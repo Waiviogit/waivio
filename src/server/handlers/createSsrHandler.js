@@ -48,7 +48,6 @@ export default function createSsrHandler(template) {
     try {
       const hostname = req.hostname;
       const searchBot = isbot(req.get('User-Agent'));
-      process.env.APP_HOST = hostname;
       const inheritedHost = isInheritedHost(hostname);
       if (inheritedHost) {
         const { redirect, redirectPath } = await checkAppStatus(hostname);
@@ -80,7 +79,7 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
-      store.disabled(setAppHost(req.hostname));
+      store.dispatch(setAppHost(req.hostname));
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
