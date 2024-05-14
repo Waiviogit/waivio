@@ -85,7 +85,7 @@ const WebsiteBody = props => {
       props.resetWebsiteFilters();
       props.setShowSearchResult(false);
     };
-  }, [props.currObj.author_permlink, props.authUserName]);
+  }, [props.currObj.author_permlink]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
@@ -207,7 +207,6 @@ WebsiteBody.propTypes = {
   logo: PropTypes.string,
   locale: PropTypes.string,
   permlink: PropTypes.string,
-  authUserName: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
