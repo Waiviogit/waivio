@@ -64,6 +64,7 @@ import {
   getMapHeight,
   getShowLocation,
 } from '../../../store/mapStore/mapSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const MainMap = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
@@ -177,7 +178,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink],
+    [props.wobject.author_permlink, props.authUserName],
   );
 
   useEffect(() => {
@@ -275,7 +276,7 @@ const MainMap = React.memo(props => {
     let mount = true;
     const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
-    if ((permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) || mount) {
+    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
       props.getObjectAction(permlink);
     }
 
@@ -513,6 +514,7 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  authUserName: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -556,6 +558,7 @@ export default connect(
     infoboxData: getInfoboxData(state),
     showLocation: getShowLocation(state),
     area: getArea(state),
+    authUserName: getAuthenticatedUserName(state),
   }),
   {
     getCoordinates,

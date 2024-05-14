@@ -38,7 +38,10 @@ import {
   setMapInitialised,
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getSocialSearchResultLoading } from '../../../store/websiteStore/websiteSelectors';
+import {
+  getSocialSearchResult,
+  getSocialSearchResultLoading,
+} from '../../../store/websiteStore/websiteSelectors';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
 
 const SearchAllResult = props => {
@@ -87,11 +90,11 @@ const SearchAllResult = props => {
       // } else {
       const perml = props.permlink || props.currObj.author_permlink;
 
-      perml &&
-        props.setSocialSearchResults(perml, {
-          topPoint: props.searchMap.topPoint,
-          bottomPoint: props.searchMap.bottomPoint,
-        });
+      perml && isEmpty(props.socialWobjects);
+      props.setSocialSearchResults(perml, {
+        topPoint: props.searchMap.topPoint,
+        bottomPoint: props.searchMap.bottomPoint,
+      });
       // }
     } else {
       switch (props.searchType) {
@@ -231,6 +234,7 @@ SearchAllResult.propTypes = {
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  socialWobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 SearchAllResult.defaultProps = {
@@ -256,6 +260,7 @@ export default connect(
     currObj: getObject(state),
     // isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),
+    socialWobjects: getSocialSearchResult(state),
   }),
   {
     searchExpertsForMapLoadingMore,
