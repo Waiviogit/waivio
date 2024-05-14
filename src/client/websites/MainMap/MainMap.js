@@ -210,6 +210,12 @@ const MainMap = React.memo(props => {
         props.history.push(`?${query.toString()}`);
       }
     }
+
+    return () => {
+      if (props.isSocial) {
+        props.setMapForSearch({});
+      }
+    };
   }, [props.isShowResult]);
 
   useEffect(() => {
