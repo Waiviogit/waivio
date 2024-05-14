@@ -5,6 +5,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getWobjectGallery, getRelatedPhotos } from '../../waivioApi/ApiClient';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getRelatedPhotos as relatedPhotos } from './gallerySelectors';
+import { getAppHost } from '../appStore/appSelectors';
 
 export const GET_ALBUMS = createAsyncActionType('@gallery/GET_ALBUMS');
 export const GET_RELATED_PHOTOS = createAsyncActionType('@gallery/GET_RELATED_PHOTOS');
@@ -15,12 +16,14 @@ export const RESET_GALLERY = '@gallery/RESET_GALLERY';
 export const CLEAR_RELATED_PHOTO = '@gallery/CLEAR_RELATED_PHOTO';
 
 export const getAlbums = authorPermlink => (dispatch, getState) => {
-  const locale = getLocale(getState());
+  const state = getState();
+  const locale = getLocale(state);
+  const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_ALBUMS.ACTION,
     payload: {
-      promise: getWobjectGallery(authorPermlink, locale).then(albums => {
+      promise: getWobjectGallery(authorPermlink, locale, appHost).then(albums => {
         const defaultAlbum = _.remove(albums, alb => alb.id === authorPermlink);
 
         const sortedAlbums = _.orderBy(albums, ['weight'], ['desc']);
@@ -31,13 +34,17 @@ export const getAlbums = authorPermlink => (dispatch, getState) => {
   }).catch(() => {});
 };
 
-export const getRelatedAlbum = (authorPermlink, limit = 30, skip = 0) => dispatch =>
-  dispatch({
+export const getRelatedAlbum = (authorPermlink, limit = 30, skip = 0) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
     type: GET_RELATED_PHOTOS.ACTION,
     payload: {
-      promise: getRelatedPhotos(authorPermlink, limit, skip),
+      promise: getRelatedPhotos(authorPermlink, limit, skip, appHost),
     },
   });
+};
 
 export const getMoreRelatedAlbum = (authorPermlink, limit = 30) => (dispatch, getState) => {
   const state = getState();

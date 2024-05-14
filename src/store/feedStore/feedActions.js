@@ -13,6 +13,7 @@ import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
 import { getBlogFilters, getFeed } from './feedSelectors';
 import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmarksSelectors';
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
+import { getAppHost } from '../appStore/appSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
@@ -147,10 +148,11 @@ export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getSt
   const state = getState();
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
+  const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserFeedContent(userName, limit, user_languages, locale),
+    payload: ApiClient.getUserFeedContent(userName, limit, user_languages, locale, appHost),
     meta: {
       sortBy: 'feed',
       category: userName,
@@ -258,8 +260,9 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
   const readLanguages = getUserLocalesArray(getState);
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
+  const appHost = getAppHost(state);
 
-  const apiCall1 = ApiClient.getPinnedPostsByObject(object, locale, follower);
+  const apiCall1 = ApiClient.getPinnedPostsByObject(object, locale, follower, appHost);
   const apiCall2 = ApiClient.getFeedContentByObject(
     object,
     limit,
@@ -267,6 +270,7 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
     locale,
     follower,
     newsPermlink,
+    appHost,
   );
 
   dispatch({
