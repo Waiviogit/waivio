@@ -76,22 +76,16 @@ const WebsiteBody = props => {
         if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
       }
     }
-
-    return () => {
-      props.resetWebsiteFilters();
-      props.setShowSearchResult(false);
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isEmpty(props.currObj) && props.isSocial) {
       props.getCoordinates();
     }
 
     return () => {
       props.resetSocialSearchResult();
+      props.resetWebsiteFilters();
+      props.setShowSearchResult(false);
     };
-  }, [props.currObj.author_permlink]);
+  }, [props.currObj.author_permlink, props.authUserName]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
@@ -213,6 +207,7 @@ WebsiteBody.propTypes = {
   logo: PropTypes.string,
   locale: PropTypes.string,
   permlink: PropTypes.string,
+  authUserName: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,

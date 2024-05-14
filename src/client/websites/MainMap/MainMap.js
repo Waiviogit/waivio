@@ -238,7 +238,12 @@ const MainMap = React.memo(props => {
 
       searchString &&
         props
-          .getWebsiteObjWithCoordinates(props.isSocial, searchString, { topPoint, bottomPoint }, 80)
+          .getWebsiteObjWithCoordinates(
+            props.isSocial,
+            searchString,
+            { topPoint, bottomPoint },
+            100,
+          )
           .then(res => {
             checkDistanceAndSetReload();
             if (!isEmpty(queryCenter)) {
