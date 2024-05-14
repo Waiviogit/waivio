@@ -90,11 +90,12 @@ const SearchAllResult = props => {
       // } else {
       const perml = props.permlink || props.currObj.author_permlink;
 
-      perml && isEmpty(props.socialWobjects);
-      props.setSocialSearchResults(perml, {
-        topPoint: props.searchMap.topPoint,
-        bottomPoint: props.searchMap.bottomPoint,
-      });
+      perml &&
+        isEmpty(props.socialWobjects) &&
+        props.setSocialSearchResults(perml, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        });
       // }
     } else {
       switch (props.searchType) {
