@@ -39,6 +39,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getSocialSearchResultLoading } from '../../../store/websiteStore/websiteSelectors';
+import useUpdateEffect from '../../../hooks/useUpdateEffect';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -102,7 +103,7 @@ const SearchAllResult = props => {
     }
   };
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (
       props.isShowResult &&
       !isEmpty(props.searchMap.bottomPoint) &&
