@@ -5,7 +5,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
 import { getObjectPermlink } from '../../client/vendor/steemitHelpers';
 import { followObject, voteObject } from './wobjActions';
-import { getCurrentHost } from '../appStore/appSelectors';
+import { getAppHost, getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { checkExistPermlink } from '../../waivioApi/ApiClient';
@@ -18,20 +18,29 @@ export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 export const GET_OBJECT_FOLLOWERS = createAsyncActionType('@objects/GET_OBJECT_FOLLOWERS');
 export const GET_OBJECTS_NEARBY = createAsyncActionType('@objects/GET_OBJECTS_NEARBY');
 
-export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank' }) => dispatch =>
-  dispatch({
+export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank' }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
     type: GET_OBJECT_FOLLOWERS.ACTION,
     payload: {
-      promise: ApiClient.getWobjectFollowers(object, skip, limit, sort, userName),
+      promise: ApiClient.getWobjectFollowers(object, skip, limit, sort, userName, appHost),
     },
   });
+};
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
-  const usedLocale = getLocale(getState());
+  const state = getState();
+  const usedLocale = getLocale(state);
+  const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, user, usedLocale)
+    payload: ApiClient.getObject(authorPermlink, user, usedLocale, appHost)
       .then(res => res)
       .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
@@ -136,10 +145,11 @@ export const createWaivioObject = postData => async (dispatch, getState) => {
 export const getNearbyObjects = authorPermlink => (dispatch, getState) => {
   const state = getState();
   const domain = getCurrentHost(state);
+  const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_OBJECTS_NEARBY.ACTION,
-    payload: ApiClient.getNearbyObjects(authorPermlink, domain).catch(() =>
+    payload: ApiClient.getNearbyObjects(authorPermlink, domain, 0, 5, 20000, appHost).catch(() =>
       dispatch({ type: GET_OBJECT_ERROR }),
     ),
   });
@@ -155,8 +165,10 @@ export const addListItem = item => dispatch =>
 
 export const GET_ADD_ONS = createAsyncActionType('@wobj/GET_ADD_ONS');
 
-export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
-  if (!isEmpty(addOnPermlinks))
+export const getAddOns = (addOnPermlinks, userName, limit = 30) => (dispatch, getState) => {
+  if (!isEmpty(addOnPermlinks)) {
+    const appHost = getAppHost(getState());
+
     return dispatch({
       type: GET_ADD_ONS.ACTION,
       payload: ApiClient.getObjectsByIds({
@@ -164,8 +176,10 @@ export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
         authUserName: userName,
         limit,
         skip: 0,
+        host: appHost,
       }),
     });
+  }
 
   return dispatch({
     type: GET_ADD_ONS.SUCCESS,
@@ -177,8 +191,14 @@ export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
 
 export const GET_SIMILAR_OBJECTS = createAsyncActionType('@wobj/GET_SIMILAR_OBJECTS');
 
-export const getSimilarObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
-  dispatch({
+export const getSimilarObjects = (author_permlink, userName, locale, limit = 30) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
     type: GET_SIMILAR_OBJECTS.ACTION,
     payload: ApiClient.getSimilarObjectsFromDepartments(
       author_permlink,
@@ -186,17 +206,20 @@ export const getSimilarObjects = (author_permlink, userName, locale, limit = 30)
       locale,
       0,
       limit,
+      appHost,
     ),
   });
+};
 export const GET_RELATED_OBJECTS = createAsyncActionType('@wobj/GET_RELATED_OBJECTS');
 
-export const getRelatedObjectsAction = (
-  author_permlink,
-  userName,
-  locale,
-  limit = 30,
-) => dispatch =>
-  dispatch({
+export const getRelatedObjectsAction = (author_permlink, userName, locale, limit = 30) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
     type: GET_RELATED_OBJECTS.ACTION,
     payload: ApiClient.getRelatedObjectsFromDepartments(
       author_permlink,
@@ -204,21 +227,29 @@ export const getRelatedObjectsAction = (
       locale,
       0,
       limit,
+      appHost,
     ),
   });
+};
 
 export const GET_MENU_ITEM_CONTENT = createAsyncActionType('@wobj/GET_MENU_ITEM_CONTENT');
 
-export const getMenuItemContent = (author_permlink, userName, locale) => dispatch =>
-  dispatch({
+export const getMenuItemContent = (author_permlink, userName, locale) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
     type: GET_MENU_ITEM_CONTENT.ACTION,
-    payload: ApiClient.getObject(author_permlink, userName, locale),
+    payload: ApiClient.getObject(author_permlink, userName, locale, appHost),
     meta: author_permlink,
   });
+};
 
 export const GET_PRODUCT_INFO = createAsyncActionType('@wobj/GET_PRODUCT_INFO');
 
-export const getProductInfo = (wobject, locale) => dispatch => {
+export const getProductInfo = (wobject, locale) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const brand = parseWobjectField(wobject, 'brand');
   const merchant = parseWobjectField(wobject, 'merchant');
@@ -235,7 +266,7 @@ export const getProductInfo = (wobject, locale) => dispatch => {
     type: GET_PRODUCT_INFO.ACTION,
     payload:
       !isEmpty(permlinks) &&
-      ApiClient.getObjectInfo(permlinks, locale).then(res => {
+      ApiClient.getObjectInfo(permlinks, locale, appHost).then(res => {
         const brandObject =
           res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
         const manufacturerObject =

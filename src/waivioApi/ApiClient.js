@@ -28,6 +28,7 @@ export const headers = {
   'Content-Type': 'application/json',
   ...isMobileDevice(),
 };
+const addAppHost = host => (typeof window === 'undefined' ? { 'app-host': host } : {});
 
 const WAIVIdPool = 13;
 const REQUEST_TIMEOUT = 15000;
@@ -113,6 +114,7 @@ export const getObjectsByIds = ({
   locale = 'en-US',
   limit = 30,
   skip,
+  host,
 }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
@@ -120,6 +122,7 @@ export const getObjectsByIds = ({
       app: config.appName,
       follower: authUserName,
       locale,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -132,7 +135,7 @@ export const getObjectsByIds = ({
     .then(res => res.json())
     .catch(error => []);
 
-export const getObject = (authorPermlink, user, locale) => {
+export const getObject = (authorPermlink, user, locale, host) => {
   const queryString = user ? `?user=${user}` : '';
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
@@ -141,6 +144,7 @@ export const getObject = (authorPermlink, user, locale) => {
       app: config.appName,
       follower: user,
       locale,
+      ...addAppHost(host),
     },
   })
     .then(res => Promise.resolve(res.json()))
@@ -158,6 +162,7 @@ export const getFeedContentByObject = (
   locale,
   follower,
   newsPermlink,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
     headers: {
@@ -165,6 +170,7 @@ export const getFeedContentByObject = (
       app: config.appName,
       locale,
       follower,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({ limit, user_languages, newsPermlink }),
@@ -173,13 +179,14 @@ export const getFeedContentByObject = (
     .then(posts => posts)
     .catch(error => error);
 
-export const getPinnedPostsByObject = (name, locale, follower) =>
+export const getPinnedPostsByObject = (name, locale, follower, host) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.pin}`, {
     headers: {
       ...headers,
       app: config.appName,
       locale,
       follower,
+      ...addAppHost(host),
     },
     method: 'GET',
   })
@@ -299,13 +306,14 @@ export const chechExistUser = userName =>
     .then(res => res.result)
     .catch(error => error);
 
-export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
+export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale, host) =>
   fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
     headers: {
       ...headers,
       locale,
       app: config.appName,
       follower: feedUserName,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({ limit, user_languages }),
@@ -462,13 +470,20 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
     .catch(error => error);
 };
 
-export const getWobjectFollowers = (wobject, skip = 0, limit = 50, sort = 'recency', authUser) => {
+export const getWobjectFollowers = (
+  wobject,
+  skip = 0,
+  limit = 50,
+  sort = 'recency',
+  authUser,
+  host,
+) => {
   const actualHeaders = authUser
     ? { ...headers, following: authUser, follower: authUser }
     : headers;
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
-    headers: actualHeaders,
+    headers: { ...actualHeaders, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({ skip, limit, sort }),
   })
@@ -556,12 +571,13 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
     .catch(error => error);
 // endregion
 
-export const getWobjectGallery = (wobject, locale) =>
+export const getWobjectGallery = (wobject, locale, host) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`, {
     headers: {
       ...headers,
       app: config.appName,
       locale,
+      ...addAppHost(host),
     },
   })
     .then(res => res.json())
@@ -617,13 +633,14 @@ export const getWobjectsExpertiseWithNewsFilter = (
   skip = 0,
   limit = 30,
   newsFilter,
+  host,
 ) => {
   const actualHeader = user ? { ...headers, following: user, follower: user } : headers;
 
   return fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`,
     {
-      headers: { ...actualHeader, app: config.appName },
+      headers: { ...actualHeader, app: config.appName, ...addAppHost(host) },
       method: 'POST',
       body: JSON.stringify({ skip, limit, ...newsFilter }),
     },
@@ -1586,11 +1603,14 @@ export const getStatusSponsoredRewards = (referral, userName, type = 'referral_s
     .then(result => result)
     .catch(error => error);
 
-export const getRelatedPhotos = (authorPermlink, limit, skip) =>
+export const getRelatedPhotos = (authorPermlink, limit, skip, host) =>
   fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.related}?limit=${limit}&skip=${skip}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...addAppHost(host),
+      },
       method: 'GET',
     },
   )
@@ -3367,9 +3387,9 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-export const getObjectInfo = (links, locale) =>
+export const getObjectInfo = (links, locale, host) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
-    headers: { ...headers, locale },
+    headers: { ...headers, locale, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({
       links,
@@ -3801,9 +3821,10 @@ export const getRelatedObjectsFromDepartments = (
   locale,
   skip,
   limit = 30,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.related}`, {
-    headers: { ...headers, follower: userName, locale },
+    headers: { ...headers, follower: userName, locale, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
@@ -3821,9 +3842,10 @@ export const getSimilarObjectsFromDepartments = (
   locale,
   skip,
   limit = 30,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.similar}`, {
-    headers: { ...headers, follower: userName, locale },
+    headers: { ...headers, follower: userName, locale, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
