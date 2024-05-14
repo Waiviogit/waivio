@@ -275,7 +275,7 @@ const MainMap = React.memo(props => {
     let mount = true;
     const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
-    if ((permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) || mount) {
+    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
       props.getObjectAction(permlink);
     }
 
