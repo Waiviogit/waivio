@@ -64,7 +64,6 @@ import {
   getMapHeight,
   getShowLocation,
 } from '../../../store/mapStore/mapSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const MainMap = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
@@ -178,7 +177,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink, props.authUserName],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
@@ -210,12 +209,6 @@ const MainMap = React.memo(props => {
         props.history.push(`?${query.toString()}`);
       }
     }
-
-    return () => {
-      if (props.isSocial) {
-        props.setMapForSearch({});
-      }
-    };
   }, [props.isShowResult]);
 
   useEffect(() => {
@@ -520,7 +513,6 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
-  authUserName: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -564,7 +556,6 @@ export default connect(
     infoboxData: getInfoboxData(state),
     showLocation: getShowLocation(state),
     area: getArea(state),
-    authUserName: getAuthenticatedUserName(state),
   }),
   {
     getCoordinates,
