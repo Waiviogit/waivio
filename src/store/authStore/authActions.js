@@ -283,6 +283,33 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
           });
         });
       }
+    } else if (cookie.access_token && cookie.socialProvider) {
+      promise = new Promise(async (resolve, reject) => {
+        try {
+          const userData = await setToken(cookie.access_token, cookie.socialProvider);
+          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+          const privateEmail = await getPrivateEmail(userData.name);
+          const rewardsTab = await getRewardTab(userData.name);
+          const { WAIV } = await getGuestWaivBalance(userData.name);
+
+          dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
+          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(changeAdminStatus(userData.name));
+
+          resolve({
+            account: userData,
+            userMetaData,
+            privateEmail,
+            socialNetwork: cookie.socialProvider,
+            isGuestUser: true,
+            waivBalance: WAIV,
+            ...rewardsTab,
+          });
+        } catch (e) {
+          dispatch(notify(e.error.details[0].message));
+          reject(e);
+        }
+      });
     } else if (isGuest || cookie.access_token) {
       promise = new Promise(async resolve => {
         const scUserData = isGuest

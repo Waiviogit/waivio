@@ -80,14 +80,22 @@ export default function createSsrHandler(template) {
       const store = getStore(sc2Api, waivioAPI, req.url);
 
       store.dispatch(setAppHost(req.hostname));
+
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
+
+      const splittedUrl = req.url.split('?');
+      const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
+      const access_token = query ? query.get('access_token') : req?.cookies?.access_token;
+      const socialProvider = query ? query.get('socialProvider') : undefined;
+
       if (req.cookies && !req.url?.includes('sign-in')) {
-        sc2Api.setAccessToken(req.cookies.access_token);
-        store.dispatch(loginFromServer(req.cookies)).then(async res => {
+        sc2Api.setAccessToken(access_token);
+        const data = { access_token, socialProvider, ...req?.cookies };
+        await store.dispatch(loginFromServer(data)).then(async res => {
           try {
             const language = res?.value?.userMetaData?.settings.locale;
             store.dispatch(setLocale(language));
@@ -98,10 +106,6 @@ export default function createSsrHandler(template) {
         });
       }
 
-      const routes = switchRoutes(hostname, parentHost);
-      const splittedUrl = req.url.split('?');
-      const branch = matchRoutes(routes, splittedUrl[0]);
-      const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
       const loc =
         query?.get('usedLocale') ||
@@ -112,6 +116,8 @@ export default function createSsrHandler(template) {
         store.dispatch(setLocale(loc));
         store.dispatch(setUsedLocale(await loadLanguage(loc)));
       }
+      const routes = switchRoutes(hostname, parentHost);
+      const branch = matchRoutes(routes, splittedUrl[0]);
 
       branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
