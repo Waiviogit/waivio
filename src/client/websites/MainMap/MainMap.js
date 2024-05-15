@@ -64,6 +64,7 @@ import {
   getMapHeight,
   getShowLocation,
 } from '../../../store/mapStore/mapSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const MainMap = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
@@ -103,7 +104,13 @@ const MainMap = React.memo(props => {
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
     }
+    // eslint-disable-next-line no-console
+    console.log(props.isSocial, 'isSocial');
+    // eslint-disable-next-line no-console
+    console.log(props.authUserName, 'authUserName');
     if (props.isSocial) {
+      // eslint-disable-next-line no-console
+      console.log(props.wobject, 'props.wobject');
       const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
         ? JSON.parse(props.wobject?.mapDesktopView)
         : undefined;
@@ -513,6 +520,7 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  authUserName: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -556,6 +564,7 @@ export default connect(
     infoboxData: getInfoboxData(state),
     showLocation: getShowLocation(state),
     area: getArea(state),
+    authUserName: getAuthenticatedUserName(state),
   }),
   {
     getCoordinates,
