@@ -104,7 +104,13 @@ const MainMap = React.memo(props => {
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
     }
+    // eslint-disable-next-line no-console
+    console.log(props.isSocial, 'isSocial');
+    // eslint-disable-next-line no-console
+    console.log(props.authUserName, 'authUserName');
     if (props.isSocial) {
+      // eslint-disable-next-line no-console
+      console.log(props.wobject, 'props.wobject');
       const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
         ? JSON.parse(props.wobject?.mapDesktopView)
         : undefined;
@@ -178,7 +184,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink, props.authUserName],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
@@ -210,12 +216,6 @@ const MainMap = React.memo(props => {
         props.history.push(`?${query.toString()}`);
       }
     }
-
-    return () => {
-      if (props.isSocial) {
-        props.setMapForSearch({});
-      }
-    };
   }, [props.isShowResult]);
 
   useEffect(() => {

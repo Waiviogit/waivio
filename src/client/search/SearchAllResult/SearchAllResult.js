@@ -80,23 +80,20 @@ const SearchAllResult = props => {
     }
   };
 
+  const isInitialRender = useRef(false);
   // eslint-disable-next-line consistent-return
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
     if (props.isSocial) {
-      // if (props.isMapInitialised) {
-      //   props.setMapInitialised(false);
-      // } else {
       const perml = props.permlink || props.currObj.author_permlink;
 
       perml &&
-        isEmpty(props.socialWobjects) &&
+        !isInitialRender.current &&
         props.setSocialSearchResults(perml, {
           topPoint: props.searchMap.topPoint,
           bottomPoint: props.searchMap.bottomPoint,
         });
-      // }
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -106,6 +103,20 @@ const SearchAllResult = props => {
       }
     }
   };
+
+  useEffect(() => {
+    if (props.isSocial && isInitialRender.current) {
+      const perml = props.permlink || props.currObj.author_permlink;
+
+      if (perml && !isEmpty(props.searchMap.bottomPoint) && !isEmpty(props.searchMap.topPoint)) {
+        props.setSocialSearchResults(perml, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        });
+      }
+      isInitialRender.current = true;
+    }
+  }, []);
 
   useUpdateEffect(() => {
     if (
@@ -235,7 +246,6 @@ SearchAllResult.propTypes = {
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  socialWobjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 SearchAllResult.defaultProps = {
