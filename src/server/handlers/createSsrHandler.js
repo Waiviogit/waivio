@@ -89,12 +89,12 @@ export default function createSsrHandler(template) {
 
       const splittedUrl = req.url.split('?');
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
-      console.log(query);
       const access_token = query ? query.get('access_token') : req?.cookies?.access_token;
+      const socialProvider = query ? query.get('socialProvider') : undefined;
 
       if (req.cookies && !req.url?.includes('sign-in')) {
         sc2Api.setAccessToken(access_token);
-        const data = { access_token, ...req?.cookies };
+        const data = { access_token, socialProvider, ...req?.cookies };
         await store.dispatch(loginFromServer(data)).then(async res => {
           try {
             const language = res?.value?.userMetaData?.settings.locale;
