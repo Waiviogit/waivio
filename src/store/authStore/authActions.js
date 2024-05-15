@@ -315,7 +315,10 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
       payload: {
         promise,
       },
-    }).catch(e => e);
+    }).catch(e => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    });
   } catch (e) {
     console.warn(e);
   }
