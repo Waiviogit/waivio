@@ -34,14 +34,16 @@ import ReloadButton from './components/ReloadButton';
 import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
+  setSocialSearchResultLoading,
   setSocialSearchResults,
-  setMapInitialised,
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import {
+  getIsMapInitialised,
   getSocialSearchResult,
   getSocialSearchResultLoading,
 } from '../../../store/websiteStore/websiteSelectors';
+import { getBoundsParams, getMapData } from '../../../store/mapStore/mapSelectors';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
 
 const SearchAllResult = props => {
@@ -80,7 +82,6 @@ const SearchAllResult = props => {
     }
   };
 
-  const isInitialRender = useRef(false);
   // eslint-disable-next-line consistent-return
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
@@ -89,11 +90,12 @@ const SearchAllResult = props => {
       const perml = props.permlink || props.currObj.author_permlink;
 
       perml &&
-        !isInitialRender.current &&
-        props.setSocialSearchResults(perml, {
-          topPoint: props.searchMap.topPoint,
-          bottomPoint: props.searchMap.bottomPoint,
-        });
+        props
+          .setSocialSearchResults(perml, {
+            topPoint: props.searchMap.topPoint,
+            bottomPoint: props.searchMap.bottomPoint,
+          })
+          .then(() => props.setSocialSearchResultLoading(false));
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -103,20 +105,6 @@ const SearchAllResult = props => {
       }
     }
   };
-
-  useEffect(() => {
-    if (props.isSocial && isInitialRender.current) {
-      const perml = props.permlink || props.currObj.author_permlink;
-
-      if (perml && !isEmpty(props.searchMap.bottomPoint) && !isEmpty(props.searchMap.topPoint)) {
-        props.setSocialSearchResults(perml, {
-          topPoint: props.searchMap.topPoint,
-          bottomPoint: props.searchMap.bottomPoint,
-        });
-      }
-      isInitialRender.current = true;
-    }
-  }, []);
 
   useUpdateEffect(() => {
     if (
@@ -137,7 +125,10 @@ const SearchAllResult = props => {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
 
-    return () => localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    return () => {
+      props.setSocialSearchResultLoading(true);
+      localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    };
   }, []);
 
   const currRenderListState = currentListState();
@@ -240,6 +231,7 @@ SearchAllResult.propTypes = {
   socialLoading: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   setSocialSearchResults: PropTypes.func,
+  setSocialSearchResultLoading: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   permlink: PropTypes.string,
@@ -269,9 +261,11 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
     currObj: getObject(state),
-    // isMapInitialised: getIsMapInitialised(state),
+    isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),
     socialWobjects: getSocialSearchResult(state),
+    boundsParams: getBoundsParams(state),
+    mapData: getMapData(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -280,6 +274,6 @@ export default connect(
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
     setSocialSearchResults,
-    setMapInitialised,
+    setSocialSearchResultLoading,
   },
 )(injectIntl(SearchAllResult));
