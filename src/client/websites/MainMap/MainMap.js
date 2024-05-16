@@ -171,8 +171,6 @@ const MainMap = React.memo(props => {
       if (typeof window !== 'undefined') {
         const handleResize = () => props.setHeight(window.innerHeight);
 
-        // eslint-disable-next-line no-console
-        console.log('isAuth:', props.isAuth, 'authUserName:', props.authUserName);
         props.setHeight(window.innerHeight);
         props.locale && getCoordinatesForMap();
 
@@ -183,7 +181,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink, props.authUserName, props.isAuth],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
@@ -515,8 +513,6 @@ MainMap.propTypes = {
   isSocial: PropTypes.bool,
   loading: PropTypes.bool,
   socialLoading: PropTypes.bool,
-  isAuth: PropTypes.bool,
-  authUserName: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
