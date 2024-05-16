@@ -146,7 +146,24 @@ const DataImport = ({ intl }) => {
         {intl.formatMessage({
           id: 'data_import_description1',
           defaultMessage:
-            'The data import bot automatically creates or updates objects on the Hive blockchain using the JSON data files generated in accordance with the following data schema. (https://developer.datafiniti.co/docs/product-data-schema). Product, people and business data files downloaded from the Datafiniti.io service are compliant.',
+            'The data import bot automatically creates or updates objects on the Hive blockchain using the JSON data files generated in accordance with the following',
+        })}
+        <a
+          href="https://docs.datafiniti.co/docs/product-data-schema"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {' '}
+          {intl.formatMessage({
+            id: 'data_import_description_data_schema',
+            defaultMessage: 'data schema',
+          })}
+        </a>
+        .{' '}
+        {intl.formatMessage({
+          id: 'data_import_description1_1',
+          defaultMessage:
+            'Product, people and business data files downloaded from the Datafiniti.io service are compliant.',
         })}
       </p>
       <p>
