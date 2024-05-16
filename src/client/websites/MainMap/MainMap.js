@@ -240,7 +240,7 @@ const MainMap = React.memo(props => {
           query.get('currObj')
         : props.searchString;
 
-      searchString &&
+      if ((searchString && props.isSocial) || !props.isSocial)
         props
           .getWebsiteObjWithCoordinates(
             props.isSocial,
