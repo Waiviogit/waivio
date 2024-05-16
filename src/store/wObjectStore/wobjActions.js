@@ -16,7 +16,7 @@ import {
   getRelatedObjectsHasNext,
   getObject as getObjectState,
 } from './wObjectSelectors';
-import { getUsedLocale } from '../appStore/appSelectors';
+import { getAppHost, getUsedLocale } from '../appStore/appSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -337,6 +337,7 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 
   const username = getAuthenticatedUserName(state);
   const wObject = getObjectState(state);
+  const appHost = getAppHost(state);
   const objAuthorPermlink = authorPermlink || wObject.author_permlink;
 
   return dispatch({
@@ -348,6 +349,7 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
         0,
         isSocial ? 30 : 5,
         newsFilter,
+        appHost,
       ),
     },
   });

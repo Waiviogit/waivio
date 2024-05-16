@@ -135,7 +135,12 @@ const MapDesktopViewForm = props => {
                 defaultMessage: 'Select area',
               })}
             </Button>
-            <p>Select the initial map focus for the mobile site.</p>
+            <p>
+              {props.intl.formatMessage({
+                id: 'mobile_map_description',
+                defaultMessage: 'Select the initial map focus for the mobile site.',
+              })}
+            </p>
           </div>
         </React.Fragment>
       ) : (
@@ -166,7 +171,12 @@ const MapDesktopViewForm = props => {
                 defaultMessage: 'Select area',
               })}
             </Button>
-            <p>Select the initial map focus for the desktop site.</p>
+            <p>
+              {props.intl.formatMessage({
+                id: 'desktop_map_description',
+                defaultMessage: 'Select the initial map focus for the desktop site.',
+              })}
+            </p>
           </div>
         </React.Fragment>
       )}

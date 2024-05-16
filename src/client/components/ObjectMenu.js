@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../../common/helpers/wObjectHelper';
-import { isMobile } from '../../common/helpers/apiHelpers';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 
 import './ObjectMenu.less';
@@ -110,7 +109,7 @@ const ObjectMenu = props => {
             className={getItemClasses([
               TAB_NAME.REVIEWS,
               TAB_NAME.THREADS,
-              isMobile() ? '' : TAB_NAME.ABOUT,
+              // isMobile() ? '' : TAB_NAME.ABOUT,
               '',
             ])}
             data-key={TAB_NAME.REVIEWS}

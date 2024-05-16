@@ -8,7 +8,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
-import { getOwnWebsites, getParentDomain, getSocialSearchResult } from './websiteSelectors';
+import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
@@ -91,11 +91,11 @@ export const RESET_SOCIAL_SEARCH_RESULT = '@website/RESET_SOCIAL_SEARCH_RESULT';
 export const resetSocialSearchResult = () => ({
   type: RESET_SOCIAL_SEARCH_RESULT,
 });
-export const SET_MAP_INITIALISED = '@website/SET_MAP_INITIALISED';
+export const SET_SOCIAL_SEARCH_RESULT_LOADING = '@website/SET_SOCIAL_SEARCH_RESULT_LOADING';
 
-export const setMapInitialised = isInitialised => ({
-  type: SET_MAP_INITIALISED,
-  payload: isInitialised,
+export const setSocialSearchResultLoading = loading => ({
+  type: SET_SOCIAL_SEARCH_RESULT_LOADING,
+  payload: loading,
 });
 
 export const GET_INFO_FOR_MANAGE_PAGE = createAsyncActionType('@website/GET_INFO_FOR_MANAGE_PAGE');
@@ -610,7 +610,7 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
 
 export const SET_SOCIAL_SEARCH_RESULT = createAsyncActionType('@website/SET_SOCIAL_SEARCH_RESULT');
 
-export const setSocialSearchResults = (searchString, box = {}, limit = 80) => (
+export const setSocialSearchResults = (searchString, box = {}, limit = 100) => (
   dispatch,
   getState,
 ) => {
@@ -644,7 +644,7 @@ export const getWebsiteObjWithCoordinates = (
   const objType = getWebsiteSearchType(state);
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
-  const socialWobjects = getSocialSearchResult(state);
+  // const socialWobjects = getSocialSearchResult(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const userType = objType === 'Users';
   const body = {
@@ -653,9 +653,9 @@ export const getWebsiteObjWithCoordinates = (
     box,
   };
 
-  if (isEmpty(socialWobjects) && isSocial) {
-    dispatch(setSocialSearchResults(searchString, box, 80));
-  }
+  // if (isEmpty(socialWobjects) && isSocial) {
+  //   dispatch(setSocialSearchResults(searchString, box, 100));
+  // }
 
   if (!searchString) body.mapMarkers = true;
   const getObjects = () =>

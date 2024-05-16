@@ -43,6 +43,7 @@ const initialState = {
   navigItems: [],
   infoLoaded: false,
   mainObj: {},
+  appHost: '',
 };
 
 export default (state = initialState, action) => {
@@ -57,6 +58,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         rate: action.payload,
+      };
+    case appTypes.SET_APP_HOST:
+      return {
+        ...state,
+        appHost: action.payload,
       };
     case postActions.GET_CONTENT.START:
       return {

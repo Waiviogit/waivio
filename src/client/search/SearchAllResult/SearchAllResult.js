@@ -30,18 +30,21 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-import { getIsSocial } from '../../../store/appStore/appSelectors';
+
 import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
+  setSocialSearchResultLoading,
   setSocialSearchResults,
-  setMapInitialised,
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import {
   getIsMapInitialised,
+  getSocialSearchResult,
   getSocialSearchResultLoading,
 } from '../../../store/websiteStore/websiteSelectors';
+import { getBoundsParams, getMapData } from '../../../store/mapStore/mapSelectors';
+import useUpdateEffect from '../../../hooks/useUpdateEffect';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,14 +87,15 @@ const SearchAllResult = props => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
     if (props.isSocial) {
-      if (props.isMapInitialised) {
-        props.setMapInitialised(false);
-      } else {
-        props.setSocialSearchResults(props.currObj.author_permlink, {
-          topPoint: props.searchMap.topPoint,
-          bottomPoint: props.searchMap.bottomPoint,
-        });
-      }
+      const perml = props.permlink || props.currObj.author_permlink;
+
+      perml &&
+        props
+          .setSocialSearchResults(perml, {
+            topPoint: props.searchMap.topPoint,
+            bottomPoint: props.searchMap.bottomPoint,
+          })
+          .then(() => props.setSocialSearchResultLoading(false));
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -102,7 +106,7 @@ const SearchAllResult = props => {
     }
   };
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (
       props.isShowResult &&
       !isEmpty(props.searchMap.bottomPoint) &&
@@ -121,7 +125,10 @@ const SearchAllResult = props => {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
 
-    return () => localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    return () => {
+      props.setSocialSearchResultLoading(true);
+      localStorage.setItem('scrollTop', resultList.current.scrollTop);
+    };
   }, []);
 
   const currRenderListState = currentListState();
@@ -224,10 +231,10 @@ SearchAllResult.propTypes = {
   socialLoading: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   setSocialSearchResults: PropTypes.func,
+  setSocialSearchResultLoading: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
-  setMapInitialised: PropTypes.func.isRequired,
-  isMapInitialised: PropTypes.bool,
+  permlink: PropTypes.string,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -253,10 +260,12 @@ export default connect(
     usersCounter: getSearchUsersResultsQuantity(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
-    isSocial: getIsSocial(state),
     currObj: getObject(state),
     isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),
+    socialWobjects: getSocialSearchResult(state),
+    boundsParams: getBoundsParams(state),
+    mapData: getMapData(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -265,6 +274,6 @@ export default connect(
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
     setSocialSearchResults,
-    setMapInitialised,
+    setSocialSearchResultLoading,
   },
 )(injectIntl(SearchAllResult));

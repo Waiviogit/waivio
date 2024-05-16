@@ -2,7 +2,6 @@ import { get, isEmpty, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
-import { SET_MAP_INITIALISED } from './websiteActions';
 
 const initialState = {
   parentDomain: [],
@@ -26,7 +25,6 @@ const initialState = {
   wobjectsPoint: [],
   socialSearchResult: [],
   socialSearchResultLoading: true,
-  isMapInitialised: true,
   wobjectsPointHasMore: false,
   districts: null,
 };
@@ -335,6 +333,7 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
+        socialSearchResultLoading: false,
         socialSearchResult: isEmpty(state.socialSearchResult)
           ? action.payload.wobjects
           : state.socialSearchResult,
@@ -356,12 +355,6 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         wobjectsPoint: [],
         wobjectsPointHasMore: false,
-      };
-    }
-    case SET_MAP_INITIALISED: {
-      return {
-        ...state,
-        isMapInitialised: action.payload,
       };
     }
     case websiteAction.RESET_SOCIAL_SEARCH_RESULT: {
@@ -390,6 +383,12 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         socialSearchResultLoading: false,
         socialSearchResult: [],
+      };
+    }
+    case websiteAction.SET_SOCIAL_SEARCH_RESULT_LOADING: {
+      return {
+        ...state,
+        socialSearchResultLoading: action.payload,
       };
     }
     case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {

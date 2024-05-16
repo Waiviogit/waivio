@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil, has } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -65,12 +65,11 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 const WobjectContainer = props => {
-  const isEditMode = useSelector(getIsEditMode);
   const name = props.match.params.name;
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
   const toggleViewEditMode = () => {
-    props.setEditMode(!isEditMode);
+    props.setEditMode(!props.isEdit);
   };
 
   useEffect(() => {
@@ -98,22 +97,29 @@ const WobjectContainer = props => {
             props.getNearbyObjects(name);
             props.getCoordinates();
           }
-          props.getWobjectExpertise(newsFilter, name, true);
-          props.getObjectFollowers({
-            object: name,
-            skip: 0,
-            limit: 5,
-            userName: props.authenticatedUserName,
-          });
-          props.getRelatedWobjects(name);
-          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+
+          if ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) {
+            props.getWobjectExpertise(newsFilter, name, true);
+            props.getObjectFollowers({
+              object: name,
+              skip: 0,
+              limit: 5,
+              userName: props.authenticatedUserName,
+            });
+            props.getRelatedWobjects(name);
+          }
+          if (
+            ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) &&
+            (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1]))
+          ) {
             const field = getUpdateFieldName(props.match.params[1]);
 
             props.getUpdates(name, field, 'createdAt');
           }
         }
         if (
-          (props.isSocial && !['page', 'newsfeed', 'widget']?.includes(res.value.object_type)) ||
+          (props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
           !props.isSocial
         ) {
           props.getAlbums(name);
@@ -125,8 +131,8 @@ const WobjectContainer = props => {
 
   useEffect(
     () => () => {
-      props.clearObjectFromStore();
       props.setCatalogBreadCrumbs([]);
+      props.clearObjectFromStore([]);
       props.setNestedWobject({});
       props.clearRelatedPhoto();
       props.setStoreActiveOption({});
@@ -154,7 +160,7 @@ const WobjectContainer = props => {
       route={props.route}
       isSocial={props.route.isSocial}
       authenticatedUserName={props.authenticatedUserName}
-      isEditMode={isEditMode}
+      isEditMode={props.isEdit}
       toggleViewEditMode={toggleViewEditMode}
       weightValue={props.weightValue}
     />
@@ -171,6 +177,7 @@ WobjectContainer.propTypes = {
   }).isRequired,
   failed: PropTypes.bool,
   isSocial: PropTypes.bool,
+  isEdit: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
@@ -285,6 +292,7 @@ const mapStateToProps = state => ({
   isSocial: getIsSocial(state),
   weightValue: getWeightValue(state, getObjectState(state).weight),
   currHost: getCurrentHost(state),
+  isEdit: getIsEditMode(state),
 });
 
 const mapDispatchToProps = {

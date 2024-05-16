@@ -519,7 +519,7 @@
   "email_append_validation": "Voer een geldig emailadres in",
   "add_object": "Object toevoegen",
   "warning_message": "Objectupdates worden gepost door Waivio Bots om technische berichten in gebruikersfeeds te vermijden en beperkte middelen te besteden aan meerdere berichten door gebruikers. geplaatste inhoud. Gebruikers ontvangen 70% van de auteursbeloningen naast de standaard curatiebeloningen.",
-  "vote_worth": "Uw stem is $ {value} waard (min. $ 0,001)",
+  "vote_worth": "Uw stem is $ {value} waard (min. $ 0,0001)",
   "write_new_review": "Schrijf een nieuwe recensie",
   "add_photo": "Voeg foto toe",
   "need_like": "Je moet deze updates leuk vinden om van kracht te worden",

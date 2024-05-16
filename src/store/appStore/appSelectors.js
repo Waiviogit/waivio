@@ -15,6 +15,7 @@ export const getIsTrendingTopicsLoading = createSelector(
 );
 
 export const getRewardFund = createSelector([appState], state => state.rewardFund);
+export const getAppHost = createSelector([appState], state => state.appHost);
 
 export const getUserAdministrator = createSelector([appState], state => state.isUserAdministrator);
 

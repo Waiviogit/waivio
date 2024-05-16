@@ -28,7 +28,6 @@ import {
   getConfigurationValues,
   getHostAddress,
   getReserveCounter,
-  getUsedLocale,
   getWebsiteLogo,
 } from '../../../../store/appStore/appSelectors';
 import {
@@ -47,11 +46,13 @@ import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
-import './WebsiteBody.less';
 import { getCoordinates } from '../../../../store/userStore/userActions';
+import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
+import { getLocale } from '../../../../common/helpers/localStorageHelpers';
+import { setBoundsParams, setMapData } from '../../../../store/mapStore/mapActions';
+import './WebsiteBody.less';
 
 const WebsiteBody = props => {
-  const [loading, setLoading] = useState(true);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -63,28 +64,28 @@ const WebsiteBody = props => {
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
 
   useEffect(() => {
-    const query = props.location.search;
+    if (!props.isSocial) {
+      const query = props.location.search;
 
-    if (props.isAuth) props.getReservedCounter();
-    if (query) {
-      const filterBody = createFilterBody(parseTagsFilters(query));
-      const type = props.query.get('type');
+      if (props.isAuth) props.getReservedCounter();
+      if (query) {
+        const filterBody = createFilterBody(parseTagsFilters(query));
+        const type = props.query.get('type');
 
-      if (type) props.setWebsiteSearchType(type);
-      if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+        if (type) props.setWebsiteSearchType(type);
+        if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+      }
+    }
+    if (!isEmpty(props.currObj) && props.isSocial) {
+      props.getCoordinates();
     }
 
     return () => {
+      props.resetSocialSearchResult();
+      props.setBoundsParams({});
+      props.setMapData({ center: [], zoom: 8 });
       props.resetWebsiteFilters();
       props.setShowSearchResult(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    props.getCoordinates();
-
-    return () => {
-      props.resetSocialSearchResult();
     };
   }, [props.currObj.author_permlink]);
 
@@ -141,8 +142,10 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
-      {((props.isSocial && !loading) || !props.isSocial) && (
+      {((props.isSocial && !props.loading) || !props.isSocial) && (
         <SearchAllResult
+          isSocial={props.isSocial}
+          permlink={props.permlink}
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
           searchType={props.searchType}
@@ -157,17 +160,17 @@ const WebsiteBody = props => {
           <React.Fragment>
             {Boolean(props.counter) &&
               props.isAuth &&
-              (!props.isSocial || (props.isSocial && !loading)) && (
+              (!props.isSocial || (props.isSocial && !props.loading)) && (
                 <Link to="/rewards/reserved" className={reservedButtonClassList}>
                   <FormattedMessage id="reserved" defaultMessage="Reserved" />
                   :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
                 </Link>
               )}
             <MainMap
+              permlink={props.permlink}
               locale={props.locale}
               isSocial={props.isSocial}
-              loading={loading}
-              setLoading={setLoading}
+              loading={props.loading}
               query={props.query}
               hoveredCardPermlink={hoveredCardPermlink}
             />
@@ -205,12 +208,16 @@ WebsiteBody.propTypes = {
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
   locale: PropTypes.string,
+  permlink: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
+  setMapData: PropTypes.func,
+  setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
   isAuth: PropTypes.bool,
+  loading: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
     set: PropTypes.func,
@@ -239,8 +246,9 @@ export default connect(
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
     authUserName: getAuthenticatedUserName(state),
-    locale: getUsedLocale(state),
+    locale: getLocale(state),
     currObj: getObject(state),
+    loading: getMapLoading(state),
   }),
   {
     setWebsiteSearchType,
@@ -253,5 +261,7 @@ export default connect(
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
     getCoordinates,
+    setBoundsParams,
+    setMapData,
   },
 )(withRouter(WebsiteBody));

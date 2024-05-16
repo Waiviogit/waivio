@@ -7,6 +7,7 @@ import {
   getWobjectShopDepartments,
   getWobjectShopMainFeed,
 } from '../../waivioApi/ApiClient';
+import { getAppHost } from '../appStore/appSelectors';
 
 export const SET_BREAD_CRUMB = '@shop/SET_BREAD_CRUMB';
 
@@ -48,35 +49,50 @@ export const resetOptionClicked = () => ({
 
 export const GET_DEPARTMENTS = createAsyncActionType('@shop/GET_DEPARTMENTS');
 
-export const getWobjectDepartments = (name, department, excluded, path) => ({
-  type: GET_DEPARTMENTS.ACTION,
-  payload: {
-    promise: getWobjectShopDepartments(name, department, excluded, path),
-  },
-  meta: {
-    department,
-  },
-});
+export const getWobjectDepartments = (name, department, excluded, path) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
 
-export const getUserDepartments = (name, department, excluded, path) => ({
-  type: GET_DEPARTMENTS.ACTION,
-  payload: {
-    promise: getShopUserDepartments(name, department, excluded, path),
-  },
-  meta: {
-    department,
-  },
-});
+  return dispatch({
+    type: GET_DEPARTMENTS.ACTION,
+    payload: {
+      promise: getWobjectShopDepartments(name, department, excluded, path, appHost),
+    },
+    meta: {
+      department,
+    },
+  });
+};
 
-export const getGlobalDepartments = (name, department, excluded, path) => ({
-  type: GET_DEPARTMENTS.ACTION,
-  payload: {
-    promise: getShopDepartments(name, department, excluded, path),
-  },
-  meta: {
-    department,
-  },
-});
+export const getUserDepartments = (name, department, excluded, path) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
+    type: GET_DEPARTMENTS.ACTION,
+    payload: {
+      promise: getShopUserDepartments(name, department, excluded, path, appHost),
+    },
+    meta: {
+      department,
+    },
+  });
+};
+
+export const getGlobalDepartments = (name, department, excluded, path) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
+    type: GET_DEPARTMENTS.ACTION,
+    payload: {
+      promise: getShopDepartments(name, department, excluded, path, appHost),
+    },
+    meta: {
+      department,
+    },
+  });
+};
 
 export const GET_SHOP_LIST = createAsyncActionType('@shop/GET_SHOP_LIST');
 
@@ -91,25 +107,31 @@ export const getGlobalShopList = (
   limit = 10,
   categoryLimit,
   isLoadMore,
-) => ({
-  type: GET_SHOP_LIST.ACTION,
-  payload: {
-    promise: getShopMainFeed(
-      userName,
-      follower,
-      filter,
-      excludedDepartments,
-      department,
-      skip,
-      path,
-      limit,
-      categoryLimit,
-    ),
-  },
-  meta: {
-    isLoadMore,
-  },
-});
+) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
+    type: GET_SHOP_LIST.ACTION,
+    payload: {
+      promise: getShopMainFeed(
+        userName,
+        follower,
+        filter,
+        excludedDepartments,
+        department,
+        skip,
+        path,
+        limit,
+        categoryLimit,
+        appHost,
+      ),
+    },
+    meta: {
+      isLoadMore,
+    },
+  });
+};
 
 export const getUserShopList = (
   userName,
@@ -122,25 +144,31 @@ export const getUserShopList = (
   limit = 10,
   categoryLimit,
   isLoadMore,
-) => ({
-  type: GET_SHOP_LIST.ACTION,
-  payload: {
-    promise: getUserShopMainFeed(
-      userName,
-      follower,
-      filter,
-      excludedDepartments,
-      department,
-      skip,
-      path,
-      limit,
-      categoryLimit,
-    ),
-  },
-  meta: {
-    isLoadMore,
-  },
-});
+) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
+    type: GET_SHOP_LIST.ACTION,
+    payload: {
+      promise: getUserShopMainFeed(
+        userName,
+        follower,
+        filter,
+        excludedDepartments,
+        department,
+        skip,
+        path,
+        limit,
+        categoryLimit,
+        appHost,
+      ),
+    },
+    meta: {
+      isLoadMore,
+    },
+  });
+};
 
 export const getWobjectsShopList = (
   userName,
@@ -153,22 +181,28 @@ export const getWobjectsShopList = (
   limit = 10,
   categoryLimit,
   isLoadMore,
-) => ({
-  type: GET_SHOP_LIST.ACTION,
-  payload: {
-    promise: getWobjectShopMainFeed(
-      userName,
-      follower,
-      filter,
-      excludedDepartments,
-      department,
-      skip,
-      path,
-      limit,
-      categoryLimit,
-    ),
-  },
-  meta: {
-    isLoadMore,
-  },
-});
+) => (dispatch, getState) => {
+  const state = getState();
+  const appHost = getAppHost(state);
+
+  return dispatch({
+    type: GET_SHOP_LIST.ACTION,
+    payload: {
+      promise: getWobjectShopMainFeed(
+        userName,
+        follower,
+        filter,
+        excludedDepartments,
+        department,
+        skip,
+        path,
+        limit,
+        categoryLimit,
+        appHost,
+      ),
+    },
+    meta: {
+      isLoadMore,
+    },
+  });
+};

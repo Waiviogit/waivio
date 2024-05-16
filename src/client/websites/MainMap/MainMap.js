@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual, reverse } from 'lodash';
 
@@ -22,7 +22,6 @@ import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appSto
 import {
   getWebsiteObjWithCoordinates,
   resetWebsiteObjectsCoordinates,
-  setMapInitialised,
   setShowReload,
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
@@ -48,17 +47,29 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
 import Loading from '../../components/Icon/Loading';
 import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
+import {
+  setArea,
+  setBoundsParams,
+  setHeight,
+  setInfoboxData,
+  setMapData,
+  setMapLoading,
+  setShowLocation,
+} from '../../../store/mapStore/mapActions';
+import {
+  getArea,
+  getBoundsParams,
+  getInfoboxData,
+  getMapData,
+  getMapHeight,
+  getShowLocation,
+} from '../../../store/mapStore/mapSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 
 const MainMap = React.memo(props => {
-  const [boundsParams, setBoundsParams] = useState({
-    topPoint: [],
-    bottomPoint: [],
-  });
-  const [infoboxData, setInfoboxData] = useState(null);
-  const [height, setHeight] = useState('100%');
-  const [showLocation, setShowLocation] = useState(false);
-  const [area, setArea] = useState([]);
-  const [mapData, setMapData] = useState({ center: [], zoom: 6 });
   const query = new URLSearchParams(props.location.search);
   const headerHeight = 132;
   let queryCenter = query.get('center');
@@ -69,7 +80,7 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = props.isSocial ? `${height - 100}px` : `${height - 205}px`;
+  if (isMobile) mapHeight = props.isSocial ? `${props.height - 100}px` : `${props.height - 205}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
@@ -77,8 +88,8 @@ const MainMap = React.memo(props => {
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
   const setCurrMapConfig = (center, zoom) => {
-    props.setLoading(false);
-    setMapData({ center, zoom });
+    props.setMapLoading(false);
+    props.setMapData({ center, zoom });
   };
 
   const getCoordinatesForMap = async () => {
@@ -113,15 +124,15 @@ const MainMap = React.memo(props => {
   };
 
   const handleSetMapForSearch = () => {
-    const currCenter = mapData.center;
+    const currCenter = props.mapData.center;
 
     if (!isEmpty(currCenter)) {
       query.set('showPanel', true);
       query.set('center', currCenter);
-      query.set('zoom', mapData.zoom);
+      query.set('zoom', props.mapData.zoom);
       props.setMapForSearch({
         coordinates: reverse([...currCenter]),
-        ...boundsParams,
+        ...props.boundsParams,
       });
     }
 
@@ -129,12 +140,12 @@ const MainMap = React.memo(props => {
     localStorage.setItem('query', query.toString());
   };
 
-  const dataToChange = [props.searchMap, props.showReloadButton, mapData.center];
+  const dataToChange = [props.searchMap, props.showReloadButton, props.mapData.center];
 
   if (props.isSocial) {
     dataToChange.push(
       ...[
-        mapData.zoom,
+        props.mapData.zoom,
         // props.searchMap.topPoint,props.searchMap.bottomPoint
       ],
     );
@@ -144,12 +155,13 @@ const MainMap = React.memo(props => {
     if (!isEmpty(props.searchMap)) {
       const distance = distanceInMBetweenEarthCoordinates(
         reverse([...props.searchMap.coordinates]),
-        mapData.center,
+        props.mapData.center,
       );
 
+      if (props.isSocial && props.socialLoading) props.setShowReload(false);
       if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
         props.setShowReload(true);
-      if (!distance || (props.isSocial && props.socialLoading)) props.setShowReload(false);
+      if (!distance && !props.isSocial) props.setShowReload(false);
     }
   }, [dataToChange]);
 
@@ -157,22 +169,19 @@ const MainMap = React.memo(props => {
     // eslint-disable-next-line consistent-return
     () => {
       if (typeof window !== 'undefined') {
-        const handleResize = () => setHeight(window.innerHeight);
+        const handleResize = () => props.setHeight(window.innerHeight);
 
-        setHeight(window.innerHeight);
-        getCoordinatesForMap();
+        props.setHeight(window.innerHeight);
+        props.locale && getCoordinatesForMap();
 
         window.addEventListener('resize', handleResize);
 
         return () => {
-          if (props.isSocial) {
-            props.setMapInitialised(true);
-          }
           window.removeEventListener('resize', handleResize);
         };
       }
     },
-    [props.isSocial, props.locale],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
@@ -185,7 +194,7 @@ const MainMap = React.memo(props => {
 
       if (bounce.ne[0] && bounce.sw[0]) {
         if ((!isMobile && props.isSocial) || !props.isSocial) props.setShowSearchResult(true);
-        setBoundsParams({
+        props.setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
         });
@@ -207,72 +216,86 @@ const MainMap = React.memo(props => {
   }, [props.isShowResult]);
 
   useEffect(() => {
-    setInfoboxData(null);
+    props.setInfoboxData(null);
     props.resetWebsiteObjectsCoordinates();
   }, [props.searchType]);
 
   useEffect(() => {
     if (!props.showReloadButton) {
       props.setMapForSearch({
-        coordinates: reverse([...mapData.center]),
-        ...boundsParams,
+        coordinates: reverse([...props.mapData.center]),
+        ...props.boundsParams,
       });
     }
   }, [props.showReloadButton]);
 
   const fetchData = () => {
-    const { topPoint, bottomPoint } = boundsParams;
+    const { topPoint, bottomPoint } = props.boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       const searchString = props.isSocial
-        ? props.match.params.name || props.wobject.author_permlink || query.get('currObj')
+        ? props.permlink ||
+          props.match.params.name ||
+          props.wobject.author_permlink ||
+          query.get('currObj')
         : props.searchString;
 
-      props
-        .getWebsiteObjWithCoordinates(props.isSocial, searchString, { topPoint, bottomPoint }, 80)
-        .then(res => {
-          checkDistanceAndSetReload();
-          if (!isEmpty(queryCenter)) {
-            const { wobjects } = res.value;
-            const queryPermlink = props.isSocial
-              ? query.get('permlink')
-              : props.query.get('permlink');
-            const currentPoint =
-              get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
-                ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
-                : null;
+      if ((searchString && props.isSocial) || !props.isSocial)
+        props
+          .getWebsiteObjWithCoordinates(
+            props.isSocial,
+            searchString,
+            { topPoint, bottomPoint },
+            100,
+          )
+          .then(res => {
+            checkDistanceAndSetReload();
+            if (!isEmpty(queryCenter)) {
+              const { wobjects } = res.value;
+              const queryPermlink = props.isSocial
+                ? query.get('permlink')
+                : props.query.get('permlink');
+              const currentPoint =
+                get(props.infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
+                  ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
+                  : null;
 
-            if (currentPoint && !infoboxData) {
-              setInfoboxData({
-                wobject: currentPoint,
-                coordinates: queryCenter,
-              });
+              if (currentPoint && !props.infoboxData) {
+                props.setInfoboxData({
+                  wobject: currentPoint,
+                  coordinates: queryCenter,
+                });
+              }
             }
-          }
-        });
+          });
     }
   };
 
   useEffect(() => {
     if (!props.isSocial) fetchData();
-  }, [props.userLocation, boundsParams, props.searchType]);
+  }, [props.userLocation, props.boundsParams, props.searchType]);
 
   useEffect(() => {
-    const permlink = query.get('currObj') || props.match.params.name;
+    let mount = true;
+    const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
     if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
       props.getObjectAction(permlink);
     }
 
-    if (props.isSocial) {
+    if (props.isSocial && mount) {
       fetchData();
     }
-  }, [boundsParams, props.match.params.name, props.locale]);
+
+    return () => {
+      mount = false;
+    };
+  }, [props.boundsParams, props.match.params.name, props.locale]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
       if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
-        setBoundsParams({
+        props.setBoundsParams({
           topPoint: [bounds.ne[1], bounds.ne[0]],
           bottomPoint: [bounds.sw[1], bounds.sw[0]],
         });
@@ -282,31 +305,31 @@ const MainMap = React.memo(props => {
   );
 
   const onBoundsChanged = ({ center, zoom, bounds }) => {
-    setArea(bounds);
-    setMapData({ zoom, center });
+    props.setArea(bounds);
+    props.setMapData({ zoom, center });
 
-    if (!isEqual(bounds, area)) handleOnBoundsChanged(bounds);
+    if (!isEqual(bounds, props.area)) handleOnBoundsChanged(bounds);
   };
 
   const handleMarkerClick = useCallback(
     ({ payload, anchor }) => {
       handleAddMapCoordinates(anchor);
 
-      if (get(infoboxData, 'coordinates', []) === anchor) setInfoboxData({ infoboxData: null });
+      if (get(props.infoboxData, 'coordinates', []) === anchor) props.setInfoboxData(null);
 
       query.set('center', anchor);
-      query.set('zoom', mapData.zoom);
+      query.set('zoom', props.mapData.zoom);
       query.set('permlink', payload.author_permlink);
       if (props.isSocial && props.location.pathname === '/') {
         query.set('currObj', props.wobject.author_permlink);
       }
       props.history.push(`?${query.toString()}`);
-      setInfoboxData({ wobject: payload, coordinates: anchor });
+      props.setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [mapData.zoom, props.location.search, props.isSocial, props.wobject],
+    [props.mapData.zoom, props.location.search, props.isSocial, props.wobject],
   );
 
-  const resetInfoBox = () => setInfoboxData(null);
+  const resetInfoBox = () => props.setInfoboxData(null);
 
   const getMarkers = useCallback(
     wObjects => {
@@ -342,8 +365,8 @@ const MainMap = React.memo(props => {
   );
 
   const getOverlayLayout = useCallback(() => {
-    if (!infoboxData) return null;
-    const currentWobj = infoboxData;
+    if (!props.infoboxData) return null;
+    const currentWobj = props.infoboxData;
     const name = getObjectName(currentWobj.wobject);
     const wobject = get(currentWobj, 'wobject', {});
     const firstOffsetNumber = getFirstOffsetNumber(name);
@@ -352,7 +375,11 @@ const MainMap = React.memo(props => {
     const offset = usersType ? [80, 240] : [firstOffsetNumber, 160];
 
     return (
-      <Overlay anchor={infoboxData.coordinates} offset={offset} className="WebsiteBody__overlay">
+      <Overlay
+        anchor={props.infoboxData.coordinates}
+        offset={offset}
+        className="WebsiteBody__overlay"
+      >
         <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
           {usersType ? (
             <PostOverlayCard wObject={wobject} />
@@ -366,27 +393,32 @@ const MainMap = React.memo(props => {
         </div>
       </Overlay>
     );
-  }, [infoboxData]);
+  }, [props.infoboxData]);
 
   const incrementZoom = useCallback(() => {
-    if (mapData.zoom < 18) setMapData({ ...mapData, zoom: mapData.zoom + 1 });
-  }, [mapData]);
+    if (props.mapData.zoom < 18)
+      props.setMapData({ ...props.mapData, zoom: props.mapData.zoom + 1 });
+  }, [props.mapData]);
 
   const decrementZoom = useCallback(() => {
-    if (mapData.zoom > 1) setMapData({ ...mapData, zoom: mapData.zoom - 1 });
-  }, [mapData]);
+    if (props.mapData.zoom > 1)
+      props.setMapData({ ...props.mapData, zoom: props.mapData.zoom - 1 });
+  }, [props.mapData]);
 
   const setLocationFromNavigator = position => {
     const { latitude, longitude } = position.coords;
 
     props.putUserCoordinates({ latitude, longitude });
-    setShowLocation(true);
-    setMapData({ center: [latitude, longitude], zoom: mapData.zoom });
+    props.setShowLocation(true);
+    props.setMapData({ center: [latitude, longitude], zoom: props.mapData.zoom });
   };
 
   const setLocationFromApi = () => {
-    setShowLocation(false);
-    setMapData({ center: [props.userLocation.lat, props.userLocation.lon], zoom: mapData.zoom });
+    props.setShowLocation(false);
+    props.setMapData({
+      center: [props.userLocation.lat, props.userLocation.lon],
+      zoom: props.mapData.zoom,
+    });
   };
 
   const handleClickOnMap = ({ event }) => {
@@ -400,7 +432,7 @@ const MainMap = React.memo(props => {
     }
   };
 
-  const overlay = useMemo(() => getOverlayLayout(), [infoboxData]);
+  const overlay = useMemo(() => getOverlayLayout(), [props.infoboxData]);
 
   const markersList = useMemo(() => getMarkers(props.wobjectsPoint), [
     props.wobjectsPoint,
@@ -412,14 +444,14 @@ const MainMap = React.memo(props => {
   }
 
   return (
-    !isEmpty(mapData.center) &&
-    mapData.zoom && (
+    !isEmpty(props.mapData.center) &&
+    props.mapData.zoom && (
       <div className={mapClassList} style={{ height: mapHeight }}>
         <Map
           ref={mapRef}
-          center={mapData.center}
+          center={props.mapData.center}
           height={Number(mapHeight)}
-          zoom={mapData.zoom}
+          zoom={props.mapData.zoom}
           provider={mapProvider}
           onBoundsChanged={onBoundsChanged}
           onClick={handleClickOnMap}
@@ -427,7 +459,7 @@ const MainMap = React.memo(props => {
           <TagFilters query={query} history={props.history} />
           {markersList}
           {overlay}
-          {showLocation && (
+          {props.showLocation && (
             <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
           )}
         </Map>
@@ -471,10 +503,9 @@ MainMap.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  setMapLoading: PropTypes.func.isRequired,
   getObjectAction: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
-  setMapInitialised: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,
@@ -482,6 +513,19 @@ MainMap.propTypes = {
   isSocial: PropTypes.bool,
   loading: PropTypes.bool,
   socialLoading: PropTypes.bool,
+  mapData: PropTypes.shape(),
+  setMapData: PropTypes.func.isRequired,
+  height: PropTypes.string,
+  permlink: PropTypes.string,
+  setHeight: PropTypes.func.isRequired,
+  boundsParams: PropTypes.shape().isRequired,
+  setBoundsParams: PropTypes.func.isRequired,
+  infoboxData: PropTypes.shape(),
+  setInfoboxData: PropTypes.func.isRequired,
+  area: PropTypes.arrayOf(),
+  setArea: PropTypes.func.isRequired,
+  showLocation: PropTypes.bool.isRequired,
+  setShowLocation: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
@@ -510,6 +554,14 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     wobject: getObject(state),
     socialLoading: getSocialSearchResultLoading(state),
+    mapData: getMapData(state),
+    height: getMapHeight(state),
+    boundsParams: getBoundsParams(state),
+    infoboxData: getInfoboxData(state),
+    showLocation: getShowLocation(state),
+    area: getArea(state),
+    authUserName: getAuthenticatedUserName(state),
+    isAuth: getIsAuthenticated(state),
   }),
   {
     getCoordinates,
@@ -522,7 +574,13 @@ export default connect(
     setSearchInBox,
     setShowSearchResult,
     setSocialSearchResults,
-    setMapInitialised,
     getObjectAction,
+    setMapData,
+    setHeight,
+    setBoundsParams,
+    setInfoboxData,
+    setShowLocation,
+    setArea,
+    setMapLoading,
   },
 )(withRouter(MainMap));

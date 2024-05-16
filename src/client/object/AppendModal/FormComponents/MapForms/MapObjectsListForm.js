@@ -37,8 +37,11 @@ const MapObjectsListForm = props => (
       )}
     </div>
     <p>
-      By selecting the main list, all objects, including embedded ones, will be displayed on the
-      map.
+      {props.intl.formatMessage({
+        id: 'map_list_note',
+        defaultMessage:
+          'By selecting the main list, all objects, including embedded ones, will be displayed on the map.',
+      })}
     </p>
   </div>
 );
