@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil, has } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -25,7 +25,6 @@ import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getCurrentHost, getIsSocial, getWeightValue } from '../../../store/appStore/appSelectors';
 
 import {
-  clearObjectFromStore,
   getNearbyObjects as getNearbyObjectsAction,
   getObject,
   getObjectFollowers as getObjectFollowersAction,
@@ -65,7 +64,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 const WobjectContainer = props => {
-  const isEditMode = useSelector(getIsEditMode);
+  const isEditMode = props.isEdit;
   const name = props.match.params.name;
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
@@ -132,7 +131,6 @@ const WobjectContainer = props => {
 
   useEffect(
     () => () => {
-      props.clearObjectFromStore();
       props.setCatalogBreadCrumbs([]);
       props.setNestedWobject({});
       props.clearRelatedPhoto();
@@ -178,6 +176,7 @@ WobjectContainer.propTypes = {
   }).isRequired,
   failed: PropTypes.bool,
   isSocial: PropTypes.bool,
+  isEdit: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
@@ -185,7 +184,6 @@ WobjectContainer.propTypes = {
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
   updates: PropTypes.arrayOf(PropTypes.shape({})),
-  clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
   getCoordinates: PropTypes.func,
@@ -292,10 +290,10 @@ const mapStateToProps = state => ({
   isSocial: getIsSocial(state),
   weightValue: getWeightValue(state, getObjectState(state).weight),
   currHost: getCurrentHost(state),
+  iaEdit: getIsEditMode(state),
 });
 
 const mapDispatchToProps = {
-  clearObjectFromStore,
   setEditMode,
   setCatalogBreadCrumbs,
   setNestedWobject,

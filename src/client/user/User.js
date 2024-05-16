@@ -55,6 +55,7 @@ import {
   setFavoriteObjects,
   setFavoriteObjectTypes,
 } from '../../store/favoritesStore/favoritesActions';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 const getDescriptions = (username, siteName) => ({
   activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
@@ -261,9 +262,18 @@ User.defaultProps = {
   isOpenWalletTable: false,
 };
 
-User.fetchData = async ({ store, match }) => {
+User.fetchData = async ({ store, match, req }) => {
+  const locale = getLocale(store.getState());
   const fetcher = (skip, authUser) =>
-    getWobjectsWithUserWeight(match.params.name, skip, 5, authUser, excludeHashtagObjType);
+    getWobjectsWithUserWeight(
+      match.params.name,
+      skip,
+      5,
+      authUser,
+      excludeHashtagObjType,
+      locale,
+      req.hostname,
+    );
   const promises = [
     store
       .dispatch(getUserAccount(match.params.name))
