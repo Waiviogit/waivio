@@ -312,28 +312,32 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
       });
     } else if (isGuest || cookie.access_token) {
       promise = new Promise(async resolve => {
-        const scUserData = isGuest
-          ? await waivioAPI.getUserAccount(cookie.guestName, true)
-          : await steemConnectAPI.me();
-        const account = isGuest ? scUserData : await getAccount(scUserData.name);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        const privateEmail = await getPrivateEmail(scUserData.name);
-        const rewardsTab = await getRewardTab(scUserData.name);
-        const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+        try {
+          const scUserData = isGuest
+            ? await waivioAPI.getUserAccount(cookie.guestName, true)
+            : await steemConnectAPI.me();
+          const account = isGuest ? scUserData : await getAccount(scUserData.name);
+          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+          const privateEmail = await getPrivateEmail(scUserData.name);
+          const rewardsTab = await getRewardTab(scUserData.name);
+          const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
-        dispatch(changeAdminStatus(scUserData.name));
-        dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(changeAdminStatus(scUserData.name));
+          dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
-        resolve({
-          ...scUserData,
-          ...rewardsTab,
-          account,
-          userMetaData,
-          privateEmail,
-          waivBalance: WAIV,
-          isGuestUser: isGuest,
-        });
+          resolve({
+            ...scUserData,
+            ...rewardsTab,
+            account,
+            userMetaData,
+            privateEmail,
+            waivBalance: WAIV,
+            isGuestUser: isGuest,
+          });
+        } catch (e) {
+          console.warn(e);
+        }
       });
     }
 

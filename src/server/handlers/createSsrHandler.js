@@ -89,7 +89,8 @@ export default function createSsrHandler(template) {
 
       const splittedUrl = req.url.split('?');
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
-      const access_token = query ? query.get('access_token') : req?.cookies?.access_token;
+      const access_token =
+        query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
       const socialProvider = query ? query.get('socialProvider') : undefined;
 
       if (req.cookies && !req.url?.includes('sign-in')) {
