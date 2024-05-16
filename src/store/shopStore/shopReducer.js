@@ -63,6 +63,8 @@ export default function shopReducer(state = initialState, action) {
         isOptionClicked: false,
       };
     case GET_DEPARTMENTS.SUCCESS:
+      if (action.payload.message) return state;
+
       return {
         ...state,
         departmentsList: action.meta.department ? state.departmentsList : action.payload,
