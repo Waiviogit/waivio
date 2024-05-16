@@ -64,6 +64,10 @@ import {
   getMapHeight,
   getShowLocation,
 } from '../../../store/mapStore/mapSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 
 const MainMap = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
@@ -167,6 +171,8 @@ const MainMap = React.memo(props => {
       if (typeof window !== 'undefined') {
         const handleResize = () => props.setHeight(window.innerHeight);
 
+        // eslint-disable-next-line no-console
+        console.log('isAuth:', props.isAuth, 'authUserName:', props.authUserName);
         props.setHeight(window.innerHeight);
         props.locale && getCoordinatesForMap();
 
@@ -177,7 +183,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink, props.wobject],
+    [props.wobject.author_permlink, props.authUserName, props.isAuth],
   );
 
   useEffect(() => {
@@ -509,6 +515,8 @@ MainMap.propTypes = {
   isSocial: PropTypes.bool,
   loading: PropTypes.bool,
   socialLoading: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  authUserName: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
@@ -556,6 +564,8 @@ export default connect(
     infoboxData: getInfoboxData(state),
     showLocation: getShowLocation(state),
     area: getArea(state),
+    authUserName: getAuthenticatedUserName(state),
+    isAuth: getIsAuthenticated(state),
   }),
   {
     getCoordinates,
