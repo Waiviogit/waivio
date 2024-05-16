@@ -65,6 +65,78 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 class WobjectContainer extends React.PureComponent {
+  componentDidMount() {
+    const name = this.props.match.params.name;
+    const newsFilter =
+      this.props.match.params[1] === 'newsFilter'
+        ? { newsFilter: this.prop.match.params.itemId }
+        : {};
+
+    if (name !== this.props.wobjPermlink) {
+      this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
+        if (this.props.currHost?.includes('waivio')) {
+          if (
+            (await showDescriptionPage(res.value, this.props.locale)) &&
+            !this.props.match.params[0]
+          ) {
+            this.props.history.push(`/object/${res.value.author_permlink}/description`);
+          }
+        }
+
+        if (this.props.isSocial && listOfSocialObjectTypes?.includes(res.value.object_type)) {
+          if (
+            isEmpty(this.props.updates) ||
+            isNil(this.props.updates) ||
+            isNil(this.props.match.params[1])
+          ) {
+            const field = getUpdateFieldName(this.props.match.params[1]);
+
+            this.props.getUpdates(name, field, 'createdAt');
+          }
+        }
+        if (
+          (this.props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
+          !this.props.isSocial
+        ) {
+          if (res.value.map) {
+            this.props.getNearbyObjects(name);
+            this.props.getCoordinates();
+          }
+
+          if ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) {
+            this.props.getWobjectExpertise(newsFilter, name, true);
+            this.props.getObjectFollowers({
+              object: name,
+              skip: 0,
+              limit: 5,
+              userName: this.props.authenticatedUserName,
+            });
+            this.props.getRelatedWobjects(name);
+          }
+          if (
+            ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) &&
+            (isEmpty(this.props.updates) ||
+              isNil(this.props.updates) ||
+              isNil(this.props.match.params[1]))
+          ) {
+            const field = getUpdateFieldName(this.props.match.params[1]);
+
+            this.props.getUpdates(name, field, 'createdAt');
+          }
+        }
+        if (
+          (this.props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
+          !this.props.isSocial
+        ) {
+          this.props.getAlbums(name);
+          this.props.getRelatedAlbum(name);
+        }
+      });
+    }
+  }
+
   componentDidUpdate() {
     const name = this.props.match.params.name;
     const newsFilter =
@@ -305,7 +377,7 @@ const mapStateToProps = state => ({
   isSocial: getIsSocial(state),
   weightValue: getWeightValue(state, getObjectState(state).weight),
   currHost: getCurrentHost(state),
-  iaEdit: getIsEditMode(state),
+  isEdit: getIsEditMode(state),
 });
 
 const mapDispatchToProps = {
