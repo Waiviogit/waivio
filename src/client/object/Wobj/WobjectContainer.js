@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil, has } from 'lodash';
@@ -64,193 +64,108 @@ import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
-class WobjectContainer extends React.PureComponent {
-  componentDidMount() {
-    const name = this.props.match.params.name;
-    const newsFilter =
-      this.props.match.params[1] === 'newsFilter'
-        ? { newsFilter: this.prop.match.params.itemId }
-        : {};
+const WobjectContainer = props => {
+  const name = props.match.params.name;
+  const newsFilter =
+    props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
+  const toggleViewEditMode = () => {
+    props.setEditMode(!props.isEdit);
+  };
 
-    if (name !== this.props.wobjPermlink) {
-      this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
-        if (this.props.currHost?.includes('waivio')) {
-          if (
-            (await showDescriptionPage(res.value, this.props.locale)) &&
-            !this.props.match.params[0]
-          ) {
-            this.props.history.push(`/object/${res.value.author_permlink}/description`);
+  useEffect(() => {
+    if (name !== props.wobjPermlink) {
+      props.getObject(name, props.authenticatedUserName).then(async res => {
+        if (props.currHost?.includes('waivio')) {
+          if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
+            props.history.push(`/object/${res.value.author_permlink}/description`);
           }
         }
 
-        if (this.props.isSocial && listOfSocialObjectTypes?.includes(res.value.object_type)) {
-          if (
-            isEmpty(this.props.updates) ||
-            isNil(this.props.updates) ||
-            isNil(this.props.match.params[1])
-          ) {
-            const field = getUpdateFieldName(this.props.match.params[1]);
+        if (props.isSocial && listOfSocialObjectTypes?.includes(res.value.object_type)) {
+          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+            const field = getUpdateFieldName(props.match.params[1]);
 
-            this.props.getUpdates(name, field, 'createdAt');
+            props.getUpdates(name, field, 'createdAt');
           }
         }
         if (
-          (this.props.isSocial &&
+          (props.isSocial &&
             !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
-          !this.props.isSocial
+          !props.isSocial
         ) {
           if (res.value.map) {
-            this.props.getNearbyObjects(name);
-            this.props.getCoordinates();
+            props.getNearbyObjects(name);
+            props.getCoordinates();
           }
 
-          if ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) {
-            this.props.getWobjectExpertise(newsFilter, name, true);
-            this.props.getObjectFollowers({
+          if ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) {
+            props.getWobjectExpertise(newsFilter, name, true);
+            props.getObjectFollowers({
               object: name,
               skip: 0,
               limit: 5,
-              userName: this.props.authenticatedUserName,
+              userName: props.authenticatedUserName,
             });
-            this.props.getRelatedWobjects(name);
+            props.getRelatedWobjects(name);
           }
           if (
-            ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) &&
-            (isEmpty(this.props.updates) ||
-              isNil(this.props.updates) ||
-              isNil(this.props.match.params[1]))
+            ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) &&
+            (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1]))
           ) {
-            const field = getUpdateFieldName(this.props.match.params[1]);
+            const field = getUpdateFieldName(props.match.params[1]);
 
-            this.props.getUpdates(name, field, 'createdAt');
+            props.getUpdates(name, field, 'createdAt');
           }
         }
         if (
-          (this.props.isSocial &&
+          (props.isSocial &&
             !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
-          !this.props.isSocial
+          !props.isSocial
         ) {
-          this.props.getAlbums(name);
-          this.props.getRelatedAlbum(name);
+          props.getAlbums(name);
+          props.getRelatedAlbum(name);
         }
       });
     }
-  }
+  }, [name, props.locale, props.authenticatedUserName]);
 
-  componentDidUpdate() {
-    const name = this.props.match.params.name;
-    const newsFilter =
-      this.props.match.params[1] === 'newsFilter'
-        ? { newsFilter: this.prop.match.params.itemId }
-        : {};
+  useEffect(
+    () => () => {
+      props.setCatalogBreadCrumbs([]);
+      props.clearObjectFromStore([]);
+      props.setNestedWobject({});
+      props.clearRelatedPhoto();
+      props.setStoreActiveOption({});
+      props.resetBreadCrumb();
+      props.resetGallery();
+      props.resetWobjectExpertise();
+      props.setEditMode(false);
+    },
+    [],
+  );
 
-    if (name !== this.props.wobjPermlink) {
-      this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
-        if (this.props.currHost?.includes('waivio')) {
-          if (
-            (await showDescriptionPage(res.value, this.props.locale)) &&
-            !this.props.match.params[0]
-          ) {
-            this.props.history.push(`/object/${res.value.author_permlink}/description`);
-          }
-        }
-
-        if (this.props.isSocial && listOfSocialObjectTypes?.includes(res.value.object_type)) {
-          if (
-            isEmpty(this.props.updates) ||
-            isNil(this.props.updates) ||
-            isNil(this.props.match.params[1])
-          ) {
-            const field = getUpdateFieldName(this.props.match.params[1]);
-
-            this.props.getUpdates(name, field, 'createdAt');
-          }
-        }
-        if (
-          (this.props.isSocial &&
-            !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
-          !this.props.isSocial
-        ) {
-          if (res.value.map) {
-            this.props.getNearbyObjects(name);
-            this.props.getCoordinates();
-          }
-
-          if ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) {
-            this.props.getWobjectExpertise(newsFilter, name, true);
-            this.props.getObjectFollowers({
-              object: name,
-              skip: 0,
-              limit: 5,
-              userName: this.props.authenticatedUserName,
-            });
-            this.props.getRelatedWobjects(name);
-          }
-          if (
-            ((res.value.object_type !== 'map' && this.props.isSocial) || !this.props.isSocial) &&
-            (isEmpty(this.props.updates) ||
-              isNil(this.props.updates) ||
-              isNil(this.props.match.params[1]))
-          ) {
-            const field = getUpdateFieldName(this.props.match.params[1]);
-
-            this.props.getUpdates(name, field, 'createdAt');
-          }
-        }
-        if (
-          (this.props.isSocial &&
-            !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
-          !this.props.isSocial
-        ) {
-          this.props.getAlbums(name);
-          this.props.getRelatedAlbum(name);
-        }
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.clearObjectFromStore();
-    this.props.setCatalogBreadCrumbs([]);
-    this.props.setNestedWobject({});
-    this.props.clearRelatedPhoto();
-    this.props.setStoreActiveOption({});
-    this.props.resetBreadCrumb();
-    this.props.resetGallery();
-    this.props.resetWobjectExpertise();
-    this.props.setEditMode(false);
-  }
-
-  render() {
-    const name = this.props.match.params.name;
-
-    const toggleViewEditMode = () => {
-      this.props.setEditMode(!this.props.isEdit);
-    };
-
-    if (this.props.failed)
-      return (
-        <div className="main-panel">
-          <NotFound
-            item={name}
-            title={'there_are_not_object_with_name'}
-            titleDefault={'Sorry! There are no object with name {item} on Waivio'}
-          />
-        </div>
-      );
-
+  if (props.failed)
     return (
-      <Wobj
-        route={this.props.route}
-        isSocial={this.props.route.isSocial}
-        authenticatedUserName={this.props.authenticatedUserName}
-        isEditMode={this.props.isEdit}
-        toggleViewEditMode={toggleViewEditMode}
-        weightValue={this.props.weightValue}
-      />
+      <div className="main-panel">
+        <NotFound
+          item={name}
+          title={'there_are_not_object_with_name'}
+          titleDefault={'Sorry! There are no object with name {item} on Waivio'}
+        />
+      </div>
     );
-  }
-}
+
+  return (
+    <Wobj
+      route={props.route}
+      isSocial={props.route.isSocial}
+      authenticatedUserName={props.authenticatedUserName}
+      isEditMode={props.isEdit}
+      toggleViewEditMode={toggleViewEditMode}
+      weightValue={props.weightValue}
+    />
+  );
+};
 
 WobjectContainer.propTypes = {
   route: PropTypes.shape().isRequired,
