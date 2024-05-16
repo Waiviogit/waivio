@@ -591,6 +591,7 @@ export const getWobjectsWithUserWeight = (
   authUser,
   objectTypes,
   locale,
+  host,
 ) => {
   const reqData = { skip, limit };
 
@@ -602,6 +603,7 @@ export const getWobjectsWithUserWeight = (
       follower: authUser,
       app: config.appName,
       locale,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify(reqData),
@@ -3452,9 +3454,9 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserDepartments = (userName, name, excluded, path) =>
+export const getShopUserDepartments = (userName, name, excluded, path, host) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
-    headers,
+    headers: { ...headers, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({
       userName,
@@ -3467,9 +3469,9 @@ export const getShopUserDepartments = (userName, name, excluded, path) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopDepartments = (name, excluded, path) =>
+export const getShopDepartments = (name, excluded, path, host) =>
   fetch(`${config.apiPrefix}${config.shop}${config.departments}`, {
-    headers,
+    headers: { ...headers, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify({
       name,
@@ -3491,11 +3493,13 @@ export const getUserShopMainFeed = (
   path,
   limit,
   categoryLimit,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3523,11 +3527,13 @@ export const getShopMainFeed = (
   path,
   limit = 10,
   categoryLimit,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower: userName,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3555,11 +3561,13 @@ export const getWobjectShopMainFeed = (
   path,
   limit = 10,
   categoryLimit,
+  host,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3577,9 +3585,12 @@ export const getWobjectShopMainFeed = (
     .then(posts => posts)
     .catch(error => error);
 
-export const getWobjectShopDepartments = (authorPermlink, name, excluded, path) =>
+export const getWobjectShopDepartments = (authorPermlink, name, excluded, path, host) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departments}`, {
-    headers,
+    headers: {
+      ...headers,
+      ...addAppHost(host),
+    },
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
