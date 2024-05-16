@@ -22,7 +22,6 @@ import { getReservedCounter } from '../../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
   resetSocialSearchResult,
-  setMapInitialised,
   setShowReload,
 } from '../../../../store/websiteStore/websiteActions';
 import {
@@ -50,6 +49,7 @@ import { getObject as getObjectAction } from '../../../../store/wObjectStore/wob
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
+import { setBoundsParams, setMapData } from '../../../../store/mapStore/mapActions';
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
@@ -82,6 +82,8 @@ const WebsiteBody = props => {
 
     return () => {
       props.resetSocialSearchResult();
+      props.setBoundsParams({});
+      props.setMapData({ center: [], zoom: 8 });
       props.resetWebsiteFilters();
       props.setShowSearchResult(false);
     };
@@ -209,6 +211,8 @@ WebsiteBody.propTypes = {
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
+  setMapData: PropTypes.func,
+  setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
@@ -257,6 +261,7 @@ export default connect(
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
     getCoordinates,
-    setMapInitialised,
+    setBoundsParams,
+    setMapData,
   },
 )(withRouter(WebsiteBody));
