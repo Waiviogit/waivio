@@ -85,7 +85,7 @@ const WebsiteBody = props => {
       props.setBoundsParams({});
       props.setMapData({ center: [], zoom: 8 });
       props.resetWebsiteFilters();
-      props.setShowSearchResult(false);
+      // props.setShowSearchResult(false);
     };
   }, [props.currObj.author_permlink]);
 
@@ -200,7 +200,7 @@ WebsiteBody.propTypes = {
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
+  // setShowSearchResult: PropTypes.func.isRequired,
   getCoordinates: PropTypes.func,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
