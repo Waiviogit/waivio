@@ -444,7 +444,7 @@ const MainMap = React.memo(props => {
   }
 
   return (
-    !isEmpty(props.mapData.center) &&
+    // !isEmpty(props.mapData.center) &&
     props.mapData.zoom && (
       <div className={mapClassList} style={{ height: mapHeight }}>
         <Map
