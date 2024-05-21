@@ -38,7 +38,7 @@ import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors
 
 const limit = 15;
 
-const ObjectNewsFeed = ({ wobj }) => {
+const ObjectNewsFeed = ({ wobj, isNested }) => {
   const readLanguages = useSelector(getReadLanguages);
   const previews = useSelector(getTiktokPreviewFromState);
   const previewLoading = useSelector(getPreviewLoadingFromState);
@@ -66,7 +66,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
   const getPostsList = () => {
-    if (wobj && wobj.author_permlink === name) {
+    if ((wobj && isNested) || (wobj && wobj.author_permlink === name)) {
       dispatch(
         getObjectPosts({
           object: wobj.author_permlink,
@@ -165,6 +165,7 @@ const ObjectNewsFeed = ({ wobj }) => {
 
 ObjectNewsFeed.propTypes = {
   wobj: PropTypes.shape(),
+  isNested: PropTypes.bool,
 };
 
 export default ObjectNewsFeed;

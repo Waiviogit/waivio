@@ -26,7 +26,6 @@ import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/g
 import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
-import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import {
   getNumbersFromWobjPrice,
@@ -479,7 +478,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
-  getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),

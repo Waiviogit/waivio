@@ -285,18 +285,25 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
 
   return Promise.all([apiCall1, apiCall2])
     .then(([pinnedPosts, feedContent]) => {
-      const allPosts = [...pinnedPosts, ...feedContent];
+      let allPosts = [];
 
-      dispatch({
-        type: SET_PINNED_POSTS,
-        payload: pinnedPosts.reduce((acc, post) => {
-          if (post.currentUserPin) {
-            acc.push(post.url);
-          }
+      if (!pinnedPosts.message) {
+        allPosts = [...pinnedPosts];
+        dispatch({
+          type: SET_PINNED_POSTS,
+          payload: pinnedPosts.reduce((acc, post) => {
+            if (post.currentUserPin) {
+              acc.push(post.url);
+            }
 
-          return acc;
-        }, []),
-      });
+            return acc;
+          }, []),
+        });
+      }
+
+      if (!feedContent.message) {
+        allPosts = [...allPosts, ...feedContent];
+      }
 
       return dispatch({
         type: GET_OBJECT_POSTS.SUCCESS,

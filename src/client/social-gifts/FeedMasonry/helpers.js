@@ -13,6 +13,7 @@ export const preparationPreview = postItems => {
   if (!postItems || !Array.isArray(postItems)) {
     return Promise.resolve([]);
   }
+
   const urls = postItems
     ?.map(p => {
       const embed = getVideoForPreview(p)[0];
@@ -28,8 +29,10 @@ export const preparationPreview = postItems => {
   return Promise.resolve([]);
 };
 
-export const preparationPostList = (postsIds, postsList) =>
-  postsIds.reduce((acc, curr) => {
+export const preparationPostList = (postsIds, postsList) => {
+  if (isEmpty(postsIds)) return [];
+
+  return postsIds?.reduce((acc, curr) => {
     const post = postsList[curr];
     const imagePath = getImageForPreview(post);
     const embeds = getVideoForPreview(post);
@@ -38,5 +41,6 @@ export const preparationPostList = (postsIds, postsList) =>
 
     return [...acc, { ...post, id: curr, imagePath, embeds }];
   }, []);
+};
 
 export default null;

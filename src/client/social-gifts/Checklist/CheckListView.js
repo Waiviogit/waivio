@@ -21,7 +21,7 @@ import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 import ListDescription from '../ListDescription/ListDescription';
 
-const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) => {
+const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
   const match = useRouteMatch();
@@ -99,7 +99,8 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
   const getMenuList = () => {
     if (wobject?.object_type === 'page') return <PageContent wobj={wobject} />;
     if (wobject?.object_type === 'widget') return <WidgetContent wobj={wobject} />;
-    if (wobject?.object_type === 'newsfeed') return <ObjectNewsFeed wobj={wobject} />;
+    if (wobject?.object_type === 'newsfeed')
+      return <ObjectNewsFeed isNested={isNested} wobj={wobject} />;
 
     if (isEmpty(listItems) && !loading) {
       return (
@@ -156,6 +157,7 @@ CheckListView.propTypes = {
   listItems: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,
   loading: PropTypes.bool,
+  isNested: PropTypes.bool,
   hideBreadCrumbs: PropTypes.bool,
 };
 
