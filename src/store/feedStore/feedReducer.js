@@ -332,6 +332,11 @@ const feed = (state = initialState, action) => {
           tagConditions: [],
         },
       };
+    case feedTypes.RESET_THREADS:
+      return {
+        ...state,
+        threads: {},
+      };
     case feedTypes.SET_PROFILE_TAGS:
       return {
         ...state,
