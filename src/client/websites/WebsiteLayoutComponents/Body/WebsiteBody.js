@@ -45,7 +45,6 @@ import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/hel
 import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
-import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
@@ -257,7 +256,6 @@ export default connect(
     setFilterFromQuery,
     resetWebsiteFilters,
     setShowSearchResult,
-    getObjectAction,
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
     getCoordinates,

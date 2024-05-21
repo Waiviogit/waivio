@@ -5,10 +5,7 @@ import { mapValues } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { getObject } from '../../../../store/wObjectStore/wobjectsActions';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-} from '../../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 
 import './SidebarMenu.less';
 
@@ -33,7 +30,6 @@ function sidebarMenuReducer(state, action) {
 const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
-  const authenticatedUserName = useSelector(getAuthenticatedUserName);
   // local state
   const [menuState, setMenuState] = useReducer(
     sidebarMenuReducer,
@@ -52,7 +48,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   };
 
   const handleGetObject = (permlink, key) => {
-    if (key === 'list') dispatch(getObject(permlink, authenticatedUserName));
+    if (key === 'list') dispatch(getObject(permlink));
   };
 
   const getSectionTitle = menuSection =>

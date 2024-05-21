@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import useQuery from '../../../hooks/useQuery';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
-import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getLastPermlinksFromHash,
   getObjectAvatar,
@@ -29,8 +28,6 @@ import CheckListView from './CheckListView';
 import './Checklist.less';
 
 const Checklist = ({
-  userName,
-  locale,
   history,
   match,
   setBreadcrumb,
@@ -68,7 +65,7 @@ const Checklist = ({
       setLoading(true);
     }
 
-    getObjectAction(pathUrl, userName, locale).then(res => {
+    getObjectAction(pathUrl).then(res => {
       const wObject = res?.value;
 
       if (wObject?.object_type === 'list' && typeof window !== 'undefined' && window.gtag) {
@@ -141,9 +138,7 @@ Checklist.propTypes = {
     }),
     listItems: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
-  userName: PropTypes.string,
   permlink: PropTypes.string,
-  locale: PropTypes.string.isRequired,
   setNestedObject: PropTypes.func,
   getObjectAction: PropTypes.func,
   intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,
@@ -162,7 +157,6 @@ Checklist.fetchData = ({ store, match, query }) => {
 };
 
 const mapStateToProps = state => ({
-  locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
   wobject: getObjectState(state),
 });

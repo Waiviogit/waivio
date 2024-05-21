@@ -33,10 +33,11 @@ export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank
   });
 };
 
-export const getObject = (authorPermlink, user) => (dispatch, getState) => {
+export const getObject = authorPermlink => (dispatch, getState) => {
   const state = getState();
   const usedLocale = getLocale(state);
   const appHost = getAppHost(state);
+  const user = getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_OBJECT,
