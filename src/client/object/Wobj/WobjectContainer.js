@@ -96,7 +96,7 @@ class WobjectContainer extends React.PureComponent {
     const name = this.props.match.params.name;
     const newsFilter =
       this.props.match.params[1] === 'newsFilter'
-        ? { newsFilter: this.prop.match.params.itemId }
+        ? { newsFilter: this.props.match.params.itemId }
         : {};
 
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
