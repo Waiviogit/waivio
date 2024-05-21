@@ -390,11 +390,6 @@ const routes = {
           exact: true,
           component: Views.WalletTable,
         },
-        // {
-        //   path: '/transfers/(waiv-table|)',
-        //   exact: true,
-        //   component: Views.WAIVwalletTable,
-        // },
         {
           path: '/(expertise-hashtags|expertise-objects)',
           exact: true,

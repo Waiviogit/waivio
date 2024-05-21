@@ -44,6 +44,7 @@ import Loading from '../../components/Icon/Loading';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 import './WalletTable.less';
+import { withRouter } from 'react-router';
 
 @Form.create()
 @injectIntl
@@ -207,11 +208,6 @@ class WalletTable extends React.Component {
     );
   };
 
-  handleChangeStartDate = value =>
-    moment(value)
-      .startOf('day')
-      .unix();
-
   handleLoadMore = () => {
     const { from, end } = this.props.form.getFieldsValue();
 
@@ -239,6 +235,11 @@ class WalletTable extends React.Component {
 
     return endDate.unix();
   };
+
+  handleChangeStartDate = value =>
+    moment(value)
+      .startOf('day')
+      .unix();
 
   handleOnChange = (e, item) => {
     this.props.user &&
@@ -455,4 +456,4 @@ class WalletTable extends React.Component {
   }
 }
 
-export default WalletTable;
+export default withRouter(WalletTable);
