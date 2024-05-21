@@ -73,7 +73,7 @@ class WobjectContainer extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (
-      prevProps.wobjPermlink !== this.props.wobjPermlink ||
+      prevProps.match.params.name !== this.props.match.params.name ||
       prevProps.locale !== this.props.locale
     ) {
       this.getWobjInfo();

@@ -79,7 +79,7 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
-      store.dispatch(setAppHost(req.hostname));
+      store.dispatch(setAppHost(hostname));
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
