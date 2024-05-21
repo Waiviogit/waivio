@@ -45,7 +45,6 @@ import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions
 import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
 import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
 import {
-  getObject,
   getAddOns,
   getSimilarObjects,
   getProductInfo,
@@ -587,7 +586,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
-  getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   getAddOnsAction: (addOnPermlinks, userName) => dispatch(getAddOns(addOnPermlinks, userName)),
