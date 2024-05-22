@@ -2634,5 +2634,6 @@
   "map_list_note": "By selecting the main list, all objects, including embedded ones, will be displayed on the map.",
   "map_area_note": "All objects within the specified areas on the map will be displayed.",
   "object_type_note": "Filter objects by type to display only selected ones on the map.",
-  "map_tags_note": "Choose the tags for displaying objects on the map."
+  "map_tags_note": "Choose the tags for displaying objects on the map.",
+  "update": "Update"
 }
