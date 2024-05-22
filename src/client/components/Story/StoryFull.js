@@ -41,6 +41,7 @@ import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './StoryFull.less';
 import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
+import CommentForm from '../Comments/CommentForm';
 
 @injectIntl
 @withRouter
@@ -73,6 +74,10 @@ class StoryFull extends React.Component {
     onReportClick: PropTypes.func,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
+    editThread: PropTypes.func,
+    handleEditThread: PropTypes.func,
+    closeEditThread: PropTypes.func,
+    newBody: PropTypes.string,
     onEditClick: PropTypes.func,
     isOriginalPost: PropTypes.string,
     isModal: PropTypes.bool,
@@ -234,6 +239,10 @@ class StoryFull extends React.Component {
       isOriginalPost,
       isModal,
       isThread,
+      editThread,
+      handleEditThread,
+      closeEditThread,
+      newBody,
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -246,7 +255,8 @@ class StoryFull extends React.Component {
     });
     const { open, index } = this.state.lightbox;
     const getImagePath = item => getImagePathPost(item);
-    const parsedBody = getHtml(post.body, {}, 'text');
+    const initialPostBody = newBody || post.body;
+    const parsedBody = getHtml(initialPostBody, {}, 'text');
 
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
@@ -255,7 +265,7 @@ class StoryFull extends React.Component {
 
     const body = this.images.reduce(
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
-      post?.body,
+      initialPostBody,
     );
 
     let signedBody = body?.replaceAll('http://', 'https://');
@@ -309,13 +319,27 @@ class StoryFull extends React.Component {
           }}
           onClick={this.handleContentClick}
         >
-          <BodyContainer
-            full
-            body={signedBody}
-            json_metadata={post.json_metadata}
-            isModal={isModal}
-            isGuest={!isEmpty(post.guestInfo)}
-          />
+          {editThread ? (
+            <div>
+              {' '}
+              <CommentForm
+                isEdit={editThread}
+                isReply={false}
+                inputValue={post.body}
+                parentPost={post}
+                onSubmit={handleEditThread}
+                onClose={closeEditThread}
+              />
+            </div>
+          ) : (
+            <BodyContainer
+              full
+              body={signedBody}
+              json_metadata={post.json_metadata}
+              isModal={isModal}
+              isGuest={!isEmpty(post.guestInfo)}
+            />
+          )}
         </div>
       );
     }

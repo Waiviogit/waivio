@@ -224,7 +224,7 @@ class Story extends React.Component {
     if (isThread) {
       this.setState({ editThread: true });
     }
-    if (post.depth === 0)
+    if (post.depth === 0 && !isThread)
       return this.props
         .editPost(post, intl)
         .then(() => this.props.push(`/editor?draft=${post.id}`));
