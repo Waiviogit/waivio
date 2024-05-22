@@ -180,7 +180,10 @@ const PostPopoverMenu = ({
 
       case 'hide':
         return dispatch(handleHidePost(post));
+      case 'edit':
+        setIsVisible(false);
 
+        return handlePostPopoverMenuClick(key);
       case 'rejectReservation':
         setIsVisible(false);
 
