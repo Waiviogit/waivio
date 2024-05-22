@@ -444,7 +444,7 @@ const MainMap = React.memo(props => {
   }
 
   return (
-    // !isEmpty(props.mapData.center) &&
+    ((!props.isSocial && !isEmpty(props.mapData.center)) || props.isSocial) &&
     props.mapData.zoom && (
       <div className={mapClassList} style={{ height: mapHeight }}>
         <Map
@@ -540,6 +540,7 @@ MainMap.defaultProps = {
   wobjectsPoint: [],
   searchString: '',
   showReloadButton: false,
+  isSocial: false,
 };
 
 export default connect(
