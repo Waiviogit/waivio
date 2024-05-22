@@ -38,6 +38,8 @@ export default class Buttons extends React.Component {
     username: PropTypes.string,
     userComments: PropTypes.bool,
     isThread: PropTypes.bool,
+    editThread: PropTypes.bool,
+    closeEditThread: PropTypes.func,
   };
 
   static defaultProps = {
@@ -200,6 +202,8 @@ export default class Buttons extends React.Component {
       handlePostPopoverMenuClick,
       userComments,
       isThread,
+      editThread,
+      closeEditThread,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -409,6 +413,11 @@ export default class Buttons extends React.Component {
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>
+        {isThread && editThread && (
+          <span className="Buttons__close-edit" role="presentation" onClick={closeEditThread}>
+            <FormattedMessage id="close" defaultMessage="Close" />
+          </span>
+        )}
         {!get(post, 'reblogged_users', []).includes(this.props.username) &&
           this.state.shareModalVisible && (
             <Modal

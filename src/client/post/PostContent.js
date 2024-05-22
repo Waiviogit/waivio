@@ -42,6 +42,8 @@ import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bo
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 import { getCanonicalHostForPost } from '../../hooks/useSeoInfo';
+import { editThread as editThreadAction } from '../../store/commentsStore/commentsActions';
+import { buildPost } from '../../store/slateEditorStore/editorActions';
 
 @injectIntl
 @connect(
@@ -73,6 +75,8 @@ import { getCanonicalHostForPost } from '../../hooks/useSeoInfo';
     pendingFollowingPostAuthor,
     followingPostAuthor,
     errorFollowingPostAuthor,
+    buildPost,
+    editThreadAction,
   },
 )
 class PostContent extends React.Component {
@@ -94,6 +98,8 @@ class PostContent extends React.Component {
     bookmarks: PropTypes.arrayOf(PropTypes.string),
     sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
+    editThreadAction: PropTypes.func,
+    buildPost: PropTypes.func,
     toggleBookmark: PropTypes.func,
     muteAuthorPost: PropTypes.func.isRequired,
     votePost: PropTypes.func,
@@ -133,7 +139,10 @@ class PostContent extends React.Component {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      editThread: false,
+      newBody: null,
+    };
     this.handleReportClick = this.handleReportClick.bind(this);
   }
 
@@ -212,16 +221,32 @@ class PostContent extends React.Component {
       .then(() => this.props.followingPostAuthor(postId))
       .catch(() => this.props.errorFollowingPostAuthor(postId));
   };
+  handleEditThread = (data, newBody) => {
+    const id = `/${data.author}/${data.permlink}`;
+    const postData = { ...data, body: newBody, parentPermlink: data.parent_permlink };
+    const newPostData = this.props.buildPost(id, postData);
 
+    this.setState({ editThread: false, newBody });
+
+    return this.props.editThreadAction(newPostData);
+  };
+  closeEditThread = () => {
+    this.setState({ editThread: false });
+  };
+
+  // eslint-disable-next-line consistent-return
   handleEditClick = post => {
-    const { intl } = this.props;
+    const { intl, isThread } = this.props;
 
-    if (post.depth === 0)
+    if (isThread) {
+      this.setState({ editThread: true });
+    }
+    if (post.depth === 0 && !isThread)
       return this.props
         .editPost(post, intl)
         .then(() => this.props.push(`/editor?draft=${post.id}`));
 
-    return this.props.push(`${post.url}-edit`);
+    if (!isThread) return this.props.push(`${post.url}-edit`);
   };
 
   render() {
@@ -245,6 +270,7 @@ class PostContent extends React.Component {
       siteName,
       isThread,
     } = this.props;
+    const { editThread, newBody } = this.state;
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
@@ -338,6 +364,10 @@ class PostContent extends React.Component {
           postState={postState}
           signature={signature}
           isThread={isThread}
+          editThread={editThread}
+          newBody={newBody}
+          handleEditThread={this.handleEditThread}
+          closeEditThread={this.closeEditThread}
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}

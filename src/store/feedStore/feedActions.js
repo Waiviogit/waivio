@@ -17,6 +17,7 @@ import { getAppHost } from '../appStore/appSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
+export const RESET_THREADS = '@feed/RESET_THREADS';
 export const GET_MORE_THREADS_CONTENT = createAsyncActionType('@feed/GET_MORE_THREADS_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
@@ -201,7 +202,7 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
     meta: { sortBy: 'comments', category: username, limit },
   });
 };
-
+export const resetThreads = () => dispatch => dispatch({ type: RESET_THREADS });
 export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);

@@ -555,11 +555,12 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     isUpdating,
     draftId,
     ...settings,
+    permlink: permlink || kebabCase(titleValue),
   };
 
   if (titleValue || title) {
     postData.title = titleValue || title;
-    postData.permlink = permlink || kebabCase(titleValue);
+    // postData.permlink = permlink || kebabCase(titleValue);
   }
 
   postData.parentAuthor = '';

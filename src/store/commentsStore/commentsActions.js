@@ -163,7 +163,40 @@ export const getComments = postId => (dispatch, getState) => {
     });
   }
 };
+export const editThread = (threadData, callback) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const { permlink, parentPermlink, author, body, jsonMetadata } = threadData;
+  const { auth } = getState();
 
+  return steemConnectAPI
+    .comment('leothreads', parentPermlink, author, permlink, '', body, jsonMetadata, author)
+    .then(res => {
+      if (res.error) throw new Error();
+      if (res.ok || res.result) {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          auth.user.name,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((response, mess) => {
+          if (mess?.success && mess?.permlink === res.result.id) {
+            callback();
+          }
+        });
+
+        if (typeof window !== 'undefined' && window.gtag)
+          window.gtag('event', 'publish_comment', { debug_mode: false });
+      }
+
+      return res;
+    })
+    .catch(err => {
+      if (err) dispatch(notify(err.error.message || err.error_description, 'error'));
+      dispatch(SEND_COMMENT_ERROR);
+    });
+};
 export const sendComment = (
   parentPost,
   newBody,
