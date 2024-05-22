@@ -37,7 +37,13 @@ const NestedChecklist = ({ permlink }) => {
   }, [permlink]);
 
   return (
-    <CheckListView hideBreadCrumbs wobject={wobject} listItems={listItems} loading={loading} />
+    <CheckListView
+      isNested
+      hideBreadCrumbs
+      wobject={wobject}
+      listItems={listItems}
+      loading={loading}
+    />
   );
 };
 

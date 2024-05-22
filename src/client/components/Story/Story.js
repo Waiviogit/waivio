@@ -31,6 +31,7 @@ import { getObjectName, isObjectReviewTab } from '../../../common/helpers/wObjec
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
+import QuickCommentEditor from '../Comments/QuickCommentEditor';
 
 @injectIntl
 @withRouter
@@ -64,7 +65,9 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     handlePinPost: PropTypes.func,
-    pinnedPostsUrls: PropTypes.arrayOf(PropTypes.string),
+    editThread: PropTypes.func,
+    buildPost: PropTypes.func,
+    pinnedPostsUrls: PropTypes.arrayOf(),
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,
@@ -100,6 +103,8 @@ class Story extends React.Component {
     super(props);
 
     this.state = {
+      editThread: false,
+      newBody: null,
       showHiddenStoryPreview: false,
       displayLoginModal: false,
     };
@@ -212,18 +217,19 @@ class Story extends React.Component {
       .catch(() => this.props.errorFollowingPostAuthor(postId));
   }
 
+  // eslint-disable-next-line consistent-return
   handleEditClick = post => {
     const { intl, isThread } = this.props;
-    const threadEditUrl = `/@${post.parent_author}/${post.parent_permlink}#@${post.author}/${post.permlink}`;
 
-    if (post.depth === 0)
+    if (isThread) {
+      this.setState({ editThread: true });
+    }
+    if (post.depth === 0 && !isThread)
       return this.props
         .editPost(post, intl)
-        .then(() =>
-          this.props.push(isThread ? `${threadEditUrl}-edit` : `/editor?draft=${post.id}`),
-        );
+        .then(() => this.props.push(`/editor?draft=${post.id}`));
 
-    return this.props.push(`${isThread ? threadEditUrl : post.url}-edit`);
+    if (!isThread) return this.props.push(`${post.url}-edit`);
   };
 
   handleShowStoryPreview() {
@@ -268,6 +274,7 @@ class Story extends React.Component {
 
   renderStoryPreview() {
     const { post } = this.props;
+    const { newBody } = this.state;
     const showStoryPreview = this.getDisplayStoryPreview();
     const isVimeo = get(post, 'body', '').includes('player.vimeo.com');
     const hiddenStoryPreviewMessage = isPostTaggedNSFW(post) && (
@@ -290,12 +297,26 @@ class Story extends React.Component {
         }
         className="Story__content__preview"
       >
-        <StoryPreview post={post} isVimeo={isVimeo} />
+        <StoryPreview post={{ ...post, body: newBody || post.body }} isVimeo={isVimeo} />
       </a>
     ) : (
       hiddenStoryPreviewMessage
     );
   }
+
+  closeEditThread = () => {
+    this.setState({ editThread: false });
+  };
+
+  handleEditThread = (data, newBody) => {
+    const id = `/${data.author}/${data.permlink}`;
+    const postData = { ...data, body: newBody, parentPermlink: data.parent_permlink };
+    const newPostData = this.props.buildPost(id, postData);
+
+    this.setState({ editThread: false, newBody });
+
+    return this.props.editThread(newPostData);
+  };
 
   render() {
     const {
@@ -322,6 +343,7 @@ class Story extends React.Component {
       handlePinPost,
       userVotingPower,
     } = this.props;
+    const { editThread } = this.state;
     const isObjectPage = isObjectReviewTab(wobject, match) && isAuthUser;
     const currentUserPin = pinnedPostsUrls.includes(post.url);
     const tooltipTitle = (
@@ -461,7 +483,17 @@ class Story extends React.Component {
                   </h2>
                 )}
               </a>
-              {this.renderStoryPreview()}
+              {editThread ? (
+                <div className="Story__edit-thread">
+                  <QuickCommentEditor
+                    inputValue={post.body}
+                    parentPost={post}
+                    onSubmit={this.handleEditThread}
+                  />
+                </div>
+              ) : (
+                this.renderStoryPreview()
+              )}
             </div>
             <div className="Story__footer">
               <StoryFooter
@@ -486,6 +518,8 @@ class Story extends React.Component {
                 handleEditClick={this.handleEditClick}
                 userComments={userComments}
                 isThread={isThread}
+                editThread={editThread}
+                closeEditThread={this.closeEditThread}
               />
             </div>
           </div>

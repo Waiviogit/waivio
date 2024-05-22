@@ -177,7 +177,7 @@ const CommentForm = props => {
     insertObject(editor, url, textReplace, true);
   };
 
-  const { username, isSmall, isEdit } = props;
+  const { username, isSmall, isEdit, isThread } = props;
   const getButtonText = () => {
     let text = loading ? (
       <FormattedMessage id="comment_send_progress" defaultMessage="Commenting" />
@@ -189,7 +189,10 @@ const CommentForm = props => {
       text = loading ? (
         <FormattedMessage id="comment_update_progress" defaultMessage="Updating" />
       ) : (
-        <FormattedMessage id="comment_update_send" defaultMessage="Update comment" />
+        <FormattedMessage
+          id={isThread ? 'update' : 'comment_update_send'}
+          defaultMessage={isThread ? 'Update' : 'Update comment'}
+        />
       );
     }
 
@@ -258,6 +261,7 @@ CommentForm.propTypes = {
   setCursorCoordinates: PropTypes.func,
   searchObjects: PropTypes.func,
   isEdit: PropTypes.bool,
+  isThread: PropTypes.bool,
   onClose: PropTypes.func,
 };
 

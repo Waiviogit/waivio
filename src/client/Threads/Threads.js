@@ -14,7 +14,11 @@ import {
   getFeedHasMoreFromState,
   getFeedLoadingFromState,
 } from '../../common/helpers/stateHelpers';
-import { getMoreThreadsContent, getThreadsContent } from '../../store/feedStore/feedActions';
+import {
+  getMoreThreadsContent,
+  getThreadsContent,
+  resetThreads,
+} from '../../store/feedStore/feedActions';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -60,6 +64,8 @@ const Threads = props => {
         setParentPost(r.posts[0]);
       });
     }
+
+    return () => props.resetThreads();
   }, [name]);
   const description = `Create vibrant conversations and build connections on ${name}'s Threads page! Join the dialogue, share insights, and spark discussions with fellow users. Dive into a diverse array of topics and engage with a community passionate about exchanging ideas. Start your thread today and unleash the power of collaborative dialogue!`;
 
@@ -119,6 +125,7 @@ const Threads = props => {
 Threads.propTypes = {
   feed: PropTypes.shape(),
   getThreadsContent: PropTypes.func,
+  resetThreads: PropTypes.func,
   getMoreThreadsContent: PropTypes.func,
   showPostModal: PropTypes.func,
   sendComment: PropTypes.func,
@@ -137,6 +144,7 @@ export default connect(
   }),
   {
     getThreadsContent,
+    resetThreads,
     getMoreThreadsContent,
     sendComment: (parentPost, body, isUpdating, originalPost, isThread, cb) =>
       commentsActions.sendComment(parentPost, body, isUpdating, originalPost, isThread, cb),

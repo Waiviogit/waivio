@@ -59,6 +59,8 @@ class StoryFooter extends React.Component {
     handleHidePost: PropTypes.func.isRequired,
     userComments: PropTypes.bool,
     isThread: PropTypes.bool,
+    editThread: PropTypes.bool,
+    closeEditThread: PropTypes.func,
   };
 
   static defaultProps = {
@@ -216,6 +218,8 @@ class StoryFooter extends React.Component {
       getSocialInfoPostAction,
       userComments,
       isThread,
+      editThread,
+      closeEditThread,
     } = this.props;
 
     return (
@@ -249,6 +253,8 @@ class StoryFooter extends React.Component {
               isGuest={this.props.isGuest}
               userComments={userComments}
               isThread={isThread}
+              editThread={editThread}
+              closeEditThread={closeEditThread}
             />
           )}
         </div>

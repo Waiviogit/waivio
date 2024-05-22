@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import formatter from '../../common/helpers/steemitFormatter';
@@ -169,6 +169,8 @@ export default class Post extends React.Component {
 
     const signature = get(user, 'posting_json_metadata.profile.signature', null);
 
+    const isThread = isEmpty(content.title) && content.parent_author === 'leothreads';
+
     return (
       <div className="main-panel">
         <ScrollToTopOnMount />
@@ -187,6 +189,7 @@ export default class Post extends React.Component {
               content && (
                 <div className="center" style={{ paddingBottom: '24px' }}>
                   <PostContent
+                    isThread={isThread}
                     content={content}
                     signature={signature}
                     isOriginalPost={match.params.original}

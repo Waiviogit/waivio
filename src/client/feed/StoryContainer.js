@@ -29,6 +29,8 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 import { getPinnedPostsUrls } from '../../store/feedStore/feedSelectors';
 import { getObject } from '../../store/wObjectStore/wObjectSelectors';
+import { editThread } from '../../store/commentsStore/commentsActions';
+import { buildPost } from '../../store/slateEditorStore/editorActions';
 
 const mapStateToProps = (state, { id, isThread }) => {
   const user = getAuthenticatedUser(state);
@@ -97,4 +99,6 @@ export default connect(mapStateToProps, {
   pendingFollowingPostAuthor,
   errorFollowingPostAuthor,
   handlePinPost,
+  editThread,
+  buildPost,
 })(Story);

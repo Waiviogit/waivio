@@ -45,7 +45,6 @@ import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/hel
 import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
-import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
@@ -85,7 +84,7 @@ const WebsiteBody = props => {
       props.setBoundsParams({});
       props.setMapData({ center: [], zoom: 8 });
       props.resetWebsiteFilters();
-      props.setShowSearchResult(false);
+      // props.setShowSearchResult(false);
     };
   }, [props.currObj.author_permlink]);
 
@@ -200,7 +199,7 @@ WebsiteBody.propTypes = {
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,
-  setShowSearchResult: PropTypes.func.isRequired,
+  // setShowSearchResult: PropTypes.func.isRequired,
   getCoordinates: PropTypes.func,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
@@ -257,7 +256,6 @@ export default connect(
     setFilterFromQuery,
     resetWebsiteFilters,
     setShowSearchResult,
-    getObjectAction,
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
     getCoordinates,

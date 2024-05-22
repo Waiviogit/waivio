@@ -17,6 +17,7 @@ import { getAppHost } from '../appStore/appSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
+export const RESET_THREADS = '@feed/RESET_THREADS';
 export const GET_MORE_THREADS_CONTENT = createAsyncActionType('@feed/GET_MORE_THREADS_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
@@ -201,7 +202,7 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
     meta: { sortBy: 'comments', category: username, limit },
   });
 };
-
+export const resetThreads = () => dispatch => dispatch({ type: RESET_THREADS });
 export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -284,18 +285,25 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
 
   return Promise.all([apiCall1, apiCall2])
     .then(([pinnedPosts, feedContent]) => {
-      const allPosts = [...pinnedPosts, ...feedContent];
+      let allPosts = [];
 
-      dispatch({
-        type: SET_PINNED_POSTS,
-        payload: pinnedPosts.reduce((acc, post) => {
-          if (post.currentUserPin) {
-            acc.push(post.url);
-          }
+      if (!pinnedPosts.message) {
+        allPosts = [...pinnedPosts];
+        dispatch({
+          type: SET_PINNED_POSTS,
+          payload: pinnedPosts.reduce((acc, post) => {
+            if (post.currentUserPin) {
+              acc.push(post.url);
+            }
 
-          return acc;
-        }, []),
-      });
+            return acc;
+          }, []),
+        });
+      }
+
+      if (!feedContent.message) {
+        allPosts = [...allPosts, ...feedContent];
+      }
 
       return dispatch({
         type: GET_OBJECT_POSTS.SUCCESS,
