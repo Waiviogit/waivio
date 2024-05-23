@@ -486,6 +486,7 @@ class Story extends React.Component {
               {editThread ? (
                 <div className="Story__edit-thread">
                   <QuickCommentEditor
+                    isEdit={editThread}
                     inputValue={post.body}
                     parentPost={post}
                     onSubmit={this.handleEditThread}
