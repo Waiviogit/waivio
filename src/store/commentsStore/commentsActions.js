@@ -21,6 +21,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from '../appendStore/appendSelectors';
 import { updateCounter } from '../appendStore/appendActions';
 import { getCurrentShownPost } from '../appStore/appSelectors';
+import { editThreadState } from '../feedStore/feedActions';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -163,6 +164,7 @@ export const getComments = postId => (dispatch, getState) => {
     });
   }
 };
+
 export const editThread = (threadData, callback) => (
   dispatch,
   getState,
@@ -170,6 +172,9 @@ export const editThread = (threadData, callback) => (
 ) => {
   const { permlink, parentPermlink, author, body, jsonMetadata } = threadData;
   const { auth } = getState();
+  const id = `${author}/${permlink}`;
+
+  dispatch(editThreadState(threadData.body, id));
 
   return steemConnectAPI
     .comment('leothreads', parentPermlink, author, permlink, '', body, jsonMetadata, author)
