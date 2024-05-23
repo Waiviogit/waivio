@@ -323,6 +323,7 @@ class StoryFull extends React.Component {
             <div>
               {' '}
               <CommentForm
+                currentComment={post}
                 isThread={isThread}
                 isEdit={editThread}
                 isReply={false}

@@ -182,7 +182,7 @@ export const editThread = (threadData, callback) => (
         ]);
         busyAPI.instance.subscribe((response, mess) => {
           if (mess?.success && mess?.permlink === res.result.id) {
-            callback();
+            if (callback) callback();
           }
         });
 
