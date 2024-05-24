@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import Helmet from 'react-helmet';
 import { useLocation, useParams } from 'react-router';
+import { Button } from 'antd';
 import { shortenDescription, removeEmptyLines } from '../../object/wObjectHelper';
 import FeedMasonry from './FeedMasonry';
 import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
@@ -26,19 +28,30 @@ import {
 } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import {
+  accessTypesArr,
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
   getTitleForLink,
+  haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList } from './helpers';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
+import {
+  getHelmetIcon,
+  getSiteName,
+  getUserAdministrator,
+} from '../../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
 const limit = 15;
 
-const ObjectNewsFeed = ({ wobj, isNested }) => {
+const ObjectNewsFeed = ({ wobj, isNested, intl }) => {
   const readLanguages = useSelector(getReadLanguages);
   const previews = useSelector(getTiktokPreviewFromState);
   const previewLoading = useSelector(getPreviewLoadingFromState);
@@ -49,6 +62,10 @@ const ObjectNewsFeed = ({ wobj, isNested }) => {
   const postsList = useSelector(getPosts);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const username = useSelector(getAuthenticatedUserName);
+  const authenticated = useSelector(getIsAuthenticated);
+  const isAdministrator = useSelector(getUserAdministrator);
+  const accessExtend = haveAccess(wobj || currObj, username, accessTypesArr[0]);
   const dispatch = useDispatch();
   const { name } = useParams();
   const location = useLocation();
@@ -65,6 +82,9 @@ const ObjectNewsFeed = ({ wobj, isNested }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+  };
   const getPostsList = () => {
     if ((wobj && isNested) || (wobj && wobj.author_permlink === name)) {
       dispatch(
@@ -149,6 +169,13 @@ const ObjectNewsFeed = ({ wobj, isNested }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
+      {accessExtend && authenticated && isAdministrator && (
+        <div className="FeedMasonry__edit-container">
+          <Button onClick={editObjectClick}>
+            {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+          </Button>
+        </div>
+      )}
       <FeedMasonry
         objName={getObjectName(wobj) || getObjectName(currObj) || 'News feed'}
         description={wobj?.description || currObj?.description}
@@ -165,7 +192,8 @@ const ObjectNewsFeed = ({ wobj, isNested }) => {
 
 ObjectNewsFeed.propTypes = {
   wobj: PropTypes.shape(),
+  intl: PropTypes.shape(),
   isNested: PropTypes.bool,
 };
 
-export default ObjectNewsFeed;
+export default injectIntl(ObjectNewsFeed);

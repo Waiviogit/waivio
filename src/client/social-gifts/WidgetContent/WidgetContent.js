@@ -1,34 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
+import { Button } from 'antd';
 import Helmet from 'react-helmet';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getHelmetIcon, getSiteName, getUsedLocale } from '../../../store/appStore/appSelectors';
 import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import {
+  getHelmetIcon,
+  getSiteName,
+  getUsedLocale,
+  getUserAdministrator,
+} from '../../../store/appStore/appSelectors';
+import {
+  accessTypesArr,
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
   getTitleForLink,
+  haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
+import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
-const WidgetContent = ({ wobj }) => {
+const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
   const { name } = useParams();
   const location = useLocation();
+  const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const username = useSelector(getAuthenticatedUserName);
+  const authenticated = useSelector(getIsAuthenticated);
+  const isAdministrator = useSelector(getUserAdministrator);
+  const accessExtend = haveAccess(wobj || currentWobject, username, accessTypesArr[0]);
   const title = getTitleForLink(currentWobject);
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(currentWobject.canonical);
   const desc = currentWobject?.description || descriptionSite || siteName;
   const image = getObjectAvatar(currentWobject) || favicon;
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+  };
 
   useEffect(() => {
     if (!wobj && wobj.author_permlink !== objName) {
@@ -99,6 +120,13 @@ const WidgetContent = ({ wobj }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
+      {accessExtend && authenticated && isAdministrator && (
+        <div className="FeedMasonry__edit-container">
+          <Button onClick={editObjectClick}>
+            {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+          </Button>
+        </div>
+      )}
       <div className="FormPage">{widgetView()}</div>
     </React.Fragment>
   );
@@ -106,6 +134,7 @@ const WidgetContent = ({ wobj }) => {
 
 WidgetContent.propTypes = {
   wobj: PropTypes.shape(),
+  intl: PropTypes.shape(),
 };
 
-export default WidgetContent;
+export default injectIntl(WidgetContent);

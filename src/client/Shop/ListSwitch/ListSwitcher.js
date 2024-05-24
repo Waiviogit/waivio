@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Button, Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
@@ -14,24 +14,41 @@ import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList
 import GlobalShopingList from '../ShopList/GlobalShopingList';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 import {
+  accessTypesArr,
   createHash,
   getLastPermlinksFromHash,
   getPermlinksFromHash,
+  haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import Loading from '../../components/Icon/Loading';
-
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import { getUserAdministrator } from '../../../store/appStore/appSelectors';
+import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import './ListSwitch.less';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
+  const currObj = useSelector(getObject);
+  const username = useSelector(getAuthenticatedUserName);
+  const authenticated = useSelector(getIsAuthenticated);
+  const isAdministrator = useSelector(getUserAdministrator);
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
   const [visibleNavig, setVisibleNavig] = useState(false);
   const [visibleFilter, setVisibleFilter] = useState(false);
-
+  const accessExtend = haveAccess(currObj, username, accessTypesArr[0]);
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+    history.push(`/object/${props.user}`);
+  };
   const list = useMemo(() => {
     if (!activeCrumb && match.params.department) return <Loading />;
 
@@ -40,6 +57,8 @@ const ListSwitcher = props => {
         case 'user':
           return <UserShoppingList isSocial={props.isSocial} name={props.user} />;
         case 'wobject':
+          if (props.user !== currObj?.author_permlink) dispatch(getObjectAction(props.user));
+
           return <WobjectShoppingList isSocial={props.isSocial} name={props.user} />;
 
         default:
@@ -60,15 +79,24 @@ const ListSwitcher = props => {
   return (
     <div className={'ListSwitcher'}>
       <h3 className={'ListSwitcher__breadCrumbsWrap'}>
-        <span
-          className={'ListSwitcher__breadCrumbs'}
-          onClick={() => {
-            dispatch(resetBreadCrumb());
-            history.push(props.path);
-          }}
-        >
-          {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
-        </span>{' '}
+        <div className={'flex'}>
+          <span
+            className={'ListSwitcher__breadCrumbs'}
+            onClick={() => {
+              dispatch(resetBreadCrumb());
+              history.push(props.path);
+            }}
+          >
+            {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
+          </span>{' '}
+          {props.type === 'wobject' && accessExtend && authenticated && isAdministrator && (
+            <div className="Breadcrumbs__edit-container">
+              <Button onClick={editObjectClick}>
+                {props.intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+              </Button>
+            </div>
+          )}
+        </div>
         {match.params.department && (
           <React.Fragment>
             <Icon type="right" />{' '}

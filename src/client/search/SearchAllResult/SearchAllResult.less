@@ -11,7 +11,14 @@
   transition: 0.3s;
   left: -100%;
   z-index: 201;
-
+  &__buttons-wrap {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__edit-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
   @media @small {
     left: -40%;
   }

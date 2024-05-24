@@ -46,7 +46,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const query = useQuery();
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const permlinks = location.hash?.replace('#', '').split('/');
-  const listObjType = wobject?.object_type === 'list';
+  const editObjTypes = ['list', 'page']?.includes(wobject?.object_type);
   let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
   const viewUrl = query.get('viewUrl');
 
@@ -155,7 +155,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
           </React.Fragment>
         ))}
       </div>
-      {accessExtend && authenticated && isAdministrator && listObjType && (
+      {accessExtend && authenticated && isAdministrator && editObjTypes && (
         <div className="Breadcrumbs__edit-container">
           <Button onClick={editListClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
