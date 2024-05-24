@@ -22,27 +22,32 @@ import {
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { objectFields } from '../../../common/constants/listOfFields';
 import {
+  accessTypesArr,
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
   getTitleForLink,
+  haveAccess,
 } from '../../../common/helpers/wObjectHelper';
-import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import {
   getHelmetIcon,
   getIsSocial,
   getSiteName,
   getUsedLocale,
+  getUserAdministrator,
 } from '../../../store/appStore/appSelectors';
 import customVideoPlugin from './videoPlugin';
-
-import './ObjectOfTypeWebpage.less';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import Loading from '../../components/Icon/Loading';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import DEFAULTS from '../const/defaultValues';
+import './ObjectOfTypeWebpage.less';
 
 const customSlate = slate(config => ({
   ...config,
@@ -70,6 +75,9 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const user = useSelector(getAuthenticatedUserName);
   const nestedWobject = useSelector(getWobjectNested);
   const wobject = useSelector(getObjectState);
+  const authenticated = useSelector(getIsAuthenticated);
+  const isAdministrator = useSelector(getUserAdministrator);
+  const accessExtend = haveAccess(wobject, user, accessTypesArr[0]);
   const isEditMode = useSelector(getIsEditMode);
   const isSocial = useSelector(getIsSocial);
   const siteName = useSelector(getSiteName);
@@ -100,6 +108,9 @@ const ObjectOfTypeWebpage = ({ intl }) => {
       });
     }
   }, [history.location.hash, name]);
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+  };
 
   if (((isNil(currentValue) && !loading) || currentValue?.rows?.length < 1) && !isEditMode) {
     return (
@@ -140,6 +151,13 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <div className={isSocial ? 'SitesWebpage' : ''}>
+        {isSocial && accessExtend && authenticated && isAdministrator && (
+          <div className="SitesWebpage__edit-container">
+            <Button onClick={editObjectClick}>
+              {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+            </Button>
+          </div>
+        )}
         <div className={isEditMode ? 'ObjectOfTypeWebpage margin' : 'ObjectOfTypeWebpage'}>
           {!isEditMode && history?.location.hash && (
             <CatalogBreadcrumb wobject={currObj} intl={intl} />
