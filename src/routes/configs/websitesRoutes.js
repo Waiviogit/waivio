@@ -133,14 +133,14 @@ const routes = (host, page) => ({
           component: Views.UserWallet,
         },
         {
-          path: '/transfers/table',
+          path: '/transfers/(table)',
           exact: true,
           component: Views.WalletTable,
         },
         {
-          path: '/transfers/waiv-table',
+          path: '/transfers/(waiv-table)',
           exact: true,
-          component: Views.WAIVwalletTable,
+          component: Views.WalletTableSwitcher,
         },
         {
           path: '/(expertise-hashtags|expertise-objects)',

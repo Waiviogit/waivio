@@ -12,3 +12,8 @@ export const getTransfersWithdrawals = createSelector([reportsState], state => s
 export const getTransfersDeposits = createSelector([reportsState], state => state.deposits);
 export const getIsLoadingAllData = createSelector([reportsState], state => state.loadingAllData);
 export const getCreationAccDate = createSelector([reportsState], state => state.creationDate);
+export const getActiveGenerate = createSelector([reportsState], state => state.activeGenerate);
+export const getHistoryGenerateReports = createSelector(
+  [reportsState],
+  state => state.historyReports,
+);
