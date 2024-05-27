@@ -451,4 +451,21 @@ const compareTransferBody = (
   }
 };
 
+export const handleChangeEndDate = value => {
+  const date = moment(value);
+  const isToday =
+    date.startOf('day').unix() ===
+    moment()
+      .startOf('day')
+      .unix();
+  const endDate = isToday ? value || date : date.endOf('day');
+
+  return endDate.unix();
+};
+
+export const handleChangeStartDate = value =>
+  moment(value)
+    .startOf('day')
+    .unix();
+
 export default compareTransferBody;

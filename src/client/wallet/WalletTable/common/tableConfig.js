@@ -108,5 +108,147 @@ export const configReportsWebsitesTableHeader = type => [
     },
   },
 ];
+export const configActiveReportsTableHeader = [
+  {
+    id: 'active',
+    type: 'checkbox',
+    intl: {
+      id: 'active',
+      defaultMessage: 'active',
+    },
+    getChecked: i => i.status === 'IN_PROGRESS',
+  },
+  {
+    id: 'endDate',
+    type: 'date',
+    intl: {
+      id: 'end_date',
+      defaultMessage: 'End date',
+    },
+  },
+  {
+    id: 'startDate',
+    type: 'date',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+  },
+  {
+    id: 'accounts',
+    type: 'list',
+    key: 'name',
+    intl: {
+      id: 'accounts',
+      defaultMessage: 'Accounts',
+    },
+  },
+  {
+    id: 'currency',
+    // type: 'checkbox',
+    intl: {
+      id: 'currency',
+      defaultMessage: 'Currency',
+    },
+  },
+  {
+    id: 'deposits',
+    type: 'currency',
+    view: 'symbol',
+    intl: {
+      id: 'current_deposits',
+      defaultMessage: 'Current deposits',
+    },
+  },
+  {
+    id: 'withdrawals',
+    type: 'currency',
+    view: 'symbol',
+    intl: {
+      id: 'current_withdrawals',
+      defaultMessage: 'Current withdrawals',
+    },
+  },
+  {
+    id: 'active',
+    type: 'delete',
+    intl: {
+      id: 'Actions',
+      defaultMessage: 'Actions',
+    },
+    checkShowItem: (item, getBody) =>
+      ['IN_PROGRESS', 'PAUSED'].includes(item.status)
+        ? getBody(item, { type: 'delete', name: 'stop' })
+        : getBody(item, { type: 'delete', name: 'resume' }),
+  },
+];
+export const configHistoryReportsTableHeader = [
+  {
+    id: 'endDate',
+    type: 'date',
+    intl: {
+      id: 'end_date',
+      defaultMessage: 'End date',
+    },
+  },
+  {
+    id: 'startDate',
+    type: 'date',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+  },
+  {
+    id: 'accounts',
+    type: 'list',
+    key: 'name',
+    intl: {
+      id: 'accounts',
+      defaultMessage: 'Accounts',
+    },
+  },
+  {
+    id: 'currency',
+    intl: {
+      id: 'currency',
+      defaultMessage: 'Currency',
+    },
+  },
+  {
+    id: 'deposits',
+    type: 'currency',
+    view: 'symbol',
+    intl: {
+      id: 'current_deposits',
+      defaultMessage: 'Total deposits',
+    },
+  },
+  {
+    id: 'withdrawals',
+    type: 'currency',
+    view: 'symbol',
+    intl: {
+      id: 'current_deposits',
+      defaultMessage: 'Total withdrawals',
+    },
+  },
+  {
+    id: 'active',
+    type: 'action',
+    intl: {
+      id: 'details',
+      defaultMessage: 'details',
+    },
+  },
+  {
+    id: 'active',
+    type: 'action',
+    intl: {
+      id: 'CSV',
+      defaultMessage: 'CSV',
+    },
+  },
+];
 
 export default null;
