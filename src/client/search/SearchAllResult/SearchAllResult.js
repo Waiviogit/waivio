@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
+import { useHistory } from 'react-router';
 import classNames from 'classnames';
 
 import {
@@ -30,8 +31,6 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-
-import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
   setSocialSearchResultLoading,
@@ -52,11 +51,13 @@ import {
 } from '../../../store/authStore/authSelectors';
 import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import './SearchAllResult.less';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
+  const history = useHistory();
   const accessExtend = haveAccess(props.currObj, props.username, accessTypesArr[0]);
   const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
@@ -184,6 +185,9 @@ const SearchAllResult = props => {
   const setCloseResult = useCallback(() => props.setShowSearchResult(false), []);
   const editObjectClick = () => {
     props.setEditMode(true);
+    if (history?.location?.pathname === '/') {
+      history.push(`/object/${props.currObj.author_permlink}`);
+    }
   };
 
   return (

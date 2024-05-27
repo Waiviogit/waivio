@@ -151,7 +151,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <div className={isSocial ? 'SitesWebpage' : ''}>
-        {isSocial && accessExtend && authenticated && isAdministrator && (
+        {isSocial && !isEditMode && accessExtend && authenticated && isAdministrator && (
           <div className="SitesWebpage__edit-container">
             <Button onClick={editObjectClick}>
               {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

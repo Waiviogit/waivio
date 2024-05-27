@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { Button, Icon } from 'antd';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
@@ -23,7 +24,7 @@ import {
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import Loading from '../../components/Icon/Loading';
-import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getIsEditMode, getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getAuthenticatedUserName,
@@ -38,6 +39,7 @@ const ListSwitcher = props => {
   const currObj = useSelector(getObject);
   const username = useSelector(getAuthenticatedUserName);
   const authenticated = useSelector(getIsAuthenticated);
+  const isEditMode = useSelector(getIsEditMode);
   const isAdministrator = useSelector(getUserAdministrator);
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -45,9 +47,12 @@ const ListSwitcher = props => {
   const [visibleNavig, setVisibleNavig] = useState(false);
   const [visibleFilter, setVisibleFilter] = useState(false);
   const accessExtend = haveAccess(currObj, username, accessTypesArr[0]);
+
   const editObjectClick = () => {
+    const backUrl = `/object-shop/${props.user}`;
+
     dispatch(setEditMode(true));
-    history.push(`/object/${props.user}`);
+    history.push(`/object/${props.user}?viewUrl=${backUrl}`);
   };
   const list = useMemo(() => {
     if (!activeCrumb && match.params.department) return <Loading />;
@@ -57,7 +62,8 @@ const ListSwitcher = props => {
         case 'user':
           return <UserShoppingList isSocial={props.isSocial} name={props.user} />;
         case 'wobject':
-          if (props.user !== currObj?.author_permlink) dispatch(getObjectAction(props.user));
+          if (props.user !== currObj?.author_permlink || isEmpty(currObj))
+            dispatch(getObjectAction(props.user));
 
           return <WobjectShoppingList isSocial={props.isSocial} name={props.user} />;
 
@@ -74,7 +80,15 @@ const ListSwitcher = props => {
         isSocial={props.isSocial}
       />
     );
-  }, [props.type, props.user, activeCrumb, match.params.name, match.params.department]);
+  }, [
+    props.type,
+    props.user,
+    activeCrumb,
+    match.params.name,
+    match.params.department,
+    isEditMode,
+    currObj,
+  ]);
 
   return (
     <div className={'ListSwitcher'}>

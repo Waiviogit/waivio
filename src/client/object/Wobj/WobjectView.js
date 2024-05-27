@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { renderRoutes } from 'react-router-config';
 import classNames from 'classnames';
 import { get, isEmpty, isNil, reduce, round } from 'lodash';
@@ -32,6 +32,7 @@ import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import { getHelmetIcon, getIsWaivio, getSiteName } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import useQuery from '../../../hooks/useQuery';
 
 const WobjectView = ({
   authenticatedUserName,
@@ -53,7 +54,8 @@ const WobjectView = ({
   const authenticated = useSelector(getIsAuthenticated);
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
-
+  const query = useQuery();
+  const viewUrl = query.get('viewUrl');
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
   const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
@@ -105,6 +107,12 @@ const WobjectView = ({
     match.params[0] === 'reviews'
       ? `https://${wobject.canonical}/object/${match.params.name}`
       : canonicalUrl;
+
+  useEffect(() => {
+    if (viewUrl && !isEditMode && wobject.object_type === 'shop') {
+      history.push(viewUrl);
+    }
+  }, [isEditMode]);
 
   return (
     <React.Fragment>

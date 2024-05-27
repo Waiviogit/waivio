@@ -72,7 +72,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
     dispatch(setEditMode(true));
 
-    history.push(`/object/${lastItemPermlink}/list?viewUrl=${backUrl}`);
+    history.push(`/object/${lastItemPermlink}/${wobject?.object_type}?viewUrl=${backUrl}`);
   };
 
   useEffect(() => {
