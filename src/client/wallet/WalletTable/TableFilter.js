@@ -23,6 +23,7 @@ const TableFilter = ({
   currency,
   startDate,
   endDate,
+  inModal,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const creationAccDate = useSelector(getCreationAccDate);
@@ -182,7 +183,7 @@ const TableFilter = ({
           ],
           initialValue: currency,
         })(
-          <Select defaultValue={currency} style={{ width: '90px' }}>
+          <Select style={{ width: '90px' }}>
             {currencyTypes.map(curr => (
               <Select.Option key={curr} value={curr}>
                 {curr}
@@ -192,18 +193,20 @@ const TableFilter = ({
         )}
       </Form.Item>
 
-      <Button
-        className="WalletTable__submit"
-        onClick={handleOnClick}
-        type="primary"
-        htmlType="submit"
-        loading={isLoadingTableTransactions}
-      >
-        {intl.formatMessage({
-          id: 'append_send',
-          defaultMessage: 'Submit',
-        })}
-      </Button>
+      {!inModal && (
+        <Button
+          className="WalletTable__submit"
+          onClick={handleOnClick}
+          type="primary"
+          htmlType="submit"
+          loading={isLoadingTableTransactions}
+        >
+          {intl.formatMessage({
+            id: 'append_send',
+            defaultMessage: 'Submit',
+          })}
+        </Button>
+      )}
     </Form>
   );
 };
@@ -216,9 +219,10 @@ TableFilter.propTypes = {
     setFieldsValue: PropTypes.func,
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
+  inModal: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
-  handleOnClick: PropTypes.func.isRequired,
+  handleOnClick: PropTypes.func,
   handleSelectUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,

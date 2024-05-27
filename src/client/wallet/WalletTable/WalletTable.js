@@ -6,6 +6,7 @@ import { FormattedNumber, injectIntl } from 'react-intl';
 import { round, map, isEmpty, isEqual } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
 import {
   openWalletTable,
@@ -207,11 +208,6 @@ class WalletTable extends React.Component {
     );
   };
 
-  handleChangeStartDate = value =>
-    moment(value)
-      .startOf('day')
-      .unix();
-
   handleLoadMore = () => {
     const { from, end } = this.props.form.getFieldsValue();
 
@@ -239,6 +235,11 @@ class WalletTable extends React.Component {
 
     return endDate.unix();
   };
+
+  handleChangeStartDate = value =>
+    moment(value)
+      .startOf('day')
+      .unix();
 
   handleOnChange = (e, item) => {
     this.props.user &&
@@ -455,4 +456,4 @@ class WalletTable extends React.Component {
   }
 }
 
-export default WalletTable;
+export default withRouter(WalletTable);

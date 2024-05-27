@@ -2,6 +2,9 @@ import {
   CALCULATE_TOTAL_CHANGES,
   DELETE_USERS_CREATION_DATE,
   EXCLUDE_TRANSFER,
+  GENERATE_REPORTS,
+  GET_HISTORY_REPORTS,
+  GET_IN_PROGRESS_REPORTS,
   GET_MORE_TRANSACTIONS_FOR_TABLE,
   GET_TRANSACTIONS_FOR_TABLE,
   GET_USERS_CREATION_DATE,
@@ -17,6 +20,7 @@ const initialState = {
   wallet: [],
   loadingAllData: false,
   creationDate: [],
+  activeGenerate: [],
 };
 
 export default function advancedReducer(state = initialState, action) {
@@ -86,6 +90,27 @@ export default function advancedReducer(state = initialState, action) {
       return {
         ...state,
         [key]: state[key] + amount,
+      };
+    }
+
+    case GENERATE_REPORTS: {
+      return {
+        ...state,
+        activeGenerate: [...state.activeGenerate, action.report],
+      };
+    }
+
+    case GET_IN_PROGRESS_REPORTS.SUCCESS: {
+      return {
+        ...state,
+        activeGenerate: action.payload,
+      };
+    }
+
+    case GET_HISTORY_REPORTS.SUCCESS: {
+      return {
+        ...state,
+        historyReports: action.payload,
       };
     }
 
