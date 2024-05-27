@@ -6,6 +6,7 @@ import { FormattedNumber, injectIntl } from 'react-intl';
 import { round, map, isEmpty, isEqual } from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
 import {
   openWalletTable,
@@ -44,7 +45,6 @@ import Loading from '../../components/Icon/Loading';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 import './WalletTable.less';
-import { withRouter } from 'react-router';
 
 @Form.create()
 @injectIntl

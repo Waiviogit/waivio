@@ -45,7 +45,6 @@ const HeartButton = ({ wobject, size }) => {
   );
 
   useEffect(() => {
-    console.log(wobject);
     if (
       !isEmpty(wobject.authority) &&
       wobject.authority.body === adminAuthority &&

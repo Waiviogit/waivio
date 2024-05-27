@@ -386,9 +386,14 @@ const routes = {
           component: Views.UserWallet,
         },
         {
-          path: '/transfers/(table|waiv-table)',
+          path: '/transfers/(table)',
           exact: true,
           component: Views.WalletTable,
+        },
+        {
+          path: '/transfers/(waiv-table)',
+          exact: true,
+          component: Views.WalletTableSwitcher,
         },
         {
           path: '/(expertise-hashtags|expertise-objects)',

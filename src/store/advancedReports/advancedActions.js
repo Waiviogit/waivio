@@ -1,5 +1,13 @@
 import moment from 'moment';
-import { getWaivAdvancedReports } from '../../waivioApi/ApiClient';
+import {
+  generateAdvancedReports,
+  getHistoryGenerateAdvancedReports,
+  getInProgressGenerateAdvancedReports,
+  getWaivAdvancedReports,
+  pauseGenerateReport,
+  resumeGenerateReport,
+  stopGenerateReport,
+} from '../../waivioApi/ApiClient';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
@@ -169,6 +177,84 @@ export const RESET_REPORTS = '@advanced/RESET_REPORTS';
 export const resetReportsData = () => ({
   type: RESET_REPORTS,
 });
+
+export const GENERATE_REPORTS = '@advanced/GENERATE_REPORTS';
+
+export const getReportUpdate = callback => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.subscribe((e, data) => {
+    if (data?.notification?.type === 'updateReport') callback();
+  });
+};
+
+export const generateReports = body => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return generateAdvancedReports(body, authenticatedUserName).then(report => {
+    dispatch({
+      type: GENERATE_REPORTS,
+      report,
+    });
+  });
+};
+
+export const GET_IN_PROGRESS_REPORTS = createAsyncActionType('@advanced/GET_IN_PROGRESS_REPORTS');
+
+export const getInProgressReports = () => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: GET_IN_PROGRESS_REPORTS.ACTION,
+    payload: getInProgressGenerateAdvancedReports(authenticatedUserName),
+  });
+};
+
+export const STOP_IN_PROGRESS_REPORTS = createAsyncActionType('@advanced/STOP_IN_PROGRESS_REPORTS');
+
+export const stopInProgressReports = id => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: STOP_IN_PROGRESS_REPORTS.ACTION,
+    payload: stopGenerateReport(authenticatedUserName, id),
+  });
+};
+
+export const RESUME_IN_PROGRESS_REPORTS = createAsyncActionType(
+  '@advanced/RESUME_IN_PROGRESS_REPORTS',
+);
+
+export const resumeInProgressReports = id => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: RESUME_IN_PROGRESS_REPORTS.ACTION,
+    payload: resumeGenerateReport(authenticatedUserName, id),
+  });
+};
+
+export const PAUSE_IN_PROGRESS_REPORTS = createAsyncActionType(
+  '@advanced/PAUSE_IN_PROGRESS_REPORTS',
+);
+
+export const pauseInProgressReports = id => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: RESUME_IN_PROGRESS_REPORTS.ACTION,
+    payload: pauseGenerateReport(authenticatedUserName, id),
+  });
+};
+
+export const GET_HISTORY_REPORTS = createAsyncActionType('@advanced/GET_HISTORY_REPORTS');
+
+export const getHistoryReports = () => (dispatch, getState) => {
+  const authenticatedUserName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: GET_HISTORY_REPORTS.ACTION,
+    payload: getHistoryGenerateAdvancedReports(authenticatedUserName),
+  });
+};
 
 export const EXCLUDE_TRANSFER = createAsyncActionType('@advanced/EXCLUDE_TRANSFER');
 
