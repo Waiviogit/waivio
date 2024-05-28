@@ -5,7 +5,11 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import BellButton from '../../../widgets/BellButton';
 import HeartButton from '../../../widgets/HeartButton';
-import { accessTypesArr, haveAccess } from '../../../../common/helpers/wObjectHelper';
+import {
+  accessTypesArr,
+  hasDelegation,
+  haveAccess,
+} from '../../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import FollowButton from '../../../widgets/FollowButton';
 import { followWobject, unfollowWobject } from '../../../../store/wObjectStore/wobjActions';
@@ -23,7 +27,9 @@ const SocialProductActions = ({
   isEditMode,
   isAdministrator,
 }) => {
-  const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(wobject, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(wobject, username);
 
   return (
     <div className="ObjectHeader__controls">
@@ -34,7 +40,7 @@ const SocialProductActions = ({
         wobj={wobject}
         followingType="wobject"
       />
-      {accessExtend && authenticated && isAdministrator && (
+      {accessExtend && authenticated && (
         <React.Fragment>
           <Button onClick={toggleViewEditMode}>
             {isEditMode

@@ -27,6 +27,7 @@ import {
   getObjectAvatar,
   getObjectName,
   getTitleForLink,
+  hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
@@ -77,7 +78,9 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const wobject = useSelector(getObjectState);
   const authenticated = useSelector(getIsAuthenticated);
   const isAdministrator = useSelector(getUserAdministrator);
-  const accessExtend = haveAccess(wobject, user, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(wobject, user, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(wobject, user);
   const isEditMode = useSelector(getIsEditMode);
   const isSocial = useSelector(getIsSocial);
   const siteName = useSelector(getSiteName);
@@ -151,7 +154,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <div className={isSocial ? 'SitesWebpage' : ''}>
-        {isSocial && !isEditMode && accessExtend && authenticated && isAdministrator && (
+        {isSocial && !isEditMode && accessExtend && authenticated && (
           <div className="SitesWebpage__edit-container">
             <Button onClick={editObjectClick}>
               {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

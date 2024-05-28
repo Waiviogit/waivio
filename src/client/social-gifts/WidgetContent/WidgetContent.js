@@ -21,6 +21,7 @@ import {
   getObjectAvatar,
   getObjectName,
   getTitleForLink,
+  hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -40,7 +41,9 @@ const WidgetContent = ({ wobj, intl }) => {
   const username = useSelector(getAuthenticatedUserName);
   const authenticated = useSelector(getIsAuthenticated);
   const isAdministrator = useSelector(getUserAdministrator);
-  const accessExtend = haveAccess(wobj || currentWobject, username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(wobj || currentWobject, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(wobj || currentWobject, username);
   const title = getTitleForLink(currentWobject);
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(currentWobject.canonical);
   const desc = currentWobject?.description || descriptionSite || siteName;
@@ -120,7 +123,7 @@ const WidgetContent = ({ wobj, intl }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      {accessExtend && authenticated && isAdministrator && (
+      {accessExtend && authenticated && (
         <div className="FeedMasonry__edit-container">
           <Button onClick={editObjectClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
