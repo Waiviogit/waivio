@@ -14,7 +14,10 @@ import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import {
   getIsEditMode,
   getObject as getObjectState,
@@ -74,6 +77,7 @@ class WobjectContainer extends React.PureComponent {
   componentDidUpdate(prevProps) {
     if (
       prevProps.match.params.name !== this.props.match.params.name ||
+      prevProps.isAuth !== this.props.isAuth ||
       prevProps.locale !== this.props.locale
     ) {
       this.getWobjInfo();
@@ -204,6 +208,7 @@ WobjectContainer.propTypes = {
   failed: PropTypes.bool,
   isSocial: PropTypes.bool,
   isEdit: PropTypes.bool,
+  isAuth: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
@@ -319,6 +324,7 @@ const mapStateToProps = state => ({
   weightValue: getWeightValue(state, getObjectState(state).weight),
   currHost: getCurrentHost(state),
   isEdit: getIsEditMode(state),
+  isAuth: getIsAuthenticated(state),
 });
 
 const mapDispatchToProps = {
