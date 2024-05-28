@@ -145,6 +145,7 @@ import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
 import './AppendForm.less';
 import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
 import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
+import DelegationForm from './FormComponents/DelegationForm';
 
 @connect(
   state => ({
@@ -468,6 +469,7 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.delegation:
       case objectFields.affiliateUrlTemplate:
       case objectFields.affiliateCode:
       case objectFields.pin:
@@ -739,6 +741,8 @@ class AppendForm extends Component {
               ? this.props.post.permlink
               : formValues[pinPostFields.postPermlink]
           }`;
+        case objectFields.delegation:
+          return `@${author} added ${currentField} (${langReadable}): ${this.state.selectedUserBlog}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.affiliateUrlTemplate:
@@ -1113,6 +1117,12 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: formValues[objectFields.affiliateGeoArea],
+        };
+      }
+      if (currentField === objectFields.delegation) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedUserBlog,
         };
       }
       if (currentField === objectFields.menuItem) {
@@ -4004,6 +4014,19 @@ class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.delegation: {
+        const { selectedUserBlog } = this.state;
+
+        return (
+          <DelegationForm
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            handleSelectUserBlog={this.handleSelectUserBlog}
+            handleResetUserBlog={this.handleResetUserBlog}
+            selectedUserBlog={selectedUserBlog}
+          />
+        );
+      }
       case objectFields.form: {
         const { formColumn, formForm } = this.state;
 
@@ -4061,6 +4084,8 @@ class AppendForm extends Component {
         return isEmpty(this.state.typeList);
       case mapObjectTypeFields.mapObjectTags:
         return isEmpty(this.state.allowList);
+      case objectFields.delegation:
+        return isEmpty(this.state.selectedUserBlog);
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||
