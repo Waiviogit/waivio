@@ -1466,6 +1466,7 @@ ${obj.productId}`}
           ),
         )}
         {this.listItem(objectFields.authority, null)}
+        {this.listItem(objectFields.delegation, null)}
       </React.Fragment>
     );
 
