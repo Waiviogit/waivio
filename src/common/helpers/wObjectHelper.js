@@ -77,6 +77,9 @@ export const haveAccess = (wobj, userName, accessType) =>
   wobj[accessType] ||
   !!(wobj.white_list && some(wobj.white_list, userInWL => userName === userInWL));
 
+export const hasDelegation = (wobj, userName) =>
+  wobj?.delegation && some(wobj?.delegation, deleg => userName === deleg.body);
+
 export const generateRandomString = stringLength => {
   let randomString = '';
   let randomAscii;

@@ -19,6 +19,7 @@ import {
   createHash,
   getLastPermlinksFromHash,
   getPermlinksFromHash,
+  hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
@@ -46,7 +47,9 @@ const ListSwitcher = props => {
   const history = useHistory();
   const [visibleNavig, setVisibleNavig] = useState(false);
   const [visibleFilter, setVisibleFilter] = useState(false);
-  const accessExtend = haveAccess(currObj, username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(currObj, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(currObj, username);
 
   const editObjectClick = () => {
     const backUrl = `/object-shop/${props.user}`;
@@ -103,7 +106,7 @@ const ListSwitcher = props => {
           >
             {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
           </span>{' '}
-          {props.type === 'wobject' && accessExtend && authenticated && isAdministrator && (
+          {props.type === 'wobject' && accessExtend && authenticated && (
             <div className="Breadcrumbs__edit-container">
               <Button onClick={editObjectClick}>
                 {props.intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

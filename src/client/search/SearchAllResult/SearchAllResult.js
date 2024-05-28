@@ -44,7 +44,7 @@ import {
 } from '../../../store/websiteStore/websiteSelectors';
 import { getBoundsParams, getMapData } from '../../../store/mapStore/mapSelectors';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
-import { accessTypesArr, haveAccess } from '../../../common/helpers/wObjectHelper';
+import { accessTypesArr, hasDelegation, haveAccess } from '../../../common/helpers/wObjectHelper';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -58,7 +58,9 @@ const SearchAllResult = props => {
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
   const history = useHistory();
-  const accessExtend = haveAccess(props.currObj, props.username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(props.currObj, props.username, accessTypesArr[0]) && props.isAdministrator) ||
+    hasDelegation(props.currObj, props.username);
   const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
@@ -211,7 +213,7 @@ const SearchAllResult = props => {
               reloadSearchList={props.reloadSearchList}
             />
           )}
-          {accessExtend && props.authenticated && props.isAdministrator && (
+          {accessExtend && props.authenticated && (
             <div className="Breadcrumbs__edit-container">
               <Button onClick={editObjectClick}>
                 {props.intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

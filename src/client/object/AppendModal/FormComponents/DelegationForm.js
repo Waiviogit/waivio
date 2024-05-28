@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'antd';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { blogFields, objectFields } from '../../../../common/constants/listOfFields';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -14,16 +14,29 @@ const DelegationForm = ({
   selectedUserBlog,
   handleResetUserBlog,
   handleSelectUserBlog,
+  intl,
 }) => (
   <>
-    <div className={classNames('ant-form-item-label AppendForm__appendTitles')}>
+    <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
       <FormattedMessage id="user" defaultMessage="User" />
     </div>
     <div>
       <Form.Item>
         {getFieldDecorator(blogFields.account, {
           rules: getFieldRules(objectFields.blog),
-        })(<SearchUsersAutocomplete handleSelect={handleSelectUserBlog} />)}
+        })(
+          <>
+            {isEmpty(selectedUserBlog) && (
+              <SearchUsersAutocomplete
+                handleSelect={handleSelectUserBlog}
+                placeholder={intl.formatMessage({
+                  id: 'find_a_user',
+                  defaultMessage: 'Find a user',
+                })}
+              />
+            )}
+          </>,
+        )}
         {!isEmpty(selectedUserBlog) && (
           <SelectUserForAutocomplete account={selectedUserBlog} resetUser={handleResetUserBlog} />
         )}
@@ -42,6 +55,7 @@ DelegationForm.propTypes = {
   getFieldRules: PropTypes.func,
   getFieldDecorator: PropTypes.func,
   selectedUserBlog: PropTypes.shape(),
+  intl: PropTypes.shape(),
 };
 
-export default DelegationForm;
+export default injectIntl(DelegationForm);
