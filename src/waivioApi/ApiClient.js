@@ -2130,6 +2130,98 @@ export const getWaivAdvancedReports = (body, user = '', abortController) => {
     .catch(e => e);
 };
 
+export const generateAdvancedReports = (body, user = '', abortController) => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}`, {
+    headers: actualHeaders,
+    body: JSON.stringify(body),
+    ...(abortController && { signal: abortController.signal }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getInProgressGenerateAdvancedReports = (user = '') => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.progress}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({ user }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const getHistoryGenerateAdvancedReports = (user = '') => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.history}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({ user }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const stopGenerateReport = (user = '', reportId) => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.stop}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({ user, reportId }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+export const pauseGenerateReport = (user = '', reportId) => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.pause}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({ user, reportId }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+export const resumeGenerateReport = (user = '', reportId) => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.resume}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({ user, reportId }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export const accountsCreationDate = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
     headers,

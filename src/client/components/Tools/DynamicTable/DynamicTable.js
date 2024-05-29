@@ -78,7 +78,18 @@ export const DynamicTable = ({
         return round(item[head.id], head.precision) || 0;
 
       case 'currency':
-        return <USDDisplay value={item[head.id]} />;
+        return <USDDisplay currencyDisplay={head.view} value={item[head.id]} />;
+
+      case 'list':
+        return (
+          <>
+            {item[head.id]?.map(i => {
+              const value = head.key ? i[head.key] : i;
+
+              return <p key={value}>{value}</p>;
+            })}
+          </>
+        );
 
       case 'openModal':
         return (

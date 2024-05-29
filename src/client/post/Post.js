@@ -169,7 +169,7 @@ export default class Post extends React.Component {
 
     const signature = get(user, 'posting_json_metadata.profile.signature', null);
 
-    const isThread = isEmpty(content.title) && content.parent_author === 'leothreads';
+    const isThread = content && isEmpty(content?.title) && content?.parent_author === 'leothreads';
 
     return (
       <div className="main-panel">

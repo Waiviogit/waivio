@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Icon } from 'antd';
+import { Button, Icon } from 'antd';
+import { useHistory } from 'react-router';
 import classNames from 'classnames';
 
 import {
@@ -30,8 +31,6 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-
-import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
   setSocialSearchResultLoading,
@@ -45,11 +44,23 @@ import {
 } from '../../../store/websiteStore/websiteSelectors';
 import { getBoundsParams, getMapData } from '../../../store/mapStore/mapSelectors';
 import useUpdateEffect from '../../../hooks/useUpdateEffect';
+import { accessTypesArr, hasDelegation, haveAccess } from '../../../common/helpers/wObjectHelper';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
+import { getUserAdministrator } from '../../../store/appStore/appSelectors';
+import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import './SearchAllResult.less';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
+  const history = useHistory();
+  const accessExtend =
+    (haveAccess(props.currObj, props.username, accessTypesArr[0]) && props.isAdministrator) ||
+    hasDelegation(props.currObj, props.username);
   const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
@@ -174,6 +185,12 @@ const SearchAllResult = props => {
   };
 
   const setCloseResult = useCallback(() => props.setShowSearchResult(false), []);
+  const editObjectClick = () => {
+    props.setEditMode(true);
+    if (history?.location?.pathname === '/') {
+      history.push(`/object/${props.currObj.author_permlink}`);
+    }
+  };
 
   return (
     <div className={searchResultClassList}>
@@ -186,12 +203,24 @@ const SearchAllResult = props => {
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && !props.isSocial && <SearchMapFilters />}
-        {showReload && (
-          <ReloadButton
-            className="SearchAllResult__reload"
-            reloadSearchList={props.reloadSearchList}
-          />
-        )}
+        <div
+          className={showReload ? 'SearchAllResult__buttons-wrap' : 'SearchAllResult__edit-wrap'}
+        >
+          {' '}
+          {showReload && (
+            <ReloadButton
+              className="SearchAllResult__reload"
+              reloadSearchList={props.reloadSearchList}
+            />
+          )}
+          {accessExtend && props.authenticated && (
+            <div className="Breadcrumbs__edit-container">
+              <Button onClick={editObjectClick}>
+                {props.intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+              </Button>
+            </div>
+          )}
+        </div>
         <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}
         {showReload ? (
@@ -229,12 +258,16 @@ SearchAllResult.propTypes = {
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   socialLoading: PropTypes.bool,
+  authenticated: PropTypes.bool,
+  isAdministrator: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
+  setEditMode: PropTypes.func,
   setSocialSearchResults: PropTypes.func,
   setSocialSearchResultLoading: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   permlink: PropTypes.string,
+  username: PropTypes.string,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -266,6 +299,9 @@ export default connect(
     socialWobjects: getSocialSearchResult(state),
     boundsParams: getBoundsParams(state),
     mapData: getMapData(state),
+    username: getAuthenticatedUserName(state),
+    authenticated: getIsAuthenticated(state),
+    isAdministrator: getUserAdministrator(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -275,5 +311,6 @@ export default connect(
     searchExpertsForMap,
     setSocialSearchResults,
     setSocialSearchResultLoading,
+    setEditMode,
   },
 )(injectIntl(SearchAllResult));

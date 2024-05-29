@@ -74,6 +74,7 @@ export const objectFields = {
   mapObjectTypes: 'mapObjectTypes',
   mapObjectTags: 'mapObjectTags',
   mapRectangles: 'mapRectangles',
+  delegation: 'delegation',
 };
 export const mapObjectTypeFields = {
   mapObjectsList: 'mapObjectsList',

@@ -19,6 +19,7 @@ import {
   haveAccess,
   getObjectName,
   parseWobjectField,
+  hasDelegation,
 } from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
@@ -42,7 +43,9 @@ const WobjHeader = ({
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
-  const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(wobject, username, accessTypesArr[0]) && (isWaivio || isAdministrator)) ||
+    hasDelegation(wobject, username);
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
   const parentName = getObjectName(parent);
@@ -96,7 +99,7 @@ const WobjHeader = ({
                   wobj={wobject}
                   followingType="wobject"
                 />
-                {accessExtend && authenticated && (isWaivio || isAdministrator) && (
+                {accessExtend && authenticated && (
                   <React.Fragment>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode

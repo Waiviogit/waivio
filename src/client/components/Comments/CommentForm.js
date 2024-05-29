@@ -61,11 +61,15 @@ const CommentForm = props => {
               id: 'comment_draft',
               defaultMessage: 'Comment draft',
             }),
-            content: props.intl.formatMessage({
-              id: 'comment_draft_message',
-              defaultMessage:
-                'You have one draft with unsaved changes. Do you want to continue editing?',
-            }),
+            content: (
+              <div style={{ whiteSpace: 'pre-line' }}>
+                {props.intl.formatMessage({
+                  id: 'comment_draft_message',
+                  defaultMessage:
+                    'You have one draft with unsaved changes.\n Do you want to continue editing?',
+                })}
+              </div>
+            ),
             onOk: () => {
               setInit(true);
               setDraft(res?.body);

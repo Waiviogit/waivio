@@ -10,6 +10,7 @@ import {
   accessTypesArr,
   createNewHash,
   getObjectName,
+  hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import {
@@ -44,9 +45,11 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const query = useQuery();
-  const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
+  const accessExtend =
+    (haveAccess(wobject, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(wobject, username);
   const permlinks = location.hash?.replace('#', '').split('/');
-  const listObjType = wobject?.object_type === 'list';
+  const editObjTypes = ['list', 'page']?.includes(wobject?.object_type);
   let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
   const viewUrl = query.get('viewUrl');
 
@@ -72,7 +75,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
     dispatch(setEditMode(true));
 
-    history.push(`/object/${lastItemPermlink}/list?viewUrl=${backUrl}`);
+    history.push(`/object/${lastItemPermlink}/${wobject?.object_type}?viewUrl=${backUrl}`);
   };
 
   useEffect(() => {
@@ -155,7 +158,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
           </React.Fragment>
         ))}
       </div>
-      {accessExtend && authenticated && isAdministrator && listObjType && (
+      {accessExtend && authenticated && editObjTypes && (
         <div className="Breadcrumbs__edit-container">
           <Button onClick={editListClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

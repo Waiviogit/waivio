@@ -63,7 +63,7 @@ export default {
   UserReblogs: loableComponent(import('../client/user/UserReblogs')),
   UserWallet: loableComponent(import('../client/wallet/Wallets')),
   WalletTable: loableComponent(import('../client/wallet/WalletTable/WalletTable')),
-  WAIVwalletTable: loableComponent(import('../client/wallet/WalletTable/WAIVwalletTable')),
+  WalletTableSwitcher: loableComponent(import('../client/wallet/WalletTable/WalletTableSwitcher')),
   UserActivity: loableComponent(import('../client/activity/UserActivity')),
   Discover: loableComponent(import('../client/discover/Discover')),
   Objects: loableComponent(import('../client/objects/Objects')),

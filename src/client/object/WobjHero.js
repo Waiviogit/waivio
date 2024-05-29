@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import { accessTypesArr, getObjectName, haveAccess } from '../../common/helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const WobjHero = ({
   isEditMode,
@@ -13,7 +15,7 @@ const WobjHero = ({
   isFollowing,
   toggleViewEditMode,
 }) => {
-  const username = getObjectName(wobject);
+  const username = useSelector(getAuthenticatedUserName);
   const accessExtend = haveAccess(wobject, getObjectName(wobject), accessTypesArr[0]);
 
   return (

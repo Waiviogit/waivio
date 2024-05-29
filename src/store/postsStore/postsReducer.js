@@ -95,6 +95,13 @@ const posts = (state = initialState, action) => {
         lastId,
       };
     }
+    case feedTypes.EDIT_THREAD:
+      const { id, body } = action.payload;
+
+      return {
+        ...state,
+        list: { ...state.list, [id]: { ...state.list[id], body } },
+      };
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_THREADS_CONTENT.SUCCESS:
