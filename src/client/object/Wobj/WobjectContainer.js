@@ -75,10 +75,14 @@ class WobjectContainer extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
+    // eslint-disable-next-line no-console
+    console.log('isAuth:', this.props.isAuth);
+    // eslint-disable-next-line no-console
+    console.log('authenticatedUserName:', this.props.authenticatedUserName);
     if (
       prevProps.match.params.name !== this.props.match.params.name ||
       prevProps.isAuth !== this.props.isAuth ||
-      isNil(this.props.isAuth) ||
+      prevProps.authenticatedUserName !== this.props.authenticatedUserName ||
       prevProps.locale !== this.props.locale
     ) {
       this.getWobjInfo();
@@ -108,7 +112,7 @@ class WobjectContainer extends React.PureComponent {
       if (this.props.currHost?.includes('waivio')) {
         if (
           (await showDescriptionPage(res.value, this.props.locale)) &&
-          !this.props.match.params[0]
+          !this.props.match.params?.[0]
         ) {
           this.props.history.push(`/object/${res.value.author_permlink}/description`);
         }
@@ -251,7 +255,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
         if (permlink && !has(curr, 'name')) {
           const newObj = await getObjectInfo([permlink]);
 
-          return [...res, newObj.wobjects[0]];
+          return [...res, newObj.wobjects?.[0]];
         }
 
         return [...res, curr];
@@ -289,7 +293,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
           const customSort = isEmpty(response.value?.sortCustom?.include)
             ? response.value.menuItem.map(i => i.permlink)
             : response.value?.sortCustom?.include;
-          const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
+          const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)?.[0];
 
           promises.push(store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)));
         }
