@@ -114,7 +114,7 @@ const PicturesSlider = ({
         <div className={'MobileCarousel'}>
           <Carousel ref={slider} {...mobileSlider}>
             {map(pictures, pic => (
-              <div key={pic.id}>
+              <div key={pic._id}>
                 <img
                   className="PicturesSlider__previewImage"
                   src={getProxyImageURL(pic.body)}
@@ -129,7 +129,7 @@ const PicturesSlider = ({
       <br />
       <Carousel {...carouselSettings(pictures)}>
         {map(pictures, (pic, i) => (
-          <div key={pic.id}>
+          <div key={pic._id}>
             <img
               onClick={e => onImgClick(e, pic)}
               onMouseOver={() => {

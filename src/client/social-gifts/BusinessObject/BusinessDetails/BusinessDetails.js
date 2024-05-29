@@ -36,7 +36,7 @@ const BusinessDetails = ({
     switch (fieldName) {
       case objectFields.phone:
         return (
-          <div className={'phone mb5px'}>
+          <div key={`tel:${params.number}`} className={'phone mb5px'}>
             <Icon type="phone" className="text-icon tel" /> {Boolean(params.body) && body}{' '}
             <a href={`tel:${params.number}`} className={body ? 'phone-number' : ''}>
               {params.number}
@@ -91,8 +91,10 @@ const BusinessDetails = ({
           {!isEditMode
             ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} isSocial />
             : companyIdBody?.map(obj => (
-                // eslint-disable-next-line react/jsx-key
-                <div className="CompanyId__block-item">
+                <div
+                  key={`${obj.companyId}-${obj.companyIdType}`}
+                  className="CompanyId__block-item"
+                >
                   <p className="CompanyId__p">{obj.companyIdType}</p>
                   <p className="CompanyId__p">{obj.companyId}</p>
                 </div>
