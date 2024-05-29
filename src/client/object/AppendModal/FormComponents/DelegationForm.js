@@ -4,13 +4,12 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
-import { blogFields, objectFields } from '../../../../common/constants/listOfFields';
+import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 
 const DelegationForm = ({
   getFieldDecorator,
-  getFieldRules,
   selectedUserBlog,
   handleResetUserBlog,
   handleSelectUserBlog,
@@ -22,9 +21,10 @@ const DelegationForm = ({
     </div>
     <div>
       <Form.Item>
-        {getFieldDecorator(blogFields.account, {
-          rules: getFieldRules(objectFields.blog),
-        })(
+        {getFieldDecorator(
+          objectFields.delegation,
+          {},
+        )(
           <>
             {isEmpty(selectedUserBlog) && (
               <SearchUsersAutocomplete
@@ -52,7 +52,6 @@ const DelegationForm = ({
 DelegationForm.propTypes = {
   handleSelectUserBlog: PropTypes.func,
   handleResetUserBlog: PropTypes.func,
-  getFieldRules: PropTypes.func,
   getFieldDecorator: PropTypes.func,
   selectedUserBlog: PropTypes.shape(),
   intl: PropTypes.shape(),
