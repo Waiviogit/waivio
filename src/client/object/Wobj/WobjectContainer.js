@@ -78,6 +78,7 @@ class WobjectContainer extends React.PureComponent {
     if (
       prevProps.match.params.name !== this.props.match.params.name ||
       prevProps.isAuth !== this.props.isAuth ||
+      isNil(this.props.isAuth) ||
       prevProps.locale !== this.props.locale
     ) {
       this.getWobjInfo();
