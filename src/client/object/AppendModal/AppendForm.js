@@ -141,11 +141,10 @@ import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import MapObjectsListForm from './FormComponents/MapForms/MapObjectsListForm';
 import MapDesktopViewForm from './FormComponents/MapForms/MapDesktopViewForm';
 import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
-
-import './AppendForm.less';
 import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
 import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
 import DelegationForm from './FormComponents/DelegationForm';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -4020,7 +4019,6 @@ class AppendForm extends Component {
         return (
           <DelegationForm
             getFieldDecorator={getFieldDecorator}
-            getFieldRules={this.getFieldRules}
             handleSelectUserBlog={this.handleSelectUserBlog}
             handleResetUserBlog={this.handleResetUserBlog}
             selectedUserBlog={selectedUserBlog}
