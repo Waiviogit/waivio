@@ -4,7 +4,7 @@ import { injectIntl, intlShape } from 'react-intl';
 
 import WalletTable from './WalletTable';
 
-import GenerateReport from './GenerateReport';
+// import GenerateReport from './GenerateReport';
 
 const WalletTableSwitcher = ({ intl }) => (
   <Tabs>
@@ -17,15 +17,15 @@ const WalletTableSwitcher = ({ intl }) => (
     >
       <WalletTable />
     </Tabs.TabPane>
-    <Tabs.TabPane
-      tab={intl.formatMessage({
-        id: 'Generate',
-        defaultMessage: 'Generate',
-      })}
-      key={'general'}
-    >
-      <GenerateReport />
-    </Tabs.TabPane>
+    {/* <Tabs.TabPane */}
+    {/*  tab={intl.formatMessage({ */}
+    {/*    id: 'Generate', */}
+    {/*    defaultMessage: 'Generate', */}
+    {/*  })} */}
+    {/*  key={'general'} */}
+    {/* > */}
+    {/*  <GenerateReport /> */}
+    {/* </Tabs.TabPane> */}
   </Tabs>
 );
 
