@@ -1,5 +1,6 @@
 import moment from 'moment';
 import {
+  excludeInReportsDetails,
   generateAdvancedReports,
   getHistoryGenerateAdvancedReports,
   getInProgressGenerateAdvancedReports,
@@ -11,7 +12,7 @@ import {
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
-import { getTransfersAccounts } from './advancedSelectors';
+import { getTransactions, getTransfersAccounts } from './advancedSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 
 const parseTransactionData = trans => {
@@ -97,6 +98,22 @@ export const getUserTableTransactions = ({
   });
 };
 
+export const getReportDetails = reportId => dispatch =>
+  dispatch({
+    type: GET_TRANSACTIONS_FOR_TABLE.ACTION,
+    payload: {
+      promise: ApiClient.getReportsDetails(reportId, 0, 500).then(data => ({
+        data: {
+          ...data,
+          wallet: data.wallet && data.wallet?.map(parseTransactionData),
+          withdrawals: data.withdrawals,
+          deposits: data.deposits,
+          reportCurrency: data.currency,
+        },
+      })),
+    },
+  });
+
 export const GET_MORE_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_MORE_TRANSACTIONS_FOR_TABLE',
 );
@@ -138,6 +155,24 @@ export const getMoreTableUserTransactionHistory = ({
   });
 };
 
+export const getMoreReportDetails = reportId => (dispatch, getState) => {
+  const skip = getTransactions(getState()).length;
+
+  return dispatch({
+    type: GET_MORE_TRANSACTIONS_FOR_TABLE.ACTION,
+    payload: {
+      promise: ApiClient.getReportsDetails(reportId, skip, 500).then(data => ({
+        data: {
+          ...data,
+          wallet: data.wallet && data.wallet?.map(parseTransactionData),
+          withdrawals: data.withdrawals,
+          deposits: data.deposits,
+        },
+      })),
+    },
+  });
+};
+
 export const GET_USERS_CREATION_DATE = createAsyncActionType('@advanced/GET_USERS_CREATION_DATE');
 
 export const getUsersTransactionDate = name => ({
@@ -172,6 +207,27 @@ export const calculateTotalChanges = (item, checked, currency, typeTable) => dis
   );
 };
 
+export const calculateTotalChangesInDetails = (recordId, item, checked, currency) => (
+  dispatch,
+  getState,
+) => {
+  const authUserName = getAuthenticatedUserName(getState());
+  const getKey = guestKey => (guestUserRegex.test(item.userName) ? guestKey : 'operationNum');
+
+  dispatch({
+    type: CALCULATE_TOTAL_CHANGES,
+    payload: { amount: item[currency], type: item.withdrawDeposit, decrement: checked },
+  });
+  dispatch({
+    type: EXCLUDE_TRANSFER.ACTION,
+    payload: excludeInReportsDetails(recordId, item._id, authUserName),
+    meta: {
+      id: item._id,
+      key: getKey('_id'),
+    },
+  });
+};
+
 export const RESET_REPORTS = '@advanced/RESET_REPORTS';
 
 export const resetReportsData = () => ({
@@ -181,8 +237,13 @@ export const resetReportsData = () => ({
 export const GENERATE_REPORTS = '@advanced/GENERATE_REPORTS';
 
 export const getReportUpdate = callback => (dispatch, getState, { busyAPI }) => {
+  let time = 0;
+
   busyAPI.instance.subscribe((e, data) => {
-    if (data?.notification?.type === 'updateReport') callback();
+    if (data?.notification?.type === 'updateReport' && data.notification?.timestamp - time === 10) {
+      callback();
+      time = data.notification?.timestamp;
+    }
   });
 };
 
