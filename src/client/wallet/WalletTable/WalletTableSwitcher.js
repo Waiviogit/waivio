@@ -1,33 +1,42 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import { injectIntl, intlShape } from 'react-intl';
-
-import WalletTable from './WalletTable';
+import { useParams } from 'react-router';
+import { useSelector } from 'react-redux';
 
 import GenerateReport from './GenerateReport';
+import BothWalletTable from './BothWalletTable';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-const WalletTableSwitcher = ({ intl }) => (
-  <Tabs>
-    <Tabs.TabPane
-      key={'standard'}
-      tab={intl.formatMessage({
-        id: 'standard',
-        defaultMessage: 'Standard',
-      })}
-    >
-      <WalletTable />
-    </Tabs.TabPane>
-    <Tabs.TabPane
-      tab={intl.formatMessage({
-        id: 'Generate',
-        defaultMessage: 'Generate',
-      })}
-      key={'general'}
-    >
-      <GenerateReport />
-    </Tabs.TabPane>
-  </Tabs>
-);
+const WalletTableSwitcher = props => {
+  const authUser = useSelector(getAuthenticatedUserName);
+  const { name } = useParams();
+
+  return (
+    <Tabs>
+      <Tabs.TabPane
+        key={'standard'}
+        tab={props.intl.formatMessage({
+          id: 'standard',
+          defaultMessage: 'Standard',
+        })}
+      >
+        <BothWalletTable />
+      </Tabs.TabPane>
+      {authUser === name && (
+        <Tabs.TabPane
+          tab={props.intl.formatMessage({
+            id: 'Generated',
+            defaultMessage: 'Generated',
+          })}
+          key={'general'}
+        >
+          <GenerateReport />
+        </Tabs.TabPane>
+      )}
+    </Tabs>
+  );
+};
 
 WalletTableSwitcher.propTypes = {
   intl: intlShape.isRequired,

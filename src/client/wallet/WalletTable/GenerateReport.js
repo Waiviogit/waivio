@@ -57,7 +57,7 @@ const GenerateReport = ({ intl, form }) => {
   }, []);
 
   const handleSelectUserFilterAccounts = user => {
-    setFilterAccounts([...filterAccounts, user]);
+    setFilterAccounts([...filterAccounts, user.account]);
   };
 
   const deleteUserFromFilterAccounts = user => {
@@ -135,6 +135,68 @@ const GenerateReport = ({ intl, form }) => {
     }
   };
 
+  // const exportCsv = (reportId, currency) => {
+  //   const mappedList = map(transactionsList, transaction =>
+  //     compareTransferBody(
+  //       transaction,
+  //       currencyType,
+  //       'WAIV',
+  //       this.props.totalVestingShares,
+  //       this.props.totalVestingFundSteem,
+  //     ),
+  //   )
+  //   const template = {
+  //       checked: 0,
+  //       dateForTable: 1,
+  //       fieldWAIV: 2,
+  //       fieldWP: 3,
+  //       waivCurrentCurrency: 4,
+  //       withdrawDeposit: 5,
+  //       account: 6,
+  //       fieldDescriptionForTable: 7,
+  //       fieldMemo: 8,
+  //     };
+  //
+  //   const csvHiveArray = mappedList.map(transaction => {
+  //     const newArr = [];
+  //
+  //     Object.entries(template).forEach(item => {
+  //       if (item[0] === 'checked') {
+  //         newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+  //
+  //         return;
+  //       }
+  //       if (item[0] === 'fieldMemo') {
+  //         newArr[item[1]] = transaction?.[item[0]]?.replace(',', ' ');
+  //       } else {
+  //         newArr[item[1]] = transaction?.[item[0]] || '';
+  //       }
+  //     });
+  //
+  //     return newArr;
+  //   });
+  //   const currArr = isHive
+  //     ? [
+  //       'HIVE',
+  //       'HP',
+  //       'HBD',
+  //       `HIVE/${this.state.currentCurrency}`,
+  //       `HBD/${this.state.currentCurrency}`,
+  //     ]
+  //     : ['WAIV', 'WP', `WAIV/${currentCurrency}`];
+  //
+  //   const rows = [
+  //     [],
+  //     ['X', 'Date', ...currArr, '±', 'Account', 'Description', 'Memo'],
+  //     ...csvHiveArray,
+  //   ];
+  //
+  //   const csvContent = rows.map(e => e.join(',')).join('\n');
+  //
+  //   if (typeof window !== 'undefined')
+  //     window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
+  // };
+
   if (loading) return <Loading />;
 
   return (
@@ -161,27 +223,29 @@ const GenerateReport = ({ intl, form }) => {
       />
       <h2>History</h2>
       <DynamicTbl header={configHistoryReportsTableHeader} bodyConfig={historyReports} />
-      <Modal
-        title={`Advanced report`}
-        visible={openModal}
-        onCancel={() => setOpenModal(false)}
-        onOk={handleSubmit}
-        okText={'Submit'}
-      >
-        <TableFilter
-          inModal
-          intl={intl}
-          filterUsersList={filterAccounts}
-          getFieldDecorator={form.getFieldDecorator}
-          handleSelectUser={handleSelectUserFilterAccounts}
-          isLoadingTableTransactions={false}
-          deleteUser={deleteUserFromFilterAccounts}
-          currency={currentCurrency.type}
-          form={form}
-          startDate={handleChangeStartDate()}
-          endDate={handleChangeEndDate()}
-        />{' '}
-      </Modal>
+      {openModal && (
+        <Modal
+          title={`Advanced report`}
+          visible={openModal}
+          onCancel={() => setOpenModal(false)}
+          onOk={handleSubmit}
+          okText={'Submit'}
+        >
+          <TableFilter
+            inModal
+            intl={intl}
+            filterUsersList={filterAccounts}
+            getFieldDecorator={form.getFieldDecorator}
+            handleSelectUser={handleSelectUserFilterAccounts}
+            isLoadingTableTransactions={false}
+            deleteUser={deleteUserFromFilterAccounts}
+            currency={currentCurrency.type}
+            form={form}
+            startDate={handleChangeStartDate()}
+            endDate={handleChangeEndDate()}
+          />{' '}
+        </Modal>
+      )}
     </div>
   );
 };
