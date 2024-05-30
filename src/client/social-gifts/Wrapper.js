@@ -224,7 +224,7 @@ const SocialWrapper = props => {
   useEffect(() => {
     createWebsiteMenu(props.config);
     loadLocale(props.locale);
-  }, [props.locale]);
+  }, [props.locale, props.username, props.isAuth]);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
