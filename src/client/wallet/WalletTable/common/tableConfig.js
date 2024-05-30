@@ -119,14 +119,6 @@ export const configActiveReportsTableHeader = [
     getChecked: i => i.status === 'IN_PROGRESS',
   },
   {
-    id: 'endDate',
-    type: 'date',
-    intl: {
-      id: 'end_date',
-      defaultMessage: 'End date',
-    },
-  },
-  {
     id: 'startDate',
     type: 'date',
     intl: {
@@ -134,6 +126,15 @@ export const configActiveReportsTableHeader = [
       defaultMessage: 'Start date',
     },
   },
+  {
+    id: 'endDate',
+    type: 'date',
+    intl: {
+      id: 'end_date',
+      defaultMessage: 'End date',
+    },
+  },
+
   {
     id: 'accounts',
     type: 'list',
@@ -145,7 +146,6 @@ export const configActiveReportsTableHeader = [
   },
   {
     id: 'currency',
-    // type: 'checkbox',
     intl: {
       id: 'currency',
       defaultMessage: 'Currency',
@@ -153,8 +153,8 @@ export const configActiveReportsTableHeader = [
   },
   {
     id: 'deposits',
-    type: 'currency',
-    view: 'symbol',
+    type: 'round',
+    precision: 3,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Current deposits',
@@ -162,8 +162,8 @@ export const configActiveReportsTableHeader = [
   },
   {
     id: 'withdrawals',
-    type: 'currency',
-    view: 'symbol',
+    type: 'round',
+    precision: 3,
     intl: {
       id: 'current_withdrawals',
       defaultMessage: 'Current withdrawals',
@@ -184,19 +184,19 @@ export const configActiveReportsTableHeader = [
 ];
 export const configHistoryReportsTableHeader = [
   {
-    id: 'endDate',
-    type: 'date',
-    intl: {
-      id: 'end_date',
-      defaultMessage: 'End date',
-    },
-  },
-  {
     id: 'startDate',
     type: 'date',
     intl: {
       id: 'start_date',
       defaultMessage: 'Start date',
+    },
+  },
+  {
+    id: 'endDate',
+    type: 'date',
+    intl: {
+      id: 'end_date',
+      defaultMessage: 'End date',
     },
   },
   {
@@ -217,8 +217,8 @@ export const configHistoryReportsTableHeader = [
   },
   {
     id: 'deposits',
-    type: 'currency',
-    view: 'symbol',
+    type: 'round',
+    precision: 3,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Total deposits',
@@ -226,8 +226,8 @@ export const configHistoryReportsTableHeader = [
   },
   {
     id: 'withdrawals',
-    type: 'currency',
-    view: 'symbol',
+    type: 'round',
+    precision: 3,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Total withdrawals',
@@ -235,20 +235,22 @@ export const configHistoryReportsTableHeader = [
   },
   {
     id: 'active',
-    type: 'action',
+    name: 'details',
+    to: (item, match) => `/@${match.params.name}/transfers/details/${item.reportId}`,
+    type: 'link',
     intl: {
       id: 'details',
       defaultMessage: 'details',
     },
   },
-  {
-    id: 'active',
-    type: 'action',
-    intl: {
-      id: 'CSV',
-      defaultMessage: 'CSV',
-    },
-  },
+  // {
+  //   id: 'active',
+  //   type: 'action',
+  //   intl: {
+  //     id: 'CSV',
+  //     defaultMessage: 'CSV',
+  //   },
+  // },
 ];
 
 export default null;

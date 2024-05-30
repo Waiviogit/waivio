@@ -45,6 +45,7 @@ export default function advancedReducer(state = initialState, action) {
         hasMore: data.hasMore,
         withdrawals: data.withdrawals,
         deposits: data.deposits,
+        reportCurrency: data.reportCurrency,
         isLoading: false,
         accounts: data.accounts,
         loadingAllData: data.hasMore,
@@ -89,7 +90,7 @@ export default function advancedReducer(state = initialState, action) {
 
       return {
         ...state,
-        [key]: state[key] + amount,
+        [key]: Number(state[key]) + amount,
       };
     }
 
@@ -118,8 +119,9 @@ export default function advancedReducer(state = initialState, action) {
       const transferList = [...state.wallet];
       const transferIndex = transferList.findIndex(
         transaction =>
-          transaction[action.meta.key] === action.meta.id || transaction._id === action.meta.id,
+          transaction?.[action?.meta?.key] === action.meta.id || transaction._id === action.meta.id,
       );
+
       const transfer = transferList[transferIndex];
 
       if (transfer) {
