@@ -47,7 +47,11 @@ import {
   getWebsiteColors,
   getWebsiteConfiguration,
 } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsAuthFetching,
+} from '../../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../../store/settingsStore/settingsSelectors';
 import QuickRewardsModal from './../rewards/QiuckRewardsModal/QuickRewardsModal';
@@ -215,7 +219,7 @@ const SocialWrapper = props => {
         });
       }
     });
-  }, []);
+  }, [props.username, props.isAuth]);
 
   useEffect(() => {
     createWebsiteMenu(props.config);
@@ -264,6 +268,7 @@ SocialWrapper.propTypes = {
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   nightmode: PropTypes.bool,
+  isAuth: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setUsedLocale: PropTypes.func,
@@ -480,6 +485,7 @@ export default ErrorBoundary(
     connect(
       state => ({
         username: getAuthenticatedUserName(state),
+        isAuth: getIsAuthenticated(state),
         usedLocale: getUsedLocale(state),
         translations: getTranslations(state),
         locale: getLocale(state),
