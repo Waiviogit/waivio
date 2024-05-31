@@ -14,6 +14,7 @@ import {
   brandFields,
   merchantFields,
   menuItemFields,
+  walletAddressFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -76,6 +77,25 @@ export const fieldsRules = {
         intlMeta: { value: 100 },
       },
     },
+    {
+      validator: true,
+    },
+  ],
+  [walletAddressFields.walletAddress]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Address' },
+      },
+    },
+
     {
       validator: true,
     },

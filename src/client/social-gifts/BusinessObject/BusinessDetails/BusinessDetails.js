@@ -9,6 +9,7 @@ import { getLink } from '../../../object/wObjectHelper';
 import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
 
 const BusinessDetails = ({
   isEditMode,
@@ -19,6 +20,7 @@ const BusinessDetails = ({
   linkField,
   companyIdBody,
   email,
+  walletAddress,
 }) => {
   const profile = linkField
     ? {
@@ -84,6 +86,11 @@ const BusinessDetails = ({
               <SocialLinks isSocial profile={pickBy(profile, identity)} />
             </div>
           )}
+          {has(wobject, 'walletAddress') && (
+            <div className={` ${!isMobile() ? 'BusinessObject__margin-b' : ''}`}>
+              <WalletAddress walletAddress={walletAddress} />
+            </div>
+          )}
         </React.Fragment>
       </div>
       {!isEmpty(companyIdBody) && (
@@ -107,6 +114,7 @@ const BusinessDetails = ({
 
 BusinessDetails.propTypes = {
   phones: PropTypes.arrayOf(),
+  walletAddress: PropTypes.arrayOf(),
   companyIdBody: PropTypes.arrayOf(),
   wobject: PropTypes.shape().isRequired,
   website: PropTypes.shape(),
