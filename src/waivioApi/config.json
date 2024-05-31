@@ -65,6 +65,7 @@
   "progress": "/progress",
   "stop": "/stop",
   "resume": "/resume",
+  "record": "/record",
   "pause": "/pause",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
