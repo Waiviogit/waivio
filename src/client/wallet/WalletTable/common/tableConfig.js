@@ -136,9 +136,8 @@ export const configActiveReportsTableHeader = [
   },
 
   {
-    id: 'accounts',
+    id: 'filterAccounts',
     type: 'list',
-    key: 'name',
     intl: {
       id: 'accounts',
       defaultMessage: 'Accounts',
@@ -154,7 +153,7 @@ export const configActiveReportsTableHeader = [
   {
     id: 'deposits',
     type: 'round',
-    precision: 3,
+    precision: 2,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Current deposits',
@@ -163,7 +162,7 @@ export const configActiveReportsTableHeader = [
   {
     id: 'withdrawals',
     type: 'round',
-    precision: 3,
+    precision: 2,
     intl: {
       id: 'current_withdrawals',
       defaultMessage: 'Current withdrawals',
@@ -200,9 +199,8 @@ export const configHistoryReportsTableHeader = [
     },
   },
   {
-    id: 'accounts',
+    id: 'filterAccounts',
     type: 'list',
-    key: 'name',
     intl: {
       id: 'accounts',
       defaultMessage: 'Accounts',
@@ -218,7 +216,7 @@ export const configHistoryReportsTableHeader = [
   {
     id: 'deposits',
     type: 'round',
-    precision: 3,
+    precision: 2,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Total deposits',
@@ -227,7 +225,7 @@ export const configHistoryReportsTableHeader = [
   {
     id: 'withdrawals',
     type: 'round',
-    precision: 3,
+    precision: 2,
     intl: {
       id: 'current_deposits',
       defaultMessage: 'Total withdrawals',
