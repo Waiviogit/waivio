@@ -14,6 +14,10 @@ export const getIsLoadingAllData = createSelector([reportsState], state => state
 export const getCreationAccDate = createSelector([reportsState], state => state.creationDate);
 export const getActiveGenerate = createSelector([reportsState], state => state.activeGenerate);
 export const getReportCurrency = createSelector([reportsState], state => state.reportCurrency);
+export const getReportAccounts = createSelector(
+  [reportsState],
+  state => state.reportAccounts || [],
+);
 export const getHistoryGenerateReports = createSelector(
   [reportsState],
   state => state.historyReports,

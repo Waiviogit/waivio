@@ -19,7 +19,7 @@ const WAIVwallet = props => {
       {!isGuest && (
         <Link
           className="UserWallet__view-btn"
-          to={`/@${props.match.params.name}/transfers/waiv-table`}
+          to={`/@${props.match.params.name}/transfers/waiv-table?tab=standard`}
         >
           <FormattedMessage id="table_view" defaultMessage="Advanced reports" />
         </Link>

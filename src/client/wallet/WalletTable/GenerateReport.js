@@ -97,6 +97,8 @@ const GenerateReport = ({ intl, form }) => {
 
           dispatch(generateReports(body)).then(() => {
             setOpenModal(false);
+            setFilterAccounts([params.name]);
+            updatePageDate();
           });
         }
       }
@@ -227,7 +229,10 @@ const GenerateReport = ({ intl, form }) => {
         <Modal
           title={`Advanced report`}
           visible={openModal}
-          onCancel={() => setOpenModal(false)}
+          onCancel={() => {
+            setOpenModal(false);
+            setFilterAccounts([params.name]);
+          }}
           onOk={handleSubmit}
           okText={'Submit'}
         >
