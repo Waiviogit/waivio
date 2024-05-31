@@ -2636,5 +2636,6 @@
   "object_type_note": "Filter objects by type to display only selected ones on the map.",
   "map_tags_note": "Choose the tags for displaying objects on the map.",
   "update": "Update",
-  "object_field_delegation": "Delegation"
+  "object_field_delegation": "Delegation",
+  "object_field_walletAddress": "Wallet address"
 }

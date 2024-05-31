@@ -70,6 +70,7 @@ import { getCoordinates } from '../../../../store/userStore/userActions';
 import './ObjectInfo.less';
 import MapObjectTypes from './ObjectInfoComponents/MapObjectTypes';
 import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
+import WalletAddress from '../WalletAddress/WalletAddress';
 
 @withRouter
 @connect(
@@ -509,6 +510,7 @@ class ObjectInfo extends React.Component {
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
+    const walletAddress = get(wobject, 'walletAddress', []);
     const mapObjectTypes = parseWobjectField(wobject, 'mapObjectTypes');
     const parent = get(wobject, 'parent');
     const status = parseWobjectField(wobject, 'status');
@@ -1207,6 +1209,7 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
             )}
+        {this.listItem(objectFields.walletAddress, <WalletAddress walletAddress={walletAddress} />)}
         {!isEditMode
           ? ageRange && (
               <div className="field-info">

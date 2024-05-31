@@ -50,11 +50,11 @@ const DelegationForm = ({
 );
 
 DelegationForm.propTypes = {
-  handleSelectUserBlog: PropTypes.func,
-  handleResetUserBlog: PropTypes.func,
-  getFieldDecorator: PropTypes.func,
-  selectedUserBlog: PropTypes.shape(),
-  intl: PropTypes.shape(),
+  handleSelectUserBlog: PropTypes.func.isRequired,
+  handleResetUserBlog: PropTypes.func.isRequired,
+  getFieldDecorator: PropTypes.func.isRequired,
+  selectedUserBlog: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(DelegationForm);

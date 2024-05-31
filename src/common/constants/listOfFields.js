@@ -75,6 +75,12 @@ export const objectFields = {
   mapObjectTags: 'mapObjectTags',
   mapRectangles: 'mapRectangles',
   delegation: 'delegation',
+  walletAddress: 'walletAddress',
+};
+export const walletAddressFields = {
+  walletTitle: 'walletTitle',
+  cryptocurrency: 'cryptocurrency',
+  walletAddress: 'walletAddress',
 };
 export const mapObjectTypeFields = {
   mapObjectsList: 'mapObjectsList',
@@ -260,6 +266,21 @@ export const socialObjectFields = [
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
+];
+
+export const cryptocurrenciesList = [
+  { name: 'Bitcoin (BTC)', abbreviation: 'BTC', shortName: 'Bitcoin', icon: 'bitcoin.png' },
+  { name: 'Litecoin (LTC)', abbreviation: 'LTC', shortName: 'Litecoin', icon: 'litecoin.png' },
+  { name: 'Ethereum (ETH)', abbreviation: 'ETH', shortName: 'Ethereum', icon: 'ethereum.png' },
+  {
+    name: 'Lightning Bitcoin (LBTC)',
+    abbreviation: 'LBTC',
+    shortName: 'Lightning Bitcoin',
+    icon: 'lightning_bitcoin.png',
+  },
+  { name: 'HIVE', abbreviation: 'HIVE', shortName: 'HIVE', icon: 'hive.png' },
+  { name: 'HBD', abbreviation: 'HBD', shortName: 'HBD', icon: 'hive.png' },
+  { name: 'WAIV', abbreviation: 'WAIV', shortName: 'WAIV', icon: 'waiv.png' },
 ];
 
 export const supportedObjectFields = Object.values(objectFields);

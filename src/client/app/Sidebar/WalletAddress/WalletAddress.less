@@ -1,0 +1,31 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables';
+
+.WalletAddress {
+  .WalletAddressItem {
+    cursor: pointer;
+    color: var(--website-color);
+
+    &__container {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+    &__icon {
+      margin-right: 5px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+.WalletAddressItem {
+  &__qr-code-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  &__title {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+}

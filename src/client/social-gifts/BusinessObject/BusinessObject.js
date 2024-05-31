@@ -90,6 +90,7 @@ const BusinessObject = ({
   const website = parseWobjectField(wobject, 'website');
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
+  const walletAddress = get(wobject, 'walletAddress', []);
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
@@ -344,6 +345,7 @@ const BusinessObject = ({
                     companyIdBody={companyIdBody}
                     wobject={wobject}
                     phones={phones}
+                    walletAddress={walletAddress}
                     username={userName}
                     linkField={linkField}
                     website={website}
