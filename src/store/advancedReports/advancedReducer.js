@@ -46,11 +46,13 @@ export default function advancedReducer(state = initialState, action) {
         withdrawals: data.withdrawals,
         deposits: data.deposits,
         reportCurrency: data.reportCurrency,
+        reportAccounts: data.reportAccounts,
         isLoading: false,
         accounts: data.accounts,
         loadingAllData: data.hasMore,
       };
     }
+
     case GET_MORE_TRANSACTIONS_FOR_TABLE.START: {
       return {
         ...state,

@@ -27,6 +27,7 @@ import {
 import compareTransferBody from './common/helpers';
 import {
   getIsLoadingAllData,
+  getReportAccounts,
   getReportCurrency,
   getTransactions,
   getTransactionsHasMore,
@@ -61,6 +62,7 @@ import { currencyPrefix } from '../../websites/constants/currencyTypes';
     isLoadingAllData: getIsLoadingAllData(state),
     currencyInfo: getCurrentCurrency(state),
     reportCurrency: getReportCurrency(state),
+    reportAccounts: getReportAccounts(state),
     user: getAuthenticatedUser(state),
   }),
   {
@@ -87,6 +89,7 @@ class WalletTable extends React.Component {
       type: PropTypes.string,
       rate: PropTypes.number,
     }).isRequired,
+    reportAccounts: PropTypes.arrayOf(PropTypes.string),
     totalVestingShares: PropTypes.string.isRequired,
     withoutFilters: PropTypes.string,
     totalVestingFundSteem: PropTypes.string.isRequired,
@@ -137,7 +140,7 @@ class WalletTable extends React.Component {
         : this.props.currencyInfo.type,
     tableType: this.props.match.params[0] === 'table' ? 'HIVE' : 'WAIV',
     forCSV: [],
-    hasMoreforCSV: true,
+    hasMoreforCSV: false,
     csvLoading: this.props.withoutFilters,
   };
 
@@ -287,9 +290,7 @@ class WalletTable extends React.Component {
     const walletType = this.state.tableType;
     const isHive = walletType === 'HIVE';
     const currentCurrency =
-      this.props.match.params[0] === 'details'
-        ? this.props.reportCurrency
-        : this.state.currentCurrency;
+      this.props.match.params[0] === 'details' ? this.props.reportCurrency : currencyType;
     const template = isHive
       ? {
           checked: 0,
@@ -320,7 +321,7 @@ class WalletTable extends React.Component {
       transaction =>
         compareTransferBody(
           transaction,
-          currencyType,
+          currentCurrency,
           walletType,
           this.props.totalVestingShares,
           this.props.totalVestingFundSteem,
@@ -379,18 +380,17 @@ class WalletTable extends React.Component {
     const walletType = this.state.tableType;
     const { from, end } = this.props.form.getFieldsValue();
     const isHive = walletType === 'HIVE';
-    const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
-    const currentCurrency =
-      this.props.match.params[0] === 'details'
-        ? this.props.reportCurrency
-        : this.state.currentCurrency;
+    const loadingBar =
+      this.props.isLoadingAllData || this.state.csvLoading ? 'Loading...' : 'Completed';
+    const isDetailsPage = this.props.match.params[0] === 'details';
+    const currentCurrency = isDetailsPage ? this.props.reportCurrency : currencyType;
 
     const handleChangeTotalValue = value =>
       (this.state.dateEstablished && !this.props.withoutFilters) ||
       (this.props.withoutFilters && value) ? (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
-          <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
+          <FormattedNumber style="currency" currency={currentCurrency} value={round(value, 3)} />
         </b>
       ) : (
         '-'
@@ -398,7 +398,7 @@ class WalletTable extends React.Component {
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,
-        currencyType,
+        currentCurrency,
         walletType,
         this.props.totalVestingShares,
         this.props.totalVestingFundSteem,
@@ -408,7 +408,11 @@ class WalletTable extends React.Component {
     return (
       <div className="WalletTable">
         <Link
-          to={`/@${match.params.name}/transfers?type=${this.state.tableType}`}
+          to={
+            isDetailsPage
+              ? `/@${match.params.name}/transfers/waiv-table?tab=generate`
+              : `/@${match.params.name}/transfers?type=${this.state.tableType}`
+          }
           className="WalletTable__back-btn"
         >
           {intl.formatMessage({
@@ -416,12 +420,33 @@ class WalletTable extends React.Component {
             defaultMessage: 'Back',
           })}
         </Link>
-        <h3>
-          {intl.formatMessage({
-            id: 'table_view',
-            defaultMessage: 'Advanced reports',
-          })}
-        </h3>
+        {isDetailsPage ? (
+          <div>
+            <h3 style={{ display: 'inline-block' }}>
+              {intl.formatMessage({
+                id: 'advanced_report',
+                defaultMessage: 'Advanced report',
+              })}
+            </h3>{' '}
+            {intl.formatMessage({
+              id: 'for',
+              defaultMessage: 'for',
+            })}{' '}
+            {this.props.reportAccounts.map((acc, i) => (
+              <b style={{ color: '#252526' }} key={acc}>
+                {acc}
+                {this.props.reportAccounts.length - 1 === i ? '.' : ','}
+              </b>
+            ))}
+          </div>
+        ) : (
+          <h3>
+            {intl.formatMessage({
+              id: 'table_view',
+              defaultMessage: 'Advanced reports',
+            })}
+          </h3>
+        )}
         {!this.props.withoutFilters && (
           <TableFilter
             intl={intl}
@@ -453,7 +478,7 @@ class WalletTable extends React.Component {
             defaultMessage: 'Withdrawals',
           })}
           : {handleChangeTotalValue(this.props.withdrawals)}. (
-          {this.state.dateEstablished
+          {this.state.dateEstablished || this.state.csvLoading
             ? loadingBar
             : intl.formatMessage({
                 id: 'totals_calculated',

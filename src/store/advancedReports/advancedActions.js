@@ -109,6 +109,7 @@ export const getReportDetails = reportId => dispatch =>
           withdrawals: data.withdrawals,
           deposits: data.deposits,
           reportCurrency: data.currency,
+          reportAccounts: data.filterAccounts,
         },
       })),
     },
