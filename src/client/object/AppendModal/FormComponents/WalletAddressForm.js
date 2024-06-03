@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Form, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
@@ -23,14 +23,15 @@ const WalletAddressForm = ({
   selectedUserBlog,
   handleResetUserBlog,
   handleSelectUserBlog,
+  isInvalid,
+  setIsInvalid,
 }) => {
-  const [invalidAddress, setInvalidAddress] = useState();
   const walletAddressClassList = classNames('WithdrawModal__input', {
-    'WithdrawModal__input--invalid': invalidAddress,
+    'WithdrawModal__input--invalid': isInvalid,
     'validation-error': isSomeValue,
   });
   const validateWalletAddressClassList = classNames('WithdrawModal__addressValidate', {
-    'WithdrawModal__addressValidate--invalid': invalidAddress,
+    'WithdrawModal__addressValidate--invalid': isInvalid,
   });
   const currCryptocurrency = cryptocurrenciesList.find(
     c => c.name === getFieldValue(walletAddressFields.cryptocurrency),
@@ -38,15 +39,15 @@ const WalletAddressForm = ({
 
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
-      if (!value) return setInvalidAddress();
+      if (!value) return setIsInvalid();
 
       if (value) {
         const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
 
-        return setInvalidAddress(!isValid);
+        return setIsInvalid(!isValid);
       }
 
-      return setInvalidAddress(false);
+      return setIsInvalid(false);
     }, 500),
     [currCryptocurrency],
   );
@@ -59,24 +60,26 @@ const WalletAddressForm = ({
 
   return (
     <div>
-      <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
-        <FormattedMessage id="title" defaultMessage="Title" />
+      <div className="AppendForm__wallet-address-title-wrap">
+        <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
+          <FormattedMessage id="title" defaultMessage="Title" />
+        </div>
+        <Form.Item>
+          {getFieldDecorator(
+            walletAddressFields.walletTitle,
+            {},
+          )(
+            <Input
+              autoFocus
+              disabled={loading}
+              placeholder={intl.formatMessage({
+                id: 'title_optional',
+                defaultMessage: 'Title (optional)',
+              })}
+            />,
+          )}
+        </Form.Item>
       </div>
-      <Form.Item>
-        {getFieldDecorator(
-          walletAddressFields.walletTitle,
-          {},
-        )(
-          <Input
-            autoFocus
-            disabled={loading}
-            placeholder={intl.formatMessage({
-              id: 'title_optional',
-              defaultMessage: 'Title (optional)',
-            })}
-          />,
-        )}
-      </Form.Item>
       <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
         <FormattedMessage id="cryptocurrency" defaultMessage="Cryptocurrency" />
       </div>
@@ -91,7 +94,7 @@ const WalletAddressForm = ({
           </Select>,
         )}
       </Form.Item>
-      {currCryptocurrency === 'HIVE' ? (
+      {currCryptocurrency?.abbreviation === 'HIVE' ? (
         <>
           <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
             <FormattedMessage id="user" defaultMessage="User" />
@@ -141,9 +144,9 @@ const WalletAddressForm = ({
               />,
             )}
           </Form.Item>
-          {getFieldValue(walletAddressFields.walletAddress) && !isNil(invalidAddress) && (
+          {getFieldValue(walletAddressFields.walletAddress) && !isNil(isInvalid) && (
             <span className={validateWalletAddressClassList}>
-              {invalidAddress ? 'Invalid address' : 'Address is valid'}
+              {isInvalid ? 'Invalid address' : 'Address is valid'}
             </span>
           )}
         </>
@@ -159,10 +162,12 @@ WalletAddressForm.propTypes = {
   handleResetUserBlog: PropTypes.func.isRequired,
   handleSelectUserBlog: PropTypes.func.isRequired,
   handleSelectChange: PropTypes.func.isRequired,
+  setIsInvalid: PropTypes.func.isRequired,
   isSomeValue: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
+  isInvalid: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
-  selectedUserBlog: PropTypes.shape().isRequired,
+  selectedUserBlog: PropTypes.oneOfType([PropTypes.shape(), PropTypes.arrayOf()]),
 };
 
 export default WalletAddressForm;

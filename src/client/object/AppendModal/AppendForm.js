@@ -265,6 +265,7 @@ class AppendForm extends Component {
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
     map: {},
+    isInvalid: null,
   };
 
   componentDidMount = () => {
@@ -577,12 +578,12 @@ class AppendForm extends Component {
 
         case objectFields.walletAddress:
           const title = formValues[walletAddressFields.walletTitle]
-            ? `title: ${formValues[walletAddressFields.walletTitle]}, `
+            ? `\n title: ${formValues[walletAddressFields.walletTitle]}, `
             : '';
-          const cryptocurrency = `cryptocurrency: ${
+          const cryptocurrency = `\n cryptocurrency: ${
             formValues[walletAddressFields.cryptocurrency]
           },`;
-          const address = ` address: ${
+          const address = `\n address: ${
             formValues[walletAddressFields.cryptocurrency] === 'HIVE'
               ? this.state.selectedUserBlog
               : formValues[walletAddressFields.walletAddress]
@@ -1367,6 +1368,7 @@ class AppendForm extends Component {
   };
 
   calculateVoteWorth = (value, voteWorth) => this.setState({ votePercent: value, voteWorth });
+  setIsInvalid = value => this.setState({ isInvalid: value });
 
   handleCreateAlbum = async formData => {
     const { user, wObject, hideModal, addAlbum } = this.props;
@@ -4057,6 +4059,8 @@ class AppendForm extends Component {
       case objectFields.walletAddress: {
         return (
           <WalletAddressForm
+            setIsInvalid={this.setIsInvalid}
+            isInvalid={this.state.isInvalid}
             handleSelectUserBlog={this.handleSelectUserBlog}
             handleResetUserBlog={this.handleResetUserBlog}
             selectedUserBlog={this.state.selectedUserBlog}
@@ -4255,8 +4259,9 @@ class AppendForm extends Component {
         );
       case objectFields.walletAddress:
         return (
-          isEmpty(getFieldValue(walletAddressFields.walletAddress)) &&
-          isEmpty(this.state.selectedUserBlog)
+          (isEmpty(getFieldValue(walletAddressFields.walletAddress)) &&
+            isEmpty(this.state.selectedUserBlog)) ||
+          this.state.isInvalid
         );
       case objectFields.address:
         return (

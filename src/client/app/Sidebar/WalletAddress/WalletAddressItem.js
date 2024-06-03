@@ -32,7 +32,7 @@ const WalletAddressItem = ({ address }) => {
         />
         {addressBody.title
           ? `${addressBody.title}`
-          : `${cryptocurrency.symbol}: ${addressBody.address}`}
+          : `${cryptocurrency.shortName}: ${addressBody.address}`}
       </span>
       <Modal
         title={addressBody.symbol}
@@ -47,7 +47,7 @@ const WalletAddressItem = ({ address }) => {
         <div className="WalletAddressItem__title">Address:</div>
 
         <div className={'Deposit__section'}>
-          <CopyButton className="Deposit__input" text={addressBody.address} />
+          <CopyButton className="WalletAddressItem__input" text={addressBody.address} />
           <div className="WalletAddressItem__qr-code-container">
             <QRCode className="Deposit__qr-code" value={addressBody.address} />
           </div>
