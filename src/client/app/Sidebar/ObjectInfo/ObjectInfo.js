@@ -1197,6 +1197,7 @@ class ObjectInfo extends React.Component {
           objectFields.link,
           has(wobject, 'link') && <SocialLinks profile={pickBy(profile, identity)} />,
         )}
+        {this.listItem(objectFields.walletAddress, <WalletAddress walletAddress={walletAddress} />)}
         {!isEditMode
           ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} />
           : this.listItem(
@@ -1209,7 +1210,6 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
             )}
-        {this.listItem(objectFields.walletAddress, <WalletAddress walletAddress={walletAddress} />)}
         {!isEditMode
           ? ageRange && (
               <div className="field-info">

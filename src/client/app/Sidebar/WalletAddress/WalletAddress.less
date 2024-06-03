@@ -11,21 +11,31 @@
       display: flex;
       align-items: center;
     }
+
     &__icon {
+      margin-top: -3px;
       margin-right: 5px;
       width: 16px;
       height: 16px;
     }
   }
 }
+
 .WalletAddressItem {
   &__qr-code-container {
     margin-top: 10px;
     display: flex;
     justify-content: center;
   }
+
   &__title {
     margin-bottom: 5px;
     font-weight: bold;
+  }
+  &__input {
+    border: @base-border;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: 100%;
   }
 }
