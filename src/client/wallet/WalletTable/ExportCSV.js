@@ -18,7 +18,7 @@ import './ExportCSV.less';
 
 const ExportCsv = ({ disabled, item, toggleDisabled }) => {
   const [csv, setCSV] = React.useState([]);
-  const [hasMore, setHasMore] = React.useState(true);
+  const [hasMore, setHasMore] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [skip, setSkip] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
