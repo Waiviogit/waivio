@@ -157,7 +157,11 @@ class WalletTable extends React.Component {
         type: tableType,
       })
       .then(({ value }) => {
-        this.setState({ forCSV: value.data.wallet, hasMoreforCSV: value.data.hasMore });
+        this.setState({
+          forCSV: value.data.wallet,
+          hasMoreforCSV: value.data.hasMore,
+          csvLoading: value.data.hasMore,
+        });
       });
     this.props.getUsersTransactionDate(this.props.match.params.name);
 
@@ -421,24 +425,22 @@ class WalletTable extends React.Component {
           })}
         </Link>
         {isDetailsPage ? (
-          <div>
-            <h3 style={{ display: 'inline-block' }}>
-              {intl.formatMessage({
-                id: 'advanced_report',
-                defaultMessage: 'Advanced report',
-              })}
-            </h3>{' '}
+          <h3 style={{ display: 'inline-block' }}>
+            {intl.formatMessage({
+              id: 'advanced_report',
+              defaultMessage: 'Advanced report',
+            })}{' '}
             {intl.formatMessage({
               id: 'for',
               defaultMessage: 'for',
             })}{' '}
             {this.props.reportAccounts.map((acc, i) => (
-              <b style={{ color: '#252526' }} key={acc}>
+              <span key={acc}>
                 {acc}
-                {this.props.reportAccounts.length - 1 === i ? '.' : ','}
-              </b>
+                {this.props.reportAccounts.length - 1 === i ? '' : ', '}
+              </span>
             ))}
-          </div>
+          </h3>
         ) : (
           <h3>
             {intl.formatMessage({
@@ -478,7 +480,7 @@ class WalletTable extends React.Component {
             defaultMessage: 'Withdrawals',
           })}
           : {handleChangeTotalValue(this.props.withdrawals)}. (
-          {this.state.dateEstablished || this.state.csvLoading
+          {this.state.dateEstablished || this.props.withoutFilters
             ? loadingBar
             : intl.formatMessage({
                 id: 'totals_calculated',

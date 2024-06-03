@@ -33,11 +33,13 @@ import {
 import Loading from '../../components/Icon/Loading';
 
 import './GenerateReport.less';
+import ExportCsv from './ExportCSV';
 
 const GenerateReport = ({ intl, form }) => {
   const params = useParams();
   const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [disabledButtons, setDisabledButtons] = React.useState(false);
   const [filterAccounts, setFilterAccounts] = React.useState([params.name]);
   const activeGenerate = useSelector(getActiveGenerate);
   const historyReports = useSelector(getHistoryGenerateReports);
@@ -224,7 +226,19 @@ const GenerateReport = ({ intl, form }) => {
         bodyConfig={activeGenerate}
       />
       <h2>History</h2>
-      <DynamicTbl header={configHistoryReportsTableHeader} bodyConfig={historyReports} />
+      <DynamicTbl
+        header={configHistoryReportsTableHeader}
+        bodyConfig={historyReports}
+        buttons={{
+          csv: item => (
+            <ExportCsv
+              item={item}
+              disabled={disabledButtons}
+              toggleDisabled={value => setDisabledButtons(value)}
+            />
+          ),
+        }}
+      />
       {openModal && (
         <Modal
           title={`Advanced report`}

@@ -241,7 +241,10 @@ export const getReportUpdate = callback => (dispatch, getState, { busyAPI }) => 
   let time = 0;
 
   busyAPI.instance.subscribe((e, data) => {
-    if (data?.notification?.type === 'updateReport' && data.notification?.timestamp - time === 10) {
+    if (
+      (data?.notification?.type === 'updateReport' && data.notification?.timestamp - time >= 3) ||
+      data?.notification?.type === 'finishReport'
+    ) {
       callback();
       time = data.notification?.timestamp;
     }

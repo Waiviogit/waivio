@@ -241,14 +241,14 @@ export const configHistoryReportsTableHeader = [
       defaultMessage: 'details',
     },
   },
-  // {
-  //   id: 'active',
-  //   type: 'action',
-  //   intl: {
-  //     id: 'CSV',
-  //     defaultMessage: 'CSV',
-  //   },
-  // },
+  {
+    id: 'csv',
+    type: 'action',
+    intl: {
+      id: 'CSV',
+      defaultMessage: 'CSV',
+    },
+  },
 ];
 
 export default null;
