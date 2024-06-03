@@ -11,6 +11,8 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import useQuery from '../../../hooks/useQuery';
 import { openWalletTable } from '../../../store/walletStore/walletActions';
 
+import './WalletTable.less';
+
 const WalletTableSwitcher = props => {
   const authUser = useSelector(getAuthenticatedUserName);
   const { name } = useParams();
@@ -23,7 +25,7 @@ const WalletTableSwitcher = props => {
   }, []);
 
   return (
-    <Tabs defaultActiveKey={tab} activeKey={tab}>
+    <Tabs className={'WalletTableSwitcher'} defaultActiveKey={tab} activeKey={tab}>
       <Tabs.TabPane
         key={'standard'}
         tab={
