@@ -511,10 +511,9 @@ class AppendForm extends Component {
       case objectFields.walletAddress: {
         const title = rest[walletAddressFields.walletTitle] || undefined;
         const symbol = rest[walletAddressFields.cryptocurrency];
-        const address =
-          rest[walletAddressFields.cryptocurrency] === 'HIVE'
-            ? this.state.selectedUserBlog
-            : rest[walletAddressFields.walletAddress];
+        const address = ['HIVE', 'WAIV', 'HBD']?.includes(rest[walletAddressFields.cryptocurrency])
+          ? this.state.selectedUserBlog
+          : rest[walletAddressFields.walletAddress];
 
         fieldBody.push(JSON.stringify({ title, symbol, address }));
         break;
@@ -584,7 +583,7 @@ class AppendForm extends Component {
             formValues[walletAddressFields.cryptocurrency]
           },`;
           const address = `\n address: ${
-            formValues[walletAddressFields.cryptocurrency] === 'HIVE'
+            ['HIVE', 'WAIV', 'HBD']?.includes(formValues[walletAddressFields.cryptocurrency])
               ? this.state.selectedUserBlog
               : formValues[walletAddressFields.walletAddress]
           }.`;
@@ -4261,7 +4260,7 @@ class AppendForm extends Component {
         return (
           (isEmpty(getFieldValue(walletAddressFields.walletAddress)) &&
             isEmpty(this.state.selectedUserBlog)) ||
-          this.state.isInvalid
+          (!isEmpty(getFieldValue(walletAddressFields.walletAddress)) && this.state.isInvalid)
         );
       case objectFields.address:
         return (

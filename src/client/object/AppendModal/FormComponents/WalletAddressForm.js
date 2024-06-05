@@ -37,6 +37,9 @@ const WalletAddressForm = ({
     c => c.name === getFieldValue(walletAddressFields.cryptocurrency),
   );
 
+  const uniqueQrCodeCurrencies = ['HIVE', 'WAIV', 'HBD']?.includes(
+    currCryptocurrency?.abbreviation,
+  );
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
       if (!value) return setIsInvalid();
@@ -94,7 +97,7 @@ const WalletAddressForm = ({
           </Select>,
         )}
       </Form.Item>
-      {currCryptocurrency?.abbreviation === 'HIVE' ? (
+      {uniqueQrCodeCurrencies ? (
         <>
           <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
             <FormattedMessage id="user" defaultMessage="User" />
