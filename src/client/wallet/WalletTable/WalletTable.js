@@ -187,8 +187,8 @@ class WalletTable extends React.Component {
         this.setState({
           forCSV: [...this.state.forCSV, ...res.wallet],
           hasMoreforCSV: res.hasMore,
+          csvLoading: res.hasMore,
         });
-        if (!res.hasMore) this.setState({ csvLoading: false });
       });
     }
   }
@@ -384,11 +384,12 @@ class WalletTable extends React.Component {
     const walletType = this.state.tableType;
     const { from, end } = this.props.form.getFieldsValue();
     const isHive = walletType === 'HIVE';
-    const loadingBar =
-      this.props.isLoadingAllData || this.state.csvLoading ? 'Loading...' : 'Completed';
     const isDetailsPage = this.props.match.params[0] === 'details';
+    const loadingBar =
+      (isDetailsPage && this.state.csvLoading) || (!isDetailsPage && this.props.isLoadingAllData)
+        ? 'Loading...'
+        : 'Completed';
     const currentCurrency = isDetailsPage ? this.props.reportCurrency : currencyType;
-
     const handleChangeTotalValue = value =>
       (this.state.dateEstablished && !this.props.withoutFilters) ||
       (this.props.withoutFilters && value) ? (
@@ -492,7 +493,7 @@ class WalletTable extends React.Component {
               disabled={
                 (this.props.isLoadingAllData && this.state.dateEstablished) ||
                 this.props.loading ||
-                this.state.csvLoading
+                (isDetailsPage && this.state.csvLoading)
               }
               className="WalletTable__csv-button"
               onClick={this.exportCsv}
