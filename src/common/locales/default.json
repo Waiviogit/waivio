@@ -1753,7 +1753,7 @@
   "disclaimer_exchange_rates": "Disclaimer: Exchange rates are provided by third parties and may not always be accurate.",
   "disclaimer_language": "Users can select another language for the interface in the user settings.",
   "rewards_details_reward_for_reviews_title": "Share {count} photos of the dish and earn crypto",
-  "disclaimer_info": "The information provided by this site, including financial reports, is provided on an \"\"as is\"\" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site.",
+  "disclaimer_info": "The information provided by this site, including financial reports, is provided on an \"as is\" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site.",
   "multiple_accounts_included": "If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.",
   "beneficiary_error": "Beneficiary % could not be less than 1",
   "authors_match_bots_meaning": "automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.",

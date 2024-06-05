@@ -242,7 +242,7 @@ export const getReportUpdate = callback => (dispatch, getState, { busyAPI }) => 
 
   busyAPI.instance.subscribe((e, data) => {
     if (
-      (data?.notification?.type === 'updateReport' && data.notification?.timestamp - time >= 3) ||
+      (data?.notification?.type === 'updateReport' && data.notification?.timestamp - time >= 5) ||
       data?.notification?.type === 'finishReport'
     ) {
       callback();
@@ -281,6 +281,7 @@ export const stopInProgressReports = id => (dispatch, getState) => {
   return dispatch({
     type: STOP_IN_PROGRESS_REPORTS.ACTION,
     payload: stopGenerateReport(authenticatedUserName, id),
+    meta: id,
   });
 };
 
@@ -294,6 +295,7 @@ export const resumeInProgressReports = id => (dispatch, getState) => {
   return dispatch({
     type: RESUME_IN_PROGRESS_REPORTS.ACTION,
     payload: resumeGenerateReport(authenticatedUserName, id),
+    meta: id,
   });
 };
 
@@ -305,8 +307,9 @@ export const pauseInProgressReports = id => (dispatch, getState) => {
   const authenticatedUserName = getAuthenticatedUserName(getState());
 
   return dispatch({
-    type: RESUME_IN_PROGRESS_REPORTS.ACTION,
+    type: PAUSE_IN_PROGRESS_REPORTS.ACTION,
     payload: pauseGenerateReport(authenticatedUserName, id),
+    meta: id,
   });
 };
 
