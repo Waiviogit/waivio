@@ -64,6 +64,8 @@ export const DynamicTable = ({
         );
 
       case 'link':
+        if (head.hideLink && head.hideLink(item)) return '-';
+
         return (
           <Link disabled={disabledLink} to={head.to(item, match)}>
             {head.name || item[head.id]}

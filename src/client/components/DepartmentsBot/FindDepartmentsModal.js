@@ -46,12 +46,15 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl })
         <React.Fragment>
           <h4 className="DepartmentsBot__margin">
             {intl.formatMessage({
-              id: 'select_list',
-              defaultMessage: 'Select list',
+              id: 'select_list_map',
+              defaultMessage: 'Select list or map',
             })}
             :
           </h4>
-          <SearchObjectsAutocomplete handleSelect={setSelectedObj} objectType={'list'} />
+          <SearchObjectsAutocomplete
+            handleSelect={setSelectedObj}
+            onlyObjectTypes={['list', 'map']}
+          />
         </React.Fragment>
       )}
       <Checkbox

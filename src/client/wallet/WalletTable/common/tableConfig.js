@@ -175,10 +175,13 @@ export const configActiveReportsTableHeader = [
       id: 'Actions',
       defaultMessage: 'Actions',
     },
-    checkShowItem: (item, getBody) =>
-      ['IN_PROGRESS', 'PAUSED'].includes(item.status)
+    checkShowItem: (item, getBody) => {
+      if (item.status === 'STOPPED') return '-';
+
+      return ['IN_PROGRESS', 'PAUSED'].includes(item.status)
         ? getBody(item, { type: 'delete', name: 'stop' })
-        : getBody(item, { type: 'delete', name: 'resume' }),
+        : getBody(item, { type: 'delete', name: 'resume' });
+    },
   },
 ];
 export const configHistoryReportsTableHeader = [
@@ -236,6 +239,7 @@ export const configHistoryReportsTableHeader = [
     name: 'details',
     to: (item, match) => `/@${match.params.name}/transfers/details/${item.reportId}`,
     type: 'link',
+    hideLink: item => item.status === 'STOPPED',
     intl: {
       id: 'details',
       defaultMessage: 'details',
