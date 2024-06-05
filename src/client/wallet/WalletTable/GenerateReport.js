@@ -117,7 +117,6 @@ const GenerateReport = ({ intl, form }) => {
         okText: 'Stop',
         onOk: () => {
           dispatch(stopInProgressReports(item.reportId));
-          updatePageDate();
         },
       });
     }
@@ -172,13 +171,16 @@ const GenerateReport = ({ intl, form }) => {
         bodyConfig={historyReports}
         disabledLink={disabledButtons}
         buttons={{
-          csv: item => (
-            <ExportCsv
-              item={item}
-              disabled={disabledButtons}
-              toggleDisabled={value => setDisabledButtons(value)}
-            />
-          ),
+          csv: item =>
+            item.status === 'STOPPED' ? (
+              '-'
+            ) : (
+              <ExportCsv
+                item={item}
+                disabled={disabledButtons}
+                toggleDisabled={value => setDisabledButtons(value)}
+              />
+            ),
         }}
       />
       {openModal && (

@@ -143,8 +143,7 @@ export default function advancedReducer(state = initialState, action) {
     }
 
     case PAUSE_IN_PROGRESS_REPORTS.SUCCESS:
-    case RESUME_IN_PROGRESS_REPORTS.SUCCESS:
-    case STOP_IN_PROGRESS_REPORTS.SUCCESS: {
+    case RESUME_IN_PROGRESS_REPORTS.SUCCESS: {
       const transferList = [...state.activeGenerate];
       const transferIndex = transferList.findIndex(
         transaction => transaction?.reportId === action.payload.reportId,
@@ -158,6 +157,23 @@ export default function advancedReducer(state = initialState, action) {
       return {
         ...state,
         activeGenerate: transferList,
+      };
+    }
+    case STOP_IN_PROGRESS_REPORTS.SUCCESS: {
+      const transferList = [...state.activeGenerate];
+      const transferIndex = transferList.findIndex(
+        transaction => transaction?.reportId === action.payload.reportId,
+      );
+      const transfer = transferList[transferIndex];
+
+      if (transfer) {
+        transferList.splice(transferIndex, 1);
+      }
+
+      return {
+        ...state,
+        activeGenerate: transferList,
+        historyReports: [action.payload, ...state.historyReports],
       };
     }
 
