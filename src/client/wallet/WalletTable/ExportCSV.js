@@ -92,7 +92,8 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
           setLoading(false);
           toggleDisabled(false);
           setSaved(true);
-          if (isEmpty(res.wallet)) message.warning('There are no records available.');
+          if (isEmpty(res.wallet) && isEmpty(csv))
+            message.warning('There are no records available.');
           else message.success('Data retrieval successful! You can now save it.');
         }
       });
@@ -102,7 +103,7 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
 
   const handleClick = () => {
     message.info(
-      "We're preparing your data for download. Please wait as this might take some time",
+      "We're preparing your data for download. Please wait as this might take some time and do not leave this page.",
     );
     setLoading(true);
     toggleDisabled(true);

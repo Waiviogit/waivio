@@ -8,7 +8,10 @@ import {
   GET_MORE_TRANSACTIONS_FOR_TABLE,
   GET_TRANSACTIONS_FOR_TABLE,
   GET_USERS_CREATION_DATE,
+  PAUSE_IN_PROGRESS_REPORTS,
   RESET_REPORTS,
+  RESUME_IN_PROGRESS_REPORTS,
+  STOP_IN_PROGRESS_REPORTS,
 } from './advancedActions';
 import { totalType } from '../../common/constants/advansedReports';
 
@@ -136,6 +139,25 @@ export default function advancedReducer(state = initialState, action) {
       return {
         ...state,
         wallet: transferList,
+      };
+    }
+
+    case PAUSE_IN_PROGRESS_REPORTS.SUCCESS:
+    case RESUME_IN_PROGRESS_REPORTS.SUCCESS:
+    case STOP_IN_PROGRESS_REPORTS.SUCCESS: {
+      const transferList = [...state.activeGenerate];
+      const transferIndex = transferList.findIndex(
+        transaction => transaction?.reportId === action.payload.reportId,
+      );
+      const transfer = transferList[transferIndex];
+
+      if (transfer) {
+        transferList.splice(transferIndex, 1, action.payload);
+      }
+
+      return {
+        ...state,
+        activeGenerate: transferList,
       };
     }
 

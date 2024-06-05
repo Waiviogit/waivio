@@ -521,7 +521,7 @@ class WalletTable extends React.Component {
             {intl.formatMessage({
               id: 'disclaimer_info',
               defaultMessage:
-                'The information provided by this site, including financial reports, is provided on an ""as is"" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site."',
+                'The information provided by this site, including financial reports, is provided on an "as is" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site."',
             })}
           </span>
         </p>
