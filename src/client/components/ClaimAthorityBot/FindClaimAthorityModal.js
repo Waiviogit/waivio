@@ -49,12 +49,16 @@ const FindClaimAthorityModal = ({ visible, onClose, updateAuthorityList, intl })
         <React.Fragment>
           <h4 className="ClaimAthorityBot__margin">
             {intl.formatMessage({
-              id: 'select_list',
-              defaultMessage: 'Select list',
+              id: 'select_list_map',
+              defaultMessage: 'Select list or map',
             })}
             :
           </h4>
-          <SearchObjectsAutocomplete handleSelect={setSelectedObj} objectType={'list'} />
+          <SearchObjectsAutocomplete
+            placeholder={'Find an object'}
+            handleSelect={setSelectedObj}
+            onlyObjectTypes={['list', 'map']}
+          />
         </React.Fragment>
       )}
       <Checkbox

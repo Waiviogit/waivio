@@ -86,14 +86,17 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
     s => {
       setSkip(s);
       ApiClient.getReportsDetails(item.reportId, s, 500).then(res => {
-        setCSV([...csv, ...res.wallet]);
         setHasMore(res.hasMore);
+        setCSV([...csv, ...res.wallet]);
         if (!res.hasMore) {
           setLoading(false);
           toggleDisabled(false);
           setSaved(true);
-          if (isEmpty(res.wallet)) message.warning('There are no records available.');
-          else message.success('Data retrieval successful! You can now save it.');
+          if (isEmpty(res.wallet) && isEmpty(csv))
+            message.warning('There are no records available.');
+          if (!isEmpty(csv)) {
+            message.success('Data retrieval successful! You can now save it.');
+          }
         }
       });
     },
@@ -102,7 +105,7 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
 
   const handleClick = () => {
     message.info(
-      "We're preparing your data for download. Please wait as this might take some time",
+      "We're preparing your data for download. Please wait as this might take some time and do not leave this page.",
     );
     setLoading(true);
     toggleDisabled(true);
@@ -111,7 +114,7 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
 
   useEffect(() => {
     if (hasMore && csv.length !== skip && !saved) getTransactions(csv.length);
-  }, [csv, hasMore]);
+  }, [csv]);
 
   if (saved && isEmpty(csv)) {
     return <span>empty</span>;

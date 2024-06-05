@@ -115,6 +115,7 @@ export const searchObjectsAutoCompete = (
   forParent,
   addHashtag,
   useExtendedSearch,
+  onlyObjectTypes,
 ) => (dispatch, getState) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
@@ -127,14 +128,24 @@ export const searchObjectsAutoCompete = (
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
     payload: useExtendedSearch
-      ? ApiClient.extendedSearchObjects(search, objType, forParent, 50, locale, body)
+      ? ApiClient.extendedSearchObjects(search, objType, forParent, 50, locale, body, null, 0)
           .then(result => ({
             result,
             search,
             locale: usedLocale,
           }))
           .catch(error => console.error('Object search >', error.message))
-      : ApiClient.searchObjects(search, objType, forParent, 50, locale, body)
+      : ApiClient.searchObjects(
+          search,
+          objType,
+          forParent,
+          50,
+          locale,
+          body,
+          null,
+          0,
+          onlyObjectTypes,
+        )
           .then(result => ({
             result,
             search,

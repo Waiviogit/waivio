@@ -376,11 +376,13 @@ export const searchObjects = (
   body = {},
   abortController,
   skip,
+  onlyObjectTypes,
 ) => {
   const requestBody = { search_string: searchString, limit, skip, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
+  if (onlyObjectTypes) requestBody.onlyObjectTypes = onlyObjectTypes;
 
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers: { ...headers, locale, follower: body.userName, app: config.appName },

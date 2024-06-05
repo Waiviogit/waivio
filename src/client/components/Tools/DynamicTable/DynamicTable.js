@@ -24,6 +24,7 @@ export const DynamicTable = ({
   buttons,
   showMore,
   handleShowMore,
+  disabledLink,
 }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(null);
@@ -63,7 +64,13 @@ export const DynamicTable = ({
         );
 
       case 'link':
-        return <Link to={head.to(item, match)}>{head.name || item[head.id]}</Link>;
+        if (head.hideLink && head.hideLink(item)) return '-';
+
+        return (
+          <Link disabled={disabledLink} to={head.to(item, match)}>
+            {head.name || item[head.id]}
+          </Link>
+        );
 
       case 'websiteName':
         return item.status === 'active' ? (
@@ -212,6 +219,7 @@ DynamicTable.propTypes = {
   handleShowMore: PropTypes.func,
   emptyTitle: PropTypes.string,
   showMore: PropTypes.bool,
+  disabledLink: PropTypes.bool,
   buttons: PropTypes.shape({}),
 };
 
