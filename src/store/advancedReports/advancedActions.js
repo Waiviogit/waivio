@@ -166,8 +166,8 @@ export const getMoreReportDetails = reportId => (dispatch, getState) => {
         data: {
           ...data,
           wallet: data.wallet && data.wallet?.map(parseTransactionData),
-          withdrawals: data.withdrawals,
-          deposits: data.deposits,
+          withdrawals: 0,
+          deposits: 0,
         },
       })),
     },
