@@ -4069,7 +4069,7 @@ class AppendForm extends Component {
             loading={loading}
             isSomeValue={this.state.isSomeValue}
             getFieldValue={this.props.form.getFieldValue}
-            handleSelectChange={this.handleSelectChange}
+            setFieldsValue={this.props.form.setFieldsValue}
           />
         );
       }

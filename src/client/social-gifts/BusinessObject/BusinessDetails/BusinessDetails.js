@@ -80,9 +80,7 @@ const BusinessDetails = ({
             </div>
           )}
           {has(wobject, 'link') && (
-            <div
-              className={`BusinessObject__links ${!isMobile() ? 'BusinessObject__margin-b' : ''}`}
-            >
+            <div className={'BusinessObject__links'}>
               <SocialLinks isSocial profile={pickBy(profile, identity)} />
             </div>
           )}
