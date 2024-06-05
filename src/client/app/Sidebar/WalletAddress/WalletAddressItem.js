@@ -21,7 +21,7 @@ const WalletAddressItem = ({ address }) => {
   const [openModal, setOpenModal] = useState(false);
   const authUserName = useSelector(getAuthenticatedUserName);
   const history = useHistory();
-  const disabledGenerate = isNil(amount) || isEmpty(amount) || amount === 0;
+  const disabledGenerate = isNil(amount) || isEmpty(amount) || parseFloat(amount) === 0;
   const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(addressBody.symbol);
 
   const onWalletAddressClick = () => {
