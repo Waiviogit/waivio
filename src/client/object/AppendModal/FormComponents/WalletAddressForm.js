@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Form, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import WAValidator from 'multicoin-address-validator';
 import PropTypes from 'prop-types';
-import { debounce, isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import {
   cryptocurrenciesList,
   walletAddressFields,
@@ -18,7 +18,7 @@ const WalletAddressForm = ({
   isSomeValue,
   loading,
   intl,
-  handleSelectChange,
+  setFieldsValue,
   getFieldValue,
   selectedUserBlog,
   handleResetUserBlog,
@@ -37,22 +37,25 @@ const WalletAddressForm = ({
     c => c.name === getFieldValue(walletAddressFields.cryptocurrency),
   );
 
-  const handleValidateWalletAddress = useCallback(
-    debounce(async value => {
-      if (!value) return setIsInvalid();
+  const userSearchCurrencies = ['HIVE', 'WAIV', 'HBD']?.includes(currCryptocurrency?.abbreviation);
+  const handleValidateWalletAddress = value => {
+    if (!value) return setIsInvalid();
 
-      if (value) {
-        const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
+    if (value) {
+      const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
 
-        return setIsInvalid(!isValid);
-      }
+      return setIsInvalid(!isValid);
+    }
 
-      return setIsInvalid(false);
-    }, 500),
-    [currCryptocurrency],
-  );
+    return setIsInvalid(false);
+  };
 
-  const handleChange = e => {
+  const handleChange = currency => {
+    setFieldsValue({ [walletAddressFields.cryptocurrency]: currency });
+    setFieldsValue({ [walletAddressFields.walletAddress]: null });
+  };
+
+  const handleChangeAddress = e => {
     const address = e.currentTarget.value;
 
     handleValidateWalletAddress(address);
@@ -61,7 +64,10 @@ const WalletAddressForm = ({
   return (
     <div>
       <div className="AppendForm__wallet-address-title-wrap">
-        <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
+        <div
+          className={classNames('AppendForm__appendTitles')}
+          style={{ marginBottom: '2px', marginTop: '8px' }}
+        >
           <FormattedMessage id="title" defaultMessage="Title" />
         </div>
         <Form.Item>
@@ -87,14 +93,14 @@ const WalletAddressForm = ({
         {getFieldDecorator(walletAddressFields.cryptocurrency, {
           initialValue: cryptocurrenciesList[0].name,
         })(
-          <Select placeholder="Select a current status" onChange={handleSelectChange}>
+          <Select placeholder="Select a current status" onChange={handleChange}>
             {cryptocurrenciesList.map(c => (
               <Select.Option key={c.name}> {c.name}</Select.Option>
             ))}
           </Select>,
         )}
       </Form.Item>
-      {currCryptocurrency?.abbreviation === 'HIVE' ? (
+      {userSearchCurrencies ? (
         <>
           <div className={classNames('AppendForm__appendTitles')} style={{ marginBottom: '2px' }}>
             <FormattedMessage id="user" defaultMessage="User" />
@@ -135,7 +141,7 @@ const WalletAddressForm = ({
             })(
               <Input
                 className={walletAddressClassList}
-                onChange={handleChange}
+                onChange={handleChangeAddress}
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'enter_address',
@@ -161,7 +167,7 @@ WalletAddressForm.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   handleResetUserBlog: PropTypes.func.isRequired,
   handleSelectUserBlog: PropTypes.func.isRequired,
-  handleSelectChange: PropTypes.func.isRequired,
+  setFieldsValue: PropTypes.func.isRequired,
   setIsInvalid: PropTypes.func.isRequired,
   isSomeValue: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router';
 import { Button, Input, Modal } from 'antd';
 import { isNil, isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -19,10 +20,16 @@ const WalletAddressItem = ({ address }) => {
   const username = addressBody.address;
   const [openModal, setOpenModal] = useState(false);
   const authUserName = useSelector(getAuthenticatedUserName);
-  const disabledGenerate = isNil(amount) || isEmpty(amount) || amount === '0';
+  const history = useHistory();
+  const disabledGenerate = isNil(amount) || isEmpty(amount) || amount === 0;
+  const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(addressBody.symbol);
 
   const onWalletAddressClick = () => {
-    setOpenModal(true);
+    if (addressBody.symbol === 'WAIV') {
+      history.push(`/@${addressBody.address}`);
+    } else {
+      setOpenModal(true);
+    }
   };
 
   const cryptocurrency = cryptocurrenciesList.find(crypto => crypto.name === addressBody.symbol);
@@ -36,7 +43,7 @@ const WalletAddressItem = ({ address }) => {
   const generateQRCodeData = () => {
     const url = encodeOp([
       'transfer',
-      { from: authUserName, to: username, amount: `${amount} HIVE`, memo: '' },
+      { from: authUserName, to: username, amount: `${amount} ${addressBody.symbol}`, memo: '' },
     ]);
 
     setQRCodeLink(url);
@@ -64,10 +71,10 @@ const WalletAddressItem = ({ address }) => {
           </Button>,
         ]}
       >
-        {addressBody.symbol === 'HIVE' ? (
+        {uniqueQrCodeCurrencies ? (
           <div>
             <div className="WalletAddressItem__title">
-              Select the amount of HIVE you want to send to{' '}
+              Select the amount of {addressBody.symbol} you want to send to{' '}
               <Link to={`/@${username}`}>{username}</Link>
             </div>
             <Input
