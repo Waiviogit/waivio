@@ -22,8 +22,12 @@ const WalletAddressItem = ({ address }) => {
   const [openModal, setOpenModal] = useState(false);
   const authUserName = useSelector(getAuthenticatedUserName);
   const history = useHistory();
-  const disabledGenerate = isNil(amount) || isEmpty(amount) || parseFloat(amount) === 0;
   const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(addressBody.symbol);
+  const disabledGenerate =
+    isNil(amount) ||
+    isEmpty(amount) ||
+    parseFloat(amount) === 0 ||
+    (uniqueQrCodeCurrencies && amount < 0.001);
 
   const onWalletAddressClick = () => {
     if (addressBody.symbol === 'WAIV') {
@@ -89,20 +93,21 @@ const WalletAddressItem = ({ address }) => {
                 Generate QR code
               </Button>
             </div>
-            {!isNil(amount) && !isNil(qrCodeLink) && (
-              <>
+            {!isNil(amount) &&
+              !isNil(qrCodeLink) &&
+              (isMobile() ? (
+                <div className="WalletAddressItem__qr-code-container">
+                  <a href={qrCodeLink}>
+                    <QRCode className="Deposit__qr-code" value={qrCodeLink} />
+                  </a>
+                  <p className="ModalSignIn__rules">or</p>
+                  <a href={qrCodeLink}>Click here</a>
+                </div>
+              ) : (
                 <div className="WalletAddressItem__qr-code-container">
                   <QRCode className="Deposit__qr-code" value={qrCodeLink} />
-                  {isMobile() && (
-                    <>
-                      {' '}
-                      <p className="ModalSignIn__rules">or</p>
-                      <a href={qrCodeLink}>Click here</a>
-                    </>
-                  )}
                 </div>
-              </>
-            )}
+              ))}
           </div>
         ) : (
           <div>
