@@ -12,6 +12,7 @@ import { cryptocurrenciesList } from '../../../../common/constants/listOfFields'
 import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import CopyButton from '../../../widgets/CopyButton/CopyButton';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const WalletAddressItem = ({ address }) => {
   const addressBody = parseWobjectField(address, 'body');
@@ -89,9 +90,18 @@ const WalletAddressItem = ({ address }) => {
               </Button>
             </div>
             {!isNil(amount) && !isNil(qrCodeLink) && (
-              <div className="WalletAddressItem__qr-code-container">
-                <QRCode className="Deposit__qr-code" value={qrCodeLink} />
-              </div>
+              <>
+                <div className="WalletAddressItem__qr-code-container">
+                  <QRCode className="Deposit__qr-code" value={qrCodeLink} />
+                  {isMobile() && (
+                    <>
+                      {' '}
+                      <p className="ModalSignIn__rules">or</p>
+                      <a href={qrCodeLink}>Click here</a>
+                    </>
+                  )}
+                </div>
+              </>
             )}
           </div>
         ) : (
