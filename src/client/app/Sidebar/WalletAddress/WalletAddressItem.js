@@ -98,9 +98,9 @@ const WalletAddressItem = ({ address }) => {
               (isMobile() ? (
                 <div className="WalletAddressItem__qr-code-container">
                   <a href={qrCodeLink}>
-                    <QRCode className="Deposit__qr-code" value={qrCodeLink} />
+                    <QRCode size={200} className="Deposit__qr-code" value={qrCodeLink} />
                   </a>
-                  <p className="ModalSignIn__rules">or</p>
+                  <p>or</p>
                   <a href={qrCodeLink}>Click here</a>
                 </div>
               ) : (
