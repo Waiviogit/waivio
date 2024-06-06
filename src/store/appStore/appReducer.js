@@ -44,6 +44,7 @@ const initialState = {
   infoLoaded: false,
   mainObj: {},
   appHost: '',
+  appAgent: 'desktop',
 };
 
 export default (state = initialState, action) => {

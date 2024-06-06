@@ -58,7 +58,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
     linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : null;
   }
-  if (isNil(linkList[0]) && linkList.length === 1) {
+  if (linkList && isNil(linkList[0]) && linkList.length === 1) {
     linkList = [breadcrumbs[0]?.author_permlink];
   }
   const getTruncatedTitle = title =>

@@ -1,0 +1,53 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables';
+
+.WalletAddress {
+  .WalletAddressItem {
+    cursor: pointer;
+    color: var(--website-color);
+    overflow-wrap: anywhere;
+
+    &__container {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    &__icon {
+      margin-top: -5px;
+      margin-right: 5px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.WalletAddressItem {
+  &__qr-code-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  &__link {
+    color: var(--website-color);
+    cursor: pointer;
+  }
+  &__generate-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__title {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  &__input {
+    border: @base-border;
+    border-radius: 4px;
+    padding: 5px 10px;
+    width: 100%;
+  }
+}

@@ -8,7 +8,10 @@ import {
   GET_MORE_TRANSACTIONS_FOR_TABLE,
   GET_TRANSACTIONS_FOR_TABLE,
   GET_USERS_CREATION_DATE,
+  PAUSE_IN_PROGRESS_REPORTS,
   RESET_REPORTS,
+  RESUME_IN_PROGRESS_REPORTS,
+  STOP_IN_PROGRESS_REPORTS,
 } from './advancedActions';
 import { totalType } from '../../common/constants/advansedReports';
 
@@ -45,11 +48,14 @@ export default function advancedReducer(state = initialState, action) {
         hasMore: data.hasMore,
         withdrawals: data.withdrawals,
         deposits: data.deposits,
+        reportCurrency: data.reportCurrency,
+        reportAccounts: data.reportAccounts,
         isLoading: false,
         accounts: data.accounts,
         loadingAllData: data.hasMore,
       };
     }
+
     case GET_MORE_TRANSACTIONS_FOR_TABLE.START: {
       return {
         ...state,
@@ -89,7 +95,7 @@ export default function advancedReducer(state = initialState, action) {
 
       return {
         ...state,
-        [key]: state[key] + amount,
+        [key]: Number(state[key]) + amount,
       };
     }
 
@@ -118,8 +124,9 @@ export default function advancedReducer(state = initialState, action) {
       const transferList = [...state.wallet];
       const transferIndex = transferList.findIndex(
         transaction =>
-          transaction[action.meta.key] === action.meta.id || transaction._id === action.meta.id,
+          transaction?.[action?.meta?.key] === action.meta.id || transaction._id === action.meta.id,
       );
+
       const transfer = transferList[transferIndex];
 
       if (transfer) {
@@ -132,6 +139,41 @@ export default function advancedReducer(state = initialState, action) {
       return {
         ...state,
         wallet: transferList,
+      };
+    }
+
+    case PAUSE_IN_PROGRESS_REPORTS.SUCCESS:
+    case RESUME_IN_PROGRESS_REPORTS.SUCCESS: {
+      const transferList = [...state.activeGenerate];
+      const transferIndex = transferList.findIndex(
+        transaction => transaction?.reportId === action.payload.reportId,
+      );
+      const transfer = transferList[transferIndex];
+
+      if (transfer) {
+        transferList.splice(transferIndex, 1, action.payload);
+      }
+
+      return {
+        ...state,
+        activeGenerate: transferList,
+      };
+    }
+    case STOP_IN_PROGRESS_REPORTS.SUCCESS: {
+      const transferList = [...state.activeGenerate];
+      const transferIndex = transferList.findIndex(
+        transaction => transaction?.reportId === action.payload.reportId,
+      );
+      const transfer = transferList[transferIndex];
+
+      if (transfer) {
+        transferList.splice(transferIndex, 1);
+      }
+
+      return {
+        ...state,
+        activeGenerate: transferList,
+        historyReports: [action.payload, ...state.historyReports],
       };
     }
 

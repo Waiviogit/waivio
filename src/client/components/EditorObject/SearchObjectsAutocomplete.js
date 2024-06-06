@@ -61,6 +61,7 @@ class SearchObjectsAutocomplete extends Component {
 
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
+    onlyObjectTypes: PropTypes.arrayOf(PropTypes.string),
     addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
     objectType: PropTypes.string,
     className: PropTypes.string,
@@ -107,6 +108,7 @@ class SearchObjectsAutocomplete extends Component {
         parent,
         this.props.addHashtag,
         this.props.useExtendedSearch,
+        this.props.onlyObjectTypes,
       ),
     300,
   );
@@ -218,7 +220,7 @@ class SearchObjectsAutocomplete extends Component {
           !this.props.placeholder
             ? intl.formatMessage({
                 id: 'objects_auto_complete_placeholder',
-                defaultMessage: 'Find objects',
+                defaultMessage: 'Find an objects',
               })
             : this.props.placeholder
         }

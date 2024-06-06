@@ -61,6 +61,7 @@ import {
   removePostFields,
   menuItemFields,
   mapObjectTypeFields,
+  walletAddressFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -145,6 +146,7 @@ import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
 import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
 import DelegationForm from './FormComponents/DelegationForm';
 import './AppendForm.less';
+import WalletAddressForm from './FormComponents/WalletAddressForm';
 
 @connect(
   state => ({
@@ -263,6 +265,7 @@ class AppendForm extends Component {
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
     map: {},
+    isInvalid: null,
   };
 
   componentDidMount = () => {
@@ -505,6 +508,16 @@ class AppendForm extends Component {
         fieldBody.push(sortingData);
         break;
       }
+      case objectFields.walletAddress: {
+        const title = rest[walletAddressFields.walletTitle] || undefined;
+        const symbol = rest[walletAddressFields.cryptocurrency];
+        const address = ['HIVE', 'WAIV', 'HBD']?.includes(rest[walletAddressFields.cryptocurrency])
+          ? this.state.selectedUserBlog
+          : rest[walletAddressFields.walletAddress];
+
+        fieldBody.push(JSON.stringify({ title, symbol, address }));
+        break;
+      }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
         break;
@@ -561,6 +574,22 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
             formValues[optionsFields.category]
           }, ${optionsFields.value}: ${formValues[optionsFields.value]}${position}${image}`;
+
+        case objectFields.walletAddress:
+          const title = formValues[walletAddressFields.walletTitle]
+            ? `\n title: ${formValues[walletAddressFields.walletTitle]}, `
+            : '';
+          const cryptocurrency = `\n cryptocurrency: ${
+            formValues[walletAddressFields.cryptocurrency]
+          },`;
+          const address = `\n address: ${
+            ['HIVE', 'WAIV', 'HBD']?.includes(formValues[walletAddressFields.cryptocurrency])
+              ? this.state.selectedUserBlog
+              : formValues[walletAddressFields.walletAddress]
+          }.`;
+
+          return `@${author} added ${currentField} (${langReadable}): ${title}${cryptocurrency}${address}`;
+
         case mapObjectTypeFields.mapObjectTypes:
           return `@${author} added ${currentField} (${langReadable}): ${this.state.typeList
             .flat()
@@ -1338,6 +1367,7 @@ class AppendForm extends Component {
   };
 
   calculateVoteWorth = (value, voteWorth) => this.setState({ votePercent: value, voteWorth });
+  setIsInvalid = value => this.setState({ isInvalid: value });
 
   handleCreateAlbum = async formData => {
     const { user, wObject, hideModal, addAlbum } = this.props;
@@ -4025,6 +4055,24 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.walletAddress: {
+        return (
+          <WalletAddressForm
+            setIsInvalid={this.setIsInvalid}
+            isInvalid={this.state.isInvalid}
+            handleSelectUserBlog={this.handleSelectUserBlog}
+            handleResetUserBlog={this.handleResetUserBlog}
+            selectedUserBlog={this.state.selectedUserBlog}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            intl={intl}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+            getFieldValue={this.props.form.getFieldValue}
+            setFieldsValue={this.props.form.setFieldsValue}
+          />
+        );
+      }
       case objectFields.form: {
         const { formColumn, formForm } = this.state;
 
@@ -4207,6 +4255,12 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
           isEmpty(getFieldValue('linkGitHub'))
+        );
+      case objectFields.walletAddress:
+        return (
+          (isEmpty(getFieldValue(walletAddressFields.walletAddress)) &&
+            isEmpty(this.state.selectedUserBlog)) ||
+          (!isEmpty(getFieldValue(walletAddressFields.walletAddress)) && this.state.isInvalid)
         );
       case objectFields.address:
         return (

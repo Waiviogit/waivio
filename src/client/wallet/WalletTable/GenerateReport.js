@@ -22,6 +22,7 @@ import {
   getHistoryReports,
   getInProgressReports,
   getReportUpdate,
+  getUsersTransactionDate,
   pauseInProgressReports,
   resumeInProgressReports,
   stopInProgressReports,
@@ -31,6 +32,7 @@ import {
   getHistoryGenerateReports,
 } from '../../../store/advancedReports/advancedSelectors';
 import Loading from '../../components/Icon/Loading';
+import ExportCsv from './ExportCSV';
 
 import './GenerateReport.less';
 
@@ -38,6 +40,7 @@ const GenerateReport = ({ intl, form }) => {
   const params = useParams();
   const [openModal, setOpenModal] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [disabledButtons, setDisabledButtons] = React.useState(false);
   const [filterAccounts, setFilterAccounts] = React.useState([params.name]);
   const activeGenerate = useSelector(getActiveGenerate);
   const historyReports = useSelector(getHistoryGenerateReports);
@@ -49,6 +52,7 @@ const GenerateReport = ({ intl, form }) => {
     Promise.allSettled([dispatch(getInProgressReports()), dispatch(getHistoryReports())]);
 
   useEffect(() => {
+    dispatch(getUsersTransactionDate(authUser));
     updatePageDate().then(() => {
       setLoading(false);
     });
@@ -57,7 +61,7 @@ const GenerateReport = ({ intl, form }) => {
   }, []);
 
   const handleSelectUserFilterAccounts = user => {
-    setFilterAccounts([...filterAccounts, user]);
+    setFilterAccounts([...filterAccounts, user.account]);
   };
 
   const deleteUserFromFilterAccounts = user => {
@@ -97,6 +101,7 @@ const GenerateReport = ({ intl, form }) => {
 
           dispatch(generateReports(body)).then(() => {
             setOpenModal(false);
+            setFilterAccounts([params.name]);
           });
         }
       }
@@ -114,7 +119,8 @@ const GenerateReport = ({ intl, form }) => {
           dispatch(stopInProgressReports(item.reportId));
         },
       });
-    } else {
+    }
+    if (item.status === 'ERRORED') {
       Modal.confirm({
         title: 'Resume report generation',
         content:
@@ -160,28 +166,49 @@ const GenerateReport = ({ intl, form }) => {
         bodyConfig={activeGenerate}
       />
       <h2>History</h2>
-      <DynamicTbl header={configHistoryReportsTableHeader} bodyConfig={historyReports} />
-      <Modal
-        title={`Advanced report`}
-        visible={openModal}
-        onCancel={() => setOpenModal(false)}
-        onOk={handleSubmit}
-        okText={'Submit'}
-      >
-        <TableFilter
-          inModal
-          intl={intl}
-          filterUsersList={filterAccounts}
-          getFieldDecorator={form.getFieldDecorator}
-          handleSelectUser={handleSelectUserFilterAccounts}
-          isLoadingTableTransactions={false}
-          deleteUser={deleteUserFromFilterAccounts}
-          currency={currentCurrency.type}
-          form={form}
-          startDate={handleChangeStartDate()}
-          endDate={handleChangeEndDate()}
-        />{' '}
-      </Modal>
+      <DynamicTbl
+        header={configHistoryReportsTableHeader}
+        bodyConfig={historyReports}
+        disabledLink={disabledButtons}
+        buttons={{
+          csv: item =>
+            item.status === 'STOPPED' ? (
+              '-'
+            ) : (
+              <ExportCsv
+                item={item}
+                disabled={disabledButtons}
+                toggleDisabled={value => setDisabledButtons(value)}
+              />
+            ),
+        }}
+      />
+      {openModal && (
+        <Modal
+          title={`Advanced report`}
+          visible={openModal}
+          onCancel={() => {
+            setOpenModal(false);
+            setFilterAccounts([params.name]);
+          }}
+          onOk={handleSubmit}
+          okText={'Submit'}
+        >
+          <TableFilter
+            inModal
+            intl={intl}
+            filterUsersList={filterAccounts}
+            getFieldDecorator={form.getFieldDecorator}
+            handleSelectUser={handleSelectUserFilterAccounts}
+            isLoadingTableTransactions={false}
+            deleteUser={deleteUserFromFilterAccounts}
+            currency={currentCurrency.type}
+            form={form}
+            startDate={handleChangeStartDate()}
+            endDate={handleChangeEndDate()}
+          />{' '}
+        </Modal>
+      )}
     </div>
   );
 };

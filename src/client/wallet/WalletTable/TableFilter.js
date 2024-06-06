@@ -26,10 +26,12 @@ const TableFilter = ({
   inModal,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
+  const disabledTillDate = (current, from) => current > moment().endOf('day') || current < from;
   const creationAccDate = useSelector(getCreationAccDate);
   const [isOpen, setIsOpen] = useState(false);
   const onOpenChange = () => setIsOpen(!isOpen);
   const invalidFields = endDate < startDate;
+  const { from } = form.getFieldsValue();
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -113,11 +115,11 @@ const TableFilter = ({
                 <button
                   className="WalletTable__datepickerFooter"
                   onClick={() => {
-                    const from = creationAccDate
+                    const f = creationAccDate
                       .map(date => Object.values(date))
                       .sort((a, b) => a - b)[0];
 
-                    form.setFieldsValue({ from: moment.unix(from) });
+                    form.setFieldsValue({ from: moment.unix(f) });
                     setIsOpen(false);
                   }}
                 >
@@ -161,7 +163,8 @@ const TableFilter = ({
                 id: 'table_end_date_picker',
                 defaultMessage: 'Select end date',
               })}
-              disabledDate={disabledDate}
+              disabled={!from}
+              disabledDate={curr => disabledTillDate(curr, from)}
             />,
           )}
         </Form.Item>
@@ -217,6 +220,7 @@ TableFilter.propTypes = {
   }).isRequired,
   form: PropTypes.shape({
     setFieldsValue: PropTypes.func,
+    getFieldsValue: PropTypes.func,
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
   inModal: PropTypes.bool,

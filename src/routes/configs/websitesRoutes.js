@@ -107,7 +107,10 @@ const routes = (host, page) => ({
       ],
     },
     {
-      path: `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+      path: [
+        `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+        `/@:name/transfers/(details)/:recordId?`,
+      ],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -141,6 +144,11 @@ const routes = (host, page) => ({
           path: '/transfers/(waiv-table)',
           exact: true,
           component: Views.WalletTableSwitcher,
+        },
+        {
+          path: '/transfers/(details)/:reportId?',
+          exact: true,
+          component: Views.DetailsTable,
         },
         {
           path: '/(expertise-hashtags|expertise-objects)',

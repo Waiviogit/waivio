@@ -199,6 +199,7 @@ const routes = () => ({
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
         `/@:name/(userShop)/:department?`,
         `/@:name/(favorites)/:objectType?`,
+        `/@:name/transfers/(details)/:recordId?`,
       ],
       component: User,
       exact: true,
@@ -243,6 +244,11 @@ const routes = () => ({
           path: '/transfers/(waiv-table)',
           exact: true,
           component: Views.WalletTableSwitcher,
+        },
+        {
+          path: '/transfers/(details)/:reportId?',
+          exact: true,
+          component: Views.DetailsTable,
         },
         {
           path: '/(expertise-hashtags|expertise-objects)',

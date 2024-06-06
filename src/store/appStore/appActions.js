@@ -30,6 +30,9 @@ export const closeBanner = createAction(CLOSE_BANNER);
 export const SET_APP_HOST = '@app/SET_APP_HOST';
 export const setAppHost = payload => ({ type: SET_APP_HOST, payload });
 
+export const SET_APP_AGENT = '@app/SET_APP_AGENT';
+export const setAppAgent = payload => ({ type: SET_APP_AGENT, payload });
+
 export const SET_APP_URL = '@app/SET_APP_URL';
 export const setAppUrl = createAction(SET_APP_URL);
 

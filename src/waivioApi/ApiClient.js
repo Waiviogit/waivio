@@ -376,11 +376,13 @@ export const searchObjects = (
   body = {},
   abortController,
   skip,
+  onlyObjectTypes,
 ) => {
   const requestBody = { search_string: searchString, limit, skip, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
+  if (onlyObjectTypes) requestBody.onlyObjectTypes = onlyObjectTypes;
 
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers: { ...headers, locale, follower: body.userName, app: config.appName },
@@ -2129,6 +2131,23 @@ export const getWaivAdvancedReports = (body, user = '', abortController) => {
     .then(res => res)
     .catch(e => e);
 };
+export const getReportsDetails = (reportId, skip, limit = 500) => {
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.report}`,
+    {
+      headers,
+      body: JSON.stringify({
+        reportId,
+        skip,
+        limit,
+      }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
 
 export const generateAdvancedReports = (body, user = '', abortController) => {
   const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
@@ -2139,6 +2158,25 @@ export const generateAdvancedReports = (body, user = '', abortController) => {
     ...(abortController && { signal: abortController.signal }),
     method: 'POST',
   })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+export const excludeInReportsDetails = (reportId, _id, user) => {
+  const actualHeaders = user ? { ...headers, ...getAuthHeaders(), user } : { ...headers };
+
+  return fetch(
+    `${config.apiPrefix}${config.user}${config.advancedReport}${config.generated}${config.record}`,
+    {
+      headers: actualHeaders,
+      body: JSON.stringify({
+        reportId,
+        _id,
+        user,
+      }),
+      method: 'POST',
+    },
+  )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);

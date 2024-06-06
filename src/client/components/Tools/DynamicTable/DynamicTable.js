@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
+import { useRouteMatch } from 'react-router';
+
 import { get, isEmpty, size, isNil, round } from 'lodash';
 import { Checkbox, Modal, Radio } from 'antd';
 import Loading from '../../Icon/Loading';
@@ -22,9 +24,11 @@ export const DynamicTable = ({
   buttons,
   showMore,
   handleShowMore,
+  disabledLink,
 }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(null);
+  const match = useRouteMatch();
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
 
@@ -60,7 +64,13 @@ export const DynamicTable = ({
         );
 
       case 'link':
-        return <Link to={head.to(item)}>{item[head.id]}</Link>;
+        if (head.hideLink && head.hideLink(item)) return '-';
+
+        return (
+          <Link disabled={disabledLink} to={head.to(item, match)}>
+            {head.name || item[head.id]}
+          </Link>
+        );
 
       case 'websiteName':
         return item.status === 'active' ? (
@@ -209,6 +219,7 @@ DynamicTable.propTypes = {
   handleShowMore: PropTypes.func,
   emptyTitle: PropTypes.string,
   showMore: PropTypes.bool,
+  disabledLink: PropTypes.bool,
   buttons: PropTypes.shape({}),
 };
 
