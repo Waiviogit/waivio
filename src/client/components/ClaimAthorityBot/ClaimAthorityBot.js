@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'antd';
+import { isEmpty } from 'lodash';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
@@ -211,7 +213,9 @@ const ClaimAthorityBot = ({ intl }) => {
         handleShowMore={loadMoreHistoryDate}
         showMore={hasMoreHistory}
         header={configAthorityBotHistoryTable}
-        bodyConfig={history}
+        bodyConfig={
+          !isEmpty(history) ? history?.map(item => ({ ...item, lists: item?.objects })) : []
+        }
       />
       {visibleVoting && (
         <ChangeVotingModal
