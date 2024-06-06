@@ -125,6 +125,7 @@ export const getNavigItems = createSelector([appState], state => state.navigItem
 export const getSettingsLoading = createSelector([appState], state => state.settingsLoading);
 export const getFacebookAuthId = createSelector([appState], state => state.facebookAuthId);
 export const getGoogleAuthId = createSelector([appState], state => state.googleAuthId);
+export const getAppAgent = createSelector([appState], state => state.appAgent);
 
 export const getWeightValue = createSelector(
   getRate,
