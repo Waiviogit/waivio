@@ -54,6 +54,7 @@ export default (messageFactory, validators, userName, currency) => ({
     options: [
       { message: messageFactory('global', 'Global'), value: 'global' },
       { message: messageFactory('local', 'Local'), value: 'local' },
+      { message: messageFactory('Mention', 'Mention'), value: 'mention' },
     ],
     caption: messageFactory(
       'specific_campaign_parameters_reach',
