@@ -41,7 +41,7 @@ const WalletAddressForm = ({
   const handleValidateWalletAddress = value => {
     if (!value) return setIsInvalid();
 
-    if (value) {
+    if (value && currCryptocurrency.abbreviation !== 'LBTC') {
       const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
 
       return setIsInvalid(!isValid);
