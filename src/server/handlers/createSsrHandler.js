@@ -47,7 +47,6 @@ export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
       const hostname = req.hostname;
-      // console.log(req.get('User-Agent'));
       const searchBot = isbot(req.get('User-Agent'));
       const inheritedHost = isInheritedHost(hostname);
       if (inheritedHost) {
@@ -63,7 +62,6 @@ export default function createSsrHandler(template) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
         if (cachedPage) {
-          console.log('SEND CACHED PAGE');
           return res.send(cachedPage);
         }
       }
@@ -162,8 +160,10 @@ export default function createSsrHandler(template) {
 
       return res.send(page);
     } catch (err) {
-      console.error('SSR error occured, falling back to bundled application instead', err);
-      console.trace(err);
+      console.error(
+        `SSR error occured, falling back to bundled application instead ${req.url}`,
+        err,
+      );
       let settings = {};
       let adsenseSettings = {};
       const isWaivio = req.hostname.includes('waivio');

@@ -2,7 +2,8 @@ import React from 'react';
 import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
-import socialProfiles, { transform } from '../../common/helpers/socialProfiles';
+import socialProfiles, { socialWallets, transform } from '../../common/helpers/socialProfiles';
+import WalletItem from './WalletItem';
 
 const SocialLinks = ({ profile, isSocial }) => {
   const union = intersection(
@@ -11,7 +12,17 @@ const SocialLinks = ({ profile, isSocial }) => {
   );
 
   const availableProfiles = socialProfiles.filter(
-    socialProfile => union.indexOf(socialProfile.id) !== -1 && profile[socialProfile.id] !== '',
+    socialProfile =>
+      union.indexOf(socialProfile.id) !== -1 &&
+      profile[socialProfile.id] !== '' &&
+      !['bitcoin', 'ethereum'].includes(socialProfile.id),
+  );
+  const wallets = intersection(
+    socialWallets.map(wallet => wallet.id),
+    Object.keys(profile),
+  );
+  const availableWallets = socialWallets.filter(
+    wallet => wallets.indexOf(wallet.id) !== -1 && profile[wallet.id] !== '',
   );
 
   return (
@@ -53,6 +64,9 @@ const SocialLinks = ({ profile, isSocial }) => {
           </div>
         ),
       )}
+      {availableWallets?.map(w => (
+        <WalletItem key={w.id} profile={profile} wallet={w} />
+      ))}
     </div>
   );
 };

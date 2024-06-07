@@ -11,6 +11,23 @@ const socialTransformers = {
   ethereum: id => `https://etherscan.io/address/${id}`,
 };
 
+export const socialWallets = [
+  {
+    name: 'Bitcoin (BTC)',
+    abbreviation: 'BTC',
+    shortName: 'Bitcoin',
+    id: 'bitcoin',
+    icon: 'bitcoin.png',
+  },
+  {
+    name: 'Ethereum (ETH)',
+    abbreviation: 'ETH',
+    shortName: 'Ethereum',
+    id: 'ethereum',
+    icon: 'ethereum.png',
+  },
+];
+
 export const transform = (socialId, id) => socialTransformers[socialId](id);
 
 export const getFacebookShareURL = url => `https://facebook.com/sharer.php?u=${url}`;

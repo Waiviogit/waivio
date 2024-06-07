@@ -241,7 +241,7 @@ export const getWeeklyTokenRatesPrice = (state, token) => {
   const locale = getLocale(state);
 
   return get(wallet.tokensRates, [CRYPTO_MAP[token].coinGeckoId, 'weekly'], []).map(price => ({
-    price: price.rates.USD,
+    price: price?.rates?.USD,
     day: moment
       .utc(price.dateString)
       .locale(locale)

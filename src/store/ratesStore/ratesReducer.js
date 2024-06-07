@@ -9,7 +9,7 @@ export default (state = defaultState, action) => {
     case GET_RATES.SUCCESS:
       return {
         ...state,
-        rates: { ...action.payload, ...state.rates },
+        rates: { ...action.payload, ...state?.rates },
       };
     default:
       return state;
