@@ -70,9 +70,6 @@ class UserInfo extends React.Component {
 
     const lastActive = !isGuestPage ? user.last_activity : null;
 
-    // eslint-disable-next-line no-console
-    console.log('lastActive:', lastActive);
-
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);
       profile = get(metadata, 'profile', {});

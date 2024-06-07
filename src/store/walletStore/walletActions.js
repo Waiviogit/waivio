@@ -484,7 +484,7 @@ export const getTokenRates = tokenName => dispatch =>
   dispatch({
     type: GET_TOKEN_RATES.ACTION,
     payload: ApiClient.getTokensEngineRates(tokenName).then(res => {
-      dispatch(setRate(tokenName, res.current.rates.HIVE));
+      dispatch(setRate(tokenName, res?.current?.rates?.HIVE));
 
       return res;
     }),
