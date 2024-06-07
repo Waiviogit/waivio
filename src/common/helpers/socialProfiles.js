@@ -11,6 +11,23 @@ const socialTransformers = {
   ethereum: id => `https://etherscan.io/address/${id}`,
 };
 
+export const socialWallets = [
+  {
+    name: 'Bitcoin (BTC)',
+    abbreviation: 'BTC',
+    shortName: 'Bitcoin',
+    id: 'bitcoin',
+    icon: 'bitcoin.png',
+  },
+  {
+    name: 'Ethereum (ETH)',
+    abbreviation: 'ETH',
+    shortName: 'Ethereum',
+    id: 'ethereum',
+    icon: 'ethereum.png',
+  },
+];
+
 export const transform = (socialId, id) => socialTransformers[socialId](id);
 
 export const getFacebookShareURL = url => `https://facebook.com/sharer.php?u=${url}`;
@@ -24,6 +41,6 @@ export default [
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
-  { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin' },
-  { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum' },
+  // { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin' },
+  // { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum' },
 ];
