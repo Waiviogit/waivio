@@ -597,10 +597,10 @@ export default class Transfer extends React.Component {
   };
 
   estimatedValue = amount => {
-    const hiveRateInUsd = this.props.rates.HIVE;
+    const hiveRateInUsd = this.props?.rates?.HIVE;
 
     if (Object.keys(Transfer.CURRENCIES).includes(this.state.currency)) {
-      const currRate = this.state.currency === 'HIVE' ? hiveRateInUsd : this.props.rates.HBD;
+      const currRate = this.state.currency === 'HIVE' ? hiveRateInUsd : this.props?.rates?.HBD;
 
       return currRate * amount;
     }

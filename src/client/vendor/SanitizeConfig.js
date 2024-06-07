@@ -75,60 +75,67 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
   if (!href) href = '#';
   href = href.trim();
   const attys = {};
-  const linkUrl = url.parse(href);
-  const linkWebsiteUrl = url.format({
-    protocol: linkUrl.protocol,
-    host: linkUrl.host,
-    hash: linkUrl.hash,
-  });
+  try {
+    const linkUrl = url.parse(href);
+    const linkWebsiteUrl = url.format({
+      protocol: linkUrl.protocol,
+      host: linkUrl.host,
+      hash: linkUrl.hash,
+    });
 
-  const internalLink = href.indexOf('/') === 0;
+    const internalLink = href.indexOf('/') === 0;
 
-  if (!internalLink) attys.target = '_blank';
-  if (
-    (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
-    linkUrl.pathname !== '/'
-  ) {
-    if (isPage) {
-      if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
-        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
-      } else {
-        let modifiedUrl =
-          linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
-            ? linkUrl.pathname.slice(0, -5)?.replace('/object/', '/checklist/')
-            : linkUrl.pathname?.replace('/object/', '/checklist/');
-        if (linkUrl.pathname.endsWith('/webpage')) {
-          modifiedUrl = linkUrl.pathname;
+    if (!internalLink) attys.target = '_blank';
+    if (
+      (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
+      linkUrl.pathname !== '/'
+    ) {
+      if (isPage) {
+        if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
+          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
+        } else {
+          let modifiedUrl =
+            linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
+              ? linkUrl.pathname.slice(0, -5)?.replace('/object/', '/checklist/')
+              : linkUrl.pathname?.replace('/object/', '/checklist/');
+          if (linkUrl.pathname.endsWith('/webpage')) {
+            modifiedUrl = linkUrl.pathname;
+          }
+
+          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : modifiedUrl;
         }
 
-        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : modifiedUrl;
+        if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
+          href = href + location?.hash;
+        }
+
+        if (linkUrl.hash)
+          href = href?.includes('#')
+            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+            : href + linkUrl.hash;
+      } else {
+        href = appUrl + linkUrl.pathname;
+        if (linkUrl.hash)
+          href = href?.includes('#')
+            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+            : href + linkUrl.hash;
       }
 
-      if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-        href = href + location?.hash;
-      }
-
-      if (linkUrl.hash)
-        href = href?.includes('#')
-          ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-          : href + linkUrl.hash;
-    } else {
-      href = appUrl + linkUrl.pathname;
-      if (linkUrl.hash)
-        href = href?.includes('#')
-          ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-          : href + linkUrl.hash;
+      attys.target = '';
     }
 
-    attys.target = '';
+    attys.href = href;
+
+    return {
+      tagName,
+      attribs: attys,
+    };
+  } catch (e) {
+    return {
+      tagName,
+      attribs: {},
+    };
   }
-
-  attys.href = href;
-
-  return {
-    tagName,
-    attribs: attys,
-  };
 };
 
 // Medium insert plugin uses: div, figure, figcaption, iframe

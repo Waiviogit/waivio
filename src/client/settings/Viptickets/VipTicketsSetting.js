@@ -37,7 +37,7 @@ const VipTicketsSetting = props => {
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState(null);
   const [showMoreLoading, setShowMoreLoading] = useState({});
-  const ticketPrice = round(props.price / props.rates.WAIV, 8);
+  const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
@@ -159,7 +159,7 @@ const VipTicketsSetting = props => {
             onChange={handleChangeAmount}
           />
           X {ticketPrice} WAIV (est.{' '}
-          <USDDisplay value={props.price * props.rates.HIVE} currencyDisplay={'symbol'} />) ={' '}
+          <USDDisplay value={props.price * props?.rates?.HIVE} currencyDisplay={'symbol'} />) ={' '}
           <b>{countTickets * ticketPrice}</b> WAIV
           <button className="VipTicketsSetting__pay" onClick={handleClickPayNow}>
             {props.intl.formatMessage({
