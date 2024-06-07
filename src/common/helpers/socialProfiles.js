@@ -41,6 +41,6 @@ export default [
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
-  // { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin' },
-  // { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum' },
+  { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin' },
+  { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum' },
 ];

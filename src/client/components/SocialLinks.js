@@ -12,7 +12,10 @@ const SocialLinks = ({ profile, isSocial }) => {
   );
 
   const availableProfiles = socialProfiles.filter(
-    socialProfile => union.indexOf(socialProfile.id) !== -1 && profile[socialProfile.id] !== '',
+    socialProfile =>
+      union.indexOf(socialProfile.id) !== -1 &&
+      profile[socialProfile.id] !== '' &&
+      !['bitcoin', 'ethereum'].includes(socialProfile.id),
   );
   const wallets = intersection(
     socialWallets.map(wallet => wallet.id),
