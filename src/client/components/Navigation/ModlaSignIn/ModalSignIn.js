@@ -38,7 +38,6 @@ import {
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
-// import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
 import useWebsiteColor from '../../../../hooks/useWebsiteColor';
 
 import './ModalSignIn.less';
@@ -159,6 +158,8 @@ const ModalSignIn = ({
         />
       );
 
+    const linkData = new URLSearchParams(showQR).get('data');
+
     return (
       <React.Fragment>
         <div className="ModalSignIn">
@@ -202,11 +203,11 @@ const ModalSignIn = ({
                   </p>
                   {isMobile() ? (
                     <center>
-                      <a href={new URLSearchParams(showQR).get('data')}>
+                      <a href={linkData}>
                         <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
                       </a>
                       <p className="ModalSignIn__rules">or</p>
-                      <a href={new URLSearchParams(showQR).get('data')}>Click here</a>
+                      <a href={linkData}>Click here</a>
                     </center>
                   ) : (
                     <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />

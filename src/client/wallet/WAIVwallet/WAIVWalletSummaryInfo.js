@@ -95,8 +95,8 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const delegation = delegationsIn - delegationsOut;
   const estAccValue =
-    props.rates.WAIV *
-    props.rates.HIVE *
+    props?.rates?.WAIV *
+    props?.rates?.HIVE *
     (Number(balance) + Number(stake) + Number(unstake) + Number(delegationsOut));
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
