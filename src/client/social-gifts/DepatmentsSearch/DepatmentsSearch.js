@@ -6,7 +6,7 @@ import { Tag } from 'antd';
 import Helmet from 'react-helmet';
 import Loading from '../../components/Icon/Loading';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
-import { getHelmetIcon } from '../../../store/appStore/appSelectors';
+import { getAppHost, getHelmetIcon } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
@@ -16,7 +16,7 @@ const wobjects_count = 20;
 
 const DepatmentsSearch = () => {
   const { name, department } = useParams();
-  const siteName = location.hostname;
+  const siteName = useSelector(getAppHost);
   const favicon = useSelector(getHelmetIcon);
   const userName = useSelector(getAuthenticatedUserName);
   const history = useHistory();

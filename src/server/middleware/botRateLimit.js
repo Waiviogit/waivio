@@ -38,7 +38,7 @@ const botRateLimit = async (req, res, next) => {
     return res.status(429).send(TOO_MANY_REQ_PAGE);
   }
 
-  if (googleBot) return next();
+  // if (googleBot) return next();
 
   const siteLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}:${hostname}`;
   const severLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}`;
