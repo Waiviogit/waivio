@@ -35,10 +35,32 @@ export default (messageFactory, validators, userName, currency) => ({
     select: messageFactory('select_campaign_type_option', 'Select campaign type'),
     options: {
       reviews: messageFactory('reviews', 'Reviews'),
-    },
+      message: messageFactory('mention', 'Mention'),
+
+},
     caption: messageFactory(
       'specific_campaign_parameters_type',
       'The campaign parameters are specific to the type of campaign',
+    ),
+  },
+  campaignTypeItem: {
+    name: 'itemType',
+    label: messageFactory('link_primary_item_type', 'Link to the primary (parent) item type'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_campaign_reach', 'Please, select your campaign reach!'),
+      },
+    ],
+    select: messageFactory('select_link_primary_item_type', 'Select campaign reach'),
+    options: [
+      { message: messageFactory('object', 'Object'), value: 'object' },
+      { message: messageFactory('user', 'User'), value: 'user' },
+      { message: messageFactory('url', 'Url'), value: 'url' },
+    ],
+    caption: messageFactory(
+      'specific_campaign_parameters_reach',
+      'If the campaign has a local reach, make sure that the primary object has both longitude and latitude specified.',
     ),
   },
   campaignReach: {
@@ -54,7 +76,6 @@ export default (messageFactory, validators, userName, currency) => ({
     options: [
       { message: messageFactory('global', 'Global'), value: 'global' },
       { message: messageFactory('local', 'Local'), value: 'local' },
-      { message: messageFactory('Mention', 'Mention'), value: 'mention' },
     ],
     caption: messageFactory(
       'specific_campaign_parameters_reach',
