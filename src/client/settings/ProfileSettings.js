@@ -122,7 +122,7 @@ export default class ProfileSettings extends React.Component {
       isAvatar: false,
       lastAccountUpdate: moment(props.user.updatedAt).unix(),
       isLoading: false,
-      hasErrors: false,
+      errors: {},
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -349,9 +349,10 @@ export default class ProfileSettings extends React.Component {
       lastAccountUpdate,
       profilePicture,
       coverPicture,
-      hasErrors,
+      errors,
     } = this.state;
     const { getFieldDecorator, getFieldValue } = form;
+    const hasErrors = Object.values(errors).some(e => e);
 
     return (
       <div>
@@ -504,10 +505,11 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <SocialInputs
-                    setHasErrors={val => this.setState({ hasErrors: val })}
+                    setErrors={val => this.setState({ errors: val })}
                     intl={intl}
                     getFieldDecorator={getFieldDecorator}
                     getFieldValue={getFieldValue}
+                    errors={errors}
                   />
                 </div>
               </div>

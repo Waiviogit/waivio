@@ -2,7 +2,7 @@ import React from 'react';
 import socialProfiles, { socialWallets } from '../../../common/helpers/socialProfiles';
 import SocialInputItem from './SocialInputItem';
 
-const SocialInputs = ({ getFieldDecorator, getFieldValue, setHasErrors, intl }) => {
+const SocialInputs = ({ getFieldDecorator, getFieldValue, setErrors, intl, errors }) => {
   const allProfiles = [...socialProfiles, ...socialWallets];
 
   return allProfiles.map(profile => (
@@ -10,9 +10,10 @@ const SocialInputs = ({ getFieldDecorator, getFieldValue, setHasErrors, intl }) 
       key={profile.id}
       profile={profile}
       getFieldDecorator={getFieldDecorator}
-      setHasErrors={setHasErrors}
+      setErrors={setErrors}
       getFieldValue={getFieldValue}
       intl={intl}
+      errors={errors}
     />
   ));
 };
