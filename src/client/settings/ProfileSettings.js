@@ -11,7 +11,6 @@ import { updateAuthProfile, updateProfile } from '../../store/authStore/authActi
 import { MAXIMUM_UPLOAD_SIZE } from '../../common/helpers/image';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
-import socialProfiles from '../../common/helpers/socialProfiles';
 import { remarkable } from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
@@ -35,7 +34,7 @@ import { editorStateToMarkdownSlate } from '../components/EditorExtended/util/ed
 import { getSelection, getSelectionRect } from '../components/EditorExtended/util';
 import { setCursorCoordinates } from '../../store/slateEditorStore/editorActions';
 import { searchObjectsAutoCompete } from '../../store/searchStore/searchActions';
-
+import SocialInputs from './SocialInputs/SocialInputs';
 import './Settings.less';
 
 const FormItem = Form.Item;
@@ -123,6 +122,7 @@ export default class ProfileSettings extends React.Component {
       isAvatar: false,
       lastAccountUpdate: moment(props.user.updatedAt).unix(),
       isLoading: false,
+      hasErrors: false,
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -349,37 +349,9 @@ export default class ProfileSettings extends React.Component {
       lastAccountUpdate,
       profilePicture,
       coverPicture,
+      hasErrors,
     } = this.state;
-    const { getFieldDecorator } = form;
-    const socialInputs = socialProfiles.map(profile => (
-      <FormItem key={profile.id}>
-        {getFieldDecorator(profile.id, {
-          rules: [
-            {
-              message: intl.formatMessage({
-                id: 'profile_social_profile_incorrect',
-                defaultMessage:
-                  "This doesn't seem to be valid username. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
-              }),
-              pattern: /^[0-9A-Za-z-_.]+$/,
-            },
-          ],
-        })(
-          <Input
-            size="large"
-            prefix={
-              <i
-                className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-                style={{
-                  color: profile.color,
-                }}
-              />
-            }
-            placeholder={profile.name}
-          />,
-        )}
-      </FormItem>
-    ));
+    const { getFieldDecorator, getFieldValue } = form;
 
     return (
       <div>
@@ -530,7 +502,14 @@ export default class ProfileSettings extends React.Component {
                 <h3>
                   <FormattedMessage id="profile_social_profiles" defaultMessage="Social profiles" />
                 </h3>
-                <div className="Settings__section__inputs">{socialInputs}</div>
+                <div className="Settings__section__inputs">
+                  <SocialInputs
+                    setHasErrors={val => this.setState({ hasErrors: val })}
+                    intl={intl}
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                  />
+                </div>
               </div>
               <div className="Settings__section">
                 <h3>
@@ -562,7 +541,11 @@ export default class ProfileSettings extends React.Component {
                 big
                 onClick={this.handleSubmit}
                 disabled={
-                  !form.isFieldsTouched() && !bodyHTML && !avatarImage.length && !coverImage.length
+                  (!form.isFieldsTouched() &&
+                    !bodyHTML &&
+                    !avatarImage.length &&
+                    !coverImage.length) ||
+                  hasErrors
                 }
                 loading={this.state.isLoading}
               >
