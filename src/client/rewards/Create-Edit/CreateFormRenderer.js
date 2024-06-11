@@ -231,7 +231,11 @@ const CreateFormRenderer = props => {
               onChange={handlers.handleSelectChange}
               disabled={disabled}
             >
-              <Option value="reviews">{fields.campaignType.options.reviews}</Option>
+              {fields.campaignType.options.map(opt => (
+                <Option key={opt.value} value={opt.value}>
+                  {opt.message}
+                </Option>
+              ))}
             </Select>,
           )}
           <div className="CreateReward__field-caption">{fields.campaignType.caption}</div>
@@ -390,72 +394,70 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.checkboxReceiptPhoto.caption}</div>
         </Form.Item>
-        {getFieldValue('type') === 'mention' ? (
-          <ItemTypeSwitcher />
-        ) : (
-          <React.Fragment>
-            <Form.Item
-              label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
-            >
-              {getFieldDecorator(fields.primaryObject.name, {
-                rules: fields.primaryObject.rules,
-                initialValue: primaryObject,
-                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-              })(
-                <SearchObjectsAutocomplete
-                  allowClear={false}
-                  itemsIdsToOmit={handlers.getObjectsToOmit()}
-                  style={{ width: '100%' }}
-                  placeholder={fields.primaryObject.placeholder}
-                  handleSelect={handlers.setPrimaryObject}
-                  disabled={disabled}
-                  autoFocus={false}
-                />,
-              )}
-              <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
-              <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
-            </Form.Item>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
+        >
+          {getFieldValue('type') === 'mention' ? (
+            <ItemTypeSwitcher setPrimaryObject={handlers.setPrimaryObject} />
+          ) : (
+            getFieldDecorator(fields.primaryObject.name, {
+              rules: fields.primaryObject.rules,
+              initialValue: primaryObject,
+              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            })(
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                placeholder={fields.primaryObject.placeholder}
+                handleSelect={handlers.setPrimaryObject}
+                disabled={disabled}
+                autoFocus={false}
+              />,
+            )
+          )}
+          <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
+          <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
+        </Form.Item>
 
-            <Form.Item
-              label={
-                <span>
-                  {fields.secondaryObject.label}{' '}
-                  {!isEmpty(primaryObject) && getObjectType(primaryObject) !== 'list' && (
-                    <React.Fragment>
-                      (
-                      <span
-                        role="presentation"
-                        className="CreateReward__addChild"
-                        onClick={handlers.openModalAddChildren}
-                      >
-                        {fields.addChildrenModalTitle.text}
-                      </span>
-                      )
-                    </React.Fragment>
-                  )}
-                </span>
-              }
-            >
-              {getFieldDecorator(fields.secondaryObject.name, {
-                initialValue: secondaryObjectsList,
-                // rules: fields.secondaryObject.rules,
-                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-              })(
-                <SearchObjectsAutocomplete
-                  allowClear={false}
-                  itemsIdsToOmit={handlers.getObjectsToOmit()}
-                  style={{ width: '100%' }}
-                  handleSelect={handlers.handleAddSecondaryObjectToList}
-                  disabled={disabled || isEmpty(primaryObject)}
-                  parentPermlink={parentPermlink}
-                  autoFocus={false}
-                />,
+        <Form.Item
+          label={
+            <span>
+              {fields.secondaryObject.label}{' '}
+              {!isEmpty(primaryObject) && getObjectType(primaryObject) !== 'list' && (
+                <React.Fragment>
+                  (
+                  <span
+                    role="presentation"
+                    className="CreateReward__addChild"
+                    onClick={handlers.openModalAddChildren}
+                  >
+                    {fields.addChildrenModalTitle.text}
+                  </span>
+                  )
+                </React.Fragment>
               )}
-              <div className="CreateReward__field-caption">{fields.secondaryObject.caption}</div>
-              <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>
-            </Form.Item>
-          </React.Fragment>
-        )}
+            </span>
+          }
+        >
+          {getFieldDecorator(fields.secondaryObject.name, {
+            initialValue: secondaryObjectsList,
+            // rules: fields.secondaryObject.rules,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+          })(
+            <SearchObjectsAutocomplete
+              allowClear={false}
+              itemsIdsToOmit={handlers.getObjectsToOmit()}
+              style={{ width: '100%' }}
+              handleSelect={handlers.handleAddSecondaryObjectToList}
+              disabled={disabled || isEmpty(primaryObject)}
+              parentPermlink={parentPermlink}
+              autoFocus={false}
+            />,
+          )}
+          <div className="CreateReward__field-caption">{fields.secondaryObject.caption}</div>
+          <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>
+        </Form.Item>
         <Form.Item label={fields.description.label}>
           {getFieldDecorator(fields.description.name, {
             rules: fields.description.rules,
