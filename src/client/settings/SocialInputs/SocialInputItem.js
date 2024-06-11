@@ -8,7 +8,14 @@ import './SocialInputItem.less';
 import { socialWallets } from '../../../common/helpers/socialProfiles';
 import { chechExistUser } from '../../../waivioApi/ApiClient';
 
-const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setHasErrors }) => {
+const SocialInputItem = ({
+  profile,
+  intl,
+  getFieldValue,
+  getFieldDecorator,
+  setErrors,
+  errors,
+}) => {
   const [isInvalid, setIsInvalid] = useState();
   const validateWalletAddressClassList = classNames('SocialInputItem__addressValidate', {
     'SocialInputItem__addressValidate--invalid': isInvalid,
@@ -19,10 +26,11 @@ const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setH
   const userInputs = ['hive', 'hbd'].includes(profile.id);
   const invalidText = userInputs ? 'Account name not found' : 'Invalid address';
   const validText = userInputs ? 'Account found' : 'Address is valid';
+  const addressValue = getFieldValue(profile.id);
 
   useEffect(() => {
-    setHasErrors(isInvalid);
-  }, [isInvalid]);
+    setErrors({ ...errors, [profile.id]: isInvalid });
+  }, [isInvalid, addressValue]);
 
   const handleValidateWalletAddress = value => {
     if (!value) return setIsInvalid();
@@ -46,11 +54,11 @@ const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setH
     debounce(username => {
       chechExistUser(username).then(result => {
         if (!result) {
-          setHasErrors(true);
+          setErrors({ ...errors, [profile.id]: true });
           setIsInvalid(true);
         } else {
           setIsInvalid(false);
-          setHasErrors(false);
+          setErrors({ ...errors, [profile.id]: false });
         }
       });
     }, 3000),
@@ -80,7 +88,6 @@ const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setH
         })(
           userInputs ? (
             <Input
-              on
               size="large"
               onChange={handleChangeUser}
               prefix={
@@ -117,7 +124,7 @@ const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setH
           ),
         )}
       </Form.Item>
-      {getFieldValue(profile.id) && !isNil(isInvalid) && idsToValidate.includes(profile.id) && (
+      {addressValue && !isNil(isInvalid) && idsToValidate.includes(profile.id) && (
         <span className={validateWalletAddressClassList}>
           {isInvalid ? invalidText : validText}
         </span>
@@ -129,8 +136,9 @@ const SocialInputItem = ({ profile, intl, getFieldValue, getFieldDecorator, setH
 SocialInputItem.propTypes = {
   profile: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  errors: PropTypes.arrayOf().isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
-  setHasErrors: PropTypes.func.isRequired,
+  setErrors: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
 };
 
