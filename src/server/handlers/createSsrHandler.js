@@ -128,8 +128,6 @@ export default function createSsrHandler(template) {
         }
       }
 
-      throw new Error('custom error');
-
       branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
         if (fetchData instanceof Function) {
