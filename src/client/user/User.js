@@ -10,7 +10,6 @@ import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes'
 import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
 
 import {
-  getGlobalProperties,
   getTokenBalance,
   getUserAccountHistory,
   openTransfer,
@@ -306,7 +305,6 @@ export default connect(
     getUserAccountHistory,
     getInfoForSideBar,
     getTokenBalance,
-    getGlobalProperties,
     resetBreadCrumb,
     setFavoriteObjects,
     setFavoriteObjectTypes,
