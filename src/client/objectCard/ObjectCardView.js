@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { truncate, get, isEmpty, uniq, round } from 'lodash';
+import { truncate, get, isEmpty, round } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,7 @@ import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
 
 import './ObjectCardView.less';
+import { getObjectInfo } from '../../waivioApi/ApiClient';
 
 const ObjectCardView = ({
   intl,
@@ -63,7 +64,10 @@ const ObjectCardView = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    setTags(uniq([wObject.object_type, ...objectTags]));
+    if (!isEmpty(objectTags))
+      getObjectInfo(objectTags).then(res =>
+        setTags(res.wobjects.map(obj => obj?.name || obj?.default_name)),
+      );
   }, [wObject.author_permlink]);
 
   const avatarLayout = () => {
@@ -167,16 +171,26 @@ const ObjectCardView = ({
                   {prise}
                 </span>
               )}
-              {tags.map((tag, index) => (
-                <span key={tag}>
-                  {index === 0 && !prise ? (
-                    intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })
-                  ) : (
-                    <span>
-                      &nbsp;&middot;
-                      {`  ${intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })}`}
-                    </span>
-                  )}
+              {!prise ? (
+                intl.formatMessage({
+                  id: `object_type_${wObject.object_type}`,
+                  defaultMessage: wObject.object_type,
+                })
+              ) : (
+                <span>
+                  &nbsp;&middot;
+                  {`  ${intl.formatMessage({
+                    id: `object_type_${wObject.object_type}`,
+                    defaultMessage: wObject.object_type,
+                  })}`}
+                </span>
+              )}
+              {tags.map(tag => (
+                <span key={tag} className={'ObjectCardView__tag'}>
+                  <span>
+                    &nbsp;&middot;
+                    {`  ${tag}`}
+                  </span>
                 </span>
               ))}
             </span>
