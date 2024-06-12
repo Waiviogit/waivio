@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty, get, map, debounce, isEqual, reverse } from 'lodash';
 
@@ -68,10 +68,8 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
-import { getObjectInfo } from '../../../waivioApi/ApiClient';
 
 const MainMap = React.memo(props => {
-  const [tags, setTags] = useState([]);
   const query = new URLSearchParams(props.location.search);
   const headerHeight = 132;
   let queryCenter = query.get('center');
@@ -370,15 +368,11 @@ const MainMap = React.memo(props => {
     if (!props.infoboxData) return null;
     const currentWobj = props.infoboxData;
     const name = getObjectName(currentWobj.wobject);
-    const wobject = { ...get(currentWobj, 'wobject', {}), topTags: tags };
+    const wobject = get(currentWobj, 'wobject', {});
     const firstOffsetNumber = getFirstOffsetNumber(name);
     const setQueryInStorage = () => localStorage.setItem('query', query);
     const usersType = props.searchType === 'Users';
     const offset = usersType ? [80, 240] : [firstOffsetNumber, 160];
-    const prevTags = props.infoboxData?.wobject?.topTags;
-
-    if (!isEmpty(prevTags))
-      getObjectInfo(prevTags).then(res => setTags(res.wobjects.map(obj => obj.name)));
 
     return (
       <Overlay
