@@ -14,7 +14,6 @@
     border-color: var(--website-color) !important;
     color: @white-darker;
 
-    &:disabled,
     &:hover,
     &:focus,
     &:active,
@@ -22,6 +21,13 @@
       background: var(--website-color) !important;
       border-color: var(--website-color) !important;
       color: @white-darker !important;
+    }
+    &:disabled,
+    &:disabled:hover {
+      background-color: @white-smoke !important;
+      border-color: @white-gainsboro !important;
+      color: rgba(0, 0, 0, 0.25) !important;
+      cursor: no-drop;
     }
   }
 

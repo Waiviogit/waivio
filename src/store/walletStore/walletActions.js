@@ -6,7 +6,6 @@ import formatter from '../../common/helpers/steemitFormatter';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAccountHistory,
-  getDynamicGlobalProperties,
   isWalletTransaction,
   defaultAccountLimit,
 } from '../../common/helpers/apiHelpers';
@@ -24,6 +23,7 @@ import delegationModalTypes from '../../common/constants/delegationModalTypes';
 import { getGuestWaivBalance, getGuestWaivTransferHistory } from '../../waivioApi/walletApi';
 import { getAllRates, setRate } from '../ratesStore/ratesAction';
 import { subscribeTypes } from '../../common/constants/blockTypes';
+import { getDynamicGlobalPropertiesFromApi } from '../../waivioApi/ApiClient';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -178,7 +178,7 @@ export const getGlobalProperties = () => dispatch =>
   dispatch({
     type: GET_GLOBAL_PROPERTIES.ACTION,
     payload: {
-      promise: getDynamicGlobalProperties(),
+      promise: getDynamicGlobalPropertiesFromApi(),
     },
   });
 
