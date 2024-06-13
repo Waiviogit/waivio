@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty, truncate, uniq } from 'lodash';
+import { get, isEmpty, truncate } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useLocation, useParams, useHistory } from 'react-router';
@@ -21,6 +21,7 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
+import { getObjectInfo } from '../../../waivioApi/ApiClient';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -39,7 +40,10 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    setTags(uniq([wObject.object_type, ...objectTags]));
+    if (!isEmpty(objectTags))
+      getObjectInfo(objectTags).then(res =>
+        setTags(res.wobjects.map(obj => obj?.name || obj?.default_name)),
+      );
   }, [wObject.author_permlink]);
 
   let link;
@@ -151,9 +155,23 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.price}
           </span>
         )}
-        {tags.map((tag, index) => (
-          <span key={tag}>
-            {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+        {!wObject.price ? (
+          <FormattedMessage
+            id={`object_type_${wObject.object_type}`}
+            defaultMessage={wObject.object_type}
+          />
+        ) : (
+          <span>
+            &nbsp;&middot;{' '}
+            <FormattedMessage
+              id={`object_type_${wObject.object_type}`}
+              defaultMessage={wObject.object_type}
+            />
+          </span>
+        )}
+        {tags.map(tag => (
+          <span key={tag} className={'ShopObjectCard__tag'}>
+            <span>&nbsp;&middot;{` ${tag}`}</span>
           </span>
         ))}
       </span>
