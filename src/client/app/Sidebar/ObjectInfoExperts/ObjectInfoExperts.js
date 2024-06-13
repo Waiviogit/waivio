@@ -18,10 +18,10 @@ const ObjectInfoExperts = ({ wobject }) => {
   return (
     <div className="objectInfo">
       <div className="objectInfo__related">
-        {showContent && <ObjectsRelated wobject={wobject} isCenterContent />}
+        {showContent && <ObjectsAddOn wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__related">
-        {showContent && <ObjectsAddOn wobject={wobject} isCenterContent />}
+        {showContent && <ObjectsRelated wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__related">
         {showContent && <ObjectsSimilar wobject={wobject} isCenterContent />}
