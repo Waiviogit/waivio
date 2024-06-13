@@ -23,6 +23,7 @@ import FiltersForMobile from '../Filters/FiltersForMobile';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
 import ViewMapButton from '../../widgets/ViewMapButton';
+import { getAccount } from '../../../common/helpers/apiHelpers';
 
 import './PropositionList.less';
 
@@ -65,6 +66,7 @@ const RenderPropositionList = ({
   const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
   const isLocation = match.params[0] === 'local';
+  const reqObj = requiredObject.replace('@', '');
 
   const getFilters = () => {
     if (!withoutFilters)
@@ -74,8 +76,10 @@ const RenderPropositionList = ({
   };
 
   const getPropositionList = async () => {
-    if (requiredObject && requiredObject !== parent?.author_permlink) {
-      const campParent = await getObject(requiredObject);
+    if (reqObj && reqObj !== parent?.author_permlink) {
+      const campParent = requiredObject.includes('@')
+        ? await getAccount(reqObj)
+        : await getObject(requiredObject);
       const campInfo = await getObjectsRewards(requiredObject, authUserName);
 
       setParent({ ...campParent, maxReward: campInfo?.main?.maxReward });
@@ -114,7 +118,7 @@ const RenderPropositionList = ({
     setLoading(true);
     try {
       const res = await getProposition(
-        requiredObject,
+        reqObj,
         authUserName,
         propositions?.length,
         search,

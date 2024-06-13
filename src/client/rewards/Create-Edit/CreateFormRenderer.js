@@ -397,14 +397,14 @@ const CreateFormRenderer = props => {
         <Form.Item
           label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
         >
-          {getFieldValue('type') === 'mention' ? (
-            <ItemTypeSwitcher setPrimaryObject={handlers.setPrimaryObject} />
-          ) : (
-            getFieldDecorator(fields.primaryObject.name, {
-              rules: fields.primaryObject.rules,
-              initialValue: primaryObject,
-              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-            })(
+          {getFieldDecorator(fields.primaryObject.name, {
+            rules: fields.primaryObject.rules,
+            initialValue: primaryObject,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+          })(
+            getFieldValue('type') === 'mentions' ? (
+              <ItemTypeSwitcher obj={primaryObject} setPrimaryObject={handlers.setPrimaryObject} />
+            ) : (
               <SearchObjectsAutocomplete
                 allowClear={false}
                 itemsIdsToOmit={handlers.getObjectsToOmit()}
@@ -413,8 +413,8 @@ const CreateFormRenderer = props => {
                 handleSelect={handlers.setPrimaryObject}
                 disabled={disabled}
                 autoFocus={false}
-              />,
-            )
+              />
+            ),
           )}
           <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
@@ -445,15 +445,22 @@ const CreateFormRenderer = props => {
             // rules: fields.secondaryObject.rules,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
-            <SearchObjectsAutocomplete
-              allowClear={false}
-              itemsIdsToOmit={handlers.getObjectsToOmit()}
-              style={{ width: '100%' }}
-              handleSelect={handlers.handleAddSecondaryObjectToList}
-              disabled={disabled || isEmpty(primaryObject)}
-              parentPermlink={parentPermlink}
-              autoFocus={false}
-            />,
+            getFieldValue('type') === 'mentions' ? (
+              <ItemTypeSwitcher
+                obj={null}
+                setPrimaryObject={handlers.handleAddSecondaryObjectToList}
+              />
+            ) : (
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                handleSelect={handlers.handleAddSecondaryObjectToList}
+                disabled={disabled || isEmpty(primaryObject)}
+                parentPermlink={parentPermlink}
+                autoFocus={false}
+              />
+            ),
           )}
           <div className="CreateReward__field-caption">{fields.secondaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>

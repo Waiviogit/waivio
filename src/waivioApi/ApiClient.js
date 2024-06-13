@@ -3014,6 +3014,29 @@ export const getEligiblePropositionByCampaingObjectPermlink = (
     .then(response => response)
     .catch(e => e);
 
+export const getEligiblePropositionByCampaingUser = (
+  parentPermlink,
+  userName,
+  skip = 0,
+  query,
+  sort,
+  reach,
+) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}/user/${parentPermlink}?limit=10&skip=${skip}${
+      userName ? `&userName=${userName}` : ''
+    }${query}&sort=${sort}&reach=${reach}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const validateActivateCampaing = data =>
   fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.activate}`, {
     headers,

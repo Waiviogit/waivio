@@ -372,9 +372,9 @@ class Story extends React.Component {
       );
     } else if (
       (post.checkForFollow && post.checkForFollow.youFollows) ||
-      (location.pathname === `/@${post.reblogged_by}` &&
-        location.pathname !== `/@${post.author}`) ||
-      (post.checkForFollow && location.pathname !== `/@${post.author}`)
+      (location?.pathname === `/@${post.reblogged_by}` &&
+        location?.pathname !== `/@${post.author}`) ||
+      (post.checkForFollow && location?.pathname !== `/@${post.author}`)
     ) {
       rebloggedUI = (
         <div className="Story__reblog">
