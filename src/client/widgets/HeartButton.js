@@ -71,7 +71,8 @@ const HeartButton = ({ wobject, size }) => {
       .substring(2)}`,
   });
 
-  const onHeartClick = () => {
+  const onHeartClick = e => {
+    e.stopPropagation();
     if (activeHeart) {
       dispatch(removeObjectFromAuthority(wobject.author_permlink));
     } else {
