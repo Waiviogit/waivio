@@ -13,6 +13,8 @@ import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import CopyButton from '../../../widgets/CopyButton/CopyButton';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import USDDisplay from '../../../components/Utils/USDDisplay';
+import { getRatesList } from '../../../../store/ratesStore/ratesSelector';
 
 const WalletAddressItem = ({ address }) => {
   const addressBody = parseWobjectField(address, 'body');
@@ -21,6 +23,7 @@ const WalletAddressItem = ({ address }) => {
   const username = addressBody.address;
   const [openModal, setOpenModal] = useState(false);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const rates = useSelector(getRatesList);
   const history = useHistory();
   const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(addressBody.symbol);
   const disabledGenerate =
@@ -52,6 +55,11 @@ const WalletAddressItem = ({ address }) => {
     ]);
 
     setQRCodeLink(url);
+  };
+  const estimatedValue = val => {
+    const currRate = cryptocurrency.shortName === 'HIVE' ? rates?.HIVE : rates?.HBD;
+
+    return currRate * val;
   };
 
   return (
@@ -88,6 +96,19 @@ const WalletAddressItem = ({ address }) => {
               type={'number'}
               onInput={e => setAmount(e.target.value)}
             />
+            <div className={'WalletItem__estimate'}>
+              <FormattedMessage
+                id="estimated_value"
+                defaultMessage="Estimated transaction value: {estimate}"
+                values={{
+                  estimate: (
+                    <span role="presentation" className="estimate">
+                      <USDDisplay value={amount ? estimatedValue(amount) : 0} />
+                    </span>
+                  ),
+                }}
+              />
+            </div>
             <div className="WalletAddressItem__generate-container">
               <Button type={'primary'} onClick={generateQRCodeData} disabled={disabledGenerate}>
                 Generate QR code

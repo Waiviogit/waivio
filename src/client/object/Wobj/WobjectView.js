@@ -166,8 +166,8 @@ const WobjectView = ({
                 !isMobile() && <WobjectShopFilter />
               ) : (
                 <React.Fragment>
-                  {!isMobile() && <ObjectsRelated />}
                   {!isMobile() && <ObjectsAddOn wobject={wobject} />}
+                  {!isMobile() && <ObjectsRelated />}
                   {!isMobile() && <ObjectsSimilar wobject={wobject} />}
                   {referenceWobjType && !isMobile() && <ObjectReference wobject={wobject} />}
                   {!isMobile() && <ObjectExpertise wobject={wobject} />}
