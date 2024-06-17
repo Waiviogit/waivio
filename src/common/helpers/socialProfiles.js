@@ -11,6 +11,10 @@ const socialTransformers = {
   ethereum: id => `https://etherscan.io/address/${id}`,
 };
 
+export const defaultSocialWallets = [
+  { name: 'HIVE', abbreviation: 'HIVE', shortName: 'HIVE', id: 'hive', icon: 'hive.png' },
+  { name: 'HBD', abbreviation: 'HBD', shortName: 'HBD', id: 'hbd', icon: 'hbd.png' },
+];
 export const socialWallets = [
   {
     name: 'Bitcoin (BTC)',
@@ -40,8 +44,6 @@ export const socialWallets = [
     id: 'lightningBitcoin',
     icon: 'lightning_bitcoin.png',
   },
-  { name: 'HIVE', abbreviation: 'HIVE', shortName: 'HIVE', id: 'hive', icon: 'hive.png' },
-  { name: 'HBD', abbreviation: 'HBD', shortName: 'HBD', id: 'hbd', icon: 'hbd.png' },
 ];
 
 export const transform = (socialId, id) => socialTransformers[socialId](id);

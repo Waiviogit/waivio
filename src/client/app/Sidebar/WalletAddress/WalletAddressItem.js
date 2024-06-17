@@ -48,10 +48,10 @@ const WalletAddressItem = ({ address }) => {
     setAmount(null);
   };
 
-  const generateQRCodeData = () => {
+  const generateQRCodeData = am => {
     const url = encodeOp([
       'transfer',
-      { from: authUserName, to: username, amount: `${amount} ${addressBody.symbol}`, memo: '' },
+      { from: authUserName, to: username, amount: `${am} ${addressBody.symbol}`, memo: '' },
     ]);
 
     setQRCodeLink(url);
@@ -94,7 +94,10 @@ const WalletAddressItem = ({ address }) => {
               value={amount}
               placeholder={'Enter amount'}
               type={'number'}
-              onInput={e => setAmount(e.target.value)}
+              onInput={e => {
+                setAmount(e.target.value);
+                generateQRCodeData(e.target.value);
+              }}
             />
             <div className={'WalletItem__estimate'}>
               <FormattedMessage
@@ -109,13 +112,9 @@ const WalletAddressItem = ({ address }) => {
                 }}
               />
             </div>
-            <div className="WalletAddressItem__generate-container">
-              <Button type={'primary'} onClick={generateQRCodeData} disabled={disabledGenerate}>
-                Generate QR code
-              </Button>
-            </div>
             {!isNil(amount) &&
               !isNil(qrCodeLink) &&
+              !disabledGenerate &&
               (isMobile() ? (
                 <div className="WalletAddressItem__qr-code-container">
                   <a href={qrCodeLink}>
@@ -126,7 +125,7 @@ const WalletAddressItem = ({ address }) => {
                 </div>
               ) : (
                 <div className="WalletAddressItem__qr-code-container">
-                  <QRCode className="Deposit__qr-code" value={qrCodeLink} />
+                  <QRCode size={200} className="Deposit__qr-code" value={qrCodeLink} />
                 </div>
               ))}
           </div>
