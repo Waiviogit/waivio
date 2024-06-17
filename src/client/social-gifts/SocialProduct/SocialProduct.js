@@ -349,7 +349,7 @@ const SocialProduct = ({
                     activeCategory={activeCategory}
                   />
                 </div>
-                <div>
+                <div className="SocialProduct__reward-wrap">
                   <ProductRewardCard isSocialProduct reward={reward} />
                 </div>
               </div>
