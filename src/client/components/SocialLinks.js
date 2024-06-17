@@ -2,7 +2,11 @@ import React from 'react';
 import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
-import socialProfiles, { socialWallets, transform } from '../../common/helpers/socialProfiles';
+import socialProfiles, {
+  defaultSocialWallets,
+  socialWallets,
+  transform,
+} from '../../common/helpers/socialProfiles';
 import WalletItem from './WalletItem';
 
 const SocialLinks = ({ profile, isSocial }) => {
@@ -21,9 +25,12 @@ const SocialLinks = ({ profile, isSocial }) => {
     socialWallets.map(wallet => wallet.id),
     Object.keys(profile),
   );
-  const availableWallets = socialWallets.filter(
-    wallet => wallets.indexOf(wallet.id) !== -1 && profile[wallet.id] !== '',
-  );
+  const availableWallets = [
+    ...socialWallets.filter(
+      wallet => wallets.indexOf(wallet.id) !== -1 && profile[wallet.id] !== '',
+    ),
+    ...defaultSocialWallets,
+  ];
 
   return (
     <div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router';
 import QRCode from 'qrcode.react';
 import { Link } from 'react-router-dom';
 import { encodeOp } from 'hive-uri';
@@ -18,9 +19,10 @@ const WalletItem = ({ wallet, profile }) => {
   const [openModal, setOpenModal] = useState(false);
   const [amount, setAmount] = useState(null);
   const [qrCodeLink, setQRCodeLink] = useState(null);
-  const address = profile[wallet.id];
   const authUserName = useSelector(getAuthenticatedUserName);
+  const params = useParams();
   const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(wallet.shortName);
+  const address = uniqueQrCodeCurrencies ? params?.name : profile[wallet.id];
   const rates = useSelector(getRatesList);
   const disabledGenerate =
     isNil(amount) ||
@@ -38,10 +40,10 @@ const WalletItem = ({ wallet, profile }) => {
     setAmount(null);
   };
 
-  const generateQRCodeData = () => {
+  const generateQRCodeData = am => {
     const url = encodeOp([
       'transfer',
-      { from: authUserName, to: address, amount: `${amount} ${wallet.shortName}`, memo: '' },
+      { from: authUserName, to: address, amount: `${am} ${wallet.shortName}`, memo: '' },
     ]);
 
     setQRCodeLink(url);
@@ -83,7 +85,10 @@ const WalletItem = ({ wallet, profile }) => {
               value={amount}
               placeholder={'Enter amount'}
               type={'number'}
-              onInput={e => setAmount(e.target.value)}
+              onInput={e => {
+                setAmount(e.target.value);
+                generateQRCodeData(e.target.value);
+              }}
             />
             <div className={'WalletItem__estimate'}>
               <FormattedMessage
@@ -98,13 +103,9 @@ const WalletItem = ({ wallet, profile }) => {
                 }}
               />
             </div>
-            <div className="WalletAddressItem__generate-container">
-              <Button type={'primary'} onClick={generateQRCodeData} disabled={disabledGenerate}>
-                Generate QR code
-              </Button>
-            </div>
             {!isNil(amount) &&
               !isNil(qrCodeLink) &&
+              !disabledGenerate &&
               (isMobile() ? (
                 <div className="WalletAddressItem__qr-code-container">
                   <a href={qrCodeLink}>
@@ -115,7 +116,7 @@ const WalletItem = ({ wallet, profile }) => {
                 </div>
               ) : (
                 <div className="WalletAddressItem__qr-code-container">
-                  <QRCode className="Deposit__qr-code" value={qrCodeLink} />
+                  <QRCode size={200} className="Deposit__qr-code" value={qrCodeLink} />
                 </div>
               ))}
           </div>

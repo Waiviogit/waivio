@@ -9,6 +9,7 @@ const ProductRewardCard = ({ reward, isSocialProduct }) => (
   <div className="ProductRewardCard">
     {!isEmpty(reward?.main) && (
       <SocialCampaignCard
+        maxReward={reward?.main?.maxReward}
         isSocialProduct={isSocialProduct}
         sponsor={reward?.main?.guideName}
         isCampaign
