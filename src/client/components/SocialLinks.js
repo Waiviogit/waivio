@@ -1,5 +1,6 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
+import { useHistory, useParams } from 'react-router';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
 import socialProfiles, {
@@ -10,6 +11,8 @@ import socialProfiles, {
 import WalletItem from './WalletItem';
 
 const SocialLinks = ({ profile, isSocial }) => {
+  const params = useParams();
+  const history = useHistory();
   const union = intersection(
     socialProfiles.map(socialProfile => socialProfile.id),
     Object.keys(profile),
@@ -25,11 +28,14 @@ const SocialLinks = ({ profile, isSocial }) => {
     socialWallets.map(wallet => wallet.id),
     Object.keys(profile),
   );
+
+  const hiveHbdWallets =
+    history?.location?.pathname === `/@${params.name}` ? defaultSocialWallets : [];
   const availableWallets = [
+    ...hiveHbdWallets,
     ...socialWallets.filter(
       wallet => wallets.indexOf(wallet.id) !== -1 && profile[wallet.id] !== '',
     ),
-    ...defaultSocialWallets,
   ];
 
   return (
