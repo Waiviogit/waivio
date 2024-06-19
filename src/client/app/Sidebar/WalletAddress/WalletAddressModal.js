@@ -6,7 +6,6 @@ import { encodeOp } from 'hive-uri';
 import { useSelector } from 'react-redux';
 import QRCode from 'qrcode.react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import CopyButton from '../../../widgets/CopyButton/CopyButton';
@@ -37,6 +36,7 @@ const WalletAddressModal = ({
     setQRCodeLink(null);
     setAmount(null);
   };
+  const addressWithAmount = `${symbol.toLowerCase()}:${address}?amount=${amount}`;
 
   const generateQRCodeData = am => {
     const url = encodeOp([
@@ -64,12 +64,13 @@ const WalletAddressModal = ({
           </Button>,
         ]}
       >
-        {uniqueQrCodeCurrencies ? (
+        {
           <div>
-            <div className="WalletAddressItem__title">
-              Select the amount of {symbol} you want to send to{' '}
-              <Link to={`/@${username}`}>{username}</Link>
+            <div className="WalletAddressItem__title">Address:</div>
+            <div className={'Deposit__section'}>
+              <CopyButton className="WalletAddressItem__input" text={address} />
             </div>
+            <div className="WalletAddressItem__title">Select the amount you want to send:</div>
             <Input
               value={amount}
               placeholder={'Enter amount'}
@@ -105,21 +106,15 @@ const WalletAddressModal = ({
                 </div>
               ) : (
                 <div className="WalletAddressItem__qr-code-container">
-                  <QRCode size={200} className="Deposit__qr-code" value={qrCodeLink} />
+                  <QRCode
+                    size={200}
+                    className="Deposit__qr-code"
+                    value={uniqueQrCodeCurrencies ? qrCodeLink : addressWithAmount}
+                  />
                 </div>
               ))}
           </div>
-        ) : (
-          <div>
-            <div className="WalletAddressItem__title">Address:</div>
-            <div className={'Deposit__section'}>
-              <CopyButton className="WalletAddressItem__input" text={address} />
-              <div className="WalletAddressItem__qr-code-container">
-                <QRCode className="Deposit__qr-code" value={address} />
-              </div>
-            </div>
-          </div>
-        )}
+        }
       </Modal>
     )
   );

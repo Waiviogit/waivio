@@ -29,8 +29,9 @@ const SocialLinks = ({ profile, isSocial }) => {
     Object.keys(profile),
   );
 
-  const hiveHbdWallets =
-    history?.location?.pathname === `/@${params.name}` ? defaultSocialWallets : [];
+  const hiveHbdWallets = history?.location?.pathname?.includes(`/@${params.name}`)
+    ? defaultSocialWallets
+    : [];
   const availableWallets = [
     ...hiveHbdWallets,
     ...socialWallets.filter(
