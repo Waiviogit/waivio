@@ -23,6 +23,7 @@ import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
 
 import './ObjectCardView.less';
+import { getTagName } from '../../common/helpers/tagsNamesList';
 
 const ObjectCardView = ({
   intl,
@@ -170,11 +171,17 @@ const ObjectCardView = ({
               {tags.map((tag, index) => (
                 <span key={tag}>
                   {index === 0 && !prise ? (
-                    intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })
+                    intl.formatMessage({
+                      id: `object_type_${tag}`,
+                      defaultMessage: getTagName(tag),
+                    })
                   ) : (
                     <span>
                       &nbsp;&middot;
-                      {`  ${intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })}`}
+                      {`  ${intl.formatMessage({
+                        id: `object_type_${tag}`,
+                        defaultMessage: getTagName(tag),
+                      })}`}
                     </span>
                   )}
                 </span>

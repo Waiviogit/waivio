@@ -21,6 +21,7 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
+import { getTagName } from '../../../common/helpers/tagsNamesList';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -154,7 +155,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         )}
         {tags.map((tag, index) => (
           <span key={tag}>
-            {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+            {index === 0 && !wObject.price ? (
+              getTagName(tag)
+            ) : (
+              <span>&nbsp;&middot;{` ${getTagName(tag)}`}</span>
+            )}
           </span>
         ))}
       </span>
