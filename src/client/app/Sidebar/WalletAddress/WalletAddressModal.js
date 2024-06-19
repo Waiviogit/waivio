@@ -20,11 +20,11 @@ const WalletAddressModal = ({
   openModal,
   setOpenModal,
 }) => {
-  const [qrCodeLink, setQRCodeLink] = useState(null);
+  const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(symbol);
+  const [qrCodeLink, setQRCodeLink] = useState(uniqueQrCodeCurrencies ? null : address);
   const [amount, setAmount] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
   const rates = useSelector(getRatesList);
-  const uniqueQrCodeCurrencies = ['HIVE', 'HBD'].includes(symbol);
   const disabledGenerate =
     isNil(amount) ||
     isEmpty(amount) ||
@@ -36,7 +36,9 @@ const WalletAddressModal = ({
     setQRCodeLink(null);
     setAmount(null);
   };
-  const addressWithAmount = `${symbol.toLowerCase()}:${address}?amount=${amount}`;
+  const addressWithAmount = disabledGenerate
+    ? address
+    : `${symbol.toLowerCase()}:${address}?amount=${amount}`;
 
   const generateQRCodeData = am => {
     const url = encodeOp([
@@ -67,10 +69,10 @@ const WalletAddressModal = ({
         {
           <div>
             <div className="WalletAddressItem__title">Address:</div>
-            <div className={'Deposit__section'}>
+            <div className="WalletAddressItem__address-setion">
               <CopyButton className="WalletAddressItem__input" text={address} />
             </div>
-            <div className="WalletAddressItem__title">Select the amount you want to send:</div>
+            <div className="WalletAddressItem__title">Amount:</div>
             <Input
               value={amount}
               placeholder={'Enter amount'}
@@ -93,9 +95,9 @@ const WalletAddressModal = ({
                 }}
               />
             </div>
-            {!isNil(amount) &&
+            {(uniqueQrCodeCurrencies ? !isNil(amount) : true) &&
               !isNil(qrCodeLink) &&
-              !disabledGenerate &&
+              (uniqueQrCodeCurrencies ? !disabledGenerate : true) &&
               (isMobile() ? (
                 <div className="WalletAddressItem__qr-code-container">
                   <a href={qrCodeLink}>
