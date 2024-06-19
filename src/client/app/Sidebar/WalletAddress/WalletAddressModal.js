@@ -109,8 +109,13 @@ const WalletAddressModal = ({
                     <a href={qrCodeLink}>
                       <QRCode size={200} className="Deposit__qr-code" value={addressLink} />
                     </a>
-                    <p>or</p>
-                    <a href={uniqueQrCodeCurrencies ? qrCodeLink : address}>Click here</a>
+                    {uniqueQrCodeCurrencies && (
+                      <>
+                        {' '}
+                        <p>or</p>
+                        <a href={qrCodeLink}>Click here</a>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <div className="WalletAddressItem__qr-code-container">
