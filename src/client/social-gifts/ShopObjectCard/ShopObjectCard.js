@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, has, isEmpty, truncate } from 'lodash';
+import { get, has, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useLocation, useParams, useHistory } from 'react-router';
@@ -21,7 +21,6 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
-import { getObjectInfo } from '../../../waivioApi/ApiClient';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -32,8 +31,8 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const history = useHistory();
   const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions) || has(wObject, 'campaigns');
-  const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns?.[0] : null;
-  const rewardAmount = proposition?.rewardInUSD || proposition?.maxReward;
+  const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
+  const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -41,10 +40,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    if (!isEmpty(objectTags))
-      getObjectInfo(objectTags).then(res =>
-        setTags(res.wobjects.map(obj => obj?.name || obj?.default_name)),
-      );
+    setTags(uniq([wObject.object_type, ...objectTags]));
   }, [wObject.author_permlink]);
 
   let link;
@@ -156,23 +152,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.price}
           </span>
         )}
-        {!wObject.price ? (
-          <FormattedMessage
-            id={`object_type_${wObject.object_type}`}
-            defaultMessage={wObject.object_type}
-          />
-        ) : (
-          <span>
-            &nbsp;&middot;{' '}
-            <FormattedMessage
-              id={`object_type_${wObject.object_type}`}
-              defaultMessage={wObject.object_type}
-            />
-          </span>
-        )}
-        {tags.map(tag => (
-          <span key={tag} className={'ShopObjectCard__tag'}>
-            <span>&nbsp;&middot;{` ${tag}`}</span>
+        {tags.map((tag, index) => (
+          <span key={tag}>
+            {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
           </span>
         ))}
       </span>

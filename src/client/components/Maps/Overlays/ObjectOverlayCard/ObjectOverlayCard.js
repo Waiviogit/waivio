@@ -18,7 +18,6 @@ import { getScreenSize } from '../../../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
-import { getObjectInfo } from '../../../../../waivioApi/ApiClient';
 
 const ObjectOverlayCard = ({
   intl,
@@ -32,7 +31,6 @@ const ObjectOverlayCard = ({
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(false);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const objName = getObjectName(wObject);
   const parentLink = get(parent, 'defaultShowLink');
@@ -45,15 +43,7 @@ const ObjectOverlayCard = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    if (!isEmpty(objectTags)) {
-      setLoading(true);
-      getObjectInfo(objectTags).then(res => {
-        setTags(res.wobjects.map(obj => obj?.name || obj?.default_name));
-        setLoading(false);
-      });
-    } else {
-      setTags([]);
-    }
+    setTags(objectTags);
   }, [wObject.author_permlink]);
 
   const avatarLayout = () => {
@@ -82,8 +72,6 @@ const ObjectOverlayCard = ({
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
-
-  if (loading) return null;
 
   return (
     <div className="ObjectOverlayCard" key={wObject.author_permlink}>
@@ -140,7 +128,7 @@ const ObjectOverlayCard = ({
               </span>
             ) : (
               tags.map((tag, index) => (
-                <span className={'ObjectOverlayCard__tag'} key={tag}>
+                <span key={tag}>
                   {!index && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
                 </span>
               ))
