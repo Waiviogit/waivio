@@ -25,20 +25,25 @@ const WalletAddressModal = ({
   const [amount, setAmount] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
   const rates = useSelector(getRatesList);
+  const addressWithAmount = disabledGenerate
+    ? address
+    : `${symbol.toLowerCase()}:${address}?amount=${amount}`;
+  const addressLink = uniqueQrCodeCurrencies ? qrCodeLink : addressWithAmount;
   const disabledGenerate =
     isNil(amount) ||
     isEmpty(amount) ||
     parseFloat(amount) === 0 ||
     (uniqueQrCodeCurrencies && amount < 0.001);
+  const isAmountValid = uniqueQrCodeCurrencies ? !isNil(amount) : true;
+  const isQrCodeLinkValid = uniqueQrCodeCurrencies ? !isNil(qrCodeLink) : true;
+  const isGenerateEnabled = uniqueQrCodeCurrencies ? !disabledGenerate : true;
+  const showQr = isAmountValid && isQrCodeLinkValid && isGenerateEnabled;
 
   const closeModal = () => {
     setOpenModal(false);
     setQRCodeLink(null);
     setAmount(null);
   };
-  const addressWithAmount = disabledGenerate
-    ? address
-    : `${symbol.toLowerCase()}:${address}?amount=${amount}`;
 
   const generateQRCodeData = am => {
     const url = encodeOp([
@@ -70,7 +75,9 @@ const WalletAddressModal = ({
           <div>
             <div className="WalletAddressItem__title">Address:</div>
             <div className="WalletAddressItem__address-setion">
-              <CopyButton className="WalletAddressItem__input" text={address} />
+              <div className="Deposit__section">
+                <CopyButton className="WalletAddressItem__input" text={address} />
+              </div>
             </div>
             <div className="WalletAddressItem__title">Amount:</div>
             <Input
@@ -95,26 +102,23 @@ const WalletAddressModal = ({
                 }}
               />
             </div>
-            {(uniqueQrCodeCurrencies ? !isNil(amount) : true) &&
-              !isNil(qrCodeLink) &&
-              (uniqueQrCodeCurrencies ? !disabledGenerate : true) &&
-              (isMobile() ? (
-                <div className="WalletAddressItem__qr-code-container">
-                  <a href={qrCodeLink}>
-                    <QRCode size={200} className="Deposit__qr-code" value={qrCodeLink} />
-                  </a>
-                  <p>or</p>
-                  <a href={qrCodeLink}>Click here</a>
-                </div>
-              ) : (
-                <div className="WalletAddressItem__qr-code-container">
-                  <QRCode
-                    size={200}
-                    className="Deposit__qr-code"
-                    value={uniqueQrCodeCurrencies ? qrCodeLink : addressWithAmount}
-                  />
-                </div>
-              ))}
+            {showQr && (
+              <>
+                {isMobile() ? (
+                  <div className="WalletAddressItem__qr-code-container">
+                    <a href={qrCodeLink}>
+                      <QRCode size={200} className="Deposit__qr-code" value={addressLink} />
+                    </a>
+                    <p>or</p>
+                    <a href={uniqueQrCodeCurrencies ? qrCodeLink : address}>Click here</a>
+                  </div>
+                ) : (
+                  <div className="WalletAddressItem__qr-code-container">
+                    <QRCode size={200} className="Deposit__qr-code" value={addressLink} />
+                  </div>
+                )}
+              </>
+            )}
           </div>
         }
       </Modal>
