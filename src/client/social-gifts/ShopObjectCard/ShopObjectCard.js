@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty, truncate, uniq } from 'lodash';
+import { get, has, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useLocation, useParams, useHistory } from 'react-router';
@@ -30,8 +30,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const { name } = useParams();
   const history = useHistory();
   const location = useLocation();
-  const withRewards = !isEmpty(wObject.propositions);
-  const proposition = withRewards ? wObject.propositions[0] : null;
+  const withRewards = !isEmpty(wObject.propositions) || has(wObject, 'campaigns');
+  const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
+  const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -107,11 +108,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             values={{ minPhotos: proposition?.requirements?.minPhotos }}
           />{' '}
           {isEnLocale ? (
-            <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+            <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
           ) : (
             <div>
               {' '}
-              <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
             </div>
           )}
         </h3>
@@ -187,6 +188,7 @@ ShopObjectCard.propTypes = {
     price: PropTypes.string,
     affiliateLinks: PropTypes.arrayOf(PropTypes.shape()),
     propositions: PropTypes.arrayOf(PropTypes.shape()),
+    campaigns: PropTypes.arrayOf(PropTypes.shape()),
   }),
 };
 

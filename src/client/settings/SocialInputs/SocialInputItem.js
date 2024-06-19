@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
-import { debounce, isEmpty, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import classNames from 'classnames';
 import WAValidator from 'multicoin-address-validator';
 import PropTypes from 'prop-types';
 import './SocialInputItem.less';
 import { socialWallets } from '../../../common/helpers/socialProfiles';
-import { chechExistUser } from '../../../waivioApi/ApiClient';
 
 const SocialInputItem = ({
   profile,
@@ -23,9 +22,8 @@ const SocialInputItem = ({
   const walletsIds = socialWallets.map(w => w.id);
   const idsToValidate = walletsIds.filter(w => w !== 'lightningBitcoin');
   const isWallet = walletsIds.includes(profile.id);
-  const userInputs = ['hive', 'hbd'].includes(profile.id);
-  const invalidText = userInputs ? 'Account name not found' : 'Invalid address';
-  const validText = userInputs ? 'Account found' : 'Address is valid';
+  const invalidText = 'Invalid address';
+  const validText = 'Address is valid';
   const addressValue = getFieldValue(profile.id);
 
   useEffect(() => {
@@ -50,27 +48,6 @@ const SocialInputItem = ({
     handleValidateWalletAddress(address, profile);
   };
 
-  const debouncedCheckUser = useCallback(
-    debounce(username => {
-      chechExistUser(username).then(result => {
-        if (!result) {
-          setErrors({ ...errors, [profile.id]: true });
-          setIsInvalid(true);
-        } else {
-          setIsInvalid(false);
-          setErrors({ ...errors, [profile.id]: false });
-        }
-      });
-    }, 3000),
-    [],
-  );
-
-  const handleChangeUser = e => {
-    const username = e.target.value;
-
-    if (username && !isEmpty(username)) debouncedCheckUser(username);
-  };
-
   return (
     <>
       <Form.Item key={profile.id}>
@@ -86,42 +63,27 @@ const SocialInputItem = ({
             },
           ],
         })(
-          userInputs ? (
-            <Input
-              size="large"
-              onChange={handleChangeUser}
-              prefix={
+          <Input
+            size="large"
+            onChange={handleChangeAddress}
+            prefix={
+              isWallet ? (
                 <img
                   className={'SocialInputItem__icon'}
                   src={`/images/icons/cryptocurrencies/${profile.icon}`}
                   alt={''}
                 />
-              }
-              placeholder={isWallet ? profile.shortName : profile.name}
-            />
-          ) : (
-            <Input
-              size="large"
-              onChange={handleChangeAddress}
-              prefix={
-                isWallet ? (
-                  <img
-                    className={'SocialInputItem__icon'}
-                    src={`/images/icons/cryptocurrencies/${profile.icon}`}
-                    alt={''}
-                  />
-                ) : (
-                  <i
-                    className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-                    style={{
-                      color: profile.color,
-                    }}
-                  />
-                )
-              }
-              placeholder={isWallet ? profile.shortName : profile.name}
-            />
-          ),
+              ) : (
+                <i
+                  className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
+                  style={{
+                    color: profile.color,
+                  }}
+                />
+              )
+            }
+            placeholder={isWallet ? profile.shortName : profile.name}
+          />,
         )}
       </Form.Item>
       {addressValue && !isNil(isInvalid) && idsToValidate.includes(profile.id) && (
