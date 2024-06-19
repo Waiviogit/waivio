@@ -71,11 +71,7 @@ const SocialCampaignCard = ({
         <div className="Proposition-new__button-container">
           {isCampaign ? (
             <div style={{ marginTop: '8px' }}>
-              <span
-                onClick={goToProducts}
-                className="Campaing__button"
-                style={{ marginRight: '80px' }}
-              >
+              <span onClick={goToProducts} className="Campaing__button">
                 {buttonLabel}{' '}
                 <b>
                   <USDDisplay value={maxReward} />
