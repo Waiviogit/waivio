@@ -70,6 +70,8 @@ import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/use
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import './SocialProduct.less';
+import SocialListItem from './SocialListItem/SocialListItem';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 const limit = 30;
 
@@ -304,6 +306,13 @@ const SocialProduct = ({
                 {wobject.name}
               </h1>
             )}
+            {isMobile() && !isEmpty(brandObject) && (
+              <SocialListItem
+                fieldName={objectFields.brand}
+                field={brandObject}
+                showTitle={false}
+              />
+            )}
             {isMobile() && !isEmpty(wobjTitle) && (
               <div className="SocialProduct__title">{wobjTitle}</div>
             )}
@@ -365,6 +374,13 @@ const SocialProduct = ({
                 >
                   {wobject.name}
                 </h1>
+              )}
+              {!isMobile() && !isEmpty(brandObject) && (
+                <SocialListItem
+                  fieldName={objectFields.brand}
+                  field={brandObject}
+                  showTitle={false}
+                />
               )}
               {!isMobile() && !isEmpty(wobjTitle) && (
                 <div className="SocialProduct__title">{wobjTitle}</div>
@@ -468,7 +484,7 @@ const SocialProduct = ({
                 dimensions={dimensions}
                 productIdBody={productIdBody}
                 departments={departments}
-                fields={{ brandObject, manufacturerObject, merchantObject }}
+                fields={{ manufacturerObject, merchantObject }}
                 parent={parent}
               />
             )}
