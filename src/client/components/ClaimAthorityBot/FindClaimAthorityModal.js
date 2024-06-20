@@ -44,7 +44,12 @@ const FindClaimAthorityModal = ({ visible, onClose, updateAuthorityList, intl })
       }}
     >
       {selectedObj ? (
-        <ObjectCardView closeButton wObject={selectedObj} onDelete={() => setSelectedObj(null)} />
+        <ObjectCardView
+          showHeart={false}
+          closeButton
+          wObject={selectedObj}
+          onDelete={() => setSelectedObj(null)}
+        />
       ) : (
         <React.Fragment>
           <h4 className="ClaimAthorityBot__margin">
