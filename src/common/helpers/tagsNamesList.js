@@ -1,3 +1,5 @@
+import { isEmpty, isNil } from 'lodash';
+
 const tagNamesList = {
   hbd: 'HBD',
   ukraine: 'Ukraine',
@@ -44,9 +46,9 @@ const tagNamesList = {
   cuba: 'Cuba',
 };
 const capitalizeFirstLetter = string => {
-  if (string.length === 0) return string;
+  if (isNil(string) || isEmpty(string)) return string;
 
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string?.charAt(0)?.toUpperCase() + string?.slice(1);
 };
 
 export const getTagName = tag => tagNamesList[tag] || capitalizeFirstLetter(tag);
