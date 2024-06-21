@@ -76,6 +76,7 @@ export const objectFields = {
   mapRectangles: 'mapRectangles',
   delegation: 'delegation',
   walletAddress: 'walletAddress',
+  url: 'url',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',

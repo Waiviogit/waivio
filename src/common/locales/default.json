@@ -2637,5 +2637,7 @@
   "map_tags_note": "Choose the tags for displaying objects on the map.",
   "update": "Update",
   "object_field_delegation": "Delegation",
-  "object_field_walletAddress": "Wallet address"
+  "object_field_walletAddress": "Wallet address",
+  "object_field_url": "URL",
+  "enter_the_url": "Enter the URL"
 }
