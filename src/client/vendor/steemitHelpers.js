@@ -60,7 +60,7 @@ export const calculatePayout = (post, rates, isUpdates) => {
   const payoutDetails = {};
   const { cashout_time } = post;
   const sponsorLikePayout = get(
-    post.active_votes.find(vote => vote.sponsor),
+    post.active_votes?.find(vote => vote.sponsor),
     'payout',
     0,
   );

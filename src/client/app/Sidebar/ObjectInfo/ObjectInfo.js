@@ -667,6 +667,8 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
+    const linkUrl = get(wobject, 'url', '');
+    const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
       !hasType(wobject, OBJECT_TYPE.MAP) &&
@@ -935,6 +937,25 @@ class ObjectInfo extends React.Component {
         {isEditMode && this.listItem(objectFields.related, null)}
         {isEditMode && this.listItem(objectFields.addOn, null)}
         {isEditMode && this.listItem(objectFields.similar, null)}
+      </React.Fragment>
+    );
+
+    const linkSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="Link" defaultMessage="Link" />
+          </div>
+        )}
+        {this.listItem(
+          objectFields.url,
+          <div className={'ObjectInfo__url-container'}>
+            <Icon type="link" className={'ObjectInfo__url-image'} />{' '}
+            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+              {linkUrl}
+            </a>
+          </div>,
+        )}
       </React.Fragment>
     );
     const aboutSection = (
@@ -1543,6 +1564,7 @@ ${obj.productId}`}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {showMapSection && mapSection()}
+            {showLinkSection && linkSection}
             {aboutSection}
             {isAffiliate && (
               <AffiliateSection
