@@ -392,6 +392,7 @@ const BusinessObject = ({
                   {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
                 </div>
                 <SocialProductDescription
+                  isBusinessObj
                   description={wobject.description}
                   pictures={pictures}
                   authorPermlink={wobject.author_permlink}
