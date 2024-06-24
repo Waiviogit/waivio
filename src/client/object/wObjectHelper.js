@@ -50,9 +50,16 @@ export const shortenDescription = (description, length) => {
   const shortened = description.substr(0, length);
   const lastPeriod = shortened.lastIndexOf('.');
 
+  if (lastPeriod === -1) {
+    return {
+      firstDescrPart: shortened,
+      secondDescrPart: description.substring(length),
+    };
+  }
+
   return {
-    firstDescrPart: shortened,
-    secondDescrPart: description.substring(lastPeriod + 1),
+    firstDescrPart: shortened.substring(0, lastPeriod + 1),
+    secondDescrPart: description.substring(lastPeriod + 1).trim(),
   };
 };
 

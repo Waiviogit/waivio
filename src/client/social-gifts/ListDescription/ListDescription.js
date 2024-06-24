@@ -50,6 +50,7 @@ const ListDescription = ({ wobject }) => {
                 !hasAvatar ? 'without-avatar' : ''
               }`}
             >
+              {'\n'}
               {secondPart}
             </div>
             <div
@@ -57,6 +58,7 @@ const ListDescription = ({ wobject }) => {
                 !hasAvatar ? 'without-avatar' : ''
               }`}
             >
+              {'\n'}
               {thirdPart}
               {!isEmpty(fourthPart) && !showMore && (
                 <button
@@ -73,6 +75,7 @@ const ListDescription = ({ wobject }) => {
                   !hasAvatar ? 'without-avatar' : ''
                 }`}
               >
+                {'\n'}
                 {fourthPart}
               </div>
             )}
