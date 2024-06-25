@@ -364,7 +364,7 @@ const ModalSignIn = ({
         />
       )}
       <Modal
-        width={isMobile() ? 350 : 480}
+        width={480}
         visible={isModalOpen}
         onCancel={memoizedOnModalClose}
         footer={null}

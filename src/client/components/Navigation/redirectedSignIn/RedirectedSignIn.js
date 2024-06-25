@@ -21,7 +21,7 @@ const RedirectedSignIn = props => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '90vw',
+            width: '80vw',
             marginTop: '100px',
           }}
         >
