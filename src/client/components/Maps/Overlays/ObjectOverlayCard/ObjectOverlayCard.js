@@ -125,7 +125,7 @@ const ObjectOverlayCard = ({
             {isEmpty(tags) ? (
               <span>
                 {wObject.price && <span>&nbsp;&middot;&nbsp;</span>}
-                {wObject.object_type}
+                {getTagName(wObject.object_type)}
               </span>
             ) : (
               tags.map((tag, index) => (
