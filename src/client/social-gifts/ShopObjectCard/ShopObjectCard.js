@@ -85,7 +85,6 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
-  const withoutHeard = ['page'].includes(wObject?.object_type);
   const locale = useSelector(getUsedLocale);
   const isEnLocale = locale === 'en-US';
   const objLink =
@@ -119,7 +118,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">
-        {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
+        <HeartButton wobject={wObject} size={'20px'} />
         <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCard__avatarWrap">
           <img className="ShopObjectCard__avatarWrap" src={url} alt={altText} />
         </a>

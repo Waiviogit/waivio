@@ -89,7 +89,7 @@ const MapDesktopViewForm = props => {
   const setCoordinates = () =>
     setSettingMap({
       ...settingMap,
-      center: [lat, lon],
+      center: [lon, lat],
       zoom: settingMap.zoom,
     });
 
@@ -114,7 +114,7 @@ const MapDesktopViewForm = props => {
               <FormattedMessage id="object_field_mapMobileView" defaultMessage="Mobile view " />
             </div>
             <Map
-              center={get(mapState, ['mobileMap', 'center'], [+lat, +lon])}
+              center={get(mapState, ['mobileMap', 'center'], [+lon, +lat])}
               zoom={get(mapState, ['mobileMap', 'zoom'], 10)}
               minZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
               maxZoom={get(mapState, ['mobileMap', 'zoom'], 0)}
@@ -150,7 +150,7 @@ const MapDesktopViewForm = props => {
               <FormattedMessage id="object_field_mapDesktopView" defaultMessage="Desktop view " />
             </div>
             <Map
-              center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
+              center={get(mapState, ['desktopMap', 'center'], [+lon, +lat])}
               zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
               minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
               maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
@@ -199,7 +199,7 @@ const MapDesktopViewForm = props => {
               setPosition={setCoordinates}
             />
             <Map
-              center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], [+lat, +lon])}
+              center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], [+lon, +lat])}
               zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], 8)}
               height={getCurrentScreenSize(isDesktopModalShow)}
               provider={mapProvider}
