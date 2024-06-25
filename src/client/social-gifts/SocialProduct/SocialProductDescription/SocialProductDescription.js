@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 import PropTypes from 'prop-types';
 import './SocialProductDescription.less';
-import {
-  getBusinessDescriptionParagraphs,
-  getProductDescriptionParagraphs,
-} from '../../../object/wObjectHelper';
 
-const SocialProductDescription = ({ description, pictures, authorPermlink, isBusinessObj }) => {
+const SocialProductDescription = ({ description, pictures, authorPermlink }) => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [dividedParagraphs, setDividedParagraphs] = useState(description?.split('\n\n'));
@@ -18,10 +14,17 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, isBus
   };
 
   useEffect(() => {
-    const productParagraphs = getProductDescriptionParagraphs(dividedParagraphs);
+    const newParagraphs = dividedParagraphs?.reduce((acc, paragraph, index) => {
+      if (index % 2 === 0) {
+        const paragraph1 = paragraph;
+        const paragraph2 = dividedParagraphs[index + 1];
+        const combinedParagraphs = [paragraph1, paragraph2].filter(Boolean).join('\n\n');
 
-    const businessParagraphs = getBusinessDescriptionParagraphs(dividedParagraphs);
-    const newParagraphs = isBusinessObj ? businessParagraphs : productParagraphs;
+        acc.push(combinedParagraphs);
+      }
+
+      return acc;
+    }, []);
 
     setDividedParagraphs(newParagraphs);
   }, [authorPermlink]);
@@ -88,7 +91,6 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, isBus
 SocialProductDescription.propTypes = {
   description: PropTypes.string,
   authorPermlink: PropTypes.string,
-  isBusinessObj: PropTypes.bool,
   pictures: PropTypes.arrayOf(),
 };
 export default SocialProductDescription;
