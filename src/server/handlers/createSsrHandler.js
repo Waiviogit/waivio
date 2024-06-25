@@ -51,6 +51,8 @@ export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
     const isWaivio = req.hostname.includes('waivio');
+    const userAgent = req.get('User-Agent');
+    const isUser = !isbot(userAgent);
     const sc2Api = new hivesigner.Client({
       app: process.env.STEEMCONNECT_CLIENT_ID,
       baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
@@ -111,6 +113,23 @@ export default function createSsrHandler(template) {
     }
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
+    if (isUser) {
+      console.log('only for users');
+      return res.send(
+        renderSsrPage(
+          store,
+          null,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
+          get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
+          get(adsenseSettings, 'code', ''),
+        ),
+      );
+    }
 
     try {
       const searchBot = isbot(req.get('User-Agent'));
