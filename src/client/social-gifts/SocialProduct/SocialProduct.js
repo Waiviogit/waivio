@@ -464,7 +464,6 @@ const SocialProduct = ({
                   {intl.formatMessage({ id: 'about_this_item', defaultMessage: 'About this item' })}
                 </div>
                 <SocialProductDescription
-                  isBusinessObj={false}
                   description={wobject.description}
                   pictures={photosAlbum.items}
                   authorPermlink={wobject.author_permlink}
