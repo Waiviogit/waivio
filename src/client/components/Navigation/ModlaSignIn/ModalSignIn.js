@@ -352,7 +352,6 @@ const ModalSignIn = ({
 
     onModalClose();
   }, [timeOutId]);
-  const windowWidth = window && window?.innerWidth * 0.9;
 
   return (
     <React.Fragment>
@@ -365,7 +364,7 @@ const ModalSignIn = ({
         />
       )}
       <Modal
-        width={isMobile() ? windowWidth : 480}
+        width={isMobile() ? 350 : 480}
         visible={isModalOpen}
         onCancel={memoizedOnModalClose}
         footer={null}
