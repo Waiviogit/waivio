@@ -187,6 +187,9 @@ const SocialWrapper = props => {
     const provider = query.get('socialProvider');
     const auth = query.get('auth');
 
+    props.getRate();
+    props.getRewardFund();
+    props.getGlobalProperties();
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
@@ -263,6 +266,9 @@ SocialWrapper.propTypes = {
   username: PropTypes.string,
   login: PropTypes.func,
   getNotifications: PropTypes.func,
+  getRate: PropTypes.func,
+  getRewardFund: PropTypes.func,
+  getGlobalProperties: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   nightmode: PropTypes.bool,
@@ -502,6 +508,9 @@ export default ErrorBoundary(
         setSocialFlag,
         setLoadingStatus,
         getCoordinates,
+        getRate,
+        getRewardFund,
+        getGlobalProperties,
       },
     )(SocialWrapper),
   ),

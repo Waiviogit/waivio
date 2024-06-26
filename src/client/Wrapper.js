@@ -82,6 +82,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCryptoPriceHistory,
     getSwapEnginRates,
     getCoordinates,
+    getGlobalProperties,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -98,6 +99,9 @@ class Wrapper extends React.PureComponent {
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
+    getRate: PropTypes.func,
+    getRewardFund: PropTypes.func,
+    getGlobalProperties: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
@@ -167,6 +171,9 @@ class Wrapper extends React.PureComponent {
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
 
+    this.props.getRate();
+    this.props.getRewardFund();
+    this.props.getGlobalProperties();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
