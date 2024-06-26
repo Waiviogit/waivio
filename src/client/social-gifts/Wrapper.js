@@ -121,12 +121,6 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
-              if (
-                ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject?.object_type) &&
-                props.location.pathname === '/'
-              ) {
-                dispatch(getObjectAction(wobject?.author_permlink));
-              }
               props.setLoadingStatus(true);
             } else {
               const listItems = isEmpty(menuItemLinks)
@@ -172,14 +166,6 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
-              if (
-                ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(
-                  buttonList[0]?.object_type,
-                ) &&
-                props.location.pathname === '/'
-              ) {
-                dispatch(getObjectAction(buttonList[0]?.permlink));
-              }
 
               props.setLoadingStatus(true);
             }
