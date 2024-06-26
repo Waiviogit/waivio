@@ -11,4 +11,5 @@ export default {
   DRINK: 'drink',
   NEWSFEED: 'newsfeed',
   MAP: 'map',
+  LINK: 'link',
 };

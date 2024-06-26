@@ -9,7 +9,13 @@ import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
 import { getRequestLocale, loadLanguage } from '../../common/translations';
-import { setAppHost, setParentHost, setUsedLocale } from '../../store/appStore/appActions';
+import {
+  setAppHost,
+  setIsDiningGifts,
+  setIsSocialGifts,
+  setParentHost,
+  setUsedLocale,
+} from '../../store/appStore/appActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
@@ -21,6 +27,8 @@ import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
 import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
+import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
+import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebsites';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -51,6 +59,8 @@ export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
     const isWaivio = req.hostname.includes('waivio');
+    const userAgent = req.get('User-Agent');
+    const isUser = !isbot(userAgent);
     const sc2Api = new hivesigner.Client({
       app: process.env.STEEMCONNECT_CLIENT_ID,
       baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
@@ -66,6 +76,11 @@ export default function createSsrHandler(template) {
     let parentHost = '';
 
     if (!isWaivio) {
+      if (listOfWebsiteWithMainPage.some(site => site === hostname))
+        store.dispatch(setIsDiningGifts(true));
+      if (listOfSocialWebsites.some(site => site === hostname))
+        store.dispatch(setIsSocialGifts(true));
+
       try {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
@@ -111,6 +126,23 @@ export default function createSsrHandler(template) {
     }
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
+    if (isUser) {
+      console.log('only for users');
+      return res.send(
+        renderSsrPage(
+          store,
+          null,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
+          get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
+          get(adsenseSettings, 'code', ''),
+        ),
+      );
+    }
 
     try {
       const searchBot = isbot(req.get('User-Agent'));

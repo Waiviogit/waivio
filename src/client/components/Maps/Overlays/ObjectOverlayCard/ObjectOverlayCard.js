@@ -18,6 +18,7 @@ import { getScreenSize } from '../../../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
 import './ObjectOverlayCard.less';
+import { getTagName } from '../../../../../common/helpers/tagsNamesList';
 
 const ObjectOverlayCard = ({
   intl,
@@ -124,12 +125,16 @@ const ObjectOverlayCard = ({
             {isEmpty(tags) ? (
               <span>
                 {wObject.price && <span>&nbsp;&middot;&nbsp;</span>}
-                {wObject.object_type}
+                {getTagName(wObject.object_type)}
               </span>
             ) : (
               tags.map((tag, index) => (
                 <span key={tag}>
-                  {!index && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                  {!index && !wObject.price ? (
+                    getTagName(tag)
+                  ) : (
+                    <span>&nbsp;&middot;{` ${getTagName(tag)}`}</span>
+                  )}
                 </span>
               ))
             )}

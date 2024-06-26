@@ -91,7 +91,11 @@ const BusinessObject = ({
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
-  const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
+  // const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
+  const allPhotos = albums
+    ?.flatMap(alb => alb?.items)
+    ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
+  const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
   const phones = get(wobject, 'phone', []);
@@ -389,7 +393,7 @@ const BusinessObject = ({
                 </div>
                 <SocialProductDescription
                   description={wobject.description}
-                  pictures={photosAlbum.items}
+                  pictures={pictures}
                   authorPermlink={wobject.author_permlink}
                 />
               </div>

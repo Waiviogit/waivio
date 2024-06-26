@@ -44,7 +44,9 @@ const AppendObjButtons = ({
   const handleApprove = () => onActionInitiated(() => handleLikeClick(post, 10000, 'approve'));
   const handleReject = () => onActionInitiated(() => onFlagClick(post, 9999, 'reject'));
   const hideApproveFields = ['authority', 'affiliateCode'].includes(post.name);
-  const showApproveButtons = (hideApproveFields && post.creator === userName) || !hideApproveFields;
+  const urlField = ['url'].includes(post.name);
+  const showApproveButtons =
+    (hideApproveFields && post.creator === userName) || (!hideApproveFields && !urlField);
   const totalPayout =
     parseFloat(post.pending_payout_value) +
     parseFloat(post.total_payout_value) +

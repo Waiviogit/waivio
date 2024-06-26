@@ -121,7 +121,6 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
-
               props.setLoadingStatus(true);
             } else {
               const listItems = isEmpty(menuItemLinks)
@@ -167,6 +166,7 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
+
               props.setLoadingStatus(true);
             }
           },
@@ -191,6 +191,8 @@ const SocialWrapper = props => {
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+
+      createWebsiteMenu(res.configuration);
 
       if (typeof document !== 'undefined') {
         document.body.style.setProperty('--website-color', mainColor);

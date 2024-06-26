@@ -96,7 +96,7 @@ const ListSwitcher = props => {
   return (
     <div className={'ListSwitcher'}>
       <h3 className={'ListSwitcher__breadCrumbsWrap'}>
-        <div className={'flex'}>
+        <span>
           <span
             className={'ListSwitcher__breadCrumbs'}
             onClick={() => {
@@ -113,7 +113,7 @@ const ListSwitcher = props => {
               </Button>
             </div>
           )}
-        </div>
+        </span>
         {match.params.department && (
           <React.Fragment>
             <Icon type="right" />{' '}

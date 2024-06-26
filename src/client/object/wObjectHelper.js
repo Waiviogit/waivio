@@ -1,4 +1,4 @@
-import { get, filter, isEmpty, uniqBy, orderBy, has } from 'lodash';
+import { filter, get, has, isEmpty, orderBy, uniqBy } from 'lodash';
 import { getObjectName, getSortList, isList } from '../../common/helpers/wObjectHelper';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
@@ -50,11 +50,51 @@ export const shortenDescription = (description, length) => {
   const shortened = description.substr(0, length);
   const lastPeriod = shortened.lastIndexOf('.');
 
+  if (lastPeriod === -1) {
+    return {
+      firstDescrPart: shortened,
+      secondDescrPart: description.substring(length),
+    };
+  }
+
   return {
-    firstDescrPart: shortened,
-    secondDescrPart: description.substring(lastPeriod + 1),
+    firstDescrPart: shortened.substring(0, lastPeriod + 1),
+    secondDescrPart: description.substring(lastPeriod + 1).trim(),
   };
 };
+export const getProductDescriptionParagraphs = dividedParagraphs =>
+  dividedParagraphs?.reduce((acc, paragraph, index) => {
+    if (index % 2 === 0) {
+      const paragraph1 = paragraph;
+      const paragraph2 = dividedParagraphs[index + 1];
+      const combinedParagraphs = [paragraph1, paragraph2].filter(Boolean).join('\n\n');
+
+      acc.push(combinedParagraphs);
+    }
+
+    return acc;
+  }, []);
+
+export const getBusinessDescriptionParagraphs = dividedParagraphs =>
+  dividedParagraphs?.reduce((acc, paragraph, index) => {
+    if (index % 2 === 0) {
+      const paragraph1 = paragraph;
+      const paragraph2 = dividedParagraphs[index + 1];
+
+      if (paragraph1.length < 150 && paragraph2) {
+        const combinedParagraphs = [paragraph1, paragraph2].join('\n\n');
+
+        acc.push(combinedParagraphs);
+      } else {
+        acc.push(paragraph1);
+        if (paragraph2) {
+          acc.push(paragraph2);
+        }
+      }
+    }
+
+    return acc;
+  }, []);
 
 export const removeEmptyLines = string => {
   const lines = string?.split('\n');
