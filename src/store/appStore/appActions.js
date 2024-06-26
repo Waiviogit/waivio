@@ -257,3 +257,17 @@ export const setParentHost = host => ({
   type: SET_PARENT_HOST.ACTION,
   payload: getParentHost(host),
 });
+
+export const SET_IS_DINING = '@app/SET_IS_DINING';
+
+export const setIsDiningGifts = payload => ({
+  type: SET_IS_DINING,
+  payload,
+});
+
+export const SET_IS_SOCIAL_GIFTS = '@app/SET_IS_SOCIAL_GIFTS';
+
+export const setIsSocialGifts = payload => ({
+  type: SET_IS_SOCIAL_GIFTS,
+  payload,
+});
