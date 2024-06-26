@@ -60,17 +60,15 @@ const MapDesktopViewForm = props => {
   const handleSubmit = param => {
     setParamsSaving(true);
     props.setMap(param);
-    // setMapState(param);
+    setMapState(param);
     setParamsSaving(false);
     setShowMap('');
     setSettingMap({});
   };
-  const handleSubmitMap = () => {
-    setMapState({ [showMap]: settingMap });
+  const handleSubmitMap = () =>
     handleSubmit({
-      [showMap]: { ...settingMap, center: [settingMap.center[1], settingMap.center[0]] },
+      [showMap]: settingMap,
     });
-  };
   const incrementZoom = () => {
     if (settingMap.zoom <= 18) {
       setSettingMap({
@@ -91,7 +89,7 @@ const MapDesktopViewForm = props => {
   const setCoordinates = () =>
     setSettingMap({
       ...settingMap,
-      center: [lon, lat],
+      center: [lat, lon],
       zoom: settingMap.zoom,
     });
 
