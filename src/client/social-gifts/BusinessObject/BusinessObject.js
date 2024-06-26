@@ -94,7 +94,7 @@ const BusinessObject = ({
   // const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const allPhotos = albums
     ?.flatMap(alb => alb?.items)
-    ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+    ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
   const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
