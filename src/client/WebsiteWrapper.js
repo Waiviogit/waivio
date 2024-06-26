@@ -70,6 +70,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getTokenRates,
     getCryptoPriceHistory,
     getSwapEnginRates,
+    getGlobalProperties,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
@@ -103,6 +104,9 @@ class WebsiteWrapper extends React.PureComponent {
     // getCryptoPriceHistory: PropTypes.func.isRequired,
     setLocale: PropTypes.func.isRequired,
     // getSwapEnginRates: PropTypes.func.isRequired,
+    getRate: PropTypes.func,
+    getRewardFund: PropTypes.func,
+    getGlobalProperties: PropTypes.func,
   };
 
   static defaultProps = {
@@ -155,6 +159,9 @@ class WebsiteWrapper extends React.PureComponent {
     const provider = query.get('socialProvider');
     const locale = query.get('usedLocale');
 
+    this.props.getRate();
+    this.props.getRewardFund();
+    this.props.getGlobalProperties();
     this.props.getCurrentAppSettings().then(res => {
       // this.props.getTokenRates('WAIV');
       // this.props.getCryptoPriceHistory();
