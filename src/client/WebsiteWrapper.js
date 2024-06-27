@@ -91,7 +91,7 @@ class WebsiteWrapper extends React.PureComponent {
     isOpenModal: PropTypes.bool,
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
-    // getTokenRates: PropTypes.func.isRequired,
+    getTokenRates: PropTypes.func.isRequired,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
@@ -101,9 +101,9 @@ class WebsiteWrapper extends React.PureComponent {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
-    // getCryptoPriceHistory: PropTypes.func.isRequired,
+    getCryptoPriceHistory: PropTypes.func.isRequired,
     setLocale: PropTypes.func.isRequired,
-    // getSwapEnginRates: PropTypes.func.isRequired,
+    getSwapEnginRates: PropTypes.func.isRequired,
     getRate: PropTypes.func,
     getRewardFund: PropTypes.func,
     getGlobalProperties: PropTypes.func,
@@ -163,9 +163,9 @@ class WebsiteWrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getGlobalProperties();
     this.props.getCurrentAppSettings().then(res => {
-      // this.props.getTokenRates('WAIV');
-      // this.props.getCryptoPriceHistory();
-      // this.props.getSwapEnginRates();
+      this.props.getTokenRates('WAIV');
+      this.props.getCryptoPriceHistory();
+      this.props.getSwapEnginRates();
       if (!this.props.username) this.props.setLocale(locale || res.language);
       const mainColor = res.configuration?.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration?.colors?.mapMarkerText || initialColors.text;
