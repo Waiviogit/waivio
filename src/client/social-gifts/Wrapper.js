@@ -190,6 +190,9 @@ const SocialWrapper = props => {
     props.getRate();
     props.getRewardFund();
     props.getGlobalProperties();
+    props.getTokenRates('WAIV');
+    props.getCryptoPriceHistory();
+    props.getSwapEnginRates();
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
@@ -265,6 +268,7 @@ SocialWrapper.propTypes = {
   translations: PropTypes.shape(),
   username: PropTypes.string,
   login: PropTypes.func,
+  getSwapEnginRates: PropTypes.func,
   getNotifications: PropTypes.func,
   getRate: PropTypes.func,
   getRewardFund: PropTypes.func,
@@ -277,6 +281,8 @@ SocialWrapper.propTypes = {
   setUsedLocale: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
+  getTokenRates: PropTypes.func,
+  getCryptoPriceHistory: PropTypes.func,
   isOpenWalletTable: PropTypes.bool,
   // loadingFetching: PropTypes.bool,
   location: PropTypes.shape({
@@ -511,6 +517,9 @@ export default ErrorBoundary(
         getRate,
         getRewardFund,
         getGlobalProperties,
+        getTokenRates,
+        getCryptoPriceHistory,
+        getSwapEnginRates,
       },
     )(SocialWrapper),
   ),
