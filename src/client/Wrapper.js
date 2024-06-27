@@ -101,6 +101,8 @@ class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
     getRewardFund: PropTypes.func,
+    getTokenRates: PropTypes.func,
+    getCryptoPriceHistory: PropTypes.func,
     getGlobalProperties: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool,
@@ -108,6 +110,7 @@ class Wrapper extends React.PureComponent {
     isOpenWalletTable: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
+    getSwapEnginRates: PropTypes.func,
     isGuest: PropTypes.bool,
   };
 
@@ -174,6 +177,9 @@ class Wrapper extends React.PureComponent {
     this.props.getRate();
     this.props.getRewardFund();
     this.props.getGlobalProperties();
+    this.props.getTokenRates('WAIV');
+    this.props.getCryptoPriceHistory();
+    this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
