@@ -14,16 +14,20 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
   };
 
   useEffect(() => {
-    const newParagraphs = dividedParagraphs?.reduce((acc, paragraph, index) => {
-      if (index % 2 === 0) {
-        const paragraph1 = paragraph;
-        const paragraph2 = dividedParagraphs[index + 1];
-        const combinedParagraphs = [paragraph1, paragraph2].filter(Boolean).join('\n\n');
+    const newarr = [];
+    const newParagraphs = dividedParagraphs.reduce((acc, paragraph, index) => {
+      const prevParagraph = acc[acc.length - 1];
 
-        acc.push(combinedParagraphs);
+      if (prevParagraph && prevParagraph.includes(paragraph)) {
+        return acc;
+      }
+      if (paragraph.length > 290) {
+        newarr.push(paragraph);
+      } else {
+        newarr.push(`${paragraph}\n\n${dividedParagraphs[index + 1]}`);
       }
 
-      return acc;
+      return newarr;
     }, []);
 
     setDividedParagraphs(newParagraphs);
