@@ -950,16 +950,18 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.url,
-          <span className={'ObjectInfo__url-container'}>
-            <ReactSVG
-              className="ObjectInfo__url-image"
-              src={'/images/icons/link-icon.svg'}
-              wrapper={'span'}
-            />{' '}
-            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-              {linkUrl}
-            </a>
-          </span>,
+          linkUrl && (
+            <span className={'ObjectInfo__url-container'}>
+              <ReactSVG
+                className="ObjectInfo__url-image"
+                src={'/images/icons/link-icon.svg'}
+                wrapper={'span'}
+              />{' '}
+              <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+                {linkUrl}
+              </a>
+            </span>
+          ),
         )}
       </React.Fragment>
     );
