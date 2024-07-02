@@ -23,6 +23,7 @@ import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
 
 import './ObjectCardView.less';
+import { getTagName } from '../../common/helpers/tagsNamesList';
 
 const ObjectCardView = ({
   intl,
@@ -167,18 +168,26 @@ const ObjectCardView = ({
                   {prise}
                 </span>
               )}
-              {tags.map((tag, index) => (
-                <span key={tag}>
-                  {index === 0 && !prise ? (
-                    intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })
-                  ) : (
-                    <span>
-                      &nbsp;&middot;
-                      {`  ${intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })}`}
-                    </span>
-                  )}
-                </span>
-              ))}
+              {tags.map((tag, index) => {
+                const formattedMessage = intl.formatMessage({
+                  id: `object_type_${tag}`,
+                  defaultMessage: getTagName(tag),
+                });
+                const displayMessage = getTagName(formattedMessage);
+
+                return (
+                  <span key={tag}>
+                    {index === 0 && !prise ? (
+                      displayMessage
+                    ) : (
+                      <span>
+                        &nbsp;&middot;
+                        {`  ${displayMessage}`}
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
             </span>
             {address && <div className="ObjectCardView__tag-text">{address}</div>}
             {wObject.title ? (

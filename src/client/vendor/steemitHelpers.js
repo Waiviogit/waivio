@@ -60,11 +60,10 @@ export const calculatePayout = (post, rates, isUpdates) => {
   const payoutDetails = {};
   const { cashout_time } = post;
   const sponsorLikePayout = get(
-    post.active_votes.find(vote => vote.sponsor),
+    post.active_votes?.find(vote => vote.sponsor),
     'payout',
     0,
   );
-  console.log(rates);
   const waivPayout = isPostCashout(post)
     ? get(post, 'total_rewards_WAIV', 0) * rates
     : get(post, 'total_payout_WAIV', 0) * rates;

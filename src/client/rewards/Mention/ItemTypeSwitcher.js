@@ -3,6 +3,7 @@ import { AutoComplete } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAvatarURL } from '../../components/Avatar';
@@ -117,6 +118,14 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl, obj }) => {
       )}
     </div>
   );
+};
+
+ItemTypeSwitcher.propTypes = {
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }),
+  obj: PropTypes.shape({}),
+  setPrimaryObject: PropTypes.func(),
 };
 
 export default injectIntl(ItemTypeSwitcher);

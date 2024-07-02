@@ -66,7 +66,7 @@ const RenderPropositionList = ({
   const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
   const isLocation = match.params[0] === 'local';
-  const reqObj = requiredObject.replace('@', '');
+  const reqObj = requiredObject?.replace('@', '');
 
   const getFilters = () => {
     if (!withoutFilters)

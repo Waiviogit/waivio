@@ -204,7 +204,7 @@ const DescrioptionsBot = ({ intl }) => {
         showMore={hasMoreHistory}
         header={configDescriptionsBotHistoryTable}
         bodyConfig={
-          !isEmpty(history) ? history?.map(item => ({ ...item, lists: [item?.baseList] })) : []
+          !isEmpty(history) ? history?.map(item => ({ ...item, lists: [item?.object] })) : []
         }
       />
       {visibleVoting && (

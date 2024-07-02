@@ -324,6 +324,23 @@
 }
 
 .ObjectInfo {
+  &__url-image {
+    margin-right: 5px;
+    margin-top: 5px;
+    span > svg {
+      margin-bottom: -5px;
+      margin-right: -5px;
+      margin-left: -2px;
+
+      path {
+        fill: @black-text-basic;
+      }
+    }
+  }
+  &__url-container {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
   &__margin-top {
     margin-top: -7px;
   }

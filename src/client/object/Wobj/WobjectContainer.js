@@ -66,9 +66,7 @@ import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectT
 
 class WobjectContainer extends React.PureComponent {
   componentDidMount() {
-    const name = this.props.match.params.name;
-
-    if (name !== this.props.wobjPermlink) this.getWobjInfo();
+    this.getWobjInfo();
   }
 
   componentDidUpdate(prevProps) {
@@ -216,7 +214,6 @@ WobjectContainer.propTypes = {
   setCatalogBreadCrumbs: PropTypes.func,
   getCoordinates: PropTypes.func,
   locale: PropTypes.string,
-  wobjPermlink: PropTypes.string,
   currHost: PropTypes.string,
   getAlbums: PropTypes.func,
   getRelatedAlbum: PropTypes.func,

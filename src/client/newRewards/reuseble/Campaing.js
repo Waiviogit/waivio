@@ -98,6 +98,11 @@ Campaing.propTypes = {
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
     }),
+    user: PropTypes.shape({
+      posting_json_metadata: PropTypes.string,
+      name: PropTypes.string,
+      profile_image: PropTypes.string,
+    }),
     _id: PropTypes.string,
   }).isRequired,
   onActionInitiated: PropTypes.func.isRequired,

@@ -667,6 +667,8 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
+    const linkUrl = get(wobject, 'url', '');
+    const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
       !hasType(wobject, OBJECT_TYPE.MAP) &&
@@ -675,6 +677,7 @@ class ObjectInfo extends React.Component {
       !hasType(wobject, OBJECT_TYPE.LIST) &&
       !hasType(wobject, OBJECT_TYPE.DISH) &&
       !hasType(wobject, OBJECT_TYPE.AFFILIATE) &&
+      !hasType(wobject, OBJECT_TYPE.LINK) &&
       !hasType(wobject, OBJECT_TYPE.DRINK);
     const showMapSection = hasType(wobject, OBJECT_TYPE.MAP);
     const formsList = getFormItems(wobject)?.map(item => ({
@@ -935,6 +938,29 @@ class ObjectInfo extends React.Component {
         {isEditMode && this.listItem(objectFields.related, null)}
         {isEditMode && this.listItem(objectFields.addOn, null)}
         {isEditMode && this.listItem(objectFields.similar, null)}
+      </React.Fragment>
+    );
+
+    const linkSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="Link" defaultMessage="Link" />
+          </div>
+        )}
+        {this.listItem(
+          objectFields.url,
+          <span className={'ObjectInfo__url-container'}>
+            <ReactSVG
+              className="ObjectInfo__url-image"
+              src={'/images/icons/link-icon.svg'}
+              wrapper={'span'}
+            />{' '}
+            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+              {linkUrl}
+            </a>
+          </span>,
+        )}
       </React.Fragment>
     );
     const aboutSection = (
@@ -1543,6 +1569,7 @@ ${obj.productId}`}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {showMapSection && mapSection()}
+            {showLinkSection && linkSection}
             {aboutSection}
             {isAffiliate && (
               <AffiliateSection

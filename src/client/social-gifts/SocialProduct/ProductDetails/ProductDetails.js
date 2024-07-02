@@ -37,9 +37,7 @@ const ProductDetails = ({
         {!isEmpty(publisherObject) && (
           <SocialListItem fieldName={objectFields.publisher} field={newPublisher} />
         )}
-        {!isEmpty(fields.brandObject) && (
-          <SocialListItem fieldName={objectFields.brand} field={fields.brandObject} />
-        )}
+
         {!isEmpty(fields.manufacturerObject) && (
           <SocialListItem fieldName={objectFields.manufacturer} field={fields.manufacturerObject} />
         )}

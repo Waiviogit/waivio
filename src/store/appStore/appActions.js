@@ -30,6 +30,9 @@ export const closeBanner = createAction(CLOSE_BANNER);
 export const SET_APP_HOST = '@app/SET_APP_HOST';
 export const setAppHost = payload => ({ type: SET_APP_HOST, payload });
 
+export const SET_APP_AGENT = '@app/SET_APP_AGENT';
+export const setAppAgent = payload => ({ type: SET_APP_AGENT, payload });
+
 export const SET_APP_URL = '@app/SET_APP_URL';
 export const setAppUrl = createAction(SET_APP_URL);
 
@@ -253,4 +256,18 @@ export const SET_PARENT_HOST = createAsyncActionType('@app/SET_PARENT_HOST');
 export const setParentHost = host => ({
   type: SET_PARENT_HOST.ACTION,
   payload: getParentHost(host),
+});
+
+export const SET_IS_DINING = '@app/SET_IS_DINING';
+
+export const setIsDiningGifts = payload => ({
+  type: SET_IS_DINING,
+  payload,
+});
+
+export const SET_IS_SOCIAL_GIFTS = '@app/SET_IS_SOCIAL_GIFTS';
+
+export const setIsSocialGifts = payload => ({
+  type: SET_IS_SOCIAL_GIFTS,
+  payload,
 });

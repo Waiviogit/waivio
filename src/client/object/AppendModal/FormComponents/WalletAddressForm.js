@@ -41,7 +41,7 @@ const WalletAddressForm = ({
   const handleValidateWalletAddress = value => {
     if (!value) return setIsInvalid();
 
-    if (value) {
+    if (value && currCryptocurrency.abbreviation !== 'LBTC') {
       const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
 
       return setIsInvalid(!isValid);
@@ -150,11 +150,13 @@ const WalletAddressForm = ({
               />,
             )}
           </Form.Item>
-          {getFieldValue(walletAddressFields.walletAddress) && !isNil(isInvalid) && (
-            <span className={validateWalletAddressClassList}>
-              {isInvalid ? 'Invalid address' : 'Address is valid'}
-            </span>
-          )}
+          {getFieldValue(walletAddressFields.walletAddress) &&
+            !isNil(isInvalid) &&
+            currCryptocurrency.abbreviation !== 'LBTC' && (
+              <span className={validateWalletAddressClassList}>
+                {isInvalid ? 'Invalid address' : 'Address is valid'}
+              </span>
+            )}
         </>
       )}
     </div>

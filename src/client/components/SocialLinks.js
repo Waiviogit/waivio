@@ -1,18 +1,43 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
+import { useHistory, useParams } from 'react-router';
 import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
-import socialProfiles, { transform } from '../../common/helpers/socialProfiles';
+import socialProfiles, {
+  defaultSocialWallets,
+  socialWallets,
+  transform,
+} from '../../common/helpers/socialProfiles';
+import WalletItem from './WalletItem';
 
 const SocialLinks = ({ profile, isSocial }) => {
+  const params = useParams();
+  const history = useHistory();
   const union = intersection(
     socialProfiles.map(socialProfile => socialProfile.id),
     Object.keys(profile),
   );
 
   const availableProfiles = socialProfiles.filter(
-    socialProfile => union.indexOf(socialProfile.id) !== -1 && profile[socialProfile.id] !== '',
+    socialProfile =>
+      union.indexOf(socialProfile.id) !== -1 &&
+      profile[socialProfile.id] !== '' &&
+      !['bitcoin', 'ethereum'].includes(socialProfile.id),
   );
+  const wallets = intersection(
+    socialWallets.map(wallet => wallet.id),
+    Object.keys(profile),
+  );
+
+  const hiveHbdWallets = history?.location?.pathname?.includes(`/@${params.name}`)
+    ? defaultSocialWallets
+    : [];
+  const availableWallets = [
+    ...hiveHbdWallets,
+    ...socialWallets.filter(
+      wallet => wallets.indexOf(wallet.id) !== -1 && profile[wallet.id] !== '',
+    ),
+  ];
 
   return (
     <div>
@@ -53,6 +78,9 @@ const SocialLinks = ({ profile, isSocial }) => {
           </div>
         ),
       )}
+      {availableWallets?.map(w => (
+        <WalletItem key={w.id} profile={profile} wallet={w} />
+      ))}
     </div>
   );
 };

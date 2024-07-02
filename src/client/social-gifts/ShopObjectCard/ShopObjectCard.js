@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty, truncate, uniq } from 'lodash';
+import { get, has, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useLocation, useParams, useHistory } from 'react-router';
@@ -21,6 +21,7 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
+import { getTagName } from '../../../common/helpers/tagsNamesList';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -30,8 +31,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const { name } = useParams();
   const history = useHistory();
   const location = useLocation();
-  const withRewards = !isEmpty(wObject.propositions);
-  const proposition = withRewards ? wObject.propositions[0] : null;
+  const withRewards = !isEmpty(wObject.propositions) || has(wObject, 'campaigns');
+  const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
+  const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -83,7 +85,6 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
-  const withoutHeard = ['page'].includes(wObject?.object_type);
   const locale = useSelector(getUsedLocale);
   const isEnLocale = locale === 'en-US';
   const objLink =
@@ -107,17 +108,17 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             values={{ minPhotos: proposition?.requirements?.minPhotos }}
           />{' '}
           {isEnLocale ? (
-            <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+            <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
           ) : (
             <div>
               {' '}
-              <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
             </div>
           )}
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">
-        {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
+        <HeartButton wobject={wObject} size={'20px'} />
         <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCard__avatarWrap">
           <img className="ShopObjectCard__avatarWrap" src={url} alt={altText} />
         </a>
@@ -153,7 +154,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         )}
         {tags.map((tag, index) => (
           <span key={tag}>
-            {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+            {index === 0 && !wObject.price ? (
+              getTagName(tag)
+            ) : (
+              <span>&nbsp;&middot;{` ${getTagName(tag)}`}</span>
+            )}
           </span>
         ))}
       </span>
@@ -187,6 +192,7 @@ ShopObjectCard.propTypes = {
     price: PropTypes.string,
     affiliateLinks: PropTypes.arrayOf(PropTypes.shape()),
     propositions: PropTypes.arrayOf(PropTypes.shape()),
+    campaigns: PropTypes.arrayOf(PropTypes.shape()),
   }),
 };
 

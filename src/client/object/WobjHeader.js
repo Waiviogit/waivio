@@ -24,7 +24,6 @@ import {
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import HeartButton from '../widgets/HeartButton';
-import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 import '../components/ObjectHeader.less';
 
@@ -52,7 +51,6 @@ const WobjHeader = ({
   const status = parseWobjectField(wobject, 'status');
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
-  const isGuest = guestUserRegex.test(username);
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -109,7 +107,7 @@ const WobjHeader = ({
                     {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
-                {authenticated && !isGuest && <HeartButton wobject={wobject} size={'28px'} />}
+                {authenticated && <HeartButton wobject={wobject} size={'28px'} />}
               </div>
             </div>
           </div>

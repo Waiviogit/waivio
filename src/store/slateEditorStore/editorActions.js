@@ -49,22 +49,19 @@ import {
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
-  getReviewTitleNew,
 } from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
-  getEditorDraftBody,
   getEditorDraftId,
   getEditorExtended,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getEditorSlate,
   getIsEditorSaving,
-  getLinkedObjects,
   getTitleValue,
 } from './editorSelectors';
-import { getCurrentLocation, getQueryString } from '../reducers';
+import { getCurrentLocation } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
@@ -474,34 +471,18 @@ export const setUpdatedEditorExtendedData = payload => ({
   payload,
 });
 
-export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) => {
+export const getCampaignInfo = ({ campaignId }, intl) => {
   return (dispatch, getState) => {
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
-    const linkedObjects = getLinkedObjects(state);
-    const draftBody = getEditorDraftBody(state);
 
     return getCampaign(authUserName, campaignId)
       .then(campaignData => {
-        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
-        const currDraft = getCurrentDraft(state, { draftId });
-        const reviewedTitle = needReviewTitle
-          ? getReviewTitleNew(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
-          : {};
-
         const updatedEditorData = {
-          ...reviewedTitle,
           campaign: campaignData,
         };
 
-        dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
-        dispatch(
-          saveDraft(draftId, intl, {
-            content: updatedEditorData.draftContent.body,
-            titleValue: updatedEditorData.draftContent.title,
-          }),
-        );
       })
       .catch(error => {
         message.error(

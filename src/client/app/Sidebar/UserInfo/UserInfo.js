@@ -173,6 +173,12 @@ class UserInfo extends React.Component {
                     </div>
                   </React.Fragment>
                 )}
+                {isGuestPage && (
+                  <React.Fragment>
+                    <i className="iconfont icon-flashlight text-icon" />
+                    Guest mana: {user.guestMana}%
+                  </React.Fragment>
+                )}
                 <SocialLinks profile={profile} />
               </div>
               {!isGuestPage && (
@@ -189,12 +195,6 @@ class UserInfo extends React.Component {
                     votingMana={user.voting_mana}
                     votePrice={user.hiveVotingPowerPrice}
                   />
-                </React.Fragment>
-              )}
-              {isGuestPage && (
-                <React.Fragment>
-                  <i className="iconfont icon-flashlight text-icon" />
-                  Guest mana: {user.guestMana}%
                 </React.Fragment>
               )}
             </div>

@@ -44,6 +44,7 @@ const initialState = {
   infoLoaded: false,
   mainObj: {},
   appHost: '',
+  appAgent: 'desktop',
 };
 
 export default (state = initialState, action) => {
@@ -243,6 +244,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currPage: action.payload,
+      };
+    case appTypes.SET_IS_SOCIAL_GIFTS:
+      return {
+        ...state,
+        isSocialGifts: action.payload,
+      };
+    case appTypes.SET_IS_DINING:
+      return {
+        ...state,
+        isDiningGifts: action.payload,
       };
 
     case appTypes.SET_SOCIAL_FLAG:

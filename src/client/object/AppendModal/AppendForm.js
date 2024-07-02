@@ -147,6 +147,7 @@ import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
 import DelegationForm from './FormComponents/DelegationForm';
 import './AppendForm.less';
 import WalletAddressForm from './FormComponents/WalletAddressForm';
+import LinkUrlForm from './FormComponents/LinkUrlForm';
 
 @connect(
   state => ({
@@ -481,6 +482,7 @@ class AppendForm extends Component {
       case objectFields.dimensions:
       case objectFields.features:
       case objectFields.publicationDate:
+      case objectFields.url:
       case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
@@ -563,6 +565,10 @@ class AppendForm extends Component {
         case objectFields.affiliateButton:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.url:
+          return `@${author} added ${currentField} (${langReadable}): ${
+            formValues[objectFields.url]
+          }`;
         case objectFields.options:
           const image = formValues[objectFields.options]
             ? `, image: \n ![${objectFields.options}](${formValues[objectFields.options]})`
@@ -3124,6 +3130,15 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.url: {
+        return (
+          <LinkUrlForm
+            getFieldDecorator={getFieldDecorator}
+            loading={loading}
+            getFieldValue={this.props.form.getFieldValue}
+          />
+        );
+      }
       case objectFields.productId: {
         return (
           <React.Fragment>
@@ -4262,6 +4277,9 @@ class AppendForm extends Component {
             isEmpty(this.state.selectedUserBlog)) ||
           (!isEmpty(getFieldValue(walletAddressFields.walletAddress)) && this.state.isInvalid)
         );
+      case objectFields.url:
+        return isEmpty(getFieldValue(objectFields.url));
+
       case objectFields.address:
         return (
           isEmpty(getFieldValue(addressFields.city)) &&

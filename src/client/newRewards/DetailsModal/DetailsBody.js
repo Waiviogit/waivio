@@ -313,6 +313,9 @@ DetailsModalBody.propTypes = {
     requiredObject: PropTypes.shape({
       defaultShowLink: PropTypes.string,
     }),
+    user: PropTypes.shape({
+      name: PropTypes.string,
+    }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
     frequencyAssign: PropTypes.number,

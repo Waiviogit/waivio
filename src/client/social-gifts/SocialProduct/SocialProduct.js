@@ -70,6 +70,8 @@ import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/use
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import './SocialProduct.less';
+import SocialListItem from './SocialListItem/SocialListItem';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 const limit = 30;
 
@@ -296,13 +298,22 @@ const SocialProduct = ({
             {isMobile() && (
               <h1
                 className={
-                  isEmpty(productAuthors) && isEmpty(wobjTitle)
+                  isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(brandObject)
                     ? 'SocialProduct__wobjName'
                     : 'SocialProduct__bookWobjName'
                 }
               >
                 {wobject.name}
               </h1>
+            )}
+            {isMobile() && !isEmpty(brandObject) && (
+              <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
+                <SocialListItem
+                  fieldName={objectFields.brand}
+                  field={brandObject}
+                  showTitle={false}
+                />
+              </div>
             )}
             {isMobile() && !isEmpty(wobjTitle) && (
               <div className="SocialProduct__title">{wobjTitle}</div>
@@ -349,7 +360,7 @@ const SocialProduct = ({
                     activeCategory={activeCategory}
                   />
                 </div>
-                <div>
+                <div className="SocialProduct__reward-wrap">
                   <ProductRewardCard isSocialProduct reward={reward} />
                 </div>
               </div>
@@ -358,13 +369,22 @@ const SocialProduct = ({
               {!isMobile() && (
                 <h1
                   className={
-                    isEmpty(productAuthors) && isEmpty(wobjTitle)
+                    isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(brandObject)
                       ? 'SocialProduct__wobjName'
                       : 'SocialProduct__bookWobjName'
                   }
                 >
                   {wobject.name}
                 </h1>
+              )}
+              {!isMobile() && !isEmpty(brandObject) && (
+                <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
+                  <SocialListItem
+                    fieldName={objectFields.brand}
+                    field={brandObject}
+                    showTitle={false}
+                  />
+                </div>
               )}
               {!isMobile() && !isEmpty(wobjTitle) && (
                 <div className="SocialProduct__title">{wobjTitle}</div>
@@ -468,7 +488,7 @@ const SocialProduct = ({
                 dimensions={dimensions}
                 productIdBody={productIdBody}
                 departments={departments}
-                fields={{ brandObject, manufacturerObject, merchantObject }}
+                fields={{ manufacturerObject, merchantObject }}
                 parent={parent}
               />
             )}

@@ -1318,6 +1318,13 @@ export const checkFollowing = (user, users = []) => {
   }).then(res => res.json());
 };
 
+export const getDynamicGlobalPropertiesFromApi = () => {
+  return fetch(`${config.apiPrefix}/hive/global-properties`, {
+    headers,
+    method: 'GET',
+  }).then(res => res.json());
+};
+
 export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
   const amount = isNaN(inputAmount) ? 0 : inputAmount;
 

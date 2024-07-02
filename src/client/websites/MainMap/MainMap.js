@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty, get, map, debounce, isEqual, reverse } from 'lodash';
+import { isEmpty, get, map, debounce, isEqual, reverse, round } from 'lodash';
 
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -439,7 +439,7 @@ const MainMap = React.memo(props => {
     props.hoveredCardPermlink,
   ]);
 
-  if (props.loading && props.isSocial) {
+  if (isEmpty(props.mapData.center) && props.isSocial) {
     return <Loading />;
   }
 
@@ -451,7 +451,7 @@ const MainMap = React.memo(props => {
           ref={mapRef}
           center={props.mapData.center}
           height={Number(mapHeight)}
-          zoom={props.mapData.zoom}
+          zoom={round(props.mapData.zoom)}
           provider={mapProvider}
           onBoundsChanged={onBoundsChanged}
           onClick={handleClickOnMap}
@@ -511,7 +511,7 @@ MainMap.propTypes = {
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
-  loading: PropTypes.bool,
+  // loading: PropTypes.bool,
   socialLoading: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,

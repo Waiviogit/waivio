@@ -173,17 +173,21 @@ export const configAthorityBotHistoryTable = [
   {
     id: 'lists',
     intl: {
-      id: 'base_list',
-      defaultMessage: 'Base list',
+      id: 'base_object',
+      defaultMessage: 'Base object',
     },
     type: 'openModal',
     modal: {
       body: item => (
         <ol>
-          {item.lists.map(link => (
-            <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
-                {link}
+          {item.objects.map(obj => (
+            <li key={obj.author_permlink}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${obj.author_permlink}/${obj.object_type}`}
+              >
+                {obj.author_permlink}
               </a>
             </li>
           ))}
@@ -397,8 +401,8 @@ export const configDepartmentsBotHistoryTable = [
   {
     id: 'lists',
     intl: {
-      id: 'base_list',
-      defaultMessage: 'Base list',
+      id: 'base_object',
+      defaultMessage: 'Base object',
     },
     type: 'openModal',
     modal: {
@@ -450,17 +454,21 @@ export const configDescriptionsBotHistoryTable = [
   {
     id: 'lists',
     intl: {
-      id: 'base_list',
-      defaultMessage: 'Base list',
+      id: 'base_object',
+      defaultMessage: 'Base object',
     },
     type: 'openModal',
     modal: {
       body: item => (
         <ol>
-          {item.lists.map(link => (
-            <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
-                {link}
+          {item.lists.map(object => (
+            <li key={object.author_permlink}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${object.author_permlink}/${object.object_type}`}
+              >
+                {object.author_permlink}
               </a>
             </li>
           ))}

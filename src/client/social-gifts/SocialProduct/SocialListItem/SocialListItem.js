@@ -7,7 +7,7 @@ import { objectFields } from '../../../../common/constants/listOfFields';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
 
-const SocialListItem = ({ fieldName, field, title }) => {
+const SocialListItem = ({ fieldName, field, title, showTitle }) => {
   const fieldPermlink = field.author_permlink || field.authorPermlink;
   const getLayout = () => {
     switch (fieldName) {
@@ -86,10 +86,15 @@ const SocialListItem = ({ fieldName, field, title }) => {
   };
 
   return (
-    <div className="paddingBottom">
-      <b>
-        {title || <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />}:{' '}
-      </b>
+    <div className={showTitle ? 'paddingBottom' : ''}>
+      {showTitle && (
+        <b>
+          {title || (
+            <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />
+          )}
+          :{' '}
+        </b>
+      )}
       {getLayout(fieldName, field)}
     </div>
   );
@@ -99,6 +104,11 @@ SocialListItem.propTypes = {
   fieldName: PropTypes.string,
   title: PropTypes.string,
   field: PropTypes.shape(),
+  showTitle: PropTypes.bool,
+};
+
+SocialListItem.defaultProps = {
+  showTitle: true,
 };
 
 export default SocialListItem;

@@ -34,7 +34,7 @@ const Payout = React.memo(({ intl, post, isUpdates }) => {
   ) : (
     <FormattedMessage id="payout_potential_payout_amount" defaultMessage="Potential Payout:" />
   );
-  console.log(currentPayout);
+
   return (
     <React.Fragment>
       <span className={payoutClassList} onClick={toggleModal}>

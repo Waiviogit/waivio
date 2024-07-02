@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
-import { injectIntl } from 'react-intl';
+import { has } from 'lodash';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -30,6 +31,14 @@ const WidgetPage = props => {
       });
     }
   }, [hash]);
+
+  if (!has(wobject, 'widget')) {
+    return (
+      <div role="presentation" className="Threads__row justify-center">
+        <FormattedMessage id="empty_widget" defaultMessage="This widget is empty" />
+      </div>
+    );
+  }
 
   if (!widgetForm?.content) {
     return <Loading />;

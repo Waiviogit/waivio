@@ -76,6 +76,7 @@ export const objectFields = {
   mapRectangles: 'mapRectangles',
   delegation: 'delegation',
   walletAddress: 'walletAddress',
+  url: 'url',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -279,7 +280,7 @@ export const cryptocurrenciesList = [
     icon: 'lightning_bitcoin.png',
   },
   { name: 'HIVE', abbreviation: 'HIVE', shortName: 'HIVE', icon: 'hive.png' },
-  { name: 'HBD', abbreviation: 'HBD', shortName: 'HBD', icon: 'hive.png' },
+  { name: 'HBD', abbreviation: 'HBD', shortName: 'HBD', icon: 'hbd.png' },
   { name: 'WAIV', abbreviation: 'WAIV', shortName: 'WAIV', icon: 'waiv.png' },
 ];
 

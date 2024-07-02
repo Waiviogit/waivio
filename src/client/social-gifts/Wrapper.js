@@ -121,7 +121,6 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
-
               props.setLoadingStatus(true);
             } else {
               const listItems = isEmpty(menuItemLinks)
@@ -167,6 +166,7 @@ const SocialWrapper = props => {
                   },
                 ]),
               );
+
               props.setLoadingStatus(true);
             }
           },
@@ -187,10 +187,18 @@ const SocialWrapper = props => {
     const provider = query.get('socialProvider');
     const auth = query.get('auth');
 
+    props.getRate();
+    props.getRewardFund();
+    props.getGlobalProperties();
+    props.getTokenRates('WAIV');
+    props.getCryptoPriceHistory();
+    props.getSwapEnginRates();
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+
+      createWebsiteMenu(res.configuration);
 
       if (typeof document !== 'undefined') {
         document.body.style.setProperty('--website-color', mainColor);
@@ -260,7 +268,11 @@ SocialWrapper.propTypes = {
   translations: PropTypes.shape(),
   username: PropTypes.string,
   login: PropTypes.func,
+  getSwapEnginRates: PropTypes.func,
   getNotifications: PropTypes.func,
+  getRate: PropTypes.func,
+  getRewardFund: PropTypes.func,
+  getGlobalProperties: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   nightmode: PropTypes.bool,
@@ -269,6 +281,8 @@ SocialWrapper.propTypes = {
   setUsedLocale: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
+  getTokenRates: PropTypes.func,
+  getCryptoPriceHistory: PropTypes.func,
   isOpenWalletTable: PropTypes.bool,
   // loadingFetching: PropTypes.bool,
   location: PropTypes.shape({
@@ -469,7 +483,6 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(getRewardFund()),
     store.dispatch(getTokenRates('WAIV')),
     store.dispatch(getCryptoPriceHistory()),
-    store.dispatch(getGlobalProperties()),
     store.dispatch(getSwapEnginRates()),
     store.dispatch(getGlobalProperties()),
   ]);
@@ -501,6 +514,12 @@ export default ErrorBoundary(
         setSocialFlag,
         setLoadingStatus,
         getCoordinates,
+        getRate,
+        getRewardFund,
+        getGlobalProperties,
+        getTokenRates,
+        getCryptoPriceHistory,
+        getSwapEnginRates,
       },
     )(SocialWrapper),
   ),

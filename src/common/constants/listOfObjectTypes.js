@@ -31,6 +31,7 @@ const listOfObjectTypes = [
   'widget',
   'webpage',
   'map',
+  'link',
   'shop',
   'affiliate',
   'restaurant',

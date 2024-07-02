@@ -50,6 +50,9 @@ RewardsHeader.propTypes = {
     requirements: PropTypes.shape({
       minPhotos: PropTypes.number,
     }),
+    user: PropTypes.shape({
+      name: PropTypes.number,
+    }),
     object: PropTypes.shape({
       object_type: PropTypes.string,
     }),
