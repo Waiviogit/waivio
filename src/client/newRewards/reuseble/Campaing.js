@@ -11,12 +11,28 @@ import useQuickRewards from '../../../hooks/useQuickRewards';
 import withAuthActions from '../../auth/withAuthActions';
 import { getIsSocial, getIsWaivio } from '../../../store/appStore/appSelectors';
 import useQuery from '../../../hooks/useQuery';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './Campaing.less';
 
 const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handleReportClick }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
+  let mainItem = campain.object;
+
+  if (campain.user) {
+    const profile = campain.user?.posting_json_metadata
+      ? parseJSON(campain.user.posting_json_metadata)?.profile
+      : null;
+
+    mainItem = {
+      name: campain.user.name,
+      object_type: 'user',
+      avatar: campain.user.profile_image,
+      description: profile?.about,
+      author_permlink: campain.user.name,
+    };
+  }
   const buttonLabel =
     maxReward === minReward
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
@@ -38,14 +54,17 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
     onActionInitiated(() => {
       openModal(true);
       setRestaurant({
-        ...campain.object,
+        ...mainItem,
         campaigns: { min_reward: minReward, max_reward: maxReward },
       });
     });
 
-  const goToProducts = () => {
-    if (isWaivio || isSocial) history.push(`${pathname}/${campain?.object?.author_permlink}`);
-    else {
+  const goToProducts = obj => {
+    if (isWaivio || isSocial) {
+      const link = obj.object_type === 'user' ? `@${obj?.author_permlink}` : obj?.author_permlink;
+
+      history.push(`${pathname}/${link}`);
+    } else {
       handleOpenQuickRewards();
     }
   };
@@ -53,14 +72,14 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
   return (
     <div className="Campaing">
       <ObjectCardView
-        wObject={campain.object}
+        wObject={mainItem}
         withRewards
         rewardPrice={maxReward}
         hovered={hovered}
         handleReportClick={handleReportClick}
         isRejected={isRejected}
       />
-      <span onClick={goToProducts} className="Campaing__button">
+      <span onClick={() => goToProducts(mainItem)} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={maxReward} />
@@ -78,6 +97,11 @@ Campaing.propTypes = {
     reach: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
+    }),
+    user: PropTypes.shape({
+      posting_json_metadata: PropTypes.string,
+      name: PropTypes.string,
+      profile_image: PropTypes.string,
     }),
     _id: PropTypes.string,
   }).isRequired,
