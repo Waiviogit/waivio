@@ -2,6 +2,16 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .ListDescription {
+  margin: 30px 5%;
+  color: @blue-botticelli;
+  word-break: break-word;
+  font-size: 18px;
+
+  p {
+    white-space: break-spaces;
+    word-break: break-word;
+  }
+
   &__title {
     font-size: 20px;
     font-weight: 500;
@@ -16,7 +26,7 @@
     }
 
     &.margin-bottom {
-      margin: 10px 0 10px;
+      margin: 0 0 10px;
     }
   }
 
@@ -123,26 +133,23 @@
     }
   }
 
-  &__image-container.show {
-    @media @small {
-      width: 40%;
-      height: auto;
-      display: block;
-    }
-  }
   &__image-container {
     @media @small {
-      display: none;
+      float: right;
     }
   }
 
   &__image {
-    width: 100%;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
     @media @small {
-      width: 70%;
-      margin: 0 auto;
-      display: flex;
+      margin-bottom: 0;
+      padding: 0 20px 0 40px;
       object-fit: contain;
+      max-height: 500px;
     }
   }
 }
