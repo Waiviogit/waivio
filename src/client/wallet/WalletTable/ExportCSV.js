@@ -94,7 +94,7 @@ const ExportCsv = ({ disabled, item, toggleDisabled }) => {
           setSaved(true);
           if (isEmpty(res.wallet) && isEmpty(csv))
             message.warning('There are no records available.');
-          if (!isEmpty(csv)) {
+          else {
             message.success('Data retrieval successful! You can now save it.');
           }
         }

@@ -215,8 +215,8 @@ export const getObjectLink = (obj, match = {}) => {
   }${getObjectUrlForLink(obj)}`;
 };
 
-const setTitle = (initObjects, props, authors) => {
-  if (size(initObjects)) {
+const setTitle = (initObjects, props, authors, users) => {
+  if (size(initObjects) || size(users)) {
     const title = initObjects.reduce((acc, curr) => {
       const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
@@ -240,13 +240,25 @@ const setTitle = (initObjects, props, authors) => {
       return authorAcc;
     }
 
+    if (!isEmpty(users)) {
+      let usersAcc = title;
+
+      users.forEach(curr => {
+        const user = curr?.match(/^\[(.+)\]\((\S+)\)/);
+
+        usersAcc = usersAcc ? `${usersAcc} @${user[1]},` : `@${user[1]}`;
+      });
+
+      return usersAcc;
+    }
+
     return title;
   }
 
   return get(props, 'editor.draftContent.title', '');
 };
 
-const setBody = (initObjects, props, authors) => {
+const setBody = (initObjects, props, authors, users) => {
   const body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
       ? initObjects.reduce((acc, curr) => {
@@ -279,6 +291,12 @@ const setBody = (initObjects, props, authors) => {
     return authorAcc;
   }
 
+  if (!isEmpty(users)) {
+    const userLinks = users.map(user => `@${user}\n`);
+
+    return body ? `${body}${userLinks.join('')}` : `${userLinks.join('')}`;
+  }
+
   return body;
 };
 
@@ -295,18 +313,19 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const initObjects = props.location.state
     ? getObjects(props.location.state)
     : query.getAll('object');
+  const users = query.getAll('user');
   const authors = query.getAll('author');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
-  const campaignId = props.campaignId ? { id: props.campaignId } : null;
-  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
-  const title = setTitle(initObjects, props, authors);
+  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : null;
+  const title = setTitle(initObjects, props, authors, users);
+
   let state = {
     campaign,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title,
-      body: setBody(initObjects, props, authors),
+      body: setBody(initObjects, props, authors, users),
     },
     content: '',
     topics: [],
