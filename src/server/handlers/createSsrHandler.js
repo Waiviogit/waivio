@@ -127,7 +127,6 @@ export default function createSsrHandler(template) {
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
     if (isUser) {
-      console.log('only for users');
       return res.send(
         renderSsrPage(
           store,
@@ -201,6 +200,8 @@ export default function createSsrHandler(template) {
       );
 
       if (searchBot) await setCachedPage({ page, req });
+
+      console.log('from ssr');
 
       return res.send(page);
     } catch (err) {

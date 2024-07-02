@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { useParams } from 'react-router';
 import { connect } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -15,7 +15,10 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [photoIndex, setPhotoIndex] = useState(0);
   const { name } = useParams();
   const description = wobject?.description;
-  const pics = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos').items : [];
+  const allPhotos = albums
+    ?.flatMap(alb => alb?.items)
+    ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
+  const pics = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const pictures = pics?.length > 15 ? pics.slice(0, 15) : pics;
   const album = [...albums, relatedAlbum]?.find(alb =>
     alb?.items?.some(pic => pic.body === pics[photoIndex]?.body),

@@ -155,7 +155,7 @@ class StoryFull extends React.Component {
     const { post } = this.props;
     const hideWhiteBG =
       document &&
-      document.location.pathname !==
+      document.location?.pathname !==
         replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
 
     if (hideWhiteBG) {

@@ -24,7 +24,9 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
       if (paragraph.length > 290) {
         newarr.push(paragraph);
       } else {
-        newarr.push(`${paragraph}\n\n${dividedParagraphs[index + 1]}`);
+        const nextParagraph = dividedParagraphs[index + 1] || '';
+
+        newarr.push(`${paragraph}\n\n${nextParagraph}`);
       }
 
       return newarr;

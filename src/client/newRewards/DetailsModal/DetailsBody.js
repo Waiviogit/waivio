@@ -145,20 +145,22 @@ const DetailsModalBody = ({
           })}
         </div>
         <ol className="DetailsModal__requirementsList">
-          <li>
-            <span className="nowrap">
-              {intl.formatMessage({ id: 'minimum', defaultMessage: 'Minimum' })}{' '}
-              {proposition?.requirements?.minPhotos}{' '}
-              {intl.formatMessage({
-                id: 'original_photos_of',
-                defaultMessage: 'original photos of',
-              })}
-            </span>
-            <Link className="ml1" to={proposition?.object?.defaultShowLink}>
-              {getObjectName(proposition?.object)}
-            </Link>
-            ;
-          </li>
+          {Boolean(proposition?.requirements?.minPhotos) && (
+            <li>
+              <span className="nowrap">
+                {intl.formatMessage({ id: 'minimum', defaultMessage: 'Minimum' })}{' '}
+                {proposition?.requirements?.minPhotos}{' '}
+                {intl.formatMessage({
+                  id: 'original_photos_of',
+                  defaultMessage: 'original photos of',
+                })}
+              </span>
+              <Link className="ml1" to={proposition?.object?.defaultShowLink}>
+                {getObjectName(proposition?.object)}
+              </Link>
+              ;
+            </li>
+          )}
           {proposition?.requirements.receiptPhoto && (
             <li>
               {intl.formatMessage({
@@ -171,8 +173,15 @@ const DetailsModalBody = ({
             <span className="nowrap">
               {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
             </span>
-            <Link className="ml1 DetailsModal__container" to={proposition?.object?.defaultShowLink}>
-              {getObjectName(proposition?.object)}
+            <Link
+              className="ml1 DetailsModal__container"
+              to={
+                proposition?.user
+                  ? `/@${proposition?.user.name}`
+                  : proposition?.object?.defaultShowLink
+              }
+            >
+              {proposition?.user ? proposition?.user.name : getObjectName(proposition?.object)}
             </Link>
             ;
           </li>
@@ -303,6 +312,9 @@ DetailsModalBody.propTypes = {
     activationPermlink: PropTypes.string,
     requiredObject: PropTypes.shape({
       defaultShowLink: PropTypes.string,
+    }),
+    user: PropTypes.shape({
+      name: PropTypes.string,
     }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
