@@ -166,7 +166,9 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                         <b>Submit</b> dish
                       </span>
                     )}{' '}
-                    {intl.formatMessage({ id: 'photos_lowercase', defaultMessage: 'photos' })}
+                    {proposition?.type === 'mentions'
+                      ? intl.formatMessage({ id: 'mentions_lowercase', defaultMessage: 'mentions' })
+                      : intl.formatMessage({ id: 'photos_lowercase', defaultMessage: 'photos' })}
                   </span>
                 </Button>
               )}
@@ -244,6 +246,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               }}
               reservedDays={proposition?.countReservationDays}
               inCard
+              type={proposition?.type}
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>
               {intl.formatMessage({ id: 'details', defaultMessage: 'Details' })}{' '}
@@ -283,6 +286,7 @@ PropositionFooter.propTypes = {
     guideName: PropTypes.string,
     notEligible: PropTypes.bool,
     reserved: PropTypes.bool,
+    type: PropTypes.string,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,

@@ -16,6 +16,7 @@ import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util
 import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './EditPost.less';
+import Loading from '../../components/Icon/Loading';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
@@ -196,6 +197,8 @@ const EditPost = props => {
   };
 
   const handlePasteText = (text, html) => props.handlePasteText(html);
+
+  if (props.campaignId) return <Loading />;
 
   return (
     <div className="shifted">

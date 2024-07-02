@@ -12,6 +12,7 @@ import { reserveProposition } from '../../../../store/newRewards/newRewardsActio
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 import './Proposition.less';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 const Proposition = ({
   handleReportClick,
@@ -25,7 +26,23 @@ const Proposition = ({
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
 
-  if (!proposition?.object) return null;
+  if (!proposition?.object && !proposition?.user) return null;
+
+  let mainItem = proposition.object;
+
+  if (proposition.user) {
+    const profile = proposition.user?.posting_json_metadata
+      ? parseJSON(proposition.user.posting_json_metadata)?.profile
+      : null;
+
+    mainItem = {
+      name: proposition.user.name,
+      object_type: 'user',
+      avatar: proposition.user.profile_image,
+      description: profile?.about,
+      author_permlink: proposition.user.name,
+    };
+  }
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
   const propositionType =
@@ -55,7 +72,7 @@ const Proposition = ({
             <RewardsHeader proposition={proposition} />
           </div>
           <ObjectCardView
-            wObject={proposition.object}
+            wObject={mainItem}
             withRewards
             rewardPrice={proposition.rewardInUSD}
             payoutToken={proposition.payoutToken}
@@ -64,7 +81,7 @@ const Proposition = ({
             isRejected={isRejected}
             passedParent={
               !has(proposition?.requiredObject, 'author_permlink') ||
-              proposition?.requiredObject?.author_permlink === proposition.object.author_permlink
+              proposition?.requiredObject?.author_permlink === mainItem.author_permlink
                 ? null
                 : proposition?.requiredObject
             }
@@ -106,6 +123,11 @@ Proposition.propTypes = {
     payoutToken: PropTypes.string,
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
+    }),
+    user: PropTypes.shape({
+      posting_json_metadata: PropTypes.string,
+      name: PropTypes.string,
+      profile_image: PropTypes.string,
     }),
     requiredObject: PropTypes.shape(),
     requirements: PropTypes.shape({
