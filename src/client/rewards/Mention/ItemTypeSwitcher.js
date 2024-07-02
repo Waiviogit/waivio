@@ -125,7 +125,7 @@ ItemTypeSwitcher.propTypes = {
     formatMessage: PropTypes.func,
   }),
   obj: PropTypes.shape({}),
-  setPrimaryObject: PropTypes.func(),
+  setPrimaryObject: PropTypes.func,
 };
 
 export default injectIntl(ItemTypeSwitcher);
