@@ -26,9 +26,12 @@
     }
   }
   &__single-paragraph {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 0;
     @media @small {
-      margin-bottom: 0;
+      margin-bottom: 20px;
+      display: block;
       padding: 20px;
     }
   }
@@ -57,11 +60,12 @@
   &__single-image {
     float: right;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 0;
     width: auto;
     max-width: 100%;
     @media @small {
-      margin-bottom: 0;
+      margin-top: 0;
       padding: 0 20px 20px 40px;
       object-fit: contain;
       max-height: 300px;
