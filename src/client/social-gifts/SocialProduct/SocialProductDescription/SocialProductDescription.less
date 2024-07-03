@@ -5,6 +5,8 @@
   &__paragraph-container {
     display: flex;
     flex-direction: column;
+    padding: 20px;
+
     @media @small {
       justify-content: space-around;
       flex-direction: row;
@@ -21,6 +23,13 @@
       margin-bottom: 0;
       padding: 20px;
       width: 50%;
+    }
+  }
+  &__single-paragraph {
+    margin-bottom: 20px;
+    @media @small {
+      margin-bottom: 0;
+      padding: 20px;
     }
   }
   &__paragraph-only {
@@ -51,11 +60,14 @@
     margin-bottom: 20px;
     width: auto;
     max-width: 100%;
-    height: auto;
     @media @small {
       margin-bottom: 0;
-      padding: 0 20px 40px 40px;
+      padding: 0 20px 20px 40px;
       object-fit: contain;
+      max-height: 300px;
+    }
+    @media @medium {
+      padding: 0 20px 40px 40px;
       max-height: 500px;
     }
   }
