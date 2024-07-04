@@ -50,6 +50,7 @@ class PostPreviewModal extends Component {
     reviewData: PropTypes.shape({
       reviewer: PropTypes.shape(),
       campaign: PropTypes.shape(),
+      requirements: PropTypes.shape(),
     }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
@@ -269,7 +270,7 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {reviewData && this.state.isCheckReviewModalOpen && (
+        {reviewData?.requirements && this.state.isCheckReviewModalOpen && (
           <CheckReviewModal
             intl={intl}
             isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}

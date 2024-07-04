@@ -49,19 +49,16 @@ import {
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
-  getReviewTitleNew,
 } from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
   getEditor,
-  getEditorDraftBody,
   getEditorDraftId,
   getEditorExtended,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getEditorSlate,
   getIsEditorSaving,
-  getLinkedObjects,
   getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString } from '../reducers';
@@ -391,6 +388,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         {
           ...jsonMetadata,
           ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
+          ...(isReview && campaign ? { campaignId: campaign?._id } : {}),
           host,
         },
         reward,
@@ -474,23 +472,15 @@ export const setUpdatedEditorExtendedData = payload => ({
   payload,
 });
 
-export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) => {
+export const getCampaignInfo = ({ campaignId }, intl) => {
   return (dispatch, getState) => {
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
-    const linkedObjects = getLinkedObjects(state);
-    const draftBody = getEditorDraftBody(state);
 
     return getCampaign(authUserName, campaignId)
       .then(campaignData => {
         const draftId = new URLSearchParams(getQueryString(state)).get('draft');
-        const currDraft = getCurrentDraft(state, { draftId });
-        const reviewedTitle = needReviewTitle
-          ? getReviewTitleNew(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
-          : {};
-
         const updatedEditorData = {
-          ...reviewedTitle,
           campaign: campaignData,
         };
 
@@ -498,8 +488,8 @@ export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) =
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
         dispatch(
           saveDraft(draftId, intl, {
-            content: updatedEditorData.draftContent.body,
-            titleValue: updatedEditorData.draftContent.title,
+            content: updatedEditorData.draftContent?.body,
+            titleValue: updatedEditorData.draftContent?.title,
           }),
         );
       })

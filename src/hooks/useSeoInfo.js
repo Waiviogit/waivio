@@ -11,7 +11,7 @@ const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
   const { name } = useParams();
   const query = useQuery();
-  let url = `${appUrl}${location.pathname}`;
+  let url = `${appUrl}${location?.pathname}`;
 
   if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
     url = `${appUrl}/object/${name}/${objectType}`;

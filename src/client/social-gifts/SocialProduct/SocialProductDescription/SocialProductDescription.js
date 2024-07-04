@@ -14,16 +14,22 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
   };
 
   useEffect(() => {
-    const newParagraphs = dividedParagraphs?.reduce((acc, paragraph, index) => {
-      if (index % 2 === 0) {
-        const paragraph1 = paragraph;
-        const paragraph2 = dividedParagraphs[index + 1];
-        const combinedParagraphs = [paragraph1, paragraph2].filter(Boolean).join('\n\n');
+    const newarr = [];
+    const newParagraphs = dividedParagraphs.reduce((acc, paragraph, index) => {
+      const prevParagraph = acc[acc.length - 1];
 
-        acc.push(combinedParagraphs);
+      if (prevParagraph && prevParagraph.includes(paragraph)) {
+        return acc;
+      }
+      if (paragraph.length > 290) {
+        newarr.push(paragraph);
+      } else {
+        const nextParagraph = dividedParagraphs[index + 1] || '';
+
+        newarr.push(`${paragraph}\n\n${nextParagraph}`);
       }
 
-      return acc;
+      return newarr;
     }, []);
 
     setDividedParagraphs(newParagraphs);
@@ -53,6 +59,23 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
       )}
     </div>
   ));
+  const renderOnePictureParagraph = () => (
+    <div className={'SocialProductDescription__single-paragraph-container'}>
+      <section className={'SocialProductDescription__single-paragraph'}>
+        {photos && (
+          <div>
+            <img
+              className="SocialProductDescription__single-image"
+              onClick={e => onPicClick(e, photos[0])}
+              src={photos[0]?.body}
+              alt={description}
+            />
+          </div>
+        )}
+        {description}
+      </section>
+    </div>
+  );
   // const remainingPictures = photos
   //   ?.slice(dividedParagraphs?.length)
   //   ?.map(picture => (
@@ -67,7 +90,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
 
   return (
     <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-      {renderedParagraphs}
+      {pictures?.length === 1 ? renderOnePictureParagraph() : renderedParagraphs}
       {/* <div className={'SocialProductDescription__images-container'}>{remainingPictures}</div> */}
       {open && (
         <Lightbox

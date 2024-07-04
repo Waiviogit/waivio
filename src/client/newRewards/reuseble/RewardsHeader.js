@@ -3,15 +3,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { round } from 'lodash';
 import { injectIntl } from 'react-intl';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const RewardsHeader = ({ proposition, intl }) => (
   <div>
     <p className="Proposition-new__title">
-      {intl.formatMessage({ id: 'share_verb', defaultMessage: 'Share' })}{' '}
-      {proposition?.requirements?.minPhotos}{' '}
-      {intl.formatMessage({ id: 'photos_of_the', defaultMessage: 'photos of the' })}{' '}
-      {proposition?.object?.object_type}{' '}
-      {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
+      {proposition?.type === 'mentions' ? (
+        <React.Fragment>
+          Mention {proposition?.user?.name || getObjectName(proposition.object)}{' '}
+          {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          {intl.formatMessage({ id: 'share_verb', defaultMessage: 'Share' })}{' '}
+          {proposition?.requirements?.minPhotos}{' '}
+          {intl.formatMessage({ id: 'photos_of_the', defaultMessage: 'photos of the' })}{' '}
+          {proposition?.object?.object_type}{' '}
+          {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
+        </React.Fragment>
+      )}
     </p>
     <div className="Proposition-new__sponsorInfo">
       <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
@@ -35,10 +45,14 @@ const RewardsHeader = ({ proposition, intl }) => (
 RewardsHeader.propTypes = {
   proposition: PropTypes.shape({
     guideName: PropTypes.string,
+    type: PropTypes.string,
     totalPayed: PropTypes.string,
     payoutToken: PropTypes.string,
     requirements: PropTypes.shape({
       minPhotos: PropTypes.number,
+    }),
+    user: PropTypes.shape({
+      name: PropTypes.number,
     }),
     object: PropTypes.shape({
       object_type: PropTypes.string,

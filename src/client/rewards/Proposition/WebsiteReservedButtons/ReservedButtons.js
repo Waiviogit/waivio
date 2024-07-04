@@ -51,9 +51,11 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        {props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
+        {props?.type === 'mentions'
+          ? props.intl.formatMessage({ id: 'submit_mentions', defaultMessage: 'Submit mentions' })
+          : props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
       </Button>
-      {!props.reserved && (
+      {!props.reserved && props.type !== 'mentions' && (
         <Popover
           placement="bottomRight"
           trigger="click"
@@ -96,6 +98,7 @@ ReservedButtons.propTypes = {
   inCard: PropTypes.bool,
   isSocialProduct: PropTypes.bool,
   reservedDays: PropTypes.number,
+  type: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
 

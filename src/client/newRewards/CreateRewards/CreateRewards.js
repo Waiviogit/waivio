@@ -12,6 +12,7 @@ import {
   getAuthorsChildWobjects,
   getNewCampaingById,
   getObjectsByIds,
+  getUsers,
   updateCampaing,
 } from '../../../waivioApi/ApiClient';
 import * as apiConfig from '../../../waivioApi/config.json';
@@ -24,12 +25,14 @@ import {
 import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
 import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
 import { getCurrentCurrency, getRate, getRewardFund } from '../../../store/appStore/appSelectors';
-import '../../rewards/Create-Edit/CreateReward.less';
 import { getTokenBalance, getTokenRates } from '../../../store/walletStore/walletActions';
+import { parseJSON } from '../../../common/helpers/parseJSON';
+
+import '../../rewards/Create-Edit/CreateReward.less';
 
 const initialState = {
   campaignName: '',
-  campaignType: '',
+  campaignType: 'reviews',
   budget: null,
   reward: null,
   primaryObject: {},
@@ -107,7 +110,7 @@ class CreateRewards extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { ...initialState, currency: props.currency.type };
+    this.state = { ...initialState, currency: props.currency.type || 'USD' };
   }
 
   componentDidMount = async () => {
@@ -150,33 +153,93 @@ class CreateRewards extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getNewCampaingById(this.props.match.params.campaignId);
+      const reqItemIsUser = campaign.requiredObject[0] === '@';
+      const secondaryItems = campaign.objects.reduce(
+        (acc, curr) => {
+          if (curr[0] === '@') {
+            return {
+              ...acc,
+              users: [...acc.users, curr.replace('@', '')],
+            };
+          }
+
+          return {
+            ...acc,
+            wobjects: [...acc.wobjects, curr],
+          };
+        },
+        { users: [], wobjects: [] },
+      );
+
       const isExpired =
         campaign.status === 'expired' || moment(campaign.expiredAt).unix() < moment().unix();
       const isDuplicate = this.props.match.params?.[0] === 'duplicate';
       const isDisabled = campaign.status !== 'pending' && !isDuplicate;
+      let authorPermlinks = [...campaign.agreementObjects, ...secondaryItems.wobjects];
 
-      const authorPermlinks = [
-        campaign.requiredObject,
-        ...campaign.agreementObjects,
-        ...campaign.objects,
-      ];
-      const combinedObjects = await getObjectsByIds({
-        authorPermlinks,
-        limit: size(authorPermlinks),
-      });
+      if (!reqItemIsUser) {
+        authorPermlinks = [campaign.requiredObject, ...authorPermlinks];
+      }
+
+      const combinedObjects = !isEmpty(authorPermlinks)
+        ? await getObjectsByIds({
+            authorPermlinks,
+            limit: size(authorPermlinks),
+          })
+        : null;
+
+      let primaryObject = null;
+      let secondaryObjects = [];
+
+      if (reqItemIsUser) {
+        const userList = await getUsers({
+          listUsers: [campaign.requiredObject.replace('@', ''), ...secondaryItems.users],
+        }).then(res =>
+          res?.users.map(user => {
+            const profile = user?.posting_json_metadata
+              ? parseJSON(user.posting_json_metadata)?.profile
+              : null;
+
+            return {
+              name: user.name,
+              object_type: 'user',
+              avatar: user?.profile_image,
+              description: profile?.about,
+              author_permlink: user.name,
+            };
+          }),
+        );
+
+        secondaryObjects = userList.filter(user => secondaryItems.users.includes(user.name));
+        primaryObject = userList.find(
+          user => user.name === campaign.requiredObject.replace('@', ''),
+        );
+      } else {
+        primaryObject = combinedObjects.wobjects.find(
+          wobj => wobj.author_permlink === campaign.requiredObject,
+        );
+      }
 
       const sponsors = campaign.matchBots;
-      const primaryObject = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.requiredObject,
-      );
-      const secondaryObjects = combinedObjects.wobjects.filter(
-        wobj =>
-          includes(campaign.objects, wobj.author_permlink) &&
-          wobj.author_permlink !== primaryObject.author_permlink,
-      );
-      const agreementObjects = combinedObjects.wobjects.filter(wobj =>
-        campaign.agreementObjects.some(agreementObject => agreementObject === wobj.author_permlink),
-      );
+
+      if (!isEmpty(secondaryItems.wobjects)) {
+        secondaryObjects = [
+          ...secondaryObjects,
+          ...combinedObjects?.wobjects.filter(
+            wobj =>
+              includes(secondaryItems.wobjects, wobj.author_permlink) &&
+              wobj.author_permlink !== primaryObject.author_permlink,
+          ),
+        ];
+      }
+
+      const agreementObjects = !isEmpty(combinedObjects?.wobjects)
+        ? combinedObjects.wobjects.filter(wobj =>
+            campaign.agreementObjects.some(
+              agreementObject => agreementObject === wobj.author_permlink,
+            ),
+          )
+        : null;
 
       const minExpertise = getMinExpertise({
         campaignMinExpertise: campaign.userRequirements.minExpertise,
@@ -226,9 +289,15 @@ class CreateRewards extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects } = this.state;
     const { rewardFund, rate } = this.props;
+    const requiredObject =
+      data.primaryObject.object_type === 'user'
+        ? `@${data.primaryObject.name}`
+        : data.primaryObject.author_permlink;
     const objects = isEmpty(data.secondaryObject)
-      ? [data.primaryObject.author_permlink]
-      : map(data.secondaryObject, o => o.author_permlink);
+      ? [requiredObject]
+      : map(data.secondaryObject, o =>
+          o.object_type === 'user' ? `@${o.account}` : o.author_permlink,
+        );
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const matchBots = Array.isArray(data.sponsorsList)
       ? map(data.sponsorsList, o => o.account || o)
@@ -241,7 +310,7 @@ class CreateRewards extends React.Component {
     });
 
     const preparedObject = {
-      requiredObject: data.primaryObject.author_permlink,
+      requiredObject,
       guideName: userName,
       name: data.campaignName,
       app: appName,
@@ -310,13 +379,23 @@ class CreateRewards extends React.Component {
 
     setPrimaryObject: obj => {
       this.handleSetState(
-        { primaryObject: obj, parentPermlink: obj.author_permlink },
+        {
+          primaryObject: obj,
+          parentPermlink: obj?.object_type === 'user' ? `@${obj?.account}` : obj.author_permlink,
+        },
         { primaryObject: obj },
       );
     },
 
     removePrimaryObject: () => {
       this.handleSetState({ primaryObject: {} }, { primaryObject: {} });
+    },
+
+    handleSelectChange: () => {
+      this.handleSetState(
+        { primaryObject: {}, parentPermlink: '', secondaryObjectsList: [] },
+        { primaryObject: {}, secondaryObject: [] },
+      );
     },
 
     handleAddSecondaryObjectToList: obj => {

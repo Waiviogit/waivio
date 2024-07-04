@@ -129,6 +129,7 @@ const SocialProduct = ({
   const departments = get(wobject, 'departments');
   const dimensions = parseWobjectField(wobject, 'dimensions');
   const brand = parseWobjectField(wobject, 'brand');
+  const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
   const customSort = get(wobject, 'sortCustom.include', []);
@@ -298,7 +299,7 @@ const SocialProduct = ({
             {isMobile() && (
               <h1
                 className={
-                  isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(brandObject)
+                  isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(currBrand)
                     ? 'SocialProduct__wobjName'
                     : 'SocialProduct__bookWobjName'
                 }
@@ -306,11 +307,11 @@ const SocialProduct = ({
                 {wobject.name}
               </h1>
             )}
-            {isMobile() && !isEmpty(brandObject) && (
+            {isMobile() && !isEmpty(currBrand) && (
               <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
                 <SocialListItem
                   fieldName={objectFields.brand}
-                  field={brandObject}
+                  field={currBrand}
                   showTitle={false}
                 />
               </div>
@@ -369,7 +370,7 @@ const SocialProduct = ({
               {!isMobile() && (
                 <h1
                   className={
-                    isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(brandObject)
+                    isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(currBrand)
                       ? 'SocialProduct__wobjName'
                       : 'SocialProduct__bookWobjName'
                   }
@@ -377,11 +378,11 @@ const SocialProduct = ({
                   {wobject.name}
                 </h1>
               )}
-              {!isMobile() && !isEmpty(brandObject) && (
+              {!isMobile() && !isEmpty(brand) && (
                 <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
                   <SocialListItem
                     fieldName={objectFields.brand}
-                    field={brandObject}
+                    field={currBrand}
                     showTitle={false}
                   />
                 </div>

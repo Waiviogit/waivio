@@ -55,7 +55,9 @@ const DetailsModal = ({
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
   const disable = Object.values(requirements).some(requirement => !requirement);
-  const withoutSecondary = requiredObject.author_permlink === proposition?.object?.author_permlink;
+  const withoutSecondary = requiredObject.author_permlink
+    ? requiredObject.author_permlink === proposition?.object?.author_permlink
+    : requiredObject.name === proposition?.objects?.replace('@', '');
 
   useEffect(() => {
     if (stringRequiredObj) {
@@ -81,17 +83,19 @@ const DetailsModal = ({
   }, [proposition?.activationPermlink, userName]);
 
   const handleClickReserve = cb => {
-    let search = `?object=[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`;
+    let search = requiredObject?.author_permlink
+      ? `?object=[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`
+      : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;
 
     if (!withoutSecondary) {
-      search += `&object=[${getObjectName(proposition.object)}](${
-        proposition?.object?.author_permlink
-      })`;
+      search += proposition?.object?.author_permlink
+        ? `&object=[${getObjectName(proposition.object)}](${proposition?.object?.author_permlink})`
+        : `&user=[${proposition?.objects.replace('@', '')}](${proposition?.objects})`;
     }
 
     search += `&campaign=${proposition._id}`;
 
-    if (!proposition?.reserved) {
+    if (!proposition?.reserved && proposition?.type !== 'mentions') {
       return dispatch(reserveProposition(proposition, userName))
         .then(() => {
           const urlConfig = {
@@ -101,7 +105,8 @@ const DetailsModal = ({
 
           history.push(urlConfig);
         })
-        .catch(() => {
+        .catch(e => {
+          console.error(e);
           if (cb) cb(false);
         });
     }
@@ -121,6 +126,7 @@ const DetailsModal = ({
         handleReserve={onClick}
         disable={disable}
         reservedDays={proposition?.countReservationDays}
+        type={proposition?.type}
         handleReserveForPopover={() =>
           dispatch(reserveProposition(proposition, userName)).then(res => {
             if (!res.value.error) toggleModal();

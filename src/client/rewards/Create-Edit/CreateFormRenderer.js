@@ -20,6 +20,7 @@ import {
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
+import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
 
@@ -218,7 +219,6 @@ const CreateFormRenderer = props => {
           })(<Input disabled={disabled} autoFocus />)}
           <div className="CreateReward__field-caption">{fields.campaignName.caption}</div>
         </Form.Item>
-
         <Form.Item label={fields.campaignType.label}>
           {getFieldDecorator(fields.campaignType.name, {
             rules: fields.campaignType.rules,
@@ -230,7 +230,11 @@ const CreateFormRenderer = props => {
               onChange={handlers.handleSelectChange}
               disabled={disabled}
             >
-              <Option value="reviews">{fields.campaignType.options.reviews}</Option>
+              {fields.campaignType.options.map(opt => (
+                <Option key={opt.value} value={opt.value}>
+                  {opt.message}
+                </Option>
+              ))}
             </Select>,
           )}
           <div className="CreateReward__field-caption">{fields.campaignType.caption}</div>
@@ -239,12 +243,12 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignReach.name, {
             rules: fields.campaignReach.rules,
             validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
-            initialValue: reachType,
+            initialValue: getFieldValue('type') === 'mentions' ? 'global' : reachType,
           })(
             <Select
               placeholder={fields.campaignReach.select}
               onChange={handlers.handleSelectReach}
-              disabled={disabled}
+              disabled={disabled || getFieldValue('type') === 'mentions'}
             >
               {fields.campaignReach.options.map(opt => (
                 <Option key={opt.value} value={opt.value}>
@@ -389,7 +393,6 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.checkboxReceiptPhoto.caption}</div>
         </Form.Item>
-
         <Form.Item
           label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
         >
@@ -398,15 +401,19 @@ const CreateFormRenderer = props => {
             initialValue: primaryObject,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
-            <SearchObjectsAutocomplete
-              allowClear={false}
-              itemsIdsToOmit={handlers.getObjectsToOmit()}
-              style={{ width: '100%' }}
-              placeholder={fields.primaryObject.placeholder}
-              handleSelect={handlers.setPrimaryObject}
-              disabled={disabled}
-              autoFocus={false}
-            />,
+            getFieldValue('type') === 'mentions' ? (
+              <ItemTypeSwitcher obj={primaryObject} setPrimaryObject={handlers.setPrimaryObject} />
+            ) : (
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                placeholder={fields.primaryObject.placeholder}
+                handleSelect={handlers.setPrimaryObject}
+                disabled={disabled}
+                autoFocus={false}
+              />
+            ),
           )}
           <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
@@ -437,20 +444,26 @@ const CreateFormRenderer = props => {
             // rules: fields.secondaryObject.rules,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
-            <SearchObjectsAutocomplete
-              allowClear={false}
-              itemsIdsToOmit={handlers.getObjectsToOmit()}
-              style={{ width: '100%' }}
-              handleSelect={handlers.handleAddSecondaryObjectToList}
-              disabled={disabled || isEmpty(primaryObject)}
-              parentPermlink={parentPermlink}
-              autoFocus={false}
-            />,
+            getFieldValue('type') === 'mentions' ? (
+              <ItemTypeSwitcher
+                obj={null}
+                setPrimaryObject={handlers.handleAddSecondaryObjectToList}
+              />
+            ) : (
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                handleSelect={handlers.handleAddSecondaryObjectToList}
+                disabled={disabled || isEmpty(primaryObject)}
+                parentPermlink={parentPermlink}
+                autoFocus={false}
+              />
+            ),
           )}
           <div className="CreateReward__field-caption">{fields.secondaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>
         </Form.Item>
-
         <Form.Item label={fields.description.label}>
           {getFieldDecorator(fields.description.name, {
             rules: fields.description.rules,
@@ -613,7 +626,7 @@ CreateFormRenderer.defaultProps = {
   primaryObject: {},
   parentPermlink: '',
   campaignName: '',
-  campaignType: '',
+  campaignType: null,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,
