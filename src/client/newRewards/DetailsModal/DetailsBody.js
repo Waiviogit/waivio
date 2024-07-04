@@ -155,9 +155,15 @@ const DetailsModalBody = ({
                   defaultMessage: 'original photos of',
                 })}
               </span>
-              <Link className="ml1" to={proposition?.object?.defaultShowLink}>
-                {getObjectName(proposition?.object)}
-              </Link>
+              {proposition?.user ? (
+                <Link className="ml1" to={`/@${proposition?.user.name}`}>
+                  {proposition?.user.name}
+                </Link>
+              ) : (
+                <Link className="ml1" to={proposition?.object?.defaultShowLink}>
+                  {getObjectName(proposition?.object)}
+                </Link>
+              )}
               ;
             </li>
           )}

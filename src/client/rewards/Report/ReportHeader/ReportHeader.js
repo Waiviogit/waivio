@@ -39,7 +39,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const primaryObject = singleReportData?.primaryObject || singleReportData?.requiredObject;
   const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
     name: secondaryObject.object_name,
-    permlink: secondaryObject.author_permlink,
+    permlink: secondaryObject?.author_permlink,
   })).filter(o => o.permlink !== primaryObject.permlink);
 
   return (
@@ -147,36 +147,39 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
           </span>
           <span className="ReportHeader__campaignInfo-title">{title}</span>
         </div>
-        <div>
-          <span className="ReportHeader__campaignInfo-name">
-            {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
-          </span>
-          <a href={getObjectUrlForLink(primaryObject)}>
-            <span className="ReportHeader__campaignInfo-links">{`${getObjectName(
-              primaryObject,
-            )}`}</span>
-          </a>
-          {!isEmpty(secondaryObjects) ||
-            (singleReportData?.secondaryObject.author_permlink !==
-              primaryObject.author_permlink && (
-              <React.Fragment>
-                ,{' '}
-                {!isEmpty(secondaryObjects) ? (
-                  map(secondaryObjects, object => (
-                    <a key={object.permlink} href={getObjectUrlForLink(object)}>
-                      <span className="ReportHeader__campaignInfo-links">{object.name}</span>
-                    </a>
-                  ))
-                ) : (
-                  <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
-                    <span className="ReportHeader__campaignInfo-links">
-                      {getObjectName(singleReportData?.secondaryObject)}
-                    </span>
-                  </a>
-                )}
-              </React.Fragment>
-            ))}
-        </div>
+        {!isEmpty(primaryObject) ||
+          (!isEmpty(secondaryObjects) && (
+            <div>
+              <span className="ReportHeader__campaignInfo-name">
+                {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
+              </span>
+              <a href={getObjectUrlForLink(primaryObject)}>
+                <span className="ReportHeader__campaignInfo-links">{`${getObjectName(
+                  primaryObject,
+                )}`}</span>
+              </a>
+              {!isEmpty(secondaryObjects) ||
+                (singleReportData?.secondaryObject?.author_permlink !==
+                  primaryObject?.author_permlink && (
+                  <React.Fragment>
+                    ,{' '}
+                    {!isEmpty(secondaryObjects) ? (
+                      map(secondaryObjects, object => (
+                        <a key={object.permlink} href={getObjectUrlForLink(object)}>
+                          <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+                        </a>
+                      ))
+                    ) : (
+                      <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
+                        <span className="ReportHeader__campaignInfo-links">
+                          {getObjectName(singleReportData?.secondaryObject)}
+                        </span>
+                      </a>
+                    )}
+                  </React.Fragment>
+                ))}
+            </div>
+          ))}
       </div>
     </React.Fragment>
   );

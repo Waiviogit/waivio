@@ -54,12 +54,17 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const prise = withRewards ? null : wObject.price;
+  const isUser = wObject.object_type === 'user';
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
+
+  if (isUser) {
+    pathName = `/@${objName}`;
+  }
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
@@ -213,7 +218,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {username && showHeart && (
+          {username && showHeart && !isUser && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>

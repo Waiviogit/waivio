@@ -17,7 +17,6 @@ const WebsiteReservedButtons = props => {
   const [loading, setLoading] = useState(false);
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
-
   const handlePopoverClick = key =>
     props.onActionInitiated(() => {
       switch (key) {
@@ -56,27 +55,29 @@ const WebsiteReservedButtons = props => {
       >
         <b>Submit</b> dish photos
       </Button>
-      <Popover
-        placement="bottomRight"
-        trigger="click"
-        visible={visiblePopover}
-        onVisibleChange={() => setVisiblePopover(true)}
-        content={
-          <React.Fragment>
-            <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-              <PopoverMenuItem key="reserve" disabled={props.disable}>
-                <Icon type="user" /> Reserve the reward for{' '}
-                <span>
-                  <span style={{ color: 'black' }}>7 days </span>
-                  {loading && <Icon type="loading" />}
-                </span>
-              </PopoverMenuItem>
-            </PopoverMenu>
-          </React.Fragment>
-        }
-      >
-        <i className="Buttons__post-menu iconfont icon-more" />
-      </Popover>
+      {props.dish.type !== 'mentions' && (
+        <Popover
+          placement="bottomRight"
+          trigger="click"
+          visible={visiblePopover}
+          onVisibleChange={() => setVisiblePopover(true)}
+          content={
+            <React.Fragment>
+              <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                <PopoverMenuItem key="reserve" disabled={props.disable}>
+                  <Icon type="user" /> Reserve the reward for{' '}
+                  <span>
+                    <span style={{ color: 'black' }}>7 days </span>
+                    {loading && <Icon type="loading" />}
+                  </span>
+                </PopoverMenuItem>
+              </PopoverMenu>
+            </React.Fragment>
+          }
+        >
+          <i className="Buttons__post-menu iconfont icon-more" />
+        </Popover>
+      )}
     </div>
   );
 };

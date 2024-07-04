@@ -23,7 +23,7 @@ import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './ItemTypeSwitcher.less';
 
-const ItemTypeSwitcher = ({ setPrimaryObject, intl, obj }) => {
+const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
   const [searchString, setSearchString] = useState('');
   const dispatch = useDispatch();
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
@@ -36,18 +36,7 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl, obj }) => {
           item => item.object_type !== 'hashtag',
         );
   const handleAutoCompleteSearch = useCallback(
-    debounce(
-      value =>
-        dispatch(
-          searchAutoComplete(value, 3, 50, null, true, [
-            'business',
-            'book',
-            'product',
-            'restaurant',
-          ]),
-        ),
-      300,
-    ),
+    debounce(value => dispatch(searchAutoComplete(value, 3, 50, null, true, [])), 300),
     [],
   );
 
@@ -78,44 +67,42 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl, obj }) => {
 
   return (
     <div>
-      {isEmpty(obj) && (
-        <AutoComplete
-          onSearch={handleSearch}
-          onChange={handleChange}
-          placeholder={intl.formatMessage({
-            id: 'find_object',
-            defaultMessage: 'Find object',
-          })}
-          allowClear={false}
-          autoFocus={false}
-          value={searchString}
-          optionLabelProp="value"
-          dropdownClassName={'BaseObjSettings__resultList'}
-          dataSource={
-            loading
-              ? pendingSearch('', intl)
-              : dataSource.map(o => (
-                  <AutoComplete.Option
-                    value={getOptionName(o)}
-                    key={getOptionName(o)}
-                    label={getOptionName(o)}
-                    onClick={() => handleSelect(o)}
-                    className={'BaseObjSettings__resulItem'}
-                  >
-                    {o.account ? (
-                      <UserSearchItem user={o} withType hideActions={() => {}} />
-                    ) : (
-                      <ObjectSearchCard
-                        object={o}
-                        name={getObjectName(o)}
-                        type={o.type || o.object_type}
-                      />
-                    )}
-                  </AutoComplete.Option>
-                ))
-          }
-        />
-      )}
+      <AutoComplete
+        onSearch={handleSearch}
+        onChange={handleChange}
+        placeholder={intl.formatMessage({
+          id: 'find_object',
+          defaultMessage: 'Find object',
+        })}
+        allowClear={false}
+        autoFocus={false}
+        value={searchString}
+        optionLabelProp="value"
+        dropdownClassName={'BaseObjSettings__resultList'}
+        dataSource={
+          loading
+            ? pendingSearch('', intl)
+            : dataSource.map(o => (
+                <AutoComplete.Option
+                  value={getOptionName(o)}
+                  key={getOptionName(o)}
+                  label={getOptionName(o)}
+                  onClick={() => handleSelect(o)}
+                  className={'BaseObjSettings__resulItem'}
+                >
+                  {o.account ? (
+                    <UserSearchItem user={o} withType hideActions={() => {}} />
+                  ) : (
+                    <ObjectSearchCard
+                      object={o}
+                      name={getObjectName(o)}
+                      type={o.type || o.object_type}
+                    />
+                  )}
+                </AutoComplete.Option>
+              ))
+        }
+      />
     </div>
   );
 };
@@ -124,7 +111,6 @@ ItemTypeSwitcher.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
-  obj: PropTypes.shape({}),
   setPrimaryObject: PropTypes.func,
 };
 

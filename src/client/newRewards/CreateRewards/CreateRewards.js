@@ -32,7 +32,7 @@ import '../../rewards/Create-Edit/CreateReward.less';
 
 const initialState = {
   campaignName: '',
-  campaignType: '',
+  campaignType: 'reviews',
   budget: null,
   reward: null,
   primaryObject: {},
@@ -110,7 +110,7 @@ class CreateRewards extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { ...initialState, currency: props.currency.type };
+    this.state = { ...initialState, currency: props.currency.type || 'USD' };
   }
 
   componentDidMount = async () => {
@@ -189,7 +189,7 @@ class CreateRewards extends React.Component {
         : null;
 
       let primaryObject = null;
-      let secondaryObjects = null;
+      let secondaryObjects = [];
 
       if (reqItemIsUser) {
         const userList = await getUsers({

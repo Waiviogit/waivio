@@ -219,7 +219,6 @@ const CreateFormRenderer = props => {
           })(<Input disabled={disabled} autoFocus />)}
           <div className="CreateReward__field-caption">{fields.campaignName.caption}</div>
         </Form.Item>
-
         <Form.Item label={fields.campaignType.label}>
           {getFieldDecorator(fields.campaignType.name, {
             rules: fields.campaignType.rules,
@@ -244,12 +243,12 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignReach.name, {
             rules: fields.campaignReach.rules,
             validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
-            initialValue: reachType,
+            initialValue: getFieldValue('type') === 'mentions' ? 'global' : reachType,
           })(
             <Select
               placeholder={fields.campaignReach.select}
               onChange={handlers.handleSelectReach}
-              disabled={disabled}
+              disabled={disabled || getFieldValue('type') === 'mentions'}
             >
               {fields.campaignReach.options.map(opt => (
                 <Option key={opt.value} value={opt.value}>
@@ -627,7 +626,7 @@ CreateFormRenderer.defaultProps = {
   primaryObject: {},
   parentPermlink: '',
   campaignName: '',
-  campaignType: '',
+  campaignType: null,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,

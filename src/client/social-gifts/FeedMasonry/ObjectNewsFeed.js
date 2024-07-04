@@ -113,7 +113,7 @@ const ObjectNewsFeed = ({ wobj, isNested, intl }) => {
         ).then(() => {
           dispatch(getTiktokPreviewAction(res.value)).then(() => dispatch(setFirstLoading(false)));
         });
-        setNewsPermlink(res?.newsFeed?.permlink);
+        setNewsPermlink(res?.value?.newsFeed?.permlink);
         setCurrObj(res);
       });
     }

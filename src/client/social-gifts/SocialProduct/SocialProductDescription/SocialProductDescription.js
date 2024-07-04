@@ -60,7 +60,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
     </div>
   ));
   const renderOnePictureParagraph = () => (
-    <div className={'SocialProductDescription__paragraph-container'}>
+    <div className={'SocialProductDescription__single-paragraph-container'}>
       <section className={'SocialProductDescription__single-paragraph'}>
         {photos && (
           <div>

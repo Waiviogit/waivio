@@ -5,7 +5,6 @@
   &__paragraph-container {
     display: flex;
     flex-direction: column;
-    padding: 20px;
 
     @media @small {
       justify-content: space-around;
@@ -14,6 +13,17 @@
       &:nth-child(even) {
         flex-direction: row-reverse;
       }
+    }
+  }
+  &__single-paragraph-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    @media @small {
+      justify-content: space-around;
+      flex-direction: row;
+      margin-bottom: 20px;
     }
   }
 
@@ -46,12 +56,11 @@
 
   &__image {
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     width: auto;
     max-width: 100%;
     height: auto;
     @media @small {
-      margin-bottom: 0;
       padding: 20px;
       object-fit: contain;
       max-height: 500px;
