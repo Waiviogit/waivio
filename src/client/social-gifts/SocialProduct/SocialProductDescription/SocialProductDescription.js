@@ -59,6 +59,23 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
       )}
     </div>
   ));
+  const renderOnePictureParagraph = () => (
+    <div className={'SocialProductDescription__single-paragraph-container'}>
+      <section className={'SocialProductDescription__single-paragraph'}>
+        {photos && (
+          <div>
+            <img
+              className="SocialProductDescription__single-image"
+              onClick={e => onPicClick(e, photos[0])}
+              src={photos[0]?.body}
+              alt={description}
+            />
+          </div>
+        )}
+        {description}
+      </section>
+    </div>
+  );
   // const remainingPictures = photos
   //   ?.slice(dividedParagraphs?.length)
   //   ?.map(picture => (
@@ -73,7 +90,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
 
   return (
     <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-      {renderedParagraphs}
+      {pictures?.length === 1 ? renderOnePictureParagraph() : renderedParagraphs}
       {/* <div className={'SocialProductDescription__images-container'}>{remainingPictures}</div> */}
       {open && (
         <Lightbox

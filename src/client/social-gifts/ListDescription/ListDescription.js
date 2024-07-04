@@ -10,15 +10,7 @@ const ListDescription = ({ wobject }) => {
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
-  const { firstDescrPart, secondDescrPart } = shortenDescription(wobject?.description, 800);
-  const { firstDescrPart: secondPart, secondDescrPart: thirdPartDescr } = shortenDescription(
-    secondDescrPart,
-    750,
-  );
-  const { firstDescrPart: thirdPart, secondDescrPart: fourthPart } = shortenDescription(
-    thirdPartDescr,
-    750,
-  );
+  const { firstDescrPart, secondDescrPart } = shortenDescription(wobject?.description, 2000);
   const { firstDescrPart: description } = shortenDescription(
     removeEmptyLines(wobject?.description),
     350,
@@ -28,56 +20,34 @@ const ListDescription = ({ wobject }) => {
   return (
     (hasTitle || hasDescription) && (
       <div className={'ListDescription'}>
-        {hasDescription && (
-          <>
-            <div className={`ListDescription__description-container show`}>
-              <div
-                className={`ListDescription__description-${hasAvatar ? 'with' : 'without'}-image`}
-              >
+        <section>
+          {hasAvatar && (
+            <div className={'ListDescription__image-container'}>
+              <img className={'ListDescription__image'} src={wobject.avatar} alt={altText} />
+            </div>
+          )}
+          {hasDescription && (
+            <>
+              <div>
                 <h1 className={'ListDescription__title margin-bottom'}>
                   {hasTitle ? wobject.title : wobject.name}
                 </h1>
-                {firstDescrPart}
+                <p>
+                  {firstDescrPart}
+                  {!isEmpty(secondDescrPart) && !showMore && (
+                    <button
+                      onClick={() => setShowMore(!showMore)}
+                      className="WalletTable__csv-button ml2"
+                    >
+                      <FormattedMessage id="show_more" defaultMessage="Show more" />
+                    </button>
+                  )}
+                </p>
+                {showMore && <p>{secondDescrPart}</p>}
               </div>
-              {hasAvatar && (
-                <div className={'ListDescription__image-container show'}>
-                  <img className={'ListDescription__image'} src={wobject.avatar} alt={altText} />
-                </div>
-              )}
-            </div>
-            <div
-              className={`ListDescription__second-description ${
-                !hasAvatar ? 'without-avatar' : ''
-              }`}
-            >
-              {secondPart}
-            </div>
-            <div
-              className={`ListDescription__second-description ${
-                !hasAvatar ? 'without-avatar' : ''
-              }`}
-            >
-              {thirdPart}
-              {!isEmpty(fourthPart) && !showMore && (
-                <button
-                  onClick={() => setShowMore(!showMore)}
-                  className="WalletTable__csv-button ml2"
-                >
-                  <FormattedMessage id="show_more" defaultMessage="Show more" />
-                </button>
-              )}
-            </div>
-            {showMore && (
-              <div
-                className={`ListDescription__remaining-description ${
-                  !hasAvatar ? 'without-avatar' : ''
-                }`}
-              >
-                {fourthPart}
-              </div>
-            )}
-          </>
-        )}
+            </>
+          )}
+        </section>
       </div>
     )
   );
