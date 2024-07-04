@@ -376,6 +376,23 @@ export default (messageFactory, validators, userName, currency) => ({
       'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
     ),
   },
+  checkboxOnly: {
+    name: 'qualifiedPayoutToken',
+    rules: [
+      {
+        required: true,
+        message: messageFactory(
+          'read_agreement_only',
+          'Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign',
+        ),
+      },
+    ],
+    valuePropName: 'checked',
+    textBeforeLink: messageFactory(
+      'read_agreement_only',
+      'Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign',
+    ),
+  },
   commissionAgreement: {
     name: 'commissionAgreement',
     label: messageFactory(

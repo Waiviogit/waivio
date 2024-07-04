@@ -316,12 +316,18 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     : query.getAll('object');
   const users = query.getAll('user');
   const authors = query.getAll('author');
+  const type = query.get('type');
+  const secondaryItem = query.get('secondaryItem');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const campaignId = props.campaignId ? { id: props.campaignId } : null;
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
-  const title = setTitle(initObjects, props, authors);
+  const title = setTitle(initObjects, props, authors, users);
   let state = {
-    campaign,
+    campaign: {
+      ...campaign,
+      type,
+      secondaryItem,
+    },
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {

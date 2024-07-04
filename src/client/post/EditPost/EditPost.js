@@ -14,9 +14,9 @@ import CreateObject from '../CreateObjectModal/CreateObject';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+import Loading from '../../components/Icon/Loading';
 
 import './EditPost.less';
-import Loading from '../../components/Icon/Loading';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
@@ -24,6 +24,8 @@ const propTypes = {
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   draftId: PropTypes.string,
   campaignId: PropTypes.string,
+  campaignType: PropTypes.string,
+  secondaryItem: PropTypes.string,
   publishing: PropTypes.bool,
   saving: PropTypes.bool,
   imageLoading: PropTypes.bool,
@@ -100,7 +102,7 @@ const EditPost = props => {
 
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
     if (isReview) {
-      props.getReviewCheckInfo({ campaignId }, intl, true);
+      props.getReviewCheckInfo({ campaignId }, intl, props.campaignType, props.secondaryItem);
     }
 
     return () => {

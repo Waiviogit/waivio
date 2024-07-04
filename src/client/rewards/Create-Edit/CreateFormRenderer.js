@@ -546,7 +546,19 @@ const CreateFormRenderer = props => {
           })(<Input.TextArea disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
-
+        <Form.Item>
+          {getFieldDecorator(fields.checkboxOnly.name, {
+            rules: fields.checkboxOnly.rules,
+            valuePropName: fields.checkboxOnly.valuePropName,
+            initialValue: true,
+          })(
+            <Checkbox disabled={disabled}>
+              <span className="CreateReward__item-title ant-form-item-required">
+                {fields.checkboxOnly.textBeforeLink}
+              </span>
+            </Checkbox>,
+          )}
+        </Form.Item>
         <Form.Item>
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,

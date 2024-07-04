@@ -3248,6 +3248,16 @@ export const getSponsorsMatchBots = botName =>
     .then(response => response)
     .catch(e => e);
 
+export const getMentionCampaign = (user, id, secondary) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.details}/${id}/${secondary}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getCampaign = (user, id) =>
   fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`, {
     headers,
