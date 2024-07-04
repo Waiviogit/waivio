@@ -2,6 +2,23 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .ListDescription {
+  margin: 30px 5%;
+  color: @blue-botticelli;
+  word-break: break-word;
+  font-size: 18px;
+
+  p {
+    white-space: break-spaces;
+    word-break: break-word;
+  }
+  section {
+    display: flex;
+    flex-direction: column-reverse;
+    @media @small {
+      display: block;
+    }
+  }
+
   &__title {
     font-size: 20px;
     font-weight: 500;
@@ -16,133 +33,33 @@
     }
 
     &.margin-bottom {
-      margin: 10px 0 10px;
+      margin: 0 0 10px;
     }
   }
 
-  &__icon {
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    color: @blue-botticelli;
-    cursor: pointer;
-    &.margin-bottom {
-      margin: 10px 0 10px;
-    }
-  }
-  &__img {
-    svg {
-      width: 26px;
-      height: auto;
-      g path {
-        fill: @blue-botticelli;
-      }
-    }
-  }
-
-  &__description-container {
-    display: flex;
-    flex-direction: column;
-    height: 0;
-    transition: 0.5s;
-    animation: fadeout 0s ease-in 1 forwards;
-    @media @small {
-      justify-content: center;
-      flex-direction: row;
-      display: flex;
-    }
-  }
-
-  &__description-container.show {
-    display: flex;
-    height: auto;
-    flex-direction: column;
-    transition: 0.5s;
-    animation: fadein 0.4s ease-in 1 forwards;
-    margin-bottom: 20px;
-
-    @media @small {
-      justify-content: center;
-      flex-direction: row;
-      display: flex;
-      margin: 20px 0 0;
-    }
-  }
-
-  &__description-with-image {
-    color: @blue-botticelli;
-    word-break: break-word;
-    font-size: 18px;
-    margin: 10px;
-    @media @small {
-      white-space: break-spaces;
-      width: 50%;
-      word-break: break-word;
-    }
-  }
-
-  &__description-without-image {
-    color: @blue-botticelli;
-    word-break: break-word;
-    font-size: 18px;
-    margin: 10px;
-    @media @small {
-      white-space: break-spaces;
-      width: 100%;
-      word-break: break-word;
-    }
-  }
-  &__remaining-description {
-    color: @blue-botticelli;
-    word-break: break-word;
-    font-size: 18px;
-    margin: 10px;
-
-    @media @small {
-      white-space: break-spaces;
-      word-break: break-word;
-      margin: 0 5% 20px;
-    }
-    &.without-avatar {
-      margin: 10px;
-    }
-  }
-  &__second-description {
-    color: @blue-botticelli;
-    word-break: break-word;
-    font-size: 18px;
-    margin: 10px;
-
-    @media @small {
-      white-space: break-spaces;
-      word-break: break-word;
-      margin: 0 5%;
-    }
-    &.without-avatar {
-      margin: 10px;
-    }
-  }
-
-  &__image-container.show {
-    @media @small {
-      width: 40%;
-      height: auto;
-      display: block;
-    }
-  }
   &__image-container {
     @media @small {
-      display: none;
+      float: right;
     }
   }
 
   &__image {
-    width: 100%;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
     @media @small {
-      width: 70%;
-      margin: 0 auto;
-      display: flex;
+      margin-bottom: 0;
+      margin-top: 0;
+      padding: 0 20px 0 40px;
       object-fit: contain;
+      max-height: 300px;
+    }
+    @media @medium {
+      max-height: 360px;
+      padding: 0 20px 20px 40px;
     }
   }
 }

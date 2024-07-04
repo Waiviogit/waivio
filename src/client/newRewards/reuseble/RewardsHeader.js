@@ -10,7 +10,7 @@ const RewardsHeader = ({ proposition, intl }) => (
     <p className="Proposition-new__title">
       {proposition?.type === 'mentions' ? (
         <React.Fragment>
-          Mention {proposition?.user.name || getObjectName(proposition.object)}{' '}
+          Mention {proposition?.user?.name || getObjectName(proposition.object)}{' '}
           {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
         </React.Fragment>
       ) : (

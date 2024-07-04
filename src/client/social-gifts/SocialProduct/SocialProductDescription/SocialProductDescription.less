@@ -5,6 +5,7 @@
   &__paragraph-container {
     display: flex;
     flex-direction: column;
+
     @media @small {
       justify-content: space-around;
       flex-direction: row;
@@ -14,6 +15,17 @@
       }
     }
   }
+  &__single-paragraph-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    @media @small {
+      justify-content: space-around;
+      flex-direction: row;
+      margin-bottom: 20px;
+    }
+  }
 
   &__paragraph {
     margin-bottom: 20px;
@@ -21,6 +33,16 @@
       margin-bottom: 0;
       padding: 20px;
       width: 50%;
+    }
+  }
+  &__single-paragraph {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 0;
+    @media @small {
+      margin-bottom: 20px;
+      display: block;
+      padding: 20px;
     }
   }
   &__paragraph-only {
@@ -34,14 +56,31 @@
 
   &__image {
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     width: auto;
     max-width: 100%;
     height: auto;
     @media @small {
-      margin-bottom: 0;
       padding: 20px;
       object-fit: contain;
+      max-height: 500px;
+    }
+  }
+  &__single-image {
+    float: right;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 0;
+    width: auto;
+    max-width: 100%;
+    @media @small {
+      margin-top: 0;
+      padding: 0 20px 20px 40px;
+      object-fit: contain;
+      max-height: 300px;
+    }
+    @media @medium {
+      padding: 0 20px 40px 40px;
       max-height: 500px;
     }
   }

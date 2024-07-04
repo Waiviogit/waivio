@@ -48,7 +48,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
             ...rewardsPost,
             author: guideName,
             permlink,
-            title: 'Activate rewards campaign',
+            title: `Activate ${item.type} campaign`,
             body: createBody(item),
             json_metadata: JSON.stringify({
               waivioRewards: { type: 'activateCampaign', campaignId: item._id },
@@ -99,25 +99,25 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
     const isActive = campaingIsActive(item.status);
     const title = isActive
       ? intl.formatMessage({
-          id: 'deactivate_campaign',
-          defaultMessage: 'Deactivate rewards campaign',
+          id: `deactivate_campaign_${item.type}`,
+          defaultMessage: `Deactivate ${item.type} campaign`,
         })
       : intl.formatMessage({
-          id: 'activate_campaign',
-          defaultMessage: 'Activate rewards campaign',
+          id: `activate_campaign_${item.type}`,
+          defaultMessage: `Activate ${item.type} campaign`,
         });
     const content = isActive
       ? intl.formatMessage(
           {
-            id: 'campaign_stopped',
-            defaultMessage: `The terms and conditions of the rewards campaign {name} will be stopped on Hive blockchain`,
+            id: `campaign_stopped_${item.type}`,
+            defaultMessage: `The terms and conditions of the ${item.type} campaign {name} will be stopped on Hive blockchain`,
           },
           { name: item.name },
         )
       : intl.formatMessage(
           {
-            id: 'campaign_published',
-            defaultMessage: `The terms and conditions of the rewards campaign {name} will be published on Hive blockchain`,
+            id: `campaign_published_${item.type}`,
+            defaultMessage: `The terms and conditions of the ${item.type} campaign {name} will be published on Hive blockchain`,
           },
           { name: item.name },
         );
