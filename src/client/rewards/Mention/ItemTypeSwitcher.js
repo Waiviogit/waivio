@@ -36,7 +36,7 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
           item => item.object_type !== 'hashtag',
         );
   const handleAutoCompleteSearch = useCallback(
-    debounce(value => dispatch(searchAutoComplete(value, 3, 50, null, true, [])), 300),
+    debounce(value => dispatch(searchAutoComplete(value, 3, 50, null, true, undefined)), 300),
     [],
   );
 

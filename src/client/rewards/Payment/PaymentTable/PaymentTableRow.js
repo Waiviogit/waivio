@@ -118,10 +118,15 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
         return (
           <React.Fragment>
             <span className="PaymentTable__action-item fw6">
-              {intl.formatMessage({
-                id: 'paymentTable_review',
-                defaultMessage: 'Review',
-              })}
+              {sponsor.campaignType !== 'mentions'
+                ? intl.formatMessage({
+                    id: 'paymentTable_review',
+                    defaultMessage: 'Review',
+                  })
+                : intl.formatMessage({
+                    id: 'paymentTable_mention',
+                    defaultMessage: 'Mention',
+                  })}
             </span>{' '}
             {intl.formatMessage({
               id: 'paymentTable_review_by',
@@ -140,10 +145,16 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
 
   const reviewPermlink =
     get(sponsor, ['details', 'review_permlink'], '') || sponsor?.reviewPermlink;
-  const review = intl.formatMessage({
-    id: 'paymentTable_review',
-    defaultMessage: `Review`,
-  });
+  const review =
+    sponsor.campaignType === 'mentions'
+      ? intl.formatMessage({
+          id: 'mention',
+          defaultMessage: `Mention`,
+        })
+      : intl.formatMessage({
+          id: 'paymentTable_review',
+          defaultMessage: `Review`,
+        });
 
   return (
     <tr>
@@ -222,17 +233,19 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           </p>
         ) : (
           <React.Fragment>
-            <p>
-              <Link
-                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink']) ||
-                  sponsor?.reservationPermlink}`}
-              >
-                {intl.formatMessage({
-                  id: 'paymentTable_reservation',
-                  defaultMessage: `Reservation`,
-                })}
-              </Link>
-            </p>
+            {sponsor.campaignType !== 'mentions' && (
+              <p>
+                <Link
+                  to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink']) ||
+                    sponsor?.reservationPermlink}`}
+                >
+                  {intl.formatMessage({
+                    id: 'paymentTable_reservation',
+                    defaultMessage: `Reservation`,
+                  })}
+                </Link>
+              </p>
+            )}
             <div className="PaymentTable__report" onClick={toggleModalReport} role="presentation">
               <span>
                 {intl.formatMessage({

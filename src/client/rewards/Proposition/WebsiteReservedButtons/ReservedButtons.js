@@ -55,37 +55,36 @@ const ReservedButtons = props => {
           ? props.intl.formatMessage({ id: 'submit_mentions', defaultMessage: 'Submit mentions' })
           : props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
       </Button>
-      {!props.reserved ||
-        (props.type !== 'mentions' && (
-          <Popover
-            placement="bottomRight"
-            trigger="click"
-            visible={visiblePopover}
-            onVisibleChange={visible => setVisiblePopover(visible)}
-            content={
-              <React.Fragment>
-                <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-                  <PopoverMenuItem key="reserve" disabled={props.disable}>
-                    {!props.isSocialProduct && <Icon type="user" />}{' '}
-                    {props.intl.formatMessage({
-                      id: 'reserve_the_rewards_for',
-                      defaultMessage: 'Reserve the reward for',
-                    })}{' '}
-                    <span>
-                      <span style={{ color: 'black' }}>
-                        {props.reservedDays}{' '}
-                        {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
-                      </span>
-                      {loading && <Icon type="loading" />}
+      {!props.reserved && props.type !== 'mentions' && (
+        <Popover
+          placement="bottomRight"
+          trigger="click"
+          visible={visiblePopover}
+          onVisibleChange={visible => setVisiblePopover(visible)}
+          content={
+            <React.Fragment>
+              <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                <PopoverMenuItem key="reserve" disabled={props.disable}>
+                  {!props.isSocialProduct && <Icon type="user" />}{' '}
+                  {props.intl.formatMessage({
+                    id: 'reserve_the_rewards_for',
+                    defaultMessage: 'Reserve the reward for',
+                  })}{' '}
+                  <span>
+                    <span style={{ color: 'black' }}>
+                      {props.reservedDays}{' '}
+                      {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
                     </span>
-                  </PopoverMenuItem>
-                </PopoverMenu>
-              </React.Fragment>
-            }
-          >
-            <i className="Buttons__post-menu iconfont icon-more" />
-          </Popover>
-        ))}
+                    {loading && <Icon type="loading" />}
+                  </span>
+                </PopoverMenuItem>
+              </PopoverMenu>
+            </React.Fragment>
+          }
+        >
+          <i className="Buttons__post-menu iconfont icon-more" />
+        </Popover>
+      )}
     </div>
   );
 };
