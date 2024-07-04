@@ -57,7 +57,7 @@ const DetailsModal = ({
   const disable = Object.values(requirements).some(requirement => !requirement);
   const withoutSecondary = requiredObject.author_permlink
     ? requiredObject.author_permlink === proposition?.object?.author_permlink
-    : requiredObject.name === proposition?.objects.replace('@', '');
+    : requiredObject.name === proposition?.objects?.replace('@', '');
 
   useEffect(() => {
     if (stringRequiredObj) {

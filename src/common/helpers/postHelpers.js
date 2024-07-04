@@ -217,11 +217,13 @@ export const getObjectLink = (obj, match = {}) => {
 
 const setTitle = (initObjects, props, authors, users) => {
   if (size(initObjects) || size(users)) {
-    const title = initObjects.reduce((acc, curr) => {
+    const title = initObjects.reduce((acc, curr, i) => {
       const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
       if (!isNil(matches) && matches[1]) {
-        return initObjects.length > 1 ? `${acc}${matches[1]}, ` : `${acc}${matches[1]}`;
+        if (!i || initObjects.length === 1) return `${acc}${matches[1]}`;
+
+        return `${acc}, ${matches[1]}`;
       }
 
       return acc;
@@ -243,10 +245,10 @@ const setTitle = (initObjects, props, authors, users) => {
     if (!isEmpty(users)) {
       let usersAcc = title;
 
-      users.forEach(curr => {
+      users.forEach((curr, i) => {
         const user = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
-        usersAcc = usersAcc ? `${usersAcc} @${user[1]},` : `@${user[1]}`;
+        usersAcc = usersAcc || i === 0 ? `${usersAcc} @${user[1]}` : `, @${user[1]}`;
       });
 
       return usersAcc;
@@ -259,7 +261,7 @@ const setTitle = (initObjects, props, authors, users) => {
 };
 
 const setBody = (initObjects, props, authors, users) => {
-  const body =
+  let body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
       ? initObjects.reduce((acc, curr) => {
           const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
@@ -277,24 +279,23 @@ const setBody = (initObjects, props, authors, users) => {
       : '';
 
   if (!isEmpty(authors)) {
-    let authorAcc = body;
-
     authors.forEach((author, i) => {
       const matchesAuthor = author?.match(/^\[(.+)\]\((\S+)\)/);
       const authorLink = matchesAuthor
         ? `[${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`
         : author;
 
-      authorAcc = i === 0 ? `${authorAcc} by ${authorLink}` : `${authorAcc}, ${authorLink}`;
+      body = i === 0 ? `${body} by ${authorLink}` : `${body}, ${authorLink}`;
     });
-
-    return authorAcc;
   }
 
   if (!isEmpty(users)) {
-    const userLinks = users.map(user => `@${user}\n`);
+    users.forEach((author, i) => {
+      const matchesAuthor = author?.match(/^\[(.+)\]\((\S+)\)/);
+      const authorLink = `@${matchesAuthor[1]}`;
 
-    return body ? `${body}${userLinks.join('')}` : `${userLinks.join('')}`;
+      body = i === 0 ? `${body} ${authorLink}` : `${body}, ${authorLink}`;
+    });
   }
 
   return body;
@@ -316,9 +317,9 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const users = query.getAll('user');
   const authors = query.getAll('author');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
-  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : null;
-  const title = setTitle(initObjects, props, authors, users);
-
+  const campaignId = props.campaignId ? { id: props.campaignId } : null;
+  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
+  const title = setTitle(initObjects, props, authors);
   let state = {
     campaign,
     draftId: props.draftId || uuidv4(),

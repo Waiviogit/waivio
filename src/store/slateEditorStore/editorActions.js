@@ -61,7 +61,7 @@ import {
   getIsEditorSaving,
   getTitleValue,
 } from './editorSelectors';
-import { getCurrentLocation } from '../reducers';
+import { getCurrentLocation, getQueryString } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
@@ -478,11 +478,19 @@ export const getCampaignInfo = ({ campaignId }, intl) => {
 
     return getCampaign(authUserName, campaignId)
       .then(campaignData => {
+        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
         const updatedEditorData = {
           campaign: campaignData,
         };
 
+        dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
+        dispatch(
+          saveDraft(draftId, intl, {
+            content: updatedEditorData.draftContent?.body,
+            titleValue: updatedEditorData.draftContent?.title,
+          }),
+        );
       })
       .catch(error => {
         message.error(

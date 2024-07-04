@@ -8,7 +8,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 const RewardsHeader = ({ proposition, intl }) => (
   <div>
     <p className="Proposition-new__title">
-      {proposition?.user ? (
+      {proposition?.type === 'mentions' ? (
         <React.Fragment>
           Mention {proposition?.user.name || getObjectName(proposition.object)}{' '}
           {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
@@ -45,6 +45,7 @@ const RewardsHeader = ({ proposition, intl }) => (
 RewardsHeader.propTypes = {
   proposition: PropTypes.shape({
     guideName: PropTypes.string,
+    type: PropTypes.string,
     totalPayed: PropTypes.string,
     payoutToken: PropTypes.string,
     requirements: PropTypes.shape({

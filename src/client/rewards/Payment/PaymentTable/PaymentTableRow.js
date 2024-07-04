@@ -113,6 +113,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
             )}
           </React.Fragment>
         );
+
       default:
         return (
           <React.Fragment>

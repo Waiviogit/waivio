@@ -35,7 +35,7 @@ export default (messageFactory, validators, userName, currency) => ({
     select: messageFactory('select_campaign_type_option', 'Select campaign type'),
     options: [
       { message: messageFactory('reviews', 'Reviews'), value: 'reviews' },
-      { message: messageFactory('mentions', 'Mentions'), value: 'mentions' },
+      { message: messageFactory('mentions', 'Mentions (Beta)'), value: 'mentions' },
     ],
     caption: messageFactory(
       'specific_campaign_parameters_type',
