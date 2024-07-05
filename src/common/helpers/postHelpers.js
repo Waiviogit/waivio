@@ -323,11 +323,13 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
   const title = setTitle(initObjects, props, authors, users);
   let state = {
-    campaign: {
-      ...campaign,
-      type,
-      secondaryItem,
-    },
+    campaign: props.campaignId
+      ? {
+          ...campaign,
+          type,
+          secondaryItem,
+        }
+      : null,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
