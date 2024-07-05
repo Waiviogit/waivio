@@ -339,6 +339,7 @@ class CreateRewards extends React.Component {
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
+      ...(data.type === 'mentions' ? { qualifiedPayoutToken: data.qualifiedPayoutToken } : {}),
     };
 
     if (data.description) preparedObject.description = data.description;
