@@ -29,7 +29,8 @@ const CheckReviewModal = ({
     size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
   const hasObject = object =>
-    linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
+    linkedObjects.some(obj => obj.author_permlink === object.author_permlink) ||
+    postBody.includes(`@${object.name}`);
 
   const modalBody =
     hasMinPhotos && hasReceipt && hasObject(secondaryObject) && hasObject(primaryObject) ? (

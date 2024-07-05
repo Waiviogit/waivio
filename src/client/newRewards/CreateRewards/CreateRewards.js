@@ -293,10 +293,11 @@ class CreateRewards extends React.Component {
       data.primaryObject.object_type === 'user'
         ? `@${data.primaryObject.name}`
         : data.primaryObject.author_permlink;
+
     const objects = isEmpty(data.secondaryObject)
       ? [requiredObject]
       : map(data.secondaryObject, o =>
-          o.object_type === 'user' ? `@${o.account}` : o.author_permlink,
+          o.object_type === 'user' ? `@${o.account || o.name}` : o.author_permlink,
         );
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const matchBots = Array.isArray(data.sponsorsList)

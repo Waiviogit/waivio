@@ -94,7 +94,7 @@ const DetailsModal = ({
     }
 
     search += `&campaign=${proposition._id}&type=${proposition?.type}&secondaryItem=${proposition
-      ?.object?.author_permlink || proposition?.objects.replace('@', '')}`;
+      ?.object?.author_permlink || proposition?.objects}`;
 
     if (!proposition?.reserved && proposition?.type !== 'mentions') {
       return dispatch(reserveProposition(proposition, userName))
