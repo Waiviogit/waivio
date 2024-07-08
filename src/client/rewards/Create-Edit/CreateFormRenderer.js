@@ -554,7 +554,7 @@ const CreateFormRenderer = props => {
               initialValue: true,
             })(
               <Checkbox disabled={disabled}>
-                <span className="CreateReward__item-title ant-form-item-required">
+                <span className="CreateReward__item-title" style={{ color: '#000' }}>
                   {fields.checkboxOnly.textBeforeLink}
                 </span>
               </Checkbox>,
