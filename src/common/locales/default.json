@@ -1048,6 +1048,7 @@
   "creditCards": "- credit cards",
   "BTC_LTC_ETH": "- BTC/LTC/ETH",
   "STEEMcoins": "- HIVE coins",
+  "read_agreement_only": "Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign.",
   "guestAccounts": "GUEST ACCOUNTS",
   "lookAroundgetRewardsMakeConnections": "Look around, get rewards, make connections,",
   "createSteemAccountLater": "create a Hive account later",

@@ -380,10 +380,9 @@ export default (messageFactory, validators, userName, currency) => ({
     name: 'qualifiedPayoutToken',
     rules: [
       {
-        required: true,
         message: messageFactory(
           'read_agreement_only',
-          'Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign',
+          'Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign.',
         ),
       },
     ],
