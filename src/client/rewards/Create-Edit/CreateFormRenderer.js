@@ -549,10 +549,10 @@ const CreateFormRenderer = props => {
         {getFieldValue('type') === 'mentions' && (
           <Form.Item>
             {getFieldDecorator(fields.checkboxOnly.name, {
-              rules: fields.checkboxOnly.rules,
+              valuePropName: 'checked',
               initialValue: true,
             })(
-              <Checkbox disabled={disabled}>
+              <Checkbox defaultChecked disabled={disabled}>
                 <span className="CreateReward__item-title" style={{ color: '#000' }}>
                   {fields.checkboxOnly.textBeforeLink}
                 </span>
