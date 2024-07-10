@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon, Input } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
@@ -11,24 +11,25 @@ import UserMessage from './UserMessage';
 import { getChatBotMessages } from '../../../store/chatBotStore/chatBotSelectors';
 import {
   resetChatBotMessages,
+  setChatBotHistory,
   setChatBotId,
   setChatBotMessage,
 } from '../../../store/chatBotStore/chatBotActions';
-import { sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
+import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
 import './ChatWindow.less';
 
 const CHAT_ID = 'chatId';
 const ChatWindow = ({ clearChat, className, hideChat }) => {
   const [message, setMessage] = useState('');
-  // const [history, setHistory] = useState('');
   const chatMessages = useSelector(getChatBotMessages);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const newMessage = { isUser: true, text: typeof mess === 'string' ? mess : message };
+    const question = typeof mess === 'string' ? mess : message;
+    const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
     if (isEmpty(chatId)) {
@@ -36,7 +37,9 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
     }
     dispatch(setChatBotMessage(newMessage));
     setMessage('');
-    sendChatBotQuestion(message, id).then(res => dispatch(setChatBotMessage({ text: res.result })));
+    sendChatBotQuestion(question, id).then(res =>
+      dispatch(setChatBotMessage({ text: res.result, role: 'ai' })),
+    );
   };
 
   const setInputData = e => {
@@ -54,9 +57,10 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
     }
   };
 
-  // useEffect(() => {
-  //   getChatBotHistory(chatId).then(r => console.log(r));
-  // }, []);
+  useEffect(() => {
+    if (chatId && isEmpty(chatMessages))
+      getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
+  }, [chatId]);
 
   return (
     <div className={`ChatWindow ${className}`}>
@@ -84,7 +88,7 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
         </div>
         {!isEmpty(chatMessages) &&
           chatMessages?.map(mes =>
-            mes.isUser ? (
+            mes.role === 'human' ? (
               <UserMessage key={mes.text} text={mes.text} />
             ) : (
               <AssistantMessage key={mes.text} text={mes.text} />

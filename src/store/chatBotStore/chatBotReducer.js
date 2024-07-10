@@ -11,6 +11,11 @@ export default (state = defaultState, action) => {
         ...state,
         messages: [...state.messages, action.payload],
       };
+    case chatBotActions.SET_HISTORY:
+      return {
+        ...state,
+        messages: action.payload,
+      };
 
     case chatBotActions.RESET_MESSAGES:
       return {

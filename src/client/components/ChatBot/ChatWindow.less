@@ -5,9 +5,8 @@
   z-index: @ant-message-z-index;
   position: fixed;
   width: 370px;
-  height: 550px;
+  height: 600px;
   background-color: white;
-  border: 1px solid @white-gainsboro;
   border-radius: 10px;
   border-top: none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -71,6 +70,8 @@
     flex: 1;
     padding: 10px;
     overflow-y: auto;
+    border-left: 1px solid @white-gainsboro;
+    border-right: 1px solid @white-gainsboro;
   }
 
   .info {
@@ -120,7 +121,9 @@
   .chat-footer {
     display: flex;
     padding: 10px;
-    border-top: 1px solid @white-gainsboro;
+    border: 1px solid @white-gainsboro;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
   }
 
   .chat-footer input {
@@ -135,7 +138,6 @@
     background-color: var(--website-color);
     color: white;
     border: none;
-    padding: 5px 10px;
     border-radius: 5px;
     margin-left: 5px;
     cursor: pointer;
