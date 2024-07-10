@@ -230,6 +230,7 @@ export const rejectAuthorReview = proposition => (
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
+  const authName = getAuthenticatedUserName(getState());
   const parent_author = proposition.reservationRootAuthor || proposition.rootName;
 
   const commentOp = [
@@ -255,10 +256,17 @@ export const rejectAuthorReview = proposition => (
       }),
     },
   ];
+  const method = () =>
+    proposition?.type === 'mentions'
+      ? steemConnectAPI.rejectMentionRewards(
+          authName,
+          proposition.userName,
+          proposition?.reservationPermlink,
+        )
+      : steemConnectAPI.broadcast([commentOp]);
 
   return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
+    method()
       .then(res => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
           proposition.guideName,
@@ -304,10 +312,17 @@ export const reinstateReward = proposition => (
       }),
     },
   ];
+  const method = () =>
+    proposition.type === 'mentions'
+      ? steemConnectAPI.restoreMentionRewards(
+          authUserName,
+          proposition.userName,
+          proposition?.reservationPermlink,
+        )
+      : steemConnectAPI.broadcast([commentOp]);
 
   return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
+    method()
       .then(res => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
           proposition.guideName,

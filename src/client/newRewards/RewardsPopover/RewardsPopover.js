@@ -41,6 +41,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const isUser = authUserName === proposition?.userName;
   const bothStatus = isUser && isSponsor;
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
+  const isMentions = proposition?.type === 'mentions';
 
   useEffect(() => {
     if (isVisiblePopover && !bothStatus) {
@@ -421,7 +422,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
       }
 
       case 'completed': {
-        const mainList = [viewReservation, openReview, report];
+        const mainList = isMentions ? [openReview, report] : [viewReservation, openReview, report];
 
         return isSponsor
           ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
@@ -494,6 +495,7 @@ RewardsPopover.propTypes = {
     rejectionPermlink: PropTypes.string,
     requiredObject: PropTypes.string,
     guideName: PropTypes.string,
+    type: PropTypes.string,
     muted: PropTypes.bool,
     isHide: PropTypes.bool,
   }).isRequired,
