@@ -22,6 +22,7 @@ import './ChatWindow.less';
 const CHAT_ID = 'chatId';
 const ChatWindow = ({ clearChat, className, hideChat }) => {
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
@@ -37,9 +38,11 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
     }
     dispatch(setChatBotMessage(newMessage));
     setMessage('');
-    sendChatBotQuestion(question, id).then(res =>
-      dispatch(setChatBotMessage({ text: res.result, role: 'ai' })),
-    );
+    setLoading(true);
+    sendChatBotQuestion(question, id).then(res => {
+      dispatch(setChatBotMessage({ text: res.result, role: 'ai' }));
+      setLoading(false);
+    });
   };
 
   const setInputData = e => {
@@ -91,9 +94,10 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
             mes.role === 'human' ? (
               <UserMessage key={mes.text} text={mes.text} />
             ) : (
-              <AssistantMessage key={mes.text} text={mes.text} />
+              <AssistantMessage key={mes.text} text={mes.text} loading={false} />
             ),
           )}
+        {loading && <AssistantMessage loading />}
       </div>
       <div className="chat-footer">
         <Input
