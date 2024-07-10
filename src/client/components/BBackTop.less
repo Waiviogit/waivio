@@ -11,7 +11,7 @@
   .BBackTop__container {
     position: relative;
     margin: 0 auto;
-    max-width: @container-width;
+    max-width: calc(100% - 100px);
     @media @large {
       padding: 0;
     }
@@ -39,6 +39,29 @@
       &:hover {
         color: var(--website-hover-color) !important;
       }
+    }
+  }
+
+  &_button-ai {
+    position: static !important;
+    float: right;
+
+    background: var(--website-color) !important;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: white;
+    border-radius: 50%;
+    height: 37px;
+    display: block;
+    transition: 0.5s;
+    width: 37px;
+    padding-left: 9px;
+    padding-top: 3px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--website-hover-color) !important;
     }
   }
 }

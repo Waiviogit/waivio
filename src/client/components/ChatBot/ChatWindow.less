@@ -1,0 +1,147 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.ChatWindow {
+  z-index: @ant-message-z-index;
+  position: fixed;
+  width: 370px;
+  height: 550px;
+  background-color: white;
+  border: 1px solid @white-gainsboro;
+  border-radius: 10px;
+  border-top: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  bottom: -100%;
+  right: 20px;
+  transition: bottom 0.5s ease-in-out;
+
+  &.open {
+    bottom: 10px;
+  }
+
+  p {
+    text-align: center;
+  }
+
+  .chat-logo {
+    width: 40px;
+    height: 40px;
+  }
+  .chat-logo-small {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+
+  .chat-header-text {
+    margin-left: 10px;
+  }
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--website-color);
+    color: white;
+    padding: 10px 15px 10px 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+  }
+
+  .chat-header-logo-wrap {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .chat-header-buttons-wrap {
+    display: flex;
+    width: 40px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .message {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+    color: @black-text-basic;
+    min-height: 40px;
+    border-radius: 5px;
+    max-width: 280px;
+    width: fit-content;
+    padding: 5px 10px;
+  }
+
+  .message.from-user {
+    background-color: var(--website-light-color);
+    margin-left: auto;
+  }
+
+  .message.from-assistant {
+    background-color: @white-gainsboro;
+    margin-right: auto;
+  }
+
+  .options {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+  }
+
+  .options button {
+    background-color: @white-gainsboro;
+    color: @black-text-basic;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .chat-footer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid @white-gainsboro;
+  }
+
+  .chat-footer input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid @white-gainsboro;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  .chat-footer button {
+    background-color: var(--website-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+
+  .hovered {
+    cursor: pointer;
+  }
+}

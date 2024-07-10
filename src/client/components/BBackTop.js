@@ -1,22 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { BackTop } from 'antd';
 import classNames from 'classnames';
 import './BBackTop.less';
+import ChatWindow from './ChatBot/ChatWindow';
 
-export default function BBackTop({ className, isModal, ...otherProps }) {
+export default function BBackTop({ className, isModal }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className="BBackTop">
-      <div
-        className={classNames(className, 'BBackTop__container', {
-          'BBackTop__container--shifted': isModal,
-        })}
-      >
-        <BackTop className="BBackTop_button" {...otherProps}>
-          <i className="iconfont icon-back-top" />
-        </BackTop>
+    <>
+      <div className="BBackTop">
+        <div
+          className={classNames(className, 'BBackTop__container', {
+            'BBackTop__container--shifted': isModal,
+          })}
+        >
+          <div className="BBackTop_button-ai" onClick={toggleChat}>
+            AI
+          </div>
+        </div>
       </div>
-    </div>
+      <ChatWindow
+        className={isOpen ? 'open' : ''}
+        clearChat={() => setIsOpen(false)}
+        hideChat={() => setIsOpen(false)}
+      />
+    </>
   );
 }
 
