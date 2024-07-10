@@ -31,6 +31,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
+  const isMentions = proposition?.type === 'mentions';
   const propositionFooterContainerClassList = classnames('Proposition-new__footer-container', {
     'Proposition-new__footer-container--noEligible': proposition.notEligible,
     'Proposition-new__footer-container--reserved': type === 'reserved',
@@ -147,10 +148,15 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                     defaultMessage: 'days left',
                   })}
                 </b>
-                <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
-                {Boolean(commentsCount) && (
-                  <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                {!isMentions && (
+                  <span>
+                    <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
+                    {Boolean(commentsCount) && (
+                      <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                    )}
+                  </span>
                 )}
+
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
               {authUserName === proposition.guideName &&
@@ -166,7 +172,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                         <b>Submit</b> dish
                       </span>
                     )}{' '}
-                    {proposition?.type === 'mentions'
+                    {isMentions
                       ? intl.formatMessage({ id: 'mentions_lowercase', defaultMessage: 'mentions' })
                       : intl.formatMessage({ id: 'photos_lowercase', defaultMessage: 'photos' })}
                   </span>
@@ -182,7 +188,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            {!isMentions && <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />}
           </React.Fragment>
         );
       case 'history':
@@ -199,13 +205,17 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                     defaultMessage: proposition?.reviewStatus,
                   })}
                 </b>
-                {commentsLoading ? (
-                  <Icon type="loading" />
-                ) : (
-                  <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
-                )}
-                {Boolean(commentsCount) && (
-                  <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                {!isMentions && (
+                  <span>
+                    {commentsLoading ? (
+                      <Icon type="loading" />
+                    ) : (
+                      <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
+                    )}
+                    {Boolean(commentsCount) && (
+                      <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                    )}
+                  </span>
                 )}
                 <RewardsPopover
                   proposition={proposition}
@@ -230,7 +240,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            {!isMentions && <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />}
           </React.Fragment>
         );
 

@@ -509,13 +509,17 @@ class CreateRewards extends React.Component {
           const submitMethod = isDetails ? updateCampaing : createNewCampaing;
 
           submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
-            .then(() => {
-              message.success(
-                `Rewards campaign ${values.campaignName} ${
-                  isDuplicate ? 'has been created' : 'has been updated'
-                }`,
-              );
-              this.manageRedirect();
+            .then(res => {
+              if (res.message) {
+                message.error(res.message);
+              } else {
+                message.success(
+                  `Rewards campaign ${values.campaignName} ${
+                    isDuplicate ? 'has been created' : 'has been updated'
+                  }`,
+                );
+                this.manageRedirect();
+              }
             })
             .catch(() => {
               message.error(`Campaign ${values.campaignName} has been rejected`);

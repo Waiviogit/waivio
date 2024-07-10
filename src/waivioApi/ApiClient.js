@@ -2768,7 +2768,6 @@ export const createNewCampaing = (data, account) =>
     method: 'POST',
     body: JSON.stringify(data),
   })
-    .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);

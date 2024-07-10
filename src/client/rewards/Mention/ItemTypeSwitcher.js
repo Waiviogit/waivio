@@ -52,7 +52,7 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
         }
       : o;
 
-    setSearchString('');
+    setSearchString(null);
     setPrimaryObject(value);
     dispatch(resetSearchAutoCompete());
   };
@@ -60,8 +60,6 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
   const getOptionName = op => op.account || getObjectName(op);
   const handleSearch = value => {
     handleAutoCompleteSearch(value);
-  };
-  const handleChange = value => {
     setSearchString(value);
   };
 
@@ -69,15 +67,14 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
     <div>
       <AutoComplete
         onSearch={handleSearch}
-        onChange={handleChange}
+        // onChange={handleChange}
         placeholder={intl.formatMessage({
           id: 'find_object',
           defaultMessage: 'Find object',
         })}
-        allowClear={false}
         autoFocus={false}
         value={searchString}
-        optionLabelProp="value"
+        optionLabelProp="label"
         dropdownClassName={'BaseObjSettings__resultList'}
         dataSource={
           loading

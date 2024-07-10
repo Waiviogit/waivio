@@ -550,7 +550,6 @@ const CreateFormRenderer = props => {
           <Form.Item>
             {getFieldDecorator(fields.checkboxOnly.name, {
               rules: fields.checkboxOnly.rules,
-              valuePropName: fields.checkboxOnly.valuePropName,
               initialValue: true,
             })(
               <Checkbox disabled={disabled}>

@@ -103,6 +103,36 @@ function sc2Extended() {
     sc2Proto,
     sc2api,
     {
+      restoreMentionRewards(follower, user, reservationPermlink, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'waivioCampaigns',
+          json: JSON.stringify({
+            action: 'restorePostByGuide',
+            payload: { guideName: follower, reservationPermlink, user },
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      rejectMentionRewards(follower, user, reservationPermlink, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [follower],
+          id: 'waivioCampaigns',
+          json: JSON.stringify({
+            action: 'rejectPostByGuide',
+            payload: { guideName: follower, reservationPermlink, user },
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       followObject(follower, followingObject, name, type, cb) {
         const params = {
           required_auths: [],
