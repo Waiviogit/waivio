@@ -13,13 +13,14 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
     switch (fieldName) {
       case objectFields.parent:
       case objectFields.merchant:
-      case objectFields.brand:
       case objectFields.manufacturer:
         return objAuthorPermlink(field) ? (
           <Link to={`/object/${objAuthorPermlink(field)}`}>{field.name}</Link>
         ) : (
           <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>
         );
+      case objectFields.brand:
+        return <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>;
       case objectFields.productWeight:
         return (
           <span>
