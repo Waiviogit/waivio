@@ -17,17 +17,24 @@ const SubmitReviewPublish = ({ intl, reviewData }) => {
           })}
         </span>
         &nbsp;
-        <a
-          href={`/@${authUserName}/${reviewData.reservationPermlink}`}
-          title={reviewData.name}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {intl.formatMessage({
-            id: `check_review_the_reservation`,
-            defaultMessage: 'the reservation',
-          })}
-        </a>
+        {reviewData?.type === 'mentions' ? (
+          intl.formatMessage({
+            id: `mentions_lowercase`,
+            defaultMessage: 'the mentions',
+          })
+        ) : (
+          <a
+            href={`/@${authUserName}/${reviewData.reservationPermlink}`}
+            title={reviewData.name}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {intl.formatMessage({
+              id: `check_review_the_reservation`,
+              defaultMessage: 'the reservation',
+            })}
+          </a>
+        )}
         &nbsp;
         <span>
           {intl.formatMessage({

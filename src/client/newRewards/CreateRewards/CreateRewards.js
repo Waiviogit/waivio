@@ -293,10 +293,11 @@ class CreateRewards extends React.Component {
       data.primaryObject.object_type === 'user'
         ? `@${data.primaryObject.name}`
         : data.primaryObject.author_permlink;
+
     const objects = isEmpty(data.secondaryObject)
       ? [requiredObject]
       : map(data.secondaryObject, o =>
-          o.object_type === 'user' ? `@${o.account}` : o.author_permlink,
+          o.object_type === 'user' ? `@${o.account || o.name}` : o.author_permlink,
         );
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const matchBots = Array.isArray(data.sponsorsList)
@@ -339,6 +340,7 @@ class CreateRewards extends React.Component {
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
+      ...(data.type === 'mentions' ? { qualifiedPayoutToken: data.qualifiedPayoutToken } : {}),
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -507,13 +509,17 @@ class CreateRewards extends React.Component {
           const submitMethod = isDetails ? updateCampaing : createNewCampaing;
 
           submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
-            .then(() => {
-              message.success(
-                `Rewards campaign ${values.campaignName} ${
-                  isDuplicate ? 'has been created' : 'has been updated'
-                }`,
-              );
-              this.manageRedirect();
+            .then(res => {
+              if (res.message) {
+                message.error(res.message);
+              } else {
+                message.success(
+                  `Rewards campaign ${values.campaignName} ${
+                    isDuplicate ? 'has been created' : 'has been updated'
+                  }`,
+                );
+                this.manageRedirect();
+              }
             })
             .catch(() => {
               message.error(`Campaign ${values.campaignName} has been rejected`);

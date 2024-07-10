@@ -10,9 +10,9 @@ import PropositionFooter from './PropositionFooter';
 import SocialCampaignCard from '../../../social-gifts/ShopObjectCard/ProductRewardCard/SocialCampaignCard';
 import { reserveProposition } from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 import './Proposition.less';
-import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 const Proposition = ({
   handleReportClick,

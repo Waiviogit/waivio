@@ -546,7 +546,20 @@ const CreateFormRenderer = props => {
           })(<Input.TextArea disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
-
+        {getFieldValue('type') === 'mentions' && (
+          <Form.Item>
+            {getFieldDecorator(fields.checkboxOnly.name, {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(
+              <Checkbox defaultChecked disabled={disabled}>
+                <span className="CreateReward__item-title" style={{ color: '#000' }}>
+                  {fields.checkboxOnly.textBeforeLink}
+                </span>
+              </Checkbox>,
+            )}
+          </Form.Item>
+        )}
         <Form.Item>
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,

@@ -38,7 +38,7 @@ import { clearBeneficiariesUsers } from '../searchStore/searchActions';
 import { getCurrentHost, getTranslationByKey } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getCampaign, getObjectsByIds } from '../../waivioApi/ApiClient';
+import { getCampaign, getMentionCampaign, getObjectsByIds } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
@@ -472,12 +472,13 @@ export const setUpdatedEditorExtendedData = payload => ({
   payload,
 });
 
-export const getCampaignInfo = ({ campaignId }, intl) => {
+export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryItem) => {
   return (dispatch, getState) => {
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
+    const method = campaignType === 'mentions' ? getMentionCampaign : getCampaign;
 
-    return getCampaign(authUserName, campaignId)
+    return method(authUserName, campaignId, secondaryItem)
       .then(campaignData => {
         const draftId = new URLSearchParams(getQueryString(state)).get('draft');
         const updatedEditorData = {

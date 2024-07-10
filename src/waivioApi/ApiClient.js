@@ -2768,7 +2768,6 @@ export const createNewCampaing = (data, account) =>
     method: 'POST',
     body: JSON.stringify(data),
   })
-    .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
@@ -3240,6 +3239,16 @@ export const getFiltersForHistoryProposition = userName =>
 
 export const getSponsorsMatchBots = botName =>
   fetch(`${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getMentionCampaign = (user, id, secondary) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.details}/${id}/${secondary}`, {
     headers,
     method: 'GET',
   })
