@@ -378,6 +378,7 @@ export default (messageFactory, validators, userName, currency) => ({
   },
   checkboxOnly: {
     name: 'qualifiedPayoutToken',
+    valuePropName: 'checked',
     textBeforeLink: messageFactory(
       'read_agreement_only',
       'Only posts eligible to receive a WAIV token reward will be considered qualified for participation in the campaign',
