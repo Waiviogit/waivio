@@ -12,26 +12,32 @@ const LinkUrlForm = ({ getFieldDecorator, loading, intl, getFieldValue }) => {
   const hasError = isNil(urlValidation) && getFieldValue(objectFields.url);
 
   return (
-    <Form.Item validateStatus={hasError ? 'error' : 'success'}>
-      <div className="AppendForm__appendTitles">
-        <FormattedMessage id="Link" defaultMessage="Link" />
-      </div>
-      {getFieldDecorator(
-        objectFields.url,
-        {},
-      )(
-        <Input
-          disabled={loading}
-          placeholder={intl.formatMessage({
-            id: 'enter_the_url',
-            defaultMessage: 'Enter the URL',
-          })}
-        />,
-      )}
-      {hasError && (
-        <span className={' mt2 append-combined-value__validation-msg'}>Invalid url</span>
-      )}
-    </Form.Item>
+    <>
+      <Form.Item validateStatus={hasError ? 'error' : 'success'}>
+        <div className="AppendForm__appendTitles mt2">
+          <FormattedMessage id="Link" defaultMessage="Link" />
+        </div>
+        {getFieldDecorator(
+          objectFields.url,
+          {},
+        )(
+          <Input
+            disabled={loading}
+            placeholder={intl.formatMessage({
+              id: 'enter_the_url',
+              defaultMessage: 'Enter the URL',
+            })}
+          />,
+        )}
+        {hasError && (
+          <span className={' mt2 append-combined-value__validation-msg'}>Invalid url</span>
+        )}
+      </Form.Item>
+      <p className={'mt1'}>
+        Enter a full URL for exact matching, or use * at the end to include URLs starting with the
+        specified path.
+      </p>
+    </>
   );
 };
 

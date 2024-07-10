@@ -72,15 +72,17 @@ const ProductDetails = ({
             wobject={wobject}
           />
         )}
-        {
-          <ProductId
-            isSocialGifts
-            isEditMode={false}
-            authorPermlink={wobject.author_permlink}
-            groupId={groupId}
-            productIdBody={productIdBody}
-          />
-        }
+        {(groupId || Boolean(productIdBody.length)) && (
+          <div style={{ marginBottom: '8px' }}>
+            <ProductId
+              isSocialGifts
+              isEditMode={false}
+              authorPermlink={wobject.author_permlink}
+              groupId={groupId}
+              productIdBody={productIdBody}
+            />
+          </div>
+        )}
         {!isEmpty(website) && <SocialListItem fieldName={objectFields.website} field={website} />}
       </div>
     </div>
