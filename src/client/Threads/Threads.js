@@ -77,19 +77,17 @@ const Threads = props => {
         <meta property="og:type" content="article" />
         <meta property="og:description" content={description} />
       </Helmet>
-      {props.isAuth && (
-        <ThreadsEditor
-          isUser={props.isUser}
-          name={name}
-          loading={loading}
-          setLoading={setLoading}
-          mainThreadHashtag={props.isUser ? undefined : name}
-          parentPost={parentPost}
-          inputValue={initialInputValue}
-          onSubmit={props.sendComment}
-          callback={callback}
-        />
-      )}
+      <ThreadsEditor
+        isUser={props.isUser}
+        name={name}
+        loading={loading}
+        setLoading={setLoading}
+        mainThreadHashtag={props.isUser ? undefined : name}
+        parentPost={parentPost}
+        inputValue={initialInputValue}
+        onSubmit={props.sendComment}
+        callback={callback}
+      />
       {(isFetching && threads.length < limit) || loading ? (
         <Loading />
       ) : (
@@ -130,7 +128,6 @@ Threads.propTypes = {
   showPostModal: PropTypes.func,
   sendComment: PropTypes.func,
   isGuest: PropTypes.bool,
-  isAuth: PropTypes.bool,
   isUser: PropTypes.bool,
   authUserName: PropTypes.string,
 };
