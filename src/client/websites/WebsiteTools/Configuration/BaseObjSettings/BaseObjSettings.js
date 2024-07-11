@@ -41,6 +41,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
         dispatch(
           searchAutoComplete(value, 3, 50, null, true, [
             'business',
+            'link',
             'book',
             'product',
             'restaurant',
