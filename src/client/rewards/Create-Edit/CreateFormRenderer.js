@@ -61,6 +61,7 @@ const CreateFormRenderer = props => {
     payoutToken,
     reachType,
     agreement,
+    qualifiedPayoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -550,7 +551,7 @@ const CreateFormRenderer = props => {
           <Form.Item>
             {getFieldDecorator(fields.checkboxOnly.name, {
               valuePropName: 'checked',
-              initialValue: true,
+              initialValue: qualifiedPayoutToken,
             })(
               <Checkbox defaultChecked disabled={disabled}>
                 <span className="CreateReward__item-title" style={{ color: '#000' }}>
@@ -640,6 +641,7 @@ CreateFormRenderer.defaultProps = {
   parentPermlink: '',
   campaignName: '',
   campaignType: null,
+  qualifiedPayoutToken: true,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,
@@ -678,6 +680,7 @@ CreateFormRenderer.propTypes = {
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
   receiptPhoto: PropTypes.bool,
+  qualifiedPayoutToken: PropTypes.bool,
   minPhotos: PropTypes.number,
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
