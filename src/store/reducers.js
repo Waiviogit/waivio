@@ -39,6 +39,7 @@ import ratesReducer from './ratesStore/ratesReducer';
 import shopReducer from './shopStore/shopReducer';
 import affiliateCodesReducer from './affiliateCodes/affiliateCodesReducer';
 import newRewardsReducer from './newRewards/newRewardsReducer';
+import chatBotReducer from './chatBotStore/chatBotReducer';
 
 export default history =>
   combineReducers({
@@ -73,6 +74,7 @@ export default history =>
     depositWithdraw,
     options: optionsReducer,
     affiliateCodes: affiliateCodesReducer,
+    chatBot: chatBotReducer,
     department: objectDepartmentsReducer,
     rates: ratesReducer,
     shop: shopReducer,

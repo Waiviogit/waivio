@@ -236,5 +236,6 @@
   "pin": "/pin",
   "rawField": "/raw-field",
   "info": "/info",
-  "avatar": "/avatar"
+  "avatar": "/avatar",
+  "assistant": "/assistant"
 }
