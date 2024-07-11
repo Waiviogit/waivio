@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import './BBackTop.less';
+import { BackTop } from 'antd';
+import { useSelector } from 'react-redux';
 import ChatWindow from './ChatBot/ChatWindow';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
+import './BBackTop.less';
 
-export default function BBackTop({ className, isModal }) {
+export default function BBackTop({ className, isModal, ...otherProps }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  const isWaivio = useSelector(getIsWaivio);
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
@@ -19,9 +22,15 @@ export default function BBackTop({ className, isModal }) {
             'BBackTop__container--shifted': isModal,
           })}
         >
-          <div className="BBackTop_button-ai" onClick={toggleChat}>
-            AI
-          </div>
+          {isWaivio ? (
+            <div className="BBackTop_button-ai" onClick={toggleChat}>
+              AI
+            </div>
+          ) : (
+            <BackTop className="BBackTop_button" {...otherProps}>
+              <i className="iconfont icon-back-top" />
+            </BackTop>
+          )}
         </div>
       </div>
       <ChatWindow className={isOpen ? 'open' : 'closed'} hideChat={() => setIsOpen(false)} />
