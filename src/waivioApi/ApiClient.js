@@ -3257,6 +3257,15 @@ export const getMentionCampaign = (user, id, secondary) =>
     .then(response => response)
     .catch(e => e);
 
+export const getUsersMentionCampaign = user =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}/user/${user}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getCampaign = (user, id) =>
   fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`, {
     headers,

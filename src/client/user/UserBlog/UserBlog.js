@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { useParams, withRouter } from 'react-router';
 import { isEmpty, get } from 'lodash';
@@ -21,12 +21,16 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 import { getBlogFilters, getFeed } from '../../../store/feedStore/feedSelectors';
 import { getUserProfileBlogPosts, resetProfileFilters } from '../../../store/feedStore/feedActions';
 import { showPostModal } from '../../../store/appStore/appActions';
+import { getUsersMentionCampaign } from '../../../waivioApi/ApiClient';
+import Campaing from '../../newRewards/reuseble/Campaing';
+import Proposition from '../../newRewards/reuseble/Proposition/Proposition';
 
 const limit = 10;
 
 const UserBlog = props => {
   const { name } = useParams();
   const user = useSelector(state => getUser(state, name));
+  const [mentions, setMentions] = useState({});
   const isOwnProfile = name === props.authenticatedUserName;
   const content = getFeedFromState('blog', name, props.feed);
   const isFetching = getFeedLoadingFromState('blog', name, props.feed);
@@ -44,6 +48,9 @@ const UserBlog = props => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
+    getUsersMentionCampaign(name).then(res => {
+      setMentions(res);
+    });
 
     return () => props.resetProfileFilters();
   }, [name]);
@@ -58,6 +65,9 @@ const UserBlog = props => {
         <meta name="twitter:description" content={description} />
         <meta property="og:description" content={description} />
       </Helmet>
+      {mentions.main && <Campaing campain={mentions.main} />}
+      {!isEmpty(mentions.secondary) &&
+        mentions.secondary.map(propos => <Proposition key={propos._id} proposition={propos} />)}
       <Feed
         content={content}
         isFetching={isFetching}
