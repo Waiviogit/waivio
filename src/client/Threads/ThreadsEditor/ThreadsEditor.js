@@ -17,7 +17,7 @@ import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../../components/EditorExtended/util/SlateEditor/utils/common';
 import ThreadsEditorSlate from '../../components/EditorExtended/ThreadsEditorSlate';
 import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
-
+import withAuthActions from '../../auth/withAuthActions';
 import './ThreadsEditor.less';
 
 const ThreadsEditor = ({
@@ -29,6 +29,7 @@ const ThreadsEditor = ({
   inputValue,
   onSubmit,
   isAuth,
+  onActionInitiated,
   setCursorCoordin,
   searchObjects,
   callback,
@@ -47,23 +48,25 @@ const ThreadsEditor = ({
   const handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
-    if (!commentMsg.includes(`${isUser ? '@' : '#'}${name}`)) {
-      setShowError(true);
+    if (isAuth) {
+      if (!commentMsg.includes(`${isUser ? '@' : '#'}${name}`)) {
+        setShowError(true);
 
-      return;
-    }
-    setShowError(false);
-    if (e.shiftKey) {
-      setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
-    } else if (commentMsg) {
-      const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
+        return;
+      }
+      setShowError(false);
+      if (e.shiftKey) {
+        setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
+      } else if (commentMsg) {
+        const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
 
-      setCommentMsg('');
-      setLoading(true);
-      resetEditorState(editor);
-      onSubmit(parentPost, bodyWithSignature, false, parentPost, true, callback).then(() => {
-        setFocused(false);
-      });
+        setCommentMsg('');
+        setLoading(true);
+        resetEditorState(editor);
+        onSubmit(parentPost, bodyWithSignature, false, parentPost, true, callback).then(() => {
+          setFocused(false);
+        });
+      }
     }
   };
 
@@ -116,14 +119,14 @@ const ThreadsEditor = ({
     <>
       <div className="ThreadsEditor">
         <div className="QuickComment">
-          {isAuth && (
+          {
             <>
               <ThreadsEditorSlate
                 small
                 isComment
                 isQuickComment
                 editorEnabled
-                onChange={handleMsgChange}
+                onChange={e => onActionInitiated(() => handleMsgChange(e))}
                 minHeight="auto"
                 initialPosTopBtn="-14px"
                 placeholder={`${isUser ? '@' : '#'}${name}...`}
@@ -144,14 +147,14 @@ const ThreadsEditor = ({
                 <span
                   disabled={showError}
                   role="presentation"
-                  onClick={handleSubmit}
+                  onClick={e => onActionInitiated(() => handleSubmit(e))}
                   className="QuickComment__send-comment"
                 >
                   <img src={'/images/icons/send.svg'} alt="send" />
                 </span>
               )}
             </>
-          )}
+          }
         </div>
       </div>
       {showError && (
@@ -174,7 +177,8 @@ ThreadsEditor.propTypes = {
   isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
-  isAuth: PropTypes.bool,
+  isAuth: PropTypes.func,
+  onActionInitiated: PropTypes.func,
   setLoading: PropTypes.func,
   loading: PropTypes.bool,
   setCursorCoordin: PropTypes.func,
@@ -198,4 +202,6 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(ThreadsEditor));
+export default injectIntl(
+  connect(mapStateToProps, mapDispatchToProps)(withAuthActions(ThreadsEditor)),
+);
