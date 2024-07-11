@@ -33,15 +33,15 @@ const WalletAddressForm = ({
   const validateWalletAddressClassList = classNames('WithdrawModal__addressValidate', {
     'WithdrawModal__addressValidate--invalid': isInvalid,
   });
-  const currCryptocurrency = cryptocurrenciesList.find(
-    c => c.name === getFieldValue(walletAddressFields.cryptocurrency),
+  const currCryptocurrency = cryptocurrenciesList.find(c =>
+    [c.abbreviation, c.name].includes(getFieldValue(walletAddressFields.cryptocurrency)),
   );
 
   const userSearchCurrencies = ['HIVE', 'WAIV', 'HBD']?.includes(currCryptocurrency?.abbreviation);
   const handleValidateWalletAddress = value => {
     if (!value) return setIsInvalid();
 
-    if (value && currCryptocurrency.abbreviation !== 'LBTC') {
+    if (value && currCryptocurrency?.abbreviation !== 'LBTC') {
       const isValid = WAValidator.validate(value, currCryptocurrency.abbreviation.toLowerCase());
 
       return setIsInvalid(!isValid);
@@ -91,11 +91,13 @@ const WalletAddressForm = ({
       </div>
       <Form.Item>
         {getFieldDecorator(walletAddressFields.cryptocurrency, {
-          initialValue: cryptocurrenciesList[0].name,
+          initialValue: cryptocurrenciesList[0].abbreviation,
         })(
           <Select placeholder="Select a current status" onChange={handleChange}>
             {cryptocurrenciesList.map(c => (
-              <Select.Option key={c.name}> {c.name}</Select.Option>
+              <Select.Option key={c.name} value={c.abbreviation}>
+                {c.name}
+              </Select.Option>
             ))}
           </Select>,
         )}
