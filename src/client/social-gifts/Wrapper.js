@@ -70,6 +70,7 @@ const createLink = i => {
     case 'page':
       return `/checklist/${i?.author_permlink}`;
     case 'business':
+    case 'link':
     case 'product':
     case 'book':
     case 'map':

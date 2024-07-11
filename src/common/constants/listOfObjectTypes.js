@@ -1,11 +1,19 @@
 export const listObjectTypeOfDining = ['restaurant', 'dish'];
 
-export const listOfSocialObjectTypes = ['product', 'book', 'person', 'business', 'restaurant'];
+export const listOfSocialObjectTypes = [
+  'product',
+  'book',
+  'person',
+  'business',
+  'link',
+  'restaurant',
+];
 
 export const recommendedObjectTypes = [
   'product',
   'book',
   'business',
+  'link',
   'restaurant',
   'dish',
   'drink',
