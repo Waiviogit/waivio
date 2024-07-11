@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, Input } from 'antd';
+import { Icon, Input } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -20,7 +20,8 @@ import { quickMessages } from './chatBotHelper';
 import './ChatWindow.less';
 
 const CHAT_ID = 'chatId';
-const ChatWindow = ({ clearChat, className, hideChat }) => {
+
+const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
@@ -36,13 +37,15 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
     if (isEmpty(chatId)) {
       Cookie.set(CHAT_ID, id);
     }
-    dispatch(setChatBotMessage(newMessage));
-    setMessage('');
-    setLoading(true);
-    sendChatBotQuestion(question, id).then(res => {
-      dispatch(setChatBotMessage({ text: res.result, role: 'ai' }));
-      setLoading(false);
-    });
+    if (!isEmpty(question)) {
+      dispatch(setChatBotMessage(newMessage));
+      setMessage('');
+      setLoading(true);
+      sendChatBotQuestion(question, id).then(res => {
+        dispatch(setChatBotMessage({ text: res.result, role: 'ai' }));
+        setLoading(false);
+      });
+    }
   };
 
   const setInputData = e => {
@@ -50,12 +53,13 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
   };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
-    clearChat();
+    hideChat();
     dispatch(resetChatBotMessages());
   };
 
   const handleKeyPress = e => {
     if (e.key === 'Enter' && !isEmpty(message)) {
+      e.preventDefault();
       sendMessage();
     }
   };
@@ -69,7 +73,7 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
     <div className={`ChatWindow ${className}`}>
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
-          <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt={'Waivio'} />
+          <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
           <div className="chat-header-text">Waivio Assistant</div>
         </div>
         <div className="chat-header-buttons-wrap">
@@ -80,7 +84,7 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
       <div className="chat-body">
         <div className="info">
           <p>Welcome to Waivio AI Assistant!</p>
-          <p> How can I assist you today?</p>
+          <p>How can I assist you today?</p>
         </div>
         <div className="options">
           {quickMessages.map(mess => (
@@ -90,7 +94,7 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
           ))}
         </div>
         {!isEmpty(chatMessages) &&
-          chatMessages?.map(mes =>
+          chatMessages.map(mes =>
             mes.role === 'human' ? (
               <UserMessage key={mes.text} text={mes.text} />
             ) : (
@@ -100,24 +104,29 @@ const ChatWindow = ({ clearChat, className, hideChat }) => {
         {loading && <AssistantMessage loading />}
       </div>
       <div className="chat-footer">
-        <Input
-          allowClear
+        <Input.TextArea
           placeholder="Enter your question"
           value={message}
           onInput={setInputData}
           onKeyPress={handleKeyPress}
+          className="chat-input"
+          autoSize={{ minRows: 1 }}
         />
-        <Button disabled={isEmpty(message)} onClick={sendMessage}>
-          Send
-        </Button>
+        <span
+          role="presentation"
+          onClick={() => sendMessage()}
+          className="QuickComment__send-comment"
+        >
+          <img src="/images/icons/send.svg" alt="send" />
+        </span>
       </div>
     </div>
   );
 };
 
 ChatWindow.propTypes = {
-  clearChat: PropTypes.func.isRequired,
   hideChat: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
+
 export default ChatWindow;

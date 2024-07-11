@@ -20,7 +20,13 @@
   &.open {
     bottom: 10px;
   }
-
+  &.closed {
+    transition: none;
+  }
+  .QuickComment__send-comment {
+    bottom: 16px;
+    right: 18px;
+  }
   p {
     text-align: center;
   }
@@ -79,6 +85,8 @@
     justify-content: center;
     flex-direction: column;
     margin-bottom: 10px;
+    color: @blue-botticelli;
+    font-weight: 500;
   }
   .message {
     display: flex;
@@ -127,22 +135,22 @@
     border-bottom-right-radius: 10px;
   }
 
-  .chat-footer input {
+  .chat-footer .chat-input {
+    padding: 8px 30px 8px 12px;
     flex: 1;
-    padding: 8px 12px;
     border: 1px solid @white-gainsboro;
     border-radius: 5px;
-    margin-right: 10px;
+    resize: none;
   }
 
-  .chat-footer button {
-    background-color: var(--website-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-    cursor: pointer;
-  }
+  //.chat-footer button {
+  //  background-color: var(--website-color);
+  //  color: white;
+  //  border: none;
+  //  border-radius: 5px;
+  //  margin-left: 5px;
+  //  cursor: pointer;
+  //}
 
   .hovered {
     cursor: pointer;

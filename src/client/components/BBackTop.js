@@ -24,11 +24,7 @@ export default function BBackTop({ className, isModal }) {
           </div>
         </div>
       </div>
-      <ChatWindow
-        className={isOpen ? 'open' : ''}
-        clearChat={() => setIsOpen(false)}
-        hideChat={() => setIsOpen(false)}
-      />
+      <ChatWindow className={isOpen ? 'open' : 'closed'} hideChat={() => setIsOpen(false)} />
     </>
   );
 }
