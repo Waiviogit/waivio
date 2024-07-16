@@ -30,17 +30,18 @@ const Proposition = ({
 
   let mainItem = proposition.object;
 
-  if (proposition.user) {
-    const profile = proposition.user?.posting_json_metadata
-      ? parseJSON(proposition.user.posting_json_metadata)?.profile
+  if (proposition.user || !proposition.object?.object_type) {
+    const user = proposition.user || proposition.object;
+    const profile = user?.posting_json_metadata
+      ? parseJSON(user.posting_json_metadata)?.profile
       : null;
 
     mainItem = {
-      name: proposition.user.name,
+      name: user.name,
       object_type: 'user',
-      avatar: proposition.user.profile_image,
+      avatar: user.profile_image,
       description: profile?.about,
-      author_permlink: proposition.user.name,
+      author_permlink: user.name,
     };
   }
   const [openDetails, setOpenDitails] = useState(false);
@@ -123,6 +124,7 @@ Proposition.propTypes = {
     payoutToken: PropTypes.string,
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
+      object_type: PropTypes.string,
     }),
     user: PropTypes.shape({
       posting_json_metadata: PropTypes.string,
