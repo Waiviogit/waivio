@@ -33,10 +33,12 @@
   &.closed {
     transition: none;
   }
-
+  ol {
+    margin-left: 10px;
+  }
   .QuickComment__send-comment {
     bottom: 20px;
-    right: 18px;
+    right: 25px;
   }
   .info-paragraph {
     text-align: center;
@@ -105,13 +107,13 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: @black-text-basic;
     min-height: 40px;
     border-radius: 5px;
     max-width: 280px;
     width: fit-content;
-    padding: 5px 10px;
+    padding: 8px 16px;
     white-space: break-spaces;
     word-break: break-word;
     font-weight: 500;
@@ -158,6 +160,7 @@
   }
 
   .chat-footer .chat-input {
+    font-weight: 500;
     padding: 8px 30px 8px 12px;
     flex: 1;
     border: 1px solid @white-gainsboro;

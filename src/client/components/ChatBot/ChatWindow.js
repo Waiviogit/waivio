@@ -78,7 +78,11 @@ const ChatWindow = ({ className, hideChat }) => {
           <div className="chat-header-text">Waivio Assistant</div>
         </div>
         <div className="chat-header-buttons-wrap">
-          <Icon type="poweroff" className="hovered" onClick={clearChatMessages} />
+          {chatId ? (
+            <Icon type="poweroff" className="hovered" onClick={clearChatMessages} />
+          ) : (
+            <span />
+          )}
           <Icon type="shrink" className="hovered" onClick={hideChat} />
         </div>
       </div>
@@ -91,10 +95,13 @@ const ChatWindow = ({ className, hideChat }) => {
             </div>
             <div className="options">
               {quickMessages.map(mess => (
-                <button key={mess.label} onClick={() => sendMessage(mess.text)}>
+                <button key={mess.label} onClick={() => setMessage(`${mess.text} `)}>
                   {mess.label}
                 </button>
               ))}
+              <button key={'About Waivio'} onClick={() => sendMessage('About Waivio')}>
+                About Waivio
+              </button>
             </div>{' '}
           </>
         )}
