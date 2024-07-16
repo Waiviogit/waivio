@@ -176,7 +176,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                 <Link
                   to={
                     sponsor?.mainObject
-                      ? sponsor?.mainObject?.defaultShowLink
+                      ? sponsor?.mainObject?.defaultShowLink || `/@${sponsor?.mainObject?.name}`
                       : `/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`
                   }
                 >

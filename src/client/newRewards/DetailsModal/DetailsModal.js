@@ -15,6 +15,7 @@ import DetailsModalBody from './DetailsBody';
 import {
   getObjectInfo,
   getObjectsByIds,
+  getUserAccount,
   validateEgibilitiesForUser,
 } from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
@@ -61,12 +62,19 @@ const DetailsModal = ({
 
   useEffect(() => {
     if (stringRequiredObj) {
-      getObjectInfo([proposition?.requiredObject], locale).then(res =>
-        setRequiredObject(res.wobjects[0]),
-      );
+      if (proposition?.requiredObject.includes('@')) {
+        getUserAccount(proposition?.requiredObject.replace('@', '')).then(res => {
+          setRequiredObject(res);
+        });
+      } else {
+        getObjectInfo([proposition?.requiredObject], locale).then(res =>
+          setRequiredObject(res.wobjects[0]),
+        );
+      }
     } else {
       setRequiredObject(proposition.requiredObject);
     }
+
     if (!proposition?.reserved) {
       validateEgibilitiesForUser({
         userName,
