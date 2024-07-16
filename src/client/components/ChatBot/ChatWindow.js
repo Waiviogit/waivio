@@ -37,7 +37,7 @@ const ChatWindow = ({ className, hideChat }) => {
     if (isEmpty(chatId)) {
       Cookie.set(CHAT_ID, id);
     }
-    if (!isEmpty(question)) {
+    if (!isEmpty(question) && !loading) {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
       setLoading(true);
@@ -53,12 +53,13 @@ const ChatWindow = ({ className, hideChat }) => {
   };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
+    setMessage('');
     hideChat();
     dispatch(resetChatBotMessages());
   };
 
-  const handleKeyPress = e => {
-    if (e.key === 'Enter' && !isEmpty(message)) {
+  const handleKeyDown = e => {
+    if (e.key === 'Enter' && !e.shiftKey && !isEmpty(message)) {
       e.preventDefault();
       sendMessage();
     }
@@ -82,35 +83,41 @@ const ChatWindow = ({ className, hideChat }) => {
         </div>
       </div>
       <div className="chat-body">
-        <div className="info">
-          <p>Welcome to Waivio AI Assistant!</p>
-          <p>How can I assist you today?</p>
+        {isEmpty(chatMessages) && (
+          <>
+            <div className="info">
+              <div className="info-paragraph">Welcome to Waivio AI Assistant!</div>
+              <div className="info-paragraph">How can I assist you today?</div>
+            </div>
+            <div className="options">
+              {quickMessages.map(mess => (
+                <button key={mess.label} onClick={() => sendMessage(mess.text)}>
+                  {mess.label}
+                </button>
+              ))}
+            </div>{' '}
+          </>
+        )}
+        <div className="chat-messages">
+          {!isEmpty(chatMessages) &&
+            chatMessages.map(mes =>
+              mes.role === 'human' ? (
+                <UserMessage key={mes.text} text={mes.text} />
+              ) : (
+                <AssistantMessage key={mes.text} text={mes.text} loading={false} />
+              ),
+            )}
+          {loading && <AssistantMessage loading />}
         </div>
-        <div className="options">
-          {quickMessages.map(mess => (
-            <button key={mess.label} onClick={() => sendMessage(mess.text)}>
-              {mess.label}
-            </button>
-          ))}
-        </div>
-        {!isEmpty(chatMessages) &&
-          chatMessages.map(mes =>
-            mes.role === 'human' ? (
-              <UserMessage key={mes.text} text={mes.text} />
-            ) : (
-              <AssistantMessage key={mes.text} text={mes.text} loading={false} />
-            ),
-          )}
-        {loading && <AssistantMessage loading />}
       </div>
       <div className="chat-footer">
         <Input.TextArea
           placeholder="Enter your question"
           value={message}
           onInput={setInputData}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           className="chat-input"
-          autoSize={{ minRows: 1 }}
+          autoSize={{ minRows: 1, maxRows: 5 }}
         />
         <span
           role="presentation"
