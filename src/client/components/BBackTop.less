@@ -4,9 +4,13 @@
 .BBackTop {
   position: fixed;
   width: 100%;
-  height: 0;
-  bottom: 60px;
+  bottom: 45px;
+  right: -40px;
   z-index: @backtop-z-index;
+  @media @medium {
+    height: 0;
+    bottom: 60px;
+  }
 
   .BBackTop__container {
     position: relative;
@@ -59,10 +63,6 @@
     padding-left: 9px;
     padding-top: 4px;
     cursor: pointer;
-
-    &:hover {
-      background-color: var(--website-hover-color) !important;
-    }
   }
 }
 
