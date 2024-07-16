@@ -1,19 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TypingText from './TypingText';
-import { parseChatBotLinks } from './chatBotHelper';
+import { getHtml } from '../Story/Body';
 
 const AssistantMessage = ({ text, loading }) => (
   <div className="flex">
     {' '}
     <img className="chat-logo-small" src="/images/icons/cryptocurrencies/waiv.png" alt={'Waivio'} />
-    {!loading && (
-      <div
-        className="message from-assistant"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: parseChatBotLinks(text) }}
-      />
-    )}
+    {!loading && <div className="message from-assistant">{getHtml(text)}</div>}
     {loading && <TypingText />}
   </div>
 );

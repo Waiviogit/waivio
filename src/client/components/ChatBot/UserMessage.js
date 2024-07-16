@@ -1,14 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { parseChatBotLinks } from './chatBotHelper';
+import { getHtml } from '../Story/Body';
 
-const UserMessage = ({ text }) => (
-  <div
-    className="message from-user"
-    // eslint-disable-next-line react/no-danger
-    dangerouslySetInnerHTML={{ __html: parseChatBotLinks(text) }}
-  />
-);
+const UserMessage = ({ text }) => <div className="message from-user">{getHtml(text)}</div>;
 
 UserMessage.propTypes = {
   text: PropTypes.string.isRequired,
