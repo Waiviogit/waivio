@@ -92,7 +92,6 @@ const BusinessObject = ({
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
-  // const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const allPhotos = albums
     ?.flatMap(alb => alb?.items)
     ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
@@ -159,6 +158,7 @@ const BusinessObject = ({
     !isNil(website) ||
     !isNil(email) ||
     !isNil(linkField) ||
+    !isEmpty(walletAddress) ||
     !isEmpty(companyIdBody);
 
   const showAddressHoursBlock = !isNil(address) || !isNil(map) || !isNil(workTime);
