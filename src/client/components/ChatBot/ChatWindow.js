@@ -95,7 +95,7 @@ const ChatWindow = ({ className, hideChat }) => {
             </div>
             <div className="options">
               {quickMessages.map(mess => (
-                <button key={mess.label} onClick={() => setMessage(`${mess.text}: `)}>
+                <button key={mess.label} onClick={() => setMessage(`${mess.text}:\n`)}>
                   {mess.label}
                 </button>
               ))}
