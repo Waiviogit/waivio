@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 import {
-  getCurrentHost,
+  getAppHost,
   getIsWaivio,
   getUsedLocale,
   getWebsiteColors,
@@ -21,7 +21,7 @@ export default function withAuthActions(WrappedComponent) {
     authenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
     domain: getWebsiteParentHost(state),
-    host: getCurrentHost(state),
+    host: getAppHost(state),
     websiteName: getWebsiteNameForHeader(state),
     usedLocale: getUsedLocale(state),
     colors: getWebsiteColors(state),
@@ -80,7 +80,7 @@ export default function withAuthActions(WrappedComponent) {
         const color = this.props.colors.mapMarkerBody?.replace('#', '');
 
         if (typeof window !== 'undefined')
-          window.location.href = `https://${this.props.domain}/sign-in?host=${
+          window.location.href = `https://${this.props.domain}/sign-in?host=https://${
             this.props.host
           }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
             .websiteName || this.props.host}`;

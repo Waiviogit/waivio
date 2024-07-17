@@ -19,14 +19,16 @@ const WalletAddressItem = ({ address }) => {
     }
   };
 
-  const cryptocurrency = cryptocurrenciesList.find(crypto => crypto.name === addressBody.symbol);
+  const cryptocurrency = cryptocurrenciesList.find(crypto =>
+    [crypto.abbreviation, crypto.name].includes(addressBody.symbol),
+  );
 
   return (
     <div className={'WalletAddressItem__container'}>
       <span className={'WalletAddressItem'} onClick={onWalletAddressClick}>
         <img
           className={'WalletAddressItem__icon'}
-          src={`/images/icons/cryptocurrencies/${cryptocurrency.icon}`}
+          src={`/images/icons/cryptocurrencies/${cryptocurrency?.icon}`}
           alt={''}
         />
         {addressBody.title

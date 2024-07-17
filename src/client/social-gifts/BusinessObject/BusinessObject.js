@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { ReactSVG } from 'react-svg';
 import { withRouter } from 'react-router-dom';
 import { get, isEmpty, isNil, reduce } from 'lodash';
 import { Helmet } from 'react-helmet';
@@ -52,11 +53,11 @@ import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/use
 import DEFAULTS from '../../object/const/defaultValues';
 import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
 import BusinessDetails from './BusinessDetails/BusinessDetails';
-import './BusinessObject.less';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
 import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import './BusinessObject.less';
 
 const BusinessObject = ({
   userName,
@@ -91,11 +92,9 @@ const BusinessObject = ({
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
-  // const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
-  const allPhotos = albums
+  const pictures = albums
     ?.flatMap(alb => alb?.items)
     ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
-  const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
   const phones = get(wobject, 'phone', []);
@@ -120,6 +119,7 @@ const BusinessObject = ({
   const address = parseAddress(wobject);
   const map = parseWobjectField(wobject, 'map');
   const workTime = get(wobject, 'workTime');
+  const linkUrl = get(wobject, 'url', '');
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery = !isEmpty(wobject.preview_gallery);
   const tagCategoriesForDescr = reduce(
@@ -157,6 +157,7 @@ const BusinessObject = ({
     !isNil(website) ||
     !isNil(email) ||
     !isNil(linkField) ||
+    !isEmpty(walletAddress) ||
     !isEmpty(companyIdBody);
 
   const showAddressHoursBlock = !isNil(address) || !isNil(map) || !isNil(workTime);
@@ -277,7 +278,6 @@ const BusinessObject = ({
               <div className="SocialProduct__row SocialProduct__right-row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
-                    relatedAlbum={relatedAlbum}
                     albums={albums}
                     altText={description}
                     currentWobj={wobject}
@@ -333,6 +333,20 @@ const BusinessObject = ({
                       ))}
                   </div>
                 )}
+                <div>
+                  {wobject.object_type === 'link' && (
+                    <span className={'ObjectInfo__url-container'}>
+                      <ReactSVG
+                        className="ObjectInfo__url-image"
+                        src={'/images/icons/link-icon.svg'}
+                        wrapper={'span'}
+                      />{' '}
+                      <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+                        {linkUrl}
+                      </a>
+                    </span>
+                  )}
+                </div>
                 <div
                   className={
                     isNil(price) && !isEmpty(wobject?.options)

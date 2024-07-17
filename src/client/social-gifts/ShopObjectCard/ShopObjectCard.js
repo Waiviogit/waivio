@@ -52,6 +52,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   switch (wObject.object_type) {
     case 'product':
     case 'business':
+    case 'link':
     case 'restaurant':
     case 'book': {
       const query = location.hash

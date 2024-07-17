@@ -270,6 +270,9 @@ class CreateRewards extends React.Component {
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservationTimetable,
           minPhotos: campaign.requirements.minPhotos,
+          ...(campaign.type === 'mentions'
+            ? { qualifiedPayoutToken: campaign.qualifiedPayoutToken }
+            : {}),
           description: campaign.description,
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
           campaignId: campaign._id,
@@ -579,6 +582,7 @@ class CreateRewards extends React.Component {
       isDisabled,
       isDuplicate,
       reachType,
+      qualifiedPayoutToken,
     } = this.state;
 
     return (
@@ -612,6 +616,7 @@ class CreateRewards extends React.Component {
         getFieldDecorator={form.getFieldDecorator}
         getFieldValue={form.getFieldValue}
         commissionAgreement={commissionAgreement}
+        qualifiedPayoutToken={qualifiedPayoutToken}
         campaignId={campaignId}
         iAgree={iAgree}
         eligibleDays={eligibleDays}

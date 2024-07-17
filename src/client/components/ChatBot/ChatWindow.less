@@ -1,0 +1,228 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.ChatWindow {
+  z-index: @ant-message-z-index;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  border-radius: 0;
+  border-top: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  bottom: -100%;
+  right: 0;
+  transition: bottom 0.5s ease-in-out;
+  @media @medium {
+    width: 370px;
+    right: 20px;
+    height: 600px;
+    border-radius: 10px;
+  }
+
+  &.open {
+    bottom: 0;
+    @media @medium {
+      bottom: 10px;
+    }
+  }
+
+  &.closed {
+    transition: none;
+  }
+  ol {
+    margin-left: 10px;
+  }
+
+  br {
+    display: none;
+  }
+
+  .QuickComment__send-comment {
+    bottom: 20px;
+    right: 25px;
+  }
+  .info-paragraph {
+    text-align: center;
+  }
+
+  .chat-logo {
+    width: 40px;
+    height: 40px;
+  }
+  .chat-logo-small {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+
+  .chat-header-text {
+    margin-left: 10px;
+  }
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--website-color);
+    color: white;
+    padding: 10px 15px 10px 15px;
+    text-align: center;
+    font-weight: bold;
+    position: relative;
+    @media @medium {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+
+  .chat-header-logo-wrap {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .chat-header-buttons-wrap {
+    display: flex;
+    width: 40px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-left: 1px solid @white-gainsboro;
+    border-right: 1px solid @white-gainsboro;
+  }
+
+  .info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 10px;
+    color: @blue-botticelli;
+    font-weight: 500;
+  }
+  .message {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 15px;
+    color: @black-text-basic;
+    min-height: 40px;
+    border-radius: 5px;
+    max-width: 280px;
+    width: fit-content;
+    padding: 8px 16px;
+    white-space: break-spaces;
+    word-break: break-word;
+    font-weight: 500;
+  }
+
+  .message.from-user {
+    background-color: var(--website-light-color);
+    margin-left: auto;
+  }
+
+  .message.from-assistant {
+    background-color: @white-gainsboro;
+    margin-right: auto;
+  }
+
+  .options {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  .chat-messages {
+    margin-top: 10px;
+  }
+
+  .options button {
+    background-color: @white-gainsboro;
+    color: @black-text-basic;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .chat-footer {
+    display: flex;
+    padding: 10px;
+    border: 1px solid @white-gainsboro;
+
+    @media @medium {
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+  }
+
+  .chat-footer .chat-input {
+    font-weight: 500;
+    padding: 8px 30px 8px 12px;
+    flex: 1;
+    border: 1px solid @white-gainsboro;
+    border-radius: 5px;
+    resize: none;
+  }
+
+  //.chat-footer button {
+  //  background-color: var(--website-color);
+  //  color: white;
+  //  border: none;
+  //  border-radius: 5px;
+  //  margin-left: 5px;
+  //  cursor: pointer;
+  //}
+
+  .hovered {
+    cursor: pointer;
+  }
+  .typing-container {
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: @white-gainsboro;
+  }
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: typing 1.5s infinite;
+  }
+
+  .dot:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .dot:nth-child(2) {
+    animation-delay: 0.3s;
+  }
+
+  .dot:nth-child(3) {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes typing {
+    0%,
+    80%,
+    100% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.5);
+    }
+  }
+}

@@ -429,19 +429,24 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           : [...mainList, decrease];
       }
       case 'rejected':
+        if (isMentions)
+          return isSponsor ? [rejectionNote, reinstate, ...toolList] : [rejectionNote];
+
         return isSponsor
           ? [viewReservation, rejectionNote, reinstate, ...toolList]
           : [viewReservation, rejectionNote];
       case 'unassigned':
       case 'expired': {
-        const mainList = [viewReservation];
+        const mainList = isMentions ? [] : [viewReservation];
 
         if (bothStatus || isUser) return mainList;
 
         return [...mainList, ...toolList];
       }
       default:
-        return [realeaseRewards, viewReservation, ...toolList];
+        return isMentions
+          ? [realeaseRewards, ...toolList]
+          : [realeaseRewards, viewReservation, ...toolList];
     }
   };
 

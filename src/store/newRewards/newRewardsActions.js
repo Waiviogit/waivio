@@ -232,7 +232,6 @@ export const rejectAuthorReview = proposition => (
 ) => {
   const authName = getAuthenticatedUserName(getState());
   const parent_author = proposition.reservationRootAuthor || proposition.rootName;
-
   const commentOp = [
     'comment',
     {
