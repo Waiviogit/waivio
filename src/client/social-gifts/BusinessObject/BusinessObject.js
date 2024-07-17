@@ -279,7 +279,6 @@ const BusinessObject = ({
               <div className="SocialProduct__row SocialProduct__right-row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
-                    relatedAlbum={relatedAlbum}
                     albums={albums}
                     altText={description}
                     currentWobj={wobject}

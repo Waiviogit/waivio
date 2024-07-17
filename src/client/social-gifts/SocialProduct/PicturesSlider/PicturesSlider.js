@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Carousel, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { get, indexOf, isEmpty, map } from 'lodash';
+import { indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
@@ -15,12 +15,10 @@ const PicturesSlider = ({
   currentWobj,
   altText,
   albums,
-  relatedAlbum,
 }) => {
-  const allPhotos = albums
+  const pictures = albums
     ?.flatMap(alb => alb?.items)
     ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-  const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const avatar = getObjectAvatar(currentWobj);
   const [currentImage, setCurrentImage] = useState(
     isEmpty(avatar) ? pictures[0] : { body: avatar },
