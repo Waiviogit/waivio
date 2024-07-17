@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Icon, Input } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
@@ -27,6 +27,7 @@ const ChatWindow = ({ className, hideChat }) => {
   const chatMessages = useSelector(getChatBotMessages);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
+  const textAreaRef = useRef(null);
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -51,6 +52,7 @@ const ChatWindow = ({ className, hideChat }) => {
   const setInputData = e => {
     setMessage(e.target.value);
   };
+
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
     setMessage('');
@@ -66,9 +68,22 @@ const ChatWindow = ({ className, hideChat }) => {
   };
 
   useEffect(() => {
-    if (chatId && isEmpty(chatMessages))
+    if (chatId && isEmpty(chatMessages)) {
       getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
-  }, [chatId]);
+    }
+  }, [chatId, chatMessages, dispatch]);
+
+  const handleQuickMessageClick = mess => {
+    setMessage(`${mess.text}:\n`);
+    setTimeout(() => {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+        const length = textAreaRef.current.value.length;
+
+        textAreaRef.current.setSelectionRange(length, length);
+      }
+    }, 0);
+  };
 
   return (
     <div className={`ChatWindow ${className}`}>
@@ -95,11 +110,11 @@ const ChatWindow = ({ className, hideChat }) => {
             </div>
             <div className="options">
               {quickMessages.map(mess => (
-                <button key={mess.label} onClick={() => setMessage(`${mess.text}:\n`)}>
+                <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                   {mess.label}
                 </button>
               ))}
-            </div>{' '}
+            </div>
           </>
         )}
         <div className="chat-messages">
@@ -122,6 +137,7 @@ const ChatWindow = ({ className, hideChat }) => {
           onKeyDown={handleKeyDown}
           className="chat-input"
           autoSize={{ minRows: 1, maxRows: 5 }}
+          ref={textAreaRef}
         />
         <span
           role="presentation"
