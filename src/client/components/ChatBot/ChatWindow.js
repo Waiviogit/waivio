@@ -73,7 +73,7 @@ const ChatWindow = ({ className, hideChat }) => {
     if (chatId && isEmpty(chatMessages) && isWaivio) {
       getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
     }
-  }, [chatId, chatMessages]);
+  }, [chatId, chatMessages.length]);
 
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
