@@ -18,6 +18,7 @@ import {
 import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
 import './ChatWindow.less';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 const CHAT_ID = 'chatId';
 
@@ -25,6 +26,7 @@ const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
+  const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
@@ -68,10 +70,10 @@ const ChatWindow = ({ className, hideChat }) => {
   };
 
   useEffect(() => {
-    if (chatId && isEmpty(chatMessages)) {
+    if (chatId && isEmpty(chatMessages) && isWaivio) {
       getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
     }
-  }, [chatId, chatMessages, dispatch]);
+  }, [chatId, chatMessages]);
 
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
