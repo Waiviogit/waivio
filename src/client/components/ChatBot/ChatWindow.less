@@ -13,21 +13,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  bottom: 10px;
-  right: -100%;
-  transition: right 0.5s ease-in-out;
+  bottom: -100%;
+  right: 0;
+  transition: bottom 0.5s ease-in-out;
   @media @small {
     width: 370px;
+    right: 20px;
     height: 600px;
     border-radius: 10px;
   }
 
   &.open {
     bottom: 0;
-    right: 0;
     @media @small {
       bottom: 10px;
-      right: 10px;
     }
   }
 
