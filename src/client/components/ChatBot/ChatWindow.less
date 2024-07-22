@@ -5,7 +5,7 @@
   z-index: @ant-message-z-index;
   position: fixed;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: white;
   border-radius: 0;
   border-top: none;
@@ -50,6 +50,8 @@
   }
 
   .chat-logo {
+    border: 0.5px solid @white-gainsboro;
+    border-radius: 15px;
     width: 40px;
     height: 40px;
   }
@@ -87,7 +89,7 @@
 
   .chat-header-buttons-wrap {
     display: flex;
-    width: 40px;
+    width: 65px;
     align-items: center;
     justify-content: space-between;
   }
@@ -182,7 +184,8 @@
   //  cursor: pointer;
   //}
 
-  .hovered {
+  .header-button-icon {
+    font-size: 22px;
     cursor: pointer;
   }
   .typing-container {
