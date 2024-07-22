@@ -106,12 +106,43 @@ const ChatWindow = ({ className, hideChat }) => {
         }
       };
 
+      const handleWheel = e => {
+        const { scrollTop, scrollHeight, clientHeight } = chatBody;
+        const delta = e.deltaY;
+
+        if (
+          (scrollTop === 0 && delta < 0) ||
+          (scrollTop + clientHeight === scrollHeight && delta > 0)
+        ) {
+          e.preventDefault();
+        }
+      };
+
       chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
       chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+      chatBody.addEventListener('wheel', handleWheel, { passive: false });
 
       return () => {
         chatBody.removeEventListener('touchstart', handleTouchStart);
         chatBody.removeEventListener('touchmove', handleTouchMove);
+        chatBody.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const handleTouchMove = e => {
+      e.stopPropagation();
+    };
+
+    const textArea = textAreaRef.current;
+
+    if (textArea) {
+      textArea.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+      return () => {
+        textArea.removeEventListener('touchmove', handleTouchMove);
       };
     }
   }, []);
