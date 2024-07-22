@@ -106,12 +106,43 @@ const ChatWindow = ({ className, hideChat }) => {
         }
       };
 
+      const handleWheel = e => {
+        const { scrollTop, scrollHeight, clientHeight } = chatBody;
+        const delta = e.deltaY;
+
+        if (
+          (scrollTop === 0 && delta < 0) ||
+          (scrollTop + clientHeight === scrollHeight && delta > 0)
+        ) {
+          e.preventDefault();
+        }
+      };
+
       chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
       chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+      chatBody.addEventListener('wheel', handleWheel, { passive: false });
 
       return () => {
         chatBody.removeEventListener('touchstart', handleTouchStart);
         chatBody.removeEventListener('touchmove', handleTouchMove);
+        chatBody.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const handleTouchMove = e => {
+      e.stopPropagation();
+    };
+
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (textArea) {
+      textArea.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+      return () => {
+        textArea.removeEventListener('touchmove', handleTouchMove);
       };
     }
   }, []);
@@ -121,9 +152,9 @@ const ChatWindow = ({ className, hideChat }) => {
     setTimeout(() => {
       if (textAreaRef.current) {
         textAreaRef.current.focus();
-        const length = textAreaRef.current.value.length;
+        const length = textAreaRef.current.resizableTextArea.textArea.value.length;
 
-        textAreaRef.current.setSelectionRange(length, length);
+        textAreaRef.current.resizableTextArea.textArea.setSelectionRange(length, length);
       }
     }, 0);
   };
