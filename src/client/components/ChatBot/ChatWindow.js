@@ -32,6 +32,7 @@ const ChatWindow = ({ className, hideChat }) => {
   const textAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
   const chatBodyRef = useRef(null);
+  const touchStartRef = useRef(0);
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -88,9 +89,14 @@ const ChatWindow = ({ className, hideChat }) => {
     const chatBody = chatBodyRef.current;
 
     if (chatBody) {
-      const preventScroll = e => {
+      const handleTouchStart = e => {
+        touchStartRef.current = e.touches[0].clientY;
+      };
+
+      const handleTouchMove = e => {
+        const touchCurrent = e.touches[0].clientY;
         const { scrollTop, scrollHeight, clientHeight } = chatBody;
-        const delta = e.deltaY;
+        const delta = touchStartRef.current - touchCurrent;
 
         if (
           (scrollTop === 0 && delta < 0) ||
@@ -100,10 +106,12 @@ const ChatWindow = ({ className, hideChat }) => {
         }
       };
 
-      chatBody.addEventListener('wheel', preventScroll, { passive: false });
+      chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
+      chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
 
       return () => {
-        chatBody.removeEventListener('wheel', preventScroll);
+        chatBody.removeEventListener('touchstart', handleTouchStart);
+        chatBody.removeEventListener('touchmove', handleTouchMove);
       };
     }
   }, []);
