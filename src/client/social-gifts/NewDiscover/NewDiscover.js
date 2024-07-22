@@ -33,6 +33,8 @@ const NewDiscover = () => {
   const [hasMoreObjects, setHasMoreObjects] = useState();
   const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
+  const tag = query.get('tag')?.replaceAll('%26%', '&');
+  const category = query.get('category')?.replaceAll('%26%', '&');
   const discoverUsers = match.url.includes('discover-users');
   const desc = 'All objects are located here. Discover new objects!';
   const image =
@@ -57,6 +59,17 @@ const NewDiscover = () => {
           searchString: search,
         };
 
+      if (tag && category) {
+        requestData.filter = {
+          tagCategory: [
+            {
+              categoryName: category,
+              tags: [tag],
+            },
+          ],
+        };
+      }
+
       getObjectType(type, requestData, ac).then(res => {
         setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
         setHasMoreObjects(res?.hasMoreWobjects);
@@ -78,6 +91,17 @@ const NewDiscover = () => {
       requestData.filter = {
         searchString: search,
       };
+
+    if (tag && category) {
+      requestData.filter = {
+        tagCategory: [
+          {
+            categoryName: category,
+            tags: [tag],
+          },
+        ],
+      };
+    }
 
     getObjectType(type, requestData).then(res => {
       setObjects([...objects, ...res?.related_wobjects]);

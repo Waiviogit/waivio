@@ -30,6 +30,8 @@ const ChatWindow = ({ className, hideChat }) => {
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const chatBodyRef = useRef(null);
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -75,6 +77,37 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, [chatId, chatMessages.length]);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatMessages, loading]);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const chatBody = chatBodyRef.current;
+
+    if (chatBody) {
+      const preventScroll = e => {
+        const { scrollTop, scrollHeight, clientHeight } = chatBody;
+        const delta = e.deltaY;
+
+        if (
+          (scrollTop === 0 && delta < 0) ||
+          (scrollTop + clientHeight === scrollHeight && delta > 0)
+        ) {
+          e.preventDefault();
+        }
+      };
+
+      chatBody.addEventListener('wheel', preventScroll, { passive: false });
+
+      return () => {
+        chatBody.removeEventListener('wheel', preventScroll);
+      };
+    }
+  }, []);
+
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -92,23 +125,22 @@ const ChatWindow = ({ className, hideChat }) => {
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
-          <div className="chat-header-text">Waivio Assistant</div>
+          <div className="chat-header-text">Waivio AI Assistant</div>
         </div>
         <div className="chat-header-buttons-wrap">
           {chatId ? (
-            <Icon type="poweroff" className="hovered" onClick={clearChatMessages} />
+            <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
           ) : (
             <span />
           )}
-          <Icon type="shrink" className="hovered" onClick={hideChat} />
+          <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
         </div>
       </div>
-      <div className="chat-body">
+      <div className="chat-body" ref={chatBodyRef}>
         {isEmpty(chatMessages) && (
           <>
             <div className="info">
-              <div className="info-paragraph">Welcome to Waivio AI Assistant!</div>
-              <div className="info-paragraph">How can I assist you today?</div>
+              <div className="info-paragraph">How can I help you today?</div>
             </div>
             <div className="options">
               {quickMessages.map(mess => (
@@ -129,11 +161,12 @@ const ChatWindow = ({ className, hideChat }) => {
               ),
             )}
           {loading && <AssistantMessage loading />}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       <div className="chat-footer">
         <Input.TextArea
-          placeholder="Enter your question"
+          placeholder="Type your question here..."
           value={message}
           onInput={setInputData}
           onKeyDown={handleKeyDown}
