@@ -62,7 +62,6 @@ const ChatWindow = ({ className, hideChat }) => {
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
     setMessage('');
-    hideChat();
     dispatch(resetChatBotMessages());
   };
 
