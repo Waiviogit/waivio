@@ -25,6 +25,7 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
@@ -147,6 +148,14 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, []);
 
+  const handleFocus = () => {
+    setIsKeyboardVisible(true);
+  };
+
+  const handleBlur = () => {
+    setIsKeyboardVisible(false);
+  };
+
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -175,7 +184,13 @@ const ChatWindow = ({ className, hideChat }) => {
           <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
         </div>
       </div>
-      <div className="chat-body" ref={chatBodyRef}>
+      <div
+        className="chat-body"
+        ref={chatBodyRef}
+        style={{
+          height: isKeyboardVisible ? 'calc(100vh - 200px)' : 'calc(100vh - 100px)',
+        }}
+      >
         {isEmpty(chatMessages) && (
           <>
             <div className="info">
@@ -212,6 +227,8 @@ const ChatWindow = ({ className, hideChat }) => {
           className="chat-input"
           autoSize={{ minRows: 1, maxRows: 5 }}
           ref={textAreaRef}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         <span
           role="presentation"
