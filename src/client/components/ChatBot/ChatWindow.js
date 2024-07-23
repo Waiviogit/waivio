@@ -26,6 +26,7 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [height, setHeight] = useState('100%');
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
@@ -168,10 +169,28 @@ const ChatWindow = ({ className, hideChat }) => {
     }, 0);
   };
 
+  useEffect(
+    // eslint-disable-next-line consistent-return
+    () => {
+      if (typeof window !== 'undefined') {
+        const handleResize = () => setHeight(window.innerHeight);
+
+        setHeight(window.innerHeight);
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }
+    },
+    [],
+  );
+
   return (
     <div
       className={`ChatWindow ${className}`}
-      style={isMobile() && isKeyboardVisible ? { height: '50%' } : {}}
+      style={isMobile() && isKeyboardVisible ? { height } : {}}
     >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
