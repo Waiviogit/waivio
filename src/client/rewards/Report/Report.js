@@ -79,6 +79,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
         currencyInfo={currencyInfo}
         reportDetails={reportDetails}
         payoutToken={payoutToken}
+        type={sponsor.campaignType}
       />
       <ReportTableRewards
         currencyInfo={currencyInfo}

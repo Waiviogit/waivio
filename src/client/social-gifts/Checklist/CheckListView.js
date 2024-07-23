@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import {
-  createNewHash,
+  createQueryBreadcrumbs,
   getObjectName,
   getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
@@ -20,13 +20,19 @@ import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 import ListDescription from '../ListDescription/ListDescription';
+import useQuery from '../../../hooks/useQuery';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
-  const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
-  const listPermlink = match.params.name || wobject?.author_permlink;
+  const query = useQuery();
+  const { name } = useParams();
+
+  let breadcrumbsFromQuery = query.get('breadcrumbs');
+
+  breadcrumbsFromQuery = breadcrumbsFromQuery ? breadcrumbsFromQuery.split('/') : null;
+
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
 
@@ -37,13 +43,13 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
         <div
           className="Checklist__listItems"
           onClick={() => {
-            const hash = createNewHash(listItem?.author_permlink, history.location.hash);
-            const query =
-              listPermlink === listItem?.author_permlink
-                ? ''
-                : `currObj=${listItem?.author_permlink}`;
-
-            history.push(`/checklist/${listPermlink}?${query}#${hash}`);
+            history.push(
+              `/checklist/${listItem?.author_permlink}?breadcrumbs=${createQueryBreadcrumbs(
+                listItem?.author_permlink,
+                breadcrumbsFromQuery,
+                name,
+              )}`,
+            );
           }}
           key={listItem.author_permlink}
         >

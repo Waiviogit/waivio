@@ -11,7 +11,7 @@ import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/w
 
 import './ReportHeader.less';
 
-const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
+const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken, type }) => {
   const singleReportData = reportDetails || useSelector(getSingleReportData);
   const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM D, YYYY');
   const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
@@ -19,7 +19,6 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const title = singleReportData.title;
   const reward = singleReportData.rewardTokenAmount || singleReportData.rewardHive;
   const rewardHive = reward ? round(reward, 3) : 0;
-
   const rewardUsd = singleReportData.rewardUsd
     ? round(singleReportData.rewardUsd * currencyInfo.rate, 2)
     : 'N/A';
@@ -117,20 +116,22 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
             </span>
           </a>
         </div>
-        <div>
-          <span className="ReportHeader__campaignInfo-name">
-            {intl.formatMessage({
-              id: 'rewards_reservation',
-              defaultMessage: 'Rewards reservation:',
-            })}{' '}
-          </span>
-          <a href={`/@${userName}/${reservationPermlink}`}>
-            <span className="ReportHeader__campaignInfo-date">
-              {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
-              {reservationDate}
+        {type !== 'mentions' && (
+          <div>
+            <span className="ReportHeader__campaignInfo-name">
+              {intl.formatMessage({
+                id: 'rewards_reservation',
+                defaultMessage: 'Rewards reservation:',
+              })}{' '}
             </span>
-          </a>
-        </div>
+            <a href={`/@${userName}/${reservationPermlink}`}>
+              <span className="ReportHeader__campaignInfo-date">
+                {intl.formatMessage({ id: 'posted_on', defaultMessage: 'posted on' })}{' '}
+                {reservationDate}
+              </span>
+            </a>
+          </div>
+        )}
         <div>
           <span className="ReportHeader__campaignInfo-name">
             {intl.formatMessage({ id: 'paymentTable_review', defaultMessage: 'Review' })}:{' '}
@@ -193,6 +194,7 @@ ReportHeader.propTypes = {
   }).isRequired,
   reportDetails: PropTypes.shape().isRequired,
   payoutToken: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ReportHeader);

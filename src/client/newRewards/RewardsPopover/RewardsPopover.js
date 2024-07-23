@@ -429,8 +429,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           : [...mainList, decrease];
       }
       case 'rejected':
-        if (isMentions)
-          return isSponsor ? [rejectionNote, reinstate, ...toolList] : [rejectionNote];
+        if (isMentions) return isSponsor ? [reinstate, ...toolList] : [];
 
         return isSponsor
           ? [viewReservation, rejectionNote, reinstate, ...toolList]
