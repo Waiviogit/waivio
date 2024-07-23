@@ -48,7 +48,7 @@ export function getHtml(
   body,
   jsonMetadata = {},
   returnType = 'Object',
-  options = {},
+  options = { isChatBotLink: false },
   location,
   isPage,
 ) {
@@ -93,6 +93,7 @@ export function getHtml(
       secureLinks: options.secureLinks,
       location,
       isPage,
+      isChatBotLink: options.isChatBotLink,
     }),
   );
 

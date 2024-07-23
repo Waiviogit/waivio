@@ -17,7 +17,9 @@ const AssistantMessage = ({ text, loading }) => {
         alt={'Waivio'}
       />
       {!loading && (
-        <div className="message from-assistant">{getHtml(text, {}, 'Object', { appUrl })}</div>
+        <div className="message from-assistant">
+          {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
+        </div>
       )}
       {loading && <TypingText />}
     </div>

@@ -7,7 +7,11 @@ import { getAppUrl } from '../../../store/appStore/appSelectors';
 const UserMessage = ({ text }) => {
   const appUrl = useSelector(getAppUrl);
 
-  return <div className="message from-user">{getHtml(text, {}, 'Object', { appUrl })}</div>;
+  return (
+    <div className="message from-user">
+      {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
+    </div>
+  );
 };
 
 UserMessage.propTypes = {
