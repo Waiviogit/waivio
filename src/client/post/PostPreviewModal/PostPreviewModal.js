@@ -204,7 +204,9 @@ class PostPreviewModal extends Component {
             zIndex={1500}
             onCancel={this.hideModal}
           >
-            <BBackTop isModal target={PostPreviewModal.findScrollElement} />
+            {!isModalOpen && !isPublishing && (
+              <BBackTop isModal target={PostPreviewModal.findScrollElement} />
+            )}
             <h1 className="StoryFull__title preview">{titleValue}</h1>
             <BodyContainer full body={body} isPostPreviewModal />
             <TagsSelector
