@@ -160,6 +160,7 @@ class DiscoverObjectsContent extends Component {
     const searchFilters = {};
 
     if (search) searchFilters.searchString = trimEnd(search);
+    const filters = this.getTagsFromQuery();
 
     if (activeTagsFilter) {
       if (activeFilters?.rating) searchFilters.rating = activeFilters.rating.split(',');
@@ -178,7 +179,7 @@ class DiscoverObjectsContent extends Component {
     }
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
-    dispatchGetObjectType(typeName, { skip: 0 });
+    dispatchGetObjectType(typeName, { skip: 0 }, filters);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
@@ -211,10 +212,30 @@ class DiscoverObjectsContent extends Component {
     </React.Fragment>
   );
 
+  getTagsFromQuery = () => {
+    const { location } = this.props;
+    const query = new URLSearchParams(location.search);
+    const tag = query.get('tag')?.replaceAll('%26%', '&');
+    const category = query.get('category')?.replaceAll('%26%', '&');
+    let filter = {};
+
+    if (category && tag) {
+      filter = [
+        {
+          categoryName: category,
+          tags: [tag],
+        },
+      ];
+    }
+
+    return filter;
+  };
+
   loadMoreRelatedObjects = () => {
     const { dispatchGetObjectType, theType, filteredObjects } = this.props;
+    const filters = this.getTagsFromQuery();
 
-    dispatchGetObjectType(theType.name, { skip: filteredObjects.length || 0 });
+    dispatchGetObjectType(theType.name, { skip: filteredObjects.length || 0 }, filters);
   };
 
   showFiltersModal = () =>

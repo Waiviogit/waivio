@@ -38,7 +38,11 @@ const FiltersContainer = ({
   const { search: filterPath } = location;
 
   useEffect(() => {
-    if (filterPath) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
+    const query = new URLSearchParams(location.search);
+    const tag = query.get('tag')?.replaceAll('%26%', '&');
+    const category = query.get('category')?.replaceAll('%26%', '&');
+
+    if (filterPath && !tag && !category) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
   }, []);
 
   const handleDisplayFilter = filterName => () => {

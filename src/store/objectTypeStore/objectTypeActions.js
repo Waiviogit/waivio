@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getQueryString } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -110,10 +110,11 @@ export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode)
 export const getObjectTypeByStateFilters = (
   typeName,
   { skip = 0, limit = 15, simplified = false } = {},
+  filter = {},
 ) => (dispatch, getState) => {
   const state = getState();
   const activeFilters = getActiveFilters(state);
-  const filterBody = createFilterBody(getActiveFiltersTags(state));
+  const filterBody = isEmpty(filter) ? createFilterBody(getActiveFiltersTags(state)) : filter;
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
   const sort = getObjectTypeSorting(state);
 
