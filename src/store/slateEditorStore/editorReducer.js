@@ -174,6 +174,15 @@ const editor = (state = defaultState, action) => {
         },
       };
     }
+    case editorActions.SET_LINKED_OBJ: {
+      return {
+        ...state,
+        editor: {
+          ...state.editor,
+          linkedObjects: uniqBy([...state.editor.linkedObjects, action.payload], '_id'),
+        },
+      };
+    }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
       return {
         ...state,

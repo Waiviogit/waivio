@@ -24,6 +24,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
 
 import './Details.less';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
 
 const DetailsModal = ({
   proposition,
@@ -92,12 +93,20 @@ const DetailsModal = ({
 
   const handleClickReserve = cb => {
     let search = requiredObject?.author_permlink
-      ? `?object=[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`
+      ? `?object=[${getObjectName(requiredObject)}](${
+          requiredObject.object_type === 'link'
+            ? requiredObject?.url
+            : getObjectUrl(requiredObject?.author_permlink)
+        })`
       : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;
 
     if (!withoutSecondary) {
       search += proposition?.object?.author_permlink
-        ? `&object=[${getObjectName(proposition.object)}](${proposition?.object?.author_permlink})`
+        ? `&object=[${getObjectName(proposition.object)}](${
+            proposition?.object.object_type === 'link'
+              ? proposition?.object?.url
+              : getObjectUrl(proposition?.object?.author_permlink)
+          })`
         : `&user=[${proposition?.objects.replace('@', '')}](${proposition?.objects})`;
     }
 

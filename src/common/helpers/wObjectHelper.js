@@ -378,6 +378,21 @@ export const createNewHash = (currPermlink, hash, wobj = {}) => {
   return hashPermlinks.length > 1 ? hashPermlinks.join('/') : hashPermlinks[0];
 };
 
+export const createQueryBreadcrumbs = (currCrumbPermlink, breadcrumbs, currentWobj) => {
+  const permlinks = breadcrumbs || [currentWobj];
+
+  const findIndex = permlinks ? permlinks.findIndex(el => el === currCrumbPermlink) : -1;
+
+  if (findIndex === 0) return '';
+
+  const hashPermlinks = [...permlinks];
+
+  if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
+  else hashPermlinks.push(currCrumbPermlink);
+
+  return hashPermlinks.length > 1 ? hashPermlinks.join('/') : hashPermlinks[0];
+};
+
 export const getLinkPath = (match, department, path, location) => {
   if (match.params.department === department.name) return path;
 
