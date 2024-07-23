@@ -149,7 +149,12 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   })}
                 </b>
                 {!isMentions && (
-                  <span>
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
                     {Boolean(commentsCount) && (
                       <span className="Proposition-new__commentCounter">{commentsCount}</span>
@@ -206,7 +211,12 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   })}
                 </b>
                 {!isMentions && (
-                  <span>
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
                     {commentsLoading ? (
                       <Icon type="loading" />
                     ) : (

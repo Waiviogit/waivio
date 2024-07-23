@@ -4,11 +4,11 @@ import { FormattedMessage } from 'react-intl';
 import { get, has, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useLocation, useParams, useHistory } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { createQueryBreadcrumbs, getObjectName } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -22,6 +22,7 @@ import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
 import { getTagName } from '../../../common/helpers/tagsNamesList';
+import useQuery from '../../../hooks/useQuery';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -30,13 +31,21 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const wobjName = getObjectName(wObject);
   const { name } = useParams();
   const history = useHistory();
-  const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions) || has(wObject, 'campaigns');
   const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
   const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
+  const query = useQuery();
+  let breadbrumbsFromQuery = query.get('breadcrumbs');
+
+  breadbrumbsFromQuery = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [];
+  const breadbrumbs = `?breadcrumbs=${createQueryBreadcrumbs(
+    wObject.author_permlink,
+    breadbrumbsFromQuery,
+    name,
+  )}`;
 
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
@@ -45,9 +54,6 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   }, [wObject.author_permlink]);
 
   let link;
-  const hash = location?.hash
-    ? `${location?.hash}/${wObject.author_permlink}`
-    : `#${wObject.author_permlink}`;
 
   switch (wObject.object_type) {
     case 'product':
@@ -55,20 +61,14 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     case 'link':
     case 'restaurant':
     case 'book': {
-      const query = location.hash
-        ? `${location.hash.replace('#', '')}/${wObject?.author_permlink}`
-        : wObject?.author_permlink;
-
-      link = isChecklist
-        ? `${wObject?.defaultShowLink}?breadbrumbs=${name || mainObj.author_permlink}/${query}`
-        : wObject?.defaultShowLink;
+      link = isChecklist ? `${wObject?.defaultShowLink}${breadbrumbs}` : wObject?.defaultShowLink;
       break;
     }
     case 'page':
     case 'widget':
     case 'newsfeed':
       link = isChecklist
-        ? `/checklist/${name || mainObj.author_permlink}${hash}`
+        ? `/checklist/${name || mainObj.author_permlink}${breadbrumbs}`
         : wObject?.defaultShowLink;
       break;
 
