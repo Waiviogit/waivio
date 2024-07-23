@@ -19,6 +19,7 @@ import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatB
 import { quickMessages } from './chatBotHelper';
 import './ChatWindow.less';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const CHAT_ID = 'chatId';
 
@@ -168,7 +169,10 @@ const ChatWindow = ({ className, hideChat }) => {
   };
 
   return (
-    <div className={`ChatWindow ${className}`}>
+    <div
+      className={`ChatWindow ${className}`}
+      style={isMobile() && isKeyboardVisible ? { height: '50%' } : {}}
+    >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
@@ -183,13 +187,7 @@ const ChatWindow = ({ className, hideChat }) => {
           <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
         </div>
       </div>
-      <div
-        className="chat-body"
-        ref={chatBodyRef}
-        style={{
-          height: isKeyboardVisible ? 'calc(100vh - 200px)' : 'calc(100vh - 100px)',
-        }}
-      >
+      <div className="chat-body" ref={chatBodyRef}>
         {isEmpty(chatMessages) && (
           <>
             <div className="info">
