@@ -27,7 +27,6 @@ const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
@@ -149,14 +148,6 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, []);
 
-  const handleFocus = () => {
-    setIsKeyboardVisible(true);
-  };
-
-  const handleBlur = () => {
-    setIsKeyboardVisible(false);
-  };
-
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -188,10 +179,7 @@ const ChatWindow = ({ className, hideChat }) => {
   );
 
   return (
-    <div
-      className={`ChatWindow ${className}`}
-      style={isMobile() && isKeyboardVisible ? { height } : {}}
-    >
+    <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
@@ -243,8 +231,6 @@ const ChatWindow = ({ className, hideChat }) => {
           className="chat-input"
           autoSize={{ minRows: 1, maxRows: 5 }}
           ref={textAreaRef}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
         />
         <span
           role="presentation"
