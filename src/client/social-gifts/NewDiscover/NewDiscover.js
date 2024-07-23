@@ -41,6 +41,7 @@ const NewDiscover = () => {
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
   const { canonicalUrl } = useSeoInfo();
   const title = 'Discover - Waivio';
+  const tagTitle = search || `${category}: ${tag}`;
 
   useEffect(() => {
     const ac = new AbortController();
@@ -153,9 +154,9 @@ const NewDiscover = () => {
       </Helmet>
       <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
         <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-        {(discoverUsers ? user : search) && (
+        {(discoverUsers ? user : tagTitle) && (
           <Tag closable onClose={handleDeleteTag}>
-            {discoverUsers ? user : search}
+            {discoverUsers ? user : tagTitle}
           </Tag>
         )}
       </div>
