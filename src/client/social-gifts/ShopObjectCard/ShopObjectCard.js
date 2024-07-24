@@ -40,7 +40,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const query = useQuery();
   let breadbrumbsFromQuery = query.get('breadcrumbs');
 
-  breadbrumbsFromQuery = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [];
+  breadbrumbsFromQuery = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : null;
   const breadbrumbs = `?breadcrumbs=${createQueryBreadcrumbs(
     wObject.author_permlink,
     breadbrumbsFromQuery,

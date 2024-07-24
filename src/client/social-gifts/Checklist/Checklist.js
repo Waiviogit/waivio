@@ -53,13 +53,11 @@ const Checklist = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true, wobject.object_type);
+  const breadbcrumbsFromQuery = query.get('breadcrumbs');
 
   useEffect(() => {
     const pathUrl =
-      permlink ||
-      getLastPermlinksFromHash(history.location.hash) ||
-      query.get('currObj') ||
-      match.params.name;
+      permlink || getLastPermlinksFromHash(breadbcrumbsFromQuery) || match.params.name;
 
     if (wobject?.author_permlink !== pathUrl) {
       setLoading(true);
@@ -71,10 +69,10 @@ const Checklist = ({
       if (wObject?.object_type === 'list' && typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: false });
       }
-      if (history.location.hash || query.get('currObj')) {
+      if (breadbcrumbsFromQuery) {
         setNestedObject(wObject);
       }
-      if (history.location.pathname === '/' || query.get('currObj')) {
+      if (history.location.pathname === '/') {
         setBreadcrumb(wObject);
       }
       setLists(
@@ -86,7 +84,7 @@ const Checklist = ({
       );
       setLoading(false);
     });
-  }, [history.location.hash, match.params.name]);
+  }, [breadbcrumbsFromQuery, match.params.name]);
 
   return (
     <React.Fragment>
