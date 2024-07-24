@@ -50,10 +50,10 @@ const Breadcrumbs = ({ inProduct, intl }) => {
     hasDelegation(wobject, username);
   const editObjTypes = ['list', 'page']?.includes(wobject?.object_type);
   const breadbrumbsFromQuery = query.get('breadcrumbs');
-  let linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [];
+  let linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [wobject.author_permlink];
   const viewUrl = query.get('viewUrl');
 
-  if (linkList && isNil(linkList[0]) && linkList.length === 1) {
+  if (linkList && isNil(linkList[0])) {
     linkList = [breadcrumbs[0]?.author_permlink];
   }
   const getTruncatedTitle = title =>

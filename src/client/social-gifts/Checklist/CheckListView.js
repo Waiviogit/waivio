@@ -47,7 +47,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
               `/checklist/${listItem?.author_permlink}?breadcrumbs=${createQueryBreadcrumbs(
                 listItem?.author_permlink,
                 breadcrumbsFromQuery,
-                name,
+                name || wobject.author_permlink,
               )}`,
             );
           }}
