@@ -22,12 +22,7 @@ export const parseUrl = url => {
 
   const parseSearchParams = url
     .split('&')
-    .map(search =>
-      search
-        .replace('=', ': "')
-        .replace('?', '')
-        .replace('%20', ' '),
-    )
+    .map(search => search.replace('=', '": "').replace('?', ''))
     .join('", "');
 
   return parseJSON(`{"${parseSearchParams}"}`);
