@@ -26,7 +26,7 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  // const [height, setHeight] = useState('100%');
+  const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
@@ -161,28 +161,26 @@ const ChatWindow = ({ className, hideChat }) => {
   };
 
   // eslint-disable-next-line consistent-return
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined' && window.visualViewport) {
-  //     const handleViewportChange = () => {
-  //       const viewportHeight = window.visualViewport.height;
-  //
-  //       setHeight(viewportHeight);
-  //     };
-  //
-  //     window.visualViewport.addEventListener('resize', handleViewportChange);
-  //     window.visualViewport.addEventListener('scroll', handleViewportChange);
-  //
-  //     // Initial setting
-  //     handleViewportChange();
-  //
-  //     return () => {
-  //       window.visualViewport.removeEventListener('resize', handleViewportChange);
-  //       window.visualViewport.removeEventListener('scroll', handleViewportChange);
-  //     };
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      const handleViewportChange = () => {
+        const viewportHeight = window.visualViewport.height;
 
-  const height = window && window.visualViewport.height;
+        setHeight(viewportHeight);
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      // Initial setting
+      handleViewportChange();
+
+      return () => {
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+        window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
 
   return (
     <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
