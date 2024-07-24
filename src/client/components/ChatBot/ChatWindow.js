@@ -26,7 +26,7 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
@@ -148,14 +148,6 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, []);
 
-  const handleFocus = () => {
-    setIsKeyboardVisible(true);
-  };
-
-  const handleBlur = () => {
-    setIsKeyboardVisible(false);
-  };
-
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -168,11 +160,30 @@ const ChatWindow = ({ className, hideChat }) => {
     }, 0);
   };
 
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      const handleViewportChange = () => {
+        const viewportHeight = window.visualViewport.height;
+
+        setHeight(viewportHeight);
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      // Initial setting
+      handleViewportChange();
+
+      return () => {
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+        window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
+
   return (
-    <div
-      className={`ChatWindow ${className}`}
-      style={isMobile() && isKeyboardVisible ? { height: '50%' } : {}}
-    >
+    <div className={`ChatWindow ${className}`}>
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
@@ -187,7 +198,7 @@ const ChatWindow = ({ className, hideChat }) => {
           <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
         </div>
       </div>
-      <div className="chat-body" ref={chatBodyRef}>
+      <div className="chat-body" ref={chatBodyRef} style={isMobile() ? { height } : {}}>
         {isEmpty(chatMessages) && (
           <>
             <div className="info">
@@ -224,8 +235,6 @@ const ChatWindow = ({ className, hideChat }) => {
           className="chat-input"
           autoSize={{ minRows: 1, maxRows: 5 }}
           ref={textAreaRef}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
         />
         <span
           role="presentation"

@@ -83,12 +83,11 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
       hash: linkUrl.hash,
     });
 
-    const internalLink = href.indexOf('/') === 0 || isChatBotLink;
+    const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
 
     if (
-      !isChatBotLink &&
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
@@ -125,7 +124,7 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
 
       attys.target = '';
     }
-
+    if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
 
     return {
