@@ -380,7 +380,6 @@ export const createNewHash = (currPermlink, hash, wobj = {}) => {
 
 export const createQueryBreadcrumbs = (currCrumbPermlink, breadcrumbs, currentWobj) => {
   const permlinks = breadcrumbs || [currentWobj];
-
   const findIndex = permlinks ? permlinks.findIndex(el => el === currCrumbPermlink) : -1;
 
   if (findIndex === 0) return '';
