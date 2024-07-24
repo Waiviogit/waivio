@@ -26,7 +26,7 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [height, setHeight] = useState('100%');
+  // const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
@@ -160,42 +160,29 @@ const ChatWindow = ({ className, hideChat }) => {
     }, 0);
   };
 
+  // eslint-disable-next-line consistent-return
   // useEffect(() => {
-  //   // eslint-disable-next-line consistent-return
-  //   if (typeof window !== 'undefined') {
-  //     const handleResize = () => setHeight(window.innerHeight);
+  //   if (typeof window !== 'undefined' && window.visualViewport) {
+  //     const handleViewportChange = () => {
+  //       const viewportHeight = window.visualViewport.height;
   //
-  //     setHeight(window.innerHeight);
+  //       setHeight(viewportHeight);
+  //     };
   //
-  //     window.addEventListener('resize', handleResize);
+  //     window.visualViewport.addEventListener('resize', handleViewportChange);
+  //     window.visualViewport.addEventListener('scroll', handleViewportChange);
+  //
+  //     // Initial setting
+  //     handleViewportChange();
   //
   //     return () => {
-  //       window.removeEventListener('resize', handleResize);
+  //       window.visualViewport.removeEventListener('resize', handleViewportChange);
+  //       window.visualViewport.removeEventListener('scroll', handleViewportChange);
   //     };
   //   }
   // }, []);
 
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.visualViewport) {
-      const handleViewportChange = () => {
-        const viewportHeight = window.visualViewport.height;
-
-        setHeight(viewportHeight);
-      };
-
-      window.visualViewport.addEventListener('resize', handleViewportChange);
-      window.visualViewport.addEventListener('scroll', handleViewportChange);
-
-      // Initial setting
-      handleViewportChange();
-
-      return () => {
-        window.visualViewport.removeEventListener('resize', handleViewportChange);
-        window.visualViewport.removeEventListener('scroll', handleViewportChange);
-      };
-    }
-  }, []);
+  const height = window && window.visualViewport.height;
 
   return (
     <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
