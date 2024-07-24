@@ -32,14 +32,13 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
-      : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects].filter(
-          item => item.object_type !== 'hashtag',
-        );
+      : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects];
+
   const handleAutoCompleteSearch = useCallback(
     debounce(value => {
       let objType;
       let wobLimit = 50;
-      let userLimit = 3;
+      let userLimit = 50;
 
       dispatch(resetSearchAutoCompete());
 
