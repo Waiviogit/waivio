@@ -160,23 +160,42 @@ const ChatWindow = ({ className, hideChat }) => {
     }, 0);
   };
 
-  useEffect(
-    // eslint-disable-next-line consistent-return
-    () => {
-      if (typeof window !== 'undefined') {
-        const handleResize = () => setHeight(window.innerHeight);
+  // useEffect(() => {
+  //   // eslint-disable-next-line consistent-return
+  //   if (typeof window !== 'undefined') {
+  //     const handleResize = () => setHeight(window.innerHeight);
+  //
+  //     setHeight(window.innerHeight);
+  //
+  //     window.addEventListener('resize', handleResize);
+  //
+  //     return () => {
+  //       window.removeEventListener('resize', handleResize);
+  //     };
+  //   }
+  // }, []);
 
-        setHeight(window.innerHeight);
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      const handleViewportChange = () => {
+        const viewportHeight = window.visualViewport.height;
 
-        window.addEventListener('resize', handleResize);
+        setHeight(viewportHeight);
+      };
 
-        return () => {
-          window.removeEventListener('resize', handleResize);
-        };
-      }
-    },
-    [],
-  );
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      // Initial setting
+      handleViewportChange();
+
+      return () => {
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+        window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
 
   return (
     <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
