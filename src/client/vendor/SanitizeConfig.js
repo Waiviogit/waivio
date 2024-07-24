@@ -88,7 +88,6 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
     if (!internalLink) attys.target = '_blank';
 
     if (
-      !isChatBotLink &&
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
