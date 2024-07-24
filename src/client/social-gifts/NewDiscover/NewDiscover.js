@@ -42,6 +42,7 @@ const NewDiscover = () => {
   const { canonicalUrl } = useSeoInfo();
   const title = 'Discover - Waivio';
   const tagTitle = search || `${category}: ${tag}`;
+  const hasTag = category && tag;
 
   useEffect(() => {
     const ac = new AbortController();
@@ -79,7 +80,7 @@ const NewDiscover = () => {
     }
 
     return () => ac.abort();
-  }, [search, type, user]);
+  }, [search, type, user, tag, category]);
 
   const loadMore = () => {
     const requestData = {
@@ -154,7 +155,7 @@ const NewDiscover = () => {
       </Helmet>
       <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
         <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-        {(discoverUsers ? user : tagTitle) && (
+        {(discoverUsers ? user : hasTag) && (
           <Tag closable onClose={handleDeleteTag}>
             {discoverUsers ? user : tagTitle}
           </Tag>
