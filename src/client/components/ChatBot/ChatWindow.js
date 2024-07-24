@@ -183,7 +183,7 @@ const ChatWindow = ({ className, hideChat }) => {
   }, []);
 
   return (
-    <div className={`ChatWindow ${className}`}>
+    <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
@@ -198,7 +198,7 @@ const ChatWindow = ({ className, hideChat }) => {
           <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
         </div>
       </div>
-      <div className="chat-body" ref={chatBodyRef} style={isMobile() ? { height } : {}}>
+      <div className="chat-body" ref={chatBodyRef}>
         {isEmpty(chatMessages) && (
           <>
             <div className="info">
