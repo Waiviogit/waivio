@@ -17,7 +17,6 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ShopObjectCard.less';
@@ -26,7 +25,6 @@ import useQuery from '../../../hooks/useQuery';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
-  const mainObj = useSelector(getObject);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
   const { name } = useParams();
@@ -60,17 +58,13 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     case 'business':
     case 'link':
     case 'restaurant':
+    case 'page':
+    case 'widget':
+    case 'newsfeed':
     case 'book': {
       link = isChecklist ? `${wObject?.defaultShowLink}${breadbrumbs}` : wObject?.defaultShowLink;
       break;
     }
-    case 'page':
-    case 'widget':
-    case 'newsfeed':
-      link = isChecklist
-        ? `/checklist/${name || mainObj.author_permlink}${breadbrumbs}`
-        : wObject?.defaultShowLink;
-      break;
 
     default:
       link = wObject.defaultShowLink;
