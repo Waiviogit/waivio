@@ -487,11 +487,6 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
           campaign: campaignData,
         };
 
-        if (campaignData.requiredObject.object_type === 'link')
-          dispatch(setLinkedObj(campaignData.requiredObject));
-        if (campaignData.secondaryObject.object_type === 'link')
-          dispatch(setLinkedObj(campaignData.secondaryObject));
-
         dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
         dispatch(

@@ -233,21 +233,24 @@ const EditPost = props => {
               )}
             </div>
           )}
-          <PostPreviewModal
-            content={content}
-            isPublishing={props.publishing}
-            isUpdating={isUpdating}
-            linkedObjects={linkedObjects}
-            objPercentage={objPercentage}
-            onUpdate={props.saveDraft}
-            reviewData={campaign}
-            settings={settings}
-            topics={topics}
-            onSettingsChange={handleSettingsChange}
-            onSubmit={handleSubmit}
-            isGuest={props.isGuest}
-            titleValue={titleValue}
-          />
+          {content && (
+            <PostPreviewModal
+              content={content}
+              isPublishing={props.publishing}
+              isUpdating={isUpdating}
+              linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
+              onUpdate={props.saveDraft}
+              reviewData={campaign}
+              settings={settings}
+              topics={topics}
+              onSettingsChange={handleSettingsChange}
+              onSubmit={handleSubmit}
+              isGuest={props.isGuest}
+              titleValue={titleValue}
+            />
+          )}
+
           <div className="search-object-panel">
             {props.intl.formatMessage({
               id: 'editor_search_elements',

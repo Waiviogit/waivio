@@ -95,7 +95,7 @@ const DetailsModal = ({
     let search = requiredObject?.author_permlink
       ? `?object=[${getObjectName(requiredObject)}](${
           requiredObject.object_type === 'link'
-            ? requiredObject?.url
+            ? requiredObject?.url.replace('*', '')
             : getObjectUrl(requiredObject?.author_permlink)
         })`
       : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;
