@@ -32,9 +32,9 @@ const ChatWindow = ({ className, hideChat }) => {
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
-  const messagesEndRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
+  const lastMessageRef = useRef(null);
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -80,10 +80,14 @@ const ChatWindow = ({ className, hideChat }) => {
   }, [chatId, chatMessages.length]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chatMessages, loading]);
+
+  const stopPropagation = e => {
+    e.stopPropagation();
+  };
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -121,12 +125,16 @@ const ChatWindow = ({ className, hideChat }) => {
 
       chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
       chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+      chatBody.addEventListener('touchmove', stopPropagation, { passive: false });
       chatBody.addEventListener('wheel', handleWheel, { passive: false });
+      chatBody.addEventListener('wheel', stopPropagation, { passive: false });
 
       return () => {
         chatBody.removeEventListener('touchstart', handleTouchStart);
         chatBody.removeEventListener('touchmove', handleTouchMove);
+        chatBody.removeEventListener('touchmove', stopPropagation);
         chatBody.removeEventListener('wheel', handleWheel);
+        chatBody.removeEventListener('wheel', stopPropagation);
       };
     }
   }, []);
@@ -172,12 +180,32 @@ const ChatWindow = ({ className, hideChat }) => {
       window.visualViewport.addEventListener('resize', handleViewportChange);
       window.visualViewport.addEventListener('scroll', handleViewportChange);
 
-      // Initial setting
       handleViewportChange();
 
       return () => {
         window.visualViewport.removeEventListener('resize', handleViewportChange);
         window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const handleFocus = () => {
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    };
+
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (textArea) {
+      textArea.addEventListener('focus', handleFocus);
+
+      return () => {
+        textArea.removeEventListener('focus', handleFocus);
       };
     }
   }, []);
@@ -215,15 +243,23 @@ const ChatWindow = ({ className, hideChat }) => {
         )}
         <div className="chat-messages">
           {!isEmpty(chatMessages) &&
-            chatMessages.map(mes =>
+            chatMessages.map((mes, index) =>
               mes.role === 'human' ? (
-                <UserMessage key={mes.text} text={mes.text} />
+                <UserMessage
+                  key={mes.text}
+                  text={mes.text}
+                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                />
               ) : (
-                <AssistantMessage key={mes.text} text={mes.text} loading={false} />
+                <AssistantMessage
+                  key={mes.text}
+                  text={mes.text}
+                  loading={false}
+                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                />
               ),
             )}
-          {loading && <AssistantMessage loading />}
-          <div ref={messagesEndRef} />
+          {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
         </div>
       </div>
       <div className="chat-footer">

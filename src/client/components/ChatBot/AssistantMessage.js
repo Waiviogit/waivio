@@ -5,11 +5,11 @@ import TypingText from './TypingText';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 
-const AssistantMessage = ({ text, loading }) => {
+const AssistantMessage = ({ text, loading, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
-    <div className="flex">
+    <div className="flex" ref={lastMessageRef}>
       {' '}
       <img
         className="chat-logo-small"
@@ -29,6 +29,7 @@ const AssistantMessage = ({ text, loading }) => {
 AssistantMessage.propTypes = {
   text: PropTypes.string,
   loading: PropTypes.bool,
+  lastMessageRef: PropTypes.shape().isRequired,
 };
 
 AssistantMessage.defaultProps = {
