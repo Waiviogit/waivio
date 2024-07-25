@@ -251,12 +251,15 @@ export const parseAddress = (wobject, hideField = []) => {
   ).join(', ');
 };
 
-export const getLastPermlinksFromHash = url =>
-  url
+export const getLastPermlinksFromHash = url => {
+  if (!url) return '';
+
+  return url
     .split('/')
     .pop()
     .replace('#', '')
     .replaceAll('%20', ' ');
+};
 
 export const createHash = (hash, name) => {
   const permlinks = getPermlinksFromHash(hash);
