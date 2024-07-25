@@ -32,9 +32,9 @@ const ChatWindow = ({ className, hideChat }) => {
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
-  const messagesEndRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
+  const lastMessageRef = useRef(null);
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -80,8 +80,8 @@ const ChatWindow = ({ className, hideChat }) => {
   }, [chatId, chatMessages.length]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chatMessages, loading]);
 
@@ -215,15 +215,23 @@ const ChatWindow = ({ className, hideChat }) => {
         )}
         <div className="chat-messages">
           {!isEmpty(chatMessages) &&
-            chatMessages.map(mes =>
+            chatMessages.map((mes, index) =>
               mes.role === 'human' ? (
-                <UserMessage key={mes.text} text={mes.text} />
+                <UserMessage
+                  key={mes.text}
+                  text={mes.text}
+                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                />
               ) : (
-                <AssistantMessage key={mes.text} text={mes.text} loading={false} />
+                <AssistantMessage
+                  key={mes.text}
+                  text={mes.text}
+                  loading={false}
+                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                />
               ),
             )}
-          {loading && <AssistantMessage loading />}
-          <div ref={messagesEndRef} />
+          {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
         </div>
       </div>
       <div className="chat-footer">

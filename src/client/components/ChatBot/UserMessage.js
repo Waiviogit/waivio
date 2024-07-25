@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 
-const UserMessage = ({ text }) => {
+const UserMessage = ({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
-    <div className="message from-user">
+    <div className="message from-user" ref={lastMessageRef}>
       {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
     </div>
   );
@@ -16,5 +16,6 @@ const UserMessage = ({ text }) => {
 
 UserMessage.propTypes = {
   text: PropTypes.string.isRequired,
+  lastMessageRef: PropTypes.shape().isRequired,
 };
 export default UserMessage;
