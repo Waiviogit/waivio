@@ -50,7 +50,9 @@ const ChatWindow = ({ className, hideChat }) => {
       setMessage('');
       setLoading(true);
       sendChatBotQuestion(question, id).then(res => {
-        dispatch(setChatBotMessage({ text: res.result, role: 'ai' }));
+        const resutText = isEmpty(res) ? 'Sorry, an error has occurred.' : res.result;
+
+        dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
         setLoading(false);
       });
     }
@@ -77,11 +79,11 @@ const ChatWindow = ({ className, hideChat }) => {
     if (chatId && isEmpty(chatMessages) && isWaivio) {
       getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
     }
-  }, [chatId, chatMessages.length]);
+  }, [chatId, chatMessages?.length]);
 
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [chatMessages, loading]);
 

@@ -86,8 +86,11 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
     const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
+    const chatPictures =
+      linkWebsiteUrl.includes('waivio.nyc3.digitaloceanspaces.com') && isChatBotLink;
 
     if (
+      !chatPictures &&
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
