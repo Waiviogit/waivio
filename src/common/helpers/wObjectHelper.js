@@ -251,12 +251,15 @@ export const parseAddress = (wobject, hideField = []) => {
   ).join(', ');
 };
 
-export const getLastPermlinksFromHash = url =>
-  url
+export const getLastPermlinksFromHash = url => {
+  if (!url) return '';
+
+  return url
     .split('/')
     .pop()
     .replace('#', '')
     .replaceAll('%20', ' ');
+};
 
 export const createHash = (hash, name) => {
   const permlinks = getPermlinksFromHash(hash);
@@ -374,6 +377,20 @@ export const createNewHash = (currPermlink, hash, wobj = {}) => {
 
   if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
   else hashPermlinks.push(currPermlink);
+
+  return hashPermlinks.length > 1 ? hashPermlinks.join('/') : hashPermlinks[0];
+};
+
+export const createQueryBreadcrumbs = (currCrumbPermlink, breadcrumbs, currentWobj) => {
+  const permlinks = breadcrumbs || [currentWobj];
+  const findIndex = permlinks ? permlinks.findIndex(el => el === currCrumbPermlink) : -1;
+
+  if (findIndex === 0) return '';
+
+  const hashPermlinks = [...permlinks];
+
+  if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
+  else hashPermlinks.push(currCrumbPermlink);
 
   return hashPermlinks.length > 1 ? hashPermlinks.join('/') : hashPermlinks[0];
 };

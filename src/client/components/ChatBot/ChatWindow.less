@@ -5,7 +5,7 @@
   z-index: @ant-message-z-index;
   position: fixed;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   background-color: white;
   border-radius: 0;
   border-top: none;
@@ -16,7 +16,7 @@
   bottom: -120%;
   right: 0;
   transition: bottom 0.5s ease-in-out;
-  @media @medium {
+  @media @small {
     width: 370px;
     right: 20px;
     height: 600px;
@@ -25,7 +25,7 @@
 
   &.open {
     bottom: 0;
-    @media @medium {
+    @media @small {
       bottom: 10px;
     }
   }
@@ -35,6 +35,16 @@
   }
   ol {
     margin-left: 10px;
+    margin-top: -30px;
+    margin-bottom: -30px;
+  }
+  ul {
+    list-style-type: disc;
+    margin-left: 10px;
+    margin-top: -20px;
+  }
+  li {
+    margin-bottom: -10px;
   }
 
   br {
@@ -50,6 +60,8 @@
   }
 
   .chat-logo {
+    border: 0.5px solid @white-gainsboro;
+    border-radius: 50%;
     width: 40px;
     height: 40px;
   }
@@ -87,7 +99,7 @@
 
   .chat-header-buttons-wrap {
     display: flex;
-    width: 40px;
+    width: 65px;
     align-items: center;
     justify-content: space-between;
   }
@@ -105,6 +117,7 @@
     justify-content: center;
     flex-direction: column;
     margin-bottom: 10px;
+    margin-top: 5px;
     color: @blue-botticelli;
     font-weight: 500;
   }
@@ -173,16 +186,8 @@
     resize: none;
   }
 
-  //.chat-footer button {
-  //  background-color: var(--website-color);
-  //  color: white;
-  //  border: none;
-  //  border-radius: 5px;
-  //  margin-left: 5px;
-  //  cursor: pointer;
-  //}
-
-  .hovered {
+  .header-button-icon {
+    font-size: 22px;
     cursor: pointer;
   }
   .typing-container {

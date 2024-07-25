@@ -32,11 +32,25 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
-      : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects].filter(
-          item => item.object_type !== 'hashtag',
-        );
+      : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects];
+
   const handleAutoCompleteSearch = useCallback(
-    debounce(value => dispatch(searchAutoComplete(value, 3, 50, null, true, undefined)), 300),
+    debounce(value => {
+      let objType;
+      let wobLimit = 50;
+      let userLimit = 50;
+
+      dispatch(resetSearchAutoCompete());
+
+      if (value[0] === '#') {
+        objType = ['hashtag'];
+        userLimit = 0;
+      }
+
+      if (value[0] === '@') wobLimit = 0;
+
+      return dispatch(searchAutoComplete(value, userLimit, wobLimit, null, true, objType));
+    }, 400),
     [],
   );
 
@@ -57,7 +71,8 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
     dispatch(resetSearchAutoCompete());
   };
 
-  const getOptionName = op => op.account || getObjectName(op);
+  const getOptionName = o => o.account || o.author_permlink;
+
   const handleSearch = value => {
     handleAutoCompleteSearch(value);
     setSearchString(value);

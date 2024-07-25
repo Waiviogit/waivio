@@ -2,6 +2,10 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .BusinessObject {
+  &__margin-b {
+    margin-bottom: 10px;
+  }
+
   &__row {
     padding: 0;
     min-height: fit-content;
@@ -61,11 +65,11 @@
     @media @small {
       display: block;
       columns: 1;
-      margin-bottom: 5px;
+      margin-bottom: 0;
     }
     @media @large {
       columns: 1;
-      margin-bottom: 15px;
+      margin-bottom: 0;
     }
     .mb5px {
       margin-bottom: 10px;

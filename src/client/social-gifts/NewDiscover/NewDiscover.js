@@ -33,12 +33,16 @@ const NewDiscover = () => {
   const [hasMoreObjects, setHasMoreObjects] = useState();
   const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
+  const tag = query.get('tag')?.replaceAll('%26%', '&');
+  const category = query.get('category')?.replaceAll('%26%', '&');
   const discoverUsers = match.url.includes('discover-users');
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
   const { canonicalUrl } = useSeoInfo();
   const title = 'Discover - Waivio';
+  const tagTitle = search || `${category}: ${tag}`;
+  const hasTag = category && tag;
 
   useEffect(() => {
     const ac = new AbortController();
@@ -57,6 +61,17 @@ const NewDiscover = () => {
           searchString: search,
         };
 
+      if (tag && category) {
+        requestData.filter = {
+          tagCategory: [
+            {
+              categoryName: category,
+              tags: [tag],
+            },
+          ],
+        };
+      }
+
       getObjectType(type, requestData, ac).then(res => {
         setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
         setHasMoreObjects(res?.hasMoreWobjects);
@@ -65,7 +80,7 @@ const NewDiscover = () => {
     }
 
     return () => ac.abort();
-  }, [search, type, user]);
+  }, [search, type, user, tag, category]);
 
   const loadMore = () => {
     const requestData = {
@@ -78,6 +93,17 @@ const NewDiscover = () => {
       requestData.filter = {
         searchString: search,
       };
+
+    if (tag && category) {
+      requestData.filter = {
+        tagCategory: [
+          {
+            categoryName: category,
+            tags: [tag],
+          },
+        ],
+      };
+    }
 
     getObjectType(type, requestData).then(res => {
       setObjects([...objects, ...res?.related_wobjects]);
@@ -129,9 +155,9 @@ const NewDiscover = () => {
       </Helmet>
       <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
         <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-        {(discoverUsers ? user : search) && (
+        {(discoverUsers ? user : hasTag) && (
           <Tag closable onClose={handleDeleteTag}>
-            {discoverUsers ? user : search}
+            {discoverUsers ? user : tagTitle}
           </Tag>
         )}
       </div>

@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useRouteMatch } from 'react-router';
-import { isEmpty, isNil, takeRight } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import {
   accessTypesArr,
-  createNewHash,
+  createQueryBreadcrumbs,
   getObjectName,
   hasDelegation,
   haveAccess,
@@ -48,17 +48,12 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && isAdministrator) ||
     hasDelegation(wobject, username);
-  const permlinks = location.hash?.replace('#', '').split('/');
   const editObjTypes = ['list', 'page']?.includes(wobject?.object_type);
-  let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
+  const breadbrumbsFromQuery = query.get('breadcrumbs');
+  let linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [wobject.author_permlink];
   const viewUrl = query.get('viewUrl');
 
-  if (inProduct) {
-    const breadbrumbsFromQuery = query.get('breadbrumbs');
-
-    linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : null;
-  }
-  if (linkList && isNil(linkList[0]) && linkList.length === 1) {
+  if (linkList && isNil(linkList[0])) {
     linkList = [breadcrumbs[0]?.author_permlink];
   }
   const getTruncatedTitle = title =>
@@ -112,7 +107,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
     }
   }, [location.hash, match.params.name]);
 
-  if (!linkList) return null;
+  if (isEmpty(linkList)) return null;
 
   return (
     <div className={'flex '}>
@@ -124,27 +119,15 @@ const Breadcrumbs = ({ inProduct, intl }) => {
             ) : (
               <Link
                 to={{
-                  hash:
-                    match.params.name === crumb.author_permlink ||
-                    (inProduct && breadcrumbs[0].author_permlink === crumb.author_permlink)
+                  pathname: `/checklist/${crumb.author_permlink}`,
+                  search:
+                    match.params.name === crumb.author_permlink
                       ? ''
-                      : createNewHash(
+                      : `breadcrumbs=${createQueryBreadcrumbs(
                           crumb.author_permlink,
-                          inProduct
-                            ? takeRight(linkList, linkList.length - 1).join('/')
-                            : location.hash,
-                        ),
-                  pathname: inProduct
-                    ? `/checklist/${breadcrumbs[0].author_permlink}`
-                    : location.pathname,
-                  ...(inProduct
-                    ? {}
-                    : {
-                        search:
-                          match.params.name === crumb.author_permlink
-                            ? ''
-                            : `currObj=${crumb.author_permlink}`,
-                      }),
+                          linkList,
+                          match.params.name,
+                        )}`,
                 }}
               >
                 {getTruncatedTitle(getObjectName(crumb))}

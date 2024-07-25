@@ -465,8 +465,10 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 }
 
 export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
+export const SET_LINKED_OBJ = '@editor/SET_LINKED_OBJ';
 export const SET_UPDATED_EDITOR_EXTENDED_DATA = '@editor/SET_UPDATED_EDITOR_EXTENDED_DATA';
 export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload });
+export const setLinkedObj = payload => ({ type: SET_LINKED_OBJ, payload });
 export const setUpdatedEditorExtendedData = payload => ({
   type: SET_UPDATED_EDITOR_EXTENDED_DATA,
   payload,
@@ -484,6 +486,11 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
         const updatedEditorData = {
           campaign: campaignData,
         };
+
+        if (campaignData.requiredObject.object_type === 'link')
+          dispatch(setLinkedObj(campaignData.requiredObject));
+        if (campaignData.secondaryObject.object_type === 'link')
+          dispatch(setLinkedObj(campaignData.secondaryObject));
 
         dispatch(setUpdatedEditorData(updatedEditorData));
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));

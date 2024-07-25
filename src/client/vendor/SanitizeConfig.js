@@ -70,7 +70,7 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
+export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -86,6 +86,7 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
     const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
+
     if (
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
@@ -123,7 +124,7 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
 
       attys.target = '';
     }
-
+    if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
 
     return {
@@ -147,6 +148,7 @@ export default ({
   secureLinks = false,
   location,
   isPage,
+  isChatBotLink,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -246,6 +248,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location, isPage),
+    a: parseLink(appUrl, location, isPage, isChatBotLink),
   },
 });
