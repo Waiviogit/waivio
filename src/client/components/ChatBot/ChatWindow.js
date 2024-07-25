@@ -85,6 +85,10 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, [chatMessages, loading]);
 
+  const stopPropagation = e => {
+    e.stopPropagation();
+  };
+
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     const chatBody = chatBodyRef.current;
@@ -121,12 +125,16 @@ const ChatWindow = ({ className, hideChat }) => {
 
       chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
       chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+      chatBody.addEventListener('touchmove', stopPropagation, { passive: false });
       chatBody.addEventListener('wheel', handleWheel, { passive: false });
+      chatBody.addEventListener('wheel', stopPropagation, { passive: false });
 
       return () => {
         chatBody.removeEventListener('touchstart', handleTouchStart);
         chatBody.removeEventListener('touchmove', handleTouchMove);
+        chatBody.removeEventListener('touchmove', stopPropagation);
         chatBody.removeEventListener('wheel', handleWheel);
+        chatBody.removeEventListener('wheel', stopPropagation);
       };
     }
   }, []);
@@ -172,12 +180,32 @@ const ChatWindow = ({ className, hideChat }) => {
       window.visualViewport.addEventListener('resize', handleViewportChange);
       window.visualViewport.addEventListener('scroll', handleViewportChange);
 
-      // Initial setting
       handleViewportChange();
 
       return () => {
         window.visualViewport.removeEventListener('resize', handleViewportChange);
         window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const handleFocus = () => {
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    };
+
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (textArea) {
+      textArea.addEventListener('focus', handleFocus);
+
+      return () => {
+        textArea.removeEventListener('focus', handleFocus);
       };
     }
   }, []);
