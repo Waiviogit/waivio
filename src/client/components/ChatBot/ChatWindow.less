@@ -1,6 +1,12 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
-
+.ant-drawer.ant-drawer-bottom.ant-drawer-open {
+  z-index: @ant-message-z-index;
+  height: 100%;
+}
+.ant-drawer-content-wrapper {
+  height: 100% !important;
+}
 .ChatWindow {
   z-index: @ant-message-z-index;
   position: fixed;
@@ -13,14 +19,17 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  bottom: -120%;
+  //bottom: -120%;
   right: 0;
-  transition: bottom 0.5s ease-in-out;
+  //transition: bottom 0.5s ease-in-out;
+
   @media @small {
     width: 370px;
     right: 20px;
     height: 600px;
     border-radius: 10px;
+    transition: bottom 0.5s ease-in-out;
+    bottom: -120%;
   }
 
   &.open {
