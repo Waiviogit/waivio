@@ -213,8 +213,8 @@ const ChatWindow = ({ className, hideChat, open }) => {
 
   const content = (
     <div
-      className={`ChatWindow  ${isMobile() ? 'open' : className}`}
-      style={isMobile() ? { height } : {}}
+      className={`ChatWindow  ${className} ${isMobile() ? 'smooth-height' : ''}`}
+      style={{ height: `${height}px` }}
     >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
