@@ -8,9 +8,12 @@ const UserMessage = ({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
-    <div className="message from-user" ref={lastMessageRef}>
-      {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
-    </div>
+    <>
+      <div ref={lastMessageRef} style={{ marginBottom: '20px' }} />
+      <div className="message from-user">
+        {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
+      </div>
+    </>
   );
 };
 
