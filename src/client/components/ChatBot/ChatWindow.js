@@ -26,13 +26,14 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat, open }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
   const chatBodyRef = useRef(null);
-  // const touchStartRef = useRef(0);
+  const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
 
   const sendMessage = mess => {
@@ -86,59 +87,59 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   }, [chatMessages, loading]);
 
-  // const stopPropagation = e => {
-  //   e.stopPropagation();
-  // };
+  const stopPropagation = e => {
+    e.stopPropagation();
+  };
 
   // eslint-disable-next-line consistent-return
-  // useEffect(() => {
-  //   const chatBody = chatBodyRef.current;
-  //
-  //   if (chatBody) {
-  //     const handleTouchStart = e => {
-  //       touchStartRef.current = e.touches[0].clientY;
-  //     };
-  //
-  //     const handleTouchMove = e => {
-  //       const touchCurrent = e.touches[0].clientY;
-  //       const { scrollTop, scrollHeight, clientHeight } = chatBody;
-  //       const delta = touchStartRef.current - touchCurrent;
-  //
-  //       if (
-  //         (scrollTop === 0 && delta < 0) ||
-  //         (scrollTop + clientHeight === scrollHeight && delta > 0)
-  //       ) {
-  //         e.preventDefault();
-  //       }
-  //     };
-  //
-  //     const handleWheel = e => {
-  //       const { scrollTop, scrollHeight, clientHeight } = chatBody;
-  //       const delta = e.deltaY;
-  //
-  //       if (
-  //         (scrollTop === 0 && delta < 0) ||
-  //         (scrollTop + clientHeight === scrollHeight && delta > 0)
-  //       ) {
-  //         e.preventDefault();
-  //       }
-  //     };
-  //
-  //     chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
-  //     chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
-  //     chatBody.addEventListener('touchmove', stopPropagation, { passive: false });
-  //     chatBody.addEventListener('wheel', handleWheel, { passive: false });
-  //     chatBody.addEventListener('wheel', stopPropagation, { passive: false });
-  //
-  //     return () => {
-  //       chatBody.removeEventListener('touchstart', handleTouchStart);
-  //       chatBody.removeEventListener('touchmove', handleTouchMove);
-  //       chatBody.removeEventListener('touchmove', stopPropagation);
-  //       chatBody.removeEventListener('wheel', handleWheel);
-  //       chatBody.removeEventListener('wheel', stopPropagation);
-  //     };
-  //   }
-  // }, []);
+  useEffect(() => {
+    const chatBody = chatBodyRef.current;
+
+    if (chatBody) {
+      const handleTouchStart = e => {
+        touchStartRef.current = e.touches[0].clientY;
+      };
+
+      const handleTouchMove = e => {
+        const touchCurrent = e.touches[0].clientY;
+        const { scrollTop, scrollHeight, clientHeight } = chatBody;
+        const delta = touchStartRef.current - touchCurrent;
+
+        if (
+          (scrollTop === 0 && delta < 0) ||
+          (scrollTop + clientHeight === scrollHeight && delta > 0)
+        ) {
+          e.preventDefault();
+        }
+      };
+
+      const handleWheel = e => {
+        const { scrollTop, scrollHeight, clientHeight } = chatBody;
+        const delta = e.deltaY;
+
+        if (
+          (scrollTop === 0 && delta < 0) ||
+          (scrollTop + clientHeight === scrollHeight && delta > 0)
+        ) {
+          e.preventDefault();
+        }
+      };
+
+      chatBody.addEventListener('touchstart', handleTouchStart, { passive: false });
+      chatBody.addEventListener('touchmove', handleTouchMove, { passive: false });
+      chatBody.addEventListener('touchmove', stopPropagation, { passive: false });
+      chatBody.addEventListener('wheel', handleWheel, { passive: false });
+      chatBody.addEventListener('wheel', stopPropagation, { passive: false });
+
+      return () => {
+        chatBody.removeEventListener('touchstart', handleTouchStart);
+        chatBody.removeEventListener('touchmove', handleTouchMove);
+        chatBody.removeEventListener('touchmove', stopPropagation);
+        chatBody.removeEventListener('wheel', handleWheel);
+        chatBody.removeEventListener('wheel', stopPropagation);
+      };
+    }
+  }, []);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -189,9 +190,32 @@ const ChatWindow = ({ className, hideChat, open }) => {
       };
     }
   }, []);
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      const handleViewportChange = () => {
+        const viewportHeight = window.visualViewport.height;
+
+        setHeight(viewportHeight);
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      handleViewportChange();
+
+      return () => {
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+        window.visualViewport.removeEventListener('scroll', handleViewportChange);
+      };
+    }
+  }, []);
 
   const content = (
-    <div className={`ChatWindow  ${isMobile() ? 'open' : className}`}>
+    <div
+      className={`ChatWindow  ${isMobile() ? 'open' : className}`}
+      style={isMobile() ? { height } : {}}
+    >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
