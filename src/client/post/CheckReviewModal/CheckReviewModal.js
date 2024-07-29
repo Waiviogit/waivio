@@ -29,12 +29,13 @@ const CheckReviewModal = ({
     size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
   const hasObject = object => {
-    if (object.url) {
+    if (object.url && postBody) {
       const url = object.url.replace(/\*/g, '');
+      const regex = new RegExp(url);
 
       return object.url[object.url.length - 1] === '*'
         ? postBody.includes(url)
-        : postBody.test(`/${url}/`);
+        : regex.test(postBody);
     }
 
     return (
