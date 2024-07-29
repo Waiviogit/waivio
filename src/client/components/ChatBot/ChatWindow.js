@@ -247,22 +247,24 @@ const ChatWindow = ({ className, hideChat, open }) => {
         )}
         <div className="chat-messages">
           {!isEmpty(chatMessages) &&
-            chatMessages.map((mes, index) =>
-              mes.role === 'human' ? (
+            chatMessages.map((mes, index) => {
+              const text = mes.text.replace(/\n\n/g, '\n');
+
+              return mes.role === 'human' ? (
                 <UserMessage
                   key={mes.text}
-                  text={mes.text}
+                  text={text}
                   lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
                 />
               ) : (
                 <AssistantMessage
                   key={mes.text}
-                  text={mes.text}
+                  text={text}
                   loading={false}
                   lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
                 />
-              ),
-            )}
+              );
+            })}
           {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
         </div>
       </div>
