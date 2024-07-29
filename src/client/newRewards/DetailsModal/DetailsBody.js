@@ -30,6 +30,7 @@ const DetailsModalBody = ({
     rewardFundRewardBalance: rewardFund.reward_balance,
     rate,
   });
+  const isMentions = proposition?.type === 'mentions';
 
   return (
     <div className="DetailsModal__text-wrap">
@@ -116,16 +117,18 @@ const DetailsModalBody = ({
                 })}
               </div>
             </div>
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.notAssigned} disabled />
-              <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_account_without_active_reservation',
-                  defaultMessage:
-                    'User does not have an active reservation for such a reward at the moment.',
-                })}
+            {!isMentions && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.notAssigned} disabled />
+                <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_account_without_active_reservation',
+                    defaultMessage:
+                      'User does not have an active reservation for such a reward at the moment.',
+                  })}
+                </div>
               </div>
-            </div>
+            )}{' '}
           </div>
         </React.Fragment>
       )}
@@ -215,11 +218,17 @@ const DetailsModalBody = ({
           )}
         </ol>
         <div className="DetailsModal__text mv3">
-          {intl.formatMessage({
-            id: 'rewards_details_sponsor_reserves_payment',
-            defaultMessage:
-              'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
-          })}
+          {isMentions
+            ? intl.formatMessage({
+                id: 'rewards_details_sponsor_reserves_payment_mentions',
+                defaultMessage:
+                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.',
+              })
+            : intl.formatMessage({
+                id: 'rewards_details_sponsor_reserves_payment',
+                defaultMessage:
+                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
+              })}
         </div>
       </div>
       {!proposition?.reserved && (
@@ -233,11 +242,19 @@ const DetailsModalBody = ({
               defaultMessage: 'The amount of the reward is determined in',
             })}{' '}
             {proposition?.payoutToken}{' '}
-            {intl.formatMessage({
-              id: 'at_the_time_of_reservation',
-              defaultMessage:
-                'at the time of reservation. The reward will be paid in the form of a combination of upvotes',
-            })}{' '}
+            {intl.formatMessage(
+              isMentions
+                ? {
+                    id: 'at_the_time_of_submission',
+                    defaultMessage:
+                      'at the time of submission. The reward will be paid in the form of a combination of upvotes',
+                  }
+                : {
+                    id: 'at_the_time_of_reservation',
+                    defaultMessage:
+                      'at the time of reservation. The reward will be paid in the form of a combination of upvotes',
+                  },
+            )}{' '}
             ({proposition?.payoutToken}{' '}
             {intl.formatMessage({
               id: 'power_and_direct_payments',
@@ -315,6 +332,7 @@ DetailsModalBody.propTypes = {
   proposition: PropTypes.shape({
     usersLegalNotice: PropTypes.string,
     guideName: PropTypes.string,
+    type: PropTypes.string,
     activationPermlink: PropTypes.string,
     requiredObject: PropTypes.shape({
       defaultShowLink: PropTypes.string,

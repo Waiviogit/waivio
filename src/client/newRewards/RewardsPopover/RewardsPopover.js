@@ -424,9 +424,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
       case 'completed': {
         const mainList = isMentions ? [openReview, report] : [viewReservation, openReview, report];
 
-        return isSponsor
-          ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
-          : [...mainList, decrease];
+        return isSponsor ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList] : mainList;
       }
       case 'rejected':
         if (isMentions) return isSponsor ? [reinstate, ...toolList] : [];
