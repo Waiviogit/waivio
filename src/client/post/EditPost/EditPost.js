@@ -152,7 +152,7 @@ const EditPost = props => {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
-    }, 1500),
+    }, 500),
     [props.draftId, content, titleValue],
   );
 
@@ -233,24 +233,21 @@ const EditPost = props => {
               )}
             </div>
           )}
-          {content && (
-            <PostPreviewModal
-              content={content}
-              isPublishing={props.publishing}
-              isUpdating={isUpdating}
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              onUpdate={props.saveDraft}
-              reviewData={campaign}
-              settings={settings}
-              topics={topics}
-              onSettingsChange={handleSettingsChange}
-              onSubmit={handleSubmit}
-              isGuest={props.isGuest}
-              titleValue={titleValue}
-            />
-          )}
-
+          <PostPreviewModal
+            content={content}
+            isPublishing={props.publishing}
+            isUpdating={isUpdating}
+            linkedObjects={linkedObjects}
+            objPercentage={objPercentage}
+            onUpdate={props.saveDraft}
+            reviewData={campaign}
+            settings={settings}
+            topics={topics}
+            onSettingsChange={handleSettingsChange}
+            onSubmit={handleSubmit}
+            isGuest={props.isGuest}
+            titleValue={titleValue}
+          />
           <div className="search-object-panel">
             {props.intl.formatMessage({
               id: 'editor_search_elements',
