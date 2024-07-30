@@ -313,7 +313,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const query = new URLSearchParams(props.location.search);
   const initObjects = props.location.state
     ? getObjects(props.location.state)
-    : query.getAll('object');
+    : query.getAll('object').map(obj => obj.replace('*amp*', '&'));
   const users = query.getAll('user');
   const authors = query.getAll('author');
   const type = query.get('type');
