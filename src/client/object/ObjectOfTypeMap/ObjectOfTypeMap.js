@@ -29,6 +29,7 @@ import './ObjectOfTypeMap.less';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 
 const ObjectOfTypeMap = props => {
   const [nestedWobj, setNestedWobj] = useState({});
@@ -129,43 +130,36 @@ const ObjectOfTypeMap = props => {
     });
   };
 
-  const onMarkerClick = link => history.push(`/object/${link}`);
-  const getOverlayLayout = () => {
-    const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
+  const onMarkerClick = ({ payload, anchor }) => {
+    handleAddMapCoordinates(anchor);
+    if (get(infoboxData, 'coordinates', []) === anchor) {
+      setInfoboxData(null);
+    }
 
-    return (
-      <Overlay
-        anchor={infoboxData.coordinates}
-        offset={[140, 140]}
-        className="WebsiteBody__overlay"
-      >
-        <div
-          role="presentation"
-          className="WebsiteBody__overlay-wrap"
-          onClick={() => onMarkerClick(wobjPermlink)}
-        >
-          <ObjectOverlayCard isMapObj wObject={infoboxData.wobject} showParent={false} />
-        </div>
-      </Overlay>
-    );
+    query.set('center', anchor);
+    query.set('permlink', payload.author_permlink);
+    query.set('zoom', settingMap.zoom);
+    query.set('topPoint', settingMap.topPoint.join(','));
+
+    history.push(`?${query.toString()}${history.location.hash || ''}`);
+    setInfoboxData({ wobject: payload, coordinates: anchor });
+    setSelectedObject(payload);
   };
+  const getOverlayLayout = () => (
+    <Overlay anchor={infoboxData.coordinates} offset={[140, 140]} className="WebsiteBody__overlay">
+      <div role="presentation" className="WebsiteBody__overlay-wrap">
+        <ObjectOverlayCard isMapObj wObject={infoboxData.wobject} showParent={false} />
+      </div>
+    </Overlay>
+  );
   const closeInfobox = () => {
-    const url = `center=${settingMap.center.join(',')}&zoom=${
-      settingMap.zoom
-    }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(',')}`;
+    history.push(
+      `/object/${
+        nestedObjPermlink ? props.match.params.name : currentWobject.author_permlink
+      }/map?${nestedObjPermlink ? `#${nestedObjPermlink}` : ''}`,
+    );
 
-    history.push(`/object/${currentWobject.author_permlink}/map?${url}`);
     setInfoboxData(null);
-  };
-
-  const setQueryInUrl = (anchor, link) => {
-    const url = `center=${anchor.join(',')}&zoom=${
-      settingMap.zoom
-    }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(
-      ',',
-    )}&permlink=${link}`;
-
-    history.push(`/object/${currentWobject.author_permlink}/map?${url}`);
   };
 
   const getMarkers = wObjects =>
@@ -184,11 +178,7 @@ const ObjectOfTypeMap = props => {
           isMarked={isMarked}
           anchor={[+latitude, +longitude]}
           payload={wobject}
-          onClick={({ payload, anchor }) => {
-            setSelectedObject(payload);
-            setInfoboxData({ wobject: payload, coordinates: anchor });
-            setQueryInUrl(anchor, payload.author_permlink);
-          }}
+          onClick={onMarkerClick}
           onDoubleClick={closeInfobox}
         />
       ) : null;
@@ -318,6 +308,7 @@ const ObjectOfTypeMap = props => {
                 ) {
                   history.push(infoboxData.wobject.defaultShowLink);
                 } else if (event.target.classList.value === 'pigeon-overlays') {
+                  query.delete('permlink');
                   closeInfobox();
                 }
               }}
