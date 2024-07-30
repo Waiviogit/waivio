@@ -5,6 +5,27 @@ import TypingText from './TypingText';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 
+export const linkifyText = text => {
+  const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
+
+  const parts = text.split(markdownLinkRegex);
+
+  return parts
+    .reduce((acc, part, index) => {
+      if (index % 3 === 0) {
+        acc.push(part.replace(urlRegex, url => `<${url}>`));
+      } else if (index % 3 === 1) {
+        acc.push(`[${part}]`);
+      } else if (index % 3 === 2) {
+        acc.push(`(${part})&nbsp;`);
+      }
+
+      return acc;
+    }, [])
+    .join('');
+};
+
 const AssistantMessage = ({ text, loading, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
@@ -20,7 +41,7 @@ const AssistantMessage = ({ text, loading, lastMessageRef }) => {
         />
         {!loading && (
           <div className="message from-assistant">
-            {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
+            {getHtml(linkifyText(text), {}, 'Object', { appUrl, isChatBotLink: true })}
           </div>
         )}
         {loading && <TypingText />}

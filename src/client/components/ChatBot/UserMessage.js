@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
+import { linkifyText } from './AssistantMessage';
 
 const UserMessage = ({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
@@ -11,7 +12,7 @@ const UserMessage = ({ text, lastMessageRef }) => {
     <>
       <div ref={lastMessageRef} style={{ marginBottom: '20px' }} />
       <div className="message from-user">
-        {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
+        {getHtml(linkifyText(text), {}, 'Object', { appUrl, isChatBotLink: true })}
       </div>
     </>
   );
