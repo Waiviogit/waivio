@@ -201,7 +201,7 @@ const routes = {
           component: Views.Activity,
         },
         {
-          path: '/editor',
+          path: '/(editor)',
           component: Views.Editor,
           exact: true,
         },

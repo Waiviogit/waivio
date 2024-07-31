@@ -195,7 +195,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   const parseChildren = (child, style) => {
     // RegEx: [[ embed url=<anything> ]]
-    const objectLinkRegEx = /^(https?):\/\/[^\s$\/?#]*\/(object)\/[a-z0-9-]+$/; // eslint-disable-line
+    const objectLinkRegEx = /\/object\//; // eslint-disable-line
 
     switch (child.type) {
       case 'Link':
