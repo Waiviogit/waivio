@@ -24,7 +24,7 @@ import {
 import './SocialProductReviews.less';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 import {
-  getCurrentHost,
+  getAppHost,
   getUsedLocale,
   getWebsiteColors,
   getWebsiteName,
@@ -46,7 +46,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
-  const host = useSelector(getCurrentHost);
+  const host = useSelector(getAppHost);
   const colors = useSelector(getWebsiteColors);
   const websiteName = useSelector(getWebsiteName);
   const color = colors?.mapMarkerBody || initialColors.marker;

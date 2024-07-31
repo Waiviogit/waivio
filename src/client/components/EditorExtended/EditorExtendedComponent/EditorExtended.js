@@ -105,6 +105,7 @@ const Editor = props => {
             isNewReview={props.isNewReview}
             intl={props.intl}
             isVimeo={isVimeo}
+            isMainEditor
             editorState={editorState}
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChangeSlate}

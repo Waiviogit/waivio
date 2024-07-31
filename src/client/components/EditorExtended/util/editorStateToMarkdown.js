@@ -321,7 +321,10 @@ export function editorStateToMarkdownSlate(value) {
             };
           }
 
-          return null;
+          return {
+            type: 'paragraph',
+            children: next([{ text: '' }]),
+          };
         },
       },
     })

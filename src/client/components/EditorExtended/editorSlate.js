@@ -75,6 +75,7 @@ const EditorSlate = props => {
     handleObjectSelect,
     initialBody,
     isComment,
+    isMainEditor,
     initialPosTopBtn,
     clearEditor,
     ADD_BTN_DIF,
@@ -84,7 +85,6 @@ const EditorSlate = props => {
   const params = useParams();
   const [initiallized, setInitiallized] = useState(false);
   const editorRef = useRef(null);
-
   const handlePastedFiles = async event => {
     const html = event.clipboardData.getData('text/html');
 
@@ -310,7 +310,7 @@ const EditorSlate = props => {
         <div className={editorClass}>
           {isShowEditorSearch && (
             <EditorSearchObjects
-              handleObjectSelect={isComment ? handleObjectSelect : null}
+              handleObjectSelect={isComment || isMainEditor ? handleObjectSelect : null}
               editor={editor}
               isComment={isComment}
             />
@@ -367,6 +367,7 @@ EditorSlate.propTypes = {
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
+  isMainEditor: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
   isNewReview: PropTypes.bool,
