@@ -30,7 +30,7 @@ const RedirectedSignIn = props => {
             isSocial={props.isSocial}
             setUserData={setUserData}
             setIsFormVisible={setIsFormVisible}
-            url={urlObj}
+            url={url}
           />
         </div>
       )}

@@ -312,20 +312,24 @@ export function editorStateToMarkdownSlate(value) {
           type: 'text',
           value: node.url,
         }),
-        object: (node, next) => {
-          if (node.children[0].text) {
+        link: (node, next) => {
+          if (node.children[0].text)
             return {
               type: 'link',
               url: node.url,
-              children: next([{ text: node.hashtag }]),
+              children: next([{ text: node.children[0].text }]),
             };
-          }
 
           return {
             type: 'paragraph',
             children: next([{ text: '' }]),
           };
         },
+        object: (node, next) => ({
+          type: 'link',
+          url: node.url,
+          children: next([{ text: node.hashtag }]),
+        }),
       },
     })
     .use(remarkGfm)

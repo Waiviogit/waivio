@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { map, reduce, get } from 'lodash';
+import { map, reduce, get, isEmpty } from 'lodash';
 import moment from 'moment';
 
 import { convertDigits, formatDate } from '../../rewardsHelper';
@@ -175,14 +175,15 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                 :{' '}
                 <Link
                   to={
-                    sponsor?.mainObject
+                    !isEmpty(sponsor?.mainObject)
                       ? sponsor?.mainObject?.defaultShowLink || `/@${sponsor?.mainObject?.name}`
                       : `/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`
                   }
                 >
                   {prymaryObjectName}
                 </Link>
-                {sponsor?.mainObject.defaultShowLink !== sponsor?.reviewObject.defaultShowLink && (
+                {sponsor?.mainObject?.defaultShowLink !==
+                  sponsor?.reviewObject?.defaultShowLink && (
                   <React.Fragment>
                     ,{' '}
                     <Link
