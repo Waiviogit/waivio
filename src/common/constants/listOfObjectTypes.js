@@ -8,6 +8,25 @@ export const listOfSocialObjectTypes = [
   'link',
   'restaurant',
 ];
+export const listOfMapObjectTypes = [
+  'restaurant',
+  'person',
+  'business',
+  'place',
+  'indices',
+  'commodity',
+  'currency',
+  'stocks',
+  'app',
+  'currencies',
+  'company',
+  'organization',
+  'hotel',
+  'motel',
+  'resort',
+  'b&b',
+  'car',
+];
 
 export const recommendedObjectTypes = [
   'product',

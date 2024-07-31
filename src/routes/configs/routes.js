@@ -24,6 +24,7 @@ import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/Object
 import ObjectFeed from '../../client/object/ObjectFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../../client/components/Favorites/UserFavorites';
+import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const routes = {
   component: Wrapper,
@@ -375,6 +376,11 @@ const routes = {
           path: '/(favorites)/:objectType?',
           exact: true,
           component: UserFavorites,
+        },
+        {
+          path: '/map',
+          exact: true,
+          component: WebsiteBody,
         },
         {
           path: '/reblogs',

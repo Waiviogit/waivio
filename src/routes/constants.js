@@ -39,6 +39,7 @@ export default {
       'expertise-objects',
       'about',
       'shop',
+      'map',
     ].join('|'),
   },
   FEED: {
