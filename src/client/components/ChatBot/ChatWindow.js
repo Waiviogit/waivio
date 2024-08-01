@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Icon, Input } from 'antd';
+import { Drawer, Icon, Input } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,7 +23,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const CHAT_ID = 'chatId';
 
-const ChatWindow = ({ className, hideChat }) => {
+const ChatWindow = ({ className, hideChat, open }) => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
@@ -50,7 +50,9 @@ const ChatWindow = ({ className, hideChat }) => {
       setMessage('');
       setLoading(true);
       sendChatBotQuestion(question, id).then(res => {
-        dispatch(setChatBotMessage({ text: res.result, role: 'ai' }));
+        const resutText = isEmpty(res) ? 'Sorry, an error has occurred.' : res.result;
+
+        dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
         setLoading(false);
       });
     }
@@ -77,11 +79,11 @@ const ChatWindow = ({ className, hideChat }) => {
     if (chatId && isEmpty(chatMessages) && isWaivio) {
       getChatBotHistory(chatId).then(r => dispatch(setChatBotHistory(r.result)));
     }
-  }, [chatId, chatMessages.length]);
+  }, [chatId, chatMessages?.length]);
 
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [chatMessages, loading]);
 
@@ -170,6 +172,26 @@ const ChatWindow = ({ className, hideChat }) => {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
+    const handleFocus = () => {
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    };
+
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (textArea) {
+      textArea.addEventListener('focus', handleFocus);
+
+      return () => {
+        textArea.removeEventListener('focus', handleFocus);
+      };
+    }
+  }, []);
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
     if (typeof window !== 'undefined' && window.visualViewport) {
       const handleViewportChange = () => {
         const viewportHeight = window.visualViewport.height;
@@ -189,29 +211,11 @@ const ChatWindow = ({ className, hideChat }) => {
     }
   }, []);
 
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    const handleFocus = () => {
-      setTimeout(() => {
-        if (textAreaRef.current) {
-          textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 300);
-    };
-
-    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
-
-    if (textArea) {
-      textArea.addEventListener('focus', handleFocus);
-
-      return () => {
-        textArea.removeEventListener('focus', handleFocus);
-      };
-    }
-  }, []);
-
-  return (
-    <div className={`ChatWindow ${className}`} style={isMobile() ? { height } : {}}>
+  const content = (
+    <div
+      className={`ChatWindow  ${className} ${isMobile() ? 'smooth-height' : ''}`}
+      style={isMobile() ? { height: `${height}px` } : {}}
+    >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
           <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
@@ -243,22 +247,24 @@ const ChatWindow = ({ className, hideChat }) => {
         )}
         <div className="chat-messages">
           {!isEmpty(chatMessages) &&
-            chatMessages.map((mes, index) =>
-              mes.role === 'human' ? (
+            chatMessages.map((mes, index) => {
+              const text = mes.text.replace(/\n\n/g, '\n');
+
+              return mes.role === 'human' ? (
                 <UserMessage
                   key={mes.text}
-                  text={mes.text}
+                  text={text}
                   lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
                 />
               ) : (
                 <AssistantMessage
                   key={mes.text}
-                  text={mes.text}
+                  text={text}
                   loading={false}
                   lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
                 />
-              ),
-            )}
+              );
+            })}
           {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
         </div>
       </div>
@@ -282,11 +288,20 @@ const ChatWindow = ({ className, hideChat }) => {
       </div>
     </div>
   );
+
+  return isMobile() ? (
+    <Drawer visible={open} placement={'bottom'}>
+      {content}
+    </Drawer>
+  ) : (
+    content
+  );
 };
 
 ChatWindow.propTypes = {
   hideChat: PropTypes.func.isRequired,
   className: PropTypes.string,
+  open: PropTypes.bool,
 };
 
 export default ChatWindow;

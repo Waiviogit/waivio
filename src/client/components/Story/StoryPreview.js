@@ -31,7 +31,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
 
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
-  const imagePath = getImageForPreview(post, isUpdates)[0];
+  const image = getImageForPreview(post, isUpdates);
+  const imagePath = typeof image === 'string' ? image : image[0];
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
 

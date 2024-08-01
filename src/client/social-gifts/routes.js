@@ -158,7 +158,7 @@ const routes = () => ({
           component: Views.Wallet,
         },
         {
-          path: '/editor',
+          path: '/(editor)',
           component: Views.Editor,
           exact: true,
         },

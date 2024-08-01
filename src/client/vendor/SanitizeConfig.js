@@ -86,8 +86,11 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
     const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
+    const chatPictures =
+      linkWebsiteUrl.includes('waivio.nyc3.digitaloceanspaces.com') && isChatBotLink;
 
     if (
+      !chatPictures &&
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
@@ -216,6 +219,13 @@ export default ({
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;
+
+      if (isChatBotLink) {
+        const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
+        const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
+        return { tagName: 'div', text: aTag };
+      }
+
       return { tagName, attribs: atts };
     },
     div: (tagName, attribs) => {

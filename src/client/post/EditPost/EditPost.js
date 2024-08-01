@@ -152,7 +152,7 @@ const EditPost = props => {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
-    }, 1500),
+    }, 500),
     [props.draftId, content, titleValue],
   );
 

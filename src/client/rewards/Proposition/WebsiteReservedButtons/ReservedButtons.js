@@ -52,7 +52,7 @@ const ReservedButtons = props => {
         loading={loadingButton}
       >
         {props?.type === 'mentions'
-          ? props.intl.formatMessage({ id: 'submit_mentions', defaultMessage: 'Submit mentions' })
+          ? props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' })
           : props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
       </Button>
       {!props.reserved && props.type !== 'mentions' && (

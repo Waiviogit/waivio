@@ -460,16 +460,18 @@ export const handleCreatePost = (wobject, authors, history) => {
       const parentObject = wobject.parent;
 
       redirectUrl += `${encodeURIComponent(
-        `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
+        `[${getObjectName(parentObject)}](/object/${parentObject.author_permlink})`,
       )}&object=`;
     }
 
-    redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
+    redirectUrl += encodeURIComponent(
+      `[${getObjectName(wobject)}](/object/${wobject.author_permlink})`,
+    );
 
     if (!isEmpty(wobject.authors)) {
       authors.forEach(author => {
         redirectUrl += author.author_permlink
-          ? `&author=${encodeURIComponent(`[${author.name}](${author.author_permlink})`)}`
+          ? `&author=${encodeURIComponent(`[${author.name}](/object/${author.author_permlink})`)}`
           : `&author=${encodeURIComponent(author.name)}`;
       });
     }

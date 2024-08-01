@@ -31,7 +31,7 @@ import {
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
 import {
-  getCurrentHost,
+  getAppHost,
   getIsWaivio,
   getUsedLocale,
   getWebsiteNameForHeader,
@@ -53,7 +53,7 @@ const ModalSignIn = ({
   history,
   buttonClassName,
   text,
-  currHost,
+  host,
   isWaivio,
   domain,
   usedLocale,
@@ -69,13 +69,15 @@ const ModalSignIn = ({
   const [lastError, setLastError] = React.useState('');
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
-  let host = currHost;
+  let callbackURL = `https://${host}/callback`;
 
-  if (!host && typeof location !== 'undefined') host = location.origin;
+  if (host.includes('localhost') && typeof location !== 'undefined') {
+    callbackURL = `${location.origin}/callback`;
+  }
 
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${host}/callback`,
+    callbackURL,
   });
   const isWidget = getSessionData('isWidget');
 
@@ -155,6 +157,7 @@ const ModalSignIn = ({
           setUserData={setUserData}
           setIsFormVisible={setIsFormVisible}
           setIsModalOpen={setIsModalOpen}
+          url={host}
         />
       );
 
@@ -393,7 +396,7 @@ ModalSignIn.propTypes = {
   websiteName: PropTypes.string,
   buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
-  currHost: PropTypes.string.isRequired,
+  host: PropTypes.string.isRequired,
   isWaivio: PropTypes.bool.isRequired,
   domain: PropTypes.string,
 };
@@ -412,7 +415,7 @@ ModalSignIn.defaultProps = {
 };
 
 export default connect(state => ({
-  currHost: getCurrentHost(state),
+  host: getAppHost(state),
   domain: getWebsiteParentHost(state),
   isWaivio: getIsWaivio(state),
   usedLocale: getUsedLocale(state),

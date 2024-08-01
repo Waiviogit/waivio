@@ -93,9 +93,9 @@ const DetailsModal = ({
 
   const handleClickReserve = cb => {
     let search = requiredObject?.author_permlink
-      ? `?object=[${getObjectName(requiredObject)}](${
+      ? `?object=[${getObjectName(requiredObject).replace('&', '*amp*')}](${
           requiredObject.object_type === 'link'
-            ? requiredObject?.url
+            ? requiredObject?.url.replace('*', '')
             : getObjectUrl(requiredObject?.author_permlink)
         })`
       : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;

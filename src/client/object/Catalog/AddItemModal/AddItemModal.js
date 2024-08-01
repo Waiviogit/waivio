@@ -255,6 +255,7 @@ class AddItemModal extends Component {
           {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
         </div>
         <SearchObjectsAutocomplete
+          useExtendedSearch
           addedItemsPermlinks={addedItemsPermlinks}
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}

@@ -9,7 +9,7 @@ const RedirectedSignIn = props => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host');
-  const urlObj = new URL(url);
+  const urlObj = `https://${url}`;
 
   return (
     <div className="Wrapper">
@@ -30,6 +30,7 @@ const RedirectedSignIn = props => {
             isSocial={props.isSocial}
             setUserData={setUserData}
             setIsFormVisible={setIsFormVisible}
+            url={url}
           />
         </div>
       )}

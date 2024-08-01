@@ -28,9 +28,20 @@ const CheckReviewModal = ({
   const hasReceipt =
     size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
-  const hasObject = object =>
-    linkedObjects.some(obj => obj.author_permlink === object.author_permlink) ||
-    postBody.includes(`@${object.name}`);
+  const hasObject = object => {
+    if (object.url && postBody) {
+      const url = object.url.replace(/[*\\<>]/g, '');
+      const body = postBody.replace(/[*\\<>]/g, '');
+      const regex = new RegExp(url);
+
+      return object.url[object.url.length - 1] === '*' ? body.includes(url) : regex.test(body);
+    }
+
+    return (
+      linkedObjects.some(obj => obj.author_permlink === object.author_permlink) ||
+      postBody.includes(`@${object.name}`)
+    );
+  };
 
   const modalBody =
     hasMinPhotos && hasReceipt && hasObject(secondaryObject) && hasObject(primaryObject) ? (

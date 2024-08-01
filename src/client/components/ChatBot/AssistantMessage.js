@@ -4,25 +4,29 @@ import { useSelector } from 'react-redux';
 import TypingText from './TypingText';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
+import { linkifyText } from '../../../common/helpers/parser';
 
 const AssistantMessage = ({ text, loading, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
-    <div className="flex" ref={lastMessageRef}>
-      {' '}
-      <img
-        className="chat-logo-small"
-        src="/images/icons/cryptocurrencies/waiv.png"
-        alt={'Waivio'}
-      />
-      {!loading && (
-        <div className="message from-assistant">
-          {getHtml(text, {}, 'Object', { appUrl, isChatBotLink: true })}
-        </div>
-      )}
-      {loading && <TypingText />}
-    </div>
+    <>
+      <div ref={lastMessageRef} style={{ marginBottom: '20px' }} />
+      <div className="flex">
+        {' '}
+        <img
+          className="chat-logo-small"
+          src="/images/icons/cryptocurrencies/waiv.png"
+          alt={'Waivio'}
+        />
+        {!loading && (
+          <div className="message from-assistant">
+            {getHtml(linkifyText(text), {}, 'Object', { appUrl, isChatBotLink: true })}
+          </div>
+        )}
+        {loading && <TypingText />}
+      </div>
+    </>
   );
 };
 

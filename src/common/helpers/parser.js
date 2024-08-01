@@ -1,6 +1,48 @@
 import { isError, get, attempt, size, unescape, round } from 'lodash';
 import { parseJSON } from './parseJSON';
 
+export const linkifyText = text => {
+  const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
+
+  const parts = text.split(/(\[.*?\]\(.*?\))/g);
+
+  return parts
+    .reduce((acc, part) => {
+      if (markdownLinkRegex.test(part)) {
+        acc.push(
+          part.replace(markdownLinkRegex, (match, p1, p2) => {
+            let trailingPunctuation = '';
+
+            if (p2.endsWith('.')) {
+              // eslint-disable-next-line no-param-reassign
+              p2 = p2.slice(0, -1);
+              trailingPunctuation = '.';
+            }
+
+            return `[${p1}](${p2})${trailingPunctuation}`;
+          }),
+        );
+      } else {
+        acc.push(
+          part.replace(urlRegex, url => {
+            let trailingPunctuation = '';
+
+            if (url.endsWith('.')) {
+              // eslint-disable-next-line no-param-reassign
+              url = url.slice(0, -1);
+              trailingPunctuation = '.';
+            }
+
+            return `<${url}>${trailingPunctuation}`;
+          }),
+        );
+      }
+
+      return acc;
+    }, [])
+    .join('');
+};
 export function getFromMetadata(jsonMetadata, key) {
   const metadata = attempt(parseJSON, jsonMetadata);
 

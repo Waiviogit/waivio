@@ -35,11 +35,14 @@ const WebsiteSignIn = props => {
   const websiteTitle = websiteName
     ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
-  const url = query.get('host') || location.origin;
-  const urlObj = new URL(url);
+  let callbackURL = `https://${props.url}/callback`;
+
+  if (props.url.includes('localhost') && typeof location !== 'undefined') {
+    callbackURL = `${location.origin}/callback`;
+  }
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${urlObj.origin}/callback`,
+    callbackURL,
   });
 
   useEffect(() => {
@@ -71,7 +74,7 @@ const WebsiteSignIn = props => {
         setGuestLoginData(response.accessToken, socialNetwork, id);
         if (query.get('host')) {
           if (typeof window !== 'undefined')
-            window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+            window.location.href = `${props.url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
         } else {
           if (typeof window !== 'undefined' && window.gtag)
             window.gtag('event', `login_${socialNetwork}`, { debug_mode: false });
@@ -130,7 +133,7 @@ const WebsiteSignIn = props => {
       setIsModalOpen={props.setIsModalOpen}
       loading={loading}
       hiveSigner={hiveSigner}
-      websiteName={url}
+      websiteName={props.url}
       showCloseIcon={props.showCloseIcon}
       onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
@@ -155,6 +158,7 @@ WebsiteSignIn.propTypes = {
   setUserData: PropTypes.func.isRequired,
   isSocial: PropTypes.bool,
   showCloseIcon: PropTypes.bool,
+  url: PropTypes.string,
   setIsFormVisible: PropTypes.func.isRequired,
   setIsModalOpen: PropTypes.func.isRequired,
 };
