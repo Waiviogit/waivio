@@ -9,9 +9,20 @@ const originalWaivioHost = 'www.waivio.com';
 
 const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
+  const params = useParams();
   const { name } = useParams();
   const query = useQuery();
+  const isWaivio = appUrl.includes('waivio');
   let url = `${appUrl}${location?.pathname}`;
+
+  if (!isWaivio) {
+    const path = location?.pathname
+      .split('/')
+      .filter(i => i !== params[0])
+      .join('/');
+
+    url = `${appUrl}${path}`;
+  }
 
   if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
     url = `${appUrl}/object/${name}/${objectType}`;
