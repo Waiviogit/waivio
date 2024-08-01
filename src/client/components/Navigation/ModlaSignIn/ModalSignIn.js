@@ -72,7 +72,7 @@ const ModalSignIn = ({
 
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `${host}/callback`,
+    callbackURL: `https://${host}/callback`,
   });
   const isWidget = getSessionData('isWidget');
 
