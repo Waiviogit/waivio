@@ -69,10 +69,15 @@ const ModalSignIn = ({
   const [lastError, setLastError] = React.useState('');
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
+  let callbackURL = `https://${host}/callback`;
+
+  if (host.includes('localhost') && typeof location !== 'undefined') {
+    callbackURL = `${location.origin}/callback`;
+  }
 
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: `https://${host}/callback`,
+    callbackURL,
   });
   const isWidget = getSessionData('isWidget');
 
@@ -152,6 +157,7 @@ const ModalSignIn = ({
           setUserData={setUserData}
           setIsFormVisible={setIsFormVisible}
           setIsModalOpen={setIsModalOpen}
+          url={host}
         />
       );
 
