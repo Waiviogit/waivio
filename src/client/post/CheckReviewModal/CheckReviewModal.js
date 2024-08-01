@@ -30,8 +30,8 @@ const CheckReviewModal = ({
 
   const hasObject = object => {
     if (object.url && postBody) {
-      const url = object.url.replace(/\*/g, '');
-      const body = postBody.replace(/\*/g, '');
+      const url = object.url.replace(/[*\\<>]/g, '');
+      const body = postBody.replace(/[*\\<>]/g, '');
       const regex = new RegExp(url);
 
       return object.url[object.url.length - 1] === '*' ? body.includes(url) : regex.test(body);
