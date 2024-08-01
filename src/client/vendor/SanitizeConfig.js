@@ -219,6 +219,13 @@ export default ({
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;
+
+      if (isChatBotLink) {
+        const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
+        const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
+        return { tagName: 'div', text: aTag };
+      }
+
       return { tagName, attribs: atts };
     },
     div: (tagName, attribs) => {

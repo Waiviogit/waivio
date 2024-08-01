@@ -4,27 +4,7 @@ import { useSelector } from 'react-redux';
 import TypingText from './TypingText';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
-
-export const linkifyText = text => {
-  const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
-  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
-
-  const parts = text.split(markdownLinkRegex);
-
-  return parts
-    .reduce((acc, part, index) => {
-      if (index % 3 === 0) {
-        acc.push(part.replace(urlRegex, url => `<${url}>`));
-      } else if (index % 3 === 1) {
-        acc.push(`[${part}]`);
-      } else if (index % 3 === 2) {
-        acc.push(`(${part})&nbsp;`);
-      }
-
-      return acc;
-    }, [])
-    .join('');
-};
+import { linkifyText } from '../../../common/helpers/parser';
 
 const AssistantMessage = ({ text, loading, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);

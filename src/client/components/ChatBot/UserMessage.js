@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
-import { linkifyText } from './AssistantMessage';
+import { linkifyText } from '../../../common/helpers/parser';
 
 const UserMessage = ({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
