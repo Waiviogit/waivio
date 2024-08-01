@@ -31,7 +31,7 @@ import {
   removeSessionData,
 } from '../../../rewards/rewardsHelper';
 import {
-  getCurrentHost,
+  getAppHost,
   getIsWaivio,
   getUsedLocale,
   getWebsiteNameForHeader,
@@ -53,7 +53,7 @@ const ModalSignIn = ({
   history,
   buttonClassName,
   text,
-  currHost,
+  host,
   isWaivio,
   domain,
   usedLocale,
@@ -69,9 +69,6 @@ const ModalSignIn = ({
   const [lastError, setLastError] = React.useState('');
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
-  let host = currHost;
-
-  if (!host && typeof location !== 'undefined') host = location.origin;
 
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -393,7 +390,7 @@ ModalSignIn.propTypes = {
   websiteName: PropTypes.string,
   buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
-  currHost: PropTypes.string.isRequired,
+  host: PropTypes.string.isRequired,
   isWaivio: PropTypes.bool.isRequired,
   domain: PropTypes.string,
 };
@@ -412,7 +409,7 @@ ModalSignIn.defaultProps = {
 };
 
 export default connect(state => ({
-  currHost: getCurrentHost(state),
+  host: getAppHost(state),
   domain: getWebsiteParentHost(state),
   isWaivio: getIsWaivio(state),
   usedLocale: getUsedLocale(state),
