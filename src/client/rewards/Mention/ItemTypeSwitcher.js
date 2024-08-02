@@ -39,17 +39,19 @@ const ItemTypeSwitcher = ({ setPrimaryObject, intl }) => {
       let objType;
       let wobLimit = 50;
       let userLimit = 50;
+      let valueCurr = value;
 
       dispatch(resetSearchAutoCompete());
 
       if (value[0] === '#') {
         objType = ['hashtag'];
         userLimit = 0;
+        valueCurr = valueCurr.replace(/#/g, '');
       }
 
       if (value[0] === '@') wobLimit = 0;
 
-      return dispatch(searchAutoComplete(value, userLimit, wobLimit, null, true, objType));
+      return dispatch(searchAutoComplete(valueCurr, userLimit, wobLimit, null, true, objType));
     }, 400),
     [],
   );
