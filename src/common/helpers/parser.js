@@ -95,7 +95,7 @@ export function extractLinks(body) {
   return extract(body, hrefRegex).map(unescape);
 }
 
-export const replacer = value => value.replace(/^@/g, '').replace(/#/g, '');
+export const replacer = value => value.replace(/^@/g, '');
 
 export const fixedNumber = (num, precision) => {
   if (!num) return 0;
