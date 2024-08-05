@@ -35,7 +35,7 @@ const WebsiteSignIn = props => {
   const websiteTitle = websiteName
     ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
-  let callbackURL = `https://${props.url}/callback`;
+  let callbackURL = `${props.url}/callback`;
 
   if (props.url.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
