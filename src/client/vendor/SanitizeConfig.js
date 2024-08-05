@@ -75,6 +75,7 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
   tagName,
   attribs,
 ) => {
+  console.log(appUrl);
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
