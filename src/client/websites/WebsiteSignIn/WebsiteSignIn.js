@@ -40,13 +40,6 @@ const WebsiteSignIn = props => {
   if (props.url.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(props.url, 'props.url');
-  // eslint-disable-next-line no-console
-  console.log(callbackURL, 'callbackURL');
-  // eslint-disable-next-line no-console
-  console.log(location.origin, 'location.origin');
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL,
