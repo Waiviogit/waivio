@@ -221,6 +221,11 @@ const routes = () => ({
           component: UserFavorites,
         },
         {
+          path: '/map',
+          exact: true,
+          component: WebsiteBody,
+        },
+        {
           path: '/(followers|following|following-objects)',
           exact: true,
           component: UserFollowers,

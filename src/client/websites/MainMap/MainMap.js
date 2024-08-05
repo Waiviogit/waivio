@@ -1,23 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty, get, map, debounce, isEqual, reverse, round } from 'lodash';
-
+import { isEmpty, get, reverse } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { Map } from 'pigeon-maps';
-import Overlay from 'pigeon-overlay';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import {
   setMapForSearch,
   setSearchInBox,
   setShowSearchResult,
 } from '../../../store/searchStore/searchActions';
-import mapProvider from '../../../common/helpers/mapProvider';
-import { getParsedMap } from '../../components/Maps/mapHelpers';
-import CustomMarker from '../../components/Maps/CustomMarker';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
@@ -25,8 +17,7 @@ import {
   setShowReload,
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
-import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
-import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
+import { distanceInMBetweenEarthCoordinates } from '../helper';
 import { getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
@@ -40,9 +31,6 @@ import {
   getSocialSearchResultLoading,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
-import MapControllers from '../../widgets/MapControllers/MapControllers';
-import TagFilters from '../TagFilters/TagFilters';
-import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
 import Loading from '../../components/Icon/Loading';
@@ -68,6 +56,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
+import MainMapView from './MainMapView';
 
 const MainMap = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
@@ -291,188 +280,40 @@ const MainMap = React.memo(props => {
       mount = false;
     };
   }, [props.boundsParams, props.match.params.name, props.locale]);
-
-  const handleOnBoundsChanged = useCallback(
-    debounce(bounds => {
-      if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
-        props.setBoundsParams({
-          topPoint: [bounds.ne[1], bounds.ne[0]],
-          bottomPoint: [bounds.sw[1], bounds.sw[0]],
-        });
-      }
-    }, 500),
-    [],
-  );
-
-  const onBoundsChanged = ({ center, zoom, bounds }) => {
-    props.setArea(bounds);
-    props.setMapData({ zoom, center });
-
-    if (!isEqual(bounds, props.area)) handleOnBoundsChanged(bounds);
-  };
-
-  const handleMarkerClick = useCallback(
-    ({ payload, anchor }) => {
-      handleAddMapCoordinates(anchor);
-
-      if (get(props.infoboxData, 'coordinates', []) === anchor) props.setInfoboxData(null);
-
-      query.set('center', anchor);
-      query.set('zoom', props.mapData.zoom);
-      query.set('permlink', payload.author_permlink);
-      if (props.isSocial && props.location.pathname === '/') {
-        query.set('currObj', props.wobject.author_permlink);
-      }
-      props.history.push(`?${query.toString()}`);
-      props.setInfoboxData({ wobject: payload, coordinates: anchor });
-    },
-    [props.mapData.zoom, props.location.search, props.isSocial, props.wobject],
-  );
-
-  const resetInfoBox = () => props.setInfoboxData(null);
-
-  const getMarkers = useCallback(
-    wObjects => {
-      if (isEmpty(wObjects)) return null;
-
-      return map(wObjects, wobject => {
-        const parsedMap = getParsedMap(wobject);
-        const latitude = get(parsedMap, ['latitude']);
-        const longitude = get(parsedMap, ['longitude']);
-
-        if (!latitude && !longitude) return null;
-
-        const isMarked = Boolean(
-          get(wobject, 'campaigns') || !isEmpty(get(wobject, 'propositions')),
-        );
-        const hoveredWobj = props.hoveredCardPermlink === wobject.author_permlink;
-        const anchor = [+latitude, +longitude];
-
-        return (
-          <CustomMarker
-            key={get(wobject, '_id')}
-            isMarked={isMarked}
-            anchor={anchor}
-            payload={wobject}
-            onClick={handleMarkerClick}
-            onDoubleClick={resetInfoBox}
-            hoveredWobj={hoveredWobj}
-          />
-        );
-      });
-    },
-    [props.wobjectsPoint, props.hoveredCardPermlink, props.location.search],
-  );
-
-  const getOverlayLayout = useCallback(() => {
-    if (!props.infoboxData) return null;
-    const currentWobj = props.infoboxData;
-    const name = getObjectName(currentWobj.wobject);
-    const wobject = get(currentWobj, 'wobject', {});
-    const firstOffsetNumber = getFirstOffsetNumber(name);
-    const setQueryInStorage = () => localStorage.setItem('query', query);
-    const usersType = props.searchType === 'Users';
-    const offset = usersType ? [80, 240] : [firstOffsetNumber, 160];
-
-    return (
-      <Overlay
-        anchor={props.infoboxData.coordinates}
-        offset={offset}
-        className="WebsiteBody__overlay"
-      >
-        <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
-          {usersType ? (
-            <PostOverlayCard wObject={wobject} />
-          ) : (
-            <ObjectOverlayCard
-              isMapObj
-              wObject={wobject}
-              showParent={props.searchType !== 'restaurant'}
-            />
-          )}
-        </div>
-      </Overlay>
-    );
-  }, [props.infoboxData]);
-
-  const incrementZoom = useCallback(() => {
-    if (props.mapData.zoom < 18)
-      props.setMapData({ ...props.mapData, zoom: props.mapData.zoom + 1 });
-  }, [props.mapData]);
-
-  const decrementZoom = useCallback(() => {
-    if (props.mapData.zoom > 1)
-      props.setMapData({ ...props.mapData, zoom: props.mapData.zoom - 1 });
-  }, [props.mapData]);
-
-  const setLocationFromNavigator = position => {
-    const { latitude, longitude } = position.coords;
-
-    props.putUserCoordinates({ latitude, longitude });
-    props.setShowLocation(true);
-    props.setMapData({ center: [latitude, longitude], zoom: props.mapData.zoom });
-  };
-
-  const setLocationFromApi = () => {
-    props.setShowLocation(false);
-    props.setMapData({
-      center: [props.userLocation.lat, props.userLocation.lon],
-      zoom: props.mapData.zoom,
-    });
-  };
-
-  const handleClickOnMap = ({ event }) => {
-    if (event.target.classList.value === 'pigeon-overlays') {
-      resetInfoBox();
-      query.delete('center');
-      query.delete('zoom');
-      query.delete('permlink');
-      query.delete('currObj');
-      props.history.push(`?${query.toString()}`);
-    }
-  };
-
-  const overlay = useMemo(() => getOverlayLayout(), [props.infoboxData]);
-
-  const markersList = useMemo(() => getMarkers(props.wobjectsPoint), [
-    props.wobjectsPoint,
-    props.hoveredCardPermlink,
-  ]);
-
   if (isEmpty(props.mapData.center) && props.isSocial) {
     return <Loading />;
   }
 
   return (
-    ((!props.isSocial && !isEmpty(props.mapData.center)) || props.isSocial) &&
-    props.mapData.zoom && (
-      <div className={mapClassList} style={{ height: mapHeight }}>
-        <Map
-          ref={mapRef}
-          center={props.mapData.center}
-          height={Number(mapHeight)}
-          zoom={round(props.mapData.zoom)}
-          provider={mapProvider}
-          onBoundsChanged={onBoundsChanged}
-          onClick={handleClickOnMap}
-        >
-          <TagFilters query={query} history={props.history} />
-          {markersList}
-          {overlay}
-          {props.showLocation && (
-            <CustomMarker anchor={[props.userLocation.lat, props.userLocation.lon]} currLocation />
-          )}
-        </Map>
-        <MapControllers
-          isMapObjType
-          className={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
-          decrementZoom={decrementZoom}
-          incrementZoom={incrementZoom}
-          successCallback={setLocationFromNavigator}
-          rejectCallback={setLocationFromApi}
-        />
-      </div>
-    )
+    <MainMapView
+      hoveredCardPermlink={props.hoveredCardPermlink}
+      wobject={props.wobject}
+      isSocial={props.isSocial}
+      infoboxData={props.infoboxData}
+      area={props.area}
+      setArea={props.setArea}
+      setBoundsParams={props.setBoundsParams}
+      setInfoboxData={props.setInfoboxData}
+      showLocation={props.showLocation}
+      showMap={
+        ((!props.isSocial && !isEmpty(props.mapData.center)) || props.isSocial) &&
+        props.mapData.zoom
+      }
+      setShowLocation={props.setShowLocation}
+      setMapData={props.setMapData}
+      mapClassList={mapClassList}
+      query={query}
+      mapData={props.mapData}
+      putUserCoordinates={props.putUserCoordinates}
+      history={props.history}
+      mapRef={mapRef}
+      mapHeight={mapHeight}
+      mapControllersClassName={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
+      userLocation={props.userLocation}
+      location={props.location}
+      wobjectsPoint={props.wobjectsPoint}
+      searchType={props.searchType}
+    />
   );
 });
 

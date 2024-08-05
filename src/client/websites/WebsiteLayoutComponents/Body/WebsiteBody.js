@@ -82,11 +82,12 @@ const WebsiteBody = props => {
     return () => {
       props.resetSocialSearchResult();
       props.setBoundsParams({});
-      props.setMapData({ center: [], zoom: 8 });
       props.resetWebsiteFilters();
       // props.setShowSearchResult(false);
     };
   }, [props.currObj.author_permlink]);
+
+  useEffect(() => () => props.setMapData({ center: [], zoom: 8 }), []);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);

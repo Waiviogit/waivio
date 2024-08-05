@@ -152,6 +152,7 @@ const User = props => {
   const currentClassName = isOpenWalletTable
     ? 'display-table'
     : classNames('center', { pa3: isAboutPage });
+  const isMapPage = tab === 'map';
 
   return (
     <div className="main-panel">
@@ -211,11 +212,13 @@ const User = props => {
                 <React.Fragment>
                   <Affix className="leftContainer leftContainer__user" stickPosition={72}>
                     <div className={classNames('left', { 'display-none': isAboutPage })}>
-                      <LeftSidebar />
+                      {!isMapPage && <LeftSidebar />}
                     </div>
                   </Affix>
                   <Affix className="rightContainer" stickPosition={72}>
-                    <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+                    <div className="right">
+                      {loaded && !isMapPage && <RightSidebar key={user.name} />}
+                    </div>
                   </Affix>
                 </React.Fragment>
               )}
