@@ -45,6 +45,13 @@ const UserMenu = props => {
               </Link>
             </li>
           )}
+          {showUserShop && (
+            <li className={getItemClasses(['map'])} role="presentation">
+              <Link to={`/@${name}/map`}>
+                <FormattedMessage id="map" defaultMessage="Map" />
+              </Link>
+            </li>
+          )}
           <li
             className={getItemClasses(['followers', 'following', 'following-objects'])}
             role="presentation"

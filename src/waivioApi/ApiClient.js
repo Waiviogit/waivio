@@ -14,6 +14,7 @@ import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 import {
   excludeHashtagObjType,
+  listOfMapObjectTypes,
   recommendedObjectTypes,
 } from '../common/constants/listOfObjectTypes';
 // getGuestAccessToken() ||
@@ -4271,6 +4272,21 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     method: 'POST',
     body: JSON.stringify({
       objectType,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+export const getUserFavoriteObjectsForMap = (authUserName, user, box, skip, limit = 10) => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.map}`, {
+    headers: { ...headers, follower: authUserName },
+    method: 'POST',
+    body: JSON.stringify({
+      objectTypes: listOfMapObjectTypes,
+      box,
       skip,
       limit,
     }),
