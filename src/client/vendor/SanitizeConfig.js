@@ -116,7 +116,12 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
         }
 
         if (linkUrl.hash) {
-          if (linkUrl.pathname.endsWith('/page')) {
+          console.log(appUrl);
+          if (
+            linkUrl.pathname.endsWith('/page') &&
+            !appUrl?.includes('waivio') &&
+            !appUrl?.includes('dining')
+          ) {
             href = href?.includes('?breadcrumbs')
               ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
               : href + `?breadcrumbs=${params.name}/${getLastPermlinksFromHash(linkUrl.hash)}`;
