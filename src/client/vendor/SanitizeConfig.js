@@ -71,11 +71,13 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
+export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
+  tagName,
+  attribs,
+) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
-  const params = useParams();
   const attys = {};
   try {
     const linkUrl = url.parse(href);
@@ -116,7 +118,6 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
         }
 
         if (linkUrl.hash) {
-          console.log(appUrl);
           if (
             linkUrl.pathname.endsWith('/page') &&
             !appUrl?.includes('waivio') &&
@@ -124,7 +125,7 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
           ) {
             href = href?.includes('?breadcrumbs')
               ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-              : href + `?breadcrumbs=${params.name}/${getLastPermlinksFromHash(linkUrl.hash)}`;
+              : href + `?breadcrumbs=${baseObj}/${getLastPermlinksFromHash(linkUrl.hash)}`;
           } else {
             href = href?.includes('#')
               ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
@@ -166,6 +167,7 @@ export default ({
   location,
   isPage,
   isChatBotLink,
+  baseObj,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -272,6 +274,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location, isPage, isChatBotLink),
+    a: parseLink(appUrl, location, isPage, isChatBotLink, baseObj),
   },
 });
