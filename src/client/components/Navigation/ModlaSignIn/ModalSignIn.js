@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, message, Alert } from 'antd';
 import hivesigner from 'hivesigner';
-import { batch, connect, useDispatch, useSelector } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -32,7 +32,6 @@ import {
 } from '../../../rewards/rewardsHelper';
 import {
   getAppHost,
-  getCurrentHost,
   getIsWaivio,
   getUsedLocale,
   getWebsiteNameForHeader,
@@ -42,7 +41,6 @@ import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 import useWebsiteColor from '../../../../hooks/useWebsiteColor';
 
 import './ModalSignIn.less';
-import useQuery from '../../../../hooks/useQuery';
 
 const ModalSignIn = ({
   intl,
@@ -63,7 +61,6 @@ const ModalSignIn = ({
   isSocialGifts,
 }) => {
   const dispatch = useDispatch();
-  const query = useQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showQR, setShowQr] = useState('');
   const [userData, setUserData] = useState({});
@@ -73,13 +70,8 @@ const ModalSignIn = ({
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
 
-  // eslint-disable-next-line no-console
-  console.log(useSelector(getCurrentHost), ':useSelector(getCurrentHost)');
-  // eslint-disable-next-line no-console
-  console.log(host, ':host');
-  // eslint-disable-next-line no-console
-  console.log(query.get('host'), ':query host');
   let callbackURL = `https://${host}/callback`;
+  const urlObj = `https://${host}`;
 
   if (host.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
@@ -155,7 +147,7 @@ const ModalSignIn = ({
 
   const renderGuestSignUpForm = () => (
     <div className="ModalGuestForm">
-      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
+      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} url={urlObj} />
     </div>
   );
 
