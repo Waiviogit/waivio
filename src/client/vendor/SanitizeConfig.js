@@ -3,6 +3,7 @@ import url from 'url';
 import { endsWith } from 'lodash';
 import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
+import { useParams } from 'react-router';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -74,6 +75,7 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
+  const params = useParams();
   const attys = {};
   try {
     const linkUrl = url.parse(href);
@@ -113,10 +115,17 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
           href = href + location?.hash;
         }
 
-        if (linkUrl.hash)
-          href = href?.includes('#')
-            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-            : href + linkUrl.hash;
+        if (linkUrl.hash) {
+          if (linkUrl.pathname.endsWith('/page')) {
+            href = href?.includes('?breadcrumbs')
+              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+              : href + `?breadcrumbs=${params.name}/${getLastPermlinksFromHash(linkUrl.hash)}`;
+          } else {
+            href = href?.includes('#')
+              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+              : href + linkUrl.hash;
+          }
+        }
       } else {
         href = appUrl + linkUrl.pathname;
         if (linkUrl.hash)
