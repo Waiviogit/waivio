@@ -69,7 +69,6 @@ const ModalSignIn = ({
   const [lastError, setLastError] = React.useState('');
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
-
   let callbackURL = `https://${host}/callback`;
   const urlObj = `https://${host}`;
 
@@ -340,7 +339,7 @@ const ModalSignIn = ({
   const onSignUpClick = isOpen => {
     if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${
-        isFormVisible ? urlObj : host
+        isFormVisible ? host : urlObj
       }&color=${colors.background.replace(
         '#',
         '',
