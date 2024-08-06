@@ -18,6 +18,7 @@ import UserActivity from '../../activity/UserActivity';
 import UserBlog from '../UserBlog/UserBlog';
 import Threads from '../../Threads/Threads';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
+import UserMentions from '../../components/UserMentions/UserMentions';
 
 const PostsCommentsActivity = props => {
   const { match, authenticatedUserName, user, intl } = props;
@@ -60,6 +61,16 @@ const PostsCommentsActivity = props => {
         key="comments"
       >
         {tab === 'comments' && <UserProfilePosts match={match} />}
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={
+          <Link to={`/@${name}/mentions`}>
+            {intl.formatMessage({ id: 'mentions_tab', defaultMessage: 'Mentions' })}
+          </Link>
+        }
+        key="mentions"
+      >
+        {tab === 'mentions' && <UserMentions />}
       </Tabs.TabPane>
       {!isGuest && (
         <Tabs.TabPane

@@ -17,9 +17,12 @@ import { getAppHost } from '../appStore/appSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
+export const GET_MENTIONS_CONTENT = createAsyncActionType('@feed/GET_MENTIONS_CONTENT');
 export const RESET_THREADS = '@feed/RESET_THREADS';
+export const RESET_MENTIONS = '@feed/RESET_MENTIONS';
 export const EDIT_THREAD = '@feed/EDIT_THREAD';
 export const GET_MORE_THREADS_CONTENT = createAsyncActionType('@feed/GET_MORE_THREADS_CONTENT');
+export const GET_MORE_MENTIONS_CONTENT = createAsyncActionType('@feed/GET_MORE_MENTIONS_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
 export const GET_FEED_CONTENT_BY_BLOG = createAsyncActionType('@feed/GET_FEED_CONTENT_BY_BLOG');
@@ -204,6 +207,7 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
   });
 };
 export const resetThreads = () => dispatch => dispatch({ type: RESET_THREADS });
+export const resetMentions = () => dispatch => dispatch({ type: RESET_MENTIONS });
 export const editThreadState = (body, id) => dispatch =>
   dispatch({ type: EDIT_THREAD, payload: { id, body } });
 export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
@@ -221,6 +225,18 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
       promise: getThreadsMethod(),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
+  });
+};
+export const getMentionsContent = (account, skip, limit) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: GET_MENTIONS_CONTENT.ACTION,
+    payload: {
+      promise: ApiClient.getMentionsPosts(userName, account, skip, limit).then(r => r.posts),
+    },
+    meta: { sortBy: 'mentions', category: account, limit },
   });
 };
 
@@ -247,6 +263,25 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
       promise: getThreadsMethod(),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
+  });
+};
+export const getMoreMentionsContent = (account, limit) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const userName = getAuthenticatedUserName(state);
+  const feedContent = getFeedFromState('mentions', account, feed);
+
+  if (!feedContent.length || !feed || !feed.mentions || !feed.mentions[account])
+    return Promise.resolve(null);
+
+  const skip = feed.mentions[account].list.length;
+
+  return dispatch({
+    type: GET_MORE_MENTIONS_CONTENT.ACTION,
+    payload: {
+      promise: ApiClient.getMentionsPosts(userName, account, skip, limit).then(r => r.posts),
+    },
+    meta: { sortBy: 'mentions', category: account, limit },
   });
 };
 export const setPinnedPostsUrls = posts => dispatch => {
