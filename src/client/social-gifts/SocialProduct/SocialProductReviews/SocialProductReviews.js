@@ -54,7 +54,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const handleWriteReviewClick = () => {
     if (!isAuthUser) {
       history.push(
-        `/sign-in?host=${host}&backUrl=${host}/object/${wobject.author_permlink}&color=${color}&usedLocale=${usedLocale}&websiteName=${websiteName}`,
+        `/sign-in?host=https://${host}&backUrl=https://${host}/object/${wobject.author_permlink}&color=${color}&usedLocale=${usedLocale}&websiteName=${websiteName}`,
       );
     } else {
       handleCreatePost(wobject, authors, history);
