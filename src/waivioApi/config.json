@@ -237,5 +237,6 @@
   "rawField": "/raw-field",
   "info": "/info",
   "avatar": "/avatar",
-  "assistant": "/assistant"
+  "assistant": "/assistant",
+  "mentions": "/mentions"
 }
