@@ -460,7 +460,7 @@ const SocialProduct = ({
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
-                  {intl.formatMessage({ id: 'about_this_item', defaultMessage: 'About this item' })}
+                  {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
                 </div>
                 <SocialProductDescription
                   description={wobject.description}
