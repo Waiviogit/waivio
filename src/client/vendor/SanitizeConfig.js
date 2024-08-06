@@ -3,6 +3,7 @@ import url from 'url';
 import { endsWith } from 'lodash';
 import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
+import { useParams } from 'react-router';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -70,7 +71,10 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
+export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
+  tagName,
+  attribs,
+) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -113,10 +117,21 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
           href = href + location?.hash;
         }
 
-        if (linkUrl.hash)
-          href = href?.includes('#')
-            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-            : href + linkUrl.hash;
+        if (linkUrl.hash) {
+          if (
+            linkUrl.pathname.endsWith('/page') &&
+            !appUrl?.includes('waivio') &&
+            !appUrl?.includes('dining')
+          ) {
+            href = href?.includes('?breadcrumbs')
+              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+              : href + `?breadcrumbs=${baseObj}/${getLastPermlinksFromHash(linkUrl.hash)}`;
+          } else {
+            href = href?.includes('#')
+              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+              : href + linkUrl.hash;
+          }
+        }
       } else {
         href = appUrl + linkUrl.pathname;
         if (linkUrl.hash)
@@ -152,6 +167,7 @@ export default ({
   location,
   isPage,
   isChatBotLink,
+  baseObj,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -258,6 +274,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location, isPage, isChatBotLink),
+    a: parseLink(appUrl, location, isPage, isChatBotLink, baseObj),
   },
 });

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -51,6 +51,7 @@ export function getHtml(
   options = { isChatBotLink: false },
   location,
   isPage,
+  baseObj = '',
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
@@ -94,6 +95,7 @@ export function getHtml(
       location,
       isPage,
       isChatBotLink: options.isChatBotLink,
+      baseObj,
     }),
   );
 
@@ -181,6 +183,7 @@ const Body = props => {
   }, []);
 
   const location = useLocation();
+  const params = useParams();
   const options = {
     appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,
@@ -193,6 +196,7 @@ const Body = props => {
     options,
     location,
     props.isPage,
+    params.name,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
