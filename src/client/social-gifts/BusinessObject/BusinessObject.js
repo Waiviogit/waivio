@@ -120,6 +120,7 @@ const BusinessObject = ({
   const map = parseWobjectField(wobject, 'map');
   const workTime = get(wobject, 'workTime');
   const linkUrl = get(wobject, 'url', '');
+  const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery = !isEmpty(wobject.preview_gallery);
   const tagCategoriesForDescr = reduce(
@@ -341,7 +342,7 @@ const BusinessObject = ({
                         src={'/images/icons/link-icon.svg'}
                         wrapper={'span'}
                       />{' '}
-                      <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+                      <a href={linkUrlHref} target="_blank" rel="noopener noreferrer">
                         {linkUrl}
                       </a>
                     </span>
