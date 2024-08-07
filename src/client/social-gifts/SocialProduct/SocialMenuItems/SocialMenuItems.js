@@ -43,8 +43,8 @@ const SocialMenuItems = ({ menuItem }) => {
         {sortListItems(
           menuItems,
           menuItem.map(i => i.permlink),
-        ).map((item, index) => (
-          <SocialMenuItem key={item._id} item={item} isOpen={index === 0} />
+        ).map(item => (
+          <SocialMenuItem key={item._id} item={item} isOpen />
         ))}
       </div>
     </div>
