@@ -233,6 +233,20 @@ export const getFeedContent = (sortBy, locale, follower, queryData) =>
     .then(posts => posts)
     .catch(error => error);
 
+export const getMentionsPosts = (authUserName, account, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.posts}${config.mentions}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      follower: authUserName,
+    },
+    method: 'POST',
+    body: JSON.stringify({ skip, limit, account }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 export const saveDraftPage = (user, authorPermlink, body) =>
   fetch(`${config.apiPrefix}${config.draft}${config.object}`, {
     headers: {

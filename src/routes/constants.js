@@ -29,6 +29,7 @@ export default {
     tabs: [
       'comments',
       'threads',
+      'mentions',
       'followers',
       'following',
       'following-objects',

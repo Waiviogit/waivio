@@ -668,6 +668,7 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
+    const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
@@ -957,7 +958,7 @@ class ObjectInfo extends React.Component {
                 src={'/images/icons/link-icon.svg'}
                 wrapper={'span'}
               />{' '}
-              <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+              <a href={linkUrlHref} target="_blank" rel="noopener noreferrer">
                 {linkUrl}
               </a>
             </span>
