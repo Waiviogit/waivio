@@ -96,7 +96,7 @@ const Threads = props => {
             <div role="presentation" className="Threads__row justify-center">
               <FormattedMessage
                 id="empty_threads"
-                defaultMessage="Be the first to write a thread"
+                defaultMessage="Be the first to write a thread."
               />
             </div>
           ) : (

@@ -59,7 +59,7 @@ const UserMentions = props => {
         <div>
           {isEmpty(mentions) ? (
             <div role="presentation" className="Threads__row justify-center">
-              <FormattedMessage id="empty_mentions" defaultMessage="There are no mentions yet" />
+              <FormattedMessage id="empty_mentions" defaultMessage="There are no mentions yet." />
             </div>
           ) : (
             <div className={'profile'}>
