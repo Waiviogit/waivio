@@ -11,7 +11,7 @@ import {
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
 import {
-  getAppUrl,
+  getAppHost,
   getHelmetIcon,
   getSiteName,
   getUsedLocale,
@@ -51,7 +51,11 @@ import SocialProductReviews from '../SocialProduct/SocialProductReviews/SocialPr
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import DEFAULTS from '../../object/const/defaultValues';
-import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
+import {
+  getMapPermlinkByObject,
+  getObjectsRewards,
+  getReferenceObjectsList,
+} from '../../../waivioApi/ApiClient';
 import BusinessDetails from './BusinessDetails/BusinessDetails';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
@@ -82,10 +86,12 @@ const BusinessObject = ({
   nearbyObjects,
   intl,
   resetWobjExpertise,
+  host,
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
   const [loading, setIsLoading] = useState(true);
+  const [mapObjPermlink, setMapObjPermlink] = useState('');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = get(wobject, 'price');
   const website = parseWobjectField(wobject, 'website');
@@ -166,6 +172,9 @@ const BusinessObject = ({
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      getMapPermlinkByObject(wobject.author_permlink, locale, userName, host).then(r =>
+        setMapObjPermlink(r.result),
+      );
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
@@ -393,6 +402,8 @@ const BusinessObject = ({
           <div className="SocialProduct__column">
             {showAddressHoursBlock && (
               <AddressHoursDetails
+                mapObjPermlink={mapObjPermlink}
+                selectedObjPermlink={wobject.author_permlink}
                 history={history}
                 address={address}
                 map={map}
@@ -466,6 +477,7 @@ BusinessObject.propTypes = {
   relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
+  host: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
   isEditMode: PropTypes.bool,
@@ -486,7 +498,7 @@ const mapStateToProps = state => ({
   siteName: getSiteName(state),
   wobject: getObjectState(state),
   authors: getWobjectAuthors(state),
-  appUrl: getAppUrl(state),
+  host: getAppHost(state),
   albums: getObjectAlbums(state),
   relatedAlbum: getRelatedPhotos(state),
   authenticated: getIsAuthenticated(state),
