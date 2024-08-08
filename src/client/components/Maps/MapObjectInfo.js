@@ -159,8 +159,17 @@ class MapObjectInfo extends React.Component {
   };
 
   openModal = () => {
-    if (this.props.isWaivio) this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
-    else this.setQueryInUrl(this.props.center, this.props.wobject.author_permlink);
+    if (this.props.isWaivio) {
+      if (this.props.isSocial && !isEmpty(this.props.mapObjPermlink)) {
+        this.props.history.push(
+          `/object/${this.props.mapObjPermlink}?center=${this.state.center}&zoom=${this.state.zoom}&permlink=${this.props.selectedObjPermlink}`,
+        );
+      } else {
+        this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
+      }
+    } else {
+      this.setQueryInUrl(this.props.center, this.props.wobject.author_permlink);
+    }
   };
 
   zoomButtonsLayout = () => (
@@ -259,8 +268,9 @@ MapObjectInfo.propTypes = {
   isSocial: PropTypes.bool,
   isWaivio: PropTypes.bool,
   setMapFullscreenMode: PropTypes.func,
-  // eslint-disable-next-line react/forbid-prop-types
-  wobject: PropTypes.object.isRequired,
+  selectedObjPermlink: PropTypes.string.isRequired,
+  mapObjPermlink: PropTypes.string.isRequired,
+  wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   width: PropTypes.number,
 };

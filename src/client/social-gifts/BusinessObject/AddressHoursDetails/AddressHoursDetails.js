@@ -6,7 +6,16 @@ import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
 import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import './AddressHoursDetails.less';
 
-const AddressHoursDetails = ({ address, map, workTime, wobject, history, intl }) => {
+const AddressHoursDetails = ({
+  address,
+  map,
+  workTime,
+  wobject,
+  history,
+  intl,
+  mapObjPermlink,
+  selectedObjPermlink,
+}) => {
   const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
 
   return (
@@ -51,6 +60,8 @@ const AddressHoursDetails = ({ address, map, workTime, wobject, history, intl })
             {intl.formatMessage({ id: 'object_field_map', defaultMessage: 'Map' })}
           </div>
           <MapObjectInfo
+            mapObjPermlink={mapObjPermlink}
+            selectedObjPermlink={selectedObjPermlink}
             isSocial
             mapHeigth={250}
             center={[Number(map.latitude), Number(map.longitude)]}
@@ -84,6 +95,8 @@ AddressHoursDetails.propTypes = {
   wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   workTime: PropTypes.string,
+  selectedObjPermlink: PropTypes.string.isRequired,
+  mapObjPermlink: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 export default injectIntl(AddressHoursDetails);
