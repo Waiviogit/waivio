@@ -4352,7 +4352,7 @@ export const getMapPermlinkByObject = (authorPermlink, locale, follower, host) =
       ...headers,
       locale,
       follower,
-      'Access-Host': `https:${host}`,
+      'Access-Host': host,
     },
     method: 'GET',
   })
