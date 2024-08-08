@@ -4332,13 +4332,7 @@ export const getGuestUserMana = guestName =>
     .then(response => response)
     .catch(e => e);
 
-export const getObjectsForMapObjectType = (
-  name,
-
-  body,
-  locale,
-  follower,
-) =>
+export const getObjectsForMapObjectType = (name, body, locale, follower) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.map}`, {
     headers: {
       ...headers,
@@ -4351,5 +4345,19 @@ export const getObjectsForMapObjectType = (
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => error);
+
+export const getMapPermlinkByObject = (authorPermlink, locale, follower, host) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.mapLink}`, {
+    headers: {
+      ...headers,
+      locale,
+      follower,
+      'Access-Host': host,
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
 
 export default null;

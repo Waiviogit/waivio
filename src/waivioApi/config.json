@@ -238,5 +238,6 @@
   "info": "/info",
   "avatar": "/avatar",
   "assistant": "/assistant",
-  "mentions": "/mentions"
+  "mentions": "/mentions",
+  "mapLink": "/map-link"
 }
