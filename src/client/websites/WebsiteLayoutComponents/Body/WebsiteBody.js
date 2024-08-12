@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { isEmpty, get } from 'lodash';
 import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -53,6 +54,7 @@ import './WebsiteBody.less';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const { name } = useParams();
   const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
@@ -61,6 +63,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
+  const isUserMap = props.history.location.pathname?.includes(`/@`);
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -144,7 +147,9 @@ const WebsiteBody = props => {
       </Helmet>
       {((props.isSocial && !props.loading) || !props.isSocial) && (
         <SearchAllResult
-          isSocial={props.isSocial}
+          isSocial={isUserMap ? false : props.isSocial}
+          isUserMap={isUserMap}
+          user={name}
           permlink={props.permlink}
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
@@ -156,26 +161,29 @@ const WebsiteBody = props => {
         />
       )}
       <div className={mapClassList}>
-        {!isEmpty(props.configuration) && (
-          <React.Fragment>
-            {Boolean(props.counter) &&
-              props.isAuth &&
-              (!props.isSocial || (props.isSocial && !props.loading)) && (
-                <Link to="/rewards/reserved" className={reservedButtonClassList}>
-                  <FormattedMessage id="reserved" defaultMessage="Reserved" />
-                  :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
-                </Link>
-              )}
-            <MainMap
-              permlink={props.permlink}
-              locale={props.locale}
-              isSocial={props.isSocial}
-              loading={props.loading}
-              query={props.query}
-              hoveredCardPermlink={hoveredCardPermlink}
-            />
-          </React.Fragment>
-        )}
+        {!isEmpty(props.configuration) ||
+          (isUserMap && (
+            <React.Fragment>
+              {Boolean(props.counter) &&
+                props.isAuth &&
+                (!props.isSocial || isUserMap || (props.isSocial && !props.loading)) && (
+                  <Link to="/rewards/reserved" className={reservedButtonClassList}>
+                    <FormattedMessage id="reserved" defaultMessage="Reserved" />
+                    :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
+                  </Link>
+                )}
+              <MainMap
+                isUserMap={isUserMap}
+                user={name}
+                permlink={props.permlink}
+                locale={props.locale}
+                isSocial={isUserMap ? false : props.isSocial}
+                loading={props.loading}
+                query={props.query}
+                hoveredCardPermlink={hoveredCardPermlink}
+              />
+            </React.Fragment>
+          ))}
       </div>
     </div>
   );

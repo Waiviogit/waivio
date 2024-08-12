@@ -206,8 +206,8 @@ const User = props => {
               isGuest={isGuest}
             />
           )}
-          <div className="shifted">
-            <div className={'feed-layout container'}>
+          <div className={isMapPage ? '' : 'shifted'}>
+            <div className={isMapPage ? '' : 'feed-layout container'}>
               {!isOpenWalletTable && (
                 <React.Fragment>
                   <Affix className="leftContainer leftContainer__user" stickPosition={72}>

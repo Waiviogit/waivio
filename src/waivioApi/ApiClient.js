@@ -4294,8 +4294,8 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     .then(r => r)
     .catch(error => error);
 };
-export const getUserFavoriteObjectsForMap = (authUserName, user, box, skip, limit = 10) => {
-  return fetch(`${config.apiPrefix}${config.user}/${user}${config.map}`, {
+export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10, skip) => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}${config.map}`, {
     headers: { ...headers, follower: authUserName },
     method: 'POST',
     body: JSON.stringify({

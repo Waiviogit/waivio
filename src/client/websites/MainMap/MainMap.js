@@ -147,10 +147,13 @@ const MainMap = React.memo(props => {
         props.mapData.center,
       );
 
-      if (props.isSocial && props.socialLoading) props.setShowReload(false);
-      if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
+      if ((props.isSocial || props.isUserMap) && props.socialLoading) props.setShowReload(false);
+      if (
+        (distance > 20 && !props.showReloadButton) ||
+        ((props.isSocial || props.isUserMap) && !props.socialLoading)
+      )
         props.setShowReload(true);
-      if (!distance && !props.isSocial) props.setShowReload(false);
+      if (!distance && !props.isSocial && !props.isUserMap) props.setShowReload(false);
     }
   }, [dataToChange]);
 
@@ -192,7 +195,7 @@ const MainMap = React.memo(props => {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (!props.isSocial) {
+    if (!props.isSocial || !props.isUserMap) {
       if (props.isShowResult) {
         handleSetMapForSearch();
       } else {
@@ -235,6 +238,8 @@ const MainMap = React.memo(props => {
             props.isSocial,
             searchString,
             { topPoint, bottomPoint },
+            props.isUserMap,
+            props.user,
             100,
           )
           .then(res => {
@@ -261,18 +266,22 @@ const MainMap = React.memo(props => {
   };
 
   useEffect(() => {
-    if (!props.isSocial) fetchData();
+    if (!props.isSocial && !props.isUserMap) fetchData();
   }, [props.userLocation, props.boundsParams, props.searchType]);
 
   useEffect(() => {
     let mount = true;
     const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
-    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
+    if (
+      permlink &&
+      !props.isUserMap &&
+      (isEmpty(props.wobject) || props.wobject.object_type !== 'map')
+    ) {
       props.getObjectAction(permlink);
     }
 
-    if (props.isSocial && mount) {
+    if ((props.isSocial || props.isUserMap) && mount) {
       fetchData();
     }
 
@@ -358,6 +367,7 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  user: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -366,6 +376,7 @@ MainMap.propTypes = {
   area: PropTypes.arrayOf(),
   setArea: PropTypes.func.isRequired,
   showLocation: PropTypes.bool.isRequired,
+  isUserMap: PropTypes.bool,
   setShowLocation: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),

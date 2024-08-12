@@ -35,6 +35,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
   setSocialSearchResultLoading,
   setSocialSearchResults,
+  setUserSearchResults,
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import {
@@ -61,10 +62,11 @@ const SearchAllResult = props => {
   const accessExtend =
     (haveAccess(props.currObj, props.username, accessTypesArr[0]) && props.isAdministrator) ||
     hasDelegation(props.currObj, props.username);
-  const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
+  const showReload =
+    props.isSocial || props.isUserMap ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
-    'SearchAllResult--social': props.isSocial,
+    'SearchAllResult--social': props.isSocial || props.isUserMap,
   });
 
   const handleItemClick = wobj => {
@@ -84,6 +86,7 @@ const SearchAllResult = props => {
         return {
           list: (
             <WobjectsList
+              isUserMap={props.isUserMap}
               handleHoveredCard={props.handleHoveredCard}
               handleItemClick={handleItemClick}
             />
@@ -107,6 +110,13 @@ const SearchAllResult = props => {
             bottomPoint: props.searchMap.bottomPoint,
           })
           .then(() => props.setSocialSearchResultLoading(false));
+    } else if (props.isUserMap) {
+      props
+        .setUserSearchResults(props.user, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        })
+        .then(() => props.setSocialSearchResultLoading(false));
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -129,7 +139,7 @@ const SearchAllResult = props => {
   }, [props.activeFilters, props.searchMap, props.searchString]);
 
   useEffect(() => {
-    if (props.isSocial && !isMobile()) {
+    if ((props.isSocial || props.isUserMap) && !isMobile()) {
       props.setShowSearchResult(true);
     }
     if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
@@ -202,7 +212,7 @@ const SearchAllResult = props => {
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        {!isUsersSearch && !props.isSocial && <SearchMapFilters />}
+        {!isUsersSearch && !props.isSocial && !props.isUserMap && <SearchMapFilters />}
         <div
           className={showReload ? 'SearchAllResult__buttons-wrap' : 'SearchAllResult__edit-wrap'}
         >
@@ -259,15 +269,18 @@ SearchAllResult.propTypes = {
   showReload: PropTypes.bool,
   socialLoading: PropTypes.bool,
   authenticated: PropTypes.bool,
+  isUserMap: PropTypes.bool,
   isAdministrator: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   setEditMode: PropTypes.func,
   setSocialSearchResults: PropTypes.func,
+  setUserSearchResults: PropTypes.func,
   setSocialSearchResultLoading: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   permlink: PropTypes.string,
   username: PropTypes.string,
+  user: PropTypes.string,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -310,6 +323,7 @@ export default connect(
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
     setSocialSearchResults,
+    setUserSearchResults,
     setSocialSearchResultLoading,
     setEditMode,
   },
