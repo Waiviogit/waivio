@@ -1,4 +1,4 @@
-import { message } from 'antd';
+// import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { get } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
@@ -155,11 +155,11 @@ export const getCurrentAppSettings = () => (dispatch, getState) => {
 
       return res;
     })
-    .catch(e => {
-      message.error(e.message);
+    .catch(() =>
+      // message.error(e.message);
 
-      return dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR });
-    });
+      dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR }),
+    );
 };
 
 export const SET_CURRENT_PAGE = '@app/SET_CURRENT_PAGE';

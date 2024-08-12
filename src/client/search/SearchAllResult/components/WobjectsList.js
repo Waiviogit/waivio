@@ -17,8 +17,8 @@ import {
 import { getIsSocial } from '../../../../store/appStore/appSelectors';
 
 const WobjectsList = React.memo(props => {
-  const objects = props.isSocial ? props.socialWobjects : props.searchResult;
-  const loading = props.isSocial ? props.socialLoading : props.websiteLoading;
+  const objects = props.isSocial || props.isUserMap ? props.socialWobjects : props.searchResult;
+  const loading = props.isSocial || props.isUserMap ? props.socialLoading : props.websiteLoading;
 
   if (isEmpty(objects) && !loading) {
     return (
@@ -56,6 +56,7 @@ WobjectsList.propTypes = {
   socialWobjects: PropTypes.arrayOf(PropTypes.shape()),
   websiteLoading: PropTypes.bool,
   socialLoading: PropTypes.bool,
+  isUserMap: PropTypes.bool,
   isSocial: PropTypes.bool.isRequired,
   handleHoveredCard: PropTypes.func.isRequired,
   handleItemClick: PropTypes.func.isRequired,
