@@ -108,6 +108,10 @@ const MainMap = React.memo(props => {
       center = query.size > 0 ? center : mapView?.center || center;
       zoom = query.size > 0 ? zoom : mapView?.zoom || zoom;
     }
+    if (props.isUserMap) {
+      zoom = 3;
+      center = [45.156566468001685, -48.77765737781775];
+    }
 
     setCurrMapConfig(center, zoom);
   };
@@ -295,6 +299,7 @@ const MainMap = React.memo(props => {
 
   return (
     <MainMapView
+      isUserMap={props.isUserMap}
       hoveredCardPermlink={props.hoveredCardPermlink}
       wobject={props.wobject}
       isSocial={props.isSocial}
@@ -317,7 +322,10 @@ const MainMap = React.memo(props => {
       history={props.history}
       mapRef={mapRef}
       mapHeight={mapHeight}
-      mapControllersClassName={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
+      mapControllersClassName={classNames('WebsiteBodyControl', {
+        'WebsiteBodyControl--social': props.isSocial,
+        'WebsiteBodyControl--userMap': props.isUserMap,
+      })}
       userLocation={props.userLocation}
       location={props.location}
       wobjectsPoint={props.wobjectsPoint}

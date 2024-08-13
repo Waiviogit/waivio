@@ -1,17 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { getIsSocial, getIsWaivio } from '../../store/appStore/appSelectors';
-
+import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 import './UserMenu.less';
 
 const UserMenu = props => {
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
+  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
   const { name, 0: tab = 'posts' } = useParams();
   const showUserShop = isWaivio || isSocial;
 
@@ -52,7 +55,7 @@ const UserMenu = props => {
               </Link>
             </li>
           )}
-          {showUserShop && (
+          {showUserShop && hasFavorites && (
             <li className={getItemClasses(['map'])} role="presentation">
               <Link to={`/@${name}/map`}>
                 <FormattedMessage id="map" defaultMessage="Map" />

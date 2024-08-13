@@ -117,6 +117,7 @@ const User = props => {
 
     props.getUserAccountHistory(name);
     props.resetBreadCrumb();
+    props.setFavoriteObjectTypes(name);
 
     return () => props.resetFavorites();
   }, [name, props.authenticatedUserName]);
@@ -247,6 +248,7 @@ User.propTypes = {
   openTransfer: PropTypes.func,
   resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
+  setFavoriteObjectTypes: PropTypes.func,
   getInfoForSideBar: PropTypes.func,
   resetUsers: PropTypes.func,
   rate: PropTypes.number.isRequired,
