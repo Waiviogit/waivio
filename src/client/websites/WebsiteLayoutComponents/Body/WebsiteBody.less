@@ -138,6 +138,7 @@
     top: 82.5%;
   }
 }
+
 .WebsiteBodyControl {
   .MapOS__zoom {
     right: 0;
@@ -145,5 +146,23 @@
   }
   .MapConfigurationControl__gps {
     bottom: 0;
+  }
+}
+.WebsiteBodyControl--userMap {
+  .MapOS__zoom {
+    right: -45px;
+    top: -370px;
+    @media @small {
+      right: 0;
+      top: 0;
+    }
+  }
+  .MapConfigurationControl__gps {
+    bottom: -75px;
+    right: 285px;
+    @media @small {
+      bottom: 0;
+      right: 0;
+    }
   }
 }

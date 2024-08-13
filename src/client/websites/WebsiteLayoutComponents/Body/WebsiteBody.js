@@ -161,29 +161,28 @@ const WebsiteBody = props => {
         />
       )}
       <div className={mapClassList}>
-        {!isEmpty(props.configuration) ||
-          (isUserMap && (
-            <React.Fragment>
-              {Boolean(props.counter) &&
-                props.isAuth &&
-                (!props.isSocial || isUserMap || (props.isSocial && !props.loading)) && (
-                  <Link to="/rewards/reserved" className={reservedButtonClassList}>
-                    <FormattedMessage id="reserved" defaultMessage="Reserved" />
-                    :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
-                  </Link>
-                )}
-              <MainMap
-                isUserMap={isUserMap}
-                user={name}
-                permlink={props.permlink}
-                locale={props.locale}
-                isSocial={isUserMap ? false : props.isSocial}
-                loading={props.loading}
-                query={props.query}
-                hoveredCardPermlink={hoveredCardPermlink}
-              />
-            </React.Fragment>
-          ))}
+        {(!isEmpty(props.configuration) || isUserMap) && (
+          <React.Fragment>
+            {Boolean(props.counter) &&
+              props.isAuth &&
+              (!props.isSocial || isUserMap || (props.isSocial && !props.loading)) && (
+                <Link to="/rewards/reserved" className={reservedButtonClassList}>
+                  <FormattedMessage id="reserved" defaultMessage="Reserved" />
+                  :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
+                </Link>
+              )}
+            <MainMap
+              isUserMap={isUserMap}
+              user={name}
+              permlink={props.permlink}
+              locale={props.locale}
+              isSocial={isUserMap ? false : props.isSocial}
+              loading={props.loading}
+              query={props.query}
+              hoveredCardPermlink={hoveredCardPermlink}
+            />
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
