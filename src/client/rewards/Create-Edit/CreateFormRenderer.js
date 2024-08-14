@@ -244,12 +244,12 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignReach.name, {
             rules: fields.campaignReach.rules,
             validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
-            initialValue: getFieldValue('type') === 'mentions' ? 'global' : reachType,
+            initialValue: reachType,
           })(
             <Select
               placeholder={fields.campaignReach.select}
               onChange={handlers.handleSelectReach}
-              disabled={disabled || getFieldValue('type') === 'mentions'}
+              disabled={disabled}
             >
               {fields.campaignReach.options.map(opt => (
                 <Option key={opt.value} value={opt.value}>
