@@ -94,38 +94,42 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
+      const lastPerm = getLastPermlinksFromHash(linkUrl.hash)
       if (isPage) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
+
         if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
-          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
-        } else {
-          let modifiedUrl =
-            linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
-              ? linkUrl.pathname.slice(0, -5)?.replace('/object/', '/checklist/')
-              : linkUrl.pathname?.replace('/object/', '/checklist/');
-          if (linkUrl.pathname.endsWith('/webpage')) {
-            modifiedUrl = linkUrl.pathname;
+          if (location?.hash && !linkUrl.pathname.endsWith('/webpage'))
+            href = href + location?.hash;
+
+          if (linkUrl.hash) {
+            if (href?.includes('#')) {
+              if (!href?.includes(lastPerm)) {
+                href = href + `/${lastPerm}`;
+              }
+            } else {
+              href += linkUrl.hash;
+            }
           }
-
-          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : modifiedUrl;
+        } else {
+          const withCrumbs = href?.includes('breadcrumbs');
+          if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
+            href = `${href}?breadcrumbs=${location?.hash.replace('#', '')}`;
+          }
+          console.log(location);
+          if (linkUrl.hash) {
+            if (withCrumbs) {
+              if (!href?.includes(lastPerm)) {
+                href = href + `/${lastPerm}`;
+              }
+            } else {
+              href = `${href}?breadcrumbs=${location.params.name}${linkUrl.hash.replace('#', '')}`;
+            }
+          }
         }
 
-        if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-          href = href + location?.hash;
-        }
-
-        if (linkUrl.hash)
-          href = href?.includes('#')
-            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-            : href + linkUrl.hash;
-      } else {
-        href = appUrl + linkUrl.pathname;
-        if (linkUrl.hash)
-          href = href?.includes('#')
-            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-            : href + linkUrl.hash;
+        attys.target = '';
       }
-
-      attys.target = '';
     }
     if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
