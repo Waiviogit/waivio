@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
@@ -55,6 +55,7 @@ import {
   setFavoriteObjectTypes,
 } from '../../store/favoritesStore/favoritesActions';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 
 const getDescriptions = (username, siteName) => ({
   activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
@@ -95,6 +96,8 @@ const User = props => {
     siteName,
   } = props;
   const { 0: tab, name } = useParams();
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
+  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
 
   useEffect(
     () => () => () => {
@@ -207,8 +210,8 @@ const User = props => {
               isGuest={isGuest}
             />
           )}
-          <div className={isMapPage ? '' : 'shifted'}>
-            <div className={isMapPage ? '' : 'feed-layout container'}>
+          <div className={isMapPage && hasFavorites ? '' : 'shifted'}>
+            <div className={isMapPage && hasFavorites ? '' : 'feed-layout container'}>
               {!isOpenWalletTable && (
                 <React.Fragment>
                   <Affix className="leftContainer leftContainer__user" stickPosition={72}>

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, isNil } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {
   resetWebsiteFilters,
   setFilterFromQuery,
@@ -51,11 +51,15 @@ import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
 import { setBoundsParams, setMapData } from '../../../../store/mapStore/mapActions';
 import './WebsiteBody.less';
+import { setFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesActions';
+import { getFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesSelectors';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const { name } = useParams();
   const { canonicalUrl } = useSeoInfo();
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
+  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
@@ -93,13 +97,16 @@ const WebsiteBody = props => {
   useEffect(() => () => props.setMapData({ center: [], zoom: 8 }), []);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
-  const currentLogo = props.logo || getObjectAvatar(aboutObject);
-  const description = get(aboutObject, 'description', '');
+  const currentLogo = isUserMap ? `${name} map` : props.logo || getObjectAvatar(aboutObject);
+  const description = isUserMap
+    ? `Dive into a visual journey with ${name}'s Map tab, where ${name}'s favorite items come to life. See all the locations of ${name}'s handpicked favorites in one interactive map, making it easier to explore and discover new experiences.`
+    : get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
   const title = props.isSocial
     ? getObjectName(props.currObj)
     : get(aboutObject, 'title', '') || objName;
   const websiteTitle = title ? `${objName} - ${title}` : objName;
+  const mapTitle = isUserMap ? `${name} map` : websiteTitle;
 
   const reloadSearchList = () => props.setShowReload(false);
 
@@ -122,13 +129,23 @@ const WebsiteBody = props => {
     }
   };
 
+  if (isUserMap && !hasFavorites) {
+    return (
+      <div role="presentation" className="feed_empty justify-center">
+        <h3>
+          <FormattedMessage id="this_map_is_empty" defaultMessage="This map is empty" />
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div className={bodyClassList}>
       <Helmet>
-        <title>{props.isSocial ? title : websiteTitle}</title>
+        <title>{props.isSocial ? title : mapTitle}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
+        <meta property="og:title" content={isUserMap ? `${name} map` : title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={currentLogo} />
@@ -137,11 +154,11 @@ const WebsiteBody = props => {
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={description} />
         <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
-        <meta name="twitter:site" content={`@${objName}`} />
-        <meta name="twitter:title" content={title} />
+        <meta name="twitter:site" content={isUserMap ? `${name} map` : `@${objName}`} />
+        <meta name="twitter:title" content={isUserMap ? `${name} map` : title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={currentLogo} />
-        <meta property="og:site_name" content={objName} />
+        <meta property="og:site_name" content={isUserMap ? `${name} map` : objName} />
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
@@ -269,5 +286,6 @@ export default connect(
     getCoordinates,
     setBoundsParams,
     setMapData,
+    setFavoriteObjectTypes,
   },
 )(withRouter(WebsiteBody));

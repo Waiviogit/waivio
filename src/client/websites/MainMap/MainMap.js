@@ -109,8 +109,8 @@ const MainMap = React.memo(props => {
       zoom = query.size > 0 ? zoom : mapView?.zoom || zoom;
     }
     if (props.isUserMap) {
-      zoom = 3;
-      center = [45.156566468001685, -48.77765737781775];
+      zoom = query.size > 0 ? +query.get('zoom') : 3;
+      center = query.size > 0 ? queryCenter : [45.156566468001685, -48.77765737781775];
     }
 
     setCurrMapConfig(center, zoom);
@@ -184,6 +184,7 @@ const MainMap = React.memo(props => {
     if (
       (mapRef.current && query.get('showPanel')) ||
       (props.isSocial && mapRef.current) ||
+      (props.isUserMap && mapRef.current) ||
       (mapRef.current && !props.isSocial && props.history.location.pathname === '/')
     ) {
       const bounce = mapRef.current.getBounds();
@@ -199,7 +200,7 @@ const MainMap = React.memo(props => {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (!props.isSocial || !props.isUserMap) {
+    if (!props.isSocial && !props.isUserMap) {
       if (props.isShowResult) {
         handleSetMapForSearch();
       } else {
