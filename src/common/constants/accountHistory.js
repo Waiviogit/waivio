@@ -52,6 +52,7 @@ export const BENEFICIARY_REWARD = 'comments_beneficiaryReward';
 export const MINING_LOTTERY = 'mining_lottery';
 export const AIRDROP = 'airdrops_newAirdrop';
 export const SWAP_TOKENS = 'marketpools_swapTokens';
+export const CHECK_PENDING_DTFS = 'tokenfunds_checkPendingDtfs';
 
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';

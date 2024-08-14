@@ -30,6 +30,7 @@ import WithdawCard from '../../TransfersCards/WithdrawCard';
 import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard/DelegateInstructionCard';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
 import GuestWithdawCard from '../../TransfersCards/GuestWithdrawCard';
+import CheckPendingDtfs from '../../TransfersCards/CheckPendingDtfsCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -189,6 +190,15 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
           symbolFrom={transaction.symbolIn}
           quantityFrom={transaction.symbolInQuantity}
           walletType={walletType}
+        />
+      );
+
+    case 'tokenfunds_checkPendingDtfs':
+      return (
+        <CheckPendingDtfs
+          memo={transaction.memo}
+          amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
+          timestamp={transaction.timestamp}
         />
       );
 
