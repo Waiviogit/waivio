@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty, isArray } from 'lodash';
+import { isEmpty, isArray, has } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
@@ -48,6 +48,7 @@ const DetailsModal = ({
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
   const [requiredObject, setRequiredObject] = useState({});
+  const [object, setObject] = useState({});
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
@@ -63,6 +64,9 @@ const DetailsModal = ({
     : requiredObject.name === objects?.replace('@', '');
 
   useEffect(() => {
+    if (!has(proposition, 'object')) {
+      getObjectInfo([objects], locale).then(res => setObject(res.wobjects[0]));
+    }
     if (stringRequiredObj) {
       if (proposition?.requiredObject.includes('@')) {
         getUserAccount(proposition?.requiredObject.replace('@', '')).then(res => {
@@ -199,7 +203,7 @@ const DetailsModal = ({
         <RewardsHeader proposition={proposition} />
       </div>
       <DetailsModalBody
-        proposition={{ ...proposition, requiredObject }}
+        proposition={{ ...proposition, requiredObject, object }}
         requirements={requirements}
         agreementObjects={agreementObjects}
         withoutSecondary={withoutSecondary}
