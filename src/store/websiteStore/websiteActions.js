@@ -632,10 +632,22 @@ export const setSocialSearchResults = (searchString, box = {}, limit = 100) => (
   });
 };
 
+export const setUserSearchResults = (account, box = {}, limit = 100) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: SET_SOCIAL_SEARCH_RESULT.ACTION,
+    payload: ApiClient.getUserFavoriteObjectsForMap(userName, account, box, limit),
+  });
+};
+
 export const getWebsiteObjWithCoordinates = (
   isSocial = false,
   searchString,
   box = {},
+  isUserMap,
+  user,
   limit = 70,
   abortController,
 ) => (dispatch, getState) => {
@@ -657,6 +669,17 @@ export const getWebsiteObjWithCoordinates = (
   //   dispatch(setSocialSearchResults(searchString, box, 100));
   // }
 
+  const searchObjects = () =>
+    isUserMap
+      ? ApiClient.getUserFavoriteObjectsForMap(userName, user, box, limit).then(r => {
+          if (!r.message) {
+            return { wobjects: r.result };
+          }
+
+          return { wobjects: [] };
+        })
+      : ApiClient.searchObjects(searchString, objType, false, limit, locale, body, abortController);
+
   if (!searchString) body.mapMarkers = true;
   const getObjects = () =>
     isSocial
@@ -675,9 +698,9 @@ export const getWebsiteObjWithCoordinates = (
 
           return { wobjects: [] };
         })
-      : ApiClient.searchObjects(searchString, objType, false, limit, locale, body, abortController);
+      : searchObjects();
 
-  if (userType) {
+  if (userType && !isUserMap) {
     return dispatch({
       type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
       payload: ApiClient.getPostsForMap({

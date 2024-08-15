@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
@@ -55,6 +55,7 @@ import {
   setFavoriteObjectTypes,
 } from '../../store/favoritesStore/favoritesActions';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 
 const getDescriptions = (username, siteName) => ({
   activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
@@ -66,6 +67,7 @@ const getDescriptions = (username, siteName) => ({
   'following-objects': `Discover the objects that ${username} follows, reflecting personal interests, passions, and curiosities. Browse the selection and find inspiration in ${username}'s choices.`,
   'expertise-hashtags': `Discover ${username}'s expertise in trending hashtags. Explore the topics and conversations that ${username} excels in, and engage with the community of experts.`,
   'expertise-objects': `View ${username}'s specialized expertise in various objects. Learn from a master, engage with in-depth content, and connect with a community passionate about the same subjects.`,
+  map: `Dive into a visual journey with ${username}'s Map tab, where ${username}'s favorite items come to life. See all the locations of ${username}'s handpicked favorites in one interactive map, making it easier to explore and discover new experiences.`,
 });
 
 const getTitle = tab => {
@@ -95,6 +97,8 @@ const User = props => {
     siteName,
   } = props;
   const { 0: tab, name } = useParams();
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
+  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
 
   useEffect(
     () => () => () => {
@@ -117,6 +121,7 @@ const User = props => {
 
     props.getUserAccountHistory(name);
     props.resetBreadCrumb();
+    props.setFavoriteObjectTypes(name);
 
     return () => props.resetFavorites();
   }, [name, props.authenticatedUserName]);
@@ -206,8 +211,8 @@ const User = props => {
               isGuest={isGuest}
             />
           )}
-          <div className="shifted">
-            <div className={'feed-layout container'}>
+          <div className={isMapPage && hasFavorites ? '' : 'shifted'}>
+            <div className={isMapPage && hasFavorites ? '' : 'feed-layout container'}>
               {!isOpenWalletTable && (
                 <React.Fragment>
                   <Affix className="leftContainer leftContainer__user" stickPosition={72}>
@@ -247,6 +252,7 @@ User.propTypes = {
   openTransfer: PropTypes.func,
   resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
+  setFavoriteObjectTypes: PropTypes.func,
   getInfoForSideBar: PropTypes.func,
   resetUsers: PropTypes.func,
   rate: PropTypes.number.isRequired,

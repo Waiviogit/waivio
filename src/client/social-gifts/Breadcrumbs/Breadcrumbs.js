@@ -112,34 +112,44 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   return (
     <div className={'flex '}>
       <div className="Breadcrumbs">
-        {breadcrumbs?.map((crumb, index) => (
-          <React.Fragment key={crumb.author_permlink}>
-            {inProduct && match.params.name === crumb.author_permlink ? (
-              <span> {getTruncatedTitle(getObjectName(crumb))}</span>
-            ) : (
+        {breadcrumbs?.map((crumb, index) => {
+          let comp;
+
+          if (inProduct && match.params.name === crumb.author_permlink)
+            comp = <span> {getTruncatedTitle(getObjectName(crumb))}</span>;
+          else {
+            const crumbs = createQueryBreadcrumbs(
+              crumb.author_permlink,
+              linkList,
+              match.params.name,
+            );
+
+            comp = (
               <Link
                 to={{
                   pathname: `/checklist/${crumb.author_permlink}`,
                   search:
-                    match.params.name === crumb.author_permlink
+                    match.params.name === crumb.author_permlink || !crumbs
                       ? ''
-                      : `breadcrumbs=${createQueryBreadcrumbs(
-                          crumb.author_permlink,
-                          linkList,
-                          match.params.name,
-                        )}`,
+                      : `breadcrumbs=${crumbs}`,
                 }}
               >
                 {getTruncatedTitle(getObjectName(crumb))}
               </Link>
-            )}
-            {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
-              <Icon type="right" />
-            ) : (
-              ''
-            )}
-          </React.Fragment>
-        ))}
+            );
+          }
+
+          return (
+            <React.Fragment key={crumb.author_permlink}>
+              {comp}
+              {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
+                <Icon type="right" />
+              ) : (
+                ''
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
       {accessExtend && authenticated && editObjTypes && (
         <div className="Breadcrumbs__edit-container">

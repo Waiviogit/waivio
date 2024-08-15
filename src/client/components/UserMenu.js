@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { getIsSocial, getIsWaivio } from '../../store/appStore/appSelectors';
-
 import './UserMenu.less';
 
 const UserMenu = props => {
@@ -52,13 +51,18 @@ const UserMenu = props => {
               </Link>
             </li>
           )}
-          {/* {showUserShop && ( */}
-          {/*  <li className={getItemClasses(['map'])} role="presentation"> */}
-          {/*    <Link to={`/@${name}/map`}> */}
-          {/*      <FormattedMessage id="map" defaultMessage="Map" /> */}
-          {/*    </Link> */}
-          {/*  </li> */}
-          {/* )} */}
+          {showUserShop && (
+            <li className={getItemClasses(['map'])} role="presentation">
+              <Link to={`/@${name}/map`}>
+                <FormattedMessage id="map" defaultMessage="Map" />
+              </Link>
+            </li>
+          )}
+          <li className={getItemClasses(['transfers'])}>
+            <Link to={`/@${name}/transfers?type=WAIV`}>
+              <FormattedMessage id="wallet" defaultMessage="Wallet" />
+            </Link>
+          </li>
           <li
             className={getItemClasses(['followers', 'following', 'following-objects'])}
             role="presentation"
@@ -71,11 +75,6 @@ const UserMenu = props => {
           <li className={getItemClasses(['expertise-hashtags', 'expertise-objects'])}>
             <Link to={`/@${name}/expertise-hashtags`}>
               <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
-            </Link>
-          </li>
-          <li className={getItemClasses(['transfers'])}>
-            <Link to={`/@${name}/transfers?type=WAIV`}>
-              <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </Link>
           </li>
           <li className={getItemClasses(['about'])} data-key="about">

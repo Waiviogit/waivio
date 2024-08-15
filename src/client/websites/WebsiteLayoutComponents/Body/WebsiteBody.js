@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { isEmpty, get } from 'lodash';
+import { isEmpty, get, isNil } from 'lodash';
 import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {
   resetWebsiteFilters,
   setFilterFromQuery,
@@ -50,10 +51,15 @@ import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
 import { setBoundsParams, setMapData } from '../../../../store/mapStore/mapActions';
 import './WebsiteBody.less';
+import { setFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesActions';
+import { getFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesSelectors';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const { name } = useParams();
   const { canonicalUrl } = useSeoInfo();
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
+  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
@@ -61,6 +67,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
+  const isUserMap = props.history.location.pathname?.includes(`/@`);
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -119,32 +126,46 @@ const WebsiteBody = props => {
     }
   };
 
+  if (isUserMap && !hasFavorites) {
+    return (
+      <div role="presentation" className="feed_empty justify-center">
+        <h3>
+          <FormattedMessage id="this_map_is_empty" defaultMessage="This map is empty" />
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div className={bodyClassList}>
-      <Helmet>
-        <title>{props.isSocial ? title : websiteTitle}</title>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={currentLogo} />
-        <meta property="og:image:url" content={currentLogo} />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={description} />
-        <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
-        <meta name="twitter:site" content={`@${objName}`} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" property="twitter:image" content={currentLogo} />
-        <meta property="og:site_name" content={objName} />
-        <link rel="image_src" href={currentLogo} />
-        <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
-      </Helmet>
+      {!isUserMap && (
+        <Helmet>
+          <title>{props.isSocial ? title : websiteTitle}</title>
+          <link rel="canonical" href={canonicalUrl} />
+          <meta name="description" content={description} />
+          <meta property="og:title" content={title} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={canonicalUrl} />
+          <meta property="og:image" content={currentLogo} />
+          <meta property="og:image:url" content={currentLogo} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
+          <meta property="og:description" content={description} />
+          <meta name="twitter:card" content={currentLogo ? 'summary_large_image' : 'summary'} />
+          <meta name="twitter:site" content={`@${objName}`} />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" property="twitter:image" content={currentLogo} />
+          <meta property="og:site_name" content={objName} />
+          <link rel="image_src" href={currentLogo} />
+          <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
+        </Helmet>
+      )}
       {((props.isSocial && !props.loading) || !props.isSocial) && (
         <SearchAllResult
-          isSocial={props.isSocial}
+          isSocial={isUserMap ? false : props.isSocial}
+          isUserMap={isUserMap}
+          user={name}
           permlink={props.permlink}
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
@@ -156,20 +177,22 @@ const WebsiteBody = props => {
         />
       )}
       <div className={mapClassList}>
-        {!isEmpty(props.configuration) && (
+        {(!isEmpty(props.configuration) || isUserMap) && (
           <React.Fragment>
             {Boolean(props.counter) &&
               props.isAuth &&
-              (!props.isSocial || (props.isSocial && !props.loading)) && (
+              (!props.isSocial || isUserMap || (props.isSocial && !props.loading)) && (
                 <Link to="/rewards/reserved" className={reservedButtonClassList}>
                   <FormattedMessage id="reserved" defaultMessage="Reserved" />
                   :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
                 </Link>
               )}
             <MainMap
+              isUserMap={isUserMap}
+              user={name}
               permlink={props.permlink}
               locale={props.locale}
-              isSocial={props.isSocial}
+              isSocial={isUserMap ? false : props.isSocial}
               loading={props.loading}
               query={props.query}
               hoveredCardPermlink={hoveredCardPermlink}
@@ -262,5 +285,6 @@ export default connect(
     getCoordinates,
     setBoundsParams,
     setMapData,
+    setFavoriteObjectTypes,
   },
 )(withRouter(WebsiteBody));

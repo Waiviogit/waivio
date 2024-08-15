@@ -108,6 +108,10 @@ const MainMap = React.memo(props => {
       center = query.size > 0 ? center : mapView?.center || center;
       zoom = query.size > 0 ? zoom : mapView?.zoom || zoom;
     }
+    if (props.isUserMap) {
+      zoom = query.size > 0 ? +query.get('zoom') : 3;
+      center = query.size > 0 ? queryCenter : [45.156566468001685, -48.77765737781775];
+    }
 
     setCurrMapConfig(center, zoom);
   };
@@ -147,10 +151,13 @@ const MainMap = React.memo(props => {
         props.mapData.center,
       );
 
-      if (props.isSocial && props.socialLoading) props.setShowReload(false);
-      if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
+      if ((props.isSocial || props.isUserMap) && props.socialLoading) props.setShowReload(false);
+      if (
+        (distance > 20 && !props.showReloadButton) ||
+        ((props.isSocial || props.isUserMap) && !props.socialLoading)
+      )
         props.setShowReload(true);
-      if (!distance && !props.isSocial) props.setShowReload(false);
+      if (!distance && !props.isSocial && !props.isUserMap) props.setShowReload(false);
     }
   }, [dataToChange]);
 
@@ -177,12 +184,17 @@ const MainMap = React.memo(props => {
     if (
       (mapRef.current && query.get('showPanel')) ||
       (props.isSocial && mapRef.current) ||
+      (props.isUserMap && mapRef.current) ||
       (mapRef.current && !props.isSocial && props.history.location.pathname === '/')
     ) {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
-        if ((!isMobile && props.isSocial) || !props.isSocial) props.setShowSearchResult(true);
+        if (
+          (!isMobile && (props.isSocial || props.isUserMap)) ||
+          (!props.isSocial && !props.isUserMap)
+        )
+          props.setShowSearchResult(true);
         props.setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
@@ -192,7 +204,7 @@ const MainMap = React.memo(props => {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (!props.isSocial) {
+    if (!props.isSocial && !props.isUserMap) {
       if (props.isShowResult) {
         handleSetMapForSearch();
       } else {
@@ -235,6 +247,8 @@ const MainMap = React.memo(props => {
             props.isSocial,
             searchString,
             { topPoint, bottomPoint },
+            props.isUserMap,
+            props.user,
             100,
           )
           .then(res => {
@@ -261,18 +275,22 @@ const MainMap = React.memo(props => {
   };
 
   useEffect(() => {
-    if (!props.isSocial) fetchData();
+    if (!props.isSocial && !props.isUserMap) fetchData();
   }, [props.userLocation, props.boundsParams, props.searchType]);
 
   useEffect(() => {
     let mount = true;
     const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
-    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
+    if (
+      permlink &&
+      !props.isUserMap &&
+      (isEmpty(props.wobject) || props.wobject.object_type !== 'map')
+    ) {
       props.getObjectAction(permlink);
     }
 
-    if (props.isSocial && mount) {
+    if ((props.isSocial || props.isUserMap) && mount) {
       fetchData();
     }
 
@@ -286,6 +304,7 @@ const MainMap = React.memo(props => {
 
   return (
     <MainMapView
+      isUserMap={props.isUserMap}
       hoveredCardPermlink={props.hoveredCardPermlink}
       wobject={props.wobject}
       isSocial={props.isSocial}
@@ -308,7 +327,10 @@ const MainMap = React.memo(props => {
       history={props.history}
       mapRef={mapRef}
       mapHeight={mapHeight}
-      mapControllersClassName={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
+      mapControllersClassName={classNames('WebsiteBodyControl', {
+        'WebsiteBodyControl--social': props.isSocial,
+        'WebsiteBodyControl--userMap': props.isUserMap,
+      })}
       userLocation={props.userLocation}
       location={props.location}
       wobjectsPoint={props.wobjectsPoint}
@@ -358,6 +380,7 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  user: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -366,6 +389,7 @@ MainMap.propTypes = {
   area: PropTypes.arrayOf(),
   setArea: PropTypes.func.isRequired,
   showLocation: PropTypes.bool.isRequired,
+  isUserMap: PropTypes.bool,
   setShowLocation: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+import { isEmpty, isArray } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
@@ -57,9 +57,10 @@ const DetailsModal = ({
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
   const disable = Object.values(requirements).some(requirement => !requirement);
+  const objects = isArray(proposition?.objects) ? proposition?.objects[0] : proposition?.objects;
   const withoutSecondary = requiredObject.author_permlink
     ? requiredObject.author_permlink === proposition?.object?.author_permlink
-    : requiredObject.name === proposition?.objects?.replace('@', '');
+    : requiredObject.name === objects?.replace('@', '');
 
   useEffect(() => {
     if (stringRequiredObj) {
@@ -107,7 +108,7 @@ const DetailsModal = ({
               ? proposition?.object?.url
               : getObjectUrl(proposition?.object?.author_permlink)
           })`
-        : `&user=[${proposition?.objects.replace('@', '')}](${proposition?.objects})`;
+        : `&user=[${objects.replace('@', '')}](${proposition?.objects})`;
     }
 
     search += `&campaign=${proposition._id}&type=${proposition?.type}&secondaryItem=${proposition
