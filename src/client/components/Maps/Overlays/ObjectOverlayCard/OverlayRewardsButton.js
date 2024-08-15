@@ -58,7 +58,7 @@ const OverlayRewardsButton = props => {
     if (isSocial || isWaivio) {
       const pathname = history.location.pathname.includes('/rewards/')
         ? `${history.location.pathname}/eligible`
-        : `/rewards/${campaign.reach?.[0] || 'global'}/all`;
+        : `/rewards/${campaign.reach?.[0] || 'global'}/all/${props.wObject.author_permlink}`;
 
       history.push(pathname);
     } else {
