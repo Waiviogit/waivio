@@ -160,11 +160,7 @@ class MapObjectInfo extends React.Component {
 
   openModal = () => {
     if (this.props.isWaivio) {
-      if (this.props.isSocial && !isEmpty(this.props.mapObjPermlink)) {
-        this.props.history.push(
-          `/object/${this.props.mapObjPermlink}?center=${this.state.center}&zoom=${this.state.zoom}&permlink=${this.props.selectedObjPermlink}`,
-        );
-      } else {
+      if (this.props.isSocial && isEmpty(this.props.mapObjPermlink)) {
         this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
       }
     } else {
@@ -182,30 +178,51 @@ class MapObjectInfo extends React.Component {
       </div>
     </div>
   );
+
+  onMapClick = () => {
+    if (this.props.isSocial && !isEmpty(this.props.mapObjPermlink)) {
+      this.props.history.push(
+        `/object/${this.props.mapObjPermlink}?center=${this.state.center}&zoom=${this.state.zoom}&permlink=${this.props.selectedObjPermlink}`,
+      );
+    }
+  };
+
   render() {
     const { mapHeigth, isFullscreenMode, wobject, isSocial } = this.props;
     const { center, infoboxData, zoom } = this.state;
     const markersLayout = this.getMarkers(wobject);
+    const hideButtons = this.props.isSocial && !isEmpty(this.props.mapObjPermlink);
 
     return center ? (
-      <div className="MapOS">
-        <Map provider={mapProvider} center={center} zoom={zoom} height={mapHeigth} animate>
+      <div className={hideButtons ? 'MapOS--cursor-pointer' : 'MapOS'}>
+        <Map
+          onClick={this.onMapClick}
+          provider={mapProvider}
+          center={center}
+          zoom={zoom}
+          height={mapHeigth}
+          animate
+        >
           {markersLayout}
           {infoboxData && this.getOverlayLayout()}
         </Map>
-        {this.zoomButtonsLayout()}
-        <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
-          <div className={isSocial ? 'MapOS__locateGPS-button-container' : ''}>
-            <img
-              src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
-              alt="aim"
-              className="MapOS__locateGPS-button"
-            />
+        {!hideButtons && this.zoomButtonsLayout()}
+        {!hideButtons && (
+          <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
+            <div className={isSocial ? 'MapOS__locateGPS-button-container' : ''}>
+              <img
+                src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
+                alt="aim"
+                className="MapOS__locateGPS-button"
+              />
+            </div>
           </div>
-        </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
-          <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
-        </div>
+        )}
+        {!hideButtons && (
+          <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
+            <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
+          </div>
+        )}
         {isFullscreenMode && (
           <Modal
             title={null}
