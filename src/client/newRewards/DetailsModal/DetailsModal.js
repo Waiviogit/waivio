@@ -48,7 +48,7 @@ const DetailsModal = ({
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
   const [requiredObject, setRequiredObject] = useState({});
-  const [object, setObject] = useState({});
+  const [object, setObject] = useState(proposition?.object || {});
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
