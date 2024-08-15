@@ -67,6 +67,7 @@ const getDescriptions = (username, siteName) => ({
   'following-objects': `Discover the objects that ${username} follows, reflecting personal interests, passions, and curiosities. Browse the selection and find inspiration in ${username}'s choices.`,
   'expertise-hashtags': `Discover ${username}'s expertise in trending hashtags. Explore the topics and conversations that ${username} excels in, and engage with the community of experts.`,
   'expertise-objects': `View ${username}'s specialized expertise in various objects. Learn from a master, engage with in-depth content, and connect with a community passionate about the same subjects.`,
+  map: `Dive into a visual journey with ${username}'s Map tab, where ${username}'s favorite items come to life. See all the locations of ${username}'s handpicked favorites in one interactive map, making it easier to explore and discover new experiences.`,
 });
 
 const getTitle = tab => {

@@ -190,7 +190,11 @@ const MainMap = React.memo(props => {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
-        if ((!isMobile && props.isSocial) || !props.isSocial) props.setShowSearchResult(true);
+        if (
+          (!isMobile && (props.isSocial || props.isUserMap)) ||
+          (!props.isSocial && !props.isUserMap)
+        )
+          props.setShowSearchResult(true);
         props.setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
