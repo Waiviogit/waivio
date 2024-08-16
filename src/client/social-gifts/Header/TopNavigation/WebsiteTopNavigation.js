@@ -28,7 +28,7 @@ const userNav = (user, intl) => [
   },
   {
     name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
-    link: '/checklist/ljc-legal',
+    link: '/object/ljc-legal',
   },
 ];
 

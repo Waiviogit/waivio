@@ -181,7 +181,7 @@ const Body = props => {
   }, []);
 
   const location = useLocation();
-  console.log(props.appUrl);
+
   const options = {
     appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,

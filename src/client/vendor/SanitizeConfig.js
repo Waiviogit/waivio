@@ -3,6 +3,7 @@ import url from 'url';
 import { endsWith } from 'lodash';
 import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
+import { useParams } from 'react-router';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -71,6 +72,7 @@ export const allowedTags = `
   .split(/,\s*/);
 
 export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
+  const { name } = useParams();
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -82,7 +84,6 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
       host: linkUrl.host,
       hash: linkUrl.hash,
     });
-
     const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
@@ -94,7 +95,7 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
-      const lastPerm = getLastPermlinksFromHash(linkUrl.hash)
+      const lastPerm = getLastPermlinksFromHash(linkUrl.hash);
       if (isPage) {
         href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
 
@@ -114,16 +115,16 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
         } else {
           const withCrumbs = href?.includes('breadcrumbs');
           if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-            href = `${href}?breadcrumbs=${location?.hash.replace('#', '')}`;
+            href = `${href}?breadcrumbs=${name}/${location?.hash.replace('#', '')}`;
           }
-          console.log(location);
+
           if (linkUrl.hash) {
             if (withCrumbs) {
               if (!href?.includes(lastPerm)) {
                 href = href + `/${lastPerm}`;
               }
             } else {
-              href = `${href}?breadcrumbs=${location.params.name}${linkUrl.hash.replace('#', '')}`;
+              href = `${href}?breadcrumbs=${name}/${linkUrl.hash.replace('#', '')}`;
             }
           }
         }
