@@ -68,7 +68,6 @@ const createLink = i => {
       return `/object-shop/${i?.author_permlink}`;
     case 'list':
     case 'page':
-      return `/checklist/${i?.author_permlink}`;
     case 'business':
     case 'link':
     case 'product':
@@ -116,7 +115,7 @@ const SocialWrapper = props => {
                   },
                   {
                     name: 'Legal',
-                    link: '/checklist/ljc-legal',
+                    link: '/object/ljc-legal',
                     permlink: 'ljc-legal',
                     object_type: 'list',
                   },
@@ -161,7 +160,7 @@ const SocialWrapper = props => {
                   ...buttonList,
                   {
                     name: 'Legal',
-                    link: '/checklist/ljc-legal',
+                    link: '/object/ljc-legal',
                     permlink: 'ljc-legal',
                     object_type: 'list',
                   },
@@ -353,7 +352,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                       },
                       {
                         name: 'Legal',
-                        link: '/checklist/ljc-legal',
+                        link: '/object/ljc-legal',
                         permlink: 'ljc-legal',
                         object_type: 'list',
                       },
@@ -459,7 +458,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     ...buttonList,
                     {
                       name: 'Legal',
-                      link: '/checklist/ljc-legal',
+                      link: '/object/ljc-legal',
                       permlink: 'ljc-legal',
                       object_type: 'list',
                     },
