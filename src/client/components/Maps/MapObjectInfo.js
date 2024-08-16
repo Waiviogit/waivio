@@ -64,7 +64,15 @@ class MapObjectInfo extends React.Component {
     const anchor = [+lat, +lng];
 
     return lat && lng ? (
-      <Marker width={40} anchor={anchor} onClick={() => this.handleMarkerClick(wobject, anchor)} />
+      <Marker
+        width={40}
+        anchor={anchor}
+        onClick={() =>
+          this.props.isSocial && !isEmpty(this.props.mapObjPermlink)
+            ? this.onMapClick()
+            : this.handleMarkerClick(wobject, anchor)
+        }
+      />
     ) : null;
   };
 
