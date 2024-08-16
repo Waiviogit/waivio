@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, reduce, round } from 'lodash';
+import { isEmpty, map, get, reduce, round, has } from 'lodash';
 import moment from 'moment';
 import { MESSAGES, GUIDE_HISTORY, HISTORY } from '../../common/constants/rewards';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
@@ -274,6 +274,11 @@ export const getNewDetailsBody = async (propos, parentObj) => {
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
   const receiptPhoto = getReceiptPhoto(proposition);
+  const defaultObj = {
+    author_permlink: proposition?.objects?.[0],
+    defaultShowLink: proposition?.objects?.[0],
+  };
+  const object = has(proposition, 'object') ? proposition.object : defaultObj;
 
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
@@ -281,11 +286,11 @@ export const getNewDetailsBody = async (propos, parentObj) => {
 <ul><li>Minimum Waivio expertise: ${proposition?.userRequirements?.minExpertise};</li><li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li><li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li></ul>`;
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition?.guideName}'>${proposition?.guideName}</a> or referenced accounts.</li></ul>`;
   const linkToFollowingObjects =
-    proposition.object.author_permlink !== parent.author_permlink
-      ? `<li>Link to <a href="${proposition.object.defaultShowLink}">${proposedWobjName}</a>;</li>`
+    object.author_permlink !== parent.author_permlink
+      ? `<li>Link to <a href="${object.defaultShowLink}">${proposedWobjName}</a>;</li>`
       : '';
   const proposedWobj = proposedWobjName
-    ? `of <a href='${proposition.object.defaultShowLink}'>${proposedWobjName}</a>`
+    ? `of <a href='${object.defaultShowLink}'>${proposedWobjName}</a>`
     : '';
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>

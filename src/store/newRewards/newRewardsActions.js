@@ -28,7 +28,7 @@ export const reserveProposition = (proposition, username) => async (
   { busyAPI, steemConnectAPI },
 ) => {
   const permlink = `reserve-${generatePermlink()}`;
-  const dish = proposition?.object;
+  const dish = proposition?.object || {};
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = proposition?.requiredObject;
@@ -48,7 +48,7 @@ export const reserveProposition = (proposition, username) => async (
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
         proposition.payoutToken
       } for a period of ${proposition.countReservationDays} days to write a review of <a href='${
-        dish.defaultShowLink
+        dish?.defaultShowLink
       }'>${proposedWobjName}</a>${
         primaryObject.author_permlink !== proposedAuthorPermlink
           ? `, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(primaryObject)}</a>`
