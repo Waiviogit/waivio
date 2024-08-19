@@ -60,7 +60,8 @@ const DetailsModal = ({
   const disable = Object.values(requirements).some(requirement => !requirement);
   const objects = isArray(proposition?.objects) ? proposition?.objects[0] : proposition?.objects;
   const withoutSecondary = requiredObject.author_permlink
-    ? requiredObject.author_permlink === proposition?.object?.author_permlink
+    ? requiredObject.author_permlink === proposition?.object?.author_permlink ||
+      requiredObject.author_permlink === object?.author_permlink
     : requiredObject.name === objects?.replace('@', '');
 
   useEffect(() => {
@@ -106,17 +107,16 @@ const DetailsModal = ({
       : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;
 
     if (!withoutSecondary) {
-      search += proposition?.object?.author_permlink
-        ? `&object=[${getObjectName(proposition.object)}](${
-            proposition?.object.object_type === 'link'
-              ? proposition?.object?.url
-              : getObjectUrl(proposition?.object?.author_permlink)
+      search += object?.author_permlink
+        ? `&object=[${getObjectName(object)}](${
+            object.object_type === 'link' ? object?.url : getObjectUrl(object?.author_permlink)
           })`
-        : `&user=[${objects.replace('@', '')}](${proposition?.objects})`;
+        : `&user=[${objects.replace('@', '')}](${objects})`;
     }
 
-    search += `&campaign=${proposition._id}&type=${proposition?.type}&secondaryItem=${proposition
-      ?.object?.author_permlink || proposition?.objects}`;
+    search += `&campaign=${proposition._id}&type=${
+      proposition?.type
+    }&secondaryItem=${object?.author_permlink || proposition?.objects}`;
 
     if (!proposition?.reserved && proposition?.type !== 'mentions') {
       return dispatch(reserveProposition(proposition, userName))
