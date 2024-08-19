@@ -62,6 +62,7 @@ import {
   menuItemFields,
   mapObjectTypeFields,
   walletAddressFields,
+  recipeFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -472,6 +473,9 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case recipeFields.calories:
+      case recipeFields.budget:
+      case recipeFields.cookingTime:
       case objectFields.delegation:
       case objectFields.affiliateUrlTemplate:
       case objectFields.affiliateCode:
@@ -779,6 +783,9 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${this.state.selectedUserBlog}`;
         case objectFields.ageRange:
         case objectFields.language:
+        case recipeFields.calories:
+        case recipeFields.budget:
+        case recipeFields.cookingTime:
         case objectFields.affiliateUrlTemplate:
         case objectFields.departments:
         case objectFields.groupId:
@@ -1742,6 +1749,10 @@ class AppendForm extends Component {
     if (currentField === objectFields.publicationDate)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
+    if (currentField === recipeFields.calories) return filtered.some(f => f.body === currentValue);
+    if (currentField === recipeFields.cookingTime)
+      return filtered.some(f => f.body === currentValue);
+    if (currentField === recipeFields.budget) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.pin) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.remove) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.departments)
@@ -2434,10 +2445,13 @@ class AppendForm extends Component {
           />
         );
       }
-      case objectFields.language: {
+      case objectFields.language:
+      case recipeFields.budget:
+      case recipeFields.cookingTime:
+      case recipeFields.calories: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.language, {
+            {getFieldDecorator(currentField, {
               rules: this.getFieldRules(objectFields.language),
             })(
               <Input.TextArea
@@ -2446,10 +2460,17 @@ class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'book_language',
-                  defaultMessage: 'Book language',
-                })}
+                placeholder={
+                  currentField === objectFields.language
+                    ? intl.formatMessage({
+                        id: 'book_language',
+                        defaultMessage: 'Book language',
+                      })
+                    : intl.formatMessage({
+                        id: `object_field_${currentField}`,
+                        defaultMessage: currentField,
+                      })
+                }
               />,
             )}
           </Form.Item>

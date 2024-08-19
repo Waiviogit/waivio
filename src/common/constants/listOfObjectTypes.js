@@ -61,6 +61,7 @@ const listOfObjectTypes = [
   'link',
   'shop',
   'affiliate',
+  'recipe',
   'restaurant',
   'dish',
   'drink',

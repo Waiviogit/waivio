@@ -2641,5 +2641,8 @@
   "object_field_walletAddress": "Wallet address",
   "object_field_url": "URL",
   "enter_the_url": "Enter the URL",
-  "mentions_tab": "Mentions"
+  "mentions_tab": "Mentions",
+  "object_field_calories": "Calories",
+  "object_field_cookingTime": "Cooking time",
+  "object_field_budget": "Budget"
 }
