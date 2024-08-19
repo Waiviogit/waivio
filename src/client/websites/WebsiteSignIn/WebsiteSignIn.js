@@ -35,11 +35,12 @@ const WebsiteSignIn = props => {
   const websiteTitle = websiteName
     ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
-  let callbackURL = `${props.url}/callback`;
+  let callbackURL = `https://${props.url}/callback`;
 
   if (props.url.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
   }
+
   const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL,
