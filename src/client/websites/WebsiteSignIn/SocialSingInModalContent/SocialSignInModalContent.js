@@ -214,7 +214,7 @@ const SocialSignInModalContent = ({
               })}{' '}
               <a
                 title={'Terms & Conditions'}
-                href={`${websiteName}/checklist/ljc-legal#xrj-terms-and-conditions`}
+                href={`${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/xrj-terms-and-conditions`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -223,7 +223,7 @@ const SocialSignInModalContent = ({
               , our{' '}
               <a
                 title={'Privacy Policy'}
-                href={`${websiteName}/checklist/ljc-legal#poi-privacy-policy`}
+                href={`${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/poi-privacy-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -232,7 +232,7 @@ const SocialSignInModalContent = ({
               , and our{' '}
               <a
                 title={'Cookies Policy'}
-                href={`${websiteName}/checklist/ljc-legal#uid-cookies-policy`}
+                href={`${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/uid-cookies-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

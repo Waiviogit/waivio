@@ -115,11 +115,11 @@ const Breadcrumbs = ({ inProduct, intl }) => {
         {breadcrumbs?.map((crumb, index) => {
           let comp;
 
-          if (inProduct && match.params.name === crumb.author_permlink)
+          if (inProduct && match.params.name === crumb?.author_permlink)
             comp = <span> {getTruncatedTitle(getObjectName(crumb))}</span>;
           else {
             const crumbs = createQueryBreadcrumbs(
-              crumb.author_permlink,
+              crumb?.author_permlink || linkList[0],
               linkList,
               match.params.name,
             );
@@ -127,9 +127,9 @@ const Breadcrumbs = ({ inProduct, intl }) => {
             comp = (
               <Link
                 to={{
-                  pathname: `/checklist/${crumb.author_permlink}`,
+                  pathname: `/object/${crumb?.author_permlink}`,
                   search:
-                    match.params.name === crumb.author_permlink || !crumbs
+                    match.params.name === crumb?.author_permlink || !crumbs
                       ? ''
                       : `breadcrumbs=${crumbs}`,
                 }}
@@ -140,7 +140,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
           }
 
           return (
-            <React.Fragment key={crumb.author_permlink}>
+            <React.Fragment key={crumb?.author_permlink}>
               {comp}
               {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
                 <Icon type="right" />

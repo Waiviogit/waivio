@@ -71,10 +71,8 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
-  tagName,
-  attribs,
-) => {
+export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
+  const { name } = useParams();
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -86,7 +84,6 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
       host: linkUrl.host,
       hash: linkUrl.hash,
     });
-
     const internalLink = href.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
@@ -98,49 +95,42 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink, baseObj) => (
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
+      const lastPerm = getLastPermlinksFromHash(linkUrl.hash);
       if (isPage) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
+
         if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
-          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
+          if (location?.hash && !linkUrl.pathname.endsWith('/webpage'))
+            href = href + location?.hash;
+
+          if (linkUrl.hash) {
+            if (href?.includes('#')) {
+              if (!href?.includes(lastPerm)) {
+                href = href + `/${lastPerm}`;
+              }
+            } else {
+              href += linkUrl.hash;
+            }
+          }
         } else {
-          let modifiedUrl =
-            linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
-              ? linkUrl.pathname.slice(0, -5)?.replace('/object/', '/checklist/')
-              : linkUrl.pathname?.replace('/object/', '/checklist/');
-          if (linkUrl.pathname.endsWith('/webpage')) {
-            modifiedUrl = linkUrl.pathname;
+          const withCrumbs = href?.includes('breadcrumbs');
+          if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
+            href = `${href}?breadcrumbs=${name}/${location?.hash.replace('#', '')}`;
           }
 
-          href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : modifiedUrl;
-        }
-
-        if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-          href = href + location?.hash;
-        }
-
-        if (linkUrl.hash) {
-          if (
-            linkUrl.pathname.endsWith('/page') &&
-            !appUrl?.includes('waivio') &&
-            !appUrl?.includes('dining')
-          ) {
-            href = href?.includes('?breadcrumbs')
-              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-              : href + `?breadcrumbs=${baseObj}/${getLastPermlinksFromHash(linkUrl.hash)}`;
-          } else {
-            href = href?.includes('#')
-              ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-              : href + linkUrl.hash;
+          if (linkUrl.hash) {
+            if (withCrumbs) {
+              if (!href?.includes(lastPerm)) {
+                href = href + `/${lastPerm}`;
+              }
+            } else {
+              href = `${href}?breadcrumbs=${name}/${linkUrl.hash.replace('#', '')}`;
+            }
           }
         }
-      } else {
-        href = appUrl + linkUrl.pathname;
-        if (linkUrl.hash)
-          href = href?.includes('#')
-            ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-            : href + linkUrl.hash;
+
+        attys.target = '';
       }
-
-      attys.target = '';
     }
     if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
