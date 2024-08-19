@@ -77,11 +77,17 @@ export const objectFields = {
   delegation: 'delegation',
   walletAddress: 'walletAddress',
   url: 'url',
+  recipe: 'recipe',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
   cryptocurrency: 'cryptocurrency',
   walletAddress: 'walletAddress',
+};
+export const recipeFields = {
+  calories: 'calories',
+  budget: 'budget',
+  cookingTime: 'cookingTime',
 };
 export const mapObjectTypeFields = {
   mapObjectsList: 'mapObjectsList',
