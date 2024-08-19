@@ -5,10 +5,10 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { getObject } from '../../../waivioApi/ApiClient';
-
-import './PageContent.less';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
+
+import './PageContent.less';
 
 const PageContent = ({ wobj }) => {
   const [content, setContent] = useState(wobj.pageContent || '');

@@ -29,9 +29,7 @@ const prefereCanonical = (appUrl, isChecklist, objectType) => {
   }
 
   if (query.get('currObj')) {
-    url = `${appUrl}${
-      objectType === 'list' && !appUrl?.includes(originalWaivioHost) ? '/checklist' : '/object'
-    }/${query.get('currObj')}`;
+    url = `${appUrl}/object/${query.get('currObj')}`;
   }
 
   return url;

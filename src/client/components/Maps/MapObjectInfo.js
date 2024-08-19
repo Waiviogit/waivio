@@ -168,9 +168,7 @@ class MapObjectInfo extends React.Component {
 
   openModal = () => {
     if (this.props.isWaivio) {
-      if (this.props.isSocial && isEmpty(this.props.mapObjPermlink)) {
-        this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
-      }
+      this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
     } else {
       this.setQueryInUrl(this.props.center, this.props.wobject.author_permlink);
     }
