@@ -3,13 +3,14 @@ import { Icon } from 'antd';
 import { has, identity, isEmpty, pickBy } from 'lodash';
 import PropTypes from 'prop-types';
 import { linkFields, objectFields } from '../../../../common/constants/listOfFields';
-import { accessTypesArr, haveAccess } from '../../../../common/helpers/wObjectHelper';
+import {accessTypesArr, getObjectName, haveAccess} from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
 
 import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
+import EmailDraft from "../../../widgets/EmailDraft/EmailDraft";
 
 const BusinessDetails = ({
   isEditMode,
@@ -64,10 +65,7 @@ const BusinessDetails = ({
             </div>
           )}
           {email && (
-            <div className={'BusinessObject__email mb5px'}>
-              <Icon type="mail" className="text-icon email" />
-              <span>{accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}</span>
-            </div>
+              <EmailDraft email={email} name={getObjectName(wobject) } accessExtend={accessExtend} />
           )}
           {website && (
             <div className="BusinessObject__website field-website mb5px ">
