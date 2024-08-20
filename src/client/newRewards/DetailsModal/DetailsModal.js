@@ -116,7 +116,7 @@ const DetailsModal = ({
 
     search += `&campaign=${proposition._id}&type=${
       proposition?.type
-    }&secondaryItem=${object?.author_permlink || proposition?.objects}`;
+    }&secondaryItem=${object?.author_permlink || objects}`;
 
     if (!proposition?.reserved && proposition?.type !== 'mentions') {
       return dispatch(reserveProposition(proposition, userName))
