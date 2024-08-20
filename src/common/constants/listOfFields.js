@@ -78,6 +78,9 @@ export const objectFields = {
   walletAddress: 'walletAddress',
   url: 'url',
   recipe: 'recipe',
+  calories: 'calories',
+  budget: 'budget',
+  cookingTime: 'cookingTime',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
