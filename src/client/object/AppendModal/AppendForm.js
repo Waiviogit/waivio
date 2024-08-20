@@ -2449,10 +2449,13 @@ class AppendForm extends Component {
       case recipeFields.budget:
       case recipeFields.cookingTime:
       case recipeFields.calories: {
+        const fieldForRules =
+          currentField === objectFields.language ? objectFields.language : recipeFields.calories;
+
         return (
           <Form.Item>
             {getFieldDecorator(currentField, {
-              rules: this.getFieldRules(objectFields.language),
+              rules: this.getFieldRules(fieldForRules),
             })(
               <Input.TextArea
                 autoSize={{ minRows: 4, maxRows: 8 }}
