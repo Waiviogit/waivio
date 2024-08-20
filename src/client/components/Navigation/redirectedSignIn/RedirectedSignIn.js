@@ -9,12 +9,11 @@ const RedirectedSignIn = props => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host');
-  const urlObj = `https://${url}`;
 
   return (
     <div className="Wrapper">
       {isFormVisible ? (
-        <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={urlObj} />
+        <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={url} />
       ) : (
         <div
           style={{

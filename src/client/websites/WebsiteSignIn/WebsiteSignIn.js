@@ -75,7 +75,7 @@ const WebsiteSignIn = props => {
         setGuestLoginData(response.accessToken, socialNetwork, id);
         if (query.get('host')) {
           if (typeof window !== 'undefined')
-            window.location.href = `${props.url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+            window.location.href = `https://${props.url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
         } else {
           if (typeof window !== 'undefined' && window.gtag)
             window.gtag('event', `login_${socialNetwork}`, { debug_mode: false });

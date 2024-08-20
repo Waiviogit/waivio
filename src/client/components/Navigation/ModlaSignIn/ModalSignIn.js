@@ -70,7 +70,6 @@ const ModalSignIn = ({
   const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
   let callbackURL = `https://${host}/callback`;
-  const urlObj = `https://${host}`;
 
   if (host.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
@@ -146,7 +145,7 @@ const ModalSignIn = ({
 
   const renderGuestSignUpForm = () => (
     <div className="ModalGuestForm">
-      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} url={urlObj} />
+      <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} url={host} />
     </div>
   );
 
