@@ -12,4 +12,5 @@ export default {
   NEWSFEED: 'newsfeed',
   MAP: 'map',
   LINK: 'link',
+  RECIPE: 'recipe',
 };

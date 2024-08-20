@@ -28,6 +28,7 @@ import {
   linkFields,
   mapObjectTypeFields,
   objectFields,
+  recipeFields,
   TYPES_OF_MENU_ITEM,
 } from '../../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../../../object/const/objectTypes';
@@ -533,6 +534,9 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const cookingTime = wobject.cookingTime;
+    const calories = wobject.calories;
+    const budget = wobject.budget;
     const groupId = wobject.groupId;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
@@ -665,11 +669,13 @@ class ObjectInfo extends React.Component {
     const button = parseButtonsField(wobject);
     const affiliateLinks = wobject?.affiliateLinks || [];
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
+    const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
     const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
+    const showLRecipeSection = hasType(wobject, OBJECT_TYPE.RECIPE);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
       !hasType(wobject, OBJECT_TYPE.MAP) &&
@@ -679,6 +685,7 @@ class ObjectInfo extends React.Component {
       !hasType(wobject, OBJECT_TYPE.DISH) &&
       !hasType(wobject, OBJECT_TYPE.AFFILIATE) &&
       !hasType(wobject, OBJECT_TYPE.LINK) &&
+      !hasType(wobject, OBJECT_TYPE.RECIPE) &&
       !hasType(wobject, OBJECT_TYPE.DRINK);
     const showMapSection = hasType(wobject, OBJECT_TYPE.MAP);
     const formsList = getFormItems(wobject)?.map(item => ({
@@ -836,7 +843,7 @@ class ObjectInfo extends React.Component {
               {this.listItem(objectFields.sorting, null)}
             </div>
           )}
-          {!objectTypeMenuTitle && isEditMode && !isList && (
+          {!objectTypeMenuTitle && isEditMode && !isList && !isRecipe && (
             <div
               className={
                 this.state.showMenuLegacy
@@ -964,6 +971,60 @@ class ObjectInfo extends React.Component {
             </span>
           ),
         )}
+      </React.Fragment>
+    );
+    const recipeSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="recipe" defaultMessage="recipe" />
+          </div>
+        )}
+        {!isEditMode
+          ? calories && (
+              <div className="field-info">
+                <div className="CompanyId__title">
+                  <FormattedMessage id="object_field_calories" defaultMessage="Calories" />:
+                </div>
+                <span className="field-website__title">
+                  <span className="CompanyId__wordbreak">{calories}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              recipeFields.calories,
+              calories && <span className="CompanyId__wordbreak">{calories}</span>,
+            )}
+        {!isEditMode
+          ? budget && (
+              <div className="field-info">
+                <div className="CompanyId__title">
+                  <FormattedMessage id="object_field_budget" defaultMessage="Budget" />:
+                </div>
+                <span className="field-website__title">
+                  <span className="CompanyId__wordbreak">{budget}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              recipeFields.budget,
+              calories && <span className="CompanyId__wordbreak">{budget}</span>,
+            )}{' '}
+        {!isEditMode
+          ? cookingTime && (
+              <div className="field-info">
+                <div className="CompanyId__title">
+                  <FormattedMessage id="object_field_cookingTime" defaultMessage="Cooking time" />:
+                </div>
+                <span className="field-website__title">
+                  <span className="CompanyId__wordbreak">{cookingTime}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              recipeFields.cookingTime,
+              calories && <span className="CompanyId__wordbreak">{cookingTime}</span>,
+            )}
       </React.Fragment>
     );
     const aboutSection = (
@@ -1573,6 +1634,7 @@ ${obj.productId}`}
             {!isHashtag && showMenuSection && menuSection()}
             {showMapSection && mapSection()}
             {showLinkSection && linkSection}
+            {showLRecipeSection && recipeSection}
             {aboutSection}
             {isAffiliate && (
               <AffiliateSection
