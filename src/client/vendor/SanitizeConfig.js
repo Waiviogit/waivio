@@ -113,18 +113,23 @@ export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, 
             }
           }
         } else {
+          const objName = name || linkUrl.pathname.split('/')[2];
+
           const withCrumbs = href?.includes('breadcrumbs');
           if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-            href = `${href}?breadcrumbs=${name}/${location?.hash.replace('#', '')}`;
+            href = `${href}?breadcrumbs=${objName}/${location?.hash.replace('#', '')}`;
           }
 
           if (linkUrl.hash) {
             if (withCrumbs) {
               if (!href?.includes(lastPerm)) {
-                href = href + `/${lastPerm}`;
+                href = href.replace(objName, lastPerm) + `/${lastPerm}`;
               }
             } else {
-              href = `${href}?breadcrumbs=${name}/${linkUrl.hash.replace('#', '')}`;
+              href = `${href.replace(
+                objName,
+                lastPerm,
+              )}?breadcrumbs=${objName}/${linkUrl.hash.replace('#', '')}`;
             }
           }
         }
