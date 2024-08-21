@@ -169,6 +169,7 @@ Comments.propTypes = {
 Comments.defaultProps = {
   username: undefined,
   sliderMode: false,
+  isRecipe: false,
   post: {},
   comments: {},
   commentsList: {},

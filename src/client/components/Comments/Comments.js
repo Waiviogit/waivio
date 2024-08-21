@@ -57,6 +57,7 @@ class Comments extends React.Component {
     commentsChildren: undefined,
     pendingVotes: [],
     sliderMode: false,
+    isRecipe: false,
     show: false,
     isQuickComments: false,
     isUpdating: false,
