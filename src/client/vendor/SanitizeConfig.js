@@ -1,9 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
-import { endsWith } from 'lodash';
-import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
-import { useParams } from 'react-router';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -71,8 +68,7 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage, isChatBotLink) => (tagName, attribs) => {
-  const { name } = useParams();
+export const parseLink = (appUrl, location, isPage, isChatBotLink, name) => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
