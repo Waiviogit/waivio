@@ -70,7 +70,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
           const url = query.get('host') || location.origin;
 
           if (query.get('host'))
-            window.location.href = `${url}/?socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
+            window.location.href = `https://${url}/?socialProvider=hiveAuth&auth=${JSON.stringify(
+              auth,
+            )}`;
 
           dispatch(login()).then(() => {
             dispatch(busyLogin());
