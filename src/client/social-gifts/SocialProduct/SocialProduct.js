@@ -610,28 +610,32 @@ SocialProduct.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  userName: getAuthenticatedUserName(state),
-  locale: getUsedLocale(state),
-  activeOption: getActiveOption(state),
-  activeCategory: getActiveCategory(state),
-  siteName: getSiteName(state),
-  wobject: getObjectState(state),
-  authors: getWobjectAuthors(state),
-  appUrl: getAppUrl(state),
-  albums: getObjectAlbums(state),
-  authenticated: getIsAuthenticated(state),
-  optionClicked: getIsOptionClicked(state),
-  helmetIcon: getHelmetIcon(state),
-  addOns: getAddOnFromState(state),
-  similarObjects: getSimilarObjectsFromState(state),
-  relatedObjects: getRelatedObjectsFromState(state),
-  brandObject: getBrandObject(state),
-  manufacturerObject: getManufacturerObject(state),
-  merchantObject: getMerchantObject(state),
-  publisherObject: getPublisherObject(state),
-  user: getUser(state, ownProps.match.params.author),
-});
+const mapStateToProps = state => {
+  const userName = getAuthenticatedUserName(state);
+
+  return {
+    userName,
+    locale: getUsedLocale(state),
+    activeOption: getActiveOption(state),
+    activeCategory: getActiveCategory(state),
+    siteName: getSiteName(state),
+    wobject: getObjectState(state),
+    authors: getWobjectAuthors(state),
+    appUrl: getAppUrl(state),
+    albums: getObjectAlbums(state),
+    authenticated: getIsAuthenticated(state),
+    optionClicked: getIsOptionClicked(state),
+    helmetIcon: getHelmetIcon(state),
+    addOns: getAddOnFromState(state),
+    similarObjects: getSimilarObjectsFromState(state),
+    relatedObjects: getRelatedObjectsFromState(state),
+    brandObject: getBrandObject(state),
+    manufacturerObject: getManufacturerObject(state),
+    merchantObject: getMerchantObject(state),
+    publisherObject: getPublisherObject(state),
+    user: getUser(state, userName),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
