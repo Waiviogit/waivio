@@ -52,7 +52,7 @@ import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
 const limit = 15;
 
-const ObjectNewsFeed = ({ wobj, isNested, intl }) => {
+const ObjectNewsFeed = ({ wobj, intl }) => {
   const readLanguages = useSelector(getReadLanguages);
   const previews = useSelector(getTiktokPreviewFromState);
   const previewLoading = useSelector(getPreviewLoadingFromState);
@@ -89,7 +89,7 @@ const ObjectNewsFeed = ({ wobj, isNested, intl }) => {
     dispatch(setEditMode(true));
   };
   const getPostsList = () => {
-    if ((wobj && isNested) || (wobj && wobj.author_permlink === name)) {
+    if (wobj) {
       dispatch(
         getObjectPosts({
           object: wobj.author_permlink,
@@ -196,7 +196,6 @@ const ObjectNewsFeed = ({ wobj, isNested, intl }) => {
 ObjectNewsFeed.propTypes = {
   wobj: PropTypes.shape(),
   intl: PropTypes.shape(),
-  isNested: PropTypes.bool,
 };
 
 export default injectIntl(ObjectNewsFeed);
