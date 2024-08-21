@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../SocialProductHelper';
-import { objectFields } from '../../../../common/constants/listOfFields';
+import { objectFields, recipeFields } from '../../../../common/constants/listOfFields';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
 
@@ -37,6 +37,8 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
       case objectFields.ageRange:
       case objectFields.language:
       case objectFields.publicationDate:
+      case recipeFields.calories:
+      case recipeFields.cookingTime:
         return <span>{field}</span>;
       case objectFields.website:
         return (
