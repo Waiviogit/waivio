@@ -34,7 +34,7 @@ const SocialSignInModalContent = ({
       if (backUrl) {
         window.location?.replace(backUrl);
       } else {
-        window.location?.replace(host);
+        window.location.href = `https://${host}`;
       }
     }
   };
