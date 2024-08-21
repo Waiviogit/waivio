@@ -2644,5 +2644,6 @@
   "mentions_tab": "Mentions",
   "object_field_calories": "Calories",
   "object_field_cookingTime": "Cooking time",
-  "object_field_budget": "Budget"
+  "object_field_budget": "Budget",
+  "top_recipe": "Top recipe"
 }
