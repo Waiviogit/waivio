@@ -147,6 +147,7 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
+  const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
 
@@ -450,7 +451,12 @@ const SocialProduct = ({
                 {price}
               </div>
               {showRecipeFields && isRecipe && (
-                <RecipeDetails calories={calories} cookingTime={cookingTime} />
+                <RecipeDetails
+                  isEditMode={isEditMode}
+                  calories={calories}
+                  cookingTime={cookingTime}
+                  recipeIngredients={recipeIngredients}
+                />
               )}
               {!isEmpty(wobject?.options) && (
                 <div className="SocialProduct__paddingBottom">

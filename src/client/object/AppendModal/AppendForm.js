@@ -149,6 +149,7 @@ import DelegationForm from './FormComponents/DelegationForm';
 import './AppendForm.less';
 import WalletAddressForm from './FormComponents/WalletAddressForm';
 import LinkUrlForm from './FormComponents/LinkUrlForm';
+import { splitIngredients } from './appendFormHelper';
 
 @connect(
   state => ({
@@ -476,6 +477,7 @@ class AppendForm extends Component {
       case recipeFields.calories:
       case recipeFields.budget:
       case recipeFields.cookingTime:
+      case recipeFields.recipeIngredients:
       case objectFields.delegation:
       case objectFields.affiliateUrlTemplate:
       case objectFields.affiliateCode:
@@ -786,6 +788,7 @@ class AppendForm extends Component {
         case recipeFields.calories:
         case recipeFields.budget:
         case recipeFields.cookingTime:
+        case recipeFields.recipeIngredients:
         case objectFields.affiliateUrlTemplate:
         case objectFields.departments:
         case objectFields.groupId:
@@ -908,6 +911,12 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           title: this.getNewsFilterTitle(this.state.newsFilterTitle)?.trim(),
+        };
+      }
+      if (currentField === recipeFields.recipeIngredients) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify(splitIngredients(getFieldValue(recipeFields.recipeIngredients))),
         };
       }
       if (currentField === mapObjectTypeFields.mapObjectsList) {
@@ -1752,6 +1761,8 @@ class AppendForm extends Component {
     if (currentField === recipeFields.calories) return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.cookingTime)
       return filtered.some(f => f.body === currentValue);
+    if (currentField === recipeFields.recipeIngredients)
+      return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.budget) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.pin) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.remove) return filtered.some(f => f.body === currentValue);
@@ -2448,7 +2459,8 @@ class AppendForm extends Component {
       case objectFields.language:
       case recipeFields.budget:
       case recipeFields.cookingTime:
-      case recipeFields.calories: {
+      case recipeFields.calories:
+      case recipeFields.recipeIngredients: {
         const fieldForRules =
           currentField === objectFields.language ? objectFields.language : recipeFields.calories;
 
