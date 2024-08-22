@@ -37,7 +37,7 @@ const GeneralSearch = props => {
   const getSocialLink = obj => `/object/${obj.author_permlink}`;
   const isSocialWobj = wobj =>
     props.isSocialProduct &&
-    ['product', 'book', 'person', 'business', 'link', 'restaurant', 'list'].includes(
+    ['product', 'book', 'person', 'business', 'link', 'restaurant', 'list', 'recipe'].includes(
       wobj.object_type,
     );
 
@@ -51,6 +51,7 @@ const GeneralSearch = props => {
           'link',
           'restaurant',
           'list',
+          'recipe',
         ]),
       );
     }, 500),
