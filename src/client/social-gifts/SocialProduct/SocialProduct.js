@@ -93,7 +93,7 @@ const SocialProduct = ({
   authenticated,
   optionClicked,
   helmetIcon,
-  match,
+  params,
   history,
   setStoreActiveOpt,
   resetOptClicked,
@@ -194,7 +194,7 @@ const SocialProduct = ({
   const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
-    ? `https://${wobject.canonical}/object/${match.params.name}`
+    ? `https://${wobject.canonical}/object/${params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
@@ -583,7 +583,7 @@ SocialProduct.propTypes = {
   activeOption: PropTypes.shape(),
   wobject: PropTypes.shape(),
   history: PropTypes.shape(),
-  match: PropTypes.shape(),
+  params: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
@@ -630,7 +630,7 @@ const mapStateToProps = (state, ownProps) => ({
   manufacturerObject: getManufacturerObject(state),
   merchantObject: getMerchantObject(state),
   publisherObject: getPublisherObject(state),
-  user: getUser(state, ownProps.match.params.author),
+  user: getUser(state, ownProps.params.author),
 });
 
 const mapDispatchToProps = dispatch => ({

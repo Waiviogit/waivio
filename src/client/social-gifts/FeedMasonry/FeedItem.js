@@ -113,9 +113,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   }
 
   return (
-    <div
-      className={isReviewsPage && isAuthUser ? 'FeedMasonry__item-with-pin' : 'FeedMasonry__item'}
-    >
+    <div className={isReviewsPage && isAuthUser ? 'FeedMasonry__item-with-pin' : ''}>
       {isReviewsPage && isAuthUser && (
         <Tooltip
           placement="topLeft"
@@ -133,87 +131,89 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
           />
         </Tooltip>
       )}
-      {isEmpty(embeds) ? (
-        <div className="FeedMasonry__imgWrap">
-          {take(imagePath, photoQuantity)?.map((image, index) => (
-            <CustomImage
-              className={classNames('FeedMasonry__img', {
-                'FeedMasonry__img--bottom':
-                  lastIndex && (index === photoQuantity - 1 || index === lastIndex),
-                'FeedMasonry__img--top': lastIndex && !index,
-                'FeedMasonry__img--only': !lastIndex,
-              })}
-              onClick={handleShowPostModal}
-              src={image}
-              alt={post.title}
-              key={image}
-            />
-          ))}
-        </div>
-      ) : (
-        <div
-          className={classNames('FeedMasonry__videoContainer', {
-            'FeedMasonry__videoContainer--withImage': !withoutImage,
-            'FeedMasonry__videoContainer--tiktok': isTiktok,
-          })}
-        >
-          <PostFeedEmbed key="embed" isSocial embed={embed} />
-          {!withoutImage && (
-            <img
-              className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
-              src={getProxyImageURL(imagePath[0])}
-              alt={post.title}
-              key={imagePath[0]}
-              onClick={handleShowPostModal}
-            />
-          )}
-        </div>
-      )}
-      <div className={'FeedMasonry__postInfo'}>
-        <div className="FeedMasonry__titleWrap">
-          <a
-            className="FeedMasonry__title"
-            href={`/@${post?.author}/${post?.permlink}`}
-            onClick={handleShowPostModal}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {truncate(post?.title, {
-              length: isMobile() ? 70 : 80,
-              separator: '...',
-            })}{' '}
-          </a>
-        </div>
-        <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
-          <Avatar username={post?.author} size={25} /> {post?.author}
-        </Link>
-      </div>
-      <div className="FeedMasonry__likeWrap">
-        <div className="FeedMasonry__postWrap">
-          <span className="FeedMasonry__icon FeedMasonry__icon--cursor" onClick={handleLike}>
-            {pendingLike ? (
-              <Icon type="loading" />
-            ) : (
-              <i
-                className={classNames('iconfont icon-praise_fill', {
-                  'iconfont--withMyLike': isLiked,
+      <div className={'FeedMasonry__item'}>
+        {isEmpty(embeds) ? (
+          <div className="FeedMasonry__imgWrap">
+            {take(imagePath, photoQuantity)?.map((image, index) => (
+              <CustomImage
+                className={classNames('FeedMasonry__img', {
+                  'FeedMasonry__img--bottom':
+                    lastIndex && (index === photoQuantity - 1 || index === lastIndex),
+                  'FeedMasonry__img--top': lastIndex && !index,
+                  'FeedMasonry__img--only': !lastIndex,
                 })}
+                onClick={handleShowPostModal}
+                src={image}
+                alt={post.title}
+                key={image}
               />
-            )}{' '}
-            {Boolean(likesCount) && <span>{likesCount}</span>}
-          </span>
-          {Boolean(post.children) && (
-            <span className="FeedMasonry__icon">
-              <i className="iconfont icon-message_fill" /> <span>{post.children}</span>
-            </span>
-          )}
-          {Boolean(post?.reblogged_users?.length) && (
-            <span className="FeedMasonry__icon FeedMasonry__icon--reblog">
-              <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
-            </span>
-          )}
+            ))}
+          </div>
+        ) : (
+          <div
+            className={classNames('FeedMasonry__videoContainer', {
+              'FeedMasonry__videoContainer--withImage': !withoutImage,
+              'FeedMasonry__videoContainer--tiktok': isTiktok,
+            })}
+          >
+            <PostFeedEmbed key="embed" isSocial embed={embed} />
+            {!withoutImage && (
+              <img
+                className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
+                src={getProxyImageURL(imagePath[0])}
+                alt={post.title}
+                key={imagePath[0]}
+                onClick={handleShowPostModal}
+              />
+            )}
+          </div>
+        )}
+        <div className={'FeedMasonry__postInfo'}>
+          <div className="FeedMasonry__titleWrap">
+            <a
+              className="FeedMasonry__title"
+              href={`/@${post?.author}/${post?.permlink}`}
+              onClick={handleShowPostModal}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {truncate(post?.title, {
+                length: isMobile() ? 70 : 80,
+                separator: '...',
+              })}{' '}
+            </a>
+          </div>
+          <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
+            <Avatar username={post?.author} size={25} /> {post?.author}
+          </Link>
         </div>
-        <Payout post={post} />
+        <div className="FeedMasonry__likeWrap">
+          <div className="FeedMasonry__postWrap">
+            <span className="FeedMasonry__icon FeedMasonry__icon--cursor" onClick={handleLike}>
+              {pendingLike ? (
+                <Icon type="loading" />
+              ) : (
+                <i
+                  className={classNames('iconfont icon-praise_fill', {
+                    'iconfont--withMyLike': isLiked,
+                  })}
+                />
+              )}{' '}
+              {Boolean(likesCount) && <span>{likesCount}</span>}
+            </span>
+            {Boolean(post.children) && (
+              <span className="FeedMasonry__icon">
+                <i className="iconfont icon-message_fill" /> <span>{post.children}</span>
+              </span>
+            )}
+            {Boolean(post?.reblogged_users?.length) && (
+              <span className="FeedMasonry__icon FeedMasonry__icon--reblog">
+                <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
+              </span>
+            )}
+          </div>
+          <Payout post={post} />
+        </div>
       </div>
     </div>
   );
