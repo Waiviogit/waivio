@@ -77,7 +77,7 @@ const Wobj = ({
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
-    if (isEmpty(wobject) || (params.name && wobject?.author_permlink !== params.name)) {
+    if (isEmpty(wobject)) {
       return (
         <React.Fragment>
           <Helmet>
@@ -121,6 +121,7 @@ const Wobj = ({
         'webpage',
         'map',
         'link',
+        'recipe',
       ]?.includes(wobject.object_type) ||
       (isSocial && isEditMode)
     )
@@ -141,7 +142,8 @@ const Wobj = ({
     switch (wobject?.object_type) {
       case 'book':
       case 'product':
-        return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
+      case 'recipe':
+        return <SocialProduct toggleViewEditMode={toggleViewEditMode} params={params} />;
       case 'business':
       case 'restaurant':
       case 'link':

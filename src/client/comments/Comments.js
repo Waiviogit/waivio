@@ -89,6 +89,7 @@ const Comments = props => {
     rewardFund,
     defaultVotePercent,
     isUpdating,
+    isRecipe,
   } = props;
   const postId = isUpdating || !post.id ? `${post.author}/${post.permlink}` : post.id;
   let rootLevelComments = [];
@@ -107,6 +108,7 @@ const Comments = props => {
   return (
     rootLevelComments && (
       <CommentsList
+        isRecipe={isRecipe}
         user={user}
         isGuest={props.isGuest}
         setGuestMana={props.setGuestMana}
@@ -141,6 +143,7 @@ Comments.propTypes = {
   rewardFund: PropTypes.shape().isRequired,
   defaultVotePercent: PropTypes.number,
   sliderMode: PropTypes.bool,
+  isRecipe: PropTypes.bool,
   username: PropTypes.string,
   post: PropTypes.shape(),
   comments: PropTypes.shape(),
@@ -166,6 +169,7 @@ Comments.propTypes = {
 Comments.defaultProps = {
   username: undefined,
   sliderMode: false,
+  isRecipe: false,
   post: {},
   comments: {},
   commentsList: {},

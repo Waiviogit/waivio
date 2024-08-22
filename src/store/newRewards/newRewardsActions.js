@@ -1,4 +1,4 @@
-import { round } from 'lodash';
+import { round, isArray } from 'lodash';
 import { message } from 'antd';
 
 import {
@@ -28,10 +28,14 @@ export const reserveProposition = (proposition, username) => async (
   { busyAPI, steemConnectAPI },
 ) => {
   const permlink = `reserve-${generatePermlink()}`;
-  const dish = proposition?.object;
+  const objects = isArray(proposition?.objects) ? proposition?.objects[0] : proposition?.objects;
+  const dish = proposition?.object || { author_permlink: objects, defaultShowLink: objects };
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
-  const primaryObject = proposition?.requiredObject;
+  const primaryObject =
+    typeof proposition?.requiredObject === 'string'
+      ? { author_permlink: objects }
+      : proposition?.requiredObject;
   const state = getState();
   const isGuest = isGuestUser(state);
   const rates = getTokenRatesInUSD(state, 'WAIV');
@@ -48,7 +52,7 @@ export const reserveProposition = (proposition, username) => async (
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
         proposition.payoutToken
       } for a period of ${proposition.countReservationDays} days to write a review of <a href='${
-        dish.defaultShowLink
+        dish?.defaultShowLink
       }'>${proposedWobjName}</a>${
         primaryObject.author_permlink !== proposedAuthorPermlink
           ? `, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(primaryObject)}</a>`

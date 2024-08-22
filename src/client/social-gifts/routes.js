@@ -68,11 +68,6 @@ const routes = () => ({
       ],
     },
     {
-      path: ['/checklist/:name'],
-      exact: true,
-      component: Checklist,
-    },
-    {
       path: ['/object/:name/map'],
       exact: true,
       component: WebsiteBody,

@@ -12,4 +12,10 @@ export const validateAffiliateUrl = (rule, url, callback) => {
     'Please enter valid URL. It should begin with the website name and include PRODUCTID and AFFILIATECODE.',
   );
 };
+
+export const splitIngredients = string => {
+  const pattern = new RegExp(`[,;\n]`);
+
+  return string?.split(pattern)?.filter(item => item);
+};
 export default null;

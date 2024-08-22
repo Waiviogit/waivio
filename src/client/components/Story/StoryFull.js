@@ -67,6 +67,7 @@ class StoryFull extends React.Component {
     isThread: PropTypes.bool,
     commentCount: PropTypes.number,
     saving: PropTypes.bool,
+    isRecipe: PropTypes.bool,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
     onFollowClick: PropTypes.func,
@@ -106,6 +107,7 @@ class StoryFull extends React.Component {
     match: {},
     history: {},
     isModal: false,
+    isRecipe: false,
   };
 
   constructor(props) {
@@ -239,6 +241,7 @@ class StoryFull extends React.Component {
       isOriginalPost,
       isModal,
       isThread,
+      isRecipe,
       editThread,
       handleEditThread,
       closeEditThread,
@@ -349,8 +352,9 @@ class StoryFull extends React.Component {
     return (
       <div className="StoryFull">
         {replyUI}
-        <h1 className="StoryFull__title">{post.title}</h1>
-        {!isOriginalPost && (
+        {!isRecipe && <h1 className="StoryFull__title">{post.title}</h1>}
+        {isRecipe && <span className="StoryFull__title">{post.title}</span>}
+        {!isOriginalPost && !isRecipe && (
           <h3 className="StoryFull__comments_title">
             <a href="#comments">
               {commentCount === 1 ? (
@@ -541,6 +545,7 @@ class StoryFull extends React.Component {
           )}
         </Collapse>
         <StoryFooter
+          isRecipe={isRecipe}
           isThread={isThread}
           user={user}
           post={post}

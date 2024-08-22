@@ -34,13 +34,10 @@ const GeneralSearch = props => {
   const loading = useSelector(getIsStartSearchAutoComplete);
   const dispatch = useDispatch();
   const history = useHistory();
-  const getSocialLink = obj =>
-    ['list'].includes(obj.object_type)
-      ? `/checklist/${obj.author_permlink}`
-      : `/object/${obj.author_permlink}`;
+  const getSocialLink = obj => `/object/${obj.author_permlink}`;
   const isSocialWobj = wobj =>
     props.isSocialProduct &&
-    ['product', 'book', 'person', 'business', 'link', 'restaurant', 'list'].includes(
+    ['product', 'book', 'person', 'business', 'link', 'restaurant', 'list', 'recipe'].includes(
       wobj.object_type,
     );
 
@@ -54,6 +51,7 @@ const GeneralSearch = props => {
           'link',
           'restaurant',
           'list',
+          'recipe',
         ]),
       );
     }, 500),

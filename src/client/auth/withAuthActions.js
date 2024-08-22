@@ -80,7 +80,7 @@ export default function withAuthActions(WrappedComponent) {
         const color = this.props.colors.mapMarkerBody?.replace('#', '');
 
         if (typeof window !== 'undefined')
-          window.location.href = `https://${this.props.domain}/sign-in?host=https://${
+          window.location.href = `https://${this.props.domain}/sign-in?host=${
             this.props.host
           }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
             .websiteName || this.props.host}`;

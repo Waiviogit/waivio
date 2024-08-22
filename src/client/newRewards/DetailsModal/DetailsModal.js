@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { isEmpty, isArray } from 'lodash';
+import { isEmpty, isArray, has } from 'lodash';
 import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
@@ -48,6 +48,7 @@ const DetailsModal = ({
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
   const [requiredObject, setRequiredObject] = useState({});
+  const [object, setObject] = useState(proposition?.object || {});
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
@@ -59,10 +60,14 @@ const DetailsModal = ({
   const disable = Object.values(requirements).some(requirement => !requirement);
   const objects = isArray(proposition?.objects) ? proposition?.objects[0] : proposition?.objects;
   const withoutSecondary = requiredObject.author_permlink
-    ? requiredObject.author_permlink === proposition?.object?.author_permlink
+    ? requiredObject.author_permlink === proposition?.object?.author_permlink ||
+      requiredObject.author_permlink === object?.author_permlink
     : requiredObject.name === objects?.replace('@', '');
 
   useEffect(() => {
+    if (!has(proposition, 'object')) {
+      getObjectInfo([objects], locale).then(res => setObject(res.wobjects[0]));
+    }
     if (stringRequiredObj) {
       if (proposition?.requiredObject.includes('@')) {
         getUserAccount(proposition?.requiredObject.replace('@', '')).then(res => {
@@ -102,17 +107,16 @@ const DetailsModal = ({
       : `?user=[${requiredObject?.name}](@${requiredObject?.name})`;
 
     if (!withoutSecondary) {
-      search += proposition?.object?.author_permlink
-        ? `&object=[${getObjectName(proposition.object)}](${
-            proposition?.object.object_type === 'link'
-              ? proposition?.object?.url
-              : getObjectUrl(proposition?.object?.author_permlink)
+      search += object?.author_permlink
+        ? `&object=[${getObjectName(object)}](${
+            object.object_type === 'link' ? object?.url : getObjectUrl(object?.author_permlink)
           })`
-        : `&user=[${objects.replace('@', '')}](${proposition?.objects})`;
+        : `&user=[${objects.replace('@', '')}](${objects})`;
     }
 
-    search += `&campaign=${proposition._id}&type=${proposition?.type}&secondaryItem=${proposition
-      ?.object?.author_permlink || proposition?.objects}`;
+    search += `&campaign=${proposition._id}&type=${
+      proposition?.type
+    }&secondaryItem=${object?.author_permlink || objects}`;
 
     if (!proposition?.reserved && proposition?.type !== 'mentions') {
       return dispatch(reserveProposition(proposition, userName))
@@ -199,7 +203,7 @@ const DetailsModal = ({
         <RewardsHeader proposition={proposition} />
       </div>
       <DetailsModalBody
-        proposition={{ ...proposition, requiredObject }}
+        proposition={{ ...proposition, requiredObject, object }}
         requirements={requirements}
         agreementObjects={agreementObjects}
         withoutSecondary={withoutSecondary}

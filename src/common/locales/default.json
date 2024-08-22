@@ -400,7 +400,7 @@
   "discover_more_objects": "Discover more objects",
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
-  "objects_auto_complete_placeholder": "Find an objects",
+  "objects_auto_complete_placeholder": "Find an object",
   "object_auto_complete_placeholder": "Find object",
   "create": "Create",
   "created": "Created",
@@ -2641,5 +2641,10 @@
   "object_field_walletAddress": "Wallet address",
   "object_field_url": "URL",
   "enter_the_url": "Enter the URL",
-  "mentions_tab": "Mentions"
+  "mentions_tab": "Mentions",
+  "object_field_calories": "Calories",
+  "object_field_cookingTime": "Cooking time",
+  "object_field_budget": "Budget",
+  "top_recipe": "Top recipe",
+  "object_field_recipeIngredients": "Recipe ingredients"
 }

@@ -23,6 +23,7 @@ class Comments extends React.Component {
     loadingPostId: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
+    isRecipe: PropTypes.bool,
     username: PropTypes.string,
     parentPost: PropTypes.shape(),
     comments: PropTypes.shape(),
@@ -56,6 +57,7 @@ class Comments extends React.Component {
     commentsChildren: undefined,
     pendingVotes: [],
     sliderMode: false,
+    isRecipe: false,
     show: false,
     isQuickComments: false,
     isUpdating: false,
@@ -258,16 +260,18 @@ class Comments extends React.Component {
       rewardFund,
       handleHideComment,
       defaultVotePercent,
+      isRecipe,
     } = this.props;
     const { sort, commentSubmitted } = this.state;
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
+    const showComments = !isRecipe || (isRecipe && show);
 
     return (
       <div className={classNames('Comments', { 'quick-comments': isQuickComments })}>
-        {!isQuickComments && (
+        {!isQuickComments && showComments && (
           <React.Fragment>
             <div className="Comments__header">
               <h2>

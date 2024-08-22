@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
-import { get, has, isEmpty, isNil, reduce } from 'lodash';
+import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
 import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
@@ -72,6 +72,13 @@ import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper
 import './SocialProduct.less';
 import SocialListItem from './SocialListItem/SocialListItem';
 import { objectFields } from '../../../common/constants/listOfFields';
+import RecipeDetails from './RecipeDetails/RecipeDetails';
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
+import { getPosts } from '../../../store/postsStore/postsSelectors';
+import { getFeedFromState } from '../../../common/helpers/stateHelpers';
+import { getFeed } from '../../../store/feedStore/feedSelectors';
+import RecipePost from './RecipePost/RecipePost';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
 const limit = 30;
 
@@ -86,7 +93,7 @@ const SocialProduct = ({
   authenticated,
   optionClicked,
   helmetIcon,
-  match,
+  params,
   history,
   setStoreActiveOpt,
   resetOptClicked,
@@ -105,14 +112,24 @@ const SocialProduct = ({
   getProductInfoAction,
   publisherObject,
   intl,
+  signature,
 }) => {
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
+  const isRecipe = wobject.object_type === 'recipe';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const price = hoveredOption.price || get(wobject, 'price');
+  const price = hoveredOption.price || isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const cookingTime = wobject.cookingTime;
+  const calories = wobject.calories;
+  const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
+  const showRecipeFields = calories || cookingTime || recipeIngredients;
+  const feed = useSelector(getFeed);
+  const postsList = useSelector(getPosts);
+  const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
+  const recipePost = postsList[postsIds?.[0]];
   const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
@@ -178,7 +195,7 @@ const SocialProduct = ({
   const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
-    ? `https://${wobject.canonical}/object/${match.params.name}`
+    ? `https://${wobject.canonical}/object/${params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
@@ -220,6 +237,12 @@ const SocialProduct = ({
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      isRecipe &&
+        getObjectPosts({
+          object: wobject.author_permlink,
+          username: wobject.author_permlink,
+          limit: 1,
+        });
       getAddOnsSimilarRelatedObjects();
       getPublisherManufacturerBrandMerchantObjects();
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
@@ -427,6 +450,14 @@ const SocialProduct = ({
               >
                 {price}
               </div>
+              {showRecipeFields && isRecipe && (
+                <RecipeDetails
+                  isEditMode={isEditMode}
+                  calories={calories}
+                  cookingTime={cookingTime}
+                  recipeIngredients={recipeIngredients}
+                />
+              )}
               {!isEmpty(wobject?.options) && (
                 <div className="SocialProduct__paddingBottom">
                   <Options
@@ -467,6 +498,12 @@ const SocialProduct = ({
                   pictures={photosAlbum.items}
                   authorPermlink={wobject.author_permlink}
                 />
+              </div>
+            )}
+            {recipePost && isRecipe && (
+              <div className={'SocialProduct__postWrapper PageContent social'}>
+                <RecipePost signature={signature} recipePost={recipePost} />
+                <br />
               </div>
             )}
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
@@ -552,7 +589,7 @@ SocialProduct.propTypes = {
   activeOption: PropTypes.shape(),
   wobject: PropTypes.shape(),
   history: PropTypes.shape(),
-  match: PropTypes.shape(),
+  params: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
@@ -566,6 +603,7 @@ SocialProduct.propTypes = {
   relatedObjects: PropTypes.arrayOf(),
   getRelatedAction: PropTypes.func,
   helmetIcon: PropTypes.string,
+  signature: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
   isEditMode: PropTypes.bool,
@@ -578,30 +616,37 @@ SocialProduct.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-const mapStateToProps = state => ({
-  userName: getAuthenticatedUserName(state),
-  locale: getUsedLocale(state),
-  activeOption: getActiveOption(state),
-  activeCategory: getActiveCategory(state),
-  siteName: getSiteName(state),
-  wobject: getObjectState(state),
-  authors: getWobjectAuthors(state),
-  appUrl: getAppUrl(state),
-  albums: getObjectAlbums(state),
-  authenticated: getIsAuthenticated(state),
-  optionClicked: getIsOptionClicked(state),
-  helmetIcon: getHelmetIcon(state),
-  addOns: getAddOnFromState(state),
-  similarObjects: getSimilarObjectsFromState(state),
-  relatedObjects: getRelatedObjectsFromState(state),
-  brandObject: getBrandObject(state),
-  manufacturerObject: getManufacturerObject(state),
-  merchantObject: getMerchantObject(state),
-  publisherObject: getPublisherObject(state),
-});
+const mapStateToProps = state => {
+  const userName = getAuthenticatedUserName(state);
+
+  return {
+    userName,
+    locale: getUsedLocale(state),
+    activeOption: getActiveOption(state),
+    activeCategory: getActiveCategory(state),
+    siteName: getSiteName(state),
+    wobject: getObjectState(state),
+    authors: getWobjectAuthors(state),
+    appUrl: getAppUrl(state),
+    albums: getObjectAlbums(state),
+    authenticated: getIsAuthenticated(state),
+    optionClicked: getIsOptionClicked(state),
+    helmetIcon: getHelmetIcon(state),
+    addOns: getAddOnFromState(state),
+    similarObjects: getSimilarObjectsFromState(state),
+    relatedObjects: getRelatedObjectsFromState(state),
+    brandObject: getBrandObject(state),
+    manufacturerObject: getManufacturerObject(state),
+    merchantObject: getMerchantObject(state),
+    publisherObject: getPublisherObject(state),
+    user: getUser(state, userName),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
+  getObjectPosts: (username, object, lim) =>
+    dispatch(getObjectPosts({ username, object, limit: lim })),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),

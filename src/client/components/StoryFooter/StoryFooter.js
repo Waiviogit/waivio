@@ -59,12 +59,14 @@ class StoryFooter extends React.Component {
     handleHidePost: PropTypes.func.isRequired,
     userComments: PropTypes.bool,
     isThread: PropTypes.bool,
+    isRecipe: PropTypes.bool,
     editThread: PropTypes.bool,
     closeEditThread: PropTypes.func,
   };
 
   static defaultProps = {
     pendingLike: false,
+    isRecipe: false,
     pendingFlag: false,
     ownPost: false,
     pendingFollow: false,
@@ -220,6 +222,7 @@ class StoryFooter extends React.Component {
       isThread,
       editThread,
       closeEditThread,
+      isRecipe,
     } = this.props;
 
     return (
@@ -267,8 +270,13 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {!singlePostVew && (
-          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
+        {(!singlePostVew || isRecipe) && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={post}
+            isRecipe={isRecipe}
+          />
         )}
         <MuteModal
           item={post}

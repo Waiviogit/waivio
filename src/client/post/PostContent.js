@@ -97,6 +97,7 @@ class PostContent extends React.Component {
     siteName: PropTypes.string.isRequired,
     bookmarks: PropTypes.arrayOf(PropTypes.string),
     sliderMode: PropTypes.bool,
+    isRecipe: PropTypes.bool,
     editPost: PropTypes.func,
     editThreadAction: PropTypes.func,
     buildPost: PropTypes.func,
@@ -125,6 +126,7 @@ class PostContent extends React.Component {
     pendingFollows: [],
     bookmarks: [],
     sliderMode: false,
+    isRecipe: false,
     editPost: () => {},
     toggleBookmark: () => {},
     votePost: () => {},
@@ -269,6 +271,7 @@ class PostContent extends React.Component {
       isModal,
       siteName,
       isThread,
+      isRecipe,
     } = this.props;
     const { editThread, newBody } = this.state;
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
@@ -359,6 +362,7 @@ class PostContent extends React.Component {
           <meta name="article:published_time" property="article:published_time" content={created} />
         </Helmet>
         <StoryFull
+          isRecipe={isRecipe}
           user={user}
           post={content}
           postState={postState}

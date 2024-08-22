@@ -44,7 +44,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
           className="Checklist__listItems"
           onClick={() => {
             history.push(
-              `/checklist/${listItem?.author_permlink}?breadcrumbs=${createQueryBreadcrumbs(
+              `/object/${listItem?.author_permlink}?breadcrumbs=${createQueryBreadcrumbs(
                 listItem?.author_permlink,
                 breadcrumbsFromQuery,
                 name || wobject.author_permlink,
@@ -54,7 +54,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
           key={listItem.author_permlink}
         >
           <a
-            href={`/checklist/${listItem.author_permlink}`}
+            href={`/object/${listItem.author_permlink}`}
             title={getTitleForLink(listItem)}
             onClick={e => e.preventDefault()}
           >
