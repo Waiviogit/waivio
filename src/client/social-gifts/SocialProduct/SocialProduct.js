@@ -124,7 +124,8 @@ const SocialProduct = ({
   const price = hoveredOption.price || isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
-  const showRecipeFields = calories || cookingTime;
+  const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
+  const showRecipeFields = calories || cookingTime || recipeIngredients;
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
@@ -147,7 +148,6 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
-  const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
 
