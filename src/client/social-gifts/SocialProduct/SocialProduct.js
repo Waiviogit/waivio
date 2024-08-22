@@ -128,7 +128,7 @@ const SocialProduct = ({
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
-  const recipePost = postsList[postsIds];
+  const recipePost = postsList[postsIds?.[0]];
   const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
@@ -494,12 +494,12 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            <div className={'SocialProduct__postWrapper'}>
-              {recipePost && isRecipe && (
+            {recipePost && isRecipe && (
+              <div className={'SocialProduct__postWrapper PageContent social'}>
                 <RecipePost signature={signature} recipePost={recipePost} />
-              )}
-              <br />
-            </div>
+                <br />
+              </div>
+            )}
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {showProductDetails && (
               <ProductDetails
