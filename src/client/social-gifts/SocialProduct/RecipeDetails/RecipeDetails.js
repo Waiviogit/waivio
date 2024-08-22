@@ -10,7 +10,7 @@ const RecipeDetails = ({ calories, cookingTime, recipeIngredients, isEditMode })
     {calories && <SocialListItem fieldName={recipeFields.calories} field={calories} />}
     {cookingTime && <SocialListItem fieldName={recipeFields.cookingTime} field={cookingTime} />}
     {!isEmpty(recipeIngredients) && (
-      <RecipeIngredients isSocial ingredients={recipeIngredients} isEditMode={isEditMode} />
+      <RecipeIngredients ingredients={recipeIngredients} isEditMode={isEditMode} />
     )}
   </div>
 );

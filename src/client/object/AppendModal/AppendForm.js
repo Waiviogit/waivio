@@ -2463,32 +2463,38 @@ class AppendForm extends Component {
       case recipeFields.recipeIngredients: {
         const fieldForRules =
           currentField === objectFields.language ? objectFields.language : recipeFields.calories;
+        const isIngredients = currentField === recipeFields.recipeIngredients;
 
         return (
-          <Form.Item>
-            {getFieldDecorator(currentField, {
-              rules: this.getFieldRules(fieldForRules),
-            })(
-              <Input.TextArea
-                autoSize={{ minRows: 4, maxRows: 8 }}
-                className={classNames('AppendForm__input', {
-                  'validation-error': !this.state.isSomeValue,
-                })}
-                disabled={loading}
-                placeholder={
-                  currentField === objectFields.language
-                    ? intl.formatMessage({
-                        id: 'book_language',
-                        defaultMessage: 'Book language',
-                      })
-                    : intl.formatMessage({
-                        id: `object_field_${currentField}`,
-                        defaultMessage: currentField,
-                      })
-                }
-              />,
+          <>
+            <Form.Item>
+              {getFieldDecorator(currentField, {
+                rules: this.getFieldRules(fieldForRules),
+              })(
+                <Input.TextArea
+                  autoSize={{ minRows: 4, maxRows: 8 }}
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={
+                    currentField === objectFields.language
+                      ? intl.formatMessage({
+                          id: 'book_language',
+                          defaultMessage: 'Book language',
+                        })
+                      : intl.formatMessage({
+                          id: `object_field_${currentField}`,
+                          defaultMessage: currentField,
+                        })
+                  }
+                />,
+              )}
+            </Form.Item>
+            {isIngredients && (
+              <p>To list the ingredients, use a comma, a new line, or a semicolon.</p>
             )}
-          </Form.Item>
+          </>
         );
       }
       case objectFields.pin: {
