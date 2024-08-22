@@ -21,20 +21,13 @@ import {
   getObjectName,
   handleCreatePost,
 } from '../../../../common/helpers/wObjectHelper';
-import './SocialProductReviews.less';
-import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-import {
-  getAppHost,
-  getUsedLocale,
-  getWebsiteColors,
-  getWebsiteName,
-} from '../../../../store/appStore/appSelectors';
-import { initialColors } from '../../../websites/constants/colors';
+import withAuthActions from '../../../auth/withAuthActions';
 
-const SocialProductReviews = ({ wobject, authors, intl }) => {
+import './SocialProductReviews.less';
+
+const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
-  const isAuthUser = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
@@ -46,19 +39,8 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
-  const host = useSelector(getAppHost);
-  const colors = useSelector(getWebsiteColors);
-  const websiteName = useSelector(getWebsiteName);
-  const color = colors?.mapMarkerBody || initialColors.marker;
-  const usedLocale = useSelector(getUsedLocale);
   const handleWriteReviewClick = () => {
-    if (!isAuthUser) {
-      history.push(
-        `/sign-in?host=https://${host}&backUrl=https://${host}/object/${wobject.author_permlink}&color=${color}&usedLocale=${usedLocale}&websiteName=${websiteName}`,
-      );
-    } else {
-      handleCreatePost(wobject, authors, history);
-    }
+    onActionInitiated(() => handleCreatePost(wobject, authors, history));
   };
 
   const getPostsList = () => {
@@ -123,5 +105,6 @@ SocialProductReviews.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
+  onActionInitiated: PropTypes.func,
 };
-export default injectIntl(SocialProductReviews);
+export default injectIntl(withAuthActions(SocialProductReviews));
