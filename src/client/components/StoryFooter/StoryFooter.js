@@ -66,6 +66,7 @@ class StoryFooter extends React.Component {
 
   static defaultProps = {
     pendingLike: false,
+    isRecipe: false,
     pendingFlag: false,
     ownPost: false,
     pendingFollow: false,
@@ -269,15 +270,14 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {!singlePostVew ||
-          (isRecipe && (
-            <Comments
-              show={commentsVisible}
-              isQuickComments={!singlePostVew}
-              post={post}
-              isRecipe={isRecipe}
-            />
-          ))}
+        {(!singlePostVew || isRecipe) && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments={!singlePostVew}
+            post={post}
+            isRecipe={isRecipe}
+          />
+        )}
         <MuteModal
           item={post}
           type={'post'}

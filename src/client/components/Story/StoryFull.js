@@ -107,6 +107,7 @@ class StoryFull extends React.Component {
     match: {},
     history: {},
     isModal: false,
+    isRecipe: false,
   };
 
   constructor(props) {

@@ -81,6 +81,7 @@ export const objectFields = {
   calories: 'calories',
   budget: 'budget',
   cookingTime: 'cookingTime',
+  recipeIngredients: 'recipeIngredients',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -91,6 +92,7 @@ export const recipeFields = {
   calories: 'calories',
   budget: 'budget',
   cookingTime: 'cookingTime',
+  recipeIngredients: 'recipeIngredients',
 };
 export const mapObjectTypeFields = {
   mapObjectsList: 'mapObjectsList',

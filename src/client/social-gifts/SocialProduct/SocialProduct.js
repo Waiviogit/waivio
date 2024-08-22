@@ -128,7 +128,7 @@ const SocialProduct = ({
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
-  const recipePost = postsList[postsIds];
+  const recipePost = postsList[postsIds?.[0]];
   const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
@@ -147,6 +147,7 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
+  const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
 
@@ -450,7 +451,12 @@ const SocialProduct = ({
                 {price}
               </div>
               {showRecipeFields && isRecipe && (
-                <RecipeDetails calories={calories} cookingTime={cookingTime} />
+                <RecipeDetails
+                  isEditMode={isEditMode}
+                  calories={calories}
+                  cookingTime={cookingTime}
+                  recipeIngredients={recipeIngredients}
+                />
               )}
               {!isEmpty(wobject?.options) && (
                 <div className="SocialProduct__paddingBottom">
@@ -494,12 +500,12 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            <div className={'SocialProduct__postWrapper'}>
-              {recipePost && isRecipe && (
+            {recipePost && isRecipe && (
+              <div className={'SocialProduct__postWrapper PageContent social'}>
                 <RecipePost signature={signature} recipePost={recipePost} />
-              )}
-              <br />
-            </div>
+                <br />
+              </div>
+            )}
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {showProductDetails && (
               <ProductDetails
@@ -610,28 +616,32 @@ SocialProduct.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  userName: getAuthenticatedUserName(state),
-  locale: getUsedLocale(state),
-  activeOption: getActiveOption(state),
-  activeCategory: getActiveCategory(state),
-  siteName: getSiteName(state),
-  wobject: getObjectState(state),
-  authors: getWobjectAuthors(state),
-  appUrl: getAppUrl(state),
-  albums: getObjectAlbums(state),
-  authenticated: getIsAuthenticated(state),
-  optionClicked: getIsOptionClicked(state),
-  helmetIcon: getHelmetIcon(state),
-  addOns: getAddOnFromState(state),
-  similarObjects: getSimilarObjectsFromState(state),
-  relatedObjects: getRelatedObjectsFromState(state),
-  brandObject: getBrandObject(state),
-  manufacturerObject: getManufacturerObject(state),
-  merchantObject: getMerchantObject(state),
-  publisherObject: getPublisherObject(state),
-  user: getUser(state, ownProps.params.author),
-});
+const mapStateToProps = state => {
+  const userName = getAuthenticatedUserName(state);
+
+  return {
+    userName,
+    locale: getUsedLocale(state),
+    activeOption: getActiveOption(state),
+    activeCategory: getActiveCategory(state),
+    siteName: getSiteName(state),
+    wobject: getObjectState(state),
+    authors: getWobjectAuthors(state),
+    appUrl: getAppUrl(state),
+    albums: getObjectAlbums(state),
+    authenticated: getIsAuthenticated(state),
+    optionClicked: getIsOptionClicked(state),
+    helmetIcon: getHelmetIcon(state),
+    addOns: getAddOnFromState(state),
+    similarObjects: getSimilarObjectsFromState(state),
+    relatedObjects: getRelatedObjectsFromState(state),
+    brandObject: getBrandObject(state),
+    manufacturerObject: getManufacturerObject(state),
+    merchantObject: getMerchantObject(state),
+    publisherObject: getPublisherObject(state),
+    user: getUser(state, userName),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),

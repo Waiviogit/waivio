@@ -72,6 +72,7 @@ import './ObjectInfo.less';
 import MapObjectTypes from './ObjectInfoComponents/MapObjectTypes';
 import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
 import WalletAddress from '../WalletAddress/WalletAddress';
+import RecipeIngredients from '../RecipeIngredients/RecipeIngredients';
 
 @withRouter
 @connect(
@@ -525,6 +526,7 @@ class ObjectInfo extends React.Component {
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
+    const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
     const customSort = get(wobject, 'sortCustom.include', []);
     const companyIdBody = wobject.companyId
       ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
@@ -987,13 +989,13 @@ class ObjectInfo extends React.Component {
                   <FormattedMessage id="object_field_calories" defaultMessage="Calories" />:
                 </div>
                 <span className="field-website__title">
-                  <span className="CompanyId__wordbreak">{calories}</span>
+                  <span className="CompanyId__wordbreak-word">{calories}</span>
                 </span>
               </div>
             )
           : this.listItem(
               recipeFields.calories,
-              calories && <span className="CompanyId__wordbreak">{calories}</span>,
+              calories && <span className="CompanyId__wordbreak-word">{calories}</span>,
             )}
         {!isEditMode
           ? budget && (
@@ -1002,13 +1004,13 @@ class ObjectInfo extends React.Component {
                   <FormattedMessage id="object_field_budget" defaultMessage="Budget" />:
                 </div>
                 <span className="field-website__title">
-                  <span className="CompanyId__wordbreak">{budget}</span>
+                  <span className="CompanyId__wordbreak-word">{budget}</span>
                 </span>
               </div>
             )
           : this.listItem(
               recipeFields.budget,
-              calories && <span className="CompanyId__wordbreak">{budget}</span>,
+              budget && <span className="CompanyId__wordbreak-word">{budget}</span>,
             )}{' '}
         {!isEditMode
           ? cookingTime && (
@@ -1017,14 +1019,20 @@ class ObjectInfo extends React.Component {
                   <FormattedMessage id="object_field_cookingTime" defaultMessage="Cooking time" />:
                 </div>
                 <span className="field-website__title">
-                  <span className="CompanyId__wordbreak">{cookingTime}</span>
+                  <span className="CompanyId__wordbreak-word">{cookingTime}</span>
                 </span>
               </div>
             )
           : this.listItem(
               recipeFields.cookingTime,
-              calories && <span className="CompanyId__wordbreak">{cookingTime}</span>,
+              cookingTime && <span className="CompanyId__wordbreak-word">{cookingTime}</span>,
             )}
+        {this.listItem(
+          recipeFields.recipeIngredients,
+          !isEmpty(recipeIngredients) && (
+            <RecipeIngredients isEditMode={isEditMode} ingredients={recipeIngredients} />
+          ),
+        )}
       </React.Fragment>
     );
     const aboutSection = (
