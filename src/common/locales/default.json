@@ -2645,5 +2645,6 @@
   "object_field_calories": "Calories",
   "object_field_cookingTime": "Cooking time",
   "object_field_budget": "Budget",
-  "top_recipe": "Top recipe"
+  "top_recipe": "Top recipe",
+  "object_field_recipeIngredients": "Recipe ingredients"
 }
