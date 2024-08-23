@@ -2491,9 +2491,7 @@ class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            {isIngredients && (
-              <p>To list the ingredients, use a comma, a new line, or a semicolon.</p>
-            )}
+            {isIngredients && <p>To list the ingredients use a new line.</p>}
           </>
         );
       }
