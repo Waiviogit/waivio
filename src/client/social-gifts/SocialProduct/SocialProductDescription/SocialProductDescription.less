@@ -55,6 +55,7 @@
   }
 
   &__image {
+    border: 1px solid @white-gainsboro;
     cursor: pointer;
     width: auto;
     max-width: 100%;
@@ -62,13 +63,14 @@
     margin-bottom: 20px;
     width: -webkit-fill-available;
     @media @small {
+      margin: 20px;
       margin-bottom: 0;
-      padding: 20px;
       object-fit: contain;
       max-height: 500px;
     }
   }
   &__single-image {
+    border: 1px solid @white-gainsboro;
     float: right;
     width: -webkit-fill-available;
     cursor: pointer;
@@ -83,7 +85,7 @@
       max-height: 300px;
     }
     @media @medium {
-      padding: 0 20px 40px 40px;
+      margin: 0 20px 40px 40px;
       max-height: 500px;
     }
   }
