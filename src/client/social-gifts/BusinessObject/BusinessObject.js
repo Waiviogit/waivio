@@ -368,6 +368,7 @@ const BusinessObject = ({
                 </div>
                 {showBusinessDetails && (
                   <BusinessDetails
+                    mapObjPermlink={mapObjPermlink}
                     email={email}
                     isEditMode={isEditMode}
                     companyIdBody={companyIdBody}
