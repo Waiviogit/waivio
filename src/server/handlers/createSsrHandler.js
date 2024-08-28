@@ -67,6 +67,9 @@ export default function createSsrHandler(template) {
       if (redirect) return res.redirect(302, redirectPath);
     }
 
+    if (req.url.includes('/checklist/'))
+      return res.redirect(301, req.url.replace('/checklist/', '/object/'));
+
     const isUser = !isbot(userAgent);
     const sc2Api = new hivesigner.Client({
       app: process.env.STEEMCONNECT_CLIENT_ID,

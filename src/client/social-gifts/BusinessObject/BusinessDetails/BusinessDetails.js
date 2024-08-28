@@ -27,6 +27,7 @@ const BusinessDetails = ({
   email,
   walletAddress,
   mapObjPermlink,
+  mapCenter,
 }) => {
   const profile = linkField
     ? {
@@ -76,6 +77,7 @@ const BusinessDetails = ({
               permlink={wobject.author_permlink}
               accessExtend={accessExtend}
               mapObjPermlink={mapObjPermlink}
+              center={mapCenter}
             />
           )}
           {website && (
@@ -123,6 +125,7 @@ BusinessDetails.propTypes = {
   phones: PropTypes.arrayOf(),
   walletAddress: PropTypes.arrayOf(),
   companyIdBody: PropTypes.arrayOf(),
+  mapCenter: PropTypes.arrayOf(PropTypes.number),
   wobject: PropTypes.shape().isRequired,
   website: PropTypes.shape(),
   linkField: PropTypes.shape(),
