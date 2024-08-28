@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 const RecipeIngredients = ({ ingredients, isEditMode }) =>
   !isEmpty(ingredients) && (
-    <div>
+    <div className={'paddingBottom'}>
       {!isEditMode && (
         <div className="CompanyId__title">
           <FormattedMessage

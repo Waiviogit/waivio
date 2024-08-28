@@ -125,7 +125,6 @@ const SocialProduct = ({
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
-  const showRecipeFields = calories || cookingTime || recipeIngredients;
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
@@ -157,6 +156,7 @@ const SocialProduct = ({
   const productIdBody = wobject.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
+  const showRecipeFields = calories || cookingTime || recipeIngredients || !isEmpty(productIdBody);
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = isEmpty(customSort)
@@ -208,7 +208,7 @@ const SocialProduct = ({
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
 
   const showProductDetails =
-    !isEmpty(brand) ||
+    (!isRecipe && !isEmpty(brand)) ||
     !isEmpty(manufacturer) ||
     !isEmpty(merchant) ||
     !isEmpty(parent) ||
@@ -452,6 +452,8 @@ const SocialProduct = ({
               </div>
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
+                  authorPermlink={wobject.author_permlink}
+                  productIdBody={productIdBody}
                   isEditMode={isEditMode}
                   calories={calories}
                   cookingTime={cookingTime}

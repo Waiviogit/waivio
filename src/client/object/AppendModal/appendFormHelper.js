@@ -14,7 +14,7 @@ export const validateAffiliateUrl = (rule, url, callback) => {
 };
 
 export const splitIngredients = string => {
-  const pattern = new RegExp(`[,;\n]`);
+  const pattern = new RegExp(`[\n]`);
 
   return string?.split(pattern)?.filter(item => item);
 };
