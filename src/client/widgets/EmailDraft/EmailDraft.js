@@ -7,16 +7,17 @@ import { getAppHost } from '../../../store/appStore/appSelectors';
 
 import './EmailDraft.less';
 
-const EmailDraft = ({ accessExtend, email, name, permlink, mapObjPermlink }) => {
+const EmailDraft = ({ accessExtend, email, name, permlink, mapObjPermlink, center }) => {
   const host = useSelector(getAppHost);
   const mapLink = mapObjPermlink;
   const [showModal, setShowModal] = useState(false);
+  const [visible, setVisible] = useState(false);
   const closeModal = () => setShowModal(false);
   const handleCopy = field => message.success(`Copy ${field}`);
   const subjectText = `Boost Visibility for ${name} with a Simple Backlink to ${host}`;
   const bodyText = `We are excited to inform you that ${name} is now featured on ${host}! You can view your listing here:
 
-https//:{host}/${permlink}
+https://{host}/${permlink}
 
 Additionally, ${name} can be also found on our interactive map:
 
@@ -42,15 +43,27 @@ The ${host} Team`;
         {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
         <Tooltip
           placement="topLeft"
+          visible={visible}
           title={
-            <span onClick={() => setShowModal(true)}>
+            <span
+              onClick={() => {
+                setShowModal(true);
+                setVisible(false);
+              }}
+            >
               <Icon type="user" /> Request backlink
             </span>
           }
           overlayClassName="EmailDraft__tooltip"
           overlayStyle={{ top: '10px' }}
         >
-          <Icon type="ellipsis" />
+          <span
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            <Icon type="ellipsis" style={{ fontSize: '20px' }} />
+          </span>
         </Tooltip>
       </span>
       <Modal
@@ -60,33 +73,41 @@ The ${host} Team`;
         onCancel={closeModal}
         footer={null}
       >
-        <p>
-          <b>To: </b>
-          {email}
+        <p className={'EmailDraft__item'}>
+          <span>
+            <b>To: </b>
+            {email}
+          </span>
+
           <CopyToClipboard text={email} onCopy={() => handleCopy('email')}>
             <Icon type="copy" />
           </CopyToClipboard>
         </p>
-        <p>
-          <b>Subject: </b>
-          {subjectText}
+        <p className={'EmailDraft__item'}>
+          <span>
+            <b>Subject: </b>
+            {subjectText}
+          </span>
           <CopyToClipboard text={subjectText} onCopy={() => handleCopy('subject')}>
             <Icon type="copy" />
           </CopyToClipboard>
         </p>
         <div>
           <p>
-            <b>Email body: </b>We are excited to inform you that {name} is now featured on {host}!
-            You can view your listing here:
+            <b>Email: </b>We are excited to inform you that {name} is now featured on {host}! You
+            can view your listing here:
           </p>
           <p>
-            https//:{host}/{permlink}
+            https://{host}/{permlink}
           </p>
+
           {mapLink && (
             <React.Fragment>
               {' '}
               <p>Additionally, {name} can be also found on our interactive map:</p>
-              <p>{mapLink}</p>
+              <p>
+                https://{host}/object/${mapLink}?center={center}&zoom=6&permlink={permlink}
+              </p>
             </React.Fragment>
           )}
           <p>
@@ -105,9 +126,9 @@ The ${host} Team`;
           </p>
           <p>We look forward to your response and hope to collaborate for mutual benefit.</p>
           <p>Kind regards,</p>
-          <p>
-            The {host} Team{' '}
-            <CopyToClipboard text={bodyText} onCopy={() => handleCopy('text')}>
+          <p className={'EmailDraft__item'}>
+            <span>The {host} Team</span>{' '}
+            <CopyToClipboard text={bodyText} onCopy={() => handleCopy('email')}>
               <Icon type="copy" />
             </CopyToClipboard>
           </p>
@@ -123,6 +144,7 @@ EmailDraft.propTypes = {
   name: PropTypes.string,
   mapObjPermlink: PropTypes.string,
   permlink: PropTypes.string,
+  center: PropTypes.arrayOf(PropTypes.number),
 };
 
 export default EmailDraft;

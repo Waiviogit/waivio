@@ -369,6 +369,7 @@ const BusinessObject = ({
                 {showBusinessDetails && (
                   <BusinessDetails
                     mapObjPermlink={mapObjPermlink}
+                    mapCenter={[Number(map.latitude), Number(map.longitude)]}
                     email={email}
                     isEditMode={isEditMode}
                     companyIdBody={companyIdBody}

@@ -82,8 +82,8 @@ export default function withAuthActions(WrappedComponent) {
         if (typeof window !== 'undefined')
           window.location.href = `https://${this.props.domain}/sign-in?host=${
             this.props.host
-          }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
-            .websiteName || this.props.host}`;
+          }&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
+            .websiteName || this.props.host}&backUrl=https://${this.props.host}${path}`;
       }
     }
 
