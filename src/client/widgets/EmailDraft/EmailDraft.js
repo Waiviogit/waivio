@@ -17,11 +17,15 @@ const EmailDraft = ({ accessExtend, email, name, permlink, mapObjPermlink, cente
   const subjectText = `Boost Visibility for ${name} with a Simple Backlink to ${host}`;
   const bodyText = `We are excited to inform you that ${name} is now featured on ${host}! You can view your listing here:
 
-https://{host}/${permlink}
+https://${host}/object/${permlink}
 
-Additionally, ${name} can be also found on our interactive map:
+${
+  mapLink
+    ? `Additionally, ${name} can be also found on our interactive map:
 
-{{map-link}}
+https://${host}/object/${mapLink}?center=${center.join(',')}&zoom=6&permlink=${permlink}`
+    : ''
+}
 
 To ensure your listing is accurate and comprehensive, please review it and let us know if any updates are needed.
 
@@ -93,12 +97,18 @@ The ${host} Team`;
           </CopyToClipboard>
         </p>
         <div>
-          <p>
-            <b>Email: </b>We are excited to inform you that {name} is now featured on {host}! You
-            can view your listing here:
+          <p className={'EmailDraft__item'}>
+            <span>
+              <b>Email: </b>We are excited to inform you that {name} is now featured on {host}! You
+              can view your listing here:
+            </span>
+
+            <CopyToClipboard text={bodyText} onCopy={() => handleCopy('email')}>
+              <Icon type="copy" />
+            </CopyToClipboard>
           </p>
           <p>
-            https://{host}/{permlink}
+            https://{host}/object/{permlink}
           </p>
 
           {mapLink && (
@@ -106,7 +116,7 @@ The ${host} Team`;
               {' '}
               <p>Additionally, {name} can be also found on our interactive map:</p>
               <p>
-                https://{host}/object/${mapLink}?center={center}&zoom=6&permlink={permlink}
+                https://{host}/object/{mapLink}?center={center.join(',')}&zoom=6&permlink={permlink}
               </p>
             </React.Fragment>
           )}
@@ -126,12 +136,7 @@ The ${host} Team`;
           </p>
           <p>We look forward to your response and hope to collaborate for mutual benefit.</p>
           <p>Kind regards,</p>
-          <p className={'EmailDraft__item'}>
-            <span>The {host} Team</span>{' '}
-            <CopyToClipboard text={bodyText} onCopy={() => handleCopy('email')}>
-              <Icon type="copy" />
-            </CopyToClipboard>
-          </p>
+          <p>The {host} Team</p>
         </div>
       </Modal>
     </div>
