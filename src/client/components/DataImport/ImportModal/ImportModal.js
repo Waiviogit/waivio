@@ -89,7 +89,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
           placeholder={intl.formatMessage({ id: 'select', defaultMessage: 'Select' })}
           onSelect={setObjectType}
         >
-          {['book', 'product', 'business', 'restaurant', 'link'].map(type => (
+          {['book', 'product', 'business', 'restaurant', 'link', 'recipe', 'person'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}
         </Select>
