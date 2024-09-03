@@ -8,6 +8,7 @@
   "save": "Save",
   "saved": "Saved",
   "cancel": "Cancel",
+  "match_bots_tags_auth_text": "The Tags bot requires authorization to upvote data updates on your behalf",
   "paid_waiv": "Paid (WAIV)",
   "delay_by_blocks": "Delay by {delay} blocks",
   "confirm": "Confirm",

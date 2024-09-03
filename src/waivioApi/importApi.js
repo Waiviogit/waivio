@@ -506,6 +506,29 @@ export const getDepartmentsList = async (userName, skip, limit) => {
     .catch(e => e);
 };
 
+export const getTagsList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.tagsBot}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const setDepartmentsBotVote = async (user, minVotingPower) => {
   let token = getGuestAccessToken();
   const isGuest = token === 'null' ? false : Boolean(token);
@@ -513,6 +536,28 @@ export const setDepartmentsBotVote = async (user, minVotingPower) => {
   if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minVotingPower,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const setTagsBotVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.tagsBot}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
@@ -551,6 +596,28 @@ export const deleteDepartments = async (user, importId) => {
     .then(response => response)
     .catch(e => e);
 };
+export const deleteTags = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.tagsBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getHistoryDepartmentsObjects = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -574,6 +641,28 @@ export const getHistoryDepartmentsObjects = async (userName, skip, limit) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getHistoryTagsObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.tagsBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getDepartmentsVote = async userName => {
   let token = getGuestAccessToken();
@@ -582,6 +671,23 @@ export const getDepartmentsVote = async userName => {
   if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.importApiPrefix}${config.departments}${config.power}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getTagsVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.tagsBot}${config.power}?user=${userName}`, {
     headers: {
       ...headers,
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
@@ -616,6 +722,29 @@ export const changeDepartments = async (user, status, importId) => {
     .then(response => response)
     .catch(e => e);
 };
+export const changeTags = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.tagsBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const createDepartment = async (user, authorPermlink, scanEmbedded) => {
   let token = getGuestAccessToken();
@@ -624,6 +753,33 @@ export const createDepartment = async (user, authorPermlink, scanEmbedded) => {
   if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      authorPermlink,
+      scanEmbedded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+};
+
+export const createTags = async (user, authorPermlink, scanEmbedded) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.tagsBot}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),

@@ -143,6 +143,7 @@ export default {
       'chrome-extension',
       'claim-authority',
       'departments-bot',
+      'tags-bot',
       'descriptions-bot',
       'list-duplication',
     ].join('|'),
