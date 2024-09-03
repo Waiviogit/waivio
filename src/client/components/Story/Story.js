@@ -1,7 +1,6 @@
 import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ReactSVG } from 'react-svg';
 import {
   injectIntl,
   FormattedMessage,
@@ -10,7 +9,7 @@ import {
   FormattedTime,
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
-import { Tag, Tooltip } from 'antd';
+import { Tag } from 'antd';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -32,6 +31,7 @@ import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
 import QuickCommentEditor from '../Comments/QuickCommentEditor';
+import PinButton from '../../widgets/PinButton';
 
 @injectIntl
 @withRouter
@@ -437,28 +437,18 @@ class Story extends React.Component {
                         this.getWobjects(post.wobjects.slice(0, isObjectPage ? 3 : 4))}
                     </div>
                     {isObjectPage && (
-                      <Tooltip
-                        placement="topLeft"
-                        title={tooltipTitle}
-                        overlayClassName="HeartButtonContainer"
-                        overlayStyle={{ top: '10px' }}
-                      >
-                        <ReactSVG
-                          className={currentUserPin ? 'pin-website-color' : pinClassName}
-                          wrapper="span"
-                          src="/images/icons/pin-outlined.svg"
-                          onClick={() =>
-                            handlePinPost(
-                              post,
-                              pinnedPostsUrls,
-                              user,
-                              match,
-                              wobject,
-                              userVotingPower,
-                            )
-                          }
-                        />
-                      </Tooltip>
+                      <PinButton
+                        tooltipTitle={tooltipTitle}
+                        handlePinPost={handlePinPost}
+                        userVotingPower={userVotingPower}
+                        wobject={wobject}
+                        pinnedPostsUrls={pinnedPostsUrls}
+                        match={match}
+                        currentUserPin={currentUserPin}
+                        user={user}
+                        post={post}
+                        pinClassName={pinClassName}
+                      />
                     )}
                   </div>
                 </div>
