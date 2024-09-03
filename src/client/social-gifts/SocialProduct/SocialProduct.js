@@ -121,7 +121,8 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const price = hoveredOption.price || isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const price = hoveredOption.price || defaultPrice;
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
