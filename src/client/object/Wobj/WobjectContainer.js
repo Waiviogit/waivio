@@ -98,10 +98,11 @@ class WobjectContainer extends React.PureComponent {
         : {};
 
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
-      const isRecipe = res.object_type === 'recipe';
-      const instacardAff = isRecipe
-        ? res?.affiliateLinks.find(aff => aff.type === 'instacart')
-        : null;
+      const isRecipe = res.value.object_type === 'recipe';
+      const instacardAff =
+        isRecipe && res?.value?.affiliateLinks
+          ? res?.value?.affiliateLinks?.find(aff => aff.type === 'instacart')
+          : null;
 
       if (instacardAff && typeof document !== 'undefined') {
         const fjs = document.getElementsByTagName('script')[0];
