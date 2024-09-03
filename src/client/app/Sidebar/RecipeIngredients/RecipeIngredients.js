@@ -24,6 +24,7 @@ const RecipeIngredients = ({ ingredients, isEditMode }) =>
               key={`${ingredient}-${i}`}
               className={'field-website__title'}
               style={{ listStyle: 'inside' }}
+              itemProp="recipeIngredient"
             >
               <Link
                 to={`/discover-objects/recipe?search=${ingredient}`}
