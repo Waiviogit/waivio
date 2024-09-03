@@ -98,6 +98,28 @@ class WobjectContainer extends React.PureComponent {
         : {};
 
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
+      const isRecipe = res.object_type === 'recipe';
+      const instacardAff = isRecipe
+        ? res?.affiliateLinks.find(aff => aff.type === 'instacart')
+        : null;
+
+      if (instacardAff && typeof document !== 'undefined') {
+        const fjs = document.getElementsByTagName('script')[0];
+        const element = document.getElementById('standard-instacart-widget-v1');
+
+        // if (element) element.remove();
+
+        if (!element) {
+          const js = document.createElement('script');
+
+          js.id = 'standard-instacart-widget-v1';
+          js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+          js.async = true;
+          js.dataset.source_origin = 'affiliate_hub';
+          fjs.parentNode.insertBefore(js, fjs);
+        }
+      }
+
       if (this.props.currHost?.includes('waivio')) {
         if (
           (await showDescriptionPage(res.value, this.props.locale)) &&

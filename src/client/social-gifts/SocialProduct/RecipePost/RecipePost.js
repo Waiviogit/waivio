@@ -12,7 +12,10 @@ import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 import { getVotePercent } from '../../../../store/settingsStore/settingsSelectors';
 import { getPinnedPostsUrls } from '../../../../store/feedStore/feedSelectors';
-import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+} from '../../../../store/authStore/authSelectors';
 import './RecipePost.less';
 
 const RecipePost = ({
@@ -23,6 +26,7 @@ const RecipePost = ({
   userVotingPower,
   wobject,
   handlePinRecipePost,
+  isAuth,
 }) => {
   const match = useRouteMatch();
   const currentUserPin = pinnedPostsUrls.includes(recipePost.url);
@@ -39,20 +43,22 @@ const RecipePost = ({
 
   return (
     <div className={'RecipePost'}>
-      <div className="RecipePost__pin-wrap">
-        <PinButton
-          tooltipTitle={tooltipTitle}
-          handlePinPost={handlePinRecipePost}
-          userVotingPower={userVotingPower}
-          wobject={wobject}
-          pinnedPostsUrls={pinnedPostsUrls}
-          match={match}
-          currentUserPin={currentUserPin}
-          user={user}
-          post={recipePost}
-          pinClassName={pinClassName}
-        />
-      </div>
+      {isAuth && (
+        <div className="RecipePost__pin-wrap">
+          <PinButton
+            tooltipTitle={tooltipTitle}
+            handlePinPost={handlePinRecipePost}
+            userVotingPower={userVotingPower}
+            wobject={wobject}
+            pinnedPostsUrls={pinnedPostsUrls}
+            match={match}
+            currentUserPin={currentUserPin}
+            user={user}
+            post={recipePost}
+            pinClassName={pinClassName}
+          />
+        </div>
+      )}
       <span className={'StoryFull__title'}>Top Recipe</span>
       <PostContent
         isRecipe
@@ -71,6 +77,7 @@ RecipePost.propTypes = {
   pinnedPostsUrls: PropTypes.arrayOf().isRequired,
   signature: PropTypes.string.isRequired,
   handlePinRecipePost: PropTypes.func.isRequired,
+  isAuth: PropTypes.bool.isRequired,
   userVotingPower: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,
 };
@@ -80,6 +87,7 @@ const mapStateToProps = state => ({
   wobject: getObject(state),
   pinnedPostsUrls: getPinnedPostsUrls(state),
   user: getAuthenticatedUser(state),
+  isAuth: getIsAuthenticated(state),
 });
 
 const mapDispatchToProps = {
