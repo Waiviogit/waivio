@@ -1,12 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
+import { useSelector } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
 import { indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  getObjectAvatar,
+  getObjectName,
+} from '../../../../common/helpers/wObjectHelper';
 import './PicturesSlider.less';
+import { getWobjectGallery } from '../../../../waivioApi/ApiClient';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
 const PicturesSlider = ({
   hoveredOption,
@@ -16,19 +24,20 @@ const PicturesSlider = ({
   altText,
   albums,
 }) => {
-  const pictures = albums
-    ?.flatMap(alb => alb?.items)
-    ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-  const avatar = getObjectAvatar(currentWobj);
-  const [currentImage, setCurrentImage] = useState(
-    isEmpty(avatar) ? pictures[0] : { body: avatar },
-  );
+  const [currentImage, setCurrentImage] = useState({});
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
   const [lastSlideToShow, setLastSlideToShow] = useState(null);
   const [hoveredPic, setHoveredPic] = useState({});
+  const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const slider = useRef();
+  const history = useHistory();
+  const locale = useSelector(getUsedLocale);
+  const match = useRouteMatch();
+  const authorPermlink = history.location.hash
+    ? getLastPermlinksFromHash(history.location.hash)
+    : match.params.name;
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
@@ -51,6 +60,19 @@ const PicturesSlider = ({
     setPhotoIndex(next);
     setCurrentImage(pictures[next]);
   };
+
+  useEffect(() => {
+    getWobjectGallery(authorPermlink, locale).then(async al => {
+      const allPhotos = al
+        ?.flatMap(alb => alb?.items)
+        ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+      const avatar = getObjectAvatar(currentWobj);
+
+      setPictures(allPhotos);
+      setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
+      setPhotoIndex(0);
+    });
+  }, [authorPermlink, currentWobj.author_permlink, albums.length]);
 
   useEffect(() => {
     if (photoIndex === 0) {
