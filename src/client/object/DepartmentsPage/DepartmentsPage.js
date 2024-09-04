@@ -10,6 +10,7 @@ import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objec
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const limit = 10;
 
@@ -18,9 +19,11 @@ const DepartmentsPage = () => {
   const [optionsList, setOptionsList] = useState([]);
   const activeDepartment = useSelector(getActiveDepartment);
   const userName = useSelector(getAuthenticatedUserName);
+  const wobject = useSelector(getObject);
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const departmentName = match.params.department;
+  const isRecipe = wobject.object_type === 'recipe';
 
   useEffect(() => {
     setOptionsList([]);
@@ -51,7 +54,11 @@ const DepartmentsPage = () => {
     <>
       <div className="ObjectCardView__prefix">
         <div className="ObjectCardView__prefix-content">
-          <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment.name}
+          <FormattedMessage
+            id={isRecipe ? 'category' : 'department'}
+            defaultMessage={isRecipe ? 'Category' : 'Department'}
+          />
+          : {activeDepartment.name}
         </div>
       </div>
       <InfiniteScroll

@@ -490,6 +490,13 @@ export const getObjectFieldName = (field, object, intl) => {
       default:
         return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
     }
+  } else if (object?.object_type === 'recipe') {
+    switch (field) {
+      case 'departments':
+        return intl.formatMessage({ id: `categories`, defaultMessage: 'Categories' });
+      default:
+        return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
+    }
   } else {
     return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
   }
