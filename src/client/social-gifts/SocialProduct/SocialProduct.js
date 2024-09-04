@@ -497,14 +497,14 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) ||
+              {!isEmpty(affiliateLinks) &&
                 !(affiliateLinks.length === 1 && instacardAff)(
                   <div className="SocialProduct__paddingBottom">
                     <div className="SocialProduct__subtitle">
                       <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                     </div>
                     <div className="SocialProduct__affLinks">
-                      {affiliateLinks.map(link => {
+                      {affiliateLinks?.map(link => {
                         if (link.type === 'instacart') return null;
 
                         return (
