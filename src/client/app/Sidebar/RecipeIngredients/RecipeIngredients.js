@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
-const RecipeIngredients = ({ ingredients, isEditMode }) =>
+const RecipeIngredients = ({ ingredients, isEditMode, isSocial }) =>
   !isEmpty(ingredients) && (
-    <div className={'paddingBottom'}>
+    <div className={isSocial ? 'paddingBottom' : ''}>
       {!isEditMode && (
         <div className="CompanyId__title">
           <FormattedMessage
@@ -42,5 +42,6 @@ const RecipeIngredients = ({ ingredients, isEditMode }) =>
 RecipeIngredients.propTypes = {
   ingredients: PropTypes.arrayOf().isRequired,
   isEditMode: PropTypes.bool.isRequired,
+  isSocial: PropTypes.bool,
 };
 export default RecipeIngredients;
