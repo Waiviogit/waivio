@@ -24,13 +24,12 @@ const RecipeIngredients = ({ ingredients, isEditMode, isSocial }) =>
               key={`${ingredient}-${i}`}
               className={'field-website__title'}
               style={{ listStyle: 'inside' }}
-              itemProp="recipeIngredient"
             >
               <Link
                 to={`/discover-objects/recipe?search=${ingredient}`}
                 className={'CompanyId__wordbreak-word'}
               >
-                {ingredient}
+                <span itemProp="recipeIngredient">{ingredient}</span>
               </Link>
             </li>
           ))}

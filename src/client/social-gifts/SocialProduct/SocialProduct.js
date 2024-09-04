@@ -278,7 +278,7 @@ const SocialProduct = ({
   const bestRating = getRatingForSocial(wobject.rating);
 
   return (
-    <div>
+    <div itemScope itemType="https://schema.org/Recipe">
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -304,9 +304,8 @@ const SocialProduct = ({
         itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'}
         itemScope
       >
-        <meta itemProp="mpn" content="925872" />
+        {!isRecipe && <meta itemProp="mpn" content="925872" />}
         <meta itemProp="name" content={getObjectName(wobject)} />
-        {isRecipe && <meta itemProp="name" content={recipeIngredients.join(', ')} />}
         <link itemProp="image" href={image} />
         <meta itemProp="description" content={description} />
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
@@ -341,7 +340,7 @@ const SocialProduct = ({
                     : 'SocialProduct__bookWobjName'
                 }
               >
-                {wobject.name}
+                {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
               </h1>
             )}
             {isMobile() && !isEmpty(currBrand) && (
@@ -498,20 +497,25 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) && (
-                <div className="SocialProduct__paddingBottom">
-                  <div className="SocialProduct__subtitle">
-                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                  </div>
-                  <div className="SocialProduct__affLinks">
-                    {affiliateLinks.map(link => (
-                      <div key={link.link} className="SocialProduct__links">
-                        <AffiliatLink link={link} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {!isEmpty(affiliateLinks) ||
+                !(affiliateLinks.length === 1 && instacardAff)(
+                  <div className="SocialProduct__paddingBottom">
+                    <div className="SocialProduct__subtitle">
+                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                    </div>
+                    <div className="SocialProduct__affLinks">
+                      {affiliateLinks.map(link => {
+                        if (link.type === 'instacart') return null;
+
+                        return (
+                          <div key={link.link} className="SocialProduct__links">
+                            <AffiliatLink link={link} />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>,
+                )}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
