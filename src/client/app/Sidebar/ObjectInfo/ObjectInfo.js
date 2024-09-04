@@ -746,6 +746,7 @@ class ObjectInfo extends React.Component {
             objectFields.departments,
             !isEmpty(wobject?.departments) && (
               <Department
+                isRecipe={isRecipe}
                 departments={departments}
                 isEditMode={isEditMode}
                 history={this.props.history}
@@ -1033,6 +1034,18 @@ class ObjectInfo extends React.Component {
             <RecipeIngredients isEditMode={isEditMode} ingredients={recipeIngredients} />
           ),
         )}
+        {this.listItem(
+          objectFields.departments,
+          !isEmpty(wobject?.departments) && (
+            <Department
+              isRecipe={isRecipe}
+              departments={departments}
+              isEditMode={isEditMode}
+              history={this.props.history}
+              wobject={this.props.wobject}
+            />
+          ),
+        )}
       </React.Fragment>
     );
     const aboutSection = (
@@ -1056,10 +1069,12 @@ class ObjectInfo extends React.Component {
             ),
           )}
         {!isEditMode &&
+          !isRecipe &&
           this.listItem(
             objectFields.departments,
             !isEmpty(wobject?.departments) && (
               <Department
+                isRecipe={isRecipe}
                 departments={departments}
                 isEditMode={isEditMode}
                 history={this.props.history}
