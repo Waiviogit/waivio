@@ -2647,8 +2647,12 @@ class AppendForm extends Component {
             )}
             <p>
               <FormattedMessage
-                id="department_info"
-                defaultMessage="Each product can be listed in up to 7 departments."
+                id={isRecipe ? 'recipe_category_info' : 'department_info'}
+                defaultMessage={
+                  isRecipe
+                    ? 'Each recipe can be listed in up to 10 categories.'
+                    : 'Each product can be listed in up to 7 departments.'
+                }
               />
             </p>
           </Form.Item>

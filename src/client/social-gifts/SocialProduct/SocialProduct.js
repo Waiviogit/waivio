@@ -161,7 +161,12 @@ const SocialProduct = ({
   const productIdBody = wobject.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
-  const showRecipeFields = calories || cookingTime || recipeIngredients || !isEmpty(productIdBody);
+  const showRecipeFields =
+    calories ||
+    cookingTime ||
+    recipeIngredients ||
+    !isEmpty(productIdBody) ||
+    !isEmpty(departments);
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = isEmpty(customSort)
@@ -213,21 +218,22 @@ const SocialProduct = ({
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
 
   const showProductDetails =
-    (!isRecipe && !isEmpty(brand)) ||
-    !isEmpty(manufacturer) ||
-    !isEmpty(merchant) ||
-    !isEmpty(parent) ||
-    !isEmpty(productWeight) ||
-    !isEmpty(dimensions) ||
-    !isEmpty(departments) ||
-    !isEmpty(groupId) ||
-    !isEmpty(productIdBody) ||
-    !isEmpty(language) ||
-    !isEmpty(wobject.publicationDate) ||
-    !isEmpty(printLength) ||
-    !isEmpty(publisher) ||
-    !isEmpty(website) ||
-    !isEmpty(ageRange);
+    !isRecipe &&
+    (!isEmpty(brand) ||
+      !isEmpty(manufacturer) ||
+      !isEmpty(merchant) ||
+      !isEmpty(parent) ||
+      !isEmpty(productWeight) ||
+      !isEmpty(dimensions) ||
+      !isEmpty(departments) ||
+      !isEmpty(groupId) ||
+      !isEmpty(productIdBody) ||
+      !isEmpty(language) ||
+      !isEmpty(wobject.publicationDate) ||
+      !isEmpty(printLength) ||
+      !isEmpty(publisher) ||
+      !isEmpty(website) ||
+      !isEmpty(ageRange));
 
   const getAddOnsSimilarRelatedObjects = () => {
     getAddOnsAction(addOnPermlinks, userName, limit);
@@ -471,7 +477,9 @@ const SocialProduct = ({
               )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
-                  authorPermlink={wobject.author_permlink}
+                  wobject={wobject}
+                  history={history}
+                  departments={departments}
                   productIdBody={productIdBody}
                   isEditMode={isEditMode}
                   calories={calories}

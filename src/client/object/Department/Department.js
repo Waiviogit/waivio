@@ -9,7 +9,7 @@ import './Department.less';
 const Department = ({ wobject, departments, isEditMode, isSocialGifts, isRecipe }) => (
   <div
     className={classNames(isSocialGifts ? 'Department__socialLayout' : 'flex-column', {
-      paddingBottom: !isEditMode,
+      paddingBottom: isSocialGifts,
     })}
   >
     {!isEditMode && !isEmpty(departments) && (
