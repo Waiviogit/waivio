@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import DepartmentList from './DepartmentList';
 import './Department.less';
 
-const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
+const Department = ({ wobject, departments, isEditMode, isSocialGifts, isRecipe }) => (
   <div
     className={classNames(isSocialGifts ? 'Department__socialLayout' : 'flex-column', {
       paddingBottom: !isEditMode,
@@ -14,7 +14,11 @@ const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
   >
     {!isEditMode && !isEmpty(departments) && (
       <div className="Department__title">
-        <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
+        <FormattedMessage
+          id={isRecipe ? 'categories' : 'departments'}
+          defaultMessage={isRecipe ? 'Categories' : 'Departments'}
+        />
+        :{' '}
       </div>
     )}
     <div className={isSocialGifts ? 'Department__wrapper' : ''}>
@@ -32,6 +36,7 @@ Department.propTypes = {
   departments: PropTypes.arrayOf().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   isSocialGifts: PropTypes.bool,
+  isRecipe: PropTypes.bool,
 };
 
 export default Department;
