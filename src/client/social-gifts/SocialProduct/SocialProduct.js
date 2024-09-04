@@ -139,6 +139,10 @@ const SocialProduct = ({
   const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
+  const instacardAff =
+    isRecipe && wobject?.affiliateLinks
+      ? wobject?.affiliateLinks?.find(aff => aff.type === 'instacart')
+      : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -290,9 +294,13 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div itemType="https://schema.org/Product" itemScope>
+      <div
+        itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'}
+        itemScope
+      >
         <meta itemProp="mpn" content="925872" />
         <meta itemProp="name" content={getObjectName(wobject)} />
+        {isRecipe && <meta itemProp="name" content={recipeIngredients.join(', ')} />}
         <link itemProp="image" href={image} />
         <meta itemProp="description" content={description} />
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
@@ -451,6 +459,17 @@ const SocialProduct = ({
               >
                 {price}
               </div>
+              {isRecipe && instacardAff && (
+                <div
+                  id={'shop-with-instacart-v1'}
+                  data-affiliate_id={instacardAff?.affiliateCode}
+                  data-source_origin="affiliate_hub"
+                  data-affiliate_platform="recipe_widget"
+                  style={{
+                    marginBottom: '15px',
+                  }}
+                />
+              )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
                   authorPermlink={wobject.author_permlink}

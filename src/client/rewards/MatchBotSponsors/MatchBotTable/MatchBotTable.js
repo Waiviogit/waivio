@@ -13,6 +13,8 @@ const MatchBotTable = ({
   rules,
   setIsEnabledRule,
   isNew,
+  handleShowMore,
+  hasMore,
 }) => (
   <table className="MatchBotTable">
     <thead>
@@ -49,18 +51,26 @@ const MatchBotTable = ({
           isNew={isNew}
         />
       ))}
+      {}
+      {hasMore && (
+        <tr style={{ cursor: 'pointer' }} onClick={handleShowMore}>
+          <td colSpan={6}>Show more</td>
+        </tr>
+      )}
     </tbody>
   </table>
 );
 
 MatchBotTable.propTypes = {
   handleEditRule: PropTypes.func.isRequired,
+  handleShowMore: PropTypes.func.isRequired,
   handleSwitcher: PropTypes.func.isRequired,
   isAuthority: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   rules: PropTypes.arrayOf(PropTypes.shape()),
   setIsEnabledRule: PropTypes.func.isRequired,
   isNew: PropTypes.bool,
+  hasMore: PropTypes.bool,
 };
 
 MatchBotTable.defaultProps = {

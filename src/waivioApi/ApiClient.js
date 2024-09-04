@@ -817,11 +817,14 @@ export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, pos
     .catch(error => error);
 };
 
-export const getMatchBotRules = guideName =>
-  fetch(`${config.campaignApiPrefix}${config.matchBots}/?bot_name=${guideName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getMatchBotRules = (guideName, limit, skip) =>
+  fetch(
+    `${config.campaignApiPrefix}${config.matchBots}/?bot_name=${guideName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(result => result)
     .catch(error => error);
@@ -3252,11 +3255,14 @@ export const getFiltersForHistoryProposition = userName =>
     .then(response => response)
     .catch(e => e);
 
-export const getSponsorsMatchBots = botName =>
-  fetch(`${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getSponsorsMatchBots = (botName, limit, skip) =>
+  fetch(
+    `${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)

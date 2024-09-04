@@ -36,9 +36,18 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
   const handleSwitcher = () => redirectAuthHiveSigner(isAuthority, MATCH_BOTS_TYPES.SPONSORS);
   const maxRulesLimit = 25;
   const isOverRules = rules?.results?.length >= maxRulesLimit;
+  const handleShowMore = () => {
+    getSponsorsMatchBots(userName, 10, rules.results.length).then(data => {
+      setRules({
+        ...rules,
+        hasMore: data?.hasMore,
+        results: [...rules.results, ...data.results],
+      });
+    });
+  };
 
   const getSponsors = () =>
-    getSponsorsMatchBots(userName).then(data => {
+    getSponsorsMatchBots(userName, 10, 0).then(data => {
       setRules(data);
       setMinVotingPower(data.minVotingPower / 100);
     });
@@ -135,6 +144,8 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
               messageData={messageData}
               isAuthority={isAuthority}
               rules={rules.results}
+              hasMore={rules.hasMore}
+              handleShowMore={handleShowMore}
               setIsEnabledRule={setIsEnabledRule}
               isNew
             />
