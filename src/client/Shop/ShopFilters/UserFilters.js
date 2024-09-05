@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouteMatch } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
 import ShopFilters from './ShopFilters';
@@ -7,12 +7,16 @@ import {
   getDepartmentsUserFilters,
   showMoreTagsForUserFilters,
 } from '../../../waivioApi/ApiClient';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const UserFilters = ({ onClose, name }) => {
   const match = useRouteMatch();
-  const getDepartmentsFilters = path => getDepartmentsUserFilters(name || match.params.name, path);
+  const history = useHistory();
+  const schema = getUserShopSchema(history?.location?.pathname);
+  const getDepartmentsFilters = path =>
+    getDepartmentsUserFilters(name || match.params.name, path, schema);
   const showMoreTagsForFilters = (tagCategory, path, skip, limit) =>
-    showMoreTagsForUserFilters(name || match.params.name, path, tagCategory, skip, limit);
+    showMoreTagsForUserFilters(name || match.params.name, schema, path, tagCategory, skip, limit);
 
   return (
     <ShopFilters

@@ -11,14 +11,14 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 import './ShopDepartments.less';
 import { getDepartmentsList } from '../../../store/shopStore/shopSelectors';
 
-const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path, intl }) => {
+const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, path, intl }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const departments = useSelector(getDepartmentsList);
 
   useEffect(() => {
     getShopDepartments();
-  }, [match.params.name, shopFilter]);
+  }, [match.params.name, shopFilter, schema]);
 
   if (isEmpty(departments)) return null;
 
@@ -61,6 +61,7 @@ const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path, in
 
 ShopDepartmentsList.propTypes = {
   path: PropTypes.string,
+  schema: PropTypes.string,
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
   shopFilter: PropTypes.shape(),
