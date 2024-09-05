@@ -1,17 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
 import { useSelector } from 'react-redux';
-import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
 import { indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import {
-  getLastPermlinksFromHash,
-  getObjectAvatar,
-  getObjectName,
-} from '../../../../common/helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import './PicturesSlider.less';
 import { getWobjectGallery } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
@@ -32,12 +27,8 @@ const PicturesSlider = ({
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const slider = useRef();
-  const history = useHistory();
   const locale = useSelector(getUsedLocale);
-  const match = useRouteMatch();
-  const authorPermlink = history?.location?.hash
-    ? getLastPermlinksFromHash(history?.location?.hash)
-    : match.params.name || currentWobj?.author_permlink;
+  const authorPermlink = currentWobj?.author_permlink;
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
