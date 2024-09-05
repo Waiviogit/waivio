@@ -23,6 +23,7 @@ import { getReservedCounter } from '../../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
   resetSocialSearchResult,
+  resetWebsiteObjectsCoordinates,
   setShowReload,
 } from '../../../../store/websiteStore/websiteActions';
 import {
@@ -90,8 +91,9 @@ const WebsiteBody = props => {
       props.resetSocialSearchResult();
       props.setBoundsParams({});
       props.resetWebsiteFilters();
-      // props.setShowSearchResult(false);
+      props.resetWebsiteObjectsCoordinates();
     };
+    // props.setShowSearchResult(false);
   }, [props.currObj.author_permlink]);
 
   useEffect(() => () => props.setMapData({ center: [], zoom: 8 }), []);
@@ -235,6 +237,7 @@ WebsiteBody.propTypes = {
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
   setMapData: PropTypes.func,
+  resetWebsiteObjectsCoordinates: PropTypes.func,
   setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
@@ -286,5 +289,6 @@ export default connect(
     setBoundsParams,
     setMapData,
     setFavoriteObjectTypes,
+    resetWebsiteObjectsCoordinates,
   },
 )(withRouter(WebsiteBody));
