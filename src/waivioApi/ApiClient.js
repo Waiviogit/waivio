@@ -4045,6 +4045,26 @@ export const getRelatedObjectsFromDepartments = (
     .then(res => res.json())
     .then(r => r)
     .catch(error => error);
+export const getAddOnObjectsFromDepartments = (
+  authorPermlink,
+  userName,
+  locale,
+  skip,
+  limit = 30,
+  host,
+) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.addOn}`, {
+    headers: { ...headers, follower: userName, locale, ...addAppHost(host) },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
 
 export const getSimilarObjectsFromDepartments = (
   authorPermlink,

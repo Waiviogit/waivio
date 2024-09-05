@@ -239,5 +239,6 @@
   "avatar": "/avatar",
   "assistant": "/assistant",
   "mentions": "/mentions",
-  "mapLink": "/map-link"
+  "mapLink": "/map-link",
+  "addOn": "/add-on"
 }

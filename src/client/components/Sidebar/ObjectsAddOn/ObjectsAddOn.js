@@ -3,15 +3,17 @@ import { isEmpty, get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getObjectInfo } from '../../../../waivioApi/ApiClient';
+import { getAddOnObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [addOnObjects, setAddOnObjects] = useState([]);
   const locale = useSelector(getUsedLocale);
   const addOn = get(wobject, 'addOn', []);
+  const userName = useSelector(getAuthenticatedUserName);
   const addOnObjectsPermlinks = !isEmpty(addOn) ? addOn.map(obj => obj.body) : [];
   const sortedAddOnObjects = sortByFieldPermlinksList(addOnObjectsPermlinks, addOnObjects);
   const title = <FormattedMessage id="object_field_addOn" defaultMessage="Add-on" />;
@@ -28,8 +30,13 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   );
 
   useEffect(() => {
-    if (!isEmpty(addOn)) {
-      getObjectInfo(addOnObjectsPermlinks, locale).then(res => setAddOnObjects(res.wobjects));
+    if (
+      !isEmpty(wobject.author_permlink) &&
+      ['product', 'book', 'service'].includes(wobject.object_type)
+    ) {
+      getAddOnObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
+        setAddOnObjects(res.wobjects),
+      );
     }
   }, [wobject.addOn]);
 
