@@ -300,25 +300,30 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div>
-        {!isRecipe && <meta itemProp="mpn" content="925872" />}
-        <meta itemProp="name" content={getObjectName(wobject)} />
-        <link itemProp="image" href={image} />
-        <meta itemProp="description" content={description} />
-        <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-          <link itemProp="url" href={productUrl} />
-          <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} />
-          <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
-        </div>
-        {Boolean(averageRate(bestRating)) && (
-          <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-            <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-            <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+      {!isRecipe && (
+        <div>
+          {!isRecipe && <meta itemProp="mpn" content="925872" />}
+          <meta itemProp="name" content={getObjectName(wobject)} />
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={description} />
+          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+            <link itemProp="url" href={productUrl} />
+            <meta itemProp="availability" content="https://schema.org/InStock" />
+            <meta
+              itemProp="priceCurrency"
+              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
+            />
+            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
           </div>
-        )}
-      </div>
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      )}
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
