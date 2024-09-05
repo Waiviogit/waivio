@@ -329,38 +329,44 @@ class PostContent extends React.Component {
 
     return (
       <div>
-        <Helmet>
-          {!isRecipe && <title>{title}</title>}
-          <link rel="canonical" href={canonicalUrl} />
-          {/* {content?.active_votes?.map(v => ( */}
-          {/*  <link key={`voter-${v.voter}`} rel={`voter-${v.voter}`} href={`/@${v.voter}`} /> */}
-          {/* ))} */}
-          {content?.wobjects?.map(w => (
-            <link key={`wobject-${w.name}`} rel={`wobject-${w.name}`} href={w.defaultShowLink} />
-          ))}
-          {/* <link rel="amphtml" href={ampUrl} /> */}
-          <meta property="fb:app_id" content="754038848413420" />
-          <meta property="og:url" content={url} />
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content={metaTitle} />
-          <meta property="og:description" content={desc} />
-          <meta name="description" content={desc} />
-          <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta name="twitter:site" content={`@${siteName}`} />
-          <meta name="twitter:title" content={metaTitle} />
-          <meta name="twitter:description" content={desc} />
-          <meta property="og:image" content={image} />
-          <meta property="og:image:alt" content="image" />
-          <meta property="og:image:url" content={image} />
-          <meta property="og:image:width" content="680" />
-          <meta property="og:image:height" content="555" />
-          <meta name="twitter:image:src" content={image} />
-          <meta property="og:site_name" content={siteName} />
-          <meta name="article:tag" property="article:tag" content={category} />
-          <link rel="image_src" href={image} />
-          <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
-          <meta name="article:published_time" property="article:published_time" content={created} />
-        </Helmet>
+        {!isRecipe && (
+          <Helmet>
+            <title>{title}</title>
+            <link rel="canonical" href={canonicalUrl} />
+            {/* {content?.active_votes?.map(v => ( */}
+            {/*  <link key={`voter-${v.voter}`} rel={`voter-${v.voter}`} href={`/@${v.voter}`} /> */}
+            {/* ))} */}
+            {content?.wobjects?.map(w => (
+              <link key={`wobject-${w.name}`} rel={`wobject-${w.name}`} href={w.defaultShowLink} />
+            ))}
+            {/* <link rel="amphtml" href={ampUrl} /> */}
+            <meta property="fb:app_id" content="754038848413420" />
+            <meta property="og:url" content={url} />
+            <meta property="og:type" content="article" />
+            <meta property="og:title" content={metaTitle} />
+            <meta property="og:description" content={desc} />
+            <meta name="description" content={desc} />
+            <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+            <meta name="twitter:site" content={`@${siteName}`} />
+            <meta name="twitter:title" content={metaTitle} />
+            <meta name="twitter:description" content={desc} />
+            <meta property="og:image" content={image} />
+            <meta property="og:image:alt" content="image" />
+            <meta property="og:image:url" content={image} />
+            <meta property="og:image:width" content="680" />
+            <meta property="og:image:height" content="555" />
+            <meta name="twitter:image:src" content={image} />
+            <meta property="og:site_name" content={siteName} />
+            <meta name="article:tag" property="article:tag" content={category} />
+            <link rel="image_src" href={image} />
+            <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
+            <meta
+              name="article:published_time"
+              property="article:published_time"
+              content={created}
+            />
+          </Helmet>
+        )}
         <StoryFull
           isRecipe={isRecipe}
           user={user}
