@@ -45,6 +45,13 @@ const UserMenu = props => {
             </li>
           )}{' '}
           {showUserShop && (
+            <li className={getItemClasses(['recipe'])} role="presentation">
+              <Link to={`/@${name}/recipe`}>
+                <FormattedMessage id="recipe" defaultMessage="Recipe" />
+              </Link>
+            </li>
+          )}{' '}
+          {showUserShop && (
             <li className={getItemClasses(['favorites'])} role="presentation">
               <Link to={`/@${name}/favorites`}>
                 <FormattedMessage id="favorites" defaultMessage="Favorites" />
