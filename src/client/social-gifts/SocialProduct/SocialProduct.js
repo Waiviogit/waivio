@@ -278,7 +278,7 @@ const SocialProduct = ({
   const bestRating = getRatingForSocial(wobject.rating);
 
   return (
-    <div itemScope itemType="https://schema.org/Recipe">
+    <div>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -497,25 +497,24 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) &&
-                !(affiliateLinks.length === 1 && instacardAff)(
-                  <div className="SocialProduct__paddingBottom">
-                    <div className="SocialProduct__subtitle">
-                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                    </div>
-                    <div className="SocialProduct__affLinks">
-                      {affiliateLinks?.map(link => {
-                        if (link.type === 'instacart') return null;
+              {!isEmpty(affiliateLinks) && !(affiliateLinks.length === 1 && instacardAff) && (
+                <div className="SocialProduct__paddingBottom">
+                  <div className="SocialProduct__subtitle">
+                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                  </div>
+                  <div className="SocialProduct__affLinks">
+                    {affiliateLinks?.map(link => {
+                      if (link.type === 'instacart') return null;
 
-                        return (
-                          <div key={link.link} className="SocialProduct__links">
-                            <AffiliatLink link={link} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>,
-                )}
+                      return (
+                        <div key={link.link} className="SocialProduct__links">
+                          <AffiliatLink link={link} />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
