@@ -10,14 +10,12 @@ const BusinessMenuItem = ({ item, className }) => {
   const history = useHistory();
   // eslint-disable-next-line consistent-return
   const getLink = i => {
-    const pageType = ['list', 'page', 'webpage'].includes(i.objectType) ? 'checklist' : 'object';
-
     if (has(i, 'linkToWeb')) {
       if (typeof window !== 'undefined') window.open(i.linkToWeb);
     } else if (itemBody.objectType === 'shop') {
       return history.push(`/object-shop/${i.linkToObject}`);
     } else {
-      return history.push(`/${pageType}/${i.linkToObject}`);
+      return history.push(`/object/${i.linkToObject}`);
     }
   };
 
