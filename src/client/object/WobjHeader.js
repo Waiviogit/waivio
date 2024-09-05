@@ -20,12 +20,14 @@ import {
   getObjectName,
   parseWobjectField,
   hasDelegation,
+  hasType,
 } from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import HeartButton from '../widgets/HeartButton';
 
 import '../components/ObjectHeader.less';
+import OBJECT_TYPE from './const/objectTypes';
 
 const WobjHeader = ({
   isEditMode,
@@ -87,7 +89,7 @@ const WobjHeader = ({
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
               <h1 className="ObjectHeader__text ObjectHeader__title" title={name}>
-                {name}
+                {hasType(wobject, OBJECT_TYPE.RECIPE) ? <span itemProp="name">{name}</span> : name}
               </h1>
               <div className="ObjectHeader__controls">
                 <FollowButton
