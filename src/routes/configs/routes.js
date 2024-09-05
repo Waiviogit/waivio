@@ -349,7 +349,7 @@ const routes = {
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
-        `/@:name/(userShop)/:department?`,
+        `/@:name/(userShop|recipe)/:department?`,
         `/@:name/transfers/(details)/:recordId?`,
         `/@:name/(favorites)/:objectType?`,
       ],
@@ -381,6 +381,11 @@ const routes = {
           path: '/map',
           exact: true,
           component: WebsiteBody,
+        },
+        {
+          path: '/recipe/:department?',
+          exact: true,
+          component: UserDepartmentsWobjList,
         },
         {
           path: '/reblogs',

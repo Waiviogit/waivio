@@ -64,14 +64,17 @@ export const getWobjectDepartments = (name, department, excluded, path) => (disp
   });
 };
 
-export const getUserDepartments = (name, department, excluded, path) => (dispatch, getState) => {
+export const getUserDepartments = (name, schema, department, excluded, path) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_DEPARTMENTS.ACTION,
     payload: {
-      promise: getShopUserDepartments(name, department, excluded, path, appHost),
+      promise: getShopUserDepartments(name, department, excluded, path, appHost, schema),
     },
     meta: {
       department,
@@ -135,6 +138,7 @@ export const getGlobalShopList = (
 
 export const getUserShopList = (
   userName,
+  schema,
   follower,
   filter,
   excludedDepartments,
@@ -153,6 +157,7 @@ export const getUserShopList = (
     payload: {
       promise: getUserShopMainFeed(
         userName,
+        schema,
         follower,
         filter,
         excludedDepartments,

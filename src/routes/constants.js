@@ -41,6 +41,7 @@ export default {
       'about',
       'shop',
       'map',
+      'recipe',
     ].join('|'),
   },
   FEED: {

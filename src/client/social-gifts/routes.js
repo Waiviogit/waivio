@@ -192,7 +192,7 @@ const routes = () => ({
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
-        `/@:name/(userShop)/:department?`,
+        `/@:name/(userShop|recipe)/:department?`,
         `/@:name/(favorites)/:objectType?`,
         `/@:name/transfers/(details)/:recordId?`,
       ],
@@ -214,6 +214,11 @@ const routes = () => ({
           path: '/(favorites)/:objectType?',
           exact: true,
           component: UserFavorites,
+        },
+        {
+          path: '/recipe',
+          exact: true,
+          component: UserDepartmentsWobjList,
         },
         {
           path: '/map',

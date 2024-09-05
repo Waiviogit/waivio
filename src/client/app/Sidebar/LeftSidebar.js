@@ -35,6 +35,7 @@ const LeftSidebar = () => {
           )}
         />
         <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
+        <Route path="/@:name/recipe/:department?" component={DepartmentsUser} />
         <Route
           path="/user-shop/:name/:department?"
           render={() => (

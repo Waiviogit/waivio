@@ -4,6 +4,7 @@ import { useRouteMatch } from 'react-router';
 import { getUserShopList } from '../../../store/shopStore/shopActions';
 import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../ListSwitch/ListSwitcher';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const UserDepartmentsWobjList = ({ isSocial }) => {
   const match = useRouteMatch();
@@ -23,10 +24,13 @@ UserDepartmentsWobjList.propTypes = {
   isSocial: PropTypes.bool,
 };
 
-UserDepartmentsWobjList.fetchData = ({ store, match }) =>
-  store.dispatch(
+UserDepartmentsWobjList.fetchData = ({ store, match, url }) => {
+  const schema = getUserShopSchema(url);
+
+  return store.dispatch(
     getUserShopList(
       match.params.name,
+      schema,
       match.params.name,
       { tagCategory: [] },
       [],
@@ -35,5 +39,5 @@ UserDepartmentsWobjList.fetchData = ({ store, match }) =>
       [],
     ),
   );
-
+};
 export default UserDepartmentsWobjList;

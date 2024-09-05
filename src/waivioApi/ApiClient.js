@@ -1495,12 +1495,20 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .then(result => result)
     .catch(error => error);
 
-export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0, limit = 10) => {
+export const showMoreTagsForUserFilters = (
+  userName,
+  schema,
+  path,
+  tagCategory,
+  skip = 0,
+  limit = 10,
+) => {
   return fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       userName,
+      schema,
       tagCategory,
       skip,
       limit,
@@ -3653,7 +3661,7 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserDepartments = (userName, name, excluded, path, host) =>
+export const getShopUserDepartments = (userName, name, excluded, path, host, schema) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
     headers: { ...headers, ...addAppHost(host) },
     method: 'POST',
@@ -3662,6 +3670,7 @@ export const getShopUserDepartments = (userName, name, excluded, path, host) =>
       name,
       excluded,
       path,
+      schema,
     }),
   })
     .then(res => res.json())
@@ -3684,6 +3693,7 @@ export const getShopDepartments = (name, excluded, path, host) =>
 
 export const getUserShopMainFeed = (
   userName,
+  schema,
   follower,
   filter,
   excludedDepartments,
@@ -3709,6 +3719,7 @@ export const getUserShopMainFeed = (
       skip,
       limit,
       path,
+      schema,
       categoryLimit,
     }),
   })
@@ -3839,6 +3850,7 @@ export const getMoreTagsForWobjectShopFilters = (
 
 export const getDepartmentsFeed = (
   userName,
+  schema,
   follower,
   department,
   filter,
@@ -3861,6 +3873,7 @@ export const getDepartmentsFeed = (
       skip,
       limit,
       path,
+      schema,
     }),
   })
     .then(res => res.json())
@@ -3939,11 +3952,11 @@ export const getDepartmentsFilters = path =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentsUserFilters = (userName, path) =>
+export const getDepartmentsUserFilters = (userName, path, schema) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ userName, path }),
+    body: JSON.stringify({ userName, path, schema }),
   })
     .then(res => res.json())
     .then(posts => posts)
