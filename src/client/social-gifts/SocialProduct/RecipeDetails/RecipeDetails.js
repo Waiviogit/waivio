@@ -5,6 +5,7 @@ import SocialListItem from '../SocialListItem/SocialListItem';
 import { recipeFields } from '../../../../common/constants/listOfFields';
 import RecipeIngredients from '../../../app/Sidebar/RecipeIngredients/RecipeIngredients';
 import ProductId from '../../../app/Sidebar/ProductId';
+import Department from '../../../object/Department/Department';
 
 const RecipeDetails = ({
   calories,
@@ -12,23 +13,35 @@ const RecipeDetails = ({
   recipeIngredients,
   isEditMode,
   productIdBody,
-  authorPermlink,
+  departments,
+  wobject,
+  history,
 }) => (
   <div>
     {calories && <SocialListItem fieldName={recipeFields.calories} field={calories} />}
     {cookingTime && <SocialListItem fieldName={recipeFields.cookingTime} field={cookingTime} />}
     {!isEmpty(recipeIngredients) && (
-      <RecipeIngredients ingredients={recipeIngredients} isEditMode={isEditMode} />
+      <RecipeIngredients isSocial ingredients={recipeIngredients} isEditMode={isEditMode} />
     )}
     {!isEmpty(productIdBody) && (
       <div style={{ marginBottom: '8px' }}>
         <ProductId
           isSocialGifts
           isEditMode={false}
-          authorPermlink={authorPermlink}
+          authorPermlink={wobject.author_permlink}
           productIdBody={productIdBody}
         />
       </div>
+    )}
+    {!isEmpty(departments) && (
+      <Department
+        isRecipe
+        isSocialGifts
+        departments={departments}
+        isEditMode={false}
+        history={history}
+        wobject={wobject}
+      />
     )}
   </div>
 );
@@ -36,9 +49,11 @@ const RecipeDetails = ({
 RecipeDetails.propTypes = {
   calories: PropTypes.string.isRequired,
   cookingTime: PropTypes.string.isRequired,
-  authorPermlink: PropTypes.string.isRequired,
   recipeIngredients: PropTypes.shape().isRequired,
+  wobject: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
   productIdBody: PropTypes.arrayOf().isRequired,
+  departments: PropTypes.arrayOf().isRequired,
   isEditMode: PropTypes.bool.isRequired,
 };
 export default RecipeDetails;

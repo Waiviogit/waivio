@@ -2646,5 +2646,6 @@
   "object_field_cookingTime": "Cooking time",
   "object_field_budget": "Budget",
   "top_recipe": "Top recipe",
-  "object_field_recipeIngredients": "Recipe ingredients"
+  "object_field_recipeIngredients": "Recipe ingredients",
+  "recipe_category_info": "Each recipe can be listed in up to 10 categories."
 }

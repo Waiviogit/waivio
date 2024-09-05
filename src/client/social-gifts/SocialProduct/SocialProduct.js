@@ -121,7 +121,8 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const price = hoveredOption.price || isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const price = hoveredOption.price || defaultPrice;
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
@@ -138,6 +139,10 @@ const SocialProduct = ({
   const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
+  const instacardAff =
+    isRecipe && wobject?.affiliateLinks
+      ? wobject?.affiliateLinks?.find(aff => aff.type === 'instacart')
+      : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -156,7 +161,12 @@ const SocialProduct = ({
   const productIdBody = wobject.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
-  const showRecipeFields = calories || cookingTime || recipeIngredients || !isEmpty(productIdBody);
+  const showRecipeFields =
+    calories ||
+    cookingTime ||
+    recipeIngredients ||
+    !isEmpty(productIdBody) ||
+    !isEmpty(departments);
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = isEmpty(customSort)
@@ -208,21 +218,22 @@ const SocialProduct = ({
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
 
   const showProductDetails =
-    (!isRecipe && !isEmpty(brand)) ||
-    !isEmpty(manufacturer) ||
-    !isEmpty(merchant) ||
-    !isEmpty(parent) ||
-    !isEmpty(productWeight) ||
-    !isEmpty(dimensions) ||
-    !isEmpty(departments) ||
-    !isEmpty(groupId) ||
-    !isEmpty(productIdBody) ||
-    !isEmpty(language) ||
-    !isEmpty(wobject.publicationDate) ||
-    !isEmpty(printLength) ||
-    !isEmpty(publisher) ||
-    !isEmpty(website) ||
-    !isEmpty(ageRange);
+    !isRecipe &&
+    (!isEmpty(brand) ||
+      !isEmpty(manufacturer) ||
+      !isEmpty(merchant) ||
+      !isEmpty(parent) ||
+      !isEmpty(productWeight) ||
+      !isEmpty(dimensions) ||
+      !isEmpty(departments) ||
+      !isEmpty(groupId) ||
+      !isEmpty(productIdBody) ||
+      !isEmpty(language) ||
+      !isEmpty(wobject.publicationDate) ||
+      !isEmpty(printLength) ||
+      !isEmpty(publisher) ||
+      !isEmpty(website) ||
+      !isEmpty(ageRange));
 
   const getAddOnsSimilarRelatedObjects = () => {
     getAddOnsAction(addOnPermlinks, userName, limit);
@@ -267,7 +278,7 @@ const SocialProduct = ({
   const bestRating = getRatingForSocial(wobject.rating);
 
   return (
-    <div>
+    <div itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'} itemScope>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -289,25 +300,30 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div itemType="https://schema.org/Product" itemScope>
-        <meta itemProp="mpn" content="925872" />
-        <meta itemProp="name" content={getObjectName(wobject)} />
-        <link itemProp="image" href={image} />
-        <meta itemProp="description" content={description} />
-        <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-          <link itemProp="url" href={productUrl} />
-          <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} />
-          <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
-        </div>
-        {Boolean(averageRate(bestRating)) && (
-          <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-            <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-            <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+      {!isRecipe && (
+        <div>
+          {!isRecipe && <meta itemProp="mpn" content="925872" />}
+          <meta itemProp="name" content={getObjectName(wobject)} />
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={description} />
+          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+            <link itemProp="url" href={productUrl} />
+            <meta itemProp="availability" content="https://schema.org/InStock" />
+            <meta
+              itemProp="priceCurrency"
+              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
+            />
+            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
           </div>
-        )}
-      </div>
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      )}
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
@@ -326,7 +342,7 @@ const SocialProduct = ({
                     : 'SocialProduct__bookWobjName'
                 }
               >
-                {wobject.name}
+                {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
               </h1>
             )}
             {isMobile() && !isEmpty(currBrand) && (
@@ -396,7 +412,7 @@ const SocialProduct = ({
                       : 'SocialProduct__bookWobjName'
                   }
                 >
-                  {wobject.name}
+                  {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
                 </h1>
               )}
               {!isMobile() && !isEmpty(brand) && (
@@ -450,9 +466,22 @@ const SocialProduct = ({
               >
                 {price}
               </div>
+              {isRecipe && instacardAff && (
+                <div
+                  id={'shop-with-instacart-v1'}
+                  data-affiliate_id={instacardAff?.affiliateCode}
+                  data-source_origin="affiliate_hub"
+                  data-affiliate_platform="recipe_widget"
+                  style={{
+                    marginBottom: '15px',
+                  }}
+                />
+              )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
-                  authorPermlink={wobject.author_permlink}
+                  wobject={wobject}
+                  history={history}
+                  departments={departments}
                   productIdBody={productIdBody}
                   isEditMode={isEditMode}
                   calories={calories}
@@ -470,17 +499,21 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) && (
+              {!isEmpty(affiliateLinks) && !(affiliateLinks.length === 1 && instacardAff) && (
                 <div className="SocialProduct__paddingBottom">
                   <div className="SocialProduct__subtitle">
                     <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                   </div>
                   <div className="SocialProduct__affLinks">
-                    {affiliateLinks.map(link => (
-                      <div key={link.link} className="SocialProduct__links">
-                        <AffiliatLink link={link} />
-                      </div>
-                    ))}
+                    {affiliateLinks?.map(link => {
+                      if (link.type === 'instacart') return null;
+
+                      return (
+                        <div key={link.link} className="SocialProduct__links">
+                          <AffiliatLink link={link} />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

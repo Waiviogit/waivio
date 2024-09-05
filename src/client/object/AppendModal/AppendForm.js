@@ -790,9 +790,15 @@ class AppendForm extends Component {
         case recipeFields.cookingTime:
         case recipeFields.recipeIngredients:
         case objectFields.affiliateUrlTemplate:
-        case objectFields.departments:
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
+        case objectFields.departments: {
+          const isRecipe = wObject.object_type === 'recipe';
+
+          return `@${author} added ${
+            isRecipe ? 'Category' : currentField
+          } (${langReadable}): ${appendValue}`;
+        }
         case objectFields.printLength:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue} ${this.props.intl.formatMessage(
             { id: 'lowercase_pages', defaultMessage: 'pages' },
@@ -2612,12 +2618,26 @@ class AppendForm extends Component {
         );
       }
       case objectFields.departments: {
+        const isRecipe = wObject.object_type === 'recipe';
+
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.departments, {
               rules: this.getFieldRules(objectFields.departments),
             })(
               <SearchDepartmentAutocomplete
+                placeholder={
+                  isRecipe
+                    ? intl.formatMessage({
+                        id: 'category',
+                        defaultMessage: 'Category',
+                      })
+                    : intl.formatMessage({
+                        id: 'department',
+                        defaultMessage: 'Department',
+                      })
+                }
+                isRecipe={isRecipe}
                 autoFocus
                 disabled={loading}
                 handleSelectValue={val =>
@@ -2627,8 +2647,12 @@ class AppendForm extends Component {
             )}
             <p>
               <FormattedMessage
-                id="department_info"
-                defaultMessage="Each product can be listed in up to 7 departments."
+                id={isRecipe ? 'recipe_category_info' : 'department_info'}
+                defaultMessage={
+                  isRecipe
+                    ? 'Each recipe can be listed in up to 10 categories.'
+                    : 'Each product can be listed in up to 7 departments.'
+                }
               />
             </p>
           </Form.Item>

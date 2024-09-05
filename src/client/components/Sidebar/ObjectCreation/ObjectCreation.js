@@ -60,7 +60,11 @@ class ObjectCreation extends React.Component {
   };
 
   setObjectType = e => {
-    this.setState({ selectedType: e.currentTarget.textContent });
+    const selectedType = e.currentTarget.textContent?.includes('affiliate')
+      ? 'affiliate'
+      : e.currentTarget.textContent;
+
+    this.setState({ selectedType });
   };
 
   resetSelected = () => this.setState({ selectedType: '' });

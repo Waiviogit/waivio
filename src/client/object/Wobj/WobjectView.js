@@ -115,7 +115,14 @@ const WobjectView = ({
   }, [isEditMode]);
 
   return (
-    <React.Fragment>
+    <div
+      {...(hasType(wobject, OBJECT_TYPE.RECIPE)
+        ? {
+            itemScope: true,
+            itemType: 'https://schema.org/Recipe',
+          }
+        : {})}
+    >
       <Helmet>
         <title>{titleText}</title>
         <meta name="description" content={desc} />
@@ -191,7 +198,7 @@ const WobjectView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

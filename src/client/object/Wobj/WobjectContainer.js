@@ -74,6 +74,10 @@ class WobjectContainer extends React.PureComponent {
       prevProps.match.params.name !== this.props.match.params.name ||
       prevProps.locale !== this.props.locale
     ) {
+      const element = document.getElementById('standard-instacart-widget-v1');
+
+      if (element) element.remove();
+
       this.getWobjInfo();
     }
   }
@@ -88,6 +92,9 @@ class WobjectContainer extends React.PureComponent {
     this.props.resetGallery();
     this.props.resetWobjectExpertise();
     this.props.setEditMode(false);
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
   }
 
   getWobjInfo = () => {
@@ -98,6 +105,24 @@ class WobjectContainer extends React.PureComponent {
         : {};
 
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
+      const isRecipe = res.value.object_type === 'recipe';
+      const instacardAff =
+        isRecipe && res?.value?.affiliateLinks
+          ? res?.value?.affiliateLinks?.find(aff => aff.type === 'instacart')
+          : null;
+
+      if (instacardAff && typeof document !== 'undefined') {
+        const fjs = document.getElementsByTagName('script')[0];
+        const js = document.createElement('script');
+
+        js.id = 'standard-instacart-widget-v1';
+        js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+        js.async = true;
+        js.dataset.source_origin = 'affiliate_hub';
+
+        await fjs.parentNode.insertBefore(js, fjs);
+      }
+
       if (this.props.currHost?.includes('waivio')) {
         if (
           (await showDescriptionPage(res.value, this.props.locale)) &&

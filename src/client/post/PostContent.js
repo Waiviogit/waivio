@@ -330,7 +330,7 @@ class PostContent extends React.Component {
     return (
       <div>
         <Helmet>
-          <title>{title}</title>
+          {!isRecipe && <title>{title}</title>}
           <link rel="canonical" href={canonicalUrl} />
           {/* {content?.active_votes?.map(v => ( */}
           {/*  <link key={`voter-${v.voter}`} rel={`voter-${v.voter}`} href={`/@${v.voter}`} /> */}

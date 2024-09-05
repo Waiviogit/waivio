@@ -1,0 +1,51 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.RecipePost {
+  .RecipePost__pin-wrap {
+    display: flex;
+    justify-content: flex-end;
+
+    .pin-outlined,
+    .pin-grey,
+    .pin-website-color {
+      cursor: pointer;
+      height: 0;
+    }
+    .pin-outlined > span > svg {
+      width: 53px;
+      height: 55px;
+      position: relative;
+      right: -13px;
+      top: -10px;
+    }
+    .pin-website-color > span > svg {
+      width: 53px;
+      height: 55px;
+      position: relative;
+      right: -13px;
+      top: -10px;
+      path {
+        stroke-width: 0;
+        fill: var(--website-color);
+      }
+    }
+
+    .pin-grey > span > svg {
+      width: 53px;
+      height: 55px;
+      position: relative;
+      right: -13px;
+      top: -10px;
+
+      path {
+        fill: @blue-botticelli;
+      }
+    }
+    display: flex;
+
+    .ObjectAvatar {
+      margin-left: 4px;
+    }
+  }
+}
