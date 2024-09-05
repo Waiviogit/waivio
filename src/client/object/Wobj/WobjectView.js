@@ -115,7 +115,14 @@ const WobjectView = ({
   }, [isEditMode]);
 
   return (
-    <React.Fragment>
+    <div
+      {...(hasType(wobject, OBJECT_TYPE.RECIPE)
+        ? {
+            itemScope: true,
+            itemType: 'https://schema.org/Recipe',
+          }
+        : {})}
+    >
       <Helmet>
         <title>{titleText}</title>
         <meta name="description" content={desc} />
@@ -147,15 +154,7 @@ const WobjectView = ({
         albumsAndImagesCount={albumsAndImagesCount}
         appendAlbum={appendAlbum}
       />
-      <div
-        className="shifted"
-        {...(hasType(wobject, OBJECT_TYPE.RECIPE)
-          ? {
-              itemScope: true,
-              itemType: 'https://schema.org/Recipe',
-            }
-          : {})}
-      >
+      <div className="shifted">
         <div className="container feed-layout">
           <Affix key={match.params.name} className={leftSidebarClassList} stickPosition={72}>
             <div className="left">
@@ -199,7 +198,7 @@ const WobjectView = ({
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

@@ -278,7 +278,7 @@ const SocialProduct = ({
   const bestRating = getRatingForSocial(wobject.rating);
 
   return (
-    <div>
+    <div itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'} itemScope>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -300,10 +300,7 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div
-        itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'}
-        itemScope
-      >
+      <div>
         {!isRecipe && <meta itemProp="mpn" content="925872" />}
         <meta itemProp="name" content={getObjectName(wobject)} />
         <link itemProp="image" href={image} />
@@ -410,7 +407,7 @@ const SocialProduct = ({
                       : 'SocialProduct__bookWobjName'
                   }
                 >
-                  {wobject.name}
+                  {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
                 </h1>
               )}
               {!isMobile() && !isEmpty(brand) && (
