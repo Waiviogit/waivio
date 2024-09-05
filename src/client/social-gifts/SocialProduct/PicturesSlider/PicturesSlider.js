@@ -35,9 +35,9 @@ const PicturesSlider = ({
   const history = useHistory();
   const locale = useSelector(getUsedLocale);
   const match = useRouteMatch();
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
+  const authorPermlink = history?.location?.hash
+    ? getLastPermlinksFromHash(history?.location?.hash)
+    : match.params.name || currentWobj?.author_permlink;
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
