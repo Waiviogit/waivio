@@ -1,14 +1,17 @@
 import React from 'react';
-import { useRouteMatch } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
 import ShopList from './ShopList';
 import { getUserShopList } from '../../../store/shopStore/shopActions';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const UserShoppingList = ({ isSocial, name }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const schema = getUserShopSchema(history?.location?.pathname);
   const getShopFeed = (
     userName,
     follower,
@@ -24,6 +27,7 @@ const UserShoppingList = ({ isSocial, name }) => {
     dispatch(
       getUserShopList(
         userName,
+        schema,
         follower,
         filter,
         excludedDepartments,

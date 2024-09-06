@@ -20,6 +20,7 @@ import {
   resetBreadCrumb,
 } from '../../store/shopStore/shopActions';
 import { useSeoInfo } from '../../hooks/useSeoInfo';
+import { getUserShopSchema } from '../../common/helpers/shopHelper';
 
 const Shop = ({ route }) => {
   const favicon = useSelector(getHelmetIcon);
@@ -89,11 +90,13 @@ Shop.propTypes = {
   }),
 };
 
-Shop.fetchData = ({ store, match }) => {
+Shop.fetchData = ({ store, match, url }) => {
   if (match.params[0] === 'user-shop') {
+    const schema = getUserShopSchema(url);
+
     return Promise.allSettled([
-      store.dispatch(getUserDepartments(match.params.name)),
-      store.dispatch(getUserShopList(match.params.name)),
+      store.dispatch(getUserDepartments(match.params.name, schema)),
+      store.dispatch(getUserShopList(match.params.name, schema)),
     ]);
   }
 
