@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty, get } from 'lodash';
+import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getAddOnObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
-import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
@@ -12,10 +11,7 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [addOnObjects, setAddOnObjects] = useState([]);
   const locale = useSelector(getUsedLocale);
-  const addOn = get(wobject, 'addOn', []);
   const userName = useSelector(getAuthenticatedUserName);
-  const addOnObjectsPermlinks = !isEmpty(addOn) ? addOn.map(obj => obj.body) : [];
-  const sortedAddOnObjects = sortByFieldPermlinksList(addOnObjectsPermlinks, addOnObjects);
   const title = <FormattedMessage id="object_field_addOn" defaultMessage="Add-on" />;
   const linkTo = `/object/${wobject.author_permlink}/add-on`;
   const icon = (
@@ -44,7 +40,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
     <div>
       <ObjectsSidebarTablesContent
         isCenterContent={isCenterContent}
-        objects={sortedAddOnObjects}
+        objects={addOnObjects}
         title={title}
         linkTo={linkTo}
         icon={icon}
