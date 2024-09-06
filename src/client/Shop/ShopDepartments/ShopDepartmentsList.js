@@ -15,6 +15,7 @@ const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, 
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const departments = useSelector(getDepartmentsList);
+  const isRecipe = schema === 'recipe';
 
   useEffect(() => {
     getShopDepartments();
@@ -38,7 +39,10 @@ const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, 
           className="ShopDepartmentsList__maindepName"
           onClick={() => dispatch(resetBreadCrumb())}
         >
-          {intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
+          {intl.formatMessage({
+            id: `${isRecipe ? 'categories' : 'departments'}`,
+            defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
+          })}
         </NavLink>
         <div>
           {renderDep?.map(dep => (
