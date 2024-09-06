@@ -34,6 +34,7 @@ import {
 import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import './ListSwitch.less';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
@@ -45,6 +46,7 @@ const ListSwitcher = props => {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
+  const isRecipe = getUserShopSchema(history?.location?.pathname) === 'recipe';
   const [visibleNavig, setVisibleNavig] = useState(false);
   const [visibleFilter, setVisibleFilter] = useState(false);
   const accessExtend =
@@ -104,7 +106,10 @@ const ListSwitcher = props => {
               history.push(props.path);
             }}
           >
-            {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
+            {props.intl.formatMessage({
+              id: `${isRecipe ? 'categories' : 'departments'}`,
+              defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
+            })}
           </span>{' '}
           {props.type === 'wobject' && accessExtend && authenticated && (
             <div className="Breadcrumbs__edit-container">
