@@ -3551,11 +3551,12 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) =>
     .then(response => response)
     .catch(e => e);
 
-export const getObjectsByDepartment = (userName, departments, skip, limit) =>
+export const getObjectsByDepartment = (userName, departments, host, skip, limit) =>
   fetch(`${config.apiPrefix}${config.departments}${config.wobjects}`, {
     headers: {
       ...headers,
       follower: userName,
+      ...addAppHost(host),
     },
     method: 'POST',
     body: JSON.stringify({

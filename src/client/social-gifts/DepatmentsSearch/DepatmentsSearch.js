@@ -6,7 +6,7 @@ import { Tag } from 'antd';
 import Helmet from 'react-helmet';
 import Loading from '../../components/Icon/Loading';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
-import { getHelmetIcon } from '../../../store/appStore/appSelectors';
+import { getAppHost, getHelmetIcon } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
@@ -19,6 +19,7 @@ const DepatmentsSearch = () => {
   const siteName = location.hostname;
   const favicon = useSelector(getHelmetIcon);
   const userName = useSelector(getAuthenticatedUserName);
+  const host = useSelector(getAppHost);
   const history = useHistory();
   const [objects, setObjects] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
@@ -35,7 +36,7 @@ const DepatmentsSearch = () => {
 
     setLoading(true);
 
-    getObjectsByDepartment(userName, [department], 0, wobjects_count).then(res => {
+    getObjectsByDepartment(userName, [department], host, 0, wobjects_count).then(res => {
       setObjects(res.wobjects);
       setHasMoreObjects(res.hasMore);
       setLoading(false);
@@ -45,10 +46,12 @@ const DepatmentsSearch = () => {
   }, [department]);
 
   const loadMore = () => {
-    getObjectsByDepartment(userName, [department], objects.length, wobjects_count).then(res => {
-      setObjects([...objects, ...res.wobjects]);
-      setHasMoreObjects(res?.hasMore);
-    });
+    getObjectsByDepartment(userName, [department], host, objects.length, wobjects_count).then(
+      res => {
+        setObjects([...objects, ...res.wobjects]);
+        setHasMoreObjects(res?.hasMore);
+      },
+    );
   };
 
   const handleDeleteTag = () => {
