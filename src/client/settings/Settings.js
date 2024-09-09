@@ -33,6 +33,7 @@ import {
   getUpvoteSetting,
   getVotePercent,
   getVotingPower,
+  getHideRecipeObjects,
 } from '../../store/settingsStore/settingsSelectors';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
@@ -51,6 +52,7 @@ import './Settings.less';
     votePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
     hideLinkedObjects: getHideLinkedObjects(state),
+    hideRecipeObjects: getHideRecipeObjects(state),
     hideFavoriteObjects: getHideFavoriteObjects(state),
     nightmode: getNightmode(state),
     currency: getCurrency(state),
@@ -77,6 +79,7 @@ export default class Settings extends React.Component {
     showNSFWPosts: PropTypes.bool,
     hideLinkedObjects: PropTypes.bool,
     hideFavoriteObjects: PropTypes.bool,
+    hideRecipeObjects: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
     reload: PropTypes.func,
@@ -96,6 +99,7 @@ export default class Settings extends React.Component {
     reloading: false,
     hideLinkedObjects: false,
     hideFavoriteObjects: false,
+    hideRecipeObjects: false,
     locale: 'auto',
     readLanguages: [],
     votingPower: false,
@@ -129,6 +133,7 @@ export default class Settings extends React.Component {
       showNSFWPosts: props.showNSFWPosts,
       hideLinkedObjects: props.hideLinkedObjects,
       hideFavoriteObjects: props.hideLinkedObjects,
+      hideRecipeObjects: props.hideRecipeObjects,
       nightmode: props.nightmode,
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
@@ -148,6 +153,7 @@ export default class Settings extends React.Component {
       showNSFWPosts: this.props.showNSFWPosts,
       hideLinkedObjects: this.props.hideLinkedObjects,
       hideFavoriteObjects: this.props.hideFavoriteObjects,
+      hideRecipeObjects: this.props.hideRecipeObjects,
       nightmode: this.props.nightmode,
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
@@ -213,6 +219,7 @@ export default class Settings extends React.Component {
         votePercent: this.state.votePercent * 100,
         currency: this.state.currency,
         hideFavoriteObjects: this.state.hideFavoriteObjects,
+        hideRecipeObjects: this.state.hideRecipeObjects,
         shop: {
           hideLinkedObjects: this.state.hideLinkedObjects,
         },
@@ -239,6 +246,7 @@ export default class Settings extends React.Component {
   handleShowNSFWPosts = event => this.setState({ showNSFWPosts: event.target.checked });
   handleHideLinkedObjects = event => this.setState({ hideLinkedObjects: event.target.checked });
   handleHideFavoriteObjects = event => this.setState({ hideFavoriteObjects: event.target.checked });
+  handleHideRecipeObjects = event => this.setState({ hideRecipeObjects: event.target.checked });
   handleNightmode = event => this.setState({ nightmode: event.target.checked });
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
@@ -253,6 +261,7 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       hideLinkedObjects: initialHideLinkedObjects,
       hideFavoriteObjects: initialHideFavoriteObjects,
+      hideRecipeObjects: initialHideRecipeObjects,
       nightmode: initialNightmode,
       loading,
       isGuest,
@@ -263,6 +272,7 @@ export default class Settings extends React.Component {
       showNSFWPosts,
       hideLinkedObjects,
       hideFavoriteObjects,
+      hideRecipeObjects,
       nightmode,
       upvoteSetting,
       exitPageSetting,
@@ -443,6 +453,30 @@ export default class Settings extends React.Component {
                   defaultChecked={initialHideLinkedObjects}
                   checked={hideLinkedObjects}
                   onChange={this.handleHideLinkedObjects}
+                >
+                  <FormattedMessage
+                    id="not_show_objects_linked"
+                    defaultMessage="Do not show objects linked in posts"
+                  />
+                </Checkbox>
+              </div>
+            </div>{' '}
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="recipe" defaultMessage="Recipe" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="manage_your_public_recipe"
+                  defaultMessage="You can manage your public recipe list in the profile."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="hideLinkedObjects"
+                  defaultChecked={initialHideRecipeObjects}
+                  checked={hideRecipeObjects}
+                  onChange={this.handleHideRecipeObjects}
                 >
                   <FormattedMessage
                     id="not_show_objects_linked"
