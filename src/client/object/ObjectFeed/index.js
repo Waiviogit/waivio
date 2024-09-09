@@ -33,7 +33,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode, in
   const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
   const instacardAff =
     isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type === 'instacart')
+      ? wobject?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
       : null;
   const handleWriteReviewClick = () => {
     handleCreatePost(wobject, authors, history);

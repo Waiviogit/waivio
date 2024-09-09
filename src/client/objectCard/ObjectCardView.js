@@ -206,7 +206,9 @@ const ObjectCardView = ({
               description
             )}
             {!isEmpty(wObject.affiliateLinks) &&
-              !isEmpty(wObject.affiliateLinks.filter(i => i.type !== 'instacart')) && (
+              !isEmpty(
+                wObject.affiliateLinks.filter(i => i.type.toLocaleLowerCase() !== 'instacart'),
+              ) && (
                 <div className="ObjectCardView__affiliatLinksWrap">
                   <span className="ObjectCardView__buyOn">
                     {intl.formatMessage({ id: 'buy_it_on', defaultMessage: 'Buy it on' })}:
