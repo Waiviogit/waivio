@@ -108,7 +108,7 @@ class WobjectContainer extends React.PureComponent {
       const isRecipe = res.value.object_type === 'recipe';
       const instacardAff =
         isRecipe && res?.value?.affiliateLinks
-          ? res?.value?.affiliateLinks?.find(aff => aff.type === 'instacart')
+          ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
           : null;
 
       if (instacardAff && typeof document !== 'undefined') {

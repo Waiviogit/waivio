@@ -160,7 +160,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.affiliateLinks
               .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
               .map(affLink => {
-                if (affLink.type === 'instacart') return null;
+                if (affLink.type.toLocaleLowerCase() === 'instacart') return null;
 
                 return <AffiliatLink key={affLink.link} link={affLink} />;
               })}

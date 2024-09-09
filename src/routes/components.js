@@ -168,5 +168,6 @@ export default {
     import('../client/components/ClaimAthorityBot/ClaimAthorityBot'),
   ),
   DepartmentsBot: loableComponent(import('../client/components/DepartmentsBot/DepartmentsBot')),
+  TagsBot: loableComponent(import('../client/components/TagsBot/TagsBot')),
   DescriptionsBot: loableComponent(import('../client/components/DescriptionsBot/DescriptionsBot')),
 };

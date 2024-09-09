@@ -78,6 +78,11 @@ export const dataManagementSettings = {
       defaultMessage: 'Departments bot',
     },
     {
+      to: '/tags-bot',
+      id: 'tag_bot',
+      defaultMessage: 'Tags bot',
+    },
+    {
       to: '/descriptions-bot',
       id: 'descriptions_bot',
       defaultMessage: 'Descriptions bot',

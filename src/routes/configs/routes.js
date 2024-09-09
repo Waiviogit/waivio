@@ -282,6 +282,11 @@ const routes = {
           component: Views.DepartmentsBot,
         },
         {
+          path: '/tags-bot',
+          exact: true,
+          component: Views.TagsBot,
+        },
+        {
           path: '/descriptions-bot',
           exact: true,
           component: Views.DescriptionsBot,

@@ -4,7 +4,6 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getAddOnObjectsFromDepartments } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
@@ -17,8 +16,6 @@ const AddOnPage = () => {
   const wobject = useSelector(getObject);
   const locale = useSelector(getUsedLocale);
   const authUserName = useSelector(getAuthenticatedUserName);
-  const addOnPermlinks = wobject?.addOn?.map(obj => obj.body);
-  const sortedAddOnObjects = sortByFieldPermlinksList(addOnPermlinks, addOnObjects);
 
   useEffect(() => {
     getAddOnObjectsFromDepartments(wobject.author_permlink, authUserName, locale, 0, limit).then(
@@ -51,7 +48,7 @@ const AddOnPage = () => {
         initialLoad={false}
         hasMore={hasMore}
       >
-        {sortedAddOnObjects?.map(obj => (
+        {addOnObjects?.map(obj => (
           <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>
