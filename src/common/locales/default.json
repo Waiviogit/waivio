@@ -2647,5 +2647,6 @@
   "object_field_budget": "Budget",
   "top_recipe": "Top recipe",
   "object_field_recipeIngredients": "Recipe ingredients",
-  "recipe_category_info": "Each recipe can be listed in up to 10 categories."
+  "recipe_category_info": "Each recipe can be listed in up to 10 categories.",
+  "manage_your_public_recipe": "You can manage your public recipe list in the profile."
 }

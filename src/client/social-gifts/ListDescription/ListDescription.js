@@ -21,7 +21,7 @@ const ListDescription = ({ wobject }) => {
     (hasTitle || hasDescription) && (
       <div className={'ListDescription'}>
         <section>
-          {hasAvatar && (
+          {hasAvatar && hasDescription && (
             <div className={'ListDescription__image-container'}>
               <img className={'ListDescription__image'} src={wobject.avatar} alt={altText} />
             </div>
