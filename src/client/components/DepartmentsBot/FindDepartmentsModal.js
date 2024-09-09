@@ -8,18 +8,26 @@ import { createDepartment } from '../../../waivioApi/importApi';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 
-const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl }) => {
+const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl, createTag }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const [selectedObj, setSelectedObj] = useState(null);
   const [includeObjects, setIncludeObjects] = useState(true);
   const [loading, setLoading] = useState(false);
   const handleSubmit = () => {
     setLoading(true);
-    createDepartment(userName, selectedObj.author_permlink, includeObjects).then(() => {
-      onClose();
-      setLoading(false);
-      updateDepartmentsList();
-    });
+    if (createTag) {
+      createTag(userName, selectedObj.author_permlink, includeObjects).then(() => {
+        onClose();
+        setLoading(false);
+        updateDepartmentsList();
+      });
+    } else {
+      createDepartment(userName, selectedObj.author_permlink, includeObjects).then(() => {
+        onClose();
+        setLoading(false);
+        updateDepartmentsList();
+      });
+    }
   };
 
   return (
@@ -78,6 +86,7 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl })
 FindDepartmentsModal.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
+  createTag: PropTypes.func,
   updateDepartmentsList: PropTypes.func,
   intl: PropTypes.shape(),
 };

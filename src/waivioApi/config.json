@@ -99,6 +99,7 @@
   "objectTypesSearch": "/ObjectTypesSearch",
   "payables": "/payables",
   "payments": "/payments",
+  "tagsBot": "/tags-bot",
   "report": "/report",
   "post": "/post",
   "object": "/object",
