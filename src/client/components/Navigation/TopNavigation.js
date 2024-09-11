@@ -44,6 +44,7 @@ const LINKS = {
   CLAIM_AUTHORITY_BOT: '/claim-authority',
   DEPARTMENTS_BOT: '/departments-bot',
   DESCRIPTIONS_BOT: '/descriptions-bot',
+  TAGS_BOT: '/tags-bot',
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
   AFFILIATE_CODES: '/affiliate-codes',
@@ -80,6 +81,7 @@ const TOOLS_URLS = [
   LINKS.DESCRIPTIONS_BOT,
   LINKS.ASIN_SCANER,
   LINKS.CHROME_EXTENSION,
+  LINKS.TAGS_BOT,
   LINKS.USER_AFFILIATE_CODES,
 ];
 const WEBSITE_URLS = [

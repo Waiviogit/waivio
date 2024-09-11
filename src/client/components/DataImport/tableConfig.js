@@ -523,7 +523,7 @@ export const configTagsBotHistoryTable = [
     type: 'date',
   },
   {
-    id: 'baseList',
+    id: 'lists',
     intl: {
       id: 'base_object',
       defaultMessage: 'Base object',
@@ -532,24 +532,26 @@ export const configTagsBotHistoryTable = [
     modal: {
       body: item => (
         <ol>
-          <li key={item.baseList}>
-            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.baseList}/list`}>
-              1
-            </a>
-          </li>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+                {link}
+              </a>
+            </li>
+          ))}
         </ol>
       ),
     },
   },
   {
-    id: 'numberOfTags',
+    id: 'objectsCount',
     intl: {
       id: 'number_of_objects',
       defaultMessage: 'Number of objects',
     },
   },
   {
-    id: 'objectsCount',
+    id: 'numberOfTags',
     intl: {
       id: 'number_of_tags',
       defaultMessage: 'Number of tags',
