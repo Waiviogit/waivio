@@ -27,16 +27,17 @@ const AddOnPage = () => {
   }, [wobject.author_permlink]);
 
   const loadMoreAddOnObjects = () => {
-    getAddOnObjectsFromDepartments(
-      wobject.author_permlink,
-      authUserName,
-      locale,
-      addOnObjects.length,
-      limit,
-    ).then(res => {
-      setAddOnObjects([...addOnObjects, ...res.wobjects]);
-      setHasMore(res.hasMore);
-    });
+    hasMore &&
+      getAddOnObjectsFromDepartments(
+        wobject.author_permlink,
+        authUserName,
+        locale,
+        addOnObjects.length,
+        limit,
+      ).then(res => {
+        setAddOnObjects([...addOnObjects, ...res.wobjects]);
+        setHasMore(res.hasMore);
+      });
   };
 
   return (
