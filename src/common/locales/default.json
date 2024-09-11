@@ -2649,5 +2649,11 @@
   "top_recipe": "Top recipe",
   "object_field_recipeIngredients": "Recipe ingredients",
   "recipe_category_info": "Each recipe can be listed in up to 10 categories.",
-  "manage_your_public_recipe": "You can manage your public recipe list in the profile."
+  "manage_your_public_recipe": "You can manage your public recipe list in the profile.",
+  "object_field_groupExpertise": "Expertise tags",
+  "object_field_groupFollowers": "Followers",
+  "object_field_groupFollowing": "Following",
+  "object_field_groupAdd": "Add a user",
+  "object_field_groupExclude": "Exclude a user",
+  "expertise_tags": "Expertise tags"
 }
