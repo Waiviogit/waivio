@@ -68,11 +68,13 @@ import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
 import { getCoordinates } from '../../../../store/userStore/userActions';
-import './ObjectInfo.less';
 import MapObjectTypes from './ObjectInfoComponents/MapObjectTypes';
 import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
 import WalletAddress from '../WalletAddress/WalletAddress';
 import RecipeIngredients from '../RecipeIngredients/RecipeIngredients';
+import ExpertiseTags from '../../../object/GroupObjectInfo/ExpertiseTags';
+import './ObjectInfo.less';
+import GroupUsersLayout from '../../../object/GroupObjectInfo/GroupUsersLayout';
 
 @withRouter
 @connect(
@@ -526,6 +528,10 @@ class ObjectInfo extends React.Component {
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
+    const groupFollowers = parseWobjectField(wobject, 'groupFollowers');
+    const groupFollowing = parseWobjectField(wobject, 'groupFollowing');
+    const groupAdd = get(wobject, 'groupAdd', []);
+    const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
     const customSort = get(wobject, 'sortCustom.include', []);
     const companyIdBody = wobject.companyId
@@ -677,6 +683,7 @@ class ObjectInfo extends React.Component {
     const linkUrl = get(wobject, 'url', '');
     const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
+    const showGroupSection = hasType(wobject, OBJECT_TYPE.GROUP);
     const showLRecipeSection = hasType(wobject, OBJECT_TYPE.RECIPE);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
@@ -688,6 +695,7 @@ class ObjectInfo extends React.Component {
       !hasType(wobject, OBJECT_TYPE.AFFILIATE) &&
       !hasType(wobject, OBJECT_TYPE.LINK) &&
       !hasType(wobject, OBJECT_TYPE.RECIPE) &&
+      !hasType(wobject, OBJECT_TYPE.GROUP) &&
       !hasType(wobject, OBJECT_TYPE.DRINK);
     const showMapSection = hasType(wobject, OBJECT_TYPE.MAP);
     const formsList = getFormItems(wobject)?.map(item => ({
@@ -951,7 +959,41 @@ class ObjectInfo extends React.Component {
         {isEditMode && this.listItem(objectFields.similar, null)}
       </React.Fragment>
     );
-
+    const groupSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="group" defaultMessage="Group" />
+          </div>
+        )}
+        {this.listItem(
+          objectFields.groupExpertise,
+          !isEmpty(groupExpertise) && (
+            <ExpertiseTags
+              authorPermlink={wobject.author_permlink}
+              groupExpertise={groupExpertise}
+            />
+          ),
+        )}
+        {this.listItem(
+          objectFields.groupFollowers,
+          !isEmpty(groupFollowers) && (
+            <GroupUsersLayout title={'followers'} list={groupFollowers} />
+          ),
+        )}
+        {this.listItem(
+          objectFields.groupFollowing,
+          !isEmpty(groupFollowing) && (
+            <GroupUsersLayout title={'following'} list={groupFollowing} />
+          ),
+        )}
+        {this.listItem(
+          objectFields.groupAdd,
+          !isEmpty(groupAdd) && <GroupUsersLayout title={'users'} list={groupAdd} />,
+        )}
+        {this.listItem(objectFields.groupExclude, null)}
+      </React.Fragment>
+    );
     const linkSection = (
       <React.Fragment>
         {isEditMode && (
@@ -1657,6 +1699,7 @@ ${obj.productId}`}
             {!isHashtag && showMenuSection && menuSection()}
             {showMapSection && mapSection()}
             {showLinkSection && linkSection}
+            {showGroupSection && groupSection}
             {showLRecipeSection && recipeSection}
             {aboutSection}
             {isAffiliate && (
