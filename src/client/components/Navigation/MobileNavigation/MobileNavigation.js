@@ -160,6 +160,11 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'claim_authority';
       break;
+
+    case '/tags-bot':
+      pageName = 'tools';
+      filterName = 'tags_bot';
+      break;
     case '/list-duplication':
       pageName = 'tools';
       filterName = 'list_duplication';

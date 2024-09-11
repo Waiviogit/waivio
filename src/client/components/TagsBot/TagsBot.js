@@ -164,22 +164,21 @@ const TagsBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: isGuest ? 'guest_departments_pause' : 'departments_pause',
-          defaultMessage: `The departments update bot will pause if ${
+          id: isGuest ? 'guest_tags_pause' : 'tags_pause',
+          defaultMessage: `The tags bot will pause bot will pause if ${
             isGuest ? 'guest mana' : 'WAIV voting power'
           } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock
         info={intl.formatMessage({
-          id: 'departments_service',
-          defaultMessage:
-            'The Departments update bot service is provided on as-is / as-available basis.',
+          id: 'Tags_service',
+          defaultMessage: 'The Tags bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />
       <Button type="primary" onClick={() => setOpenDepModal(true)}>
-        {intl.formatMessage({ id: 'update_list', defaultMessage: 'Update list' })}
+        {intl.formatMessage({ id: 'add_tags', defaultMessage: 'Add tags' })}
       </Button>
       <DynamicTbl
         handleShowMore={loadMoreDepartmentsData}
@@ -199,7 +198,7 @@ const TagsBot = ({ intl }) => {
         handleShowMore={loadMoreHistoryData}
         showMore={hasMoreHistory}
         header={configTagsBotHistoryTable}
-        bodyConfig={history}
+        bodyConfig={history.map(i => ({ ...i, lists: [i.baseList] }))}
       />
       {visibleVoting && (
         <ChangeVotingModal
@@ -211,6 +210,7 @@ const TagsBot = ({ intl }) => {
       )}
       {openDepModal && (
         <FindDepartmentsModal
+          title={'Tags bot'}
           updateDepartmentsList={getDepsList}
           createTag={createTags}
           visible={openDepModal}

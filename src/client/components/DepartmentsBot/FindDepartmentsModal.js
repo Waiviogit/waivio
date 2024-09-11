@@ -8,7 +8,14 @@ import { createDepartment } from '../../../waivioApi/importApi';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 
-const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl, createTag }) => {
+const FindDepartmentsModal = ({
+  visible,
+  onClose,
+  updateDepartmentsList,
+  intl,
+  createTag,
+  title,
+}) => {
   const userName = useSelector(getAuthenticatedUserName);
   const [selectedObj, setSelectedObj] = useState(null);
   const [includeObjects, setIncludeObjects] = useState(true);
@@ -33,10 +40,7 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl, c
   return (
     <Modal
       visible={visible}
-      title={intl.formatMessage({
-        id: 'department_update_bot',
-        defaultMessage: 'Department update bot',
-      })}
+      title={title}
       onCancel={onClose}
       onOk={handleSubmit}
       okText={intl.formatMessage({
@@ -85,10 +89,15 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl, c
 
 FindDepartmentsModal.propTypes = {
   visible: PropTypes.bool,
+  title: PropTypes.string,
   onClose: PropTypes.func,
   createTag: PropTypes.func,
   updateDepartmentsList: PropTypes.func,
   intl: PropTypes.shape(),
+};
+
+FindDepartmentsModal.defaultProps = {
+  title: 'Department update bot',
 };
 
 export default injectIntl(FindDepartmentsModal);
