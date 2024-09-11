@@ -184,7 +184,7 @@ const TagsBot = ({ intl }) => {
         handleShowMore={loadMoreDepartmentsData}
         showMore={hasMoreDepartments}
         header={configTagsBotProductTable}
-        bodyConfig={departments}
+        bodyConfig={departments.map(i => ({ ...i, lists: [i.baseList] }))}
         deleteItem={handleDeleteDepartment}
         onChange={handleChangeStatusDepartments}
       />
