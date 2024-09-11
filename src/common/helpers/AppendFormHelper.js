@@ -13,3 +13,5 @@ export const orLayout = compareItems =>
       <FormattedMessage id="or" defaultMessage="or" />
     </div>
   );
+
+export const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');

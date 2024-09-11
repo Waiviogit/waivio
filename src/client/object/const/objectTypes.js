@@ -13,4 +13,5 @@ export default {
   MAP: 'map',
   LINK: 'link',
   RECIPE: 'recipe',
+  GROUP: 'group',
 };

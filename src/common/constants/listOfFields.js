@@ -82,6 +82,11 @@ export const objectFields = {
   budget: 'budget',
   cookingTime: 'cookingTime',
   recipeIngredients: 'recipeIngredients',
+  groupExpertise: 'groupExpertise',
+  groupFollowers: 'groupFollowers',
+  groupFollowing: 'groupFollowing',
+  groupAdd: 'groupAdd',
+  groupExclude: 'groupExclude',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',

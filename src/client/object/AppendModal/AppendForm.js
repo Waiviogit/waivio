@@ -150,6 +150,10 @@ import './AppendForm.less';
 import WalletAddressForm from './FormComponents/WalletAddressForm';
 import LinkUrlForm from './FormComponents/LinkUrlForm';
 import { splitIngredients } from './appendFormHelper';
+import ExpertiseForm from './FormComponents/GroupForms/ExpertiseForm';
+import GroupFollowersForm from './FormComponents/GroupForms/GroupFollowersForm';
+import { getDotOrComma } from '../../../common/helpers/AppendFormHelper';
+import AddUserForm from './FormComponents/GroupForms/AddUserForm';
 
 @connect(
   state => ({
@@ -457,6 +461,11 @@ class AppendForm extends Component {
       case mapObjectTypeFields.mapObjectTypes:
       case mapObjectTypeFields.mapObjectTags:
       case mapObjectTypeFields.mapRectangles:
+      case objectFields.groupExpertise:
+      case objectFields.groupFollowers:
+      case objectFields.groupFollowing:
+      case objectFields.groupAdd:
+      case objectFields.groupExclude:
       case objectFields.publisher:
       case objectFields.related:
       case objectFields.similar:
@@ -606,7 +615,25 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${this.state.typeList
             .flat()
             .join(', ')}`;
+        case objectFields.groupFollowers:
+        case objectFields.groupAdd:
+        case objectFields.groupExclude:
+        case objectFields.groupFollowing: {
+          let rulesUser = '';
+
+          if (!isEmpty(this.state.selectedUsers)) {
+            this.state.selectedUsers.forEach((user, index) => {
+              rulesUser += ` <a href="${baseUrl}/@${user}">@${user}</a>${getDotOrComma(
+                this.state.selectedUsers,
+                index,
+              )}`;
+            });
+          }
+
+          return `@${author} added ${currentField} (${langReadable}): ${rulesUser}`;
+        }
         case mapObjectTypeFields.mapObjectTags:
+        case objectFields.groupExpertise:
           return `@${author} added ${currentField} (${langReadable}): ${this.state.allowList
             .map(o => o.map(item => item.author_permlink))
             .flat(2)
@@ -827,7 +854,6 @@ class AppendForm extends Component {
         }
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
-          const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');
           let rulesAllow = '';
           let rulesIgnore = '';
           let rulesUser = '';
@@ -931,6 +957,18 @@ class AppendForm extends Component {
           body: this.state.selectedObject.author_permlink,
         };
       }
+      if ([objectFields.groupFollowers, objectFields.groupFollowing].includes(currentField)) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify(this.state.selectedUsers),
+        };
+      }
+      if ([objectFields.groupAdd, objectFields.groupExclude].includes(currentField)) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedUsers[0],
+        };
+      }
       if (currentField === mapObjectTypeFields.mapObjectTypes) {
         const mapObjectTypesBody = JSON.stringify(this.state.typeList);
 
@@ -939,7 +977,7 @@ class AppendForm extends Component {
           body: mapObjectTypesBody,
         };
       }
-      if (currentField === mapObjectTypeFields.mapObjectTags) {
+      if ([mapObjectTypeFields.mapObjectTags, objectFields.groupExpertise].includes(currentField)) {
         const mapObjectTagsBody = JSON.stringify(
           this.state.allowList.map(o => o.map(item => item.author_permlink)).flat(),
         );
@@ -3933,6 +3971,54 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.groupExpertise: {
+        return (
+          <ExpertiseForm
+            currObjId={get(this.props.wObject, 'author_permlink', '')}
+            allowList={this.state.allowList}
+            handleAddObjectToRule={this.handleAddObjectToRule}
+            deleteRuleItem={this.deleteRuleItem}
+          />
+        );
+      }
+      case objectFields.groupFollowers: {
+        return (
+          <GroupFollowersForm
+            title={'followers'}
+            selectedUsers={this.state.selectedUsers}
+            deleteUser={this.deleteUser}
+            handleSelectUsersBlog={this.handleSelectUsersBlog}
+          />
+        );
+      }
+      case objectFields.groupFollowing: {
+        return (
+          <GroupFollowersForm
+            title={'following'}
+            selectedUsers={this.state.selectedUsers}
+            deleteUser={this.deleteUser}
+            handleSelectUsersBlog={this.handleSelectUsersBlog}
+          />
+        );
+      }
+      case objectFields.groupAdd: {
+        return (
+          <AddUserForm
+            selectedUsers={this.state.selectedUsers}
+            deleteUser={this.deleteUser}
+            handleSelectUsersBlog={this.handleSelectUsersBlog}
+          />
+        );
+      }
+      case objectFields.groupExclude: {
+        return (
+          <AddUserForm
+            selectedUsers={this.state.selectedUsers}
+            deleteUser={this.deleteUser}
+            handleSelectUsersBlog={this.handleSelectUsersBlog}
+          />
+        );
+      }
       case objectFields.tagCategory: {
         return (
           <Form.Item>
@@ -4208,7 +4294,13 @@ class AppendForm extends Component {
       case mapObjectTypeFields.mapObjectTypes:
         return isEmpty(this.state.typeList);
       case mapObjectTypeFields.mapObjectTags:
+      case objectFields.groupExpertise:
         return isEmpty(this.state.allowList);
+      case objectFields.groupFollowers:
+      case objectFields.groupFollowing:
+      case objectFields.groupAdd:
+      case objectFields.groupExclude:
+        return isEmpty(this.state.selectedUsers);
       case objectFields.delegation:
         return isEmpty(this.state.selectedUserBlog);
       case objectFields.productWeight:
