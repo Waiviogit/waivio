@@ -22,6 +22,7 @@ export default {
       'form',
       'products',
       'books',
+      'group',
     ].join('|'),
     filters: [...supportedObjectFields, ...objMenuTypes, 'album'].join('|'),
   },
