@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { andLayout } from '../../../../../common/helpers/AppendFormHelper';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
+import './GroupForms.less';
 
 const ExpertiseForm = props => (
   <React.Fragment>
@@ -17,8 +18,8 @@ const ExpertiseForm = props => (
         <React.Fragment key={`allowWrap${rowIndex}`}>
           <div className="NewsFiltersRule-title AppendForm__appendTitles">{`${props.intl.formatMessage(
             {
-              id: 'expertise',
-              defaultMessage: 'Expertise',
+              id: 'expertise_tags',
+              formattedMessage: 'Expertise tags',
             },
           )}`}</div>
           <div className="NewsFiltersRule__line">

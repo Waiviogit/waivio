@@ -91,6 +91,7 @@ class SearchObjectsAutocomplete extends Component {
     this.state = {
       searchString: '',
     };
+    this.abortController = null;
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -100,18 +101,22 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: value.toLowerCase() });
   }
 
-  debouncedSearch = debounce(
-    (searchString, objType = '', parent) =>
-      this.props.searchObjects(
-        searchString,
-        objType,
-        parent,
-        this.props.addHashtag,
-        this.props.useExtendedSearch,
-        this.props.onlyObjectTypes,
-      ),
-    300,
-  );
+  debouncedSearch = debounce((searchString, objType = '', parent) => {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+
+    this.abortController = new AbortController();
+    this.props.searchObjects(
+      searchString,
+      objType,
+      parent,
+      this.props.addHashtag,
+      this.props.useExtendedSearch,
+      this.props.onlyObjectTypes,
+      this.abortController,
+    );
+  }, 300);
 
   handleSearch(value) {
     let val = value;

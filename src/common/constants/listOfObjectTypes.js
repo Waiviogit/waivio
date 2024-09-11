@@ -47,7 +47,6 @@ export const recommendedObjectTypes = [
   'b&b',
 ];
 const listOfObjectTypes = [
-  'group',
   'list',
   'page',
   'product',
@@ -68,6 +67,7 @@ const listOfObjectTypes = [
   'drink',
   'service',
   'place',
+  'group',
   'company',
   'organization',
   'app',

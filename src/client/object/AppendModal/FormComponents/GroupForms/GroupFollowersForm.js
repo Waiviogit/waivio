@@ -5,10 +5,11 @@ import { injectIntl } from 'react-intl';
 import SelectUserForAutocomplete from '../../../../widgets/SelectUserForAutocomplete';
 import { andLayout } from '../../../../../common/helpers/AppendFormHelper';
 import SearchUsersAutocomplete from '../../../../components/EditorUser/SearchUsersAutocomplete';
+import './GroupForms.less';
 
 const GroupFollowersForm = props => (
   <div className="NewsFiltersRule__line">
-    <div className="AppendForm__appendTitles">
+    <div className="NewsFiltersRule-title AppendForm__appendTitles">
       {props.intl.formatMessage({
         id: props.title,
         defaultMessage: props.title,
@@ -33,7 +34,11 @@ const GroupFollowersForm = props => (
     <div className="NewsFiltersRule__line-search">
       <SearchUsersAutocomplete handleSelect={props.handleSelectUsersBlog} />
     </div>
-    <p>Choose users whose followers should be in the group.</p>
+    <p>
+      {props.isFollowing
+        ? 'Choose users, and their following users will be in the group.'
+        : 'Choose users whose followers should be in the group.'}
+    </p>
   </div>
 );
 
@@ -43,5 +48,6 @@ GroupFollowersForm.propTypes = {
   handleSelectUsersBlog: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
+  isFollowing: PropTypes.bool.isRequired,
 };
 export default injectIntl(GroupFollowersForm);
