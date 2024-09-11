@@ -4400,4 +4400,21 @@ export const getMapPermlinkByObject = (authorPermlink, locale, follower, host) =
     .then(response => response)
     .catch(e => e);
 
+export const getGroupObjectUserList = (authorPermlink, follower, limit, lastName) =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.group}`, {
+    headers: {
+      ...headers,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      authorPermlink,
+      lastName,
+    }),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+
 export default null;
