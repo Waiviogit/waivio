@@ -78,11 +78,6 @@ export const dataManagementSettings = {
       defaultMessage: 'Departments bot',
     },
     {
-      to: '/tags-bot',
-      id: 'tag_bot',
-      defaultMessage: 'Tags bot',
-    },
-    {
       to: '/descriptions-bot',
       id: 'descriptions_bot',
       defaultMessage: 'Descriptions bot',
@@ -91,6 +86,11 @@ export const dataManagementSettings = {
       to: '/list-duplication',
       id: 'list_duplication',
       defaultMessage: 'List duplication',
+    },
+    {
+      to: '/tags-bot',
+      id: 'tag_bot',
+      defaultMessage: 'Tags bot',
     },
     {
       to: '/chrome-extension',
