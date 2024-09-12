@@ -8,6 +8,7 @@
   "save": "Save",
   "saved": "Saved",
   "cancel": "Cancel",
+  "match_bots_tags_auth_text": "The Tags bot requires authorization to upvote data updates on your behalf",
   "paid_waiv": "Paid (WAIV)",
   "delay_by_blocks": "Delay by {delay} blocks",
   "confirm": "Confirm",
@@ -2647,5 +2648,13 @@
   "object_field_budget": "Budget",
   "top_recipe": "Top recipe",
   "object_field_recipeIngredients": "Recipe ingredients",
-  "recipe_category_info": "Each recipe can be listed in up to 10 categories."
+  "recipe_category_info": "Each recipe can be listed in up to 10 categories.",
+  "manage_your_public_recipe": "You can manage your public recipe list in the profile.",
+  "object_field_groupExpertise": "Expertise tags",
+  "object_field_groupFollowers": "Followers",
+  "object_field_groupFollowing": "Following",
+  "object_field_groupAdd": "Add a user",
+  "object_field_groupExclude": "Exclude a user",
+  "expertise_tags": "Expertise tags",
+  "categories": "Categories"
 }

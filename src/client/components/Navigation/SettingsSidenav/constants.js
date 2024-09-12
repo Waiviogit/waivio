@@ -88,6 +88,11 @@ export const dataManagementSettings = {
       defaultMessage: 'List duplication',
     },
     {
+      to: '/tags-bot',
+      id: 'tag_bot',
+      defaultMessage: 'Tags bot',
+    },
+    {
       to: '/chrome-extension',
       id: 'chrome-extension',
       defaultMessage: 'Chrome extension',

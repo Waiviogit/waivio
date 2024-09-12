@@ -506,7 +506,7 @@ const SocialProduct = ({
                   </div>
                   <div className="SocialProduct__affLinks">
                     {affiliateLinks?.map(link => {
-                      if (link.type === 'instacart') return null;
+                      if (link.type.toLocaleLowerCase() === 'instacart') return null;
 
                       return (
                         <div key={link.link} className="SocialProduct__links">

@@ -61,6 +61,7 @@ import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
+import { getUserShopSchema } from '../../common/helpers/shopHelper';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -468,10 +469,11 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             },
           );
         }
+        const schema = getUserShopSchema(url);
 
         return Promise.allSettled([
-          store.dispatch(getUserDepartments(configuration.shopSettings?.value)),
-          store.dispatch(getUserShopList(configuration.shopSettings?.value)),
+          store.dispatch(getUserDepartments(configuration.shopSettings?.value, schema)),
+          store.dispatch(getUserShopList(configuration.shopSettings?.value, schema)),
         ]);
       }
 

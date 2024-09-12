@@ -22,6 +22,7 @@ export default {
       'form',
       'products',
       'books',
+      'group',
     ].join('|'),
     filters: [...supportedObjectFields, ...objMenuTypes, 'album'].join('|'),
   },
@@ -41,6 +42,7 @@ export default {
       'about',
       'shop',
       'map',
+      'recipe',
     ].join('|'),
   },
   FEED: {
@@ -143,6 +145,7 @@ export default {
       'chrome-extension',
       'claim-authority',
       'departments-bot',
+      'tags-bot',
       'descriptions-bot',
       'list-duplication',
     ].join('|'),

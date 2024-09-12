@@ -326,6 +326,81 @@ export const configDepartmentsBotProductTable = [
     name: 'stop',
   },
 ];
+export const configTagsBotProductTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_object',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'numberOfTags',
+    intl: {
+      id: 'number_tags',
+      defaultMessage: 'Number of tags',
+    },
+  },
+  {
+    id: 'objectsUpdated',
+    intl: {
+      id: 'updated_object',
+      defaultMessage: 'Updated objects',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${link}${item.object.object_type === 'list' ? '/list' : '/map'}`}
+              >
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'postedTags',
+    intl: {
+      id: 'posted_tags',
+      defaultMessage: 'Posted tags',
+    },
+  },
+
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
+  },
+];
 export const configDescriptionsBotProductTable = [
   {
     id: 'active',
@@ -431,6 +506,77 @@ export const configDepartmentsBotHistoryTable = [
     intl: {
       id: 'updated_objects',
       defaultMessage: 'Updated objects',
+    },
+  },
+];
+export const configTagsBotHistoryTable = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'finishedAt',
+    intl: {
+      id: 'finish_date',
+      defaultMessage: 'Finish date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'lists',
+    intl: {
+      id: 'base_object',
+      defaultMessage: 'Base object',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${link}${item.object.object_type === 'list' ? '/list' : '/map'}`}
+              >
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_of_objects',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'numberOfTags',
+    intl: {
+      id: 'number_of_tags',
+      defaultMessage: 'Number of tags',
+    },
+  },
+  {
+    id: 'objectsUpdated',
+    intl: {
+      id: 'updated_objects',
+      defaultMessage: 'Updated objects',
+    },
+  },
+  {
+    id: 'postedTags',
+    intl: {
+      id: 'posted_tags',
+      defaultMessage: 'Posted tags',
     },
   },
 ];

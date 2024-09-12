@@ -19,6 +19,7 @@ import {
 import ObjCardViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 
 import './DepartmentsWobjList.less';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
@@ -29,6 +30,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const location = useLocation();
   const query = useQuery();
   const list = useRef();
+  const schema = getUserShopSchema(location?.pathname);
   const path = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -38,12 +40,18 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
     : match.params.department;
 
   useEffect(() => {
-    getDepartmentsFeed(user, authUser, department, parseQueryForFilters(query), path, 0).then(
-      res => {
-        setDepartmentInfo(res);
-        setLoading(false);
-      },
-    );
+    getDepartmentsFeed(
+      user,
+      schema,
+      authUser,
+      department,
+      parseQueryForFilters(query),
+      path,
+      0,
+    ).then(res => {
+      setDepartmentInfo(res);
+      setLoading(false);
+    });
 
     if (!isMobile() && typeof window !== 'undefined')
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -65,6 +73,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const loadMore = () => {
     getDepartmentsFeed(
       user,
+      schema,
       authUser,
       department,
       parseQueryForFilters(query),

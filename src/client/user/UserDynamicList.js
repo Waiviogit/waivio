@@ -72,7 +72,8 @@ class UserDynamicList extends React.Component {
   handleLoadMore = () => {
     const { list } = this.props.dynamicListInfo;
 
-    this.getListMore(list, this.props.sort || undefined, list?.length);
+    this.props.dynamicListInfo.hasMore &&
+      this.getListMore(list, this.props.sort || undefined, list?.length);
   };
 
   unFollow = name => {

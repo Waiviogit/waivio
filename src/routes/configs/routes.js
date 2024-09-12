@@ -25,6 +25,7 @@ import ObjectFeed from '../../client/object/ObjectFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../../client/components/Favorites/UserFavorites';
 import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import GroupObjectType from '../../client/object/GroupObjectType/GroupObjectType';
 
 const routes = {
   component: Wrapper,
@@ -282,6 +283,11 @@ const routes = {
           component: Views.DepartmentsBot,
         },
         {
+          path: '/tags-bot',
+          exact: true,
+          component: Views.TagsBot,
+        },
+        {
           path: '/descriptions-bot',
           exact: true,
           component: Views.DescriptionsBot,
@@ -349,7 +355,7 @@ const routes = {
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
-        `/@:name/(userShop)/:department?`,
+        `/@:name/(userShop|recipe)/:department?`,
         `/@:name/transfers/(details)/:recordId?`,
         `/@:name/(favorites)/:objectType?`,
       ],
@@ -381,6 +387,11 @@ const routes = {
           path: '/map',
           exact: true,
           component: WebsiteBody,
+        },
+        {
+          path: '/recipe/:department?',
+          exact: true,
+          component: UserDepartmentsWobjList,
         },
         {
           path: '/reblogs',
@@ -487,6 +498,11 @@ const routes = {
           path: '/map',
           exact: true,
           component: Views.ObjectOfTypeMap,
+        },
+        {
+          path: '/group',
+          exact: true,
+          component: GroupObjectType,
         },
         { path: '/webpage', exact: true, component: Views.ObjectOfTypeWebpage },
         {

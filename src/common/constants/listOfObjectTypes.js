@@ -67,6 +67,7 @@ const listOfObjectTypes = [
   'drink',
   'service',
   'place',
+  'group',
   'company',
   'organization',
   'app',
