@@ -30,6 +30,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const location = useLocation();
   const query = useQuery();
   const list = useRef();
+  const schema = getUserShopSchema(location?.pathname);
   const path = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -39,8 +40,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
     : match.params.department;
 
   useEffect(() => {
-    const schema = getUserShopSchema(location?.pathname);
-
     getDepartmentsFeed(
       user,
       schema,
@@ -74,6 +73,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const loadMore = () => {
     getDepartmentsFeed(
       user,
+      schema,
       authUser,
       department,
       parseQueryForFilters(query),
