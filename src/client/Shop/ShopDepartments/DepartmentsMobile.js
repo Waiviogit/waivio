@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon, Modal } from 'antd';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
@@ -10,9 +11,10 @@ import DepartmentsUser from './DepartmentsUser';
 
 import './ShopDepartments.less';
 
-const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name }) => {
+const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name, intl }) => {
   const match = useRouteMatch();
   const location = useLocation();
+  const isRecipe = location?.pathname?.includes('@') && location?.pathname?.includes('recipe');
 
   const modalBody = () => {
     switch (type) {
@@ -33,7 +35,14 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name }) => {
   return (
     <React.Fragment>
       <div className="ShopDepartmentsList__mobileCrumbs" onClick={() => setVisible(true)}>
-        <b>Departments</b> (<span className="ShopDepartmentsList__select">Select</span>)
+        <b>
+          {' '}
+          {intl.formatMessage({
+            id: `${isRecipe ? 'categories' : 'departments'}`,
+            defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
+          })}
+        </b>{' '}
+        (<span className="ShopDepartmentsList__select">Select</span>)
         {match.params.department && (
           <span>
             <Icon type="right" />{' '}
@@ -49,6 +58,7 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name }) => {
 };
 
 DepartmentsMobile.propTypes = {
+  intl: PropTypes.shape(),
   setVisible: PropTypes.func,
   type: PropTypes.string,
   name: PropTypes.string,
@@ -56,4 +66,4 @@ DepartmentsMobile.propTypes = {
   isSocial: PropTypes.bool,
 };
 
-export default DepartmentsMobile;
+export default injectIntl(DepartmentsMobile);
