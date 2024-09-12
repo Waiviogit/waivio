@@ -370,7 +370,11 @@ export const configTagsBotProductTable = [
         <ol>
           {item.lists.map(link => (
             <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${link}${item.object.object_type === 'list' ? '/list' : '/map'}`}
+              >
                 {link}
               </a>
             </li>
@@ -534,7 +538,11 @@ export const configTagsBotHistoryTable = [
         <ol>
           {item.lists.map(link => (
             <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href={`/object/${link}${item.object.object_type === 'list' ? '/list' : '/map'}`}
+              >
                 {link}
               </a>
             </li>
