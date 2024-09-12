@@ -2655,5 +2655,6 @@
   "object_field_groupFollowing": "Following",
   "object_field_groupAdd": "Add a user",
   "object_field_groupExclude": "Exclude a user",
-  "expertise_tags": "Expertise tags"
+  "expertise_tags": "Expertise tags",
+  "categories": "Categories"
 }
