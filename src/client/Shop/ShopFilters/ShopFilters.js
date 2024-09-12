@@ -10,12 +10,14 @@ import { parseQuery } from '../../../waivioApi/helpers';
 import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
   const history = useHistory();
+  const schema = getUserShopSchema(history.location.pathname);
   const match = useRouteMatch();
   const path = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(history.location.hash)]
@@ -25,11 +27,11 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) =>
     getDepartmentsFilters(path).then(res => {
       setFilters(res);
     });
-  }, [history.location.hash, match.params.department, match.params.name]);
+  }, [history.location.hash, match.params.department, match.params.name, schema]);
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
-  }, [match.params.department, query.toString()]);
+  }, [match.params.department, query.toString(), schema]);
 
   const setActiveFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilter[type] || [];
