@@ -241,5 +241,6 @@
   "assistant": "/assistant",
   "mentions": "/mentions",
   "mapLink": "/map-link",
-  "addOn": "/add-on"
+  "addOn": "/add-on",
+  "group": "/group"
 }

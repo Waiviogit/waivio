@@ -3985,6 +3985,7 @@ class AppendForm extends Component {
         return (
           <GroupFollowersForm
             title={'followers'}
+            isFollowing={false}
             selectedUsers={this.state.selectedUsers}
             deleteUser={this.deleteUser}
             handleSelectUsersBlog={this.handleSelectUsersBlog}
@@ -3994,6 +3995,7 @@ class AppendForm extends Component {
       case objectFields.groupFollowing: {
         return (
           <GroupFollowersForm
+            isFollowing
             title={'following'}
             selectedUsers={this.state.selectedUsers}
             deleteUser={this.deleteUser}
@@ -4004,6 +4006,7 @@ class AppendForm extends Component {
       case objectFields.groupAdd: {
         return (
           <AddUserForm
+            isAdd
             selectedUsers={this.state.selectedUsers}
             deleteUser={this.deleteUser}
             handleSelectUsersBlog={this.handleSelectUsersBlog}
@@ -4013,6 +4016,7 @@ class AppendForm extends Component {
       case objectFields.groupExclude: {
         return (
           <AddUserForm
+            isAdd={false}
             selectedUsers={this.state.selectedUsers}
             deleteUser={this.deleteUser}
             handleSelectUsersBlog={this.handleSelectUsersBlog}

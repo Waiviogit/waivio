@@ -71,7 +71,7 @@ class SearchUsersAutocomplete extends React.Component {
 
   debouncedSearchByUser = _.debounce(
     searchString => this.props.searchUsers(searchString, 15, this.props.notGuest),
-    300,
+    500,
   );
 
   handleSearch = value => {

@@ -25,6 +25,7 @@ import ObjectFeed from '../../client/object/ObjectFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../../client/components/Favorites/UserFavorites';
 import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import GroupObjectType from '../../client/object/GroupObjectType/GroupObjectType';
 
 const routes = {
   component: Wrapper,
@@ -497,6 +498,11 @@ const routes = {
           path: '/map',
           exact: true,
           component: Views.ObjectOfTypeMap,
+        },
+        {
+          path: '/group',
+          exact: true,
+          component: GroupObjectType,
         },
         { path: '/webpage', exact: true, component: Views.ObjectOfTypeWebpage },
         {
