@@ -216,7 +216,7 @@ const routes = () => ({
           component: UserFavorites,
         },
         {
-          path: '/recipe',
+          path: '/recipe/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
         },
