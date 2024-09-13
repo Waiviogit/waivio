@@ -11,12 +11,19 @@ const WobjCardSwitcher = React.memo(props => {
   if (!isEmpty(props.obj.propositions)) {
     const proposition = props.obj.propositions[0];
 
-    return <PropositionNew hovered proposition={{ ...proposition, object: props.obj }} />;
+    return (
+      <PropositionNew
+        hovered
+        socialMap={props.socialMap}
+        proposition={{ ...proposition, object: props.obj }}
+      />
+    );
   }
 
   if (props.obj.campaigns) {
     return (
       <Campaing
+        socialMap={props.socialMap}
         campain={{
           maxReward: props.obj.campaigns?.max_reward,
           minReward: props.obj.campaigns?.min_reward,
@@ -27,14 +34,18 @@ const WobjCardSwitcher = React.memo(props => {
     );
   }
 
-  return <ObjectCardView wObject={props.obj} hovered />;
+  return <ObjectCardView socialMap={props.socialMap} wObject={props.obj} hovered />;
 });
 
 WobjCardSwitcher.propTypes = {
+  socialMap: PropTypes.bool,
   obj: PropTypes.shape({
     propositions: PropTypes.arrayOf(PropTypes.shape()),
     campaigns: PropTypes.arrayOf(PropTypes.shape()),
   }).isRequired,
+};
+WobjCardSwitcher.defaultProps = {
+  socialMap: false,
 };
 
 export default connect(null)(WobjCardSwitcher);

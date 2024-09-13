@@ -43,6 +43,7 @@ const ObjectCardView = ({
   rate,
   handleReportClick,
   isRejected,
+  socialMap,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
@@ -91,9 +92,15 @@ const ObjectCardView = ({
   };
 
   const description = wObject.description && (
-    <div className="ObjectCardView__title" title={wObject.description}>
+    <div
+      className="ObjectCardView__title"
+      title={truncate(wObject.description, {
+        length: 250,
+        separator: ' ',
+      })}
+    >
       {truncate(wObject.description, {
-        length: 140,
+        length: socialMap ? 70 : 140,
         separator: ' ',
       })}
     </div>
@@ -161,6 +168,7 @@ const ObjectCardView = ({
             </div>
             {wObject.rating && (
               <RatingsWrap
+                socialMap={socialMap}
                 ratings={wObject.rating}
                 username={isPost ? postAuthor : username}
                 wobjId={wObject.id || wObject.author_permlink}
@@ -196,9 +204,15 @@ const ObjectCardView = ({
             </span>
             {address && <div className="ObjectCardView__tag-text">{address}</div>}
             {wObject.title ? (
-              <div className="ObjectCardView__title" title={wObject.title}>
+              <div
+                className="ObjectCardView__title"
+                title={truncate(wObject.title, {
+                  length: 250,
+                  separator: ' ',
+                })}
+              >
                 {truncate(wObject.title, {
-                  length: 140,
+                  length: socialMap ? 70 : 140,
                   separator: ' ',
                 })}
               </div>
@@ -283,6 +297,7 @@ ObjectCardView.propTypes = {
   isPost: PropTypes.bool,
   showHeart: PropTypes.bool,
   isRejected: PropTypes.bool,
+  socialMap: PropTypes.bool,
   postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
   handleReportClick: PropTypes.func,
@@ -296,6 +311,7 @@ ObjectCardView.defaultProps = {
   payoutToken: '',
   passedParent: {},
   withRewards: false,
+  socialMap: false,
   showHeart: true,
   isReserved: false,
   isPost: false,
