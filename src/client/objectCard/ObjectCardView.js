@@ -70,7 +70,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    setTags(uniq([wObject.object_type, ...objectTags]));
+    setTags(socialMap ? objectTags : uniq([wObject.object_type, ...objectTags]));
   }, [wObject.author_permlink]);
 
   const avatarLayout = () => {
@@ -202,7 +202,16 @@ const ObjectCardView = ({
                 );
               })}
             </span>
-            {address && <div className="ObjectCardView__tag-text">{address}</div>}
+            {address && (
+              <div className="ObjectCardView__tag-text">
+                {socialMap
+                  ? truncate(address, {
+                      length: 50,
+                      separator: ' ',
+                    })
+                  : address}
+              </div>
+            )}
             {wObject.title ? (
               <div
                 className="ObjectCardView__title"
