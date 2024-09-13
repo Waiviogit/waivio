@@ -86,7 +86,7 @@ const SearchAllResult = props => {
         return {
           list: (
             <WobjectsList
-              isUserMap={props.isUserMap}
+              socialMap={props.isUserMap || props.isSocial}
               handleHoveredCard={props.handleHoveredCard}
               handleItemClick={handleItemClick}
             />

@@ -14,11 +14,10 @@ import {
   getSocialSearchResult,
   getSocialSearchResultLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
-import { getIsSocial } from '../../../../store/appStore/appSelectors';
 
 const WobjectsList = React.memo(props => {
-  const objects = props.isSocial || props.isUserMap ? props.socialWobjects : props.searchResult;
-  const loading = props.isSocial || props.isUserMap ? props.socialLoading : props.websiteLoading;
+  const objects = props.socialMap ? props.socialWobjects : props.searchResult;
+  const loading = props.socialMap ? props.socialLoading : props.websiteLoading;
 
   if (isEmpty(objects) && !loading) {
     return (
@@ -44,7 +43,7 @@ const WobjectsList = React.memo(props => {
           onMouseOut={onMouseOut}
           onClick={onClick}
         >
-          <WobjCardSwitcher obj={obj} />
+          <WobjCardSwitcher socialMap={props.socialMap} obj={obj} />
         </div>
       );
     })
@@ -56,15 +55,13 @@ WobjectsList.propTypes = {
   socialWobjects: PropTypes.arrayOf(PropTypes.shape()),
   websiteLoading: PropTypes.bool,
   socialLoading: PropTypes.bool,
-  isUserMap: PropTypes.bool,
-  isSocial: PropTypes.bool.isRequired,
+  socialMap: PropTypes.bool,
   handleHoveredCard: PropTypes.func.isRequired,
   handleItemClick: PropTypes.func.isRequired,
 };
 
 export default connect(state => ({
   searchResult: getWebsiteSearchResult(state),
-  isSocial: getIsSocial(state),
   socialWobjects: getSocialSearchResult(state),
   websiteLoading: getWebsiteSearchResultLoading(state),
   socialLoading: getSocialSearchResultLoading(state),
