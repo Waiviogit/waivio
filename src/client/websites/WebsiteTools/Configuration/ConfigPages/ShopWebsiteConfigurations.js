@@ -56,6 +56,7 @@ const ShopWebsiteConfigurations = ({
   });
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
+  const tabsFilter = get(config, 'tabsFilter', []);
   const banner = get(config, 'mainBanner');
   const listDefaultImage = get(config, 'defaultListImage');
   const desktopLogo = get(config, 'desktopLogo');
@@ -101,6 +102,10 @@ const ShopWebsiteConfigurations = ({
   const handleSubmitColors = colors =>
     handleSubmit({
       colors,
+    });
+  const handleSubmitTabFilters = filters =>
+    handleSubmit({
+      tabsFilter: filters,
     });
 
   const handleSubmitObjMain = obj => {
@@ -255,6 +260,8 @@ const ShopWebsiteConfigurations = ({
                 :
               </h3>
               <BaseObjSettings
+                handleSubmitTabFilters={handleSubmitTabFilters}
+                tabsFilter={tabsFilter}
                 hideActions
                 shopSettings={shopSettings}
                 handleSubmit={handleSubmitObjMain}
