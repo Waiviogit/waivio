@@ -68,7 +68,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
-  const isUserMap = props.history.location.pathname?.includes(`/@`);
+  const isUserMap = props.history.location.pathname?.includes(`/@`) || props.route.isUserMap;
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -235,6 +235,7 @@ WebsiteBody.propTypes = {
   locale: PropTypes.string,
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
+  route: PropTypes.shape().isRequired,
   resetSocialSearchResult: PropTypes.func,
   setMapData: PropTypes.func,
   resetWebsiteObjectsCoordinates: PropTypes.func,

@@ -54,6 +54,12 @@ const routes = () => ({
       component: UserBlogFeed,
     },
     {
+      path: ['/map/:name'],
+      exact: true,
+      isUserMap: true,
+      component: WebsiteBody,
+    },
+    {
       path: ['/(user-shop)/:name/:department?'],
       exact: true,
       component: Shop,
