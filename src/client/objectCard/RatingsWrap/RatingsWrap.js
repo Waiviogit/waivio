@@ -21,7 +21,8 @@ const prepereRatings = (ratings, overlay) => {
 
 const RatingsWrap = React.memo(
   ({ ratings, wobjId, socialMap, username, overlay, isSocialProduct }) => {
-    const [sortedRatings, setSortingRatings] = useState(prepereRatings(ratings, overlay));
+    const rating = socialMap ? ratings?.slice(0, 1) : ratings;
+    const [sortedRatings, setSortingRatings] = useState(prepereRatings(rating, overlay));
 
     const isAuth = useSelector(getIsAuthenticated);
     const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
@@ -80,8 +81,8 @@ const RatingsWrap = React.memo(
     };
 
     return sortedRatings[0] ? (
-      <div className={socialMap ? 'RatingsWrap social-rating' : 'RatingsWrap'}>
-        <Row className={socialMap ? 'social-rating-row' : ''}>
+      <div className="RatingsWrap">
+        <Row>
           {rateLayout(sortedRatings[1] ? 12 : 24, 0)}
           {sortedRatings[1] && rateLayout(12, 1)}
         </Row>
