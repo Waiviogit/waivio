@@ -38,6 +38,13 @@ const UserMenu = props => {
             </Link>
           </li>
           {showUserShop && (
+            <li className={getItemClasses(['map'])} role="presentation">
+              <Link to={`/@${name}/map`}>
+                <FormattedMessage id="map" defaultMessage="Map" />
+              </Link>
+            </li>
+          )}
+          {showUserShop && (
             <li className={getItemClasses(['userShop'])} role="presentation">
               <Link to={`/@${name}/userShop`}>
                 <FormattedMessage id="shop" defaultMessage="Shop" />
@@ -47,7 +54,7 @@ const UserMenu = props => {
           {showUserShop && (
             <li className={getItemClasses(['recipe'])} role="presentation">
               <Link to={`/@${name}/recipe`}>
-                <FormattedMessage id="recipe" defaultMessage="Recipe" />
+                <FormattedMessage id="recipes" defaultMessage="Recipes" />
               </Link>
             </li>
           )}{' '}
@@ -55,13 +62,6 @@ const UserMenu = props => {
             <li className={getItemClasses(['favorites'])} role="presentation">
               <Link to={`/@${name}/favorites`}>
                 <FormattedMessage id="favorites" defaultMessage="Favorites" />
-              </Link>
-            </li>
-          )}
-          {showUserShop && (
-            <li className={getItemClasses(['map'])} role="presentation">
-              <Link to={`/@${name}/map`}>
-                <FormattedMessage id="map" defaultMessage="Map" />
               </Link>
             </li>
           )}
