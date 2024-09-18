@@ -115,6 +115,7 @@ const ShopWebsiteConfigurations = ({
           type: '',
           value: '',
         },
+        tabsFilter: [],
       });
 
     handleSubmit({
@@ -122,6 +123,7 @@ const ShopWebsiteConfigurations = ({
         type: obj.account ? 'user' : 'object',
         value: obj.account || obj.author_permlink,
       },
+      tabsFilter: [],
     });
   };
 

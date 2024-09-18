@@ -123,7 +123,7 @@ const ObjectCardView = ({
           >
             {avatarLayout()}
           </Link>
-          <div className="ObjectCardView__info">
+          <div className={socialMap ? 'ObjectCardView__social-info' : 'ObjectCardView__info'}>
             {parentName && (
               <Link
                 to={parentLink}
@@ -206,7 +206,7 @@ const ObjectCardView = ({
               <div className="ObjectCardView__tag-text">
                 {socialMap
                   ? truncate(address, {
-                      length: 50,
+                      length: 33,
                       separator: ' ',
                     })
                   : address}

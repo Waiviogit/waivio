@@ -27,6 +27,10 @@ const userNav = (user, intl) => [
     link: `/blog/${user}`,
   },
   {
+    name: intl.formatMessage({ id: 'map', defaultMessage: 'Map' }),
+    link: `/map/${user}`,
+  },
+  {
     name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
     link: '/object/ljc-legal',
   },

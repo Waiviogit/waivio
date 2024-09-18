@@ -169,24 +169,27 @@ const BaseObjSettings = ({
           ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
           : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
       </Button>
-      <button
-        onClick={() => setShowDetails(true)}
-        className="WalletTable__csv-button BaseObjSettings__details"
-      >
-        {intl.formatMessage({
-          id: 'details',
-          defaultMessage: 'Details',
-        })}
-      </button>
+      {selectedObj?.account && !edit && (
+        <button
+          onClick={() => setShowDetails(true)}
+          className="WalletTable__csv-button BaseObjSettings__details"
+        >
+          {intl.formatMessage({
+            id: 'details',
+            defaultMessage: 'Details',
+          })}
+        </button>
+      )}
       {showDetails && (
         <Modal
+          okButtonProps={{ disabled: filters?.length === tabsList?.length }}
           title={'Base object details'}
           onOk={submitFilters}
           visible={showDetails}
           onCancel={() => setShowDetails(false)}
         >
           <div className={'flex flex-column'}>
-            <b className={'BaseObjSettings__tab'}>Tabs to be displayed on the site:</b>
+            <div className={'BaseObjSettings__tab'}>Tabs to be displayed on the site:</div>
             <div className={'BaseObjSettings__tabs-list'}>
               {tabsList.map(tab => (
                 <Checkbox
