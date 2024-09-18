@@ -86,6 +86,9 @@ const WebsiteBody = props => {
     if (!isEmpty(props.currObj) && props.isSocial) {
       props.getCoordinates();
     }
+    if (isUserMap) {
+      props.setFavoriteObjectTypes(name);
+    }
 
     return () => {
       props.resetSocialSearchResult();
@@ -238,6 +241,7 @@ WebsiteBody.propTypes = {
   route: PropTypes.shape().isRequired,
   resetSocialSearchResult: PropTypes.func,
   setMapData: PropTypes.func,
+  setFavoriteObjectTypes: PropTypes.func,
   resetWebsiteObjectsCoordinates: PropTypes.func,
   setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
