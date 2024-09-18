@@ -72,6 +72,7 @@ const BaseObjSettings = ({
         getObject(shopSettings.value).then(res => setSelectedObj(res));
       }
     }
+    setFilters([]);
   }, [shopSettings.value]);
 
   const resetMainObj = () => {
