@@ -500,7 +500,7 @@ const routes = {
           component: Views.ObjectOfTypeMap,
         },
         {
-          path: '/group',
+          path: '/(group)',
           exact: true,
           component: GroupObjectType,
         },

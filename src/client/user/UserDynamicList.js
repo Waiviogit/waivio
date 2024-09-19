@@ -70,8 +70,8 @@ class UserDynamicList extends React.Component {
       this.state.sort,
     );
   handleLoadMore = () => {
-    const { list } = this.props.dynamicListInfo;
-
+    const { list, hasMore } = this.props.dynamicListInfo;
+    console.log(hasMore);
     this.getListMore(list, this.props.sort || undefined, list?.length);
   };
 
@@ -110,7 +110,7 @@ class UserDynamicList extends React.Component {
   }
 
   render() {
-    const { loading } = this.props;
+    const { loading, threshold } = this.props;
     const { hasMore, list } = this.props.dynamicListInfo;
     const empty = !hasMore && list?.length === 0;
     const { sort, hideSort } = this.props;
@@ -142,7 +142,7 @@ class UserDynamicList extends React.Component {
             hasMore={hasMore}
             loader={<Loading />}
             loadMore={this.handleLoadMore}
-            threshold={500}
+            threshold={this.props.threshold}
           >
             {list?.map(user => {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
@@ -177,6 +177,7 @@ UserDynamicList.propTypes = {
   hideSort: PropTypes.bool,
   loading: PropTypes.bool,
   userName: PropTypes.string,
+  threshold: PropTypes.number,
   searchLine: PropTypes.string,
   unfollowUser: PropTypes.func.isRequired,
   followUser: PropTypes.func.isRequired,
@@ -203,6 +204,7 @@ UserDynamicList.defaultProps = {
   hideSort: false,
   userName: '',
   sort: 'recency',
+  threshold: 500,
 };
 
 export default withRouter(
