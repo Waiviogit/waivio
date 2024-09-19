@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty } from 'lodash';
-import { Button, Form, Input, message, Modal } from 'antd';
+import { debounce, get, isEmpty } from 'lodash';
+import { Button, Form, Icon, Input, message, Modal, Progress } from 'antd';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getNewPostData } from './affiliateCodesHelper';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { isGuestUser } from '../../../../store/authStore/authSelectors';
+import PercentChanger from '../../../object/AppendModal/FormComponents/PercentChanger';
 
 const guestUpVotingPower = 10000;
 
@@ -32,9 +33,49 @@ const AffiliateCodesModal = ({
   const isGuest = useSelector(isGuestUser);
   const userUpVotePower = 100;
   const hideModal = () => {
-    setFieldsValue({ [objectFields.affiliateCode]: '' });
+    setFieldsValue({ [objectFields.affiliateCode]: [] });
     setOpenAppendModal(false);
   };
+  const [items, setItem] = useState([]);
+  const [percents, setPercents] = useState([]);
+  const [codes, setCodes] = useState([]);
+  const [weightBuffer, setWeightBuffer] = useState(100);
+  const totalUsedPercents = useMemo(() => percents.reduce((acc, num) => acc + num, 0), [percents]);
+  const createCodesList = () => {
+    if (codes.length === 1) return codes;
+
+    return codes.reduce(
+      (acc, curr, i) =>
+        i ? [...acc, `${curr}::${percents[i - 1]}`] : [`${curr}::${weightBuffer}`],
+      [],
+    );
+  };
+
+  useEffect(() => {
+    setWeightBuffer(Object.values(percents).reduce((res, curr) => res - curr, 100));
+  }, [percents]);
+
+  useEffect(() => {
+    setFieldsValue({ affiliateCode: createCodesList() });
+  }, [codes, percents, weightBuffer]);
+
+  const onChangeSlider = (value, i) => {
+    const newPercents = [...percents];
+
+    newPercents.splice(i, 1, value);
+
+    setPercents(newPercents);
+  };
+  const handleChange = useCallback(
+    debounce((value, i) => {
+      const newCodes = [...codes];
+
+      newCodes.splice(i, 1, value);
+
+      setCodes(newCodes);
+    }, 300),
+    [codes],
+  );
 
   const addAffilicateCode = (dup, data, formValues) => {
     if (dup) {
@@ -87,7 +128,7 @@ const AffiliateCodesModal = ({
         .then(r => {
           setOpenAppendModal(false);
           setLoading(false);
-          setFieldsValue({ [objectFields.affiliateCode]: '' });
+          setFieldsValue({ [objectFields.affiliateCode]: [] });
 
           const mssg = get(r, ['value', 'message']);
 
@@ -159,15 +200,69 @@ const AffiliateCodesModal = ({
                 },
               ],
             })(
-              <Input
-                autoFocus
-                placeholder={intl.formatMessage({
-                  id: 'my_affiliate_code',
-                  defaultMessage: 'My affiliate code',
-                })}
-              />,
+              <div>
+                <input
+                  disabled={loading}
+                  placeholder={`${intl.formatMessage({
+                    id: 'my_affiliate_code',
+                    defaultMessage: 'My affiliate code',
+                  })} #1`}
+                  className="ant-input"
+                  onInput={e => {
+                    handleChange(e.currentTarget.value, 0);
+                  }}
+                />
+              </div>,
             )}
+            <Progress
+              status="active"
+              showInfo={false}
+              percent={weightBuffer}
+              strokeWidth={5}
+              trailColor="red"
+              strokeColor={'orange'}
+            />
           </Form.Item>
+          {items.map(i => {
+            const index = i + 1;
+
+            return (
+              <React.Fragment key={index}>
+                <p className={'ant-form-item-label AppendForm__appendTitles'}>
+                  Affiliate code {index}
+                </p>
+                <input
+                  disabled={loading}
+                  className="ant-input"
+                  placeholder={`${intl.formatMessage({
+                    id: 'my_affiliate_code',
+                    defaultMessage: 'My affiliate code',
+                  })} #${index}`}
+                  onInput={e => {
+                    handleChange(e.currentTarget.value, i);
+                  }}
+                />
+                <PercentChanger
+                  onAfterChange={value => onChangeSlider(value, i - 1)}
+                  max={
+                    100 -
+                    percents.filter((_, indx) => i !== indx).reduce((acc, elem) => acc + elem, 0)
+                  }
+                />
+              </React.Fragment>
+            );
+          })}
+          <span
+            onClick={() => {
+              if (totalUsedPercents === 100) return;
+              const i = items.length + 1;
+
+              setItem([...items, i]);
+              setPercents([...percents, 1]);
+            }}
+          >
+            <Icon type="plus-circle" className="proposition-line__icon" /> Add new codes
+          </span>
           <div className={'mt3'}>
             <p>{`CONTEXT: ${context}`}</p>
           </div>

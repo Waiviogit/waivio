@@ -166,29 +166,11 @@ export const addListItem = item => dispatch =>
 
 export const GET_ADD_ONS = createAsyncActionType('@wobj/GET_ADD_ONS');
 
-export const getAddOns = (addOnPermlinks, userName, limit = 30) => (dispatch, getState) => {
-  if (!isEmpty(addOnPermlinks)) {
-    const appHost = getAppHost(getState());
-
-    return dispatch({
-      type: GET_ADD_ONS.ACTION,
-      payload: ApiClient.getObjectsByIds({
-        authorPermlinks: addOnPermlinks,
-        authUserName: userName,
-        limit,
-        skip: 0,
-        host: appHost,
-      }),
-    });
-  }
-
-  return dispatch({
-    type: GET_ADD_ONS.SUCCESS,
-    payload: {
-      wobjects: [],
-    },
+export const getAddOns = (authorPermlink, userName, locale, limit = 30) => dispatch =>
+  dispatch({
+    type: GET_ADD_ONS.ACTION,
+    payload: ApiClient.getAddOnObjectsFromDepartments(authorPermlink, userName, locale, 0, limit),
   });
-};
 
 export const GET_SIMILAR_OBJECTS = createAsyncActionType('@wobj/GET_SIMILAR_OBJECTS');
 

@@ -32,12 +32,11 @@ export const headers = {
 const addAppHost = host => (typeof window === 'undefined' ? { 'app-host': host } : {});
 
 const WAIVIdPool = 13;
-const REQUEST_TIMEOUT = 15000;
+const REQUEST_TIMEOUT = 3000;
 const HIVE_ENGINE_NODES = [
-  'https://engine.waivio.com',
-  'https://ha.herpc.dtools.dev', // New Jersey
-  'https://herpc.dtools.dev', // Miami
-  'https://api.primersion.com',
+  'https://herpc.dtools.dev',
+  'https://api.hive-engine.com/rpc',
+  'https://ha.herpc.dtools.dev',
   'https://herpc.kanibot.com',
   'https://he.sourov.dev',
 ];

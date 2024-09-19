@@ -8,7 +8,7 @@
   height: 100% !important;
 }
 .smooth-height {
-  transition: height 0.3s ease-in-out; /* Adjust the duration and easing as needed */
+  transition: height 0.3s ease-in-out;
 }
 .ChatWindow {
   z-index: @ant-message-z-index;
@@ -66,8 +66,10 @@
     margin-top: 15px;
     margin-bottom: 15px;
     max-width: -webkit-fill-available;
+    max-width: 100%;
   }
   .QuickComment__send-comment {
+    z-index: @ant-message-z-index;
     bottom: 20px;
     right: 25px;
     img {

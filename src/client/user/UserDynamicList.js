@@ -70,8 +70,8 @@ class UserDynamicList extends React.Component {
       this.state.sort,
     );
   handleLoadMore = () => {
-    const { list, hasMore } = this.props.dynamicListInfo;
-    console.log(hasMore);
+    const { list } = this.props.dynamicListInfo;
+
     this.getListMore(list, this.props.sort || undefined, list?.length);
   };
 
@@ -142,7 +142,7 @@ class UserDynamicList extends React.Component {
             hasMore={hasMore}
             loader={<Loading />}
             loadMore={this.handleLoadMore}
-            threshold={this.props.threshold}
+            threshold={threshold}
           >
             {list?.map(user => {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {

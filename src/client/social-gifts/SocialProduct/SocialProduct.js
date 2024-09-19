@@ -141,7 +141,7 @@ const SocialProduct = ({
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
     isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type === 'instacart')
+      ? wobject?.affiliateLinks?.find(aff => aff.type.toLowerCase() === 'instacart')
       : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
@@ -184,7 +184,6 @@ const SocialProduct = ({
       }, []);
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-  const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
   const showGallery =
     !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
   const tagCategoriesForDescr = reduce(
@@ -236,7 +235,7 @@ const SocialProduct = ({
       !isEmpty(ageRange));
 
   const getAddOnsSimilarRelatedObjects = () => {
-    getAddOnsAction(addOnPermlinks, userName, limit);
+    getAddOnsAction(wobject.author_permlink, userName, locale, limit);
     getRelatedAction(wobject.author_permlink, userName, locale, limit);
     getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
   };
@@ -685,7 +684,8 @@ const mapDispatchToProps = dispatch => ({
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
-  getAddOnsAction: (addOnPermlinks, userName) => dispatch(getAddOns(addOnPermlinks, userName)),
+  getAddOnsAction: (author_permlink, userName, locale, lim = 30) =>
+    dispatch(getAddOns(author_permlink, userName, locale, lim)),
   getSimilarObjectsAction: (author_permlink, userName, locale, lim = 30) =>
     dispatch(getSimilarObjects(author_permlink, userName, locale, lim)),
   getProductInfoAction: obj => dispatch(getProductInfo(obj)),

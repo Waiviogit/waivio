@@ -102,6 +102,7 @@ export const AffiliateCodes = ({
         context={site}
         rejectCode={voteAppend}
         affiliateObjects={affiliateObjects}
+        setOpenAppendModal={() => setOpenAppendModal(true)}
       />
       <AffiliateCodesModal
         voteAppend={voteAppend}

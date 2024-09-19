@@ -20,6 +20,7 @@ import {
   getGuestPaymentsHistory,
   getPrivateEmail,
   getRewardTab,
+  getUserAccount,
   updateGuestProfile,
   waivioAPI,
 } from '../../waivioApi/ApiClient';
@@ -266,7 +267,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
         Promise.resolve();
       } else {
         promise = new Promise(async resolve => {
-          const account = await getAccount(hiveAuthData.username);
+          const account = await getUserAccount(hiveAuthData.username);
           const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
           const privateEmail = await getPrivateEmail(hiveAuthData.username);
           const rewardsTab = await getRewardTab(hiveAuthData.username);
@@ -316,7 +317,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
           const scUserData = isGuest
             ? await waivioAPI.getUserAccount(cookie.guestName, true)
             : await steemConnectAPI.me();
-          const account = isGuest ? scUserData : await getAccount(scUserData.name);
+          const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
           const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
           const privateEmail = await getPrivateEmail(scUserData.name);
           const rewardsTab = await getRewardTab(scUserData.name);

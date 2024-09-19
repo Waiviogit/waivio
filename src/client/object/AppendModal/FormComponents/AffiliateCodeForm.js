@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {Button, Form, Icon, Progress, Select} from 'antd';
+import { Button, Form, Icon, Progress, Select } from 'antd';
 import { debounce } from 'lodash';
 
 import PropTypes from 'prop-types';
@@ -131,9 +131,10 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
           </React.Fragment>
         );
       })}
-      <Button
-        disabled={totalUsedPercents === 100}
+      <span
         onClick={() => {
+          if (totalUsedPercents === 100) return;
+
           const i = items.length + 1;
 
           setItem([...items, i]);
@@ -141,7 +142,7 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
         }}
       >
         <Icon type="plus-circle" className="proposition-line__icon" /> Add new codes
-      </Button>
+      </span>
     </>
   );
 };

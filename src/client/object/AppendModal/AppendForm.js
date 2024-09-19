@@ -154,6 +154,9 @@ import ExpertiseForm from './FormComponents/GroupForms/ExpertiseForm';
 import GroupFollowersForm from './FormComponents/GroupForms/GroupFollowersForm';
 import { getDotOrComma } from '../../../common/helpers/AppendFormHelper';
 import AddUserForm from './FormComponents/GroupForms/AddUserForm';
+import ProductIdForm from './FormComponents/MapForms/ProductIdForm';
+import GroupIdForm from './FormComponents/GroupIdForm';
+import CompanyIdForm from './FormComponents/CompanyIdForm';
 
 @connect(
   state => ({
@@ -2699,36 +2702,14 @@ class AppendForm extends Component {
       }
       case objectFields.groupId: {
         return (
-          <>
-            <Form.Item>
-              {getFieldDecorator(objectFields.groupId, {
-                rules: this.getFieldRules(objectFields.groupId),
-              })(
-                <Input
-                  autoFocus
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'object_field_groupId',
-                    defaultMessage: 'Group ID',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            {isBookType ? (
-              <FormattedMessage
-                id="groupId_book_info"
-                defaultMessage="Products with multiple options (format etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
-              />
-            ) : (
-              <FormattedMessage
-                id="groupId_info"
-                defaultMessage="Products with multiple options (colors, sizes, configurations, etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
-              />
-            )}
-          </>
+          <GroupIdForm
+            getFieldDecorator={getFieldDecorator}
+            isBookType={isBookType}
+            setFieldsValue={this.props.form.setFieldsValue}
+            isSomeValue={this.state.isSomeValue}
+            loading={this.state.loading}
+            getFieldRules={this.getFieldRules}
+          />
         );
       }
       case objectFields.publicationDate: {
@@ -3155,55 +3136,14 @@ class AppendForm extends Component {
       }
       case objectFields.companyId: {
         return (
-          <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator(companyIdFields.companyIdType, {
-                rules: this.getFieldRules(objectFields.companyIdType),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'company_id_type',
-                    defaultMessage: 'Company ID type',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <p>
-              {intl.formatMessage({
-                id: 'company_id_type_description',
-                defaultMessage:
-                  'There are many global and national databases of companies and they use different types of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and many more.',
-              })}
-            </p>
-            <br />
-            <Form.Item>
-              {getFieldDecorator(companyIdFields.companyId, {
-                rules: this.getFieldRules(objectFields.companyId),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'company_id',
-                    defaultMessage: 'Company ID',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <p>
-              {intl.formatMessage({
-                id: 'company_id_description',
-                defaultMessage:
-                  'Company identifiers are often alphanumeric, but there are no limitations on this text field.',
-              })}
-            </p>
-          </React.Fragment>
+          <CompanyIdForm
+            getFieldDecorator={getFieldDecorator}
+            isBookType={isBookType}
+            setFieldsValue={this.props.form.setFieldsValue}
+            isSomeValue={this.state.isSomeValue}
+            loading={this.state.loading}
+            getFieldRules={this.getFieldRules}
+          />
         );
       }
       case objectFields.affiliateProductIdTypes: {
@@ -3244,78 +3184,15 @@ class AppendForm extends Component {
       }
       case objectFields.productId: {
         return (
-          <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator(productIdFields.productIdType, {
-                rules: this.getFieldRules(objectFields.productIdType),
-              })(
-                <Input
-                  autoFocus
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'product_id_type',
-                    defaultMessage: 'Product ID type',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <p>
-              {intl.formatMessage({
-                id: 'product_id_type_text',
-                defaultMessage:
-                  'Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But manufactures can use their own systems for naming products.',
-              })}
-            </p>
-            <br />
-            <Form.Item>
-              {getFieldDecorator(productIdFields.productId, {
-                rules: this.getFieldRules(objectFields.productId),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'product_id',
-                    defaultMessage: 'Product ID',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <p>
-              {intl.formatMessage({
-                id: 'product_id_text',
-                defaultMessage:
-                  'Product identifiers are often alphanumeric, but there are no limitations on this text field.',
-              })}
-            </p>
-            <br />
-            <div className="image-wrapper">
-              <Form.Item>
-                {getFieldDecorator(objectFields.productIdImage, {
-                  rules: this.getFieldRules(objectFields.productIdImage),
-                })(
-                  <ImageSetter
-                    onImageLoaded={this.getImages}
-                    onLoadingImage={this.onLoadingImage}
-                    labeledImage={'product_id_image'}
-                    isMultiple={false}
-                  />,
-                )}
-              </Form.Item>
-            </div>
-            <p>
-              {intl.formatMessage({
-                id: 'product_id_image_text',
-                defaultMessage:
-                  'Visual representation of the product ID, such as a bar code, label, QR code, etc.',
-              })}
-            </p>
-          </React.Fragment>
+          <ProductIdForm
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            loading={this.state.loading}
+            onLoadingImage={this.onLoadingImage}
+            isSomeValue={this.state.isSomeValue}
+            getImages={this.getImages}
+            setFieldsValue={this.props.form.setFieldsValue}
+          />
         );
       }
       case objectFields.options: {

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
-import { AutoComplete, Button, Icon } from 'antd';
+import { AutoComplete, Button, Checkbox, Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -22,13 +22,23 @@ import { getAuthenticatedUserName } from '../../../../../store/authStore/authSel
 
 import './BaseObjSettings.less';
 
-const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
+const BaseObjSettings = ({
+  handleSubmit,
+  intl,
+  shopSettings,
+  hideActions,
+  tabsFilter,
+  handleSubmitTabFilters,
+}) => {
   const dispatch = useDispatch();
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
   const loading = useSelector(getIsStartSearchAutoComplete);
   const account = useSelector(getAuthenticatedUserName);
   const [selectedObj, setSelectedObj] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [filters, setFilters] = useState(tabsFilter);
+  const tabsList = ['Shop', 'Blog', 'Map', 'Legal'];
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
@@ -62,6 +72,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
         getObject(shopSettings.value).then(res => setSelectedObj(res));
       }
     }
+    setFilters([]);
   }, [shopSettings.value]);
 
   const resetMainObj = () => {
@@ -74,6 +85,23 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
   };
 
   const getOptionName = op => op.account || getObjectName(op);
+  const changeTabFilters = (event, tab) => {
+    const isChecked = event.target.checked;
+
+    setFilters(() => {
+      if (!isChecked && !filters.includes(tab)) {
+        return [...filters, tab];
+      } else if (isChecked) {
+        return filters?.filter(filter => filter !== tab);
+      }
+
+      return filters;
+    });
+  };
+  const submitFilters = () => {
+    handleSubmitTabFilters(filters);
+    setShowDetails(false);
+  };
 
   return (
     <div>
@@ -142,17 +170,57 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
           ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
           : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
       </Button>
+      {selectedObj?.account && !edit && (
+        <button
+          onClick={() => setShowDetails(true)}
+          className="WalletTable__csv-button BaseObjSettings__details"
+        >
+          {intl.formatMessage({
+            id: 'details',
+            defaultMessage: 'Details',
+          })}
+        </button>
+      )}
+      {showDetails && (
+        <Modal
+          okButtonProps={{ disabled: filters?.length === tabsList?.length }}
+          title={'Base object details'}
+          onOk={submitFilters}
+          visible={showDetails}
+          onCancel={() => setShowDetails(false)}
+        >
+          <div className={'flex flex-column'}>
+            <div className={'BaseObjSettings__tab'}>Tabs to be displayed on the site:</div>
+            <div className={'BaseObjSettings__tabs-list'}>
+              {tabsList.map(tab => (
+                <Checkbox
+                  onChange={e => {
+                    changeTabFilters(e, tab);
+                  }}
+                  className={'BaseObjSettings__tab'}
+                  checked={!filters?.includes(tab)}
+                  key={tab}
+                >
+                  {tab}
+                </Checkbox>
+              ))}
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
 
 BaseObjSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
+  tabsFilter: PropTypes.arrayOf().isRequired,
   shopSettings: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,
   }),
   handleSubmit: PropTypes.string,
+  handleSubmitTabFilters: PropTypes.string.isRequired,
   hideActions: PropTypes.bool,
 };
 

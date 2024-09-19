@@ -1,10 +1,10 @@
 import { createClient } from 'lightrpc';
 
 const options = {
-  timeout: 15000,
+  timeout: 3000,
 };
 
-const steemUrl = process.env.STEEMJS_URL || 'https://anyx.io';
+const steemUrl = process.env.STEEMJS_URL || 'https://herpc.dtools.dev';
 
 const client = createClient(steemUrl, options);
 

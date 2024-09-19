@@ -98,6 +98,7 @@ export const UserAffiliateCodes = ({
         affiliateObjects={affiliateObjects}
         rejectCode={voteAppend}
         context={undefined}
+        setOpenAppendModal={() => setOpenAppendModal(true)}
       />
       <AffiliateCodesModal
         affiliateObjects={affiliateObjects}

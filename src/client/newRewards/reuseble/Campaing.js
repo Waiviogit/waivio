@@ -15,7 +15,15 @@ import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './Campaing.less';
 
-const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handleReportClick }) => {
+const Campaing = ({
+  campain,
+  socialMap,
+  isRejected,
+  onActionInitiated,
+  hovered,
+  intl,
+  handleReportClick,
+}) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   let mainItem = campain.object;
@@ -72,6 +80,7 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
   return (
     <div className="Campaing">
       <ObjectCardView
+        socialMap={socialMap}
         wObject={mainItem}
         withRewards
         rewardPrice={maxReward}
@@ -108,6 +117,7 @@ Campaing.propTypes = {
   onActionInitiated: PropTypes.func.isRequired,
   handleReportClick: PropTypes.func,
   hovered: PropTypes.bool,
+  socialMap: PropTypes.bool,
   isRejected: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
@@ -115,6 +125,7 @@ Campaing.propTypes = {
 Campaing.defaultProps = {
   hovered: false,
   isRejected: false,
+  socialMap: false,
   handleReportClick: null,
 };
 

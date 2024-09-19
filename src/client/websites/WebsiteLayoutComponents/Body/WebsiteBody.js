@@ -68,7 +68,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
-  const isUserMap = props.history.location.pathname?.includes(`/@`);
+  const isUserMap = props.history.location.pathname?.includes(`/@`) || props.route?.isUserMap;
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -225,7 +225,6 @@ WebsiteBody.propTypes = {
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,
-  // setShowSearchResult: PropTypes.func.isRequired,
   getCoordinates: PropTypes.func,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
@@ -235,8 +234,10 @@ WebsiteBody.propTypes = {
   locale: PropTypes.string,
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
+  route: PropTypes.shape().isRequired,
   resetSocialSearchResult: PropTypes.func,
   setMapData: PropTypes.func,
+  // setFavoriteObjectTypes: PropTypes.func,
   resetWebsiteObjectsCoordinates: PropTypes.func,
   setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
