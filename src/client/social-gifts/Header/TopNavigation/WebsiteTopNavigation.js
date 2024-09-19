@@ -8,7 +8,7 @@ import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getNavigItems } from '../../../../store/appStore/appSelectors';
+import { getNavigItems, getWebsiteConfiguration } from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
 
@@ -27,6 +27,10 @@ const userNav = (user, intl) => [
     link: `/blog/${user}`,
   },
   {
+    name: intl.formatMessage({ id: 'map', defaultMessage: 'Map' }),
+    link: `/map/${user}`,
+  },
+  {
     name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
     link: '/object/ljc-legal',
   },
@@ -34,7 +38,11 @@ const userNav = (user, intl) => [
 
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
-  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value, intl) : listItem;
+  const config = useSelector(getWebsiteConfiguration);
+  const filteredUserTab = userNav(shopSettings?.value, intl)?.filter(
+    i => !config?.tabsFilter?.includes(i?.name),
+  );
+  const linkList = shopSettings?.type === 'user' ? filteredUserTab : listItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 

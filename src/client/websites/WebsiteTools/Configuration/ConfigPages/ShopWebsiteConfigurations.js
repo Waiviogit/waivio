@@ -56,6 +56,7 @@ const ShopWebsiteConfigurations = ({
   });
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
+  const tabsFilter = get(config, 'tabsFilter', []);
   const banner = get(config, 'mainBanner');
   const listDefaultImage = get(config, 'defaultListImage');
   const desktopLogo = get(config, 'desktopLogo');
@@ -102,6 +103,10 @@ const ShopWebsiteConfigurations = ({
     handleSubmit({
       colors,
     });
+  const handleSubmitTabFilters = filters =>
+    handleSubmit({
+      tabsFilter: filters,
+    });
 
   const handleSubmitObjMain = obj => {
     if (!obj)
@@ -110,6 +115,7 @@ const ShopWebsiteConfigurations = ({
           type: '',
           value: '',
         },
+        tabsFilter: [],
       });
 
     handleSubmit({
@@ -117,6 +123,7 @@ const ShopWebsiteConfigurations = ({
         type: obj.account ? 'user' : 'object',
         value: obj.account || obj.author_permlink,
       },
+      tabsFilter: [],
     });
   };
 
@@ -255,6 +262,8 @@ const ShopWebsiteConfigurations = ({
                 :
               </h3>
               <BaseObjSettings
+                handleSubmitTabFilters={handleSubmitTabFilters}
+                tabsFilter={tabsFilter}
                 hideActions
                 shopSettings={shopSettings}
                 handleSubmit={handleSubmitObjMain}

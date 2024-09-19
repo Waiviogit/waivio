@@ -43,6 +43,7 @@ const ObjectCardView = ({
   rate,
   handleReportClick,
   isRejected,
+  socialMap,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
@@ -69,7 +70,7 @@ const ObjectCardView = ({
   useEffect(() => {
     const objectTags = get(wObject, 'topTags', []);
 
-    setTags(uniq([wObject.object_type, ...objectTags]));
+    setTags(socialMap ? objectTags : uniq([wObject.object_type, ...objectTags]));
   }, [wObject.author_permlink]);
 
   const avatarLayout = () => {
@@ -91,9 +92,15 @@ const ObjectCardView = ({
   };
 
   const description = wObject.description && (
-    <div className="ObjectCardView__title" title={wObject.description}>
+    <div
+      className="ObjectCardView__title"
+      title={truncate(wObject.description, {
+        length: 250,
+        separator: ' ',
+      })}
+    >
       {truncate(wObject.description, {
-        length: 140,
+        length: socialMap ? 70 : 140,
         separator: ' ',
       })}
     </div>
@@ -116,7 +123,7 @@ const ObjectCardView = ({
           >
             {avatarLayout()}
           </Link>
-          <div className="ObjectCardView__info">
+          <div className={socialMap ? 'ObjectCardView__social-info' : 'ObjectCardView__info'}>
             {parentName && (
               <Link
                 to={parentLink}
@@ -161,6 +168,7 @@ const ObjectCardView = ({
             </div>
             {wObject.rating && (
               <RatingsWrap
+                socialMap={socialMap}
                 ratings={wObject.rating}
                 username={isPost ? postAuthor : username}
                 wobjId={wObject.id || wObject.author_permlink}
@@ -194,11 +202,26 @@ const ObjectCardView = ({
                 );
               })}
             </span>
-            {address && <div className="ObjectCardView__tag-text">{address}</div>}
+            {address && (
+              <div className="ObjectCardView__tag-text">
+                {socialMap
+                  ? truncate(address, {
+                      length: 33,
+                      separator: ' ',
+                    })
+                  : address}
+              </div>
+            )}
             {wObject.title ? (
-              <div className="ObjectCardView__title" title={wObject.title}>
+              <div
+                className="ObjectCardView__title"
+                title={truncate(wObject.title, {
+                  length: 250,
+                  separator: ' ',
+                })}
+              >
                 {truncate(wObject.title, {
-                  length: 140,
+                  length: socialMap ? 70 : 140,
                   separator: ' ',
                 })}
               </div>
@@ -283,6 +306,7 @@ ObjectCardView.propTypes = {
   isPost: PropTypes.bool,
   showHeart: PropTypes.bool,
   isRejected: PropTypes.bool,
+  socialMap: PropTypes.bool,
   postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
   handleReportClick: PropTypes.func,
@@ -296,6 +320,7 @@ ObjectCardView.defaultProps = {
   payoutToken: '',
   passedParent: {},
   withRewards: false,
+  socialMap: false,
   showHeart: true,
   isReserved: false,
   isPost: false,

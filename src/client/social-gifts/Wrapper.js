@@ -5,7 +5,7 @@ import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
 import { findLanguage, getAntdLocale, loadLanguage } from '../../common/translations';
@@ -62,6 +62,8 @@ import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
+import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
+import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -84,6 +86,7 @@ const createLink = i => {
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
+  const favoriteTypes = useSelector(getFavoriteObjectTypes);
   const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
@@ -188,6 +191,9 @@ const SocialWrapper = props => {
     const provider = query.get('socialProvider');
     const auth = query.get('auth');
 
+    if (isNil(favoriteTypes)) {
+      props.setFavoriteObjectTypes(props.username);
+    }
     props.getRate();
     props.getRewardFund();
     props.getGlobalProperties();
@@ -275,6 +281,7 @@ SocialWrapper.propTypes = {
   getRewardFund: PropTypes.func,
   getGlobalProperties: PropTypes.func,
   busyLogin: PropTypes.func,
+  setFavoriteObjectTypes: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
@@ -522,6 +529,7 @@ export default ErrorBoundary(
         getTokenRates,
         getCryptoPriceHistory,
         getSwapEnginRates,
+        setFavoriteObjectTypes,
       },
     )(SocialWrapper),
   ),

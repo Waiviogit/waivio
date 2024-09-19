@@ -22,6 +22,7 @@ const Proposition = ({
   hovered,
   isSocialProduct,
   isRejected,
+  socialMap,
 }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -73,6 +74,7 @@ const Proposition = ({
             <RewardsHeader proposition={proposition} />
           </div>
           <ObjectCardView
+            socialMap={socialMap}
             wObject={mainItem}
             withRewards
             rewardPrice={proposition.rewardInUSD}
@@ -140,6 +142,7 @@ Proposition.propTypes = {
   hovered: PropTypes.bool,
   isSocialProduct: PropTypes.bool,
   isRejected: PropTypes.bool,
+  socialMap: PropTypes.bool,
   type: PropTypes.string,
   getProposition: PropTypes.func,
   handleReportClick: PropTypes.func,
@@ -149,6 +152,7 @@ Proposition.defaultProps = {
   getProposition: noop,
   type: '',
   hovered: false,
+  socialMap: false,
   isRejected: false,
   handleReportClick: null,
 };

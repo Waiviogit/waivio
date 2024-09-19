@@ -52,7 +52,10 @@ import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
 import { getLocale } from '../../../../common/helpers/localStorageHelpers';
 import { setBoundsParams, setMapData } from '../../../../store/mapStore/mapActions';
 import './WebsiteBody.less';
-import { setFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesActions';
+import {
+  resetFavorites,
+  setFavoriteObjectTypes,
+} from '../../../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../../../store/favoritesStore/favoritesSelectors';
 
 const WebsiteBody = props => {
@@ -60,7 +63,7 @@ const WebsiteBody = props => {
   const { name } = useParams();
   const { canonicalUrl } = useSeoInfo();
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
-  const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
+  const hasNoFavorites = !isNil(favoriteTypes) && isEmpty(favoriteTypes);
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
@@ -68,7 +71,7 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
-  const isUserMap = props.history.location.pathname?.includes(`/@`);
+  const isUserMap = props.history.location.pathname?.includes(`/@`) || props?.route?.isUserMap;
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -95,6 +98,14 @@ const WebsiteBody = props => {
     };
     // props.setShowSearchResult(false);
   }, [props.currObj.author_permlink]);
+
+  useEffect(() => {
+    if (isUserMap) props.setFavoriteObjectTypes(name);
+
+    return () => {
+      if (isUserMap) props.resetFavorites();
+    };
+  }, [name]);
 
   useEffect(() => () => props.setMapData({ center: [], zoom: 8 }), []);
 
@@ -128,7 +139,7 @@ const WebsiteBody = props => {
     }
   };
 
-  if (isUserMap && !hasFavorites) {
+  if (isUserMap && hasNoFavorites) {
     return (
       <div role="presentation" className="feed_empty justify-center">
         <h3>
@@ -235,8 +246,11 @@ WebsiteBody.propTypes = {
   locale: PropTypes.string,
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
+  route: PropTypes.shape().isRequired,
   resetSocialSearchResult: PropTypes.func,
   setMapData: PropTypes.func,
+  setFavoriteObjectTypes: PropTypes.func,
+  resetFavorites: PropTypes.func,
   resetWebsiteObjectsCoordinates: PropTypes.func,
   setBoundsParams: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
@@ -290,5 +304,6 @@ export default connect(
     setMapData,
     setFavoriteObjectTypes,
     resetWebsiteObjectsCoordinates,
+    resetFavorites,
   },
 )(withRouter(WebsiteBody));
