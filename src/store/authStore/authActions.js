@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
-import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { loadLanguage } from '../../common/translations';
 import {
@@ -40,8 +39,10 @@ import { parseJSON } from '../../common/helpers/parseJSON';
 import { getGuestWaivBalance } from '../../waivioApi/walletApi';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getGuestImportStatus, setGuestImportStatus } from '../../waivioApi/importApi';
+import { dHive } from '../../client/vendor/steemitHelpers';
 
 export const LOGIN = '@auth/LOGIN';
+export const LOGIN_SERVER = createAsyncActionType('@auth/LOGIN_SERVER');
 export const SHOW_SETTINGS = '@auth/SHOW_SETTINGS';
 export const LOGIN_START = '@auth/LOGIN_START';
 export const LOGIN_SUCCESS = '@auth/LOGIN_SUCCESS';
@@ -150,7 +151,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       Cookie.remove('access_token');
     } else {
       promise = new Promise(async resolve => {
-        const account = await getAccount(hiveAuthData.username);
+        const [account] = await dHive.database.getAccounts([hiveAuthData.username]);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
@@ -171,10 +172,19 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   } else if (isUserLoaded(state)) {
     const userMetaData = getAuthenticatedUserMetaData(state);
     const authenticatedUserName = getAuthenticatedUserName(state);
+    const authenticatedUser = getAuthenticatedUser(state);
+
+    let account;
+
+    if (isGuest) {
+      account = authenticatedUser;
+    } else {
+      account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
+    }
 
     dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
     dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve(null);
+    promise = Promise.resolve({ account });
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
@@ -207,8 +217,15 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async resolve => {
       try {
+        let account;
         const scUserData = await steemConnectAPI.me();
-        const account = isGuest ? scUserData?.account : await getAccount(scUserData.name);
+
+        if (isGuest) {
+          account = scUserData?.account;
+        } else {
+          account = (await dHive.database.getAccounts([scUserData.name]))[0];
+        }
+
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
@@ -343,7 +360,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
     }
 
     return dispatch({
-      type: LOGIN,
+      type: LOGIN_SERVER.ACTION,
       payload: {
         promise,
       },

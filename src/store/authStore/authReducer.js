@@ -35,17 +35,45 @@ export default (state = initialState, action) => {
         isFetching: true,
         isAuthenticated: false,
         loaded: false,
-        user: {},
+        // user: {},
         showSettings: false,
       };
 
     case types.LOGIN_SUCCESS:
+      if (state.isAuthenticatedInServer)
+        return {
+          ...state,
+          isAuthenticatedInServer: false,
+          user: {
+            ...(action.payload.account || state.user),
+            ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          },
+        };
+
       if (action.meta && action.meta.refresh) return state;
 
       return {
         ...state,
         isFetching: false,
         isAuthenticated: true,
+        loaded: true,
+        user: {
+          ...(action.payload.account || state.user),
+          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+        },
+        userMetaData: action.payload.userMetaData,
+        privateEmail: action.payload.privateEmail,
+        isGuestUser: action.payload.isGuestUser,
+        tabType: action.payload.tabType,
+      };
+    case types.LOGIN_SERVER.SUCCESS:
+      if (action.meta && action.meta.refresh) return state;
+
+      return {
+        ...state,
+        isFetching: false,
+        isAuthenticated: true,
+        isAuthenticatedInServer: true,
         loaded: true,
         user: {
           ...(action.payload.account || state.user),
