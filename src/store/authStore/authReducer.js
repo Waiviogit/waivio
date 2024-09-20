@@ -35,7 +35,7 @@ export default (state = initialState, action) => {
         isFetching: true,
         isAuthenticated: false,
         loaded: false,
-        user: {},
+        // user: {},
         showSettings: false,
       };
 
@@ -55,6 +55,15 @@ export default (state = initialState, action) => {
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
+      };
+    case types.LOGIN_SERVER.SUCCESS:
+      if (action.meta && action.meta.refresh) return state;
+
+      return {
+        ...state,
+        user: {
+          ...(action.payload.account || state.user),
+        },
       };
 
     // eslint-disable-next-line no-lone-blocks
