@@ -40,6 +40,16 @@ export default (state = initialState, action) => {
       };
 
     case types.LOGIN_SUCCESS:
+      if (state.isAuthenticatedInServer)
+        return {
+          ...state,
+          isAuthenticatedInServer: false,
+          user: {
+            ...(action.payload.account || state.user),
+            ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          },
+        };
+
       if (action.meta && action.meta.refresh) return state;
 
       return {
@@ -61,9 +71,18 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
+        isFetching: false,
+        isAuthenticated: true,
+        isAuthenticatedInServer: true,
+        loaded: true,
         user: {
           ...(action.payload.account || state.user),
+          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
+        userMetaData: action.payload.userMetaData,
+        privateEmail: action.payload.privateEmail,
+        isGuestUser: action.payload.isGuestUser,
+        tabType: action.payload.tabType,
       };
 
     // eslint-disable-next-line no-lone-blocks

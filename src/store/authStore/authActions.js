@@ -172,10 +172,19 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   } else if (isUserLoaded(state)) {
     const userMetaData = getAuthenticatedUserMetaData(state);
     const authenticatedUserName = getAuthenticatedUserName(state);
+    const authenticatedUser = getAuthenticatedUser(state);
+
+    let account;
+
+    if (isGuest) {
+      account = authenticatedUser;
+    } else {
+      account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
+    }
 
     dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
     dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve(null);
+    promise = Promise.resolve({ account });
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
@@ -212,9 +221,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const scUserData = await steemConnectAPI.me();
 
         if (isGuest) {
-          account = isGuest
-            ? scUserData?.account
-            : await dHive.database.getAccounts([scUserData.name]);
+          account = scUserData?.account;
         } else {
           account = (await dHive.database.getAccounts([scUserData.name]))[0];
         }
@@ -278,9 +285,19 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
       } else {
         promise = new Promise(async resolve => {
           const account = await getUserAccount(hiveAuthData.username);
+          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+          const privateEmail = await getPrivateEmail(hiveAuthData.username);
+          const rewardsTab = await getRewardTab(hiveAuthData.username);
+
+          dispatch(changeAdminStatus(hiveAuthData.username));
+          dispatch(setSignature(userMetaData?.profile?.signature || ''));
+          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
           resolve({
             account,
+            ...rewardsTab,
+            userMetaData,
+            privateEmail,
           });
         });
       }
@@ -288,9 +305,23 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
       promise = new Promise(async (resolve, reject) => {
         try {
           const userData = await setToken(cookie.access_token, cookie.socialProvider);
+          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+          const privateEmail = await getPrivateEmail(userData.name);
+          const rewardsTab = await getRewardTab(userData.name);
+          const { WAIV } = await getGuestWaivBalance(userData.name);
+
+          dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
+          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(changeAdminStatus(userData.name));
 
           resolve({
             account: userData,
+            userMetaData,
+            privateEmail,
+            socialNetwork: cookie.socialProvider,
+            isGuestUser: true,
+            waivBalance: WAIV,
+            ...rewardsTab,
           });
         } catch (e) {
           dispatch(notify(e.error.details[0].message));
@@ -304,9 +335,23 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
             ? await waivioAPI.getUserAccount(cookie.guestName, true)
             : await steemConnectAPI.me();
           const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
+          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+          const privateEmail = await getPrivateEmail(scUserData.name);
+          const rewardsTab = await getRewardTab(scUserData.name);
+          const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+
+          dispatch(changeAdminStatus(scUserData.name));
+          dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
           resolve({
+            ...scUserData,
+            ...rewardsTab,
             account,
+            userMetaData,
+            privateEmail,
+            waivBalance: WAIV,
+            isGuestUser: isGuest,
           });
         } catch (e) {
           console.warn(e);
