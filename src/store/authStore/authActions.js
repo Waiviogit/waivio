@@ -151,7 +151,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       Cookie.remove('access_token');
     } else {
       promise = new Promise(async resolve => {
-        const [account] = await dHive.database.getAccounts([hiveAuthData.name]);
+        const [account] = await dHive.database.getAccounts([hiveAuthData.username]);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
