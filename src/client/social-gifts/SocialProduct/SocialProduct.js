@@ -141,7 +141,7 @@ const SocialProduct = ({
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
     isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type === 'instacart')
+      ? wobject?.affiliateLinks?.find(aff => aff.type.toLowerCase() === 'instacart')
       : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))

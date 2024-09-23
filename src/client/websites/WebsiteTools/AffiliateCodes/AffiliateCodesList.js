@@ -35,6 +35,10 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => 
     );
   };
 
+  // const editCode = affiliateCode => {
+  //   setOpenAppendModal(affiliateCode);
+  // };
+
   return (
     <div className={codesClassList}>
       {emptyCodes ? (
@@ -44,6 +48,16 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => 
         affiliateObjects?.map(obj => {
           if (obj.affiliateCode) {
             const affiliateCode = JSON.parse(obj.affiliateCode);
+            let codes = [affiliateCode[1]];
+
+            if (affiliateCode.length > 2) {
+              affiliateCode.shift();
+              codes = affiliateCode.map(code => {
+                const c = code.split('::');
+
+                return c[0];
+              });
+            }
 
             return (
               <div key={obj._id} className="AffiliateCodes__object">
@@ -51,12 +65,22 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => 
                   <ObjectAvatar size={50} item={obj} />
                   <div className="AffiliateCodes__object-info-text">
                     <Link to={`/object/${obj.author_permlink}`}>{obj.name}</Link>
-                    <div className="AffiliateCodes__aff-code">{affiliateCode[1]}</div>
+                    {codes?.map(item => (
+                      <div key={item} className="AffiliateCodes__aff-code">
+                        {item}
+                      </div>
+                    ))}
                   </div>
                 </Link>
+                {/* {codes?.length > 1 ? ( */}
+                {/*  <Button type="primary" onClick={() => editCode(affiliateCode)}> */}
+                {/*    <FormattedMessage id="edit" defaultMessage="Edit" /> */}
+                {/*  </Button> */}
+                {/* ) : ( */}
                 <Button type="primary" onClick={() => deleteCode(obj)}>
                   <FormattedMessage id="delete" defaultMessage="Delete" />
                 </Button>
+                {/* )} */}
               </div>
             );
           }

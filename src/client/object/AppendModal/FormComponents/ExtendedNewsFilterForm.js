@@ -7,11 +7,11 @@ import PropTypes from 'prop-types';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../../components/Sidebar/ObjectCard';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
-
-import './NewsFilterForm.less';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import { andLayout, orLayout } from '../../../../common/helpers/AppendFormHelper';
+
+import './NewsFilterForm.less';
 
 const ExtendedNewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
