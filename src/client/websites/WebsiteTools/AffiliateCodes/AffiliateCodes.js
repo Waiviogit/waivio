@@ -17,6 +17,7 @@ import AffiliateCodesModal from './AffiliateCodesModal';
 import AffiliateCodesList from './AffiliateCodesList';
 import AffiliateCodesAutoComplete from './AffiliateCodesAutoComplete';
 import './AffiliateCodes.less';
+import { objectFields } from '../../../../common/constants/listOfFields';
 
 export const AffiliateCodes = ({
   intl,
@@ -102,7 +103,12 @@ export const AffiliateCodes = ({
         context={site}
         rejectCode={voteAppend}
         affiliateObjects={affiliateObjects}
-        setOpenAppendModal={() => setOpenAppendModal(true)}
+        setOpenAppendModal={codes => {
+          setOpenAppendModal(true);
+          form.setFieldsValue({
+            [objectFields.affiliateCode]: codes,
+          });
+        }}
       />
       <AffiliateCodesModal
         voteAppend={voteAppend}

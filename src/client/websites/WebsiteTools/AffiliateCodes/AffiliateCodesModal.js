@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { debounce, get, isEmpty } from 'lodash';
-import { Button, Form, Icon, Input, message, Modal, Progress } from 'antd';
+import { Button, Form, Icon, message, Modal, Progress } from 'antd';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getNewPostData } from './affiliateCodesHelper';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';

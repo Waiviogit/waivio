@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Form, Icon, Progress, Select } from 'antd';
+import { Form, Icon, Progress, Select } from 'antd';
 import { debounce } from 'lodash';
 
 import PropTypes from 'prop-types';

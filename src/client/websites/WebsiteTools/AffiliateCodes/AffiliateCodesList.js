@@ -9,7 +9,7 @@ import { has } from 'lodash';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import { isGuestUser } from '../../../../store/authStore/authSelectors';
 
-const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context, setOpenAppendModal }) => {
+const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => {
   const isGuest = useSelector(isGuestUser);
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
@@ -35,9 +35,9 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context, setOp
     );
   };
 
-  const editCode = obj => {
-    setOpenAppendModal();
-  };
+  // const editCode = affiliateCode => {
+  //   setOpenAppendModal(affiliateCode);
+  // };
 
   return (
     <div className={codesClassList}>
@@ -72,15 +72,15 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context, setOp
                     ))}
                   </div>
                 </Link>
-                {codes?.length > 1 ? (
-                  <Button type="primary" onClick={() => editCode(obj)}>
-                    <FormattedMessage id="edit" defaultMessage="Edit" />
-                  </Button>
-                ) : (
-                  <Button type="primary" onClick={() => deleteCode(obj)}>
-                    <FormattedMessage id="delete" defaultMessage="Delete" />
-                  </Button>
-                )}
+                {/* {codes?.length > 1 ? ( */}
+                {/*  <Button type="primary" onClick={() => editCode(affiliateCode)}> */}
+                {/*    <FormattedMessage id="edit" defaultMessage="Edit" /> */}
+                {/*  </Button> */}
+                {/* ) : ( */}
+                <Button type="primary" onClick={() => deleteCode(obj)}>
+                  <FormattedMessage id="delete" defaultMessage="Delete" />
+                </Button>
+                {/* )} */}
               </div>
             );
           }
