@@ -20,6 +20,7 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const limit = 25;
 
@@ -28,10 +29,12 @@ const UserBlogFeed = () => {
   const [firstLoading, setFirstLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
 
-  const { name } = useParams();
+  const { name: userName } = useParams();
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const name = userName || authUserName;
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);

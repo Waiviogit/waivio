@@ -1,23 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { useHistory, useRouteMatch } from 'react-router';
 import { getUserShopList } from '../../../store/shopStore/shopActions';
 import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../ListSwitch/ListSwitcher';
 import { getUserShopSchema } from '../../../common/helpers/shopHelper';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const UserDepartmentsWobjList = ({ isSocial }) => {
   const match = useRouteMatch();
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const name = match.params.name || authUserName;
   const history = useHistory();
-  const isRecipe =
-    history?.location?.pathname?.includes('@') && history?.location?.pathname?.includes('recipe');
-  const waivioPath = isRecipe ? `/@${match.params.name}/recipe` : `/@${match.params.name}/userShop`;
+  const isRecipe = getUserShopSchema(history?.location?.pathname) === 'recipe';
+  const socialPath = isRecipe ? `/recipe/${name}` : `/user-shop/${name}`;
+  const waivioPath = isRecipe ? `/@${name}/recipe` : `/@${name}/userShop`;
 
   return (
     <ListSwitcher
-      user={match.params.name}
+      user={name}
       getDepartmentsFeed={getDepartmentsFeed}
-      path={isSocial ? `/user-shop/${match.params.name}` : waivioPath}
+      path={isSocial ? socialPath : waivioPath}
       type={'user'}
       isSocial={isSocial}
     />

@@ -49,6 +49,20 @@ const routes = () => ({
       ],
     },
     {
+      path: ['/(recipe)/:name/:department?'],
+      exact: true,
+      component: Shop,
+      pathScope: '/recipe/:name',
+      isSocial: true,
+      routes: [
+        {
+          path: '/:department?',
+          exact: true,
+          component: UserDepartmentsWobjList,
+        },
+      ],
+    },
+    {
       path: ['/blog/:name'],
       exact: true,
       component: UserBlogFeed,

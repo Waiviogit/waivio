@@ -21,6 +21,7 @@ import { getObject } from '../../../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
 import './BaseObjSettings.less';
+import { userMenuTabsList } from '../../../../social-gifts/Header/TopNavigation/WebsiteTopNavigation';
 
 const BaseObjSettings = ({
   handleSubmit,
@@ -38,7 +39,6 @@ const BaseObjSettings = ({
   const [edit, setEdit] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [filters, setFilters] = useState(tabsFilter);
-  const tabsList = ['Shop', 'Blog', 'Map', 'Legal'];
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
@@ -72,7 +72,6 @@ const BaseObjSettings = ({
         getObject(shopSettings.value).then(res => setSelectedObj(res));
       }
     }
-    setFilters([]);
   }, [shopSettings.value]);
 
   const resetMainObj = () => {
@@ -80,6 +79,7 @@ const BaseObjSettings = ({
       account,
     };
 
+    setFilters([]);
     setSelectedObj(currAcc);
     handleSubmit(currAcc);
   };
@@ -142,9 +142,10 @@ const BaseObjSettings = ({
               : dataSource.map(o => (
                   <AutoComplete.Option
                     value={getOptionName(o)}
-                    key={getOptionName(o)}
+                    key={o.account || o.author_permlink}
                     label={getOptionName(o)}
                     onClick={() => {
+                      setFilters([]);
                       setSelectedObj(o);
                       handleSubmit(o);
                       setEdit(false);
@@ -183,7 +184,7 @@ const BaseObjSettings = ({
       )}
       {showDetails && (
         <Modal
-          okButtonProps={{ disabled: filters?.length === tabsList?.length }}
+          okButtonProps={{ disabled: filters?.length === userMenuTabsList?.length }}
           title={'Base object details'}
           onOk={submitFilters}
           visible={showDetails}
@@ -192,7 +193,7 @@ const BaseObjSettings = ({
           <div className={'flex flex-column'}>
             <div className={'BaseObjSettings__tab'}>Tabs to be displayed on the site:</div>
             <div className={'BaseObjSettings__tabs-list'}>
-              {tabsList.map(tab => (
+              {userMenuTabsList.map(tab => (
                 <Checkbox
                   onChange={e => {
                     changeTabFilters(e, tab);
