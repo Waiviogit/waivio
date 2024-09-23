@@ -60,6 +60,7 @@ import { getFavoriteObjectTypes } from '../../../../store/favoritesStore/favorit
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const [loading, setLoading] = useState(false);
   const { name } = useParams();
   const { canonicalUrl } = useSeoInfo();
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
@@ -100,7 +101,10 @@ const WebsiteBody = props => {
   }, [props.currObj.author_permlink]);
 
   useEffect(() => {
-    if (isUserMap) props.setFavoriteObjectTypes(name);
+    if (isUserMap) {
+      setLoading(true);
+      props.setFavoriteObjectTypes(name).then(() => setLoading(false));
+    }
 
     return () => {
       if (isUserMap) props.resetFavorites();
@@ -139,7 +143,7 @@ const WebsiteBody = props => {
     }
   };
 
-  if (isUserMap && hasNoFavorites) {
+  if (isUserMap && hasNoFavorites && !loading) {
     return (
       <div role="presentation" className="feed_empty justify-center">
         <h3>

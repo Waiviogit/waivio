@@ -9,10 +9,10 @@ import {
 } from '../../../waivioApi/ApiClient';
 import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
-const UserFilters = ({ onClose, name }) => {
+const UserFilters = ({ onClose, name, isRecipePage }) => {
   const match = useRouteMatch();
   const history = useHistory();
-  const schema = getUserShopSchema(history?.location?.pathname);
+  const schema = getUserShopSchema(history?.location?.pathname, isRecipePage);
   const getDepartmentsFilters = path =>
     getDepartmentsUserFilters(name || match.params.name, path, schema);
   const showMoreTagsForFilters = (tagCategory, path, skip, limit) =>
@@ -30,6 +30,7 @@ const UserFilters = ({ onClose, name }) => {
 UserFilters.propTypes = {
   onClose: PropTypes.func,
   name: PropTypes.string,
+  isRecipePage: PropTypes.bool,
 };
 
 export default UserFilters;
