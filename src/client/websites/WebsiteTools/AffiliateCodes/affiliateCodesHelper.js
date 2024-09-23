@@ -30,7 +30,7 @@ export const getNewPostData = (
     data.body = getAppendMsg(data.author, bodyField);
 
     data.title = '';
-    const affiliateCodeBody = JSON.stringify([context, formValues[objectFields.affiliateCode]]);
+    const affiliateCodeBody = JSON.stringify([context, ...formValues[objectFields.affiliateCode]]);
 
     data.field = {
       name: objectFields.affiliateCode,

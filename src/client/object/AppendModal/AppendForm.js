@@ -1041,7 +1041,7 @@ class AppendForm extends Component {
       if (currentField === objectFields.affiliateCode) {
         const affiliateCodeBody = JSON.stringify([
           formValues[objectFields.affiliateContext],
-          formValues[objectFields.affiliateCode],
+          ...formValues[objectFields.affiliateCode],
         ]);
 
         fieldsObject = {
@@ -2500,6 +2500,7 @@ class AppendForm extends Component {
             getFieldRules={this.getFieldRules}
             loading={loading}
             getFieldDecorator={getFieldDecorator}
+            setFieldsValue={this.props.form.setFieldsValue}
           />
         );
       }
