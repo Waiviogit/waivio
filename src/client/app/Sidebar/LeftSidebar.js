@@ -44,6 +44,15 @@ const LeftSidebar = () => {
               <UserFilters />
             </div>
           )}
+        />{' '}
+        <Route
+          path="/recipe/:name/:department?"
+          render={() => (
+            <div>
+              <DepartmentsUser isSocial />
+              <UserFilters />
+            </div>
+          )}
         />
         u
         <Route path="/@:name/wallet" component={SidebarMenu} />

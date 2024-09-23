@@ -10,16 +10,19 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 
 import './ShopDepartments.less';
 import { getDepartmentsList } from '../../../store/shopStore/shopSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, path, intl }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const userName = match.params.name || authUserName;
   const departments = useSelector(getDepartmentsList);
   const isRecipe = schema === 'recipe';
 
   useEffect(() => {
     getShopDepartments();
-  }, [match.params.name, shopFilter, schema]);
+  }, [userName, shopFilter, schema]);
 
   if (isEmpty(departments)) return null;
 

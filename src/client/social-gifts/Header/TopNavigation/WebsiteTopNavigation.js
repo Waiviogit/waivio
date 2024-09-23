@@ -17,20 +17,30 @@ import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
+export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes', 'Legal'];
 const userNav = (user, intl) => [
   {
-    name: intl.formatMessage({ id: 'shop', defaultMessage: 'Shop' }),
-    link: `/user-shop/${user}`,
-  },
-  {
+    id: 'Blog',
     name: intl.formatMessage({ id: 'blog', defaultMessage: 'Blog' }),
     link: `/blog/${user}`,
   },
   {
+    id: 'Map',
     name: intl.formatMessage({ id: 'map', defaultMessage: 'Map' }),
     link: `/map/${user}`,
   },
   {
+    id: 'Shop',
+    name: intl.formatMessage({ id: 'shop', defaultMessage: 'Shop' }),
+    link: `/user-shop/${user}`,
+  },
+  {
+    id: 'Recipes',
+    name: intl.formatMessage({ id: 'recipes', defaultMessage: 'Recipes' }),
+    link: `/recipe/${user}`,
+  },
+  {
+    id: 'Legal',
     name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
     link: '/object/ljc-legal',
   },
@@ -40,7 +50,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const config = useSelector(getWebsiteConfiguration);
   const filteredUserTab = userNav(shopSettings?.value, intl)?.filter(
-    i => !config?.tabsFilter?.includes(i?.name),
+    i => !config?.tabsFilter?.includes(i?.id),
   );
   const linkList = shopSettings?.type === 'user' ? filteredUserTab : listItem;
   const history = useHistory();
