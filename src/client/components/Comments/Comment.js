@@ -279,7 +279,7 @@ class Comment extends React.Component {
           <FormattedMessage id="comment_collapsed" defaultMessage="Comment collapsed" />
         </div>
       ) : (
-        <BodyContainer body={comment.body} />
+        <BodyContainer body={comment.body} isPost />
       );
     }
 
