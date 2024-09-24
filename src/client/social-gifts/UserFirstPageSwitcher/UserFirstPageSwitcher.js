@@ -87,9 +87,9 @@ const UserFirstPageSwitcher = ({ type, intl }) => {
         </div>
       );
     case 'Blog':
-      return <UserBlogFeed />;
+      return <UserBlogFeed user={shopSettings?.value} />;
     case 'Map':
-      return <WebsiteBody />;
+      return <WebsiteBody user={shopSettings?.value} isUserMap isSocial />;
     case 'Legal':
       return <Checklist permlink={'ljc-legal'} />;
   }
