@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -18,12 +18,15 @@ import {
 import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
 import './ChatWindow.less';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getWebsiteConfiguration } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
+  const config = useSelector(getWebsiteConfiguration);
+  const mobileLogo = get(config, 'mobileLogo');
+  const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
@@ -35,6 +38,10 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
+  const siteName = isWaivio ? 'Waivio' : config?.header?.name;
+  const siteImage = isWaivio
+    ? '/images/icons/cryptocurrencies/waiv.png'
+    : desktopLogo || mobileLogo;
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -218,8 +225,8 @@ const ChatWindow = ({ className, hideChat, open }) => {
     >
       <div className="chat-header">
         <div className="chat-header-logo-wrap">
-          <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
-          <div className="chat-header-text">Waivio AI Assistant</div>
+          <img className="chat-logo" src={siteImage} alt={siteName} />
+          <div className="chat-header-text">{siteName} AI Assistant</div>
         </div>
         <div className="chat-header-buttons-wrap">
           {chatId ? (
@@ -237,7 +244,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
               <div className="info-paragraph">How can I help you today?</div>
             </div>
             <div className="options">
-              {quickMessages.map(mess => (
+              {quickMessages(siteName).map(mess => (
                 <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                   {mess.label}
                 </button>
@@ -258,6 +265,8 @@ const ChatWindow = ({ className, hideChat, open }) => {
                 />
               ) : (
                 <AssistantMessage
+                  siteImage={siteImage}
+                  siteName={siteName}
                   key={mes.text}
                   text={text}
                   loading={false}
