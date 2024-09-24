@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
-
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileBlogPosts } from '../../../store/feedStore/feedActions';
 import {
@@ -20,11 +20,10 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const limit = 25;
 
-const UserBlogFeed = () => {
+const UserBlogFeed = ({ user }) => {
   const [previews, setPreviews] = useState();
   const [firstLoading, setFirstLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -33,8 +32,7 @@ const UserBlogFeed = () => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const name = userName || authUserName;
+  const name = userName || user;
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
@@ -131,6 +129,10 @@ const UserBlogFeed = () => {
       )}
     </React.Fragment>
   );
+};
+
+UserBlogFeed.propTypes = {
+  user: PropTypes.string,
 };
 
 UserBlogFeed.fetchData = ({ store, match }) =>

@@ -61,7 +61,8 @@ import { getFavoriteObjectTypes } from '../../../../store/favoritesStore/favorit
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const [loading, setLoading] = useState(false);
-  const { name } = useParams();
+  const { name: userName } = useParams();
+  const name = userName || props.user;
   const { canonicalUrl } = useSeoInfo();
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
   const hasNoFavorites = !isNil(favoriteTypes) && isEmpty(favoriteTypes);
@@ -72,7 +73,8 @@ const WebsiteBody = props => {
     WebsiteBody__hideMap: props.isShowResult,
   });
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
-  const isUserMap = props.history.location.pathname?.includes(`/@`) || props?.route?.isUserMap;
+  const isUserMap =
+    props.history.location.pathname?.includes(`/@`) || props?.route?.isUserMap || props.isUserMap;
 
   useEffect(() => {
     if (!props.isSocial) {
@@ -249,6 +251,7 @@ WebsiteBody.propTypes = {
   logo: PropTypes.string,
   locale: PropTypes.string,
   permlink: PropTypes.string,
+  user: PropTypes.string,
   currObj: PropTypes.shape(),
   route: PropTypes.shape().isRequired,
   resetSocialSearchResult: PropTypes.func,
@@ -260,6 +263,7 @@ WebsiteBody.propTypes = {
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
+  isUserMap: PropTypes.bool,
   isAuth: PropTypes.bool,
   loading: PropTypes.bool,
   query: PropTypes.shape({
