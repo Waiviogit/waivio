@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -46,6 +47,7 @@ import { editThread as editThreadAction } from '../../store/commentsStore/commen
 import { buildPost } from '../../store/slateEditorStore/editorActions';
 
 @injectIntl
+@withRouter
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
@@ -306,7 +308,7 @@ class PostContent extends React.Component {
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
-    const htmlBody = getHtml(body, {}, 'text');
+    const htmlBody = getHtml(body, {}, 'text', { isPost: true });
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
     const authorFacebook = !isEmpty(userFacebook) ? `by @${userFacebook}` : '';
     const wobjectFacebook = !isEmpty(wobjectsFacebook) ? `@${wobjectsFacebook}` : '';
