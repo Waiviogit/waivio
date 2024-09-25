@@ -44,6 +44,7 @@ const UserShoppingList = ({ isSocial, name, isRecipePage }) => {
 
   return (
     <ShopList
+      isRecipe={isRecipe}
       userName={name || match.params.name}
       path={isSocial ? socialPath : match.url}
       getShopFeed={getShopFeed}

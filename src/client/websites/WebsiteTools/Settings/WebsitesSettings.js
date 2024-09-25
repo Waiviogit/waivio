@@ -270,6 +270,7 @@ const WebsitesSettings = ({
               />
             ) : (
               <SearchUsersAutocomplete
+                notGuest
                 handleSelect={({ account }) => setBeneficiaryAccount(account)}
                 style={{ width: '100%' }}
               />
@@ -317,6 +318,7 @@ const WebsitesSettings = ({
               />
             ) : (
               <SearchUsersAutocomplete
+                notGuest
                 handleSelect={({ account }) => setReferralAccount(account)}
                 style={{ width: '100%' }}
               />
