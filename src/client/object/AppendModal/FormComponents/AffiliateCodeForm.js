@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Icon, Progress, Select } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { objectFields } from '../../../../common/constants/listOfFields';
 import { getWebsites } from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import PercentChanger from './PercentChanger';
+import { createCodesList } from '../../../websites/WebsiteTools/AffiliateCodes/helpers';
 
 const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, setFieldsValue }) => {
   const host = location.hostname;
@@ -18,23 +19,13 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
   const [codes, setCodes] = useState([]);
   const [weightBuffer, setWeightBuffer] = useState(100);
   const userName = useSelector(getAuthenticatedUserName);
-  const totalUsedPercents = useMemo(() => percents.reduce((acc, num) => acc + num, 0), [percents]);
-  const createCodesList = () => {
-    if (codes.length === 1) return codes;
-
-    return codes.reduce(
-      (acc, curr, i) =>
-        i ? [...acc, `${curr}::${percents[i - 1]}`] : [`${curr}::${weightBuffer}`],
-      [],
-    );
-  };
 
   useEffect(() => {
     setWeightBuffer(Object.values(percents).reduce((res, curr) => res - curr, 100));
   }, [percents]);
 
   useEffect(() => {
-    setFieldsValue({ affiliateCode: createCodesList() });
+    setFieldsValue({ affiliateCode: createCodesList(codes, percents, weightBuffer) });
   }, [codes, percents, weightBuffer]);
 
   useEffect(() => {
@@ -49,12 +40,19 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
     setPercents(newPercents);
   };
 
+  const handleAddNewCode = () => {
+    if (isEmpty(codes)) return;
+    const i = items.length + 1;
+
+    setItem([...items, i]);
+    setPercents([...percents, 1]);
+  };
+
   const handleChange = useCallback(
     debounce((value, i) => {
       const newCodes = [...codes];
 
       newCodes.splice(i, 1, value);
-
       setCodes(newCodes);
     }, 300),
     [codes],
@@ -94,6 +92,7 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
               handleChange(e.currentTarget.value, 0);
             }}
           />
+          <span>Frequency of use: {weightBuffer}%.</span>
           <Progress
             status="active"
             showInfo={false}
@@ -132,16 +131,23 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
         );
       })}
       <span
-        onClick={() => {
-          if (totalUsedPercents === 100) return;
-
-          const i = items.length + 1;
-
-          setItem([...items, i]);
-          setPercents([...percents, 1]);
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          cursor: 'pointer',
         }}
+        onClick={handleAddNewCode}
       >
-        <Icon type="plus-circle" className="proposition-line__icon" /> Add new codes
+        <Icon
+          style={{
+            color: '#f87007',
+            display: 'inline-block',
+            marginRight: '5px',
+          }}
+          type="plus-circle"
+          className="proposition-line__icon"
+        />{' '}
+        Add new codes
       </span>
     </>
   );
