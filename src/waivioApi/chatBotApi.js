@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import config from './routes';
+import config, { baseUrl } from './routes';
 import { headers, getAuthHeaders } from './ApiClient';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { getValidTokenData } from '../common/helpers/getToken';
@@ -10,7 +10,7 @@ export const getChatBotHistory = async id => {
 
   if (isGuest) token = await getValidTokenData();
 
-  return fetch(`${config.apiPrefix}${config.assistant}${config.history}/${id}`, {
+  return fetch(`${baseUrl}${config.assistant}${config.history}/${id}`, {
     headers: {
       ...headers,
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
@@ -22,14 +22,30 @@ export const getChatBotHistory = async id => {
     .catch(e => e);
 };
 
-export const sendChatBotQuestion = (question, id) =>
-  fetch(`${config.apiPrefix}${config.assistant}`, {
-    headers: { ...headers, app: config.appName },
+export const sendChatBotQuestion = async (query, id, userName) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${baseUrl}${config.assistant}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      ...(isGuest
+        ? {
+            'access-token': token.token,
+            'waivio-auth': true,
+          }
+        : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
-      question,
+      userName,
+      query,
       id,
     }),
   })
     .then(res => res.json())
     .catch(error => error);
+};
