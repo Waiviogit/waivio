@@ -17,14 +17,20 @@ import {
 } from '../../../store/chatBotStore/chatBotActions';
 import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
-import './ChatWindow.less';
-import { getIsWaivio, getWebsiteConfiguration } from '../../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getIsWaivio,
+  getWebsiteConfiguration,
+} from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import './ChatWindow.less';
 
 const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
   const config = useSelector(getWebsiteConfiguration);
+  const appUrl = useSelector(getAppUrl);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
@@ -32,13 +38,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
+  const authUser = useSelector(getAuthenticatedUserName);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
-  const siteName = isWaivio ? 'Waivio' : config?.header?.name;
+  const siteName = isWaivio ? 'Waivio' : config?.header?.name || appUrl;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
@@ -56,8 +63,10 @@ const ChatWindow = ({ className, hideChat, open }) => {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
       setLoading(true);
-      sendChatBotQuestion(question, id).then(res => {
-        const resutText = isEmpty(res) ? 'Sorry, an error has occurred.' : res.result;
+      sendChatBotQuestion(question, id, authUser).then(res => {
+        const resutText = isEmpty(res)
+          ? 'Sorry, an error has occurred.'
+          : res.result.kwargs.content;
 
         dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
         setLoading(false);
@@ -274,7 +283,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
                 />
               );
             })}
-          {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
+          {loading && (
+            <AssistantMessage
+              siteImage={siteImage}
+              siteName={siteName}
+              loading
+              lastMessageRef={lastMessageRef}
+            />
+          )}
         </div>
       </div>
       <div className="chat-footer">
