@@ -107,15 +107,17 @@ const AffiliateCodesList = ({
                     <FormattedMessage id="delete" defaultMessage="Delete" />
                   </Button>
                 )}
-                <AffiliateEditModal
-                  affiliateCode={affiliateCode}
-                  validateFieldsAndScroll={validateFieldsAndScroll}
-                  visibleEditModal={visibleEditModal}
-                  setFieldsValue={setFieldsValue}
-                  onClose={() => setVisibleEditModal(false)}
-                  editCode={handleEditCode}
-                  affName={wobjName}
-                />
+                {visibleEditModal && (
+                  <AffiliateEditModal
+                    affiliateCode={affiliateCode}
+                    validateFieldsAndScroll={validateFieldsAndScroll}
+                    visibleEditModal={visibleEditModal}
+                    setFieldsValue={setFieldsValue}
+                    onClose={() => setVisibleEditModal(false)}
+                    editCode={handleEditCode}
+                    affName={wobjName}
+                  />
+                )}
               </div>
             );
           }

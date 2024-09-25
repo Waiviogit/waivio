@@ -92,7 +92,14 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
               handleChange(e.currentTarget.value, 0);
             }}
           />
-          <span>Frequency of use: {weightBuffer}%.</span>
+          <span
+            style={{
+              display: 'inline-block',
+              marginTop: '10px',
+            }}
+          >
+            Frequency of use: {weightBuffer}%.
+          </span>
           <Progress
             status="active"
             showInfo={false}
@@ -134,7 +141,8 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
         style={{
           display: 'flex',
           alignItems: 'center',
-          cursor: 'pointer',
+          marginTop: '5px',
+          cursor: isEmpty(codes) ? 'not-allowed' : 'pointer',
         }}
         onClick={handleAddNewCode}
       >
@@ -147,7 +155,7 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
           type="plus-circle"
           className="proposition-line__icon"
         />{' '}
-        Add new codes
+        <span>Add new codes</span>
       </span>
     </>
   );
