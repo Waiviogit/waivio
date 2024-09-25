@@ -11,22 +11,29 @@ const AffiliateCodesModal = ({
   intl,
   selectedObj,
   openAppendModal,
-  getFieldDecorator,
   context,
   loading,
   form,
   setOpenAppendModal,
   onSubmit,
 }) => {
-  const { setFieldsValue, validateFieldsAndScroll } = form;
+  const { setFieldsValue, validateFieldsAndScroll, getFieldDecorator } = form;
   const [items, setItem] = useState([]);
   const [percents, setPercents] = useState([]);
   const [codes, setCodes] = useState([]);
   const [weightBuffer, setWeightBuffer] = useState(100);
 
-  const hideModal = () => {
-    setFieldsValue({ [objectFields.affiliateCode]: [] });
+  const resetState = () => {
+    setPercents([]);
+    setCodes([]);
+    setItem([]);
+    setWeightBuffer(100);
     setOpenAppendModal(false);
+  };
+
+  const hideModal = () => {
+    resetState();
+    setFieldsValue({ affiliateCode: [] });
   };
 
   useEffect(() => {
@@ -60,6 +67,7 @@ const AffiliateCodesModal = ({
     if (event) event.preventDefault();
     validateFieldsAndScroll((err, values) => {
       onSubmit(values);
+      resetState();
     });
   };
 
@@ -91,12 +99,7 @@ const AffiliateCodesModal = ({
           </p>
           <Form.Item>
             {getFieldDecorator(objectFields.affiliateCode, {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your username!',
-                },
-              ],
+              initialValue: [],
             })(
               <div>
                 <input
@@ -112,6 +115,15 @@ const AffiliateCodesModal = ({
                 />
               </div>,
             )}
+            <span
+              style={{
+                display: 'inline-block',
+                marginTop: '10px',
+                marginBottom: '5px',
+              }}
+            >
+              Frequency of use: {weightBuffer}%.
+            </span>
             <Progress
               status="active"
               showInfo={false}
@@ -155,6 +167,7 @@ const AffiliateCodesModal = ({
               display: 'flex',
               alignItems: 'center',
               cursor: isEmpty(codes) ? 'not-allowed' : 'pointer',
+              marginTop: '15px',
             }}
             onClick={handleAddNewCode}
           >
@@ -204,7 +217,6 @@ AffiliateCodesModal.propTypes = {
   openAppendModal: PropTypes.bool,
   setOpenAppendModal: PropTypes.func,
   onSubmit: PropTypes.func,
-  getFieldDecorator: PropTypes.func,
   loading: PropTypes.bool,
   context: PropTypes.string,
 };
