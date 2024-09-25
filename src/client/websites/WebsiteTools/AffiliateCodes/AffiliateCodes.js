@@ -39,7 +39,7 @@ export const AffiliateCodes = ({
   const [openAppendModal, setOpenAppendModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldValue } = form;
   const site = match.params.site;
   const isGuest = useSelector(isGuestUser);
   const userUpVotePower = 100;
@@ -206,25 +206,18 @@ export const AffiliateCodes = ({
         validateFieldsAndScroll={form.validateFieldsAndScroll}
         wobjName={getObjectName(selectedObj)}
       />
-      <AffiliateCodesModal
-        voteAppend={voteAppend}
-        affiliateObjects={affiliateObjects}
-        appendContext={site}
-        user={user}
-        form={form}
-        appendWobject={appendWobject}
-        setOpenAppendModal={setOpenAppendModal}
-        setLoading={setLoading}
-        langReadable={langReadable}
-        intl={intl}
-        loading={loading}
-        getFieldDecorator={getFieldDecorator}
-        getFieldValue={getFieldValue}
-        context={site}
-        openAppendModal={openAppendModal}
-        selectedObj={selectedObj}
-        onSubmit={onSubmit}
-      />
+      {openAppendModal && (
+        <AffiliateCodesModal
+          form={form}
+          setOpenAppendModal={setOpenAppendModal}
+          intl={intl}
+          loading={loading}
+          context={site}
+          openAppendModal={openAppendModal}
+          onSubmit={onSubmit}
+          selectedObj={selectedObj}
+        />
+      )}
     </div>
   );
 };

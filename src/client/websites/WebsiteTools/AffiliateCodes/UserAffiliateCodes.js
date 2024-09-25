@@ -38,7 +38,7 @@ export const UserAffiliateCodes = ({
   const [openAppendModal, setOpenAppendModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
-  const { getFieldDecorator, getFieldValue } = form;
+  const { getFieldValue } = form;
   const isGuest = useSelector(isGuestUser);
   const userUpVotePower = 100;
   const addAffilicateCode = (dup, data, formValues) => {
@@ -200,25 +200,18 @@ export const UserAffiliateCodes = ({
         validateFieldsAndScroll={form.validateFieldsAndScroll}
         wobjName={getObjectName(selectedObj)}
       />
-      <AffiliateCodesModal
-        affiliateObjects={affiliateObjects}
-        voteAppend={voteAppend}
-        user={user}
-        form={form}
-        appendWobject={appendWobject}
-        setOpenAppendModal={setOpenAppendModal}
-        setLoading={setLoading}
-        langReadable={langReadable}
-        intl={intl}
-        loading={loading}
-        getFieldDecorator={getFieldDecorator}
-        getFieldValue={getFieldValue}
-        context={`@${user.name}`}
-        appendContext={'PERSONAL'}
-        openAppendModal={openAppendModal}
-        selectedObj={selectedObj}
-        onSubmit={onSubmit}
-      />
+      {openAppendModal && (
+        <AffiliateCodesModal
+          form={form}
+          setOpenAppendModal={setOpenAppendModal}
+          intl={intl}
+          loading={loading}
+          context={`@${user.name}`}
+          openAppendModal={openAppendModal}
+          onSubmit={onSubmit}
+          selectedObj={selectedObj}
+        />
+      )}
     </div>
   );
 };

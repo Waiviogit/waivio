@@ -12,7 +12,14 @@ const PercentChanger = ({ max = 100, onAfterChange, defaultPercent = 1 }) => {
 
   return (
     <div>
-      <span>Frequency of use: {value}%.</span>
+      <span
+        style={{
+          display: 'inline-block',
+          marginTop: '10px',
+        }}
+      >
+        Frequency of use: {value}%.
+      </span>
       <Slider
         className="obj-item-slider"
         min={1}

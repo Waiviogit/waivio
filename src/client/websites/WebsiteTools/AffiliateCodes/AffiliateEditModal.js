@@ -27,6 +27,17 @@ const AffiliateEditModal = ({
     }, []);
   };
 
+  const deleteAffiliateCode = i => {
+    const newCodes = [...codes];
+    const newPercent = [...percents];
+
+    newCodes.splice(i, 1);
+    newPercent.splice(i, 1);
+
+    setCodes(newCodes);
+    setPercents(newPercent);
+  };
+
   useEffect(() => {
     const g = affiliateCode.reduce(
       (acc, curr) => {
@@ -81,8 +92,23 @@ const AffiliateEditModal = ({
         const o = code.split('::');
 
         return (
-          <div key={o[0]}>
-            <span>{o[0]}</span>
+          <div
+            key={o[0]}
+            style={{
+              marginBottom: '15px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>{o[0]}</span>
+              <Button onClick={() => deleteAffiliateCode(i)} type={'primary'}>
+                delete
+              </Button>
+            </div>
             {i ? (
               <PercentChanger
                 defaultPercent={percents[i]}
