@@ -46,7 +46,6 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
-
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
@@ -236,19 +235,42 @@ const ChatWindow = ({ className, hideChat, open }) => {
       style={isMobile() ? { height: `${height}px` } : {}}
     >
       <div className="chat-header">
-        <div className="chat-header-logo-wrap">
-          <img className="chat-logo" src={siteImage} alt={siteName} />
-          <div className="chat-header-text">{siteName} AI Assistant</div>
-        </div>
-        <div className="chat-header-buttons-wrap">
-          {chatId ? (
-            <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
-          ) : (
-            <span />
-          )}
-          <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
-        </div>
+        {isWaivio ? (
+          <>
+            <div className="chat-header-logo-wrap">
+              <img className="chat-logo" src={siteImage} alt={siteName} />
+              <div className="chat-header-text">{siteName} AI Assistant</div>
+            </div>
+            <div className="chat-header-buttons-wrap">
+              {chatId ? (
+                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+              ) : (
+                <span />
+              )}
+              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="chat-header-logo-wrap">
+              <img className="chat-logo" src={siteImage} alt={siteName} />
+            </div>
+            <div>
+              <div className="chat-header-text-sites">{siteName}</div>
+              <div className="chat-header-text-sites"> AI Assistant</div>
+            </div>
+            <div className="chat-header-buttons-wrap">
+              {chatId ? (
+                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+              ) : (
+                <span />
+              )}
+              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
+            </div>
+          </>
+        )}
       </div>
+
       <div className="chat-body" ref={chatBodyRef}>
         {isEmpty(chatMessages) && (
           <>
@@ -256,7 +278,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
               <div className="info-paragraph">How can I help you today?</div>
             </div>
             <div className="options">
-              {quickMessages(siteName).map(mess => (
+              {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
                 <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                   {mess.label}
                 </button>
