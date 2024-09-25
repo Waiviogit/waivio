@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty, isNil } from 'lodash';
-import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
+import { get, isEmpty, isNil } from 'lodash';
+import { getAuthenticatedUser, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { affiliateCodeVoteAppend, appendObject } from '../../../../store/appendStore/appendActions';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
@@ -16,8 +16,13 @@ import {
 import AffiliateCodesModal from './AffiliateCodesModal';
 import AffiliateCodesList from './AffiliateCodesList';
 import AffiliateCodesAutoComplete from './AffiliateCodesAutoComplete';
-import './AffiliateCodes.less';
 import { objectFields } from '../../../../common/constants/listOfFields';
+import { getNewPostData } from './affiliateCodesHelper';
+import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+
+import './AffiliateCodes.less';
+
+const guestUpVotingPower = 10000;
 
 export const AffiliateCodes = ({
   intl,
@@ -36,6 +41,93 @@ export const AffiliateCodes = ({
   const [selectedObj, setSelectedObj] = useState({});
   const { getFieldDecorator, getFieldValue } = form;
   const site = match.params.site;
+  const isGuest = useSelector(isGuestUser);
+  const userUpVotePower = 100;
+  const addAffilicateCode = (dup, data, formValues) => {
+    if (dup) {
+      return voteAppend(
+        dup.author,
+        selectedObj.author_permlink,
+        dup.permlink,
+        isGuest ? guestUpVotingPower : userUpVotePower,
+        user.name,
+        site === 'PERSONAL' ? undefined : site,
+      );
+    }
+
+    return appendWobject(data, {
+      votePercent: isGuest ? guestUpVotingPower : data.votePower,
+      follow: formValues.follow,
+      isLike: data.isLike,
+      isObjectPage: false,
+      isUpdatesPage: false,
+      host: site === 'PERSONAL' ? undefined : site,
+    });
+  };
+
+  const onSubmit = formValues => {
+    const currObj = affiliateObjects?.find(obj => obj.name === selectedObj.name);
+    // eslint-disable-next-line array-callback-return,consistent-return
+    const duplicate = currObj?.affiliateCodeFields?.find(update => {
+      if (update.name === 'affiliateCode') {
+        const affCode = JSON.parse(update?.body)[1];
+
+        return affCode === formValues.affiliateCode;
+      }
+    });
+
+    const postData = getNewPostData(
+      formValues,
+      langReadable,
+      user,
+      selectedObj,
+      site,
+      isGuest ? guestUpVotingPower : userUpVotePower,
+    );
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const data of postData) {
+      const field = getFieldValue('currentField');
+
+      setLoading(true);
+      addAffilicateCode(duplicate, data, formValues)
+        .then(res => {
+          setOpenAppendModal(false);
+          setLoading(false);
+          form.setFieldsValue({ [objectFields.affiliateCode]: [] });
+
+          const mssg = get(res, ['value', 'message']);
+
+          if (mssg) {
+            message.error(mssg);
+          } else {
+            message.success(
+              intl.formatMessage(
+                {
+                  id: `added_field_to_wobject_${field}`,
+                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                },
+                {
+                  field: getFieldValue('currentField'),
+                  wobject: getObjectName(selectedObj),
+                },
+              ),
+            );
+          }
+        })
+        .catch(() => {
+          message.error(
+            intl.formatMessage({
+              id: 'couldnt_append',
+              defaultMessage: "Couldn't add the field to object.",
+            }),
+          );
+
+          setLoading(false);
+          setOpenAppendModal(false);
+        });
+    }
+  };
 
   useEffect(() => {
     if (!isEmpty(site) && !isNil(site)) {
@@ -103,12 +195,16 @@ export const AffiliateCodes = ({
         context={site}
         rejectCode={voteAppend}
         affiliateObjects={affiliateObjects}
-        setOpenAppendModal={codes => {
-          setOpenAppendModal(true);
+        saveAffCodes={onSubmit}
+        setSelectedObj={setSelectedObj}
+        setFieldsValue={c =>
           form.setFieldsValue({
-            [objectFields.affiliateCode]: codes,
-          });
-        }}
+            [objectFields.affiliateCode]: c,
+          })
+        }
+        onSubmit={onSubmit}
+        validateFieldsAndScroll={form.validateFieldsAndScroll}
+        wobjName={getObjectName(selectedObj)}
       />
       <AffiliateCodesModal
         voteAppend={voteAppend}
@@ -127,6 +223,7 @@ export const AffiliateCodes = ({
         context={site}
         openAppendModal={openAppendModal}
         selectedObj={selectedObj}
+        onSubmit={onSubmit}
       />
     </div>
   );
