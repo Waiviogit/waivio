@@ -18,7 +18,7 @@ import {
 import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
 import {
-  getAppUrl,
+  getHostAddress,
   getIsWaivio,
   getWebsiteConfiguration,
 } from '../../../store/appStore/appSelectors';
@@ -30,7 +30,6 @@ const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
   const config = useSelector(getWebsiteConfiguration);
-  const appUrl = useSelector(getAppUrl);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
@@ -39,13 +38,16 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const authUser = useSelector(getAuthenticatedUserName);
+  const host = useSelector(getHostAddress);
+  const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
-  const siteName = isWaivio ? 'Waivio' : config?.header?.name || appUrl;
+
+  const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
@@ -64,9 +66,10 @@ const ChatWindow = ({ className, hideChat, open }) => {
       setMessage('');
       setLoading(true);
       sendChatBotQuestion(question, id, authUser).then(res => {
-        const resutText = isEmpty(res)
-          ? 'Sorry, an error has occurred.'
-          : res.result.kwargs.content;
+        const resutText =
+          res.message || isEmpty(res.result.kwargs.content)
+            ? 'Sorry, an error has occurred.'
+            : res.result.kwargs.content;
 
         dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
         setLoading(false);
