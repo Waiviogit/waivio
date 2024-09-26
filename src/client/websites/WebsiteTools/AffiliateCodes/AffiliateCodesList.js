@@ -23,6 +23,7 @@ const AffiliateCodesList = ({
   getFieldDecorator,
 }) => {
   const [visibleEditModal, setVisibleEditModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const isGuest = useSelector(isGuestUser);
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
@@ -46,7 +47,10 @@ const AffiliateCodesList = ({
       isGuest ? 9999 : 1,
       user.name,
       context,
-    );
+    ).then(() => {
+      setLoading(false);
+      setVisibleEditModal(false);
+    });
   };
 
   const openEditModal = obj => {
@@ -55,10 +59,9 @@ const AffiliateCodesList = ({
   };
 
   const editCode = (obj, value) => {
-    onSubmit(value).then(() => {
-      deleteCode(obj);
-      setVisibleEditModal(false);
-    });
+    setLoading(true);
+    onSubmit(value);
+    deleteCode(obj);
   };
 
   return (
@@ -68,9 +71,7 @@ const AffiliateCodesList = ({
       ) : (
         // eslint-disable-next-line array-callback-return,consistent-return
         affiliateObjects?.map(obj => {
-          const handleEditCode = value => {
-            editCode(obj, value);
-          };
+          const handleEditCode = value => editCode(obj, value);
 
           if (obj.affiliateCode) {
             const affiliateCode = JSON.parse(obj.affiliateCode);
@@ -119,6 +120,7 @@ const AffiliateCodesList = ({
                     onClose={() => setVisibleEditModal(false)}
                     editCode={handleEditCode}
                     affName={wobjName}
+                    loading={loading}
                   />
                 )}
               </div>
