@@ -198,6 +198,7 @@ export const UserAffiliateCodes = ({
         }
         onSubmit={onSubmit}
         validateFieldsAndScroll={form.validateFieldsAndScroll}
+        getFieldDecorator={form.getFieldDecorator}
         wobjName={getObjectName(selectedObj)}
       />
       {openAppendModal && (

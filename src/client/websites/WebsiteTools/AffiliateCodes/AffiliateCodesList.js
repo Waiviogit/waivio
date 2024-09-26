@@ -20,6 +20,7 @@ const AffiliateCodesList = ({
   validateFieldsAndScroll,
   setSelectedObj,
   wobjName,
+  getFieldDecorator,
 }) => {
   const [visibleEditModal, setVisibleEditModal] = React.useState(false);
   const isGuest = useSelector(isGuestUser);
@@ -54,9 +55,10 @@ const AffiliateCodesList = ({
   };
 
   const editCode = (obj, value) => {
-    deleteCode(obj);
-    onSubmit(value);
-    setVisibleEditModal(false);
+    onSubmit(value).then(() => {
+      deleteCode(obj);
+      setVisibleEditModal(false);
+    });
   };
 
   return (
@@ -109,8 +111,9 @@ const AffiliateCodesList = ({
                 )}
                 {visibleEditModal && (
                   <AffiliateEditModal
-                    affiliateCode={affiliateCode}
+                    affiliateCode={codes}
                     validateFieldsAndScroll={validateFieldsAndScroll}
+                    getFieldDecorator={getFieldDecorator}
                     visibleEditModal={visibleEditModal}
                     setFieldsValue={setFieldsValue}
                     onClose={() => setVisibleEditModal(false)}
@@ -131,6 +134,7 @@ AffiliateCodesList.propTypes = {
   affiliateObjects: PropTypes.arrayOf(),
   user: PropTypes.shape(),
   rejectCode: PropTypes.func,
+  getFieldDecorator: PropTypes.func,
   context: PropTypes.string,
   setFieldsValue: PropTypes.func,
   onSubmit: PropTypes.func,
