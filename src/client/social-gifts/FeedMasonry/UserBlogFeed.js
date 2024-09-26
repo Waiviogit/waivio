@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
-
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileBlogPosts } from '../../../store/feedStore/feedActions';
 import {
@@ -23,15 +23,16 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const limit = 25;
 
-const UserBlogFeed = () => {
+const UserBlogFeed = ({ user }) => {
   const [previews, setPreviews] = useState();
   const [firstLoading, setFirstLoading] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
 
-  const { name } = useParams();
+  const { name: userName } = useParams();
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
+  const name = userName || user;
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
@@ -128,6 +129,10 @@ const UserBlogFeed = () => {
       )}
     </React.Fragment>
   );
+};
+
+UserBlogFeed.propTypes = {
+  user: PropTypes.string,
 };
 
 UserBlogFeed.fetchData = ({ store, match }) =>

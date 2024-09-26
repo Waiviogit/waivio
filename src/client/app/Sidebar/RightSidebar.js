@@ -73,6 +73,7 @@ export default class RightSidebar extends React.Component {
         {!authenticated && <SignUp />}
         <Switch>
           <Route path="/user-shop/:name/:department?" component={UserFilters} />
+          <Route path="/recipe/:name/:department?" component={UserFilters} />
           <Route path="/@:name/userShop/:department?" component={UserFilters} />
           <Route path="/@:name/recipe/:department?" component={UserFilters} />
           <Route path={'/object-shop/:name/:department?'} component={WobjectShopFilter} />

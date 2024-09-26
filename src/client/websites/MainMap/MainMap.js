@@ -69,7 +69,9 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = props.isSocial ? `${props.height - 100}px` : `${props.height - 205}px`;
+  if (isMobile)
+    mapHeight =
+      props.isSocial || props.isUserMap ? `${props.height - 100}px` : `${props.height - 205}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
@@ -177,7 +179,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink],
+    [props.wobject.author_permlink, props.user],
   );
 
   useEffect(() => {
@@ -235,10 +237,7 @@ const MainMap = React.memo(props => {
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       const searchString = props.isSocial
-        ? props.permlink ||
-          props.match.params.name ||
-          props.wobject.author_permlink ||
-          query.get('currObj')
+        ? props.permlink || props.user || props.wobject.author_permlink || query.get('currObj')
         : props.searchString;
 
       if ((searchString && props.isSocial) || !props.isSocial)
@@ -255,9 +254,10 @@ const MainMap = React.memo(props => {
             checkDistanceAndSetReload();
             if (!isEmpty(queryCenter)) {
               const { wobjects } = res.value;
-              const queryPermlink = props.isSocial
-                ? query.get('permlink')
-                : props.query.get('permlink');
+              const queryPermlink =
+                props.isSocial || props.isUserMap
+                  ? query.get('permlink')
+                  : props.query.get('permlink');
               const currentPoint =
                 get(props.infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
                   ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
@@ -280,7 +280,7 @@ const MainMap = React.memo(props => {
 
   useEffect(() => {
     let mount = true;
-    const permlink = query.get('currObj') || props.permlink || props.match.params.name;
+    const permlink = query.get('currObj') || props.permlink || props.user;
 
     if (
       permlink &&
@@ -297,7 +297,7 @@ const MainMap = React.memo(props => {
     return () => {
       mount = false;
     };
-  }, [props.boundsParams, props.match.params.name, props.locale]);
+  }, [props.boundsParams, props.user, props.locale]);
   if (isEmpty(props.mapData.center) && props.isSocial) {
     return <Loading />;
   }
@@ -340,7 +340,6 @@ const MainMap = React.memo(props => {
 });
 
 MainMap.propTypes = {
-  match: PropTypes.shape(),
   wobject: PropTypes.shape(),
   location: PropTypes.shape({
     pathname: PropTypes.string,

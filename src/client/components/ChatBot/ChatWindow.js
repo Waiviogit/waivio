@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -17,24 +17,40 @@ import {
 } from '../../../store/chatBotStore/chatBotActions';
 import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
-import './ChatWindow.less';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import {
+  getHostAddress,
+  getIsWaivio,
+  getWebsiteConfiguration,
+} from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import './ChatWindow.less';
 
 const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
+  const config = useSelector(getWebsiteConfiguration);
+  const mobileLogo = get(config, 'mobileLogo');
+  const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
+  const authUser = useSelector(getAuthenticatedUserName);
+  const host = useSelector(getHostAddress);
+  const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
   const dispatch = useDispatch();
   const textAreaRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
+  const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
+  const shortSiteName = siteName?.length < 23;
+  const siteImage = isWaivio
+    ? '/images/icons/cryptocurrencies/waiv.png'
+    : desktopLogo || mobileLogo;
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
@@ -49,8 +65,11 @@ const ChatWindow = ({ className, hideChat, open }) => {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
       setLoading(true);
-      sendChatBotQuestion(question, id).then(res => {
-        const resutText = isEmpty(res) ? 'Sorry, an error has occurred.' : res.result;
+      sendChatBotQuestion(question, id, authUser).then(res => {
+        const resutText =
+          res.message || isEmpty(res.result.kwargs.content)
+            ? 'Sorry, an error has occurred.'
+            : res.result.kwargs.content;
 
         dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
         setLoading(false);
@@ -217,19 +236,42 @@ const ChatWindow = ({ className, hideChat, open }) => {
       style={isMobile() ? { height: `${height}px` } : {}}
     >
       <div className="chat-header">
-        <div className="chat-header-logo-wrap">
-          <img className="chat-logo" src="/images/icons/cryptocurrencies/waiv.png" alt="Waivio" />
-          <div className="chat-header-text">Waivio AI Assistant</div>
-        </div>
-        <div className="chat-header-buttons-wrap">
-          {chatId ? (
-            <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
-          ) : (
-            <span />
-          )}
-          <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
-        </div>
+        {isWaivio || (!isWaivio && shortSiteName) ? (
+          <>
+            <div className="chat-header-logo-wrap">
+              <img className="chat-logo" src={siteImage} alt={siteName} />
+              <div className="chat-header-text">{siteName} AI Assistant</div>
+            </div>
+            <div className="chat-header-buttons-wrap">
+              {chatId ? (
+                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+              ) : (
+                <span />
+              )}
+              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="chat-header-logo-wrap">
+              <img className="chat-logo" src={siteImage} alt={siteName} />
+            </div>
+            <div>
+              <div className="chat-header-text-sites">{siteName}</div>
+              <div className="chat-header-text-sites"> AI Assistant</div>
+            </div>
+            <div className="chat-header-buttons-wrap">
+              {chatId ? (
+                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+              ) : (
+                <span />
+              )}
+              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
+            </div>
+          </>
+        )}
       </div>
+
       <div className="chat-body" ref={chatBodyRef}>
         {isEmpty(chatMessages) && (
           <>
@@ -237,7 +279,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
               <div className="info-paragraph">How can I help you today?</div>
             </div>
             <div className="options">
-              {quickMessages.map(mess => (
+              {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
                 <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                   {mess.label}
                 </button>
@@ -258,6 +300,8 @@ const ChatWindow = ({ className, hideChat, open }) => {
                 />
               ) : (
                 <AssistantMessage
+                  siteImage={siteImage}
+                  siteName={siteName}
                   key={mes.text}
                   text={text}
                   loading={false}
@@ -265,7 +309,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
                 />
               );
             })}
-          {loading && <AssistantMessage loading lastMessageRef={lastMessageRef} />}
+          {loading && (
+            <AssistantMessage
+              siteImage={siteImage}
+              siteName={siteName}
+              loading
+              lastMessageRef={lastMessageRef}
+            />
+          )}
         </div>
       </div>
       <div className="chat-footer">

@@ -48,7 +48,7 @@ export function getHtml(
   body,
   jsonMetadata = {},
   returnType = 'Object',
-  options = { isChatBotLink: false },
+  options = { isChatBotLink: false, isPost: false },
   location,
   isPage,
   baseObj = '',
@@ -94,6 +94,7 @@ export function getHtml(
       secureLinks: options.secureLinks,
       location,
       isPage,
+      isPost: options.isPost,
       isChatBotLink: options.isChatBotLink,
       baseObj,
     }),
@@ -188,6 +189,7 @@ const Body = props => {
     appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
+    isPost: props.isPost,
   };
   const htmlSections = getHtml(
     props.body,
@@ -210,6 +212,7 @@ Body.propTypes = {
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
   isPage: PropTypes.bool,
+  isPost: PropTypes.bool,
 };
 
 Body.defaultProps = {

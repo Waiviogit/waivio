@@ -28,7 +28,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopList.less';
 
-const ShopList = ({ userName, path, getShopFeed, isSocial, intl }) => {
+const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => {
   const query = useQuery();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -38,6 +38,9 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl }) => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const departments = useSelector(getShopList);
   const hasMore = useSelector(getShopListHasMore);
+  const emptySocialMessage = isRecipe
+    ? 'There are no recipes.'
+    : 'This shop does not have any products.';
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -96,7 +99,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl }) => {
           emptyMessage={
             match.params.department
               ? 'There are no products available in this department.'
-              : 'This shop does not have any products.'
+              : emptySocialMessage
           }
         />
       ) : (
@@ -139,6 +142,7 @@ ShopList.propTypes = {
   path: PropTypes.string,
   getShopFeed: PropTypes.func,
   isSocial: PropTypes.bool,
+  isRecipe: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
 

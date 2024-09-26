@@ -1,131 +1,82 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty } from 'lodash';
-import { Button, Form, Input, message, Modal } from 'antd';
+import { debounce, isEmpty } from 'lodash';
+import { Button, Form, Icon, Modal, Progress } from 'antd';
 import { objectFields } from '../../../../common/constants/listOfFields';
-import { getNewPostData } from './affiliateCodesHelper';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
-import { isGuestUser } from '../../../../store/authStore/authSelectors';
-
-const guestUpVotingPower = 10000;
+import PercentChanger from '../../../object/AppendModal/FormComponents/PercentChanger';
+import { createCodesList } from './helpers';
 
 const AffiliateCodesModal = ({
   intl,
   selectedObj,
   openAppendModal,
-  getFieldDecorator,
   context,
-  appendContext,
   loading,
-  langReadable,
-  user,
   form,
-  setLoading,
   setOpenAppendModal,
-  appendWobject,
-  voteAppend,
-  affiliateObjects,
+  onSubmit,
 }) => {
-  const { setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
-  const isGuest = useSelector(isGuestUser);
-  const userUpVotePower = 100;
-  const hideModal = () => {
-    setFieldsValue({ [objectFields.affiliateCode]: '' });
+  const { setFieldsValue, validateFieldsAndScroll, getFieldDecorator } = form;
+  const [items, setItem] = useState([]);
+  const [percents, setPercents] = useState([]);
+  const [codes, setCodes] = useState([]);
+  const [weightBuffer, setWeightBuffer] = useState(100);
+
+  const resetState = () => {
+    setPercents([]);
+    setCodes([]);
+    setItem([]);
+    setWeightBuffer(100);
     setOpenAppendModal(false);
   };
 
-  const addAffilicateCode = (dup, data, formValues) => {
-    if (dup) {
-      return voteAppend(
-        dup.author,
-        selectedObj.author_permlink,
-        dup.permlink,
-        isGuest ? guestUpVotingPower : userUpVotePower,
-        user.name,
-        appendContext === 'PERSONAL' ? undefined : context,
-      );
-    }
-
-    return appendWobject(data, {
-      votePercent: isGuest ? guestUpVotingPower : data.votePower,
-      follow: formValues.follow,
-      isLike: data.isLike,
-      isObjectPage: false,
-      isUpdatesPage: false,
-      host: appendContext === 'PERSONAL' ? undefined : context,
-    });
+  const hideModal = () => {
+    resetState();
+    setFieldsValue({ affiliateCode: [] });
   };
 
-  const onSubmit = formValues => {
-    const currObj = affiliateObjects?.find(obj => obj.name === selectedObj.name);
-    // eslint-disable-next-line array-callback-return,consistent-return
-    const duplicate = currObj?.affiliateCodeFields?.find(update => {
-      if (update.name === 'affiliateCode') {
-        const affCode = JSON.parse(update?.body)[1];
+  useEffect(() => {
+    setWeightBuffer(Object.values(percents).reduce((res, curr) => res - curr, 100));
+  }, [percents]);
 
-        return affCode === formValues.affiliateCode;
-      }
-    });
+  useEffect(() => {
+    setFieldsValue({ affiliateCode: createCodesList(codes, percents, weightBuffer) });
+  }, [codes, percents, weightBuffer]);
 
-    const postData = getNewPostData(
-      formValues,
-      langReadable,
-      user,
-      selectedObj,
-      appendContext,
-      isGuest ? guestUpVotingPower : userUpVotePower,
-    );
+  const onChangeSlider = (value, i) => {
+    const newPercents = [...percents];
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const data of postData) {
-      const field = getFieldValue('currentField');
+    newPercents.splice(i, 1, value);
 
-      setLoading(true);
-      addAffilicateCode(duplicate, data, formValues)
-        .then(r => {
-          setOpenAppendModal(false);
-          setLoading(false);
-          setFieldsValue({ [objectFields.affiliateCode]: '' });
-
-          const mssg = get(r, ['value', 'message']);
-
-          if (mssg) {
-            message.error(mssg);
-          } else {
-            message.success(
-              intl.formatMessage(
-                {
-                  id: `added_field_to_wobject_${field}`,
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                },
-                {
-                  field: getFieldValue('currentField'),
-                  wobject: getObjectName(selectedObj),
-                },
-              ),
-            );
-          }
-        })
-        .catch(() => {
-          message.error(
-            intl.formatMessage({
-              id: 'couldnt_append',
-              defaultMessage: "Couldn't add the field to object.",
-            }),
-          );
-
-          setLoading(false);
-          setOpenAppendModal(false);
-        });
-    }
+    setPercents(newPercents);
   };
+
+  const handleChange = useCallback(
+    debounce((value, i) => {
+      const newCodes = [...codes];
+
+      newCodes.splice(i, 1, value);
+
+      setCodes(newCodes);
+    }, 300),
+    [codes],
+  );
+
   const handleSubmit = event => {
     if (event) event.preventDefault();
     validateFieldsAndScroll((err, values) => {
       onSubmit(values);
+      resetState();
     });
+  };
+
+  const handleAddNewCode = () => {
+    if (isEmpty(codes)) return;
+    const i = items.length + 1;
+
+    setItem([...items, i]);
+    setPercents([...percents, 1]);
   };
 
   return (
@@ -148,26 +99,89 @@ const AffiliateCodesModal = ({
           </p>
           <Form.Item>
             {getFieldDecorator(objectFields.affiliateCode, {
-              rules: [
-                {
-                  required: true,
-                  message: 'Please input your username!',
-                },
-                {
-                  max: 200,
-                  message: "Value can't be longer than 200 characters.",
-                },
-              ],
+              initialValue: [],
             })(
-              <Input
-                autoFocus
-                placeholder={intl.formatMessage({
-                  id: 'my_affiliate_code',
-                  defaultMessage: 'My affiliate code',
-                })}
-              />,
+              <div>
+                <input
+                  disabled={loading}
+                  placeholder={`${intl.formatMessage({
+                    id: 'my_affiliate_code',
+                    defaultMessage: 'My affiliate code',
+                  })} #1`}
+                  className="ant-input"
+                  onInput={e => {
+                    handleChange(e.currentTarget.value, 0);
+                  }}
+                />
+              </div>,
             )}
+            <span
+              style={{
+                display: 'inline-block',
+                marginTop: '10px',
+                marginBottom: '5px',
+              }}
+            >
+              Frequency of use: {weightBuffer}%.
+            </span>
+            <Progress
+              status="active"
+              showInfo={false}
+              percent={weightBuffer}
+              strokeWidth={5}
+              trailColor="red"
+              strokeColor={'orange'}
+            />
           </Form.Item>
+          {items.map(i => {
+            const index = i + 1;
+
+            return (
+              <React.Fragment key={index}>
+                <p className={'ant-form-item-label AppendForm__appendTitles'}>
+                  Affiliate code {index}
+                </p>
+                <input
+                  disabled={loading}
+                  className="ant-input"
+                  placeholder={`${intl.formatMessage({
+                    id: 'my_affiliate_code',
+                    defaultMessage: 'My affiliate code',
+                  })} #${index}`}
+                  onInput={e => {
+                    handleChange(e.currentTarget.value, i);
+                  }}
+                />
+                <PercentChanger
+                  onAfterChange={value => onChangeSlider(value, i - 1)}
+                  max={
+                    100 -
+                    percents.filter((_, indx) => i !== indx).reduce((acc, elem) => acc + elem, 0)
+                  }
+                />
+              </React.Fragment>
+            );
+          })}
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              cursor: isEmpty(codes) ? 'not-allowed' : 'pointer',
+              marginTop: '15px',
+            }}
+            onClick={handleAddNewCode}
+          >
+            <Icon
+              style={{
+                color: '#f87007',
+                display: 'inline-block',
+                marginRight: '5px',
+              }}
+              type="plus-circle"
+              className="proposition-line__icon"
+            />{' '}
+            Add new codes
+          </span>
           <div className={'mt3'}>
             <p>{`CONTEXT: ${context}`}</p>
           </div>
@@ -180,7 +194,7 @@ const AffiliateCodesModal = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={isEmpty(getFieldValue(objectFields.affiliateCode)) || loading}
+            disabled={isEmpty(codes) || loading}
             onClick={handleSubmit}
           >
             <FormattedMessage
@@ -200,19 +214,11 @@ AffiliateCodesModal.propTypes = {
   }).isRequired,
   selectedObj: PropTypes.shape(),
   form: PropTypes.shape(),
-  user: PropTypes.shape(),
-  affiliateObjects: PropTypes.arrayOf(),
   openAppendModal: PropTypes.bool,
   setOpenAppendModal: PropTypes.func,
-  setLoading: PropTypes.func,
-  getFieldValue: PropTypes.func,
-  getFieldDecorator: PropTypes.func,
-  voteAppend: PropTypes.func,
-  appendWobject: PropTypes.func,
+  onSubmit: PropTypes.func,
   loading: PropTypes.bool,
   context: PropTypes.string,
-  appendContext: PropTypes.string,
-  langReadable: PropTypes.string,
 };
 
 export default AffiliateCodesModal;

@@ -10,11 +10,12 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import DepartmentsUser from './DepartmentsUser';
 
 import './ShopDepartments.less';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
-const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name, intl }) => {
+const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name, intl, isRecipePage }) => {
   const match = useRouteMatch();
   const location = useLocation();
-  const isRecipe = location?.pathname?.includes('@') && location?.pathname?.includes('recipe');
+  const isRecipe = getUserShopSchema(location?.pathname) === 'recipe' || isRecipePage;
 
   const modalBody = () => {
     switch (type) {
@@ -64,6 +65,7 @@ DepartmentsMobile.propTypes = {
   name: PropTypes.string,
   visible: PropTypes.bool,
   isSocial: PropTypes.bool,
+  isRecipePage: PropTypes.bool,
 };
 
 export default injectIntl(DepartmentsMobile);

@@ -6,7 +6,7 @@ import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 import { linkifyText } from '../../../common/helpers/parser';
 
-const AssistantMessage = ({ text, loading, lastMessageRef }) => {
+const AssistantMessage = ({ text, loading, lastMessageRef, siteImage, siteName }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
@@ -14,11 +14,7 @@ const AssistantMessage = ({ text, loading, lastMessageRef }) => {
       <div ref={lastMessageRef} style={{ marginBottom: '20px' }} />
       <div className="flex">
         {' '}
-        <img
-          className="chat-logo-small"
-          src="/images/icons/cryptocurrencies/waiv.png"
-          alt={'Waivio'}
-        />
+        <img className="chat-logo-small" src={siteImage} alt={siteName} />
         {!loading && (
           <div className="message from-assistant">
             {getHtml(linkifyText(text), {}, 'Object', { appUrl, isChatBotLink: true })}
@@ -32,6 +28,8 @@ const AssistantMessage = ({ text, loading, lastMessageRef }) => {
 
 AssistantMessage.propTypes = {
   text: PropTypes.string,
+  siteName: PropTypes.string,
+  siteImage: PropTypes.string,
   loading: PropTypes.bool,
   lastMessageRef: PropTypes.shape().isRequired,
 };
