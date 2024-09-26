@@ -3,6 +3,7 @@ import { Button, Modal, Progress } from 'antd';
 import PropTypes from 'prop-types';
 
 import PercentChanger from '../../../object/AppendModal/FormComponents/PercentChanger';
+import { objectFields } from '../../../../common/constants/listOfFields';
 
 const AffiliateEditModal = ({
   visibleEditModal,
@@ -10,6 +11,7 @@ const AffiliateEditModal = ({
   setFieldsValue,
   editCode,
   validateFieldsAndScroll,
+  getFieldDecorator,
   onClose,
   affName,
 }) => {
@@ -63,7 +65,7 @@ const AffiliateEditModal = ({
   }, [percents]);
 
   useEffect(() => {
-    setFieldsValue(createCodesList(percents));
+    setFieldsValue(createCodesList());
   }, [percents, weightBuffer]);
 
   const onChangeSlider = (value, i) => {
@@ -78,6 +80,8 @@ const AffiliateEditModal = ({
     if (event) event.preventDefault();
     validateFieldsAndScroll((err, values) => {
       editCode(values);
+      onClose();
+      setFieldsValue({ affiliateCode: [] });
     });
   };
 
@@ -95,16 +99,19 @@ const AffiliateEditModal = ({
           <div
             key={o[0]}
             style={{
-              marginBottom: '15px',
+              marginBottom: '30px',
             }}
           >
+            {getFieldDecorator(objectFields.affiliateCode, {
+              initialValue: [],
+            })}
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
               }}
             >
-              <span>{o[0]}</span>
+              <span style={{ fontWeight: 500 }}>{o[0]}</span>
               <Button onClick={() => deleteAffiliateCode(i)} type={'primary'}>
                 delete
               </Button>
@@ -137,13 +144,7 @@ const AffiliateEditModal = ({
         );
       })}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button
-          type={'primary'}
-          onClick={() => {
-            handleSubmit();
-            setFieldsValue({ affiliateCode: [] });
-          }}
-        >
+        <Button type={'primary'} onClick={handleSubmit}>
           Save
         </Button>
       </div>
@@ -158,6 +159,7 @@ AffiliateEditModal.propTypes = {
   editCode: PropTypes.func,
   validateFieldsAndScroll: PropTypes.func,
   onClose: PropTypes.func,
+  getFieldDecorator: PropTypes.func,
   affName: PropTypes.string,
 };
 
