@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Slider } from 'antd';
 import PropTypes from 'prop-types';
 
+import './PercentChanger.less';
+
 const PercentChanger = ({ max = 100, onAfterChange, defaultPercent = 1 }) => {
   const [value, setValue] = useState(defaultPercent);
   const onChange = percent => {
@@ -15,12 +17,13 @@ const PercentChanger = ({ max = 100, onAfterChange, defaultPercent = 1 }) => {
       <span
         style={{
           display: 'inline-block',
+          marginTop: '10px',
         }}
       >
         Frequency of use: {value}%.
       </span>
       <Slider
-        className="obj-item-slider"
+        className="PercentChanger"
         min={1}
         max={100}
         value={value}

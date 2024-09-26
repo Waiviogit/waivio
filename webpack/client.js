@@ -1,9 +1,9 @@
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
-const CSSExtract = require('mini-css-extract-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+// const CSSExtract = require('mini-css-extract-plugin');
+// const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+// const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -19,14 +19,17 @@ const {
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
-  const IS_PROD = !IS_DEV;
-  const appPath = IS_DEV ? paths.build : paths.buildPublic;
+  // const IS_PROD = !IS_DEV;
+  // const appPath = IS_DEV ? paths.build : paths.buildPublic;
+  const appPath = paths.build;
   const smp = new SpeedMeasurePlugin();
 
   const config = smp.wrap({
-    mode: IS_DEV ? 'development' : 'production',
+    // mode: IS_DEV ? 'development' : 'production',
+    mode: 'development',
     entry: [paths.client],
-    devtool: IS_DEV ? 'inline-source-map' : '',
+    // devtool: IS_DEV ? 'inline-source-map' : '',
+    devtool: 'inline-source-map',
     output: {
       path: appPath,
       filename: IS_DEV ? 'bundle.js' : 'bundle-[name].[chunkhash].js',
@@ -63,7 +66,8 @@ module.exports = function createConfig(env = 'dev') {
         {
           test: MATCH_CSS_LESS,
           use: [
-            IS_PROD ? CSSExtract.loader : 'style-loader',
+            // IS_PROD ? CSSExtract.loader : 'style-loader',
+            'style-loader',
             {
               loader: 'css-loader',
               options: {
@@ -84,68 +88,67 @@ module.exports = function createConfig(env = 'dev') {
     },
   });
 
-  if (IS_DEV) {
-    config.entry = ['webpack-dev-server/client', 'webpack/hot/dev-server', ...config.entry];
-    config.plugins = [
-      ...config.plugins,
-      new webpack.HotModuleReplacementPlugin(),
-      new HardSourceWebpackPlugin(),
-    ];
-    config.optimization = {
-      minimize: false,
-    };
-    config.resolve = {
-      alias: {
-        'react-dom': '@hot-loader/react-dom',
-      },
-    };
-  }
+  // if (IS_DEV) {
+  config.entry = ['webpack-dev-server/client', 'webpack/hot/dev-server', ...config.entry];
+  config.plugins = [
+    ...config.plugins,
+    new webpack.HotModuleReplacementPlugin(),
+    new HardSourceWebpackPlugin(),
+  ];
+  config.optimization = {
+    minimize: false,
+  };
+  config.resolve = {
+    alias: {
+      'react-dom': '@hot-loader/react-dom',
+    },
+  };
+  // }
 
-  if (IS_PROD) {
-    config.plugins = [
-      ...config.plugins,
-      new webpack.optimize.AggressiveMergingPlugin(),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-      new LodashModuleReplacementPlugin({
-        collections: true,
-        paths: true,
-        shorthands: true,
-        flattening: true,
-      }),
-      new CSSExtract({
-        filename: '[name].[contenthash].css',
-      }),
-      new SWPrecacheWebpackPlugin({
-        filepath: paths.sw,
-        stripPrefix: appPath,
-      }),
-    ];
-    config.optimization = {
-      splitChunks: {
-        chunks: 'initial',
-        minSize: 30000,
-        minChunks: 1,
-        maxAsyncRequests: 5,
-        maxInitialRequests: 3,
-        cacheGroups: {
-          vendor: {
-            name: 'vendor',
-            test: /[\\/]node_modules[\\/]/,
-          },
-          main: {
-            name: 'main',
-            minChunks: 2,
-            reuseExistingChunk: true,
-            enforce: true,
-          },
-        },
-      },
-      runtimeChunk: {
-        name: 'manifest',
-      },
-      minimize: false,
-    };
-  }
+  // if (IS_PROD) {
+  //   config.plugins = [
+  //     ...config.plugins,
+  //     new webpack.optimize.AggressiveMergingPlugin(),
+  //     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  //     new LodashModuleReplacementPlugin({
+  //       collections: true,
+  //       paths: true,
+  //       shorthands: true,
+  //       flattening: true,
+  //     }),
+  //     new CSSExtract({
+  //       filename: '[name].[contenthash].css',
+  //     }),
+  //     new SWPrecacheWebpackPlugin({
+  //       filepath: paths.sw,
+  //       stripPrefix: appPath,
+  //     }),
+  //   ];
+  //   config.optimization = {
+  //     splitChunks: {
+  //       chunks: 'initial',
+  //       minSize: 30000,
+  //       minChunks: 1,
+  //       maxAsyncRequests: 5,
+  //       maxInitialRequests: 3,
+  //       cacheGroups: {
+  //         vendor: {
+  //           name: 'vendor',
+  //           test: /[\\/]node_modules[\\/]/,
+  //         },
+  //         main: {
+  //           name: 'main',
+  //           minChunks: 2,
+  //           reuseExistingChunk: true,
+  //           enforce: true,
+  //         },
+  //       },
+  //     },
+  //     runtimeChunk: {
+  //       name: 'manifest',
+  //     },
+  //   };
+  // }
 
   return config;
 };

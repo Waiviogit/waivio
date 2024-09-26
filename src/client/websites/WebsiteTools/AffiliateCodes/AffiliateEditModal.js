@@ -14,6 +14,7 @@ const AffiliateEditModal = ({
   getFieldDecorator,
   onClose,
   affName,
+  loading,
 }) => {
   const [weightBuffer, setWeightBuffer] = useState(100);
   const [percents, setPercents] = useState([]);
@@ -80,8 +81,6 @@ const AffiliateEditModal = ({
     if (event) event.preventDefault();
     validateFieldsAndScroll((err, values) => {
       editCode(values);
-      onClose();
-      setFieldsValue({ affiliateCode: [] });
     });
   };
 
@@ -129,7 +128,14 @@ const AffiliateEditModal = ({
               />
             ) : (
               <div>
-                <span>Frequency of use: {weightBuffer}%.</span>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    marginTop: '10px',
+                  }}
+                >
+                  Frequency of use: {weightBuffer}%.
+                </span>
                 <Progress
                   status="active"
                   showInfo={false}
@@ -144,8 +150,8 @@ const AffiliateEditModal = ({
         );
       })}
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button type={'primary'} onClick={handleSubmit}>
-          Save
+        <Button loading={loading} type={'primary'} onClick={handleSubmit}>
+          {loading ? 'Saving' : 'Save'}
         </Button>
       </div>
     </Modal>
@@ -161,6 +167,7 @@ AffiliateEditModal.propTypes = {
   onClose: PropTypes.func,
   getFieldDecorator: PropTypes.func,
   affName: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 export default AffiliateEditModal;
