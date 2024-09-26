@@ -196,23 +196,21 @@ export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'post
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
 
-  return `${apiConfig[process.env.NODE_ENV].protocol}${
-    apiConfig[process.env.NODE_ENV].host
-  }/object/${objPermlink}`;
+  return `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}/object/${objPermlink}`;
 }
 
 export const getObjectLink = (obj, match = {}) => {
   if (isEmpty(obj)) return '';
 
   if (match?.url?.includes('/page') && ['page', 'list'].includes(obj.object_type)) {
-    return `${apiConfig[process.env.NODE_ENV].protocol}${
-      apiConfig[process.env.NODE_ENV].host
-    }/object/${match.params.name}/page#${obj.author_permlink}`;
+    return `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}/object/${
+      match.params.name
+    }/page#${obj.author_permlink}`;
   }
 
-  return `${apiConfig[process.env.NODE_ENV].protocol}${
-    apiConfig[process.env.NODE_ENV].host
-  }${getObjectUrlForLink(obj)}`;
+  return `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}${getObjectUrlForLink(
+    obj,
+  )}`;
 };
 
 const setTitle = (initObjects, props, authors, users) => {

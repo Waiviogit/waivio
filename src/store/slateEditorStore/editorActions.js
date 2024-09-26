@@ -390,6 +390,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
           ...(isReview && campaign ? { campaignId: campaign?._id } : {}),
           host,
+          originalJHost: location?.hostname,
         },
         reward,
         beneficiary,

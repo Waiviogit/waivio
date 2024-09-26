@@ -259,7 +259,7 @@ class StoryFull extends React.Component {
     const { open, index } = this.state.lightbox;
     const getImagePath = item => getImagePathPost(item);
     const initialPostBody = newBody || post.body;
-    const parsedBody = getHtml(initialPostBody, {}, 'text', { isPost: true });
+    const parsedBody = getHtml(initialPostBody, post.json_metadata, 'text', { isPost: true });
 
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
@@ -341,7 +341,7 @@ class StoryFull extends React.Component {
               full
               isPost
               body={signedBody}
-              json_metadata={post.json_metadata}
+              jsonMetadata={post.json_metadata}
               isModal={isModal}
               isGuest={!isEmpty(post.guestInfo)}
             />
