@@ -204,6 +204,7 @@ export const AffiliateCodes = ({
         }
         onSubmit={onSubmit}
         validateFieldsAndScroll={form.validateFieldsAndScroll}
+        getFieldDecorator={form.getFieldDecorator}
         wobjName={getObjectName(selectedObj)}
       />
       {openAppendModal && (
