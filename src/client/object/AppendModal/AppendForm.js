@@ -347,73 +347,78 @@ class AppendForm extends Component {
       : null;
 
   onSubmit = formValues => {
-    const { form, wObject } = this.props;
-    const postData = this.getNewPostData(formValues);
+    try {
+      const { form, wObject } = this.props;
+      const postData = this.getNewPostData(formValues);
 
-    const isObjectPage = this.props.match.params.name === wObject.author_permlink;
-    const isUpdatesPage = this.props.match.params[0] === 'updates';
+      const isObjectPage = this.props.match.params.name === wObject.author_permlink;
+      const isUpdatesPage = this.props.match.params[0] === 'updates';
 
-    /* eslint-disable no-restricted-syntax */
-    // eslint-disable-next-line no-unused-vars
-    for (const data of postData) {
-      const field = form.getFieldValue('currentField');
+      /* eslint-disable no-restricted-syntax */
+      // eslint-disable-next-line no-unused-vars
+      for (const data of postData) {
+        const field = form.getFieldValue('currentField');
 
-      this.setState({ loading: true });
-      this.props
-        .appendObject(data, {
-          votePercent: data.votePower,
-          follow: formValues.follow,
-          isLike: data.isLike,
-          isObjectPage,
-          isUpdatesPage,
-        })
-        .then(res => {
-          const mssg = get(res, ['value', 'message']);
+        this.setState({ loading: true });
+        this.props
+          .appendObject(data, {
+            votePercent: data.votePower,
+            follow: formValues.follow,
+            isLike: data.isLike,
+            isObjectPage,
+            isUpdatesPage,
+          })
+          .then(res => {
+            const mssg = get(res, ['value', 'message']);
 
-          if (mssg) {
-            message.error(mssg);
-          } else {
-            if (data.votePower !== null) {
-              if (objectFields.rating === formValues.currentField && formValues.rate) {
-                const { author, permlink } = res;
+            if (mssg) {
+              message.error(mssg);
+            } else {
+              if (data.votePower !== null) {
+                if (objectFields.rating === formValues.currentField && formValues.rate) {
+                  const { author, permlink } = res;
 
-                this.props.rateObject(
-                  author,
-                  permlink,
-                  wObject.author_permlink,
-                  ratePercent[formValues.rate - 1],
-                );
+                  this.props.rateObject(
+                    author,
+                    permlink,
+                    wObject.author_permlink,
+                    ratePercent[formValues.rate - 1],
+                  );
+                }
               }
+
+              message.success(
+                this.props.intl.formatMessage(
+                  {
+                    id: `added_field_to_wobject_${field}`,
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: form.getFieldValue('currentField'),
+                    wobject: getObjectName(wObject),
+                  },
+                ),
+              );
+              this.props.hideModal();
             }
 
-            message.success(
-              this.props.intl.formatMessage(
-                {
-                  id: `added_field_to_wobject_${field}`,
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                },
-                {
-                  field: form.getFieldValue('currentField'),
-                  wobject: getObjectName(wObject),
-                },
-              ),
+            this.setState({ loading: false });
+          })
+          .catch(() => {
+            message.error(
+              this.props.intl.formatMessage({
+                id: 'couldnt_append',
+                defaultMessage: "Couldn't add the field to object.",
+              }),
             );
+
+            this.setState({ loading: false });
             this.props.hideModal();
-          }
-
-          this.setState({ loading: false });
-        })
-        .catch(() => {
-          message.error(
-            this.props.intl.formatMessage({
-              id: 'couldnt_append',
-              defaultMessage: "Couldn't add the field to object.",
-            }),
-          );
-
-          this.setState({ loading: false });
-          this.props.hideModal();
-        });
+          });
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.trace(e);
     }
   };
 
