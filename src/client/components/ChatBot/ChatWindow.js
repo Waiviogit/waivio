@@ -47,6 +47,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
+  const shortSiteName = siteName?.length < 23;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
@@ -235,7 +236,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
       style={isMobile() ? { height: `${height}px` } : {}}
     >
       <div className="chat-header">
-        {isWaivio || (!isWaivio && siteName?.length < 25) ? (
+        {isWaivio || (!isWaivio && shortSiteName) ? (
           <>
             <div className="chat-header-logo-wrap">
               <img className="chat-logo" src={siteImage} alt={siteName} />
