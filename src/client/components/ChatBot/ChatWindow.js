@@ -235,7 +235,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
       style={isMobile() ? { height: `${height}px` } : {}}
     >
       <div className="chat-header">
-        {isWaivio ? (
+        {isWaivio || (!isWaivio && siteName?.length < 25) ? (
           <>
             <div className="chat-header-logo-wrap">
               <img className="chat-logo" src={siteImage} alt={siteName} />
