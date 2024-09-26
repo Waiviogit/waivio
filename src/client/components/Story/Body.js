@@ -97,6 +97,7 @@ export function getHtml(
       isPost: options.isPost,
       isChatBotLink: options.isChatBotLink,
       baseObj,
+      parsedJsonMetadata,
     }),
   );
 

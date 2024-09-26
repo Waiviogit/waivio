@@ -68,10 +68,15 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location, isPage, isPost, isChatBotLink, name) => (
-  tagName,
-  attribs,
-) => {
+export const parseLink = (
+  appUrl,
+  location,
+  isPage,
+  isPost,
+  isChatBotLink,
+  name,
+  parsedJsonMetadata,
+) => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -91,15 +96,19 @@ export const parseLink = (appUrl, location, isPage, isPost, isChatBotLink, name)
 
     if (
       !chatPictures &&
-      (linkWebsiteUrl?.includes('waivio') ||
-        linkWebsiteUrl?.includes('dining') ||
-        linkWebsiteUrl?.includes('localhost')) &&
+      (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
       if (isPost) {
-        href = linkUrl.pathname;
-
-        attys.target = '';
+        // console.log(parsedJsonMetadata);
+        // if (
+        //   parsedJsonMetadata?.originalJHost?.includes('waivio') ||
+        //   parsedJsonMetadata?.originalJHost?.includes('dining')
+        // ) {
+        //   href = linkUrl.pathname;
+        // }
+        //
+        // attys.target = '';
       }
       const lastPerm = getLastPermlinksFromHash(linkUrl.hash);
       if (isPage) {
@@ -170,6 +179,7 @@ export default ({
   isPost,
   isChatBotLink,
   baseObj,
+  parsedJsonMetadata,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -276,6 +286,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location, isPage, isPost, isChatBotLink, baseObj),
+    a: parseLink(appUrl, location, isPage, isPost, isChatBotLink, baseObj, parsedJsonMetadata),
   },
 });
