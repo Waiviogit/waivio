@@ -69,7 +69,9 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = props.isSocial ? `${props.height - 100}px` : `${props.height - 205}px`;
+  if (isMobile)
+    mapHeight =
+      props.isSocial || props.isUserMap ? `${props.height - 100}px` : `${props.height - 205}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
