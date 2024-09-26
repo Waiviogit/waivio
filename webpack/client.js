@@ -143,7 +143,6 @@ module.exports = function createConfig(env = 'dev') {
       runtimeChunk: {
         name: 'manifest',
       },
-      minimize: false,
     };
   }
 

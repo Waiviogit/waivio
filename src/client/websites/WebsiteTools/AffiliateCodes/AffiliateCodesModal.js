@@ -119,7 +119,6 @@ const AffiliateCodesModal = ({
               style={{
                 display: 'inline-block',
                 marginTop: '10px',
-                marginBottom: '5px',
               }}
             >
               Frequency of use: {weightBuffer}%.
