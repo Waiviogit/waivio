@@ -492,7 +492,6 @@ class AppendForm extends Component {
       case recipeFields.recipeIngredients:
       case objectFields.delegation:
       case objectFields.affiliateUrlTemplate:
-      case objectFields.affiliateCode:
       case objectFields.pin:
       case objectFields.remove:
       case objectFields.departments:
@@ -936,6 +935,7 @@ class AppendForm extends Component {
       data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';
+
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: currentField === objectFields.publicationDate ? bodyField : trimEnd(bodyField),
