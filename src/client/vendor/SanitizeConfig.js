@@ -99,17 +99,6 @@ export const parseLink = (
       (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
       linkUrl.pathname !== '/'
     ) {
-      if (isPost) {
-        // console.log(parsedJsonMetadata);
-        // if (
-        //   parsedJsonMetadata?.originalJHost?.includes('waivio') ||
-        //   parsedJsonMetadata?.originalJHost?.includes('dining')
-        // ) {
-        //   href = linkUrl.pathname;
-        // }
-        //
-        // attys.target = '';
-      }
       const lastPerm = getLastPermlinksFromHash(linkUrl.hash);
       if (isPage) {
         href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
@@ -151,6 +140,17 @@ export const parseLink = (
 
         attys.target = '';
       }
+    }
+
+    if (isPost) {
+      if (
+        parsedJsonMetadata?.app?.includes('waivio') ||
+        parsedJsonMetadata?.app?.includes('dining')
+      ) {
+        href = linkUrl.pathname;
+      }
+
+      attys.target = '';
     }
     if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
