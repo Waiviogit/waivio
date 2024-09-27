@@ -144,8 +144,9 @@ export const parseLink = (
 
     if (isPost) {
       if (
-        parsedJsonMetadata?.app?.includes('waivio') ||
-        parsedJsonMetadata?.app?.includes('dining')
+        (parsedJsonMetadata?.app?.includes('waivio') ||
+          parsedJsonMetadata?.app?.includes('dining')) &&
+        linkUrl?.pathname?.includes('/object/')
       ) {
         href = linkUrl.pathname;
       }
