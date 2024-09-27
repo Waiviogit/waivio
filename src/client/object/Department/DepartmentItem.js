@@ -9,7 +9,9 @@ import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objec
 const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
   const linkToSearch = dep =>
     isSocialGifts
-      ? `/discover-departments/${wobject.author_permlink}/${dep.body}`
+      ? `/discover-departments/${wobject.author_permlink}/${
+          dep.body
+        }?isRecipe=${wobject.object_type === 'recipe'}`
       : `/object/${wobject.author_permlink}/departments/${dep.body}`;
   const dispatch = useDispatch();
   const storeActiveDep = useSelector(getActiveDepartment);

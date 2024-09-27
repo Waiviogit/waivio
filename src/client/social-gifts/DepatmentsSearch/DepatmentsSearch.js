@@ -11,6 +11,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import './DepartmentsSearch.less';
+import useQuery from '../../../hooks/useQuery';
 
 const wobjects_count = 20;
 
@@ -21,6 +22,9 @@ const DepatmentsSearch = () => {
   const userName = useSelector(getAuthenticatedUserName);
   const host = useSelector(getAppHost);
   const history = useHistory();
+  const query = useQuery();
+  const isRecipe = query.get('isRecipe') || false;
+  const schema = isRecipe ? 'recipe' : undefined;
   const [objects, setObjects] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
   const [loading, setLoading] = useState(true);
@@ -36,7 +40,7 @@ const DepatmentsSearch = () => {
 
     setLoading(true);
 
-    getObjectsByDepartment(userName, [department], host, 0, wobjects_count).then(res => {
+    getObjectsByDepartment(userName, [department], schema, host, 0, wobjects_count).then(res => {
       setObjects(res.wobjects);
       setHasMoreObjects(res.hasMore);
       setLoading(false);
@@ -46,12 +50,17 @@ const DepatmentsSearch = () => {
   }, [department]);
 
   const loadMore = () => {
-    getObjectsByDepartment(userName, [department], host, objects.length, wobjects_count).then(
-      res => {
-        setObjects([...objects, ...res.wobjects]);
-        setHasMoreObjects(res?.hasMore);
-      },
-    );
+    getObjectsByDepartment(
+      userName,
+      [department],
+      schema,
+      host,
+      objects.length,
+      wobjects_count,
+    ).then(res => {
+      setObjects([...objects, ...res.wobjects]);
+      setHasMoreObjects(res?.hasMore);
+    });
   };
 
   const handleDeleteTag = () => {
