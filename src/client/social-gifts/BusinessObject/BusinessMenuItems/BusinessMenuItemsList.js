@@ -8,7 +8,7 @@ import BusinessMenuItem from './BusinessMenuItem';
 import { sortListItems } from '../../../../common/helpers/wObjectHelper';
 import { prepareMenuItems } from '../../SocialProduct/SocialMenuItems/SocialMenuItems';
 import './BusinessMenuItems.less';
-import { isTablet, isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { isTablet, isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const BusinessMenuItemsList = ({

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
 import ExpertCard from './ExpertCard';
-import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getUsersAvatar } from '../../../../waivioApi/ApiClient';
 import { sortByExpertOrder } from '../../../../common/helpers/wObjectHelper';
 import './Experts.less';
