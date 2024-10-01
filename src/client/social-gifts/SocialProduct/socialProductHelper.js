@@ -38,6 +38,7 @@ export const listOfIngredientsHelpingWords = [
   'block',
   'fillet',
   'head',
+  'a squeeze of',
 
   // Quantifiers & Units
   'clove',
@@ -143,6 +144,7 @@ export const listOfIngredientsHelpingWords = [
   'high-fat',
   'lean',
   'thick',
+  'thinly',
   'thin',
   'tender',
   'firm',
@@ -151,19 +153,29 @@ export const listOfIngredientsHelpingWords = [
   'to taste',
   'as needed',
   'for garnish',
+  'for serving',
+  'for the filling and frosting',
   'optional',
   'and',
+  'a',
+  'of',
   'or',
   'etc',
+  '-sized',
 ];
 
 export const cleanIngredientString = ingredient => {
   const omitWordRegex = new RegExp(
-    `\\b(${listOfIngredientsHelpingWords.join('s?|')}s?)\\b|\\d+\\/?\\d*|[,;\\.!]`,
+    `\\b(${listOfIngredientsHelpingWords.join('s?|')}s?)\\b|\\d+\\/?\\d*|[(),;\\.!]`,
     'gi',
   );
 
-  return ingredient?.replace(omitWordRegex, '')?.trim();
+  return ingredient
+    ?.replace(omitWordRegex, '')
+    ?.trim()
+    ?.split(/\s+/)
+    ?.filter(Boolean)
+    ?.join(' ');
 };
 
 export default null;

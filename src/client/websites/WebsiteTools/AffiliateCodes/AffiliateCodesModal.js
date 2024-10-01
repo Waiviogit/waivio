@@ -136,7 +136,12 @@ const AffiliateCodesModal = ({
             const index = i + 1;
 
             return (
-              <React.Fragment key={index}>
+              <div
+                style={{
+                  marginTop: '20px',
+                }}
+                key={index}
+              >
                 <p className={'ant-modal-title'}>Affiliate code {index}</p>
                 <input
                   disabled={loading}
@@ -158,7 +163,7 @@ const AffiliateCodesModal = ({
                       .reduce((acc, elem) => acc + elem, 0)
                   }
                 />
-              </React.Fragment>
+              </div>
             );
           })}
           <span
