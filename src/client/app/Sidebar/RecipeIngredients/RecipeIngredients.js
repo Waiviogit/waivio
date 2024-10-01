@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { cleanIngredientString } from '../../../social-gifts/SocialProduct/socialProductHelper';
 
 const RecipeIngredients = ({ ingredients, isEditMode, isSocial }) =>
   !isEmpty(ingredients) && (
@@ -26,7 +27,7 @@ const RecipeIngredients = ({ ingredients, isEditMode, isSocial }) =>
               style={{ listStyle: 'inside' }}
             >
               <Link
-                to={`/discover-objects/recipe?search=${ingredient}`}
+                to={`/discover-objects/recipe?search=${cleanIngredientString(ingredient)}`}
                 className={'CompanyId__wordbreak-word'}
               >
                 <span itemProp="recipeIngredient">{ingredient}</span>

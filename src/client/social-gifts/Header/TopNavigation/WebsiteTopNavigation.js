@@ -14,7 +14,7 @@ import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
-import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes', 'Legal'];
