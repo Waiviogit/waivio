@@ -7,7 +7,7 @@ import './PercentChanger.less';
 const PercentChanger = ({ max = 100, onAfterChange, defaultPercent = 1 }) => {
   const [value, setValue] = useState(defaultPercent);
   const onChange = percent => {
-    const percentValue = percent < max ? percent : max;
+    const percentValue = percent < max && percent > 0 ? percent : max;
 
     setValue(percentValue);
   };

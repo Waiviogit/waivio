@@ -137,9 +137,7 @@ const AffiliateCodesModal = ({
 
             return (
               <React.Fragment key={index}>
-                <p className={'ant-form-item-label AppendForm__appendTitles'}>
-                  Affiliate code {index}
-                </p>
+                <p className={'ant-modal-title'}>Affiliate code {index}</p>
                 <input
                   disabled={loading}
                   className="ant-input"
@@ -154,8 +152,10 @@ const AffiliateCodesModal = ({
                 <PercentChanger
                   onAfterChange={value => onChangeSlider(value, i - 1)}
                   max={
-                    100 -
-                    percents.filter((_, indx) => i !== indx).reduce((acc, elem) => acc + elem, 0)
+                    99 -
+                    percents
+                      .filter((_, indx) => i - 1 !== indx)
+                      .reduce((acc, elem) => acc + elem, 0)
                   }
                 />
               </React.Fragment>
@@ -193,7 +193,7 @@ const AffiliateCodesModal = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={isEmpty(codes) || loading}
+            disabled={isEmpty(codes) || !codes[0] || loading}
             onClick={handleSubmit}
           >
             <FormattedMessage

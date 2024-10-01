@@ -131,7 +131,8 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, se
             <PercentChanger
               onAfterChange={value => onChangeSlider(value, i - 1)}
               max={
-                100 - percents.filter((_, indx) => i !== indx).reduce((acc, elem) => acc + elem, 0)
+                99 -
+                percents.filter((_, indx) => i - 1 !== indx).reduce((acc, elem) => acc + elem, 0)
               }
             />
           </React.Fragment>

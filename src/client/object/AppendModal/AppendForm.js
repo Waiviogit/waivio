@@ -4298,8 +4298,11 @@ class AppendForm extends Component {
         );
       case objectFields.name:
         return isEmpty(getFieldValue(objectFields.objectName));
-      case objectFields.affiliateCode:
-        return isEmpty(getFieldValue(objectFields.affiliateCode));
+      case objectFields.affiliateCode: {
+        const codes = getFieldValue(objectFields.affiliateCode);
+
+        return isEmpty(codes) || !codes?.[0];
+      }
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||
