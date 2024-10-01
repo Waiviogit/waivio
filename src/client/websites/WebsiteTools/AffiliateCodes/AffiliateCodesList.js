@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import classNames from 'classnames';
-import { has } from 'lodash';
+import { has, isEmpty } from 'lodash';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import { isGuestUser } from '../../../../store/authStore/authSelectors';
 import AffiliateEditModal from './AffiliateEditModal';
@@ -49,19 +49,22 @@ const AffiliateCodesList = ({
       context,
     ).then(() => {
       setLoading(false);
-      setVisibleEditModal(false);
+      setVisibleEditModal(null);
     });
   };
 
-  const openEditModal = obj => {
-    setVisibleEditModal(true);
+  const openEditModal = (obj, i) => {
+    setVisibleEditModal(i);
     setSelectedObj(obj);
   };
 
   const editCode = (obj, value) => {
     setLoading(true);
-    onSubmit(value);
     deleteCode(obj);
+
+    if (!isEmpty(value)) {
+      onSubmit(value);
+    }
   };
 
   return (
@@ -70,7 +73,7 @@ const AffiliateCodesList = ({
         <FormattedMessage id={'aff_codes_empty'} defaultMessage={'No affiliate codes added.'} />
       ) : (
         // eslint-disable-next-line array-callback-return,consistent-return
-        affiliateObjects?.map(obj => {
+        affiliateObjects?.map((obj, i) => {
           const handleEditCode = value => editCode(obj, value);
 
           if (obj.affiliateCode) {
@@ -102,7 +105,7 @@ const AffiliateCodesList = ({
                   </div>
                 </Link>
                 {codes?.length > 1 ? (
-                  <Button type="primary" onClick={() => openEditModal(obj)}>
+                  <Button type="primary" onClick={() => openEditModal(obj, i)}>
                     <FormattedMessage id="edit" defaultMessage="Edit" />
                   </Button>
                 ) : (
@@ -110,14 +113,14 @@ const AffiliateCodesList = ({
                     <FormattedMessage id="delete" defaultMessage="Delete" />
                   </Button>
                 )}
-                {visibleEditModal && (
+                {visibleEditModal === i && (
                   <AffiliateEditModal
                     affiliateCode={codes}
                     validateFieldsAndScroll={validateFieldsAndScroll}
                     getFieldDecorator={getFieldDecorator}
-                    visibleEditModal={visibleEditModal}
+                    visibleEditModal={!!visibleEditModal}
                     setFieldsValue={setFieldsValue}
-                    onClose={() => setVisibleEditModal(false)}
+                    onClose={() => setVisibleEditModal(null)}
                     editCode={handleEditCode}
                     affName={wobjName}
                     loading={loading}
