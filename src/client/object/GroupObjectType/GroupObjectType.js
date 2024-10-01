@@ -8,7 +8,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 
 const limit = 100;
 const GroupObjectType = () => {
-  const [lastUser, setLastUser] = useState('');
+  const [lastUser, setLastUser] = useState(undefined);
   const { name } = useParams();
   const authUser = useSelector(getAuthenticatedUserName);
 
