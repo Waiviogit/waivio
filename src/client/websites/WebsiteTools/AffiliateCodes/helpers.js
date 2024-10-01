@@ -5,7 +5,7 @@ export const createCodesList = (codes, percents, weightBuffer) => {
     if (i && !percents[i - 1]) return acc;
 
     if (i && !curr) {
-      if (codes.filter(v => v).length > 2) {
+      if (codes.filter(v => v).length > 1) {
         acc.splice(0, 1, `${codes[0]}::${weightBuffer + percents[i - 1]}`);
 
         return acc;
