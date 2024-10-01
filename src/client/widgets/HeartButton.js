@@ -6,30 +6,17 @@ import { has, isEmpty } from 'lodash';
 import { useRouteMatch } from 'react-router';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getLocale, getVotePercent } from '../../store/settingsStore/settingsSelectors';
+import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 import { getAuthorityList } from '../../store/appendStore/appendSelectors';
-import { getAuthorityFields } from '../../waivioApi/ApiClient';
-import {
-  appendObject,
-  authorityVoteAppend,
-  removeObjectFromAuthority,
-  setObjectinAuthority,
-} from '../../store/appendStore/appendActions';
+import { setAuthorityForObject, setObjectinAuthority } from '../../store/appendStore/appendActions';
 import { isMobile } from '../../common/helpers/apiHelpers';
 
 const HeartButton = ({ wobject, size }) => {
-  const user = useSelector(getAuthenticatedUser);
-  const userUpVotePower = useSelector(getVotePercent);
-  const language = useSelector(getLocale);
   const authorityList = useSelector(getAuthorityList);
   const isAuth = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
-  const downVotePower = 1;
   const match = useRouteMatch();
   const activeHeart = authorityList[wobject.author_permlink];
-  const isObjectPage = match.params.name === wobject.author_permlink;
   const adminAuthority = 'administrative';
   const shopObjTypes = ['book', 'product', 'service'].includes(wobject.object_type);
   const tooltipTitle = activeHeart ? (
@@ -56,52 +43,9 @@ const HeartButton = ({ wobject, size }) => {
 
   if (!isAuth) return null;
 
-  const getWobjectData = () => ({
-    author: user.name,
-    parentAuthor: wobject.author,
-    parentPermlink: wobject.author_permlink,
-    body: `@${user.name} added authority: administrative`,
-    title: '',
-    lastUpdated: Date.now(),
-    wobjectName: getObjectName(wobject),
-    votePower: userUpVotePower,
-    field: { body: adminAuthority, locale: language, name: 'authority' },
-    permlink: `${user?.name}-${Math.random()
-      .toString(36)
-      .substring(2)}`,
-  });
-
   const onHeartClick = e => {
     e.stopPropagation();
-    if (activeHeart) {
-      dispatch(removeObjectFromAuthority(wobject.author_permlink));
-    } else {
-      dispatch(setObjectinAuthority(wobject.author_permlink));
-    }
-    getAuthorityFields(wobject.author_permlink).then(postInformation => {
-      if (
-        isEmpty(postInformation) ||
-        isEmpty(postInformation.filter(p => p.creator === user.name && p.body === adminAuthority))
-      ) {
-        const data = getWobjectData();
-
-        dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
-      } else {
-        const authority = postInformation.find(
-          post => post.creator === user.name && post.body === adminAuthority,
-        );
-
-        dispatch(
-          authorityVoteAppend(
-            authority?.author,
-            wobject.author_permlink,
-            authority?.permlink,
-            activeHeart ? downVotePower : userUpVotePower,
-            isObjectPage,
-          ),
-        );
-      }
-    });
+    dispatch(setAuthorityForObject(wobject, match));
   };
 
   const heartClasses = classnames('HeartButton', { 'HeartButton--active': activeHeart });
