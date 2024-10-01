@@ -23,7 +23,7 @@ const DepatmentsSearch = () => {
   const host = useSelector(getAppHost);
   const history = useHistory();
   const query = useQuery();
-  const isRecipe = query.get('isRecipe') || false;
+  const isRecipe = query.get('isRecipe') === true || false;
   const schema = isRecipe ? 'recipe' : undefined;
   const [objects, setObjects] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
