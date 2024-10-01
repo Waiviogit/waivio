@@ -1,21 +1,28 @@
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { getChangedField, getUpdatesList, postAppendWaivioObject } from '../../waivioApi/ApiClient';
+import {
+  getAuthorityFields,
+  getChangedField,
+  getUpdatesList,
+  postAppendWaivioObject,
+} from '../../waivioApi/ApiClient';
 import { followObject, GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import {
+  getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
 
-import { getLocale } from '../settingsStore/settingsSelectors';
-import { getAppendList } from './appendSelectors';
+import { getLocale, getVotePercent } from '../settingsStore/settingsSelectors';
+import { getAppendList, getAuthorityList } from './appendSelectors';
 import {
   SET_AFFILIATE_OBJECTS,
   setAffiliateObjects,
 } from '../affiliateCodes/affiliateCodesActions';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
@@ -284,6 +291,63 @@ export const affiliateCodeVoteAppend = (
         dispatch(setAffiliateObjects(userName, host));
       }
     });
+  });
+};
+
+export const setAuthorityForObject = (wobject, match, adminAuthority = 'administrative') => (
+  dispatch,
+  getState,
+) => {
+  const isObjectPage = match.params.name === wobject.author_permlink;
+  const user = getAuthenticatedUser(getState());
+  const userUpVotePower = getVotePercent(getState());
+  const language = getLocale(getState());
+  const authorityList = getAuthorityList(getState());
+  const activeHeart = authorityList[wobject.author_permlink];
+  const downVotePower = 1;
+  const getWobjectData = () => ({
+    author: user.name,
+    parentAuthor: wobject.author,
+    parentPermlink: wobject.author_permlink,
+    body: `@${user.name} added authority: administrative`,
+    title: '',
+    lastUpdated: Date.now(),
+    wobjectName: getObjectName(wobject),
+    votePower: userUpVotePower,
+    field: { body: adminAuthority, locale: language, name: 'authority' },
+    permlink: `${user?.name}-${Math.random()
+      .toString(36)
+      .substring(2)}`,
+  });
+
+  if (activeHeart) {
+    dispatch(removeObjectFromAuthority(wobject.author_permlink));
+  } else {
+    dispatch(setObjectinAuthority(wobject.author_permlink));
+  }
+  getAuthorityFields(wobject.author_permlink).then(postInformation => {
+    if (
+      isEmpty(postInformation) ||
+      isEmpty(postInformation.filter(p => p.creator === user.name && p.body === adminAuthority))
+    ) {
+      const data = getWobjectData();
+
+      dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
+    } else {
+      const authority = postInformation.find(
+        post => post.creator === user.name && post.body === adminAuthority,
+      );
+
+      dispatch(
+        authorityVoteAppend(
+          authority?.author,
+          wobject.author_permlink,
+          authority?.permlink,
+          activeHeart ? downVotePower : userUpVotePower,
+          isObjectPage,
+        ),
+      );
+    }
   });
 };
 
