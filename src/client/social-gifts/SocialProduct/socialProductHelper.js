@@ -166,7 +166,9 @@ export const listOfIngredientsHelpingWords = [
 
 export const cleanIngredientString = ingredient => {
   const omitWordRegex = new RegExp(
-    `\\b(${listOfIngredientsHelpingWords.join('s?|')}s?)\\b|\\d+\\/?\\d*|[(),;\\.!]`,
+    `\\b(${listOfIngredientsHelpingWords.join(
+      's?|',
+    )}s?)\\b|\\d+\\/?\\d*\\s*(g|kg|ml|l|oz|tsp|tbsp|cup|pint|quart|gallon|pound|lb)?|[(),;\\.!:]`,
     'gi',
   );
 
