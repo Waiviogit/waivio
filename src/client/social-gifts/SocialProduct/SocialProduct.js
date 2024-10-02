@@ -503,16 +503,16 @@ const SocialProduct = ({
                   <div className="SocialProduct__subtitle">
                     <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                   </div>
-                  <div className="SocialProduct__affLinks">
-                    {affiliateLinks?.map(link => {
-                      if (link.type.toLocaleLowerCase() === 'instacart') return null;
+                  <div className="ShopObjectCard__affiliatLinksWrap">
+                    <div className="ShopObjectCard__affiliatLinks">
+                      {affiliateLinks
+                        .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+                        .map(affLink => {
+                          if (affLink.type.toLocaleLowerCase() === 'instacart') return null;
 
-                      return (
-                        <div key={link.link} className="SocialProduct__links">
-                          <AffiliatLink link={link} />
-                        </div>
-                      );
-                    })}
+                          return <AffiliatLink key={affLink.link} link={affLink} />;
+                        })}
+                    </div>
                   </div>
                 </div>
               )}

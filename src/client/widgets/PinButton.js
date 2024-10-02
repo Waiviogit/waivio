@@ -19,7 +19,7 @@ const PinButton = ({
 }) => {
   const dispatch = useDispatch();
   const pinPost = () => {
-    dispatch(setAuthorityForObject(wobject, match));
+    dispatch(setAuthorityForObject(wobject, match, true));
     handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
   };
 

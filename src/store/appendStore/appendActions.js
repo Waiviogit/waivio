@@ -294,10 +294,12 @@ export const affiliateCodeVoteAppend = (
   });
 };
 
-export const setAuthorityForObject = (wobject, match, adminAuthority = 'administrative') => (
-  dispatch,
-  getState,
-) => {
+export const setAuthorityForObject = (
+  wobject,
+  match,
+  isPin = false,
+  adminAuthority = 'administrative',
+) => (dispatch, getState) => {
   const isObjectPage = match.params.name === wobject.author_permlink;
   const user = getAuthenticatedUser(getState());
   const userUpVotePower = getVotePercent(getState());
@@ -321,10 +323,11 @@ export const setAuthorityForObject = (wobject, match, adminAuthority = 'administ
   });
 
   if (activeHeart) {
-    dispatch(removeObjectFromAuthority(wobject.author_permlink));
+    !isPin && dispatch(removeObjectFromAuthority(wobject.author_permlink));
   } else {
     dispatch(setObjectinAuthority(wobject.author_permlink));
   }
+
   getAuthorityFields(wobject.author_permlink).then(postInformation => {
     if (
       isEmpty(postInformation) ||
@@ -343,7 +346,7 @@ export const setAuthorityForObject = (wobject, match, adminAuthority = 'administ
           authority?.author,
           wobject.author_permlink,
           authority?.permlink,
-          activeHeart ? downVotePower : userUpVotePower,
+          activeHeart && !isPin ? downVotePower : userUpVotePower,
           isObjectPage,
         ),
       );
