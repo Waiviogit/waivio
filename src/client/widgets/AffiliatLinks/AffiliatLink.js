@@ -14,7 +14,7 @@ const images = {
 
 const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
-  const isAmazon = link.type === 'amazon';
+  const isAmazon = link.link?.includes('amazon');
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
