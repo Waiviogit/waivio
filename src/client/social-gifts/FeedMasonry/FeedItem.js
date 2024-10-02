@@ -27,6 +27,7 @@ import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authSto
 import { getPendingLikes } from '../../../store/postsStore/postsSelectors';
 import { sendTiktokPriview } from '../../../waivioApi/ApiClient';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { setAuthorityForObject } from '../../../store/appendStore/appendActions';
 
 const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const imagePath = post?.imagePath;
@@ -68,6 +69,10 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
     const authorName = post.guestInfo ? post.root_author : post.author;
 
     dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
+  };
+  const pinPost = () => {
+    dispatch(setAuthorityForObject(wobject, match, true));
+    dispatch(handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower));
   };
 
   useEffect(() => {
@@ -125,9 +130,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             className={currentUserPin ? 'pin-website-color' : pinClassName}
             wrapper="span"
             src="/images/icons/pin-outlined.svg"
-            onClick={() =>
-              dispatch(handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower))
-            }
+            onClick={pinPost}
           />
         </Tooltip>
       )}
