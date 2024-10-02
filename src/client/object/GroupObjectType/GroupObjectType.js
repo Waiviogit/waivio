@@ -21,7 +21,7 @@ const GroupObjectType = () => {
     return { users, hasMore: response.hasMore };
   };
 
-  return <UserDynamicList threshold={1500} hideSort limit={limit} fetcher={fetcher} />;
+  return <UserDynamicList useDebounce threshold={1500} hideSort limit={limit} fetcher={fetcher} />;
 };
 
 export default GroupObjectType;
