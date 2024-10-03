@@ -5,7 +5,6 @@ export const isTablet =
   typeof window !== 'undefined' && window.innerWidth >= 768 && window.innerWidth <= 1024;
 
 export const listOfIngredientsHelpingWords = [
-  // Measurements
   'cup',
   'teaspoon',
   'tsp',
@@ -53,8 +52,6 @@ export const listOfIngredientsHelpingWords = [
   'drizzle',
   'splash',
   'handful',
-
-  //  Preparation Methods
   'chopped',
   'diced',
   'minced',
@@ -84,8 +81,6 @@ export const listOfIngredientsHelpingWords = [
   'marinated',
   'seasoned',
   'blended',
-
-  // Cooking Terms
   'preheat',
   'bake',
   'cook',
@@ -112,8 +107,6 @@ export const listOfIngredientsHelpingWords = [
   'arrange',
   'top',
   'serve',
-
-  // Descriptors & Miscellaneous
   'fresh',
   'dried',
   'unsalted',
@@ -148,8 +141,6 @@ export const listOfIngredientsHelpingWords = [
   'thin',
   'tender',
   'firm',
-
-  //  Miscellaneous
   'to taste',
   'as needed',
   'for garnish',
@@ -162,13 +153,30 @@ export const listOfIngredientsHelpingWords = [
   'or',
   'etc',
   '-sized',
+  'cups',
+  'large',
+  'for toasting',
+  'chilled',
+  'high-quality',
+  'pure',
+  'hard-boiled',
+  'grams',
+  'drained',
+  'condensed',
+  'for topping',
+  'for frying',
+  'drained',
+  'cut into',
+  'for drizzling',
 ];
 
 export const cleanIngredientString = ingredient => {
   const omitWordRegex = new RegExp(
-    `\\b(${listOfIngredientsHelpingWords.join(
-      's?|',
-    )}s?)\\b|\\d+\\/?\\d*\\s*(g|kg|ml|l|oz|tsp|tbsp|cup|pint|quart|gallon|pound|lb)?|[(),;\\.!:]`,
+    `\\b(${listOfIngredientsHelpingWords
+      .map(word => `${word}s?`)
+      .join(
+        '|',
+      )})\\b|\\d+\\s?(\\d*\\/\\d+|[\\u00BC-\\u00BE\\u2150-\\u215E])?\\s*(g|kg|ml|l|oz|tsp|tbsp|cup|cups|pint|quart|gallon|pound|lb)?|[(),;\\.!:-]`,
     'gi',
   );
 
@@ -177,6 +185,7 @@ export const cleanIngredientString = ingredient => {
     ?.trim()
     ?.split(/\s+/)
     ?.filter(Boolean)
+    ?.map(word => word.replace(/s\b/g, ''))
     ?.join(' ');
 };
 
