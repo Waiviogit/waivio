@@ -13,7 +13,7 @@ import { objectFields } from '../../common/constants/listOfFields';
 import { getAppendData } from '../../common/helpers/wObjectHelper';
 import { getUsedLocale } from '../appStore/appSelectors';
 import { setPinnedPostsUrls } from '../feedStore/feedActions';
-import { appendObject, voteAppends } from '../appendStore/appendActions';
+import { appendObject, setObjectinAuthority, voteAppends } from '../appendStore/appendActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -265,6 +265,7 @@ export const handlePinPost = (
       );
     }
   } else if (currUpdate.message) {
+    dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
     const pageContentField = {
       name: objectFields.pin,
@@ -279,6 +280,7 @@ export const handlePinPost = (
       appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
     );
   } else {
+    dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
     dispatch(
       voteAppends(
