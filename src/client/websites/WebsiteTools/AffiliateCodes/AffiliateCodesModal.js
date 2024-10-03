@@ -77,6 +77,7 @@ const AffiliateCodesModal = ({
 
     setItem([...items, i]);
     setPercents([...percents, 1]);
+    setCodes([...codes, '']);
   };
 
   return (
