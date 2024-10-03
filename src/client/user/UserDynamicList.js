@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
-import { debounce } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import {
@@ -70,14 +69,12 @@ class UserDynamicList extends React.Component {
       usersList,
       this.state.sort,
     );
-  handleLoadMore = debounce(
-    () => {
-      const { list } = this.props.dynamicListInfo;
 
-      this.getListMore(list, this.props.sort || undefined, list?.length);
-    },
-    this.props.useDebounce ? 300 : 0,
-  );
+  handleLoadMore = () => {
+    const { list } = this.props.dynamicListInfo;
+
+    this.getListMore(list, this.props.sort || undefined, list?.length);
+  };
 
   unFollow = name => {
     this.props.unfollowUser(name, this.props.match.params.name, this.props.match.params[0]);
@@ -180,7 +177,6 @@ UserDynamicList.propTypes = {
   showAuthorizedUser: PropTypes.bool,
   hideSort: PropTypes.bool,
   loading: PropTypes.bool,
-  useDebounce: PropTypes.bool,
   userName: PropTypes.string,
   threshold: PropTypes.number,
   searchLine: PropTypes.string,
@@ -206,7 +202,6 @@ UserDynamicList.defaultProps = {
   authUser: '',
   searchLine: '',
   showAuthorizedUser: false,
-  useDebounce: false,
   hideSort: false,
   userName: '',
   sort: 'recency',
