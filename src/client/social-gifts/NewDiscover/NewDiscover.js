@@ -42,7 +42,7 @@ const NewDiscover = () => {
   const { canonicalUrl } = useSeoInfo();
   const title = 'Discover - Waivio';
   const tagTitle = search || `${category}: ${tag}`;
-  const hasTag = category && tag;
+  const hasTag = (category && tag) || search;
 
   useEffect(() => {
     const ac = new AbortController();

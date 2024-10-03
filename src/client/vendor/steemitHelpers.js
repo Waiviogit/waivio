@@ -340,7 +340,7 @@ const STAGING_REQUEST_NODES = [
 const currentNodesList = isDev ? STAGING_REQUEST_NODES : PRODUCTION_REQUEST_NODES;
 
 export const dHive = new Client(currentNodesList, {
-  timeout: 8 * 1000,
+  timeout: 5000,
   failoverThreshold: 0,
 });
 

@@ -69,6 +69,7 @@ class UserDynamicList extends React.Component {
       usersList,
       this.state.sort,
     );
+
   handleLoadMore = () => {
     const { list } = this.props.dynamicListInfo;
 

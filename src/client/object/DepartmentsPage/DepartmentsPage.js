@@ -26,19 +26,20 @@ const DepartmentsPage = () => {
   const dispatch = useDispatch();
   const departmentName = match.params.department;
   const isRecipe = wobject.object_type === 'recipe';
+  const schema = isRecipe ? 'recipe' : undefined;
 
   useEffect(() => {
     setOptionsList([]);
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     if (!isEmpty(activeDepartment)) {
-      getObjectsByDepartment(userName, [activeDepartment.name], host, 0, limit).then(r => {
+      getObjectsByDepartment(userName, [activeDepartment.name], schema, host, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setOptionsList(r.wobjects);
       });
     } else if (!isNil(departmentName)) {
       dispatch(setActiveDepartment({ name: departmentName, id: departmentName }));
-      getObjectsByDepartment(userName, [departmentName], host, 0, limit).then(r => {
+      getObjectsByDepartment(userName, [departmentName], schema, host, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setOptionsList(r.wobjects);
       });
@@ -46,12 +47,17 @@ const DepartmentsPage = () => {
   }, [activeDepartment]);
 
   const loadMoreRelatedObjects = () => {
-    getObjectsByDepartment(userName, [activeDepartment.name], host, optionsList.length, limit).then(
-      r => {
-        setHasMore(r.hasMore);
-        setOptionsList([...optionsList, ...r.wobjects]);
-      },
-    );
+    getObjectsByDepartment(
+      userName,
+      [activeDepartment.name],
+      schema,
+      host,
+      optionsList.length,
+      limit,
+    ).then(r => {
+      setHasMore(r.hasMore);
+      setOptionsList([...optionsList, ...r.wobjects]);
+    });
   };
 
   return (

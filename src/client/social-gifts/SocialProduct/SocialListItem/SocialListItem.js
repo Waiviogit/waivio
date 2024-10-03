@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { objAuthorPermlink } from '../SocialProductHelper';
+import { objAuthorPermlink } from '../socialProductHelper';
 import { objectFields, recipeFields } from '../../../../common/constants/listOfFields';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';

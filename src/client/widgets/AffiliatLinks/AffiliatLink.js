@@ -14,6 +14,7 @@ const images = {
 
 const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
+  const isAmazon = link.link?.includes('amazon');
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
@@ -37,13 +38,13 @@ const AffiliatLink = ({ link, disabled }) => {
     >
       {link.image ? (
         <img
-          className={'AffiliatLink__image'}
+          className={!isAmazon ? 'AffiliatLink__image' : 'AffiliatLink__image-amazon'}
           src={link.image || images[link.type]}
           alt={'Affiliate button logo'}
         />
       ) : (
         <ReactSVG
-          className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
+          className={!isAmazon ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
           src={images[link.type]}
         />
       )}

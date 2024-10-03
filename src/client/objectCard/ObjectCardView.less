@@ -183,10 +183,36 @@
   }
 
   .AffiliatLink {
-    border: 1px solid @white-gainsboro;
-    width: 115px;
-    padding: 0;
-    margin: 0 0 5px 5px;
+    border: @base-border;
+    width: 100px;
+    padding: 7px 0;
+    margin-left: 5px;
+    margin-bottom: 5px;
+
+    &__icon-amazon {
+      div {
+        width: 100px;
+        padding: 5px 0 0 0;
+      }
+    }
+
+    &__icon {
+      div {
+        width: 100px;
+        padding: 0;
+      }
+
+      @media @small {
+        width: 100px;
+        padding: 0;
+      }
+
+      &:first-child {
+        @media @small {
+          margin-left: 0;
+        }
+      }
+    }
   }
 
   .USDDisplay {

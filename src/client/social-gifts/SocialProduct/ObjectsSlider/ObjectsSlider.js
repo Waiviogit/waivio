@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
-import { isTabletOrMobile } from '../SocialProductHelper';
+import { isTabletOrMobile } from '../socialProductHelper';
 
 const ObjectsSlider = ({ title, objects, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);

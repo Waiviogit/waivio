@@ -1,7 +1,9 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { ReactSVG } from 'react-svg';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { setAuthorityForObject } from '../../store/appendStore/appendActions';
 
 const PinButton = ({
   tooltipTitle,
@@ -14,21 +16,29 @@ const PinButton = ({
   match,
   wobject,
   userVotingPower,
-}) => (
-  <Tooltip
-    placement="topLeft"
-    title={tooltipTitle}
-    overlayClassName="HeartButtonContainer"
-    overlayStyle={{ top: '10px' }}
-  >
-    <ReactSVG
-      className={currentUserPin ? 'pin-website-color' : pinClassName}
-      wrapper="span"
-      src="/images/icons/pin-outlined.svg"
-      onClick={() => handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower)}
-    />
-  </Tooltip>
-);
+}) => {
+  const dispatch = useDispatch();
+  const pinPost = () => {
+    dispatch(setAuthorityForObject(wobject, match, true));
+    handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+  };
+
+  return (
+    <Tooltip
+      placement="topLeft"
+      title={tooltipTitle}
+      overlayClassName="HeartButtonContainer"
+      overlayStyle={{ top: '10px' }}
+    >
+      <ReactSVG
+        className={currentUserPin ? 'pin-website-color' : pinClassName}
+        wrapper="span"
+        src="/images/icons/pin-outlined.svg"
+        onClick={pinPost}
+      />
+    </Tooltip>
+  );
+};
 
 PinButton.propTypes = {
   post: PropTypes.shape().isRequired,

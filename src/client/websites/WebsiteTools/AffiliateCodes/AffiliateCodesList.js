@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import classNames from 'classnames';
-import { has } from 'lodash';
+import { has, isEmpty } from 'lodash';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import { isGuestUser } from '../../../../store/authStore/authSelectors';
 import AffiliateEditModal from './AffiliateEditModal';
@@ -23,6 +23,7 @@ const AffiliateCodesList = ({
   getFieldDecorator,
 }) => {
   const [visibleEditModal, setVisibleEditModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const isGuest = useSelector(isGuestUser);
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
@@ -46,19 +47,24 @@ const AffiliateCodesList = ({
       isGuest ? 9999 : 1,
       user.name,
       context,
-    );
+    ).then(() => {
+      setLoading(false);
+      setVisibleEditModal(null);
+    });
   };
 
-  const openEditModal = obj => {
-    setVisibleEditModal(true);
+  const openEditModal = (obj, i) => {
+    setVisibleEditModal(i);
     setSelectedObj(obj);
   };
 
   const editCode = (obj, value) => {
-    onSubmit(value).then(() => {
-      deleteCode(obj);
-      setVisibleEditModal(false);
-    });
+    setLoading(true);
+    deleteCode(obj);
+
+    if (!isEmpty(value)) {
+      onSubmit(value);
+    }
   };
 
   return (
@@ -67,10 +73,8 @@ const AffiliateCodesList = ({
         <FormattedMessage id={'aff_codes_empty'} defaultMessage={'No affiliate codes added.'} />
       ) : (
         // eslint-disable-next-line array-callback-return,consistent-return
-        affiliateObjects?.map(obj => {
-          const handleEditCode = value => {
-            editCode(obj, value);
-          };
+        affiliateObjects?.map((obj, i) => {
+          const handleEditCode = value => editCode(obj, value);
 
           if (obj.affiliateCode) {
             const affiliateCode = JSON.parse(obj.affiliateCode);
@@ -101,7 +105,7 @@ const AffiliateCodesList = ({
                   </div>
                 </Link>
                 {codes?.length > 1 ? (
-                  <Button type="primary" onClick={() => openEditModal(obj)}>
+                  <Button type="primary" onClick={() => openEditModal(obj, i)}>
                     <FormattedMessage id="edit" defaultMessage="Edit" />
                   </Button>
                 ) : (
@@ -109,16 +113,17 @@ const AffiliateCodesList = ({
                     <FormattedMessage id="delete" defaultMessage="Delete" />
                   </Button>
                 )}
-                {visibleEditModal && (
+                {visibleEditModal === i && (
                   <AffiliateEditModal
                     affiliateCode={codes}
                     validateFieldsAndScroll={validateFieldsAndScroll}
                     getFieldDecorator={getFieldDecorator}
-                    visibleEditModal={visibleEditModal}
+                    visibleEditModal={!!visibleEditModal}
                     setFieldsValue={setFieldsValue}
-                    onClose={() => setVisibleEditModal(false)}
+                    onClose={() => setVisibleEditModal(null)}
                     editCode={handleEditCode}
                     affName={wobjName}
+                    loading={loading}
                   />
                 )}
               </div>

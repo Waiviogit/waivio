@@ -179,25 +179,12 @@
       padding: 16px 16px 16px 0;
     }
   }
+  //
+  //&__affLinks {
+  //  display: flex;
+  //  flex-direction: row;
+  //}
 
-  &__affLinks {
-    display: flex;
-    flex-direction: row;
-  }
-
-  &__links {
-    border: 1px solid @white-gainsboro;
-    border-radius: 4px;
-    width: 150px;
-    padding: 5px 0;
-
-    &:not(:first-child) {
-      margin-left: 4px;
-      @media @small {
-        margin-left: 20px;
-      }
-    }
-  }
   &__tag-wrapper {
     margin-bottom: @bottom;
     display: block;
@@ -272,26 +259,39 @@
       border: 3px solid var(--website-hover-color);
     }
   }
+  .AffiliatLink {
+    border: @base-border;
+    width: 100px;
+    padding: 7px 0;
+    margin-left: 5px;
+    margin-bottom: 5px;
 
-  .ShopObjectCard {
-    .AffiliatLink {
-      width: 100px;
-      padding: 7px 0;
-    }
-
-    .AffiliatLink__icon-amazon {
+    &__icon-amazon {
       div {
         width: 100px;
         padding: 5px 0 0 0;
       }
     }
 
-    .AffiliatLink__icon {
+    &__icon {
       div {
         width: 100px;
         padding: 0;
       }
+
+      @media @small {
+        width: 100px;
+        padding: 0;
+      }
+
+      &:first-child {
+        @media @small {
+          margin-left: 0;
+        }
+      }
     }
+  }
+  .ShopObjectCard {
     margin-right: 0;
     @media @small {
       display: flex;
