@@ -5,6 +5,7 @@ import { changeCounterFollow } from '../usersStore/usersActions';
 import { unfollowUser, followUser } from '../userStore/userActions';
 import { unfollowWobject, followWobject } from '../wObjectStore/wobjActions';
 import { getDynamicList } from './dynamicListSelectors';
+import { getGroupObjectUserList } from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT_LIST = createAsyncActionType('@dynamicList/GET_OBJECT_LIST');
 
@@ -139,6 +140,33 @@ export const followObjectInList = (permlink, username, type) => (dispatch, getSt
 };
 
 export const GET_USERS_LIST = createAsyncActionType('@dynamicList/GET_USERS_LIST');
+
+export const setUsersList = (name, authUser, limit, lastUser) => dispatch => {
+  dispatch({
+    type: GET_USERS_LIST.START,
+  });
+
+  return getGroupObjectUserList(name, authUser, limit, lastUser).then(res =>
+    dispatch({
+      type: GET_USERS_LIST.SUCCESS,
+      payload: { users: res.result, ...res },
+      meta: name,
+    }),
+  );
+};
+export const setMoreUsersList = (name, authUser, limit, lastUser) => dispatch => {
+  dispatch({
+    type: GET_USERS_LIST_MORE.START,
+  });
+
+  return getGroupObjectUserList(name, authUser, limit, lastUser).then(res =>
+    dispatch({
+      type: GET_USERS_LIST_MORE.SUCCESS,
+      payload: { users: res.result, ...res },
+      meta: name,
+    }),
+  );
+};
 
 export const getUsersList = (fetcher, limit, skip, type, usersList, sorting) => (
   dispatch,
