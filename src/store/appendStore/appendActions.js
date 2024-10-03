@@ -322,10 +322,12 @@ export const setAuthorityForObject = (
       .substring(2)}`,
   });
 
-  if (activeHeart) {
-    !isPin && dispatch(removeObjectFromAuthority(wobject.author_permlink));
-  } else {
-    dispatch(setObjectinAuthority(wobject.author_permlink));
+  if (!isPin) {
+    if (activeHeart) {
+      dispatch(removeObjectFromAuthority(wobject.author_permlink));
+    } else {
+      dispatch(setObjectinAuthority(wobject.author_permlink));
+    }
   }
 
   getAuthorityFields(wobject.author_permlink).then(postInformation => {
@@ -341,16 +343,15 @@ export const setAuthorityForObject = (
         post => post.creator === user.name && post.body === adminAuthority,
       );
 
-      !isPin &&
-        dispatch(
-          authorityVoteAppend(
-            authority?.author,
-            wobject.author_permlink,
-            authority?.permlink,
-            activeHeart ? downVotePower : userUpVotePower,
-            isObjectPage,
-          ),
-        );
+      dispatch(
+        authorityVoteAppend(
+          authority?.author,
+          wobject.author_permlink,
+          authority?.permlink,
+          activeHeart && !isPin ? downVotePower : userUpVotePower,
+          isObjectPage,
+        ),
+      );
     }
   });
 };
