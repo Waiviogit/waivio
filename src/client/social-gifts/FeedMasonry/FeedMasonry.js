@@ -36,7 +36,7 @@ const FeedMasonry = ({
     return (
       <InfiniteSroll
         initialLoad={false}
-        threshold={2000}
+        // threshold={2000}
         loader={<Loading />}
         hasMore={hasMore}
         loadMore={loadMore}
