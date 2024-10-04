@@ -66,6 +66,7 @@ const RatingsWrap = React.memo(
             className={isSocialProduct ? 'RatingsWrap__socialStars' : 'RatingsWrap__stars'}
             role="presentation"
             title={defaultValue}
+            onClick={e => e.stopPropagation()}
           >
             <Rate
               allowHalf
