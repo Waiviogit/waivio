@@ -29,7 +29,7 @@ const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, 
   const name = params.name;
 
   useEffect(() => {
-    dispatch(setUsersList(name, authUser, limit, lastUser));
+    dispatch(setUsersList(name, authUser, limit, undefined));
     setLastUser(last(list)?.name);
   }, [name]);
 
@@ -42,7 +42,7 @@ const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, 
   };
 
   const loadMore = () => {
-    dispatch(setMoreUsersList(name, authUser, limit, lastUser));
+    lastUser && dispatch(setMoreUsersList(name, authUser, limit, lastUser));
     setLastUser(last(list)?.name);
   };
 
@@ -82,7 +82,7 @@ GroupObjectType.propTypes = {
   authUser: PropTypes.string.isRequired,
   followUser: PropTypes.func.isRequired,
   unfollowUser: PropTypes.func.isRequired,
-  dynamicListInfo: PropTypes.func.isRequired,
+  dynamicListInfo: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
 };
 export default connect(
