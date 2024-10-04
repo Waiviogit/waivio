@@ -343,15 +343,16 @@ export const setAuthorityForObject = (
         post => post.creator === user.name && post.body === adminAuthority,
       );
 
-      dispatch(
-        authorityVoteAppend(
-          authority?.author,
-          wobject.author_permlink,
-          authority?.permlink,
-          activeHeart && !isPin ? downVotePower : userUpVotePower,
-          isObjectPage,
-        ),
-      );
+      !isPin &&
+        dispatch(
+          authorityVoteAppend(
+            authority?.author,
+            wobject.author_permlink,
+            authority?.permlink,
+            activeHeart && !isPin ? downVotePower : userUpVotePower,
+            isObjectPage,
+          ),
+        );
     }
   });
 };

@@ -15,24 +15,22 @@ import {
   setUsersList,
   unfollowUserInList,
 } from '../../../store/dynamicList/dynamicListActions';
-import { getDynamicList } from '../../../store/dynamicList/dynamicListSelectors';
+import {
+  getDynamicList,
+  getDynamicListLoading,
+} from '../../../store/dynamicList/dynamicListSelectors';
 
 const limit = 50;
-const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo }) => {
+const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, loading }) => {
   const { hasMore, list } = dynamicListInfo;
-
-  const [loading, setLoading] = useState(false);
   const [lastUser, setLastUser] = useState(undefined);
   const params = useParams();
   const dispatch = useDispatch();
   const name = params.name;
 
   useEffect(() => {
-    setLoading(true);
-
     dispatch(setUsersList(name, authUser, limit, lastUser));
     setLastUser(last(list)?.name);
-    setLoading(false);
   }, [name]);
 
   const unFollow = user => {
@@ -85,10 +83,12 @@ GroupObjectType.propTypes = {
   followUser: PropTypes.func.isRequired,
   unfollowUser: PropTypes.func.isRequired,
   dynamicListInfo: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 export default connect(
   (state, ownProps) => ({
     dynamicListInfo: getDynamicList(state, ownProps.match.params.name),
+    loading: getDynamicListLoading(state),
     authUser: getAuthenticatedUserName(state),
   }),
   {
