@@ -25,6 +25,8 @@ import withAuthActions from '../../../auth/withAuthActions';
 
 import './SocialProductReviews.less';
 
+let skip = 20;
+
 const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
@@ -57,15 +59,18 @@ const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => 
     getPostsList();
   }, [objName]);
 
-  const loadMore = () =>
+  const loadMore = () => {
     dispatch(
       getMoreObjectPosts({
         username: objName,
         authorPermlink: objName,
         limit: 20,
-        skip: posts?.length,
+        skip,
       }),
     );
+
+    skip += 20;
+  };
 
   if (isEmpty(posts) && isFetching) return <Loading />;
 
