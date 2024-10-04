@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { isEmpty, last } from 'lodash';
 import { useParams } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
@@ -23,14 +23,12 @@ import {
 const limit = 50;
 const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, loading }) => {
   const { hasMore, list } = dynamicListInfo;
-  const [lastUser, setLastUser] = useState(undefined);
   const params = useParams();
   const dispatch = useDispatch();
   const name = params.name;
 
   useEffect(() => {
     dispatch(setUsersList(name, authUser, limit, undefined));
-    setLastUser(last(list)?.name);
   }, [name]);
 
   const unFollow = user => {
@@ -42,8 +40,11 @@ const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, 
   };
 
   const loadMore = () => {
-    lastUser && dispatch(setMoreUsersList(name, authUser, limit, lastUser));
-    setLastUser(last(list)?.name);
+    const lastUser = last(list)?.name;
+
+    if (lastUser) {
+      dispatch(setMoreUsersList(name, authUser, limit, lastUser));
+    }
   };
 
   return (
