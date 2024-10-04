@@ -7,7 +7,12 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { setGuestMana } from '../usersStore/usersActions';
-import { getMinRejectVote, getUpdateByBody, getUserProfileBlog } from '../../waivioApi/ApiClient';
+import {
+  getAuthorityFields,
+  getMinRejectVote,
+  getUpdateByBody,
+  getUserProfileBlog,
+} from '../../waivioApi/ApiClient';
 import { getAppendDownvotes, getAppendUpvotes } from '../../common/helpers/voteHelpers';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getAppendData } from '../../common/helpers/wObjectHelper';
@@ -291,16 +296,22 @@ export const handlePinPost = (
   } else {
     dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
-    !activeHeart &&
-      dispatch(
-        authorityVoteAppend(
-          currUpdate?.author,
-          wobject.author_permlink,
-          currUpdate?.permlink,
-          userVotingPower,
-          isObjectPage,
-        ),
+    getAuthorityFields(wobject.author_permlink).then(postInformation => {
+      const authority = postInformation.find(
+        p => p.creator === user.name && p.body === 'administrative',
       );
+
+      !activeHeart &&
+        dispatch(
+          authorityVoteAppend(
+            authority?.author,
+            wobject.author_permlink,
+            authority?.permlink,
+            userVotingPower,
+            isObjectPage,
+          ),
+        );
+    });
     dispatch(
       voteAppends(
         currUpdate.author,
