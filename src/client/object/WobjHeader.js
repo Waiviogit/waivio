@@ -42,7 +42,6 @@ const WobjHeader = ({
   isAdministrator,
 }) => {
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
-  const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && (isWaivio || isAdministrator)) ||
@@ -53,7 +52,15 @@ const WobjHeader = ({
   const status = parseWobjectField(wobject, 'status');
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
-
+  const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
+  const instacardAff =
+    isRecipe && wobject?.affiliateLinks
+      ? wobject?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+      : null;
+  const style = {
+    backgroundImage: `url("${coverImage}")`,
+    paddingBottom: instacardAff ? '20px' : '30px',
+  };
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
@@ -143,6 +150,20 @@ const WobjHeader = ({
           )}
         </div>
       </div>
+      {isRecipe && instacardAff && (
+        <div
+          id={'shop-with-instacart-v1'}
+          className={'shop-with-instacart-v1'}
+          data-affiliate_id={instacardAff?.affiliateCode}
+          data-source_origin="affiliate_hub"
+          data-affiliate_platform="recipe_widget"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '10px',
+          }}
+        />
+      )}
     </div>
   );
 };
