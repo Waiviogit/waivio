@@ -261,15 +261,16 @@
   }
   .AffiliatLink {
     border: @base-border;
-    width: 99px;
+    max-width: 120px;
+    width: fit-content;
     padding: 0;
-    margin-left: 5px;
+    //margin-left: 5px;
     margin-bottom: 5px;
 
     &__icon-amazon {
       div {
         width: 100px;
-        padding: 5px 0 0 0;
+        //padding: 5px 0 0 0;
       }
     }
 
@@ -280,7 +281,8 @@
       }
 
       @media @small {
-        width: 100px;
+        max-width: 120px;
+        width: fit-content;
         padding: 0;
       }
 
