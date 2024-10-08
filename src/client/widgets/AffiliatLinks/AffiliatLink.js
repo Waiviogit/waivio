@@ -15,6 +15,9 @@ const images = {
 const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
   const isAmazon = link.link?.includes('amazon');
+  const needsFitContent = link.link?.includes(
+    'https://waivio.nyc3.digitaloceanspaces.com/402e4b97b8e9e4796519950a957ca8bfae23b0fc47280fe1980e43212c07fb81',
+  );
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
@@ -39,11 +42,13 @@ const AffiliatLink = ({ link, disabled }) => {
       {link.image ? (
         <img
           className={!isAmazon ? 'AffiliatLink__image' : 'AffiliatLink__image-amazon'}
+          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
           src={link.image || images[link.type]}
           alt={'Affiliate button logo'}
         />
       ) : (
         <ReactSVG
+          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
           className={!isAmazon ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
           src={images[link.type]}
         />
