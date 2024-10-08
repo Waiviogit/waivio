@@ -106,9 +106,29 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
     setLoading(true);
 
     if (isMentions) {
-      return proposition.messagesPermlink
-        ? dispatch(sendCommentForMentions(proposition, commentValue))
-        : dispatch(sendInitialCommentForMentions(proposition, commentValue));
+      const method = () =>
+        proposition.messagesPermlink
+          ? dispatch(sendCommentForMentions(proposition, commentValue))
+          : dispatch(sendInitialCommentForMentions(proposition, commentValue));
+
+      return method().then(comment => {
+        const commentList = [
+          ...comments,
+          {
+            body: commentValue,
+            created: moment()
+              .utc()
+              .format('YYYY-MM-DDTHH:mm:ss'),
+            author: authUserName,
+            active_votes: [],
+            ...comment,
+          },
+        ].sort((a, b) => b.created - a.created);
+
+        setComments(commentList);
+        setCommentsCount(commentList?.length);
+        setLoading(false);
+      });
     }
 
     return dispatch(sendCommentForReward(proposition, commentValue)).then(comment => {
