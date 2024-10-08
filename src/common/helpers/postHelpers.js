@@ -259,6 +259,10 @@ const setTitle = (initObjects, props, authors, users) => {
 };
 
 const setBody = (initObjects, props, authors, users) => {
+  const getProtocolAndHost = link =>
+    link?.includes('https')
+      ? link
+      : `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}`;
   let body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
       ? initObjects.reduce((acc, curr) => {
@@ -266,17 +270,11 @@ const setBody = (initObjects, props, authors, users) => {
 
           if (!isNil(matches) && matches[1] && matches[2]) {
             if (isEmpty(authors))
-              return `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
-                location?.hostname
-              }${matches[2]})\n`;
+              return `${acc}[${matches[1]}](${getProtocolAndHost(matches[2])}${matches[2]})\n`;
 
             return initObjects.length <= 1
-              ? `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
-                  location?.hostname
-                }${matches[2]})`
-              : `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
-                  location?.hostname
-                }${matches[2]}), `;
+              ? `${acc}[${matches[1]}](${getProtocolAndHost(matches[2])}${matches[2]})`
+              : `${acc}[${matches[1]}](${getProtocolAndHost(matches[2])}${matches[2]}), `;
           }
 
           return acc;
