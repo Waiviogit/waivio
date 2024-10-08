@@ -265,11 +265,18 @@ const setBody = (initObjects, props, authors, users) => {
           const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
           if (!isNil(matches) && matches[1] && matches[2]) {
-            if (isEmpty(authors)) return `${acc}[${matches[1]}](${matches[2]})\n`;
+            if (isEmpty(authors))
+              return `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
+                location?.hostname
+              }${matches[2]})\n`;
 
             return initObjects.length <= 1
-              ? `${acc}[${matches[1]}](${matches[2]})`
-              : `${acc}[${matches[1]}](${matches[2]}), `;
+              ? `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
+                  location?.hostname
+                }${matches[2]})`
+              : `${acc}[${matches[1]}](${apiConfig[process.env.NODE_ENV].protocol}${
+                  location?.hostname
+                }${matches[2]}), `;
           }
 
           return acc;
