@@ -13,7 +13,9 @@ import Avatar from '../../../components/Avatar';
 import QuickCommentEditor from '../../../components/Comments/QuickCommentEditor';
 import {
   reserveProposition,
+  sendCommentForMentions,
   sendCommentForReward,
+  sendInitialCommentForMentions,
 } from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
@@ -60,9 +62,22 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
         }, []),
       );
     } else {
-      const postInfo = await getPostCommentsFromApi({
+      let opt = {
         author: proposition?.reserved ? authUserName : proposition?.rootName,
         permlink: proposition?.reservationPermlink,
+      };
+
+      if (isMentions) {
+        const [parent_author, parent_permlink] = proposition.messagesPermlink.split('/');
+
+        opt = {
+          author: parent_author,
+          permlink: parent_permlink,
+        };
+      }
+
+      const postInfo = await getPostCommentsFromApi({
+        ...opt,
         userName: authUserName,
         category: config.appName,
       });
@@ -89,6 +104,32 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
   const sendComment = (parentP, commentValue) => {
     setLoading(true);
+
+    if (isMentions) {
+      const method = () =>
+        proposition.messagesPermlink
+          ? dispatch(sendCommentForMentions(proposition, commentValue))
+          : dispatch(sendInitialCommentForMentions(proposition, commentValue));
+
+      return method().then(comment => {
+        const commentList = [
+          ...comments,
+          {
+            body: commentValue,
+            created: moment()
+              .utc()
+              .format('YYYY-MM-DDTHH:mm:ss'),
+            author: authUserName,
+            active_votes: [],
+            ...comment,
+          },
+        ].sort((a, b) => b.created - a.created);
+
+        setComments(commentList);
+        setCommentsCount(commentList?.length);
+        setLoading(false);
+      });
+    }
 
     return dispatch(sendCommentForReward(proposition, commentValue)).then(comment => {
       const commentList = [
@@ -148,20 +189,17 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                     defaultMessage: 'days left',
                   })}
                 </b>
-                {!isMentions && (
-                  <span
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
-                    {Boolean(commentsCount) && (
-                      <span className="Proposition-new__commentCounter">{commentsCount}</span>
-                    )}
-                  </span>
-                )}
-
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
+                  {Boolean(commentsCount) && (
+                    <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                  )}
+                </span>
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
               {authUserName === proposition.guideName &&
@@ -193,7 +231,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   proposition={proposition}
                 />
               ))}
-            {!isMentions && <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />}
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
       case 'history':
@@ -210,23 +248,21 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                     defaultMessage: proposition?.reviewStatus,
                   })}
                 </b>
-                {!isMentions && (
-                  <span
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {commentsLoading ? (
-                      <Icon type="loading" />
-                    ) : (
-                      <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
-                    )}
-                    {Boolean(commentsCount) && (
-                      <span className="Proposition-new__commentCounter">{commentsCount}</span>
-                    )}
-                  </span>
-                )}
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {commentsLoading ? (
+                    <Icon type="loading" />
+                  ) : (
+                    <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
+                  )}
+                  {Boolean(commentsCount) && (
+                    <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                  )}
+                </span>
                 <RewardsPopover
                   proposition={proposition}
                   getProposition={getProposition}
@@ -250,7 +286,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   proposition={proposition}
                 />
               ))}
-            {!isMentions && <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />}
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
 
@@ -302,6 +338,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    messagesPermlink: PropTypes.string,
     rootName: PropTypes.string,
     guideName: PropTypes.string,
     notEligible: PropTypes.bool,

@@ -520,18 +520,196 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
+  let detail = {};
+
+  if (proposition.type === 'mentions') {
+    detail = {
+      parent_author: proposition.guideName,
+      parent_permlink: proposition.activationPermlink,
+      author: auth.user.name,
+      permlink,
+      title: '',
+      body: newBody,
+      json_metadata: JSON.stringify({
+        ...createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+        waivioRewards: {
+          type: 'createMessageThread',
+          activationPermlink: proposition.activationPermlink,
+          reservationPermlink: proposition.reservationPermlink,
+        },
+      }),
+    };
+  } else {
+    detail = {
+      parent_author: isUpdating ? originalComment.parent_author : proposition.rootName || userName,
+      parent_permlink: isUpdating
+        ? originalComment.parent_permlink
+        : proposition?.reservationPermlink,
+      author: auth.user.name,
+      permlink,
+      title: '',
+      body: newBody,
+      json_metadata: JSON.stringify(
+        createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+      ),
+    };
+  }
+
+  const commentOp = ['comment', detail];
+
+  return new Promise(resolve =>
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(res => {
+        if (auth.isGuestUser) {
+          resolve({
+            ...detail,
+            guestInfo: {
+              userId: auth.user.name,
+            },
+          });
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+            auth.user.name,
+            res.result.id,
+          ]);
+
+          const timeoutID = setTimeout(() => {
+            message.error(
+              "Timed out, we can't connect. Please reload the page to see the changes. ",
+            );
+            resolve(detail);
+          }, 10000);
+
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === res.result.id) {
+              clearTimeout(timeoutID);
+              message.success('Comment submitted');
+
+              resolve(detail);
+            }
+          });
+        }
+      })
+      .catch(err => {
+        dispatch(notify(err.message || err.error_description, 'error'));
+      }),
+  );
+};
+
+export const sendInitialCommentForMentions = (proposition, body) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const { auth } = getState();
+  const userName = auth.user.name;
+
+  const permlink = createCommentPermlink(userName, proposition?.reservationPermlink);
+
   const detail = {
-    parent_author: isUpdating ? originalComment.parent_author : proposition.rootName || userName,
-    parent_permlink: isUpdating
-      ? originalComment.parent_permlink
-      : proposition?.reservationPermlink,
+    parent_author: proposition.guideName,
+    parent_permlink: proposition.activationPermlink,
+    author: auth.user.name,
+    permlink,
+    title: '',
+    body: 'Initial chat',
+    json_metadata: JSON.stringify({
+      body: 'Initial chat',
+      waivioRewards: {
+        type: 'createMessageThread',
+        activationPermlink: proposition.activationPermlink,
+        reservationPermlink: proposition.reservationPermlink,
+      },
+    }),
+  };
+
+  const commentOp = ['comment', detail];
+
+  return new Promise(resolve =>
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(res => {
+        if (auth.isGuestUser) {
+          resolve({
+            ...detail,
+            guestInfo: {
+              userId: auth.user.name,
+            },
+          });
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+            auth.user.name,
+            res.result.id,
+          ]);
+
+          const timeoutID = setTimeout(() => {
+            dispatch(
+              sendCommentForMentions(
+                { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
+                body,
+              ),
+            );
+          }, 10000);
+
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === res.result.id) {
+              clearTimeout(timeoutID);
+              dispatch(
+                sendCommentForMentions(
+                  { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
+                  body,
+                ),
+              );
+            }
+          });
+        }
+      })
+      .catch(err => {
+        dispatch(notify(err.message || err.error_description, 'error'));
+      }),
+  );
+};
+
+export const sendCommentForMentions = (proposition, body, isUpdating = false, originalComment) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const { auth } = getState();
+  const userName = proposition?.reserved ? auth.user.name : proposition.userName;
+
+  if (!auth.isAuthenticated) {
+    return dispatch(notify('You have to be logged in to comment', 'error'));
+  }
+
+  if (!body || !body.length) {
+    return dispatch(notify("Message can't be empty", 'error'));
+  }
+
+  const permlink = isUpdating
+    ? originalComment.permlink
+    : createCommentPermlink(userName, proposition?.reservationPermlink);
+
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
+  const [parent_author, parent_permlink] = proposition.messagesPermlink.split('/');
+
+  const detail = {
+    parent_author,
+    parent_permlink,
     author: auth.user.name,
     permlink,
     title: '',
     body: newBody,
-    json_metadata: JSON.stringify(
-      createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
-    ),
+    json_metadata: JSON.stringify({
+      ...createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+      waivioRewards: {
+        type: 'campaignMessage',
+        reservationPermlink: proposition.reservationPermlink,
+      },
+    }),
   };
 
   const commentOp = ['comment', detail];
