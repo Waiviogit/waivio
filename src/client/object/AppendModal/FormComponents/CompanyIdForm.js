@@ -55,15 +55,13 @@ const CompanyIdForm = ({
         />,
       )}
     </Form.Item>
-    <p>
+    <p className={'flex justify-between'}>
       {intl.formatMessage({
         id: 'company_id_description',
         defaultMessage:
           'Company identifiers are often alphanumeric, but there are no limitations on this text field.',
       })}
-      <div className={'generateId-container'}>
-        <GenerateIdButton field={objectFields.companyId} setFieldsValue={setFieldsValue} />
-      </div>
+      <GenerateIdButton field={objectFields.companyId} setFieldsValue={setFieldsValue} />
     </p>
   </React.Fragment>
 );
