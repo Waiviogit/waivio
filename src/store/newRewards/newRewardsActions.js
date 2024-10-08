@@ -649,7 +649,7 @@ export const sendInitialCommentForMentions = (proposition, body) => (
                 { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
                 body,
               ),
-            );
+            ).then(() => resolve(detail));
           }, 10000);
 
           busyAPI.instance.subscribe((datad, j) => {
@@ -660,7 +660,7 @@ export const sendInitialCommentForMentions = (proposition, body) => (
                   { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
                   body,
                 ),
-              );
+              ).then(() => resolve(detail));
             }
           });
         }

@@ -123,7 +123,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
             active_votes: [],
             ...comment,
           },
-        ].sort((a, b) => b.created - a.created);
+        ];
 
         setComments(commentList);
         setCommentsCount(commentList?.length);
@@ -143,7 +143,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           active_votes: [],
           ...comment,
         },
-      ].sort((a, b) => b.created - a.created);
+      ];
 
       setComments(commentList);
       setCommentsCount(commentList?.length);
@@ -223,14 +223,16 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               )}
             </div>
             {showComment &&
-              comments.map(comment => (
-                <CommentCard
-                  key={`${comment?.author}/${comment?.permlink}`}
-                  comment={comment}
-                  getMessageHistory={getCommentsList}
-                  proposition={proposition}
-                />
-              ))}
+              comments
+                .sort((a, b) => b.created - a.created)
+                .map(comment => (
+                  <CommentCard
+                    key={`${comment?.author}/${comment?.permlink}`}
+                    comment={comment}
+                    getMessageHistory={getCommentsList}
+                    proposition={proposition}
+                  />
+                ))}
             <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
@@ -278,14 +280,16 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               </div>
             )}
             {showComment &&
-              comments.map(comment => (
-                <CommentCard
-                  key={`${comment?.author}/${comment?.permlink}`}
-                  comment={comment}
-                  getMessageHistory={getCommentsList}
-                  proposition={proposition}
-                />
-              ))}
+              comments
+                .sort((a, b) => b.created - a.created)
+                .map(comment => (
+                  <CommentCard
+                    key={`${comment?.author}/${comment?.permlink}`}
+                    comment={comment}
+                    getMessageHistory={getCommentsList}
+                    proposition={proposition}
+                  />
+                ))}
             <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
