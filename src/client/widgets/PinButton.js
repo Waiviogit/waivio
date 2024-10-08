@@ -1,9 +1,7 @@
 import React from 'react';
 import { Tooltip } from 'antd';
 import { ReactSVG } from 'react-svg';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { setAuthorityForObject } from '../../store/appendStore/appendActions';
 
 const PinButton = ({
   tooltipTitle,
@@ -17,9 +15,7 @@ const PinButton = ({
   wobject,
   userVotingPower,
 }) => {
-  const dispatch = useDispatch();
   const pinPost = () => {
-    dispatch(setAuthorityForObject(wobject, match, true));
     handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
   };
 

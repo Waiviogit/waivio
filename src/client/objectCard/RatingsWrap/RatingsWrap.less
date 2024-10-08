@@ -105,12 +105,27 @@
       }
     }
   }
-  &__socialStars:extend(.RatingsWrap__stars) {
-    width: 115px;
-    .ant-rate-star {
-      font-size: 20px;
-      margin-right: 3px !important;
+  &__socialStars {
+    .myvote.ant-rate {
+      color: var(--website-color) !important;
+
+      .ant-rate-star-full {
+        color: var(--website-color) !important;
+      }
     }
+
+    .ant-rate {
+      font-size: 15px;
+      line-height: 0;
+      display: flex;
+
+      .ant-rate-star {
+        font-size: 20px;
+        margin-right: 3px !important;
+      }
+    }
+
+    width: 115px;
   }
 }
 

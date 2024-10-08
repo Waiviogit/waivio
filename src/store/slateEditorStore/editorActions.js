@@ -368,8 +368,6 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       }
     }
 
-    const getErrorText = msg => msg.split(':')[1];
-
     dispatch({
       type: CREATE_POST_START,
     });
@@ -457,7 +455,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           if (err.error && err.error.message) {
             errorText = err.error.message;
           } else if (err.error_description) {
-            errorText = getErrorText(err.error_description);
+            errorText = err.error_description;
           }
           dispatch(notify(errorText, 'error'));
         }),
