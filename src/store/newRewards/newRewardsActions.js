@@ -604,9 +604,7 @@ export const sendInitialCommentForMentions = (proposition, body) => (
 ) => {
   const { auth } = getState();
   const userName = auth.user.name;
-
   const permlink = createCommentPermlink(userName, proposition?.reservationPermlink);
-
   const detail = {
     parent_author: proposition.guideName,
     parent_permlink: proposition.activationPermlink,
@@ -642,25 +640,19 @@ export const sendInitialCommentForMentions = (proposition, body) => (
             auth.user.name,
             res.result.id,
           ]);
-
+          const messagesPermlink = `${auth.user.name}/${permlink}`;
           const timeoutID = setTimeout(() => {
-            dispatch(
-              sendCommentForMentions(
-                { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
-                body,
-              ),
-            ).then(() => resolve(detail));
+            dispatch(sendCommentForMentions({ ...proposition, messagesPermlink }, body)).then(() =>
+              resolve({ ...detail, messagesPermlink }),
+            );
           }, 10000);
 
           busyAPI.instance.subscribe((datad, j) => {
             if (j?.success && j?.permlink === res.result.id) {
               clearTimeout(timeoutID);
               dispatch(
-                sendCommentForMentions(
-                  { ...proposition, messagesPermlink: `${auth.user.name}/${permlink}` },
-                  body,
-                ),
-              ).then(() => resolve(detail));
+                sendCommentForMentions({ ...proposition, messagesPermlink }, body),
+              ).then(() => resolve({ ...detail, messagesPermlink }));
             }
           });
         }
