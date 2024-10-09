@@ -11,13 +11,15 @@ const images = {
   amazon: '/images/amazon-logo.svg',
   target: '/images/target-logo.svg',
 };
+const fitIcons = [
+  'https://waivio.nyc3.digitaloceanspaces.com/cae90a4e92904f47101071d6c283b9f3a8ca38d5610a485fde91223e7e36babc',
+  'https://waivio.nyc3.digitaloceanspaces.com/402e4b97b8e9e4796519950a957ca8bfae23b0fc47280fe1980e43212c07fb81',
+];
 
 const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
   const isAmazon = link.link?.includes('amazon');
-  const needsFitContent = link.link?.includes(
-    'https://waivio.nyc3.digitaloceanspaces.com/402e4b97b8e9e4796519950a957ca8bfae23b0fc47280fe1980e43212c07fb81',
-  );
+  const needsFitContent = fitIcons.includes(link.link);
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {

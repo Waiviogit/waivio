@@ -263,25 +263,30 @@
     border: @base-border;
     max-width: 122px;
     width: fit-content;
+    height: 60px;
     padding: 0;
-    //margin-left: 5px;
     margin-bottom: 5px;
 
-    &__icon-amazon {
+    &__icon-amazon,
+    &__image-amazon {
       div {
         width: 122px;
+        height: 60px;
         padding: 0 4px;
       }
     }
 
-    &__icon {
+    &__icon,
+    &__image {
       div {
+        height: 60px;
         width: 122px;
         padding: 0;
       }
 
       @media @small {
         max-width: 122px;
+        height: 60px;
         width: fit-content;
         padding: 0;
       }
