@@ -16,6 +16,7 @@ const ListDescription = ({ wobject }) => {
     350,
   );
   const altText = description || `${wobject.name} image`;
+
   return (
     (hasTitle || hasDescription) && (
       <div className={'ListDescription'}>

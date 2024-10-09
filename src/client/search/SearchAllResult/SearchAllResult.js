@@ -57,7 +57,7 @@ import ListDescription from '../../social-gifts/ListDescription/ListDescription'
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [infoVisible, setInfoVisible] = useState(!isMobile());
+  const [infoVisible, setInfoVisible] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const hasTitle = has(props.currObj, 'title');
   const hasDescription = has(props.currObj, 'description');
