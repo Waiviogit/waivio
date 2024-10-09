@@ -96,6 +96,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const hiveAuth = Cookie.get('auth');
   const language = getWebsiteLanguage(state);
 
+  Cookie.remove('shownMaps');
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
     clearGuestAuthData();

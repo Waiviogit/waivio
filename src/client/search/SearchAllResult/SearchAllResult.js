@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { has, isEmpty } from 'lodash';
+import Cookie from 'js-cookie';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, Modal } from 'antd';
 import { useHistory } from 'react-router';
@@ -56,14 +57,19 @@ import './SearchAllResult.less';
 import ListDescription from '../../social-gifts/ListDescription/ListDescription';
 
 const SearchAllResult = props => {
+  const shownMapsToParse = Cookie.get('shownMaps');
+  const shownMaps = shownMapsToParse ? JSON.parse(decodeURIComponent(shownMapsToParse)) : [];
   const [isScrolled, setIsScrolled] = useState(false);
-  const [infoVisible, setInfoVisible] = useState(false);
+  const [infoVisible, setInfoVisible] = useState(
+    !shownMaps?.includes(props.currObj.author_permlink) && !isMobile(),
+  );
   const isUsersSearch = props.searchType === 'Users';
   const hasTitle = has(props.currObj, 'title');
   const hasDescription = has(props.currObj, 'description');
   const showInfo = hasTitle || hasDescription;
   const resultList = useRef();
   const history = useHistory();
+
   const accessExtend =
     (haveAccess(props.currObj, props.username, accessTypesArr[0]) && props.isAdministrator) ||
     hasDelegation(props.currObj, props.username);
@@ -207,6 +213,15 @@ const SearchAllResult = props => {
     }
   };
 
+  const closeInfoModal = () => {
+    setInfoVisible(false);
+    if (!shownMaps?.includes(props.currObj?.author_permlink)) {
+      shownMaps.push(props.currObj?.author_permlink.trim());
+
+      Cookie.set('shownMaps', encodeURIComponent(JSON.stringify(shownMaps)));
+    }
+  };
+
   return (
     <div className={searchResultClassList}>
       <div
@@ -258,9 +273,9 @@ const SearchAllResult = props => {
         <Modal
           width={'90%'}
           title={props.currObj?.name || props.currObj?.default_name}
-          onCancel={() => setInfoVisible(false)}
+          onCancel={closeInfoModal}
           footer={[
-            <Button key="Ok" type="primary" onClick={() => setInfoVisible(false)}>
+            <Button key="Ok" type="primary" onClick={closeInfoModal}>
               <FormattedMessage id="ok" defaultMessage="Ok" />
             </Button>,
           ]}
