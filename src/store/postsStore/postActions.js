@@ -7,13 +7,24 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { setGuestMana } from '../usersStore/usersActions';
-import { getMinRejectVote, getUpdateByBody, getUserProfileBlog } from '../../waivioApi/ApiClient';
+import {
+  getAuthorityFields,
+  getMinRejectVote,
+  getUpdateByBody,
+  getUserProfileBlog,
+} from '../../waivioApi/ApiClient';
 import { getAppendDownvotes, getAppendUpvotes } from '../../common/helpers/voteHelpers';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getAppendData } from '../../common/helpers/wObjectHelper';
 import { getUsedLocale } from '../appStore/appSelectors';
 import { setPinnedPostsUrls } from '../feedStore/feedActions';
-import { appendObject, voteAppends } from '../appendStore/appendActions';
+import {
+  appendObject,
+  authorityVoteAppend,
+  setObjectinAuthority,
+  voteAppends,
+} from '../appendStore/appendActions';
+import { getAuthorityList } from '../appendStore/appendSelectors';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -237,11 +248,46 @@ export const handlePinPost = (
     'en-US',
     `${post.author}/${post.permlink}`,
   );
+  const authorityList = getAuthorityList(getState());
+  const activeHeart = authorityList[wobject.author_permlink];
+  const isObjectPage = match.params.name === wobject.author_permlink;
   const upVotes = currUpdate?.active_votes && getAppendUpvotes(currUpdate?.active_votes);
   const isLiked = currUpdate?.isLiked || some(upVotes, { voter: user.name });
   const downVotes = getAppendDownvotes(currUpdate?.active_votes);
   const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
   let voteWeight;
+  const getAuthority = newPin => {
+    getAuthorityFields(wobject.author_permlink).then(postInformation => {
+      const authority = postInformation.find(
+        p => p.creator === user.name && p.body === 'administrative',
+      );
+
+      const voteForAuthority = () =>
+        !activeHeart &&
+        dispatch(
+          authorityVoteAppend(
+            authority?.author,
+            wobject.author_permlink,
+            authority?.permlink,
+            userVotingPower,
+            isObjectPage,
+          ),
+        );
+
+      if (newPin) {
+        if (
+          !isEmpty(postInformation) ||
+          !isEmpty(
+            postInformation.filter(p => p.creator === user.name && p.body === 'administrative'),
+          )
+        ) {
+          voteForAuthority();
+        }
+      } else {
+        voteForAuthority();
+      }
+    });
+  };
 
   if (pinnedPostsUrls.includes(post.url)) {
     dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
@@ -265,6 +311,7 @@ export const handlePinPost = (
       );
     }
   } else if (currUpdate.message) {
+    dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
     const pageContentField = {
       name: objectFields.pin,
@@ -275,11 +322,14 @@ export const handlePinPost = (
     const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
     const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
 
+    getAuthority(true);
     dispatch(
       appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
     );
   } else {
+    dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+    getAuthority(false);
     dispatch(
       voteAppends(
         currUpdate.author,

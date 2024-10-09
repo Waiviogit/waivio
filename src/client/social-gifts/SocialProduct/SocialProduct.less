@@ -261,26 +261,33 @@
   }
   .AffiliatLink {
     border: @base-border;
-    width: 100px;
-    padding: 7px 0;
-    margin-left: 5px;
+    max-width: 122px;
+    width: fit-content;
+    height: 60px;
+    padding: 0;
     margin-bottom: 5px;
 
-    &__icon-amazon {
+    &__icon-amazon,
+    &__image-amazon {
+      height: 60px;
       div {
-        width: 100px;
-        padding: 5px 0 0 0;
+        width: 122px;
+        padding: 0 4px;
       }
     }
 
-    &__icon {
+    &__icon,
+    &__image {
       div {
-        width: 100px;
+        height: 60px;
+        width: 122px;
         padding: 0;
       }
 
       @media @small {
-        width: 100px;
+        max-width: 122px;
+        height: 60px;
+        width: fit-content;
         padding: 0;
       }
 
@@ -292,6 +299,18 @@
     }
   }
   .ShopObjectCard {
+    .AffiliatLink {
+      height: 42px;
+      &__icon-amazon,
+      &__icon,
+      &__image,
+      &__image-amazon {
+        height: 42px;
+      }
+    }
+    &__affiliatLinksWrap {
+      margin-top: -10px;
+    }
     margin-right: 0;
     @media @small {
       display: flex;
@@ -498,7 +517,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 0 2px 0;
+      padding: 0 4px;
     }
   }
 

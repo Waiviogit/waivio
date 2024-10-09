@@ -188,7 +188,7 @@ class MapObjectInfo extends React.Component {
   onMapClick = () => {
     if (this.props.isSocial && !isEmpty(this.props.mapObjPermlink)) {
       this.props.history.push(
-        `/object/${this.props.mapObjPermlink}?center=${this.state.center}&zoom=${this.state.zoom}&permlink=${this.props.selectedObjPermlink}`,
+        `/object/${this.props.mapObjPermlink}?center=${this.state.center}&zoom=18&permlink=${this.props.selectedObjPermlink}`,
       );
     }
   };

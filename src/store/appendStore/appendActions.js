@@ -294,12 +294,10 @@ export const affiliateCodeVoteAppend = (
   });
 };
 
-export const setAuthorityForObject = (
-  wobject,
-  match,
-  isPin = false,
-  adminAuthority = 'administrative',
-) => (dispatch, getState) => {
+export const setAuthorityForObject = (wobject, match, adminAuthority = 'administrative') => (
+  dispatch,
+  getState,
+) => {
   const isObjectPage = match.params.name === wobject.author_permlink;
   const user = getAuthenticatedUser(getState());
   const userUpVotePower = getVotePercent(getState());
@@ -323,7 +321,7 @@ export const setAuthorityForObject = (
   });
 
   if (activeHeart) {
-    !isPin && dispatch(removeObjectFromAuthority(wobject.author_permlink));
+    dispatch(removeObjectFromAuthority(wobject.author_permlink));
   } else {
     dispatch(setObjectinAuthority(wobject.author_permlink));
   }
@@ -341,16 +339,15 @@ export const setAuthorityForObject = (
         post => post.creator === user.name && post.body === adminAuthority,
       );
 
-      !isPin &&
-        dispatch(
-          authorityVoteAppend(
-            authority?.author,
-            wobject.author_permlink,
-            authority?.permlink,
-            activeHeart ? downVotePower : userUpVotePower,
-            isObjectPage,
-          ),
-        );
+      dispatch(
+        authorityVoteAppend(
+          authority?.author,
+          wobject.author_permlink,
+          authority?.permlink,
+          activeHeart ? downVotePower : userUpVotePower,
+          isObjectPage,
+        ),
+      );
     }
   });
 };

@@ -51,6 +51,7 @@ import {
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
 const limit = 15;
+let skip = 20;
 
 const ObjectNewsFeed = ({ wobj, intl }) => {
   const readLanguages = useSelector(getReadLanguages);
@@ -141,10 +142,11 @@ const ObjectNewsFeed = ({ wobj, intl }) => {
           username: objName,
           authorPermlink: objName,
           limit,
-          skip: posts?.length,
+          skip,
           newsPermlink,
         }),
       ).then(res => dispatch(getTiktokPreviewAction(res.value)));
+      skip += limit;
       // eslint-disable-next-line no-empty
     } catch (e) {}
   };

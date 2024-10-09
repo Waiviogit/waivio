@@ -71,7 +71,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
     dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
   };
   const pinPost = () => {
-    dispatch(setAuthorityForObject(wobject, match, true));
+    dispatch(setAuthorityForObject(wobject, match));
     dispatch(handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower));
   };
 

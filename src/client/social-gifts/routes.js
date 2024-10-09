@@ -25,6 +25,7 @@ import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsAc
 import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../components/Favorites/UserFavorites';
 import WebsiteBody from '../websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import GroupObjectType from '../object/GroupObjectType/GroupObjectType';
 
 const routes = () => ({
   component: SocialWrapper,
@@ -345,6 +346,11 @@ const routes = () => ({
           path: '/(page)',
           exact: true,
           component: Views.ObjectOfTypePage,
+        },
+        {
+          path: '/(group)',
+          exact: true,
+          component: GroupObjectType,
         },
         {
           path: '/webpage',

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'antd';
 import PropTypes from 'prop-types';
 
 const GenerateIdButton = ({ field, setFieldsValue }) => {
@@ -10,9 +9,9 @@ const GenerateIdButton = ({ field, setFieldsValue }) => {
   };
 
   return (
-    <Button type={'primary'} onClick={generateId}>
-      Generate ID
-    </Button>
+    <span className={'WalletTable__csv-button'} onClick={generateId}>
+      Need an ID?
+    </span>
   );
 };
 

@@ -259,17 +259,21 @@ const setTitle = (initObjects, props, authors, users) => {
 };
 
 const setBody = (initObjects, props, authors, users) => {
+  const getLink = link =>
+    link?.includes('https')
+      ? link
+      : `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}${link}`;
   let body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
       ? initObjects.reduce((acc, curr) => {
           const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
           if (!isNil(matches) && matches[1] && matches[2]) {
-            if (isEmpty(authors)) return `${acc}[${matches[1]}](${matches[2]})\n`;
+            if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
 
             return initObjects.length <= 1
-              ? `${acc}[${matches[1]}](${matches[2]})`
-              : `${acc}[${matches[1]}](${matches[2]}), `;
+              ? `${acc}[${matches[1]}](${getLink(matches[2])})`
+              : `${acc}[${matches[1]}](${getLink(matches[2])}), `;
           }
 
           return acc;

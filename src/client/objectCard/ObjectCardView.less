@@ -184,26 +184,30 @@
 
   .AffiliatLink {
     border: @base-border;
-    width: 100px;
-    padding: 7px 0;
-    margin-left: 5px;
+    max-width: 122px;
+    width: fit-content;
+    //padding: 7px 0;
+    //margin-left: 5px;
     margin-bottom: 5px;
 
     &__icon-amazon {
       div {
-        width: 100px;
-        padding: 5px 0 0 0;
+        max-width: 122px;
+        width: fit-content;
+        padding: 0 4px;
       }
     }
 
     &__icon {
       div {
-        width: 100px;
+        max-width: 122px;
+        width: fit-content;
         padding: 0;
       }
 
       @media @small {
-        width: 100px;
+        max-width: 122px;
+        width: fit-content;
         padding: 0;
       }
 

@@ -15,6 +15,8 @@ const images = {
 const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
   const isAmazon = link.link?.includes('amazon');
+  const needsFitContent =
+    link.link?.includes('www.paypal.com') || link.link?.includes('calendly.com');
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
@@ -39,11 +41,13 @@ const AffiliatLink = ({ link, disabled }) => {
       {link.image ? (
         <img
           className={!isAmazon ? 'AffiliatLink__image' : 'AffiliatLink__image-amazon'}
+          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
           src={link.image || images[link.type]}
           alt={'Affiliate button logo'}
         />
       ) : (
         <ReactSVG
+          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
           className={!isAmazon ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
           src={images[link.type]}
         />

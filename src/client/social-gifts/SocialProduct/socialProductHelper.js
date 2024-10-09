@@ -5,7 +5,6 @@ export const isTablet =
   typeof window !== 'undefined' && window.innerWidth >= 768 && window.innerWidth <= 1024;
 
 export const listOfIngredientsHelpingWords = [
-  // Measurements
   'cup',
   'teaspoon',
   'tsp',
@@ -53,8 +52,6 @@ export const listOfIngredientsHelpingWords = [
   'drizzle',
   'splash',
   'handful',
-
-  //  Preparation Methods
   'chopped',
   'diced',
   'minced',
@@ -84,8 +81,6 @@ export const listOfIngredientsHelpingWords = [
   'marinated',
   'seasoned',
   'blended',
-
-  // Cooking Terms
   'preheat',
   'bake',
   'cook',
@@ -112,8 +107,6 @@ export const listOfIngredientsHelpingWords = [
   'arrange',
   'top',
   'serve',
-
-  // Descriptors & Miscellaneous
   'fresh',
   'dried',
   'unsalted',
@@ -148,8 +141,6 @@ export const listOfIngredientsHelpingWords = [
   'thin',
   'tender',
   'firm',
-
-  //  Miscellaneous
   'to taste',
   'as needed',
   'for garnish',
@@ -162,21 +153,38 @@ export const listOfIngredientsHelpingWords = [
   'or',
   'etc',
   '-sized',
+  'cups',
+  'large',
+  'for toasting',
+  'chilled',
+  'high-quality',
+  'pure',
+  'hard-boiled',
+  'grams',
+  'drained',
+  'condensed',
+  'for topping',
+  'for frying',
+  'drained',
+  'cut into',
+  'for drizzling',
 ];
 
 export const cleanIngredientString = ingredient => {
-  const omitWordRegex = new RegExp(
-    `\\b(${listOfIngredientsHelpingWords.join(
-      's?|',
-    )}s?)\\b|\\d+\\/?\\d*\\s*(g|kg|ml|l|oz|tsp|tbsp|cup|pint|quart|gallon|pound|lb)?|[(),;\\.!:]`,
+  const removeHelpingWords = new RegExp(
+    `\\b(${listOfIngredientsHelpingWords.map(word => `${word}s?`).join('|')})\\b`,
     'gi',
   );
 
+  const removeQuantitiesAndMeasurements = /(\d+|\u00BC|\u00BD|\u00BE|\u2150|\u2151|\u2152|\u2153|\u2154|\u2155|\u2156|\u2157|\u2158|\u2159|\u215A|\u215B|\u215C|\u215D|\u215E)\s*(g|kg|ml|l|oz|tsp|tbsp|cup|cups|pint|quart|gallon|pound|lb)?|[(),;.!:-]/gi;
+
   return ingredient
-    ?.replace(omitWordRegex, '')
+    ?.replace(removeHelpingWords, '')
+    ?.replace(removeQuantitiesAndMeasurements, '')
     ?.trim()
     ?.split(/\s+/)
     ?.filter(Boolean)
+    ?.map(word => word.replace(/s\b/g, ''))
     ?.join(' ');
 };
 
