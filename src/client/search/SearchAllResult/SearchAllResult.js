@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
-import { injectIntl } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { has, isEmpty } from 'lodash';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Button, Icon, Modal } from 'antd';
 import { useHistory } from 'react-router';
 import classNames from 'classnames';
 
@@ -53,10 +53,15 @@ import {
 import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import './SearchAllResult.less';
+import ListDescription from '../../social-gifts/ListDescription/ListDescription';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [infoVisible, setInfoVisible] = useState(!isMobile());
   const isUsersSearch = props.searchType === 'Users';
+  const hasTitle = has(props.currObj, 'title');
+  const hasDescription = has(props.currObj, 'description');
+  const showInfo = hasTitle || hasDescription;
   const resultList = useRef();
   const history = useHistory();
   const accessExtend =
@@ -223,13 +228,20 @@ const SearchAllResult = props => {
               reloadSearchList={props.reloadSearchList}
             />
           )}
-          {accessExtend && props.authenticated && (
-            <div className="Breadcrumbs__edit-container">
+          <div className="Breadcrumbs__edit-container">
+            {accessExtend && props.authenticated && (
               <Button onClick={editObjectClick}>
                 {props.intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
               </Button>
-            </div>
-          )}
+            )}
+            {props.isSocial && showInfo && (
+              <Icon
+                type="info-circle"
+                className="WalletTable__csv-button info-button"
+                onClick={() => setInfoVisible(true)}
+              />
+            )}
+          </div>
         </div>
         <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}
@@ -242,6 +254,21 @@ const SearchAllResult = props => {
           <div className="SearchAllResult__loader">{props.loadingMore && <Loading />}</div>
         )}
       </div>
+      {showInfo && (
+        <Modal
+          width={'90%'}
+          title={props.currObj?.name || props.currObj?.default_name}
+          onCancel={() => setInfoVisible(false)}
+          footer={[
+            <Button key="Ok" type="primary" onClick={() => setInfoVisible(false)}>
+              <FormattedMessage id="ok" defaultMessage="Ok" />
+            </Button>,
+          ]}
+          visible={infoVisible}
+        >
+          <ListDescription wobject={props.currObj} />
+        </Modal>
+      )}
     </div>
   );
 };
