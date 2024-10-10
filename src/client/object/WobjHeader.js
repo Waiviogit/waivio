@@ -41,7 +41,8 @@ const WobjHeader = ({
   isWaivio,
   isAdministrator,
 }) => {
-  const coverImage = wobject.background || DEFAULTS.BACKGROUND;
+  const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
+  const coverImage = wobject.background || isRecipe ? '' : DEFAULTS.BACKGROUND;
   const descriptionShort = wobject.title || '';
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && (isWaivio || isAdministrator)) ||
@@ -52,7 +53,6 @@ const WobjHeader = ({
   const status = parseWobjectField(wobject, 'status');
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
-  const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
   const instacardAff =
     isRecipe && wobject?.affiliateLinks
       ? wobject?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
