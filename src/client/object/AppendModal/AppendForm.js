@@ -2522,7 +2522,9 @@ class AppendForm extends Component {
           <>
             <Form.Item>
               {getFieldDecorator(currentField, {
-                rules: this.getFieldRules(fieldForRules),
+                rules: this.getFieldRules(
+                  isIngredients ? recipeFields.recipeIngredients : fieldForRules,
+                ),
               })(
                 <Input.TextArea
                   autoSize={{ minRows: 4, maxRows: 8 }}

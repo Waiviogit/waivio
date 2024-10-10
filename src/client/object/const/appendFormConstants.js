@@ -352,6 +352,34 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [recipeFields.recipeIngredients]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Recipe ingredients' },
+      },
+    },
+    {
+      max: 1500,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 1500 characters.",
+        },
+        intlMeta: { value: 1500 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
   [objectFields.affiliateCode]: [
     {
       transform: value => value && value.toLowerCase(),
