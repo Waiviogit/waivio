@@ -38,12 +38,20 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
     'Proposition-new__footer-container--noEligible': proposition.notEligible,
     'Proposition-new__footer-container--reserved': type === 'reserved',
   });
+  const sortComents = commList =>
+    commList.sort((a, b) => {
+      const timestamp1 = new Date(a.created).getTime();
+      const timestamp2 = new Date(b.created).getTime();
+
+      return timestamp1 - timestamp2;
+    });
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentsCount, setCommentsCount] = useState(proposition?.commentsCount);
+  const [messagesPermlink, setMessagesPermlink] = useState(proposition?.messagesPermlink);
   const [commentsLoading, setCommentsLoading] = useState(false);
 
   useEffect(() => {
@@ -68,7 +76,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       };
 
       if (isMentions) {
-        const [parent_author, parent_permlink] = proposition.messagesPermlink.split('/');
+        const [parent_author, parent_permlink] = messagesPermlink.split('/');
 
         opt = {
           author: parent_author,
@@ -107,7 +115,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
     if (isMentions) {
       const method = () =>
-        proposition.messagesPermlink
+        messagesPermlink
           ? dispatch(sendCommentForMentions(proposition, commentValue))
           : dispatch(sendInitialCommentForMentions(proposition, commentValue));
 
@@ -124,6 +132,8 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
             ...comment,
           },
         ];
+
+        if (!messagesPermlink) setMessagesPermlink(comment?.messagesPermlink);
 
         setComments(commentList);
         setCommentsCount(commentList?.length);
@@ -223,16 +233,14 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               )}
             </div>
             {showComment &&
-              comments
-                .sort((a, b) => b.created - a.created)
-                .map(comment => (
-                  <CommentCard
-                    key={`${comment?.author}/${comment?.permlink}`}
-                    comment={comment}
-                    getMessageHistory={getCommentsList}
-                    proposition={proposition}
-                  />
-                ))}
+              sortComents(comments).map(comment => (
+                <CommentCard
+                  key={`${comment?.author}/${comment?.permlink}`}
+                  comment={comment}
+                  getMessageHistory={getCommentsList}
+                  proposition={proposition}
+                />
+              ))}
             <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
@@ -280,16 +288,14 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               </div>
             )}
             {showComment &&
-              comments
-                .sort((a, b) => b.created - a.created)
-                .map(comment => (
-                  <CommentCard
-                    key={`${comment?.author}/${comment?.permlink}`}
-                    comment={comment}
-                    getMessageHistory={getCommentsList}
-                    proposition={proposition}
-                  />
-                ))}
+              sortComents(comments).map(comment => (
+                <CommentCard
+                  key={`${comment?.author}/${comment?.permlink}`}
+                  comment={comment}
+                  getMessageHistory={getCommentsList}
+                  proposition={proposition}
+                />
+              ))}
             <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );

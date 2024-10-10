@@ -46,6 +46,7 @@ const propTypes = {
     guestInfo: PropTypes.shape({
       userId: PropTypes.string,
     }),
+    campaigns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     author: PropTypes.string,
     body: PropTypes.string,
     guideName: PropTypes.string,
@@ -184,6 +185,22 @@ const PostPopoverMenu = ({
         setIsVisible(false);
 
         return handlePostPopoverMenuClick(key);
+      case 'rejectReservationMention':
+        setIsVisible(false);
+
+        return Modal.confirm({
+          title: 'Reject review',
+          content: 'Do you want to reject this mention?',
+          onOk() {
+            return new Promise(resolve => {
+              dispatch(rejectAuthorReview({ ...post, type: 'mentions' }))
+                .then(() => resolve())
+                .catch(() => {
+                  resolve();
+                });
+            });
+          },
+        });
       case 'rejectReservation':
         setIsVisible(false);
 
@@ -445,11 +462,20 @@ const PostPopoverMenu = ({
     );
 
   if (post.guideName === userName) {
+    if (!isEmpty(post?.campaigns)) {
+      popoverMenu = [
+        ...popoverMenu,
+        ...post?.campaigns?.map(camp => (
+          <PopoverMenuItem
+            key={camp.type === 'mentions' ? 'rejectReservationMention' : 'rejectReservation'}
+          >
+            <Icon type="stop" /> Reject {camp.type}
+          </PopoverMenuItem>
+        )),
+      ];
+    }
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key={'rejectReservation'}>
-        <Icon type="stop" /> Reject review
-      </PopoverMenuItem>,
       <PopoverMenuItem key={'blackList'}>
         {loadingType === 'blackList' ? <Icon type={'loading'} /> : <Icon type="user-add" />}{' '}
         {inBlackList
