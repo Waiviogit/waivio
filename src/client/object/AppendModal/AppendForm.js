@@ -2527,7 +2527,7 @@ class AppendForm extends Component {
                 ),
               })(
                 <Input.TextArea
-                  autoSize={{ minRows: 4, maxRows: 8 }}
+                  autoSize={{ minRows: 4, maxRows: isIngredients ? 100 : 8 }}
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}

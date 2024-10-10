@@ -2726,7 +2726,7 @@ export const getHiveEngineSwap = () =>
     .catch(e => e);
 
 export const getDepositWithdrawPair = () =>
-  fetch('https://converter-api.hive-engine.com/api/pairs/', {
+  fetch(`${config.currenciesApiPrefix}${config.withdraw}${config.pairs}`, {
     headers,
     method: 'GET',
   })
@@ -2736,7 +2736,7 @@ export const getDepositWithdrawPair = () =>
     .catch(e => e);
 
 export const getHiveEngineCoins = () =>
-  fetch('https://converter-api.hive-engine.com/api/coins/', {
+  fetch(`${config.currenciesApiPrefix}${config.withdraw}${config.coins}`, {
     headers,
     method: 'GET',
   })
