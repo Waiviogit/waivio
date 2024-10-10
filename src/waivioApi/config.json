@@ -242,5 +242,7 @@
   "mentions": "/mentions",
   "mapLink": "/map-link",
   "addOn": "/add-on",
-  "group": "/group"
+  "group": "/group",
+  "pairs": "/pairs",
+  "coins": "/coins"
 }
