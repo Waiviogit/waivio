@@ -2528,9 +2528,12 @@ class AppendForm extends Component {
               })(
                 <Input.TextArea
                   autoSize={{ minRows: 4, maxRows: isIngredients ? 100 : 8 }}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
+                  className={classNames(
+                    isIngredients ? 'AppendForm__description-input' : 'AppendForm__input',
+                    {
+                      'validation-error': !this.state.isSomeValue,
+                    },
+                  )}
                   disabled={loading}
                   placeholder={
                     currentField === objectFields.language
