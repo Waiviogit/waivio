@@ -61,7 +61,9 @@ const SearchAllResult = props => {
   const shownMaps = shownMapsToParse ? JSON.parse(decodeURIComponent(shownMapsToParse)) : [];
   const [isScrolled, setIsScrolled] = useState(false);
   const [infoVisible, setInfoVisible] = useState(
-    !shownMaps?.includes(props.currObj.author_permlink) && !isMobile(),
+    props.currObj?.author_permlink &&
+      !shownMaps?.includes(props.currObj?.author_permlink) &&
+      !isMobile(),
   );
   const isUsersSearch = props.searchType === 'Users';
   const hasTitle = has(props.currObj, 'title');

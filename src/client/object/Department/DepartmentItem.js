@@ -46,7 +46,7 @@ const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
             <span className={getDepartmentsClassNames(department)}>{department.body}</span>
           ) : (
             <div className={getDepartmentsClassNames(department)}>{department.body}</div>
-          )}{' '}
+          )}
         </Link>
       </span>
     </span>
