@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
 import DepartmentItem from './DepartmentItem';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const DepartmentList = ({ wobject, departments, isSocialGifts, isEditMode, isRecipe }) => {
   const history = useHistory();
@@ -38,7 +37,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts, isEditMode, isRec
             wobject={wobject}
             department={dep}
           />
-          {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ', '}{' '}
+          {isSocialGifts && i !== departmentsList.length - 1 && ', '}{' '}
         </React.Fragment>
       ))}
       {hasMore && (
