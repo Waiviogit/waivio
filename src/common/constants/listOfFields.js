@@ -360,6 +360,7 @@ export const errorObjectFields = {
   [objectFields.brand]: [brandFields.brand, brandFields.brandName],
   [objectFields.merchant]: [merchantFields.merchant, merchantFields.merchantName],
   [objectFields.menuItem]: [menuItemFields.menuItemTitle, menuItemFields.menuItemImage],
+  [recipeFields.recipeIngredients]: [recipeFields.recipeIngredients],
 };
 
 export default null;

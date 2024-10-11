@@ -1813,8 +1813,6 @@ class AppendForm extends Component {
     if (currentField === recipeFields.calories) return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.cookingTime)
       return filtered.some(f => f.body === currentValue);
-    if (currentField === recipeFields.recipeIngredients)
-      return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.budget) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.pin) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.remove) return filtered.some(f => f.body === currentValue);
