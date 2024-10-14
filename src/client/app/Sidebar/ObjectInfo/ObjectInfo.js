@@ -824,9 +824,10 @@ class ObjectInfo extends React.Component {
 
             return currentLink ? [...acc, currentLink] : acc;
           }, []);
+      const allMenuItems = uniq([...sortButtons, ...buttonArray]);
 
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
-        return uniq([...sortButtons, ...buttonArray]).map(item =>
+        return allMenuItems.map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
@@ -852,7 +853,7 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={sortButtons} />,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={allMenuItems} />,
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>
