@@ -801,33 +801,36 @@ class ObjectInfo extends React.Component {
       );
     };
     const menuSection = () => {
-      if (!isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
-        const buttonArray = [
-          ...(this.state.menuItemsArray || []),
-          ...menuLinks,
-          ...menuPages,
-          ...button,
-          ...blogsList,
-          ...formsList,
-          ...newsFilters,
-        ];
+      const buttonArray = [
+        ...(this.state.menuItemsArray || []),
+        ...menuLinks,
+        ...menuPages,
+        ...button,
+        ...blogsList,
+        ...formsList,
+        ...newsFilters,
+      ];
 
-        const sortButtons = customSort.reduce((acc, curr) => {
-          const currentLink = buttonArray.find(
-            btn =>
-              btn.body === curr ||
-              btn.author_permlink === curr ||
-              btn.permlink === curr ||
-              btn.id === curr,
-          );
+      const sortButtons = isEmpty(customSort)
+        ? buttonArray
+        : customSort?.reduce((acc, curr) => {
+            const currentLink = buttonArray?.find(
+              btn =>
+                btn.body === curr ||
+                btn.author_permlink === curr ||
+                btn.permlink === curr ||
+                btn.id === curr,
+            );
 
-          return currentLink ? [...acc, currentLink] : acc;
-        }, []);
+            return currentLink ? [...acc, currentLink] : acc;
+          }, []);
 
+      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         return uniq([...sortButtons, ...buttonArray]).map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
+
       const objectTypeMenuTitle = ['widget', 'newsfeed'].includes(wobject.object_type);
 
       return (
@@ -849,7 +852,7 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={this.state.menuItemsArray} />,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={sortButtons} />,
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>
