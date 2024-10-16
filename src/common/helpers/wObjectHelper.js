@@ -123,6 +123,29 @@ export const prepareAlbumData = (form, currentUsername, wObject, votePercent) =>
   return data;
 };
 
+export const prepareRemoveData = (post, currentUsername, wObject, votePercent) => {
+  const data = {};
+
+  data.author = currentUsername;
+  data.parentAuthor = wObject.author;
+  data.parentPermlink = wObject.author_permlink;
+  data.body = `@${data.author} removed post: author: ${post.author}, permlink: ${post.permlink}.`;
+  data.title = '';
+
+  data.field = {
+    body: `${post.author}/${post.permlink}`,
+    locale: 'en-US',
+    name: 'remove',
+  };
+
+  data.permlink = `${data.author}-${generatePermlink()}`;
+  data.lastUpdated = Date.now();
+  data.wobjectName = getObjectName(wObject);
+  data.votePower = votePercent;
+
+  return data;
+};
+
 export const prepareBlogData = (form, currentUserName, wObject, votePercent) => {
   const blog = form.blogTitle || form.blogAccount;
   const data = {};

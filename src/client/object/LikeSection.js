@@ -28,6 +28,7 @@ const LikeSection = props => {
   const defaultPercent = useSelector(getVotePercent);
   const isGuest = useSelector(isGuestUser);
   const { form, intl, disabled } = props;
+
   const littleVotePower = inWhiteList ? false : voteWorth < 0.0001;
 
   useEffect(() => {
