@@ -23,83 +23,13 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { deletePost, getObjectInfo } from '../../../waivioApi/ApiClient';
 import AppendModal from '../../object/AppendModal/AppendModal';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { rejectAuthorReview } from '../../../store/newRewards/newRewardsActions';
 import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
-
-import './PostPopoverMenu.less';
 import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
 
-const propTypes = {
-  pendingFlag: PropTypes.bool,
-  isSocial: PropTypes.bool,
-  pendingBookmark: PropTypes.bool,
-  saving: PropTypes.bool,
-  postState: PropTypes.shape({
-    isReported: PropTypes.bool,
-    userFollowed: PropTypes.bool,
-    isSaved: PropTypes.bool,
-  }).isRequired,
-  intl: PropTypes.shape().isRequired,
-  post: PropTypes.shape({
-    guestInfo: PropTypes.shape({
-      userId: PropTypes.string,
-    }),
-    campaigns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    author: PropTypes.string,
-    body: PropTypes.string,
-    guideName: PropTypes.string,
-    root_author: PropTypes.string,
-    isHide: PropTypes.bool,
-    blacklisted: PropTypes.bool,
-    url: PropTypes.string,
-    title: PropTypes.string,
-    author_original: PropTypes.string,
-    active_votes: PropTypes.arrayOf(
-      PropTypes.shape({
-        sponsor: PropTypes.bool,
-      }),
-    ),
-    net_rshares_WAIV: PropTypes.number,
-    permlink: PropTypes.string,
-    net_rshares: PropTypes.number,
-    children: PropTypes.number,
-    youFollows: PropTypes.bool,
-    loading: PropTypes.bool,
-    loadingHide: PropTypes.bool,
-    pin: PropTypes.bool,
-    hasPinUpdate: PropTypes.bool,
-    hasRemoveUpdate: PropTypes.bool,
-    id: PropTypes.string,
-    loadingMute: PropTypes.bool,
-    muted: PropTypes.bool,
-    tags: PropTypes.shape(),
-    cities: PropTypes.shape(),
-    userTwitter: PropTypes.shape(),
-    wobjectsTwitter: PropTypes.shape(),
-  }).isRequired,
-  handlePostPopoverMenuClick: PropTypes.func,
-  ownPost: PropTypes.bool,
-  disableRemove: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-  isGuest: PropTypes.bool.isRequired,
-  userName: PropTypes.string,
-  getSocialInfoPost: PropTypes.func,
-  userComments: PropTypes.bool,
-  isThread: PropTypes.bool,
-};
-
-const defaultProps = {
-  pendingFlag: false,
-  pendingBookmark: false,
-  saving: false,
-  ownPost: false,
-  handlePostPopoverMenuClick: () => {},
-  getSocialInfoPost: () => {},
-  userComments: false,
-  isThread: false,
-};
+import './PostPopoverMenu.less';
+import RemoveObjFomPost from '../RemoveObjFomPost/RemoveObjFomPost';
 
 const PostPopoverMenu = ({
   pendingFlag,
@@ -123,6 +53,7 @@ const PostPopoverMenu = ({
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [openRejectCapm, setOpenRejectCapm] = useState(false);
   const [loadingTras, setLoading] = useState(false);
   const [wobjName, setWobjName] = useState('');
   const [inBlackList, setInBlackList] = useState(post.blacklisted);
@@ -158,7 +89,15 @@ const PostPopoverMenu = ({
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = typeof window !== 'undefined' ? window.location.origin : 'https://waivio.com';
   const handleSelect = key => {
-    switch (key) {
+    let currKey = key;
+
+    if (key.includes('rejectReservation')) {
+      const parseKey = key.split('/');
+
+      currKey = parseKey[0];
+    }
+
+    switch (currKey) {
       case 'delete':
         return setIsOpen(true);
       case 'pin':
@@ -185,38 +124,12 @@ const PostPopoverMenu = ({
         setIsVisible(false);
 
         return handlePostPopoverMenuClick(key);
-      case 'rejectReservationMention':
+
+      case 'rejectCampaign': {
         setIsVisible(false);
 
-        return Modal.confirm({
-          title: 'Reject review',
-          content: 'Do you want to reject this mention?',
-          onOk() {
-            return new Promise(resolve => {
-              dispatch(rejectAuthorReview({ ...post, type: 'mentions' }))
-                .then(() => resolve())
-                .catch(() => {
-                  resolve();
-                });
-            });
-          },
-        });
-      case 'rejectReservation':
-        setIsVisible(false);
-
-        return Modal.confirm({
-          title: 'Reject review',
-          content: 'Do you want to reject this review?',
-          onOk() {
-            return new Promise(resolve => {
-              dispatch(rejectAuthorReview(post))
-                .then(() => resolve())
-                .catch(() => {
-                  resolve();
-                });
-            });
-          },
-        });
+        return setOpenRejectCapm(true);
+      }
 
       case 'blackList':
         setLoadingType('blackList');
@@ -465,15 +378,12 @@ const PostPopoverMenu = ({
     if (!isEmpty(post?.campaigns)) {
       popoverMenu = [
         ...popoverMenu,
-        ...post?.campaigns?.map(camp => (
-          <PopoverMenuItem
-            key={camp.type === 'mentions' ? 'rejectReservationMention' : 'rejectReservation'}
-          >
-            <Icon type="stop" /> Reject {camp.type}
-          </PopoverMenuItem>
-        )),
+        <PopoverMenuItem key={'rejectCampaign'}>
+          <Icon type="stop" /> Reject campaign
+        </PopoverMenuItem>,
       ];
     }
+
     popoverMenu = [
       ...popoverMenu,
       <PopoverMenuItem key={'blackList'}>
@@ -547,6 +457,15 @@ const PostPopoverMenu = ({
       >
         Would you like permanently delete your post?
       </Modal>
+      {openRejectCapm && (
+        <RemoveObjFomPost
+          onClose={() => setOpenRejectCapm(false)}
+          visible={openRejectCapm}
+          campaings={post.campaigns}
+          linkedObj={post.wobjects}
+          post={post}
+        />
+      )}
       {isPin &&
         (post.pin || post.hasPinUpdate || has(post, 'currentUserPin') ? (
           history.push(`/object/${wobjAuthorPermlink}/updates/pin?search=${post.id}`)
@@ -575,8 +494,75 @@ const PostPopoverMenu = ({
   );
 };
 
-PostPopoverMenu.propTypes = propTypes;
-PostPopoverMenu.defaultProps = defaultProps;
+PostPopoverMenu.propTypes = {
+  pendingFlag: PropTypes.bool,
+  isSocial: PropTypes.bool,
+  pendingBookmark: PropTypes.bool,
+  saving: PropTypes.bool,
+  postState: PropTypes.shape({
+    isReported: PropTypes.bool,
+    userFollowed: PropTypes.bool,
+    isSaved: PropTypes.bool,
+  }).isRequired,
+  intl: PropTypes.shape().isRequired,
+  post: PropTypes.shape({
+    guestInfo: PropTypes.shape({
+      userId: PropTypes.string,
+    }),
+    campaigns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    wobjects: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    author: PropTypes.string,
+    body: PropTypes.string,
+    guideName: PropTypes.string,
+    root_author: PropTypes.string,
+    isHide: PropTypes.bool,
+    blacklisted: PropTypes.bool,
+    url: PropTypes.string,
+    title: PropTypes.string,
+    author_original: PropTypes.string,
+    active_votes: PropTypes.arrayOf(
+      PropTypes.shape({
+        sponsor: PropTypes.bool,
+      }),
+    ),
+    net_rshares_WAIV: PropTypes.number,
+    permlink: PropTypes.string,
+    net_rshares: PropTypes.number,
+    children: PropTypes.number,
+    youFollows: PropTypes.bool,
+    loading: PropTypes.bool,
+    loadingHide: PropTypes.bool,
+    pin: PropTypes.bool,
+    hasPinUpdate: PropTypes.bool,
+    hasRemoveUpdate: PropTypes.bool,
+    id: PropTypes.string,
+    loadingMute: PropTypes.bool,
+    muted: PropTypes.bool,
+    tags: PropTypes.shape(),
+    cities: PropTypes.shape(),
+    userTwitter: PropTypes.shape(),
+    wobjectsTwitter: PropTypes.shape(),
+  }).isRequired,
+  handlePostPopoverMenuClick: PropTypes.func,
+  ownPost: PropTypes.bool,
+  disableRemove: PropTypes.bool,
+  children: PropTypes.node.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  userName: PropTypes.string,
+  getSocialInfoPost: PropTypes.func,
+  userComments: PropTypes.bool,
+  isThread: PropTypes.bool,
+};
+PostPopoverMenu.defaultProps = {
+  pendingFlag: false,
+  pendingBookmark: false,
+  saving: false,
+  ownPost: false,
+  handlePostPopoverMenuClick: () => {},
+  getSocialInfoPost: () => {},
+  userComments: false,
+  isThread: false,
+};
 
 export default connect(
   state => ({
