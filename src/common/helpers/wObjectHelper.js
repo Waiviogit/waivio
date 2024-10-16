@@ -125,15 +125,17 @@ export const prepareAlbumData = (form, currentUsername, wObject, votePercent) =>
 
 export const prepareRemoveData = (post, currentUsername, wObject, votePercent) => {
   const data = {};
+  const postAuthor = post.author || post.userName;
+  const postPermlink = post.permlink || post.reviewPermlink;
 
   data.author = currentUsername;
   data.parentAuthor = wObject.author;
   data.parentPermlink = wObject.author_permlink;
-  data.body = `@${data.author} removed post: author: ${post.author}, permlink: ${post.permlink}.`;
+  data.body = `@${data.author} removed post: author: ${postAuthor}, permlink: ${postPermlink}.`;
   data.title = '';
 
   data.field = {
-    body: `${post.author}/${post.permlink}`,
+    body: `${postAuthor}/${postPermlink}`,
     locale: 'en-US',
     name: 'remove',
   };

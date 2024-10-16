@@ -27,9 +27,9 @@ import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
+import RemoveObjFomPost from '../RemoveObjFomPost/RemoveObjFomPost';
 
 import './PostPopoverMenu.less';
-import RemoveObjFomPost from '../RemoveObjFomPost/RemoveObjFomPost';
 
 const PostPopoverMenu = ({
   pendingFlag,
@@ -461,7 +461,7 @@ const PostPopoverMenu = ({
         <RemoveObjFomPost
           onClose={() => setOpenRejectCapm(false)}
           visible={openRejectCapm}
-          campaings={post.campaigns}
+          campaigns={post.campaigns}
           linkedObj={post.wobjects}
           post={post}
         />
