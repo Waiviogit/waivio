@@ -19,7 +19,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
       content: `Do you want to reject this ${camp.type}?`,
       onOk() {
         return new Promise(resolve => {
-          dispatch(rejectAuthorReview({ ...post, type: camp.type }))
+          dispatch(rejectAuthorReview({ ...post, ...camp }))
             .then(() => {
               resolve();
               setRejectedList([...rejectedList, camp.campaignId]);
@@ -72,10 +72,10 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
             <span>{getObjectName(obj)}</span>
 
             {rejectedList.includes(obj.author_permlink) ? (
-              <span>deleted</span>
+              <span>removed</span>
             ) : (
               <Button type="primary" onClick={() => deletePostFromObj(obj)}>
-                delete
+                remove
               </Button>
             )}
           </div>
