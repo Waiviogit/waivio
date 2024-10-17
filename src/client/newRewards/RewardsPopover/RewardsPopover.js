@@ -471,19 +471,17 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         sponsor={proposition}
         reservPermlink={proposition?.reservationPermlink}
       />
-      {openRejectCapm && (
-        <RemoveObjFomPost
-          onClose={() => setOpenRejectCapm(false)}
-          visible={openRejectCapm}
-          campaigns={[{ ...proposition, name: proposition.campaignName }]}
-          linkedObj={
-            proposition?.object.author_permlink !== proposition?.requiredObject?.author_permlink
-              ? [proposition?.requiredObject, proposition?.object]
-              : [proposition?.object]
-          }
-          post={proposition}
-        />
-      )}
+      <RemoveObjFomPost
+        onClose={() => setOpenRejectCapm(false)}
+        visible={openRejectCapm}
+        campaigns={[{ ...proposition, name: proposition.campaignName }]}
+        linkedObj={
+          proposition?.object.author_permlink !== proposition?.requiredObject?.author_permlink
+            ? [proposition?.requiredObject, proposition?.object]
+            : [proposition?.object]
+        }
+        post={proposition}
+      />
     </React.Fragment>
   );
 };
