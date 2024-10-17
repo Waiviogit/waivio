@@ -374,18 +374,12 @@ const PostPopoverMenu = ({
       </PopoverMenuItem>,
     );
 
-  if (post.guideName === userName) {
-    if (!isEmpty(post?.campaigns)) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key={'rejectCampaign'}>
-          <Icon type="stop" /> Reject campaign
-        </PopoverMenuItem>,
-      ];
-    }
-
+  if (!isEmpty(post?.campaigns)) {
     popoverMenu = [
       ...popoverMenu,
+      <PopoverMenuItem key={'rejectCampaign'}>
+        <Icon type="stop" /> Reject review
+      </PopoverMenuItem>,
       <PopoverMenuItem key={'blackList'}>
         {loadingType === 'blackList' ? <Icon type={'loading'} /> : <Icon type="user-add" />}{' '}
         {inBlackList
@@ -457,7 +451,7 @@ const PostPopoverMenu = ({
       >
         Would you like permanently delete your post?
       </Modal>
-      {openRejectCapm && (
+      {!isEmpty(post?.campaigns) && (
         <RemoveObjFomPost
           onClose={() => setOpenRejectCapm(false)}
           visible={openRejectCapm}

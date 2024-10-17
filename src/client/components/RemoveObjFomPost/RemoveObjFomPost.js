@@ -33,11 +33,11 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
 
   const deletePostFromObj = obj =>
     Modal.confirm({
-      title: `Delete this post from object`,
-      content: `Delete this post from object ${getObjectName(obj)}?`,
+      title: `Remove`,
+      content: `Remove this post from ${getObjectName(obj)}?`,
       onOk() {
         return new Promise(resolve => {
-          dispatch(appendObject(prepareRemoveData(post, currUser, obj)))
+          dispatch(appendObject(prepareRemoveData(post, currUser, obj), { isLike: true }))
             .then(() => {
               resolve();
               setRejectedList([...rejectedList, obj.author_permlink]);
