@@ -35,8 +35,8 @@ const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
   useEffect(() => () => dispatch(setActiveDepartment({})), [wobject.author_permlink]);
 
   return (
-    <div className="Department__container">
-      <div className="Department__block" key={department.body}>
+    <span className="Department__container">
+      <span className="Department__block" key={department.body}>
         <Link
           className="Department__button"
           to={getDepartmentHref(department)}
@@ -46,10 +46,10 @@ const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
             <span className={getDepartmentsClassNames(department)}>{department.body}</span>
           ) : (
             <div className={getDepartmentsClassNames(department)}>{department.body}</div>
-          )}{' '}
+          )}
         </Link>
-      </div>
-    </div>
+      </span>
+    </span>
   );
 };
 

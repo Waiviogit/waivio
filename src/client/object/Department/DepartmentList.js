@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
 import DepartmentItem from './DepartmentItem';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
-const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
+const DepartmentList = ({ wobject, departments, isSocialGifts, isEditMode, isRecipe }) => {
   const history = useHistory();
   const [hasMore, setHasMore] = useState(false);
   const onShowMoreClick = () => setHasMore(false);
@@ -18,7 +18,16 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
   }, [departments.length]);
 
   return (
-    <>
+    <span>
+      {!isEditMode && !isEmpty(departments) && (
+        <span className="Department__title">
+          <FormattedMessage
+            id={isRecipe ? 'categories' : 'departments'}
+            defaultMessage={isRecipe ? 'Categories' : 'Departments'}
+          />
+          :{' '}
+        </span>
+      )}
       {departmentsList?.map((dep, i) => (
         <React.Fragment key={`department-${dep.body}`}>
           <DepartmentItem
@@ -28,7 +37,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
             wobject={wobject}
             department={dep}
           />
-          {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ', '}{' '}
+          {isSocialGifts && i !== departmentsList.length - 1 && ', '}{' '}
         </React.Fragment>
       ))}
       {hasMore && (
@@ -43,12 +52,14 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
           )}
         </button>
       )}
-    </>
+    </span>
   );
 };
 
 DepartmentList.propTypes = {
   isSocialGifts: PropTypes.bool,
+  isEditMode: PropTypes.bool,
+  isRecipe: PropTypes.bool,
   wobject: PropTypes.shape().isRequired,
   departments: PropTypes.arrayOf().isRequired,
 };

@@ -1813,8 +1813,6 @@ class AppendForm extends Component {
     if (currentField === recipeFields.calories) return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.cookingTime)
       return filtered.some(f => f.body === currentValue);
-    if (currentField === recipeFields.recipeIngredients)
-      return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.budget) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.pin) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.remove) return filtered.some(f => f.body === currentValue);
@@ -2522,13 +2520,18 @@ class AppendForm extends Component {
           <>
             <Form.Item>
               {getFieldDecorator(currentField, {
-                rules: this.getFieldRules(fieldForRules),
+                rules: this.getFieldRules(
+                  isIngredients ? recipeFields.recipeIngredients : fieldForRules,
+                ),
               })(
                 <Input.TextArea
-                  autoSize={{ minRows: 4, maxRows: 8 }}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
+                  autoSize={{ minRows: 4, maxRows: isIngredients ? 100 : 8 }}
+                  className={classNames(
+                    isIngredients ? 'AppendForm__description-input' : 'AppendForm__input',
+                    {
+                      'validation-error': !this.state.isSomeValue,
+                    },
+                  )}
                   disabled={loading}
                   placeholder={
                     currentField === objectFields.language

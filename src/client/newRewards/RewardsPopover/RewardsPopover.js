@@ -23,6 +23,7 @@ import ids from '../BlackList/constants';
 import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { handleHidePost, muteAuthorPost } from '../../../store/postsStore/postActions';
+import RemoveObjFomPost from '../../components/RemoveObjFomPost/RemoveObjFomPost';
 
 const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
@@ -30,6 +31,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const [inBlackList, setInBlackList] = useState(false);
   const [mutedAuthor, setMutedAuthort] = useState(false);
   const [hidedPost, setHidedPost] = useState(false);
+  const [openRejectCapm, setOpenRejectCapm] = useState(false);
   const [followingObj, setFollowingObj] = useState(false);
   const [followingGuide, setFollowingGuide] = useState(false);
   const [openDecrease, setOpenDecrease] = useState('');
@@ -72,27 +74,6 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
       onOk() {
         return new Promise(resolve => {
           dispatch(realiseRewards(proposition))
-            .then(() => {
-              getProposition().then(() => {
-                resolve();
-              });
-            })
-            .catch(() => {
-              resolve();
-            });
-        });
-      },
-    });
-  };
-
-  const rejectReward = () => {
-    setIsVisiblePopover(false);
-    Modal.confirm({
-      title: 'Reject review',
-      content: 'Do you want to reject this review?',
-      onOk() {
-        return new Promise(resolve => {
-          dispatch(rejectAuthorReview(proposition))
             .then(() => {
               getProposition().then(() => {
                 resolve();
@@ -310,7 +291,13 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const rejectRewards = useMemo(
     () => (
       <PopoverMenuItem key={'release'}>
-        <div role="presentation" onClick={rejectReward}>
+        <div
+          role="presentation"
+          onClick={() => {
+            setIsVisiblePopover(false);
+            setOpenRejectCapm(true);
+          }}
+        >
           {intl.formatMessage({ id: 'reject_review', defaultMessage: 'Reject review' })}
         </div>
       </PopoverMenuItem>
@@ -484,6 +471,17 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         sponsor={proposition}
         reservPermlink={proposition?.reservationPermlink}
       />
+      <RemoveObjFomPost
+        onClose={() => setOpenRejectCapm(false)}
+        visible={openRejectCapm}
+        campaigns={[{ ...proposition, name: proposition.campaignName }]}
+        linkedObj={
+          proposition?.object.author_permlink !== proposition?.requiredObject?.author_permlink
+            ? [proposition?.requiredObject, proposition?.object]
+            : [proposition?.object]
+        }
+        post={proposition}
+      />
     </React.Fragment>
   );
 };
@@ -491,6 +489,8 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
 RewardsPopover.propTypes = {
   proposition: PropTypes.shape({
     reservationPermlink: PropTypes.string,
+    campaignName: PropTypes.string,
+    object: PropTypes.shape({ author_permlink: PropTypes.string }),
     userName: PropTypes.string,
     reviewStatus: PropTypes.string,
     reviewPermlink: PropTypes.string,
