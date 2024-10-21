@@ -155,7 +155,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
           )}
         </React.Fragment>
       )}
-      <PostModal />
+      <PostModal isObj />
     </div>
   );
 };

@@ -18,6 +18,7 @@ import { getPostContent } from '../../store/postsStore/postsSelectors';
 const PostModalContainer = React.memo(
   ({
     showPostModal,
+    isObj,
     currentShownPost,
     hidePostModal,
     author,
@@ -41,6 +42,7 @@ const PostModalContainer = React.memo(
       showPostModal && (
         <PostModal
           isThread={isThread}
+          isObj={isObj}
           showPostModal={showPostModal}
           currentShownPost={currentShownPost}
           hidePostModal={hidePostModal}
@@ -66,6 +68,7 @@ PostModalContainer.propTypes = {
   shownPostContents: PropTypes.shape(),
   getSocialInfoPost: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
+  isObj: PropTypes.bool,
   isThread: PropTypes.bool,
   userName: PropTypes.string,
 };
@@ -73,6 +76,7 @@ PostModalContainer.propTypes = {
 PostModalContainer.defaultProps = {
   author: {},
   showPostModal: false,
+  isObj: false,
   currentShownPost: {},
   shownPostContents: {},
   isGuest: false,
