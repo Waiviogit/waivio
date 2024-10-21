@@ -61,6 +61,7 @@ class StoryFull extends React.Component {
     muteAuthorPost: PropTypes.func.isRequired,
     signature: PropTypes.string,
     pendingLike: PropTypes.bool,
+    isObj: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -140,7 +141,7 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
 
-    this.setInstacardScript(linkedObjects);
+    if (!this.props.isObj) this.setInstacardScript(linkedObjects);
 
     if (typeof window !== 'undefined' && window.location.hash) {
       if (typeof document !== 'undefined') {
@@ -157,7 +158,7 @@ class StoryFull extends React.Component {
   }
 
   componentWillUnmount() {
-    const { post } = this.props;
+    const { post, isObj } = this.props;
     const hideWhiteBG =
       document &&
       document.location?.pathname !==
@@ -165,6 +166,12 @@ class StoryFull extends React.Component {
 
     if (hideWhiteBG) {
       if (typeof document !== 'undefined') document.body.classList.remove('white-bg');
+    }
+
+    if (!isObj) {
+      const element = document.getElementById('standard-instacart-widget-v1');
+
+      if (element) element.remove();
     }
   }
 
@@ -269,6 +276,7 @@ class StoryFull extends React.Component {
       handleEditThread,
       closeEditThread,
       newBody,
+      isObj,
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -318,6 +326,31 @@ class StoryFull extends React.Component {
               values={{ title: post.root_title }}
             />
           </h3>
+          {instacardAff && (
+            <React.Fragment>
+              {!isObj && (
+                <div itemScope itemType={'https://schema.org/Recipe'} style={{ display: 'none' }}>
+                  {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
+                    <span key={ingredient} itemProp="recipeIngredient">
+                      {ingredient}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div
+                id={'shop-with-instacart-v1'}
+                className={'shop-with-instacart-v1'}
+                data-affiliate_id={instacardAff?.affiliateCode}
+                data-source_origin="affiliate_hub"
+                data-affiliate_platform="recipe_widget"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginBottom: '10px',
+                }}
+              />
+            </React.Fragment>
+          )}
           <h4>
             <Link to={dropCategory(post.url)}>
               <FormattedMessage
@@ -382,9 +415,16 @@ class StoryFull extends React.Component {
     }
 
     return (
-      <div className="StoryFull">
+      <div
+        className="StoryFull"
+        {...(instacardAff ? { itemType: 'https://schema.org/Recipe' } : {})}
+      >
         {replyUI}
-        {!isRecipe && <h1 className="StoryFull__title">{post.title}</h1>}
+        {!isRecipe && (
+          <h1 className="StoryFull__title" itemProp="name">
+            {post.title}
+          </h1>
+        )}
         {isRecipe && <span className="StoryFull__title">{post.title}</span>}
         {!isOriginalPost && !isRecipe && (
           <h3 className="StoryFull__comments_title">
@@ -471,30 +511,6 @@ class StoryFull extends React.Component {
             </PostPopoverMenu>
           </div>
         )}
-        {instacardAff && (
-          <React.Fragment>
-            <div itemScope itemType={'https://schema.org/Recipe'} style={{ display: 'none' }}>
-              {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
-                <span key={ingredient} itemProp="recipeIngredient">
-                  {ingredient}
-                </span>
-              ))}
-            </div>
-            <div
-              id={'shop-with-instacart-v1'}
-              className={'shop-with-instacart-v1'}
-              data-affiliate_id={instacardAff?.affiliateCode}
-              data-source_origin="affiliate_hub"
-              data-affiliate_platform="recipe_widget"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: '10px',
-              }}
-            />
-          </React.Fragment>
-        )}
-
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
@@ -600,20 +616,6 @@ class StoryFull extends React.Component {
             </Collapse.Panel>
           )}
         </Collapse>
-        {instacardAff && (
-          <div
-            id={'shop-with-instacart-v1'}
-            className={'shop-with-instacart-v1'}
-            data-affiliate_id={instacardAff?.affiliateCode}
-            data-source_origin="affiliate_hub"
-            data-affiliate_platform="recipe_widget"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginBottom: '10px',
-            }}
-          />
-        )}
         <StoryFooter
           isRecipe={isRecipe}
           isThread={isThread}

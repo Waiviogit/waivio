@@ -99,6 +99,7 @@ class PostContent extends React.Component {
     siteName: PropTypes.string.isRequired,
     bookmarks: PropTypes.arrayOf(PropTypes.string),
     sliderMode: PropTypes.bool,
+    isObj: PropTypes.bool,
     isRecipe: PropTypes.bool,
     editPost: PropTypes.func,
     editThreadAction: PropTypes.func,
@@ -274,6 +275,7 @@ class PostContent extends React.Component {
       siteName,
       isThread,
       isRecipe,
+      isObj,
     } = this.props;
     const { editThread, newBody } = this.state;
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
@@ -376,6 +378,7 @@ class PostContent extends React.Component {
           postState={postState}
           signature={signature}
           isThread={isThread}
+          isObj={isObj}
           editThread={editThread}
           newBody={newBody}
           handleEditThread={this.handleEditThread}
