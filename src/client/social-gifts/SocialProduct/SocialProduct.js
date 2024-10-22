@@ -479,6 +479,7 @@ const SocialProduct = ({
               </div>
               {!showPostModal && isRecipe && instacardAff && (
                 <div
+                  className={'SocialProduct__instacard'}
                   id={'shop-with-instacart-v1'}
                   data-affiliate_id={instacardAff?.affiliateCode}
                   data-source_origin="affiliate_hub"

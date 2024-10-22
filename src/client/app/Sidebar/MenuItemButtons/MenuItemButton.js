@@ -4,37 +4,42 @@ import { Button } from 'antd';
 import { has } from 'lodash';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 const MenuItemButton = ({ item }) => {
   const [url, setUrl] = useState('');
-  const itemBody = JSON.parse(item.body);
+  const itemBody = parseJSON(item.body);
+
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
-  const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
+  const defaultButtonType = itemBody?.style === 'highlight' ? 'primary' : 'default';
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (has(itemBody, 'linkToObject')) {
-      switch (itemBody.objectType) {
-        case 'list':
-          return setUrl(`/object/${authorPermlink}/menu#${itemBody.linkToObject}`);
-        case 'page':
-          return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
-        case 'webpage':
-          return setUrl(`/object/${authorPermlink}/webpage#${itemBody.linkToObject}`);
-        case 'newsfeed':
-          return setUrl(`/object/${authorPermlink}/newsfeed/${itemBody.linkToObject}`);
-        case 'widget':
-          return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
-        case 'map':
-          return setUrl(`/object/${authorPermlink}/map#${itemBody.linkToObject}`);
-        default:
-          return setUrl(`/object/${itemBody.linkToObject}`);
+    if (itemBody) {
+      if (has(itemBody, 'linkToObject')) {
+        switch (itemBody.objectType) {
+          case 'list':
+            return setUrl(`/object/${authorPermlink}/menu#${itemBody.linkToObject}`);
+          case 'page':
+            return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
+          case 'webpage':
+            return setUrl(`/object/${authorPermlink}/webpage#${itemBody.linkToObject}`);
+          case 'newsfeed':
+            return setUrl(`/object/${authorPermlink}/newsfeed/${itemBody.linkToObject}`);
+          case 'widget':
+            return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
+          case 'map':
+            return setUrl(`/object/${authorPermlink}/map#${itemBody.linkToObject}`);
+          default:
+            return setUrl(`/object/${itemBody.linkToObject}`);
+        }
       }
-    }
 
-    return setUrl(`${itemBody.linkToWeb}`);
+      return setUrl(`${itemBody.linkToWeb}`);
+    }
   }, []);
 
   const renderItem = () => {
@@ -95,6 +100,8 @@ const MenuItemButton = ({ item }) => {
         );
     }
   };
+
+  if (!itemBody) return null;
 
   return <div className="mb2">{renderItem()}</div>;
 };

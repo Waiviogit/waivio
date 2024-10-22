@@ -116,7 +116,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
     if (isMentions) {
       const method = () =>
         messagesPermlink
-          ? dispatch(sendCommentForMentions(proposition, commentValue))
+          ? dispatch(sendCommentForMentions({ ...proposition, messagesPermlink }, commentValue))
           : dispatch(sendInitialCommentForMentions(proposition, commentValue));
 
       return method().then(comment => {
