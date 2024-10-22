@@ -2394,6 +2394,12 @@ class AppendForm extends Component {
                   isMultiple={false}
                 />,
               )}
+              <br />
+              <p>
+                Recommended image ratio: 1.5:1 or wider (e.g., 1500x1000, 1800x1000, or 2000x1000
+                pixels).
+              </p>
+              <p>Image with a ratio larger than 2:1 may not display properly.</p>
             </Form.Item>
           </div>
         );
