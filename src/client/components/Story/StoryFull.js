@@ -61,7 +61,6 @@ class StoryFull extends React.Component {
     muteAuthorPost: PropTypes.func.isRequired,
     signature: PropTypes.string,
     pendingLike: PropTypes.bool,
-    isObj: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
@@ -141,7 +140,7 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
 
-    if (!this.props.isObj) this.setInstacardScript(linkedObjects);
+    this.setInstacardScript(linkedObjects);
 
     if (typeof window !== 'undefined' && window.location.hash) {
       if (typeof document !== 'undefined') {
@@ -158,7 +157,7 @@ class StoryFull extends React.Component {
   }
 
   componentWillUnmount() {
-    const { post, isObj } = this.props;
+    const { post } = this.props;
     const hideWhiteBG =
       document &&
       document.location?.pathname !==
@@ -168,11 +167,9 @@ class StoryFull extends React.Component {
       if (typeof document !== 'undefined') document.body.classList.remove('white-bg');
     }
 
-    if (!isObj) {
-      const element = document.getElementById('standard-instacart-widget-v1');
+    const element = document.getElementById('standard-instacart-widget-v1');
 
-      if (element) element.remove();
-    }
+    if (element) element.remove();
   }
 
   setInstacardScript = async wobjs => {
@@ -276,7 +273,6 @@ class StoryFull extends React.Component {
       handleEditThread,
       closeEditThread,
       newBody,
-      isObj,
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -326,31 +322,6 @@ class StoryFull extends React.Component {
               values={{ title: post.root_title }}
             />
           </h3>
-          {instacardAff && (
-            <React.Fragment>
-              {!isObj && (
-                <div itemScope itemType={'https://schema.org/Recipe'} style={{ display: 'none' }}>
-                  {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
-                    <span key={ingredient} itemProp="recipeIngredient">
-                      {ingredient}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div
-                id={'shop-with-instacart-v1'}
-                className={'shop-with-instacart-v1'}
-                data-affiliate_id={instacardAff?.affiliateCode}
-                data-source_origin="affiliate_hub"
-                data-affiliate_platform="recipe_widget"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginBottom: '10px',
-                }}
-              />
-            </React.Fragment>
-          )}
           <h4>
             <Link to={dropCategory(post.url)}>
               <FormattedMessage
@@ -417,7 +388,7 @@ class StoryFull extends React.Component {
     return (
       <div
         className="StoryFull"
-        {...(instacardAff ? { itemType: 'https://schema.org/Recipe' } : {})}
+        {...(instacardAff ? { itemType: 'https://schema.org/Recipe', itemScope: true } : {})}
       >
         {replyUI}
         {!isRecipe && (
@@ -511,6 +482,30 @@ class StoryFull extends React.Component {
             </PostPopoverMenu>
           </div>
         )}
+        {instacardAff && (
+          <React.Fragment>
+            <div style={{ display: 'none' }}>
+              {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
+                <span key={ingredient} itemProp="recipeIngredient">
+                  {ingredient}
+                </span>
+              ))}
+            </div>
+            <div
+              id={'shop-with-instacart-v1'}
+              className={'shop-with-instacart-v1'}
+              data-affiliate_id={instacardAff?.affiliateCode}
+              data-source_origin="affiliate_hub"
+              data-affiliate_platform="recipe_widget"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '10px',
+              }}
+            />
+          </React.Fragment>
+        )}
+
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
