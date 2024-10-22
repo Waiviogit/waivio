@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty, get, reverse } from 'lodash';
 import PropTypes from 'prop-types';
@@ -54,11 +54,22 @@ import {
 } from '../../../store/mapStore/mapSelectors';
 import {
   getAuthenticatedUserName,
+  getGuestAuthority,
   getIsAuthenticated,
+  getIsConnectMatchBot,
+  isGuestUser,
 } from '../../../store/authStore/authSelectors';
 import MainMapView from './MainMapView';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { calculateMana, dHive } from '../../vendor/steemitHelpers';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
+import MapObjectImportModal from '../MapObjectImport/MapObjectImportModal';
+import ImportErrorModal from '../MapObjectImport/ImportErrorModal';
 
 const MainMap = React.memo(props => {
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [usersState, setUsersState] = useState(null);
+  const hasVotingPower = usersState?.resourceCredits > 0.0001;
   const query = new URLSearchParams(props.location.search);
   const headerHeight = 132;
   let queryCenter = query.get('center');
@@ -146,6 +157,35 @@ const MainMap = React.memo(props => {
     );
   }
 
+  const getVotingInfo = async () => {
+    if (props.isGuest) {
+      const guestUserMana = await ApiClient.getGuestUserMana(props.authUserName);
+
+      setUsersState({ guestMana: guestUserMana.result });
+    } else {
+      const [acc] = await dHive.database.getAccounts([props.authUserName]);
+      const rc = await dHive.rc.getRCMana(props.authUserName, acc);
+      const waivVotingMana = await ApiClient.getWaivVoteMana(props.authUserName, acc);
+      const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
+      const resourceCredits = rc.percentage * 0.01 || 0;
+
+      setUsersState({
+        waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
+        resourceCredits,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getVotingInfo();
+  }, []);
+
+  const importObjects = () => {
+    setShowImportModal(true);
+  };
+  const closeImportModal = () => {
+    setShowImportModal(false);
+  };
   const checkDistanceAndSetReload = useCallback(() => {
     if (!isEmpty(props.searchMap)) {
       const distance = distanceInMBetweenEarthCoordinates(
@@ -303,39 +343,55 @@ const MainMap = React.memo(props => {
   }
 
   return (
-    <MainMapView
-      isUserMap={props.isUserMap}
-      hoveredCardPermlink={props.hoveredCardPermlink}
-      wobject={props.wobject}
-      isSocial={props.isSocial}
-      infoboxData={props.infoboxData}
-      area={props.area}
-      setArea={props.setArea}
-      setBoundsParams={props.setBoundsParams}
-      setInfoboxData={props.setInfoboxData}
-      showLocation={props.showLocation}
-      showMap={
-        ((!props.isSocial && !isEmpty(props.mapData.center)) || props.isSocial) &&
-        props.mapData.zoom
-      }
-      setShowLocation={props.setShowLocation}
-      setMapData={props.setMapData}
-      mapClassList={mapClassList}
-      query={query}
-      mapData={props.mapData}
-      putUserCoordinates={props.putUserCoordinates}
-      history={props.history}
-      mapRef={mapRef}
-      mapHeight={mapHeight}
-      mapControllersClassName={classNames('WebsiteBodyControl', {
-        'WebsiteBodyControl--social': props.isSocial,
-        'WebsiteBodyControl--userMap': props.isUserMap,
-      })}
-      userLocation={props.userLocation}
-      location={props.location}
-      wobjectsPoint={props.wobjectsPoint}
-      searchType={props.searchType}
-    />
+    <>
+      <MainMapView
+        isUserMap={props.isUserMap}
+        hoveredCardPermlink={props.hoveredCardPermlink}
+        wobject={props.wobject}
+        isSocial={props.isSocial}
+        infoboxData={props.infoboxData}
+        area={props.area}
+        setArea={props.setArea}
+        setBoundsParams={props.setBoundsParams}
+        setInfoboxData={props.setInfoboxData}
+        showLocation={props.showLocation}
+        showMap={
+          ((!props.isSocial && !isEmpty(props.mapData.center)) || props.isSocial) &&
+          props.mapData.zoom
+        }
+        setShowLocation={props.setShowLocation}
+        setMapData={props.setMapData}
+        mapClassList={mapClassList}
+        query={query}
+        mapData={props.mapData}
+        putUserCoordinates={props.putUserCoordinates}
+        history={props.history}
+        mapRef={mapRef}
+        mapHeight={mapHeight}
+        importObjects={importObjects}
+        mapControllersClassName={classNames('WebsiteBodyControl', {
+          'WebsiteBodyControl--social': props.isSocial,
+          'WebsiteBodyControl--userMap': props.isUserMap,
+        })}
+        userLocation={props.userLocation}
+        location={props.location}
+        wobjectsPoint={props.wobjectsPoint}
+        searchType={props.searchType}
+      />
+      {hasVotingPower && props.hasImportAuthority ? (
+        <MapObjectImportModal
+          closeImportModal={closeImportModal}
+          showImportModal={showImportModal}
+        />
+      ) : (
+        <ImportErrorModal
+          hasImportAuthority={props.hasImportAuthority}
+          hasVotingPower={hasVotingPower}
+          closeImportModal={closeImportModal}
+          showImportModal={showImportModal}
+        />
+      )}
+    </>
   );
 });
 
@@ -373,12 +429,14 @@ MainMap.propTypes = {
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
-  // loading: PropTypes.bool,
+  hasImportAuthority: PropTypes.bool,
+  isGuest: PropTypes.bool,
   socialLoading: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  authUserName: PropTypes.string,
   user: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
@@ -408,26 +466,34 @@ MainMap.defaultProps = {
 };
 
 export default connect(
-  state => ({
-    userLocation: getUserLocation(state),
-    isShowResult: getShowSearchResult(state),
-    screenSize: getScreenSize(state),
-    wobjectsPoint: getWobjectsPoint(state),
-    searchString: getWebsiteSearchString(state),
-    searchMap: getWebsiteMap(state),
-    showReloadButton: getShowReloadButton(state),
-    searchType: getWebsiteSearchType(state),
-    wobject: getObject(state),
-    socialLoading: getSocialSearchResultLoading(state),
-    mapData: getMapData(state),
-    height: getMapHeight(state),
-    boundsParams: getBoundsParams(state),
-    infoboxData: getInfoboxData(state),
-    showLocation: getShowLocation(state),
-    area: getArea(state),
-    authUserName: getAuthenticatedUserName(state),
-    isAuth: getIsAuthenticated(state),
-  }),
+  state => {
+    const isGuest = isGuestUser(state);
+
+    return {
+      isGuest,
+      hasImportAuthority: isGuest
+        ? getGuestAuthority(state)
+        : getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
+      userLocation: getUserLocation(state),
+      isShowResult: getShowSearchResult(state),
+      screenSize: getScreenSize(state),
+      wobjectsPoint: getWobjectsPoint(state),
+      searchString: getWebsiteSearchString(state),
+      searchMap: getWebsiteMap(state),
+      showReloadButton: getShowReloadButton(state),
+      searchType: getWebsiteSearchType(state),
+      wobject: getObject(state),
+      socialLoading: getSocialSearchResultLoading(state),
+      mapData: getMapData(state),
+      height: getMapHeight(state),
+      boundsParams: getBoundsParams(state),
+      infoboxData: getInfoboxData(state),
+      showLocation: getShowLocation(state),
+      area: getArea(state),
+      authUserName: getAuthenticatedUserName(state),
+      isAuth: getIsAuthenticated(state),
+    };
+  },
   {
     getCoordinates,
     getWebsiteObjWithCoordinates,
