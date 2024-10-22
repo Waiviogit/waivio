@@ -145,7 +145,13 @@ const Wobj = ({
       case 'book':
       case 'product':
       case 'recipe':
-        return <SocialProduct toggleViewEditMode={toggleViewEditMode} params={params} />;
+        return (
+          <SocialProduct
+            showPostModal={showPostModal}
+            toggleViewEditMode={toggleViewEditMode}
+            params={params}
+          />
+        );
       case 'business':
       case 'restaurant':
       case 'link':
