@@ -155,7 +155,7 @@ const WobjHeader = ({
           )}
         </div>
       </div>
-      {isRecipe && instacardAff && (
+      {!showPostModal && isRecipe && instacardAff && (
         <div
           id={'shop-with-instacart-v1'}
           className={'shop-with-instacart-v1'}
