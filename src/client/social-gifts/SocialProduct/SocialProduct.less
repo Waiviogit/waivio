@@ -31,6 +31,16 @@
       width: 500px;
     }
   }
+
+  &__instacard {
+    display: flex;
+    justify-content: center;
+
+    @media @small {
+      justify-content: normal;
+    }
+  }
+
   &__centralContent {
     @media @small {
       margin-left: calc(2% + 100px);

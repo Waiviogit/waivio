@@ -7,6 +7,7 @@ import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTyp
 export const CLEAR_MATCH_BOTS = '@rewards/CLEAR_MATCH_BOTS';
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 export const GET_MATCH_BOTS = createAsyncActionType('@rewards/GET_MATCH_BOTS');
+export const LOAD_MORE_MATCH_BOTS = createAsyncActionType('@rewards/LOAD_MORE_MATCH_BOTS');
 export const SET_MATCH_BOT = createAsyncActionType('@rewards/SET_MATCH_BOT');
 export const UNSET_MATCH_BOT = createAsyncActionType('@rewards/UNSET_MATCH_BOT');
 
@@ -135,7 +136,19 @@ export const getMatchBots = botType => (dispatch, getState) => {
   return dispatch({
     type: GET_MATCH_BOTS.ACTION,
     payload: {
-      promise: ApiClient.getMatchBots(botName, botType),
+      promise: ApiClient.getMatchBots(botName, botType, 0, 20),
+    },
+  });
+};
+
+export const getMatchBotsLoadMore = (botType, skip, limit) => (dispatch, getState) => {
+  const state = getState();
+  const botName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: LOAD_MORE_MATCH_BOTS.ACTION,
+    payload: {
+      promise: ApiClient.getMatchBots(botName, botType, skip, limit),
     },
   });
 };
