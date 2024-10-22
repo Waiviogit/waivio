@@ -14,6 +14,7 @@ const WobjHero = ({
   isFetching,
   isFollowing,
   toggleViewEditMode,
+  showPostModal,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
   const accessExtend = haveAccess(wobject, getObjectName(wobject), accessTypesArr[0]);
@@ -25,6 +26,7 @@ const WobjHero = ({
       ) : (
         <WobjHeader
           isEditMode={isEditMode}
+          showPostModal={showPostModal}
           username={username}
           authenticated={authenticated}
           wobject={wobject}
@@ -46,6 +48,7 @@ WobjHero.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isEditMode: PropTypes.bool,
   isFollowing: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   wobject: PropTypes.shape(),
   toggleViewEditMode: PropTypes.func,
 };

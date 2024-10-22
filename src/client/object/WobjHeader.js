@@ -40,6 +40,7 @@ const WobjHeader = ({
   unfollowWobj,
   isWaivio,
   isAdministrator,
+  showPostModal,
 }) => {
   const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
   const coverImage = wobject.background || isRecipe ? '' : DEFAULTS.BACKGROUND;
@@ -96,7 +97,11 @@ const WobjHeader = ({
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
               <h1 className="ObjectHeader__text ObjectHeader__title" title={name}>
-                {hasType(wobject, OBJECT_TYPE.RECIPE) ? <span itemProp="name">{name}</span> : name}
+                {hasType(wobject, OBJECT_TYPE.RECIPE) && !showPostModal ? (
+                  <span itemProp="name">{name}</span>
+                ) : (
+                  name
+                )}
               </h1>
               <div className="ObjectHeader__controls">
                 <FollowButton
@@ -171,6 +176,7 @@ const WobjHeader = ({
 WobjHeader.propTypes = {
   intl: PropTypes.shape(),
   isEditMode: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   isAdministrator: PropTypes.bool,
   authenticated: PropTypes.bool,
   wobject: PropTypes.shape(),

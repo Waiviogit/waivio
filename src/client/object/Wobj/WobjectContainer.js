@@ -22,7 +22,12 @@ import {
   getObjectPermlinkFromState,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-import { getCurrentHost, getIsSocial, getWeightValue } from '../../../store/appStore/appSelectors';
+import {
+  getCurrentHost,
+  getIsSocial,
+  getShowPostModal,
+  getWeightValue,
+} from '../../../store/appStore/appSelectors';
 
 import {
   clearObjectFromStore,
@@ -65,6 +70,9 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 class WobjectContainer extends React.PureComponent {
+  state = {
+    instacardAff: null,
+  };
   componentDidMount() {
     this.getWobjInfo();
   }
@@ -79,6 +87,18 @@ class WobjectContainer extends React.PureComponent {
       if (element) element.remove();
 
       this.getWobjInfo();
+    }
+
+    if (prevProps.showPostModal !== this.props.showPostModal) {
+      if (this.props.showPostModal) {
+        const element = document.getElementById('standard-instacart-widget-v1');
+
+        if (element) element.remove();
+      } else {
+        const instacardAff = this.state.instacardAff ? this.state.instacardAff : null;
+
+        this.setInstacardScript(instacardAff);
+      }
     }
   }
 
@@ -97,6 +117,24 @@ class WobjectContainer extends React.PureComponent {
     if (element) element.remove();
   }
 
+  setInstacardScript = async instacardAff => {
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) await element.remove();
+
+    if (instacardAff && typeof document !== 'undefined') {
+      const fjs = document.getElementsByTagName('script')[0];
+      const js = document.createElement('script');
+
+      js.id = 'standard-instacart-widget-v1';
+      js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+      js.async = true;
+      js.dataset.source_origin = 'affiliate_hub';
+
+      await fjs.parentNode.insertBefore(js, fjs);
+    }
+  };
+
   getWobjInfo = () => {
     const name = this.props.match.params.name;
     const newsFilter =
@@ -104,12 +142,18 @@ class WobjectContainer extends React.PureComponent {
         ? { newsFilter: this.props.match.params.itemId }
         : {};
 
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
+
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
       const isRecipe = res.value.object_type === 'recipe';
       const instacardAff =
         isRecipe && res?.value?.affiliateLinks
           ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
           : null;
+
+      await this.setState({ instacardAff });
 
       if (instacardAff && typeof document !== 'undefined') {
         const fjs = document.getElementsByTagName('script')[0];
@@ -211,6 +255,7 @@ class WobjectContainer extends React.PureComponent {
         isEditMode={this.props.isEdit}
         toggleViewEditMode={toggleViewEditMode}
         weightValue={this.props.weightValue}
+        showPostModal={this.props.showPostModal}
       />
     );
   }
@@ -227,6 +272,7 @@ WobjectContainer.propTypes = {
   failed: PropTypes.bool,
   isSocial: PropTypes.bool,
   isEdit: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
@@ -333,6 +379,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
 const mapStateToProps = state => ({
   updates: getAppendList(state),
+  showPostModal: getShowPostModal(state),
   authenticatedUserName: getAuthenticatedUserName(state),
   wobjPermlink: getObjectPermlinkFromState(state),
   failed: getWobjectIsFailed(state),
