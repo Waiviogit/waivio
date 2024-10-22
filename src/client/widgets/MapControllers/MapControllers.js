@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 
 import './MapControllers.less';
 
@@ -44,6 +45,26 @@ const MapControllers = React.memo(props => {
           />
         </div>
       </div>
+      {props.showImportBtn && (
+        <div className={'MapConfigurationControl__import'}>
+          <div
+            role="presentation"
+            className="MapConfigurationControl__locateGPS"
+            onClick={props.importObjects}
+          >
+            <img
+              src="/images/import-object-icon.svg"
+              alt="aim"
+              className="MapConfigurationControl__import-button"
+            />
+          </div>
+        </div>
+      )}
+      {props.showFullscreenBtn && (
+        <div role="presentation" className="MapOS__fullScreen" onClick={props.openModal}>
+          <Icon type="fullscreen" style={{ fontSize: '23px', color: '#000000' }} />
+        </div>
+      )}
     </div>
   );
 });
@@ -51,10 +72,14 @@ const MapControllers = React.memo(props => {
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func,
   decrementZoom: PropTypes.func,
+  importObjects: PropTypes.func,
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
+  showImportBtn: PropTypes.bool,
+  showFullscreenBtn: PropTypes.bool,
   isMapObjType: PropTypes.bool,
   successCallback: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   rejectCallback: PropTypes.func.isRequired,
 };
 
@@ -62,6 +87,9 @@ MapControllers.defaultProps = {
   className: 'MapConfigurationControl',
   withoutZoom: false,
   isMapObjType: false,
+  showFullscreenBtn: false,
+  importObjects: false,
+  showImportBtn: false,
   incrementZoom: () => {},
   decrementZoom: () => {},
 };

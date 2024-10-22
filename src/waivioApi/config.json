@@ -244,5 +244,9 @@
   "addOn": "/add-on",
   "group": "/group",
   "pairs": "/pairs",
-  "coins": "/coins"
+  "coins": "/coins",
+  "placesApi": "/places-api",
+  "text": "/text",
+  "objects": "/objects",
+  "image": "/image"
 }
