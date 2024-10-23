@@ -201,6 +201,7 @@ const SocialWrapper = props => {
     props.getCryptoPriceHistory();
     props.getSwapEnginRates();
     props.setSocialFlag();
+    location && props.getWebsiteSettings(location?.hostname);
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
@@ -287,6 +288,7 @@ SocialWrapper.propTypes = {
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setUsedLocale: PropTypes.func,
+  getWebsiteSettings: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func,
@@ -530,6 +532,7 @@ export default ErrorBoundary(
         getCryptoPriceHistory,
         getSwapEnginRates,
         setFavoriteObjectTypes,
+        getWebsiteSettings,
       },
     )(SocialWrapper),
   ),
