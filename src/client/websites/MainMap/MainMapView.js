@@ -183,7 +183,7 @@ const MainMapView = props => {
           className={props.mapControllersClassName}
           decrementZoom={decrementZoom}
           incrementZoom={incrementZoom}
-          showImportBtn={props.isSocial}
+          showImportBtn={props.isSocial || props.isUserMap}
           importObjects={props.importObjects}
           successCallback={setLocationFromNavigator}
           rejectCallback={setLocationFromApi}
@@ -212,6 +212,7 @@ MainMapView.propTypes = {
   showMap: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool.isRequired,
   showLocation: PropTypes.bool.isRequired,
+  isUserMap: PropTypes.bool.isRequired,
   importObjects: PropTypes.bool.isRequired,
   mapClassList: PropTypes.string.isRequired,
   searchType: PropTypes.string.isRequired,
