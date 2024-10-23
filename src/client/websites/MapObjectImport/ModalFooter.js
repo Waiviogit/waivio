@@ -22,43 +22,64 @@ const ModalFooter = ({
   };
   const buttonsState = [
     {
-      ...(pageNumber === 1
-        ? {
-            intl: { id: 'cancel', defaultMessage: 'Cancel' },
-            handler: closeImportModal,
-          }
-        : {
-            intl: { id: 'previous', defaultMessage: 'Previous' },
-            handler: handlePrev,
-          }),
+      intl: { id: 'cancel', defaultMessage: 'Cancel' },
+      handler: closeImportModal,
+
       classList: 'WebsiteWelcomeModal__button WebsiteWelcomeModal__button--first',
     },
     {
       ...(pageNumber === 2
         ? {
+            isPrimary: true,
             id: 'import',
             intl: { id: 'import', defaultMessage: 'Import' },
             handler: handleOk,
           }
-        : { id: 'submit', intl: { id: 'submit', defaultMessage: 'Submit' }, handler: handleOk }),
+        : {
+            isPrimary: true,
+            id: 'submit',
+            intl: { id: 'submit', defaultMessage: 'Submit' },
+            handler: handleOk,
+          }),
       classList: 'WebsiteWelcomeModal__button WebsiteWelcomeModal__button--second',
     },
   ];
 
+  const zeroButton = {
+    intl: { id: 'previous', defaultMessage: 'Previous' },
+    handler: handlePrev,
+    classList: 'WebsiteWelcomeModal__button WebsiteWelcomeModal__button--zero',
+  };
+
   return (
-    <React.Fragment>
-      {buttonsState.map(button => (
+    <div className={pageNumber === 2 ? 'flex justify-between' : ''}>
+      {pageNumber === 2 && (
         <Button
-          key={button.intl.id}
-          className={button.classList}
-          onClick={button.handler}
-          disabled={dis(button) || load(button)}
-          loading={load(button)}
+          type={zeroButton.isPrimary ? 'primary' : 'secondary'}
+          key={zeroButton.intl.id}
+          className={zeroButton.classList}
+          onClick={zeroButton.handler}
+          disabled={dis(zeroButton) || load(zeroButton)}
+          loading={load(zeroButton)}
         >
-          {intl.formatMessage(button.intl)}
+          {intl.formatMessage(zeroButton.intl)}
         </Button>
-      ))}
-    </React.Fragment>
+      )}
+      <div>
+        {buttonsState.map(button => (
+          <Button
+            type={button.isPrimary ? 'primary' : 'secondary'}
+            key={button.intl.id}
+            className={button.classList}
+            onClick={button.handler}
+            disabled={dis(button) || load(button)}
+            loading={load(button)}
+          >
+            {intl.formatMessage(button.intl)}
+          </Button>
+        ))}
+      </div>
+    </div>
   );
 };
 

@@ -41,6 +41,7 @@ import { hexToRgb } from '../common/helpers';
 import { initialColors } from './websites/constants/colors';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { setLocale } from '../store/settingsStore/settingsActions';
+import { getWebsiteSettings } from '../store/websiteStore/websiteActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -71,6 +72,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCryptoPriceHistory,
     getSwapEnginRates,
     getGlobalProperties,
+    getWebsiteSettings,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
