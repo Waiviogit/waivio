@@ -42,7 +42,6 @@ import { initialColors } from './websites/constants/colors';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { setLocale } from '../store/settingsStore/settingsActions';
 import { getWebsiteSettings } from '../store/websiteStore/websiteActions';
-import { getSettingsWebsite } from '../waivioApi/ApiClient';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -69,7 +68,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     getCurrentAppSettings,
     setLocale,
-    getSettingsWebsite,
     getTokenRates,
     getCryptoPriceHistory,
     getSwapEnginRates,
@@ -148,7 +146,6 @@ class WebsiteWrapper extends React.PureComponent {
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),
-      store.dispatch(getSettingsWebsite(req.hostname)),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
       store.dispatch(getSwapEnginRates()),
