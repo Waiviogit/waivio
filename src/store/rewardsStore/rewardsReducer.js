@@ -10,6 +10,7 @@ import {
   REMOVE_TOGGLE_FLAG,
   GET_MATCH_BOTS,
   CLEAR_MATCH_BOTS,
+  LOAD_MORE_MATCH_BOTS,
 } from './rewardsActions';
 
 const initialState = {
@@ -104,7 +105,16 @@ const rewardsReducer = (state = initialState, action) => {
     case GET_MATCH_BOTS.SUCCESS: {
       return {
         ...state,
-        matchBots: action.payload,
+        matchBots: action.payload.result,
+        matchBotsHasMore: action.payload.hasMore,
+      };
+    }
+
+    case LOAD_MORE_MATCH_BOTS.SUCCESS: {
+      return {
+        ...state,
+        matchBots: [...state.matchBots, ...action.payload.result],
+        matchBotsHasMore: action.payload.hasMore,
       };
     }
     case CLEAR_MATCH_BOTS:

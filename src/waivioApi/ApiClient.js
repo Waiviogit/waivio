@@ -2374,8 +2374,8 @@ export const getCurrentMedianHistory = () =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getMatchBots = (botName, botType) => {
-  const queryString = `?botName=${botName}`;
+export const getMatchBots = (botName, botType, skip, limit) => {
+  const queryString = `?botName=${botName}&skip=${skip}&limit=${limit}`;
 
   return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
     headers,
@@ -3436,8 +3436,9 @@ export const getBlackListInfo = user =>
     .then(response => response)
     .catch(e => e);
 
-export const getObjectsRewards = (requiredObj, userName) =>
-  fetch(
+export const getObjectsRewards = (requiredObj, userName) => {
+  console.log(userName);
+  return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.object}/${requiredObj}${
       userName ? `?userName=${userName}` : ''
     }`,
@@ -3449,6 +3450,7 @@ export const getObjectsRewards = (requiredObj, userName) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
 export const getGlobalReports = body =>
   fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.report}${config.global}`, {

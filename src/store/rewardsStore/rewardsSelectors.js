@@ -48,3 +48,7 @@ export const getIsOpenWriteReviewModal = createSelector(
 );
 export const getExpiredPayment = createSelector([rewardsState], state => state.expiredPayment);
 export const getMatchBotsSelector = createSelector([rewardsState], state => state.matchBots);
+export const getMatchBotsHasMoreSelector = createSelector(
+  [rewardsState],
+  state => state.matchBotsHasMore,
+);
