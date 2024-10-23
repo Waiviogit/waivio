@@ -123,7 +123,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
           userName,
           markerCoordinates[0],
           markerCoordinates[1],
-          undefined,
+          includedType ? [includedType] : undefined,
         )
       : getObjectsForMapImportText(
           userName,
@@ -165,7 +165,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
         const restaurantObjects = [];
 
         processedObjects.forEach(obj => {
-          const isRestaurant = obj?.types?.some(t => restaurantGoogleTypes?.includes(t));
+          const isRestaurant = obj?.googleTypes?.some(t => restaurantGoogleTypes.includes(t));
 
           if (isRestaurant) {
             restaurantObjects.push(obj);
@@ -194,40 +194,42 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
         restaurantFormData.append('useGPT', true);
         restaurantFormData.append('forceImport', true);
 
-        uploadObject(businessFormData)
-          .then(async res => {
-            setLoading(false);
-
-            if (!res.ok) {
-              message.error('An error occurred');
-            } else {
+        if (!isEmpty(businessObjects))
+          uploadObject(businessFormData)
+            .then(async res => {
+              setLoading(false);
               cancelModal();
-              message.success('Data import started successfully!');
-            }
-          })
-          .catch(error => {
-            setLoading(false);
-            message.error('Failed to upload. Please check your network connection.');
-            console.error('Network Error:', error);
-          });
 
-        uploadObject(restaurantFormData)
-          .then(async res => {
-            setLoading(false);
+              if (!res.ok) {
+                message.error('An error occurred');
+              } else {
+                message.success('Data import started successfully!');
+              }
+            })
+            .catch(error => {
+              setLoading(false);
+              message.error('Failed to upload. Please check your network connection.');
+              console.error('Network Error:', error);
+            });
 
-            // Since the response will be opaque, you cannot access its body
-            if (!res.ok) {
-              message.error('An error occurred');
-            } else {
-              cancelModal();
-              message.success('Data import started successfully!');
-            }
-          })
-          .catch(error => {
-            setLoading(false);
-            message.error('Failed to upload. Please check your network connection.');
-            console.error('Network Error:', error);
-          });
+        if (!isEmpty(restaurantObjects))
+          uploadObject(restaurantFormData)
+            .then(async res => {
+              setLoading(false);
+
+              // Since the response will be opaque, you cannot access its body
+              if (!res.ok) {
+                message.error('An error occurred');
+              } else {
+                cancelModal();
+                message.success('Data import started successfully!');
+              }
+            })
+            .catch(error => {
+              setLoading(false);
+              message.error('Failed to upload. Please check your network connection.');
+              console.error('Network Error:', error);
+            });
       });
     }
   };
@@ -328,19 +330,19 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
         <br />
         {isFirstPage ? (
           <FirstPage
+            zoomButtonsLayout={zoomButtonsLayout}
             onBoundsChanged={onBoundsChanged}
             lat={lat}
-            decrementZoom={decrementZoom}
             setMarker={setMarker}
             marker={marker}
             settingMap={settingMap}
-            incrementZoom={incrementZoom}
             setCoordinates={setCoordinates}
-            setSettingMap={setSettingMap}
             openModal={openModal}
             lon={lon}
             setName={setName}
             setType={setType}
+            name={name}
+            type={type}
           />
         ) : (
           <SecondPage

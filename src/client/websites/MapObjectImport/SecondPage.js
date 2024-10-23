@@ -86,6 +86,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              autoFocus={false}
               objectType="hashtag"
               itemsIdsToOmit={tagsToOmit}
               placeholder={intl.formatMessage({
@@ -129,6 +130,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              autoFocus={false}
               objectType="list"
               itemsIdsToOmit={listsToOmit}
               placeholder={intl.formatMessage({
@@ -140,6 +142,7 @@ const SecondPage = ({
           </div>
         </React.Fragment>
       }
+      <br />
     </div>
   );
 };

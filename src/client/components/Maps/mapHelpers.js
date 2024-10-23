@@ -184,6 +184,7 @@ export const supportedGoogleTypes = [
 
 export const formBusinessObjects = ({ object, waivio_tags, listAssociations }) => ({
   name: object.displayName.text,
+  googleTypes: object.types,
   address: object.formattedAddress,
   ...(object.editorialSummary && {
     descriptions: [object.editorialSummary.text],
