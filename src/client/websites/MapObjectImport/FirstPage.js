@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon, Input, Select } from 'antd';
+import { injectIntl } from 'react-intl';
 import { Map } from 'pigeon-maps';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
@@ -20,6 +21,7 @@ const FirstPage = ({
   name,
   type,
   zoomButtonsLayout,
+  intl,
 }) => (
   <div>
     <p>Find objects on Google Maps and import to Waivio</p>
@@ -63,12 +65,15 @@ const FirstPage = ({
     <div className={'MapObjectImportModal__select-wrap'}>
       <div className={'MapObjectImportModal__title-text'}>Choose Google Maps type (optional):</div>
       <Select
-        defaultValue={type}
+        value={type || undefined}
         showSearch
         onChange={v => {
           setType(v);
         }}
-        placeholder={'Select type'}
+        placeholder={intl.formatMessage({
+          id: 'select_type',
+          defaultMessage: 'Select type',
+        })}
       >
         {supportedGoogleTypes.map(t => (
           <Select.Option key={t.value} value={t.value}>
@@ -94,5 +99,6 @@ FirstPage.propTypes = {
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   settingMap: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
-export default FirstPage;
+export default injectIntl(FirstPage);

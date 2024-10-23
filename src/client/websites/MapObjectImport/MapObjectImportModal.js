@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Icon, message, Modal } from 'antd';
 import { Map, Marker } from 'pigeon-maps';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import uuidv4 from 'uuid/v4';
 import { injectIntl } from 'react-intl';
@@ -65,7 +65,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const dispatch = useDispatch();
   const { lat, lon } = userLocation;
-  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t }));
+  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.name }));
   const listAssociations = lists?.map(l => l.author_permlink);
 
   const getAvatar = async ({ detailsPhotos, user }) => {
@@ -320,7 +320,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
             pageNumber={pageNumber}
             handleOk={handleOk}
             setPageNumber={setPageNumber}
-            disabled={isEmpty(objects)}
+            disabled={pageNumber === 1 ? isNil(markerCoordinates) : isEmpty(objects)}
           />
         }
         visible={showImportModal}
