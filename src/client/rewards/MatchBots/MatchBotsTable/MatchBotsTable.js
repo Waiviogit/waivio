@@ -74,7 +74,12 @@ const MatchBotsTable = ({
             />
           ))}
           {hasMore && (
-            <tr onClick={handleLoadMore}>
+            <tr
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={handleLoadMore}
+            >
               <td colSpan={7}>Show more</td>
             </tr>
           )}{' '}
