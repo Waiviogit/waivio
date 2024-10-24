@@ -65,7 +65,8 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const dispatch = useDispatch();
   const { lat, lon } = userLocation;
-  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.name }));
+
+  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);
 
   const getAvatar = async ({ detailsPhotos, user }) => {
