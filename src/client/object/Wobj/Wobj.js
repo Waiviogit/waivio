@@ -39,6 +39,7 @@ const Wobj = ({
   handleFollowClick,
   isSocial,
   weightValue,
+  showPostModal,
 }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
@@ -136,6 +137,7 @@ const Wobj = ({
           appendAlbum={appendAlbum}
           nestedWobject={nestedWobject}
           weightValue={weightValue}
+          showPostModal={showPostModal}
         />
       );
 
@@ -143,7 +145,13 @@ const Wobj = ({
       case 'book':
       case 'product':
       case 'recipe':
-        return <SocialProduct toggleViewEditMode={toggleViewEditMode} params={params} />;
+        return (
+          <SocialProduct
+            showPostModal={showPostModal}
+            toggleViewEditMode={toggleViewEditMode}
+            params={params}
+          />
+        );
       case 'business':
       case 'restaurant':
       case 'link':
@@ -213,6 +221,7 @@ Wobj.propTypes = {
   authenticatedUserName: PropTypes.string,
   isEditMode: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   weightValue: PropTypes.number.isRequired,

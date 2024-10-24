@@ -38,10 +38,10 @@ import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../../store/postsStore/postActions';
 import PropositionNew from '../../newRewards/reuseble/Proposition/Proposition';
 import Campaing from '../../newRewards/reuseble/Campaing';
-
-import './StoryFull.less';
 import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import CommentForm from '../Comments/CommentForm';
+import { parseJSON } from '../../../common/helpers/parseJSON';
+import './StoryFull.less';
 
 @injectIntl
 @withRouter
@@ -139,6 +139,9 @@ class StoryFull extends React.Component {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
+
+    this.setInstacardScript(linkedObjects);
+
     if (typeof window !== 'undefined' && window.location.hash) {
       if (typeof document !== 'undefined') {
         setTimeout(() => {
@@ -163,7 +166,31 @@ class StoryFull extends React.Component {
     if (hideWhiteBG) {
       if (typeof document !== 'undefined') document.body.classList.remove('white-bg');
     }
+
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
   }
+
+  setInstacardScript = async wobjs => {
+    const wobjWithAff = wobjs?.find(obj =>
+      obj?.affiliateLinks?.some(aff => aff.type.toLocaleLowerCase() === 'instacart'),
+    );
+    const instacardAff = wobjWithAff
+      ? wobjWithAff?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+      : null;
+
+    if (instacardAff && typeof document !== 'undefined') {
+      const fjs = document.getElementsByTagName('script')[0];
+      const js = document.createElement('script');
+
+      js.id = 'standard-instacart-widget-v1';
+      js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+      js.async = true;
+      js.dataset.source_origin = 'affiliate_hub';
+      await fjs.parentNode.insertBefore(js, fjs);
+    }
+  };
 
   handleMutePostAuthor = post =>
     post.muted ? this.props.muteAuthorPost(post) : this.setState({ visible: true });
@@ -256,6 +283,14 @@ class StoryFull extends React.Component {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
+
+    const wobjWithAff = linkedObjects?.find(obj =>
+      obj?.affiliateLinks?.some(aff => aff.type.toLocaleLowerCase() === 'instacart'),
+    );
+    const instacardAff = wobjWithAff
+      ? wobjWithAff?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+      : null;
+
     const { open, index } = this.state.lightbox;
     const getImagePath = item => getImagePathPost(item);
     const initialPostBody = newBody || post.body;
@@ -351,9 +386,16 @@ class StoryFull extends React.Component {
     }
 
     return (
-      <div className="StoryFull">
+      <div
+        className="StoryFull"
+        {...(instacardAff ? { itemType: 'https://schema.org/Recipe', itemScope: true } : {})}
+      >
         {replyUI}
-        {!isRecipe && <h1 className="StoryFull__title">{post.title}</h1>}
+        {!isRecipe && (
+          <h1 className="StoryFull__title" itemProp="name">
+            {post.title}
+          </h1>
+        )}
         {isRecipe && <span className="StoryFull__title">{post.title}</span>}
         {!isOriginalPost && !isRecipe && (
           <h3 className="StoryFull__comments_title">
@@ -440,6 +482,30 @@ class StoryFull extends React.Component {
             </PostPopoverMenu>
           </div>
         )}
+        {instacardAff && (
+          <React.Fragment>
+            <div style={{ display: 'none' }}>
+              {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
+                <span key={ingredient} itemProp="recipeIngredient">
+                  {ingredient}
+                </span>
+              ))}
+            </div>
+            <div
+              id={'shop-with-instacart-v1'}
+              className={'shop-with-instacart-v1'}
+              data-affiliate_id={instacardAff?.affiliateCode}
+              data-source_origin="affiliate_hub"
+              data-affiliate_platform="recipe_widget"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '10px',
+              }}
+            />
+          </React.Fragment>
+        )}
+
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox

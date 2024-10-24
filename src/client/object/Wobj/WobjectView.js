@@ -30,7 +30,12 @@ import OBJECT_TYPE from '../const/objectTypes';
 import DEFAULTS from '../const/defaultValues';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
-import { getHelmetIcon, getIsWaivio, getSiteName } from '../../../store/appStore/appSelectors';
+import {
+  getHelmetIcon,
+  getIsWaivio,
+  getShowPostModal,
+  getSiteName,
+} from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import useQuery from '../../../hooks/useQuery';
 
@@ -46,11 +51,13 @@ const WobjectView = ({
   appendAlbum,
   nestedWobject,
   weightValue,
+  showPostModal,
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const objectName = getObjectName(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const isWaivio = useSelector(getIsWaivio);
+  const showModal = useSelector(getShowPostModal);
   const authenticated = useSelector(getIsAuthenticated);
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
@@ -116,7 +123,7 @@ const WobjectView = ({
 
   return (
     <div
-      {...(hasType(wobject, OBJECT_TYPE.RECIPE)
+      {...(hasType(wobject, OBJECT_TYPE.RECIPE) && !showModal
         ? {
             itemScope: true,
             itemType: 'https://schema.org/Recipe',
@@ -153,6 +160,7 @@ const WobjectView = ({
         toggleViewEditMode={toggleViewEditMode}
         albumsAndImagesCount={albumsAndImagesCount}
         appendAlbum={appendAlbum}
+        showPostModal={showPostModal}
       />
       <div className="shifted">
         <div className="container feed-layout">
@@ -208,6 +216,7 @@ WobjectView.propTypes = {
   wobject: PropTypes.shape(),
   history: PropTypes.shape(),
   isEditMode: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   route: PropTypes.shape(),
   handleFollowClick: PropTypes.func,

@@ -1,5 +1,5 @@
 import { forEach, get } from 'lodash';
-import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
+import { ZOOM, zoomAndRadiusArray } from '../../../common/constants/map';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 
 export const regexCoordsLatitude = /^([+-])?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
@@ -83,3 +83,155 @@ export const getCurrentScreenSize = isDesktopModalShow => {
     return 600;
   }
 };
+export const supportedGoogleTypes = [
+  { label: 'Accounting', value: 'accounting' },
+  { label: 'Airport', value: 'airport' },
+  { label: 'Amusement park', value: 'amusement_park' },
+  { label: 'Aquarium', value: 'aquarium' },
+  { label: 'Art gallery', value: 'art_gallery' },
+  { label: 'ATM', value: 'atm' },
+  { label: 'Bakery', value: 'bakery' },
+  { label: 'Bank', value: 'bank' },
+  { label: 'Bar', value: 'bar' },
+  { label: 'Beauty salon', value: 'beauty_salon' },
+  { label: 'Bicycle store', value: 'bicycle_store' },
+  { label: 'Book store', value: 'book_store' },
+  { label: 'Bowling alley', value: 'bowling_alley' },
+  { label: 'Bus station', value: 'bus_station' },
+  { label: 'Cafe', value: 'cafe' },
+  { label: 'Campground', value: 'campground' },
+  { label: 'Car dealer', value: 'car_dealer' },
+  { label: 'Car rental', value: 'car_rental' },
+  { label: 'Car repair', value: 'car_repair' },
+  { label: 'Car wash', value: 'car_wash' },
+  { label: 'Casino', value: 'casino' },
+  { label: 'Cemetery', value: 'cemetery' },
+  { label: 'Church', value: 'church' },
+  { label: 'City hall', value: 'city_hall' },
+  { label: 'Clothing store', value: 'clothing_store' },
+  { label: 'Convenience store', value: 'convenience_store' },
+  { label: 'Courthouse', value: 'courthouse' },
+  { label: 'Dentist', value: 'dentist' },
+  { label: 'Department store', value: 'department_store' },
+  { label: 'Doctor', value: 'doctor' },
+  { label: 'Drugstore', value: 'drugstore' },
+  { label: 'Electrician', value: 'electrician' },
+  { label: 'Electronics store', value: 'electronics_store' },
+  { label: 'Embassy', value: 'embassy' },
+  { label: 'Fire station', value: 'fire_station' },
+  { label: 'Florist', value: 'florist' },
+  { label: 'Funeral home', value: 'funeral_home' },
+  { label: 'Furniture store', value: 'furniture_store' },
+  { label: 'Gas station', value: 'gas_station' },
+  { label: 'Gym', value: 'gym' },
+  { label: 'Hair care', value: 'hair_care' },
+  { label: 'Hardware store', value: 'hardware_store' },
+  { label: 'Hindu temple', value: 'hindu_temple' },
+  { label: 'Home goods store', value: 'home_goods_store' },
+  { label: 'Hospital', value: 'hospital' },
+  { label: 'Insurance agency', value: 'insurance_agency' },
+  { label: 'Jewelry store', value: 'jewelry_store' },
+  { label: 'Laundry', value: 'laundry' },
+  { label: 'Lawyer', value: 'lawyer' },
+  { label: 'Library', value: 'library' },
+  { label: 'Light rail station', value: 'light_rail_station' },
+  { label: 'Liquor store', value: 'liquor_store' },
+  { label: 'Local government office', value: 'local_government_office' },
+  { label: 'Locksmith', value: 'locksmith' },
+  { label: 'Lodging', value: 'lodging' },
+  { label: 'Meal delivery', value: 'meal_delivery' },
+  { label: 'Meal takeaway', value: 'meal_takeaway' },
+  { label: 'Mosque', value: 'mosque' },
+  { label: 'Movie rental', value: 'movie_rental' },
+  { label: 'Movie theater', value: 'movie_theater' },
+  { label: 'Moving company', value: 'moving_company' },
+  { label: 'Museum', value: 'museum' },
+  { label: 'Night club', value: 'night_club' },
+  { label: 'Painter', value: 'painter' },
+  { label: 'Park', value: 'park' },
+  { label: 'Parking', value: 'parking' },
+  { label: 'Pet store', value: 'pet_store' },
+  { label: 'Pharmacy', value: 'pharmacy' },
+  { label: 'Physiotherapist', value: 'physiotherapist' },
+  { label: 'Plumber', value: 'plumber' },
+  { label: 'Police', value: 'police' },
+  { label: 'Post office', value: 'post_office' },
+  { label: 'Primary school', value: 'primary_school' },
+  { label: 'Real estate agency', value: 'real_estate_agency' },
+  { label: 'Restaurant', value: 'restaurant' },
+  { label: 'Roofing contractor', value: 'roofing_contractor' },
+  { label: 'RV park', value: 'rv_park' },
+  { label: 'School', value: 'school' },
+  { label: 'Secondary school', value: 'secondary_school' },
+  { label: 'Shoe store', value: 'shoe_store' },
+  { label: 'Shopping mall', value: 'shopping_mall' },
+  { label: 'Spa', value: 'spa' },
+  { label: 'Stadium', value: 'stadium' },
+  { label: 'Storage', value: 'storage' },
+  { label: 'Store', value: 'store' },
+  { label: 'Subway station', value: 'subway_station' },
+  { label: 'Supermarket', value: 'supermarket' },
+  { label: 'Synagogue', value: 'synagogue' },
+  { label: 'Taxi stand', value: 'taxi_stand' },
+  { label: 'Tourist attraction', value: 'tourist_attraction' },
+  { label: 'Train station', value: 'train_station' },
+  { label: 'Transit station', value: 'transit_station' },
+  { label: 'Travel agency', value: 'travel_agency' },
+  { label: 'University', value: 'university' },
+  { label: 'Veterinary care', value: 'veterinary_care' },
+  { label: 'Zoo', value: 'zoo' },
+];
+
+export const formBusinessObjects = ({ object, waivio_tags, listAssociations }) => ({
+  name: object.displayName.text,
+  googleTypes: object.types,
+  address: object.formattedAddress,
+  ...(object.editorialSummary && {
+    descriptions: [object.editorialSummary.text],
+  }),
+  ...(object.location && {
+    latitude: object.location.latitude,
+    longitude: object.location.longitude,
+  }),
+  ...(object.regularOpeningHours && {
+    workingHours: object.regularOpeningHours.weekdayDescriptions.join(',\n'),
+  }),
+  ...(object.websiteUri && { websites: [object.websiteUri] }),
+  ...(object.internationalPhoneNumber && {
+    phone: object.internationalPhoneNumber,
+  }),
+  ...(object.rating && {
+    features: [
+      {
+        key: 'Overall Rating',
+        value: [object.rating],
+      },
+    ],
+  }),
+  companyIds: [{ companyIdType: 'googleMaps', companyId: object.id }],
+  ...(object.reviews?.length && {
+    reviews: object.reviews.map(el => el?.text?.text).filter(el => !!el),
+  }),
+  waivio_tags,
+  listAssociations,
+});
+
+export const handleArrayToFile = array => {
+  const jsonData = JSON.stringify(array);
+
+  return new Blob([jsonData], { type: 'application/json' });
+
+  // return new File([fileBlob], "data.json", {type: 'application/json'});
+};
+export const restaurantGoogleTypes = [
+  'restaurant',
+  'cafe',
+  'bar',
+  'bakery',
+  'pub',
+  'bistro',
+  'coffee_shop',
+  'diner',
+  'tavern',
+  'cocktail_lounge',
+];

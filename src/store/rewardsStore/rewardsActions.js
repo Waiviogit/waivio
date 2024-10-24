@@ -3,10 +3,12 @@ import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { getMatchBotsHasMoreSelector, getMatchBotsSelector } from './rewardsSelectors';
 
 export const CLEAR_MATCH_BOTS = '@rewards/CLEAR_MATCH_BOTS';
 export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 export const GET_MATCH_BOTS = createAsyncActionType('@rewards/GET_MATCH_BOTS');
+export const LOAD_MORE_MATCH_BOTS = createAsyncActionType('@rewards/LOAD_MORE_MATCH_BOTS');
 export const SET_MATCH_BOT = createAsyncActionType('@rewards/SET_MATCH_BOT');
 export const UNSET_MATCH_BOT = createAsyncActionType('@rewards/UNSET_MATCH_BOT');
 
@@ -135,7 +137,19 @@ export const getMatchBots = botType => (dispatch, getState) => {
   return dispatch({
     type: GET_MATCH_BOTS.ACTION,
     payload: {
-      promise: ApiClient.getMatchBots(botName, botType),
+      promise: ApiClient.getMatchBots(botName, botType, 0, 20),
+    },
+  });
+};
+
+export const getMatchBotsLoadMore = (botType, skip, limit) => (dispatch, getState) => {
+  const state = getState();
+  const botName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: LOAD_MORE_MATCH_BOTS.ACTION,
+    payload: {
+      promise: ApiClient.getMatchBots(botName, botType, skip, limit),
     },
   });
 };
@@ -144,6 +158,8 @@ export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI, bu
   const state = getState();
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
+  const bots = getMatchBotsSelector(state);
+  const hasMore = getMatchBotsHasMoreSelector(state);
 
   return dispatch({
     type: SET_MATCH_BOT.ACTION,
@@ -151,7 +167,9 @@ export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI, bu
       promise: steemConnectAPI.setMatchBot(voter, ruleObj).then(async data => {
         const res = isGuest ? await data.json() : data.result;
         const blockNumber = await getLastBlockNum();
-        const subscribeCallback = () => dispatch(getMatchBots(ruleObj.type));
+        const subscribeCallback = () => {
+          if (!hasMore) dispatch(getMatchBotsLoadMore(ruleObj.type, bots?.length, 1));
+        };
 
         if (data.status !== 200 && isGuest) throw new Error(data.message);
         busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.campaigns]);

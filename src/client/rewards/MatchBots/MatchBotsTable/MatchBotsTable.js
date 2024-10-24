@@ -9,13 +9,16 @@ import ModalBotsEnableAuth from '../MatchBotsModals/ModalBotsEnableAuth';
 const MatchBotsTable = ({
   intl,
   bots,
+  hasMore,
   type,
   botType,
   setIsEnabledRule,
   handleEditRule,
   handleSwitcher,
+  getMatchBotsLoadMore,
 }) => {
   const [modalBot, setModalBot] = React.useState(null);
+  const handleLoadMore = () => getMatchBotsLoadMore(type, bots?.length, 20);
 
   return (
     <div>
@@ -70,6 +73,16 @@ const MatchBotsTable = ({
               setIsEnabledRule={setIsEnabledRule}
             />
           ))}
+          {hasMore && (
+            <tr
+              style={{
+                cursor: 'pointer',
+              }}
+              onClick={handleLoadMore}
+            >
+              <td colSpan={7}>Show more</td>
+            </tr>
+          )}{' '}
         </tbody>
       </table>
     </div>
@@ -84,6 +97,8 @@ MatchBotsTable.propTypes = {
   handleEditRule: PropTypes.func.isRequired,
   handleSwitcher: PropTypes.func.isRequired,
   setIsEnabledRule: PropTypes.func.isRequired,
+  hasMore: PropTypes.bool,
+  getMatchBotsLoadMore: PropTypes.func,
 };
 
 MatchBotsTable.defaultProps = {

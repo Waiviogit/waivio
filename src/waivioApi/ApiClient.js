@@ -2374,8 +2374,8 @@ export const getCurrentMedianHistory = () =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getMatchBots = (botName, botType) => {
-  const queryString = `?botName=${botName}`;
+export const getMatchBots = (botName, botType, skip, limit) => {
+  const queryString = `?botName=${botName}&skip=${skip}&limit=${limit}`;
 
   return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
     headers,
@@ -3436,8 +3436,9 @@ export const getBlackListInfo = user =>
     .then(response => response)
     .catch(e => e);
 
-export const getObjectsRewards = (requiredObj, userName) =>
-  fetch(
+export const getObjectsRewards = (requiredObj, userName) => {
+  console.log(userName);
+  return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.object}/${requiredObj}${
       userName ? `?userName=${userName}` : ''
     }`,
@@ -3449,6 +3450,7 @@ export const getObjectsRewards = (requiredObj, userName) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
 export const getGlobalReports = body =>
   fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.report}${config.global}`, {
@@ -4416,5 +4418,92 @@ export const getGroupObjectUserList = (authorPermlink, follower, limit, lastName
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => error);
+
+export const getObjectsForMapImportText = async (
+  userName,
+  latitude,
+  longitude,
+  includedType,
+  textQuery,
+) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.placesApi}${config.text}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      latitude,
+      longitude,
+      includedType,
+      textQuery,
+    }),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+};
+
+export const getObjectsForMapImportObjects = async (
+  userName,
+  latitude,
+  longitude,
+  includedTypes,
+) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.placesApi}${config.objects}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      latitude,
+      longitude,
+      includedTypes,
+    }),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+};
+export const getObjectsForMapImportAvatars = async (userName, placesUrl) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.placesApi}${config.image}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      placesUrl,
+      userName,
+    }),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+};
 
 export default null;

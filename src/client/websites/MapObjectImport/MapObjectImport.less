@@ -1,0 +1,90 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.MapObjectImportModal {
+  &__obj-name {
+    margin-left: 10px;
+    font-weight: 500;
+  }
+
+  &__obj-wrap {
+    margin-bottom: 10px;
+  }
+
+  .NewsFiltersRule__line-card {
+    min-width: 10px;
+    max-width: 180px;
+    white-space: nowrap;
+    width: max-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .ObjectCard__name {
+    min-width: 10px;
+    max-width: 100px;
+    white-space: nowrap;
+    width: max-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .WebsiteWelcomeModal__button {
+    height: 30px;
+    padding: 0 15px;
+  }
+
+  .MapOS__fullScreen {
+    bottom: 2px;
+    margin-bottom: 28px;
+    border: 1px solid @white-gainsboro;
+    .anticon.anticon-fullscreen,
+    .anticon.anticon-fullscreen-exit {
+      color: @text-color !important;
+      font-size: 14px !important;
+      display: flex;
+      justify-content: center;
+      height: inherit;
+      align-items: center;
+    }
+  }
+  .ant-select {
+    margin: 0 0 10px;
+    width: 100%;
+  }
+  p {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  &__title-text {
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  &__select-wrap {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  .MapDesktopMobileWrap {
+    .MapOS__locateGPS {
+      bottom: 30px;
+      .MapOS__locateGPS-button {
+        height: 13px;
+      }
+    }
+  }
+}
+.MapModal.MapModalSocial {
+  .MapOS__locateGPS {
+    left: 30px;
+    bottom: 50px;
+  }
+  .MapOS__fullScreen {
+    right: 30px;
+    bottom: 60px;
+  }
+  .MapOS__zoom {
+    right: 35px;
+    top: 50px;
+  }
+  .MapOS__fullscreenContent {
+  }
+}

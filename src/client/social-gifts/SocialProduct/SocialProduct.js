@@ -113,6 +113,7 @@ const SocialProduct = ({
   publisherObject,
   intl,
   signature,
+  showPostModal,
 }) => {
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
@@ -277,7 +278,14 @@ const SocialProduct = ({
   const bestRating = getRatingForSocial(wobject.rating);
 
   return (
-    <div itemType={isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product'} itemScope>
+    <div
+      {...(showPostModal
+        ? {}
+        : {
+            itemType: isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product',
+            itemScope: true,
+          })}
+    >
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -411,7 +419,11 @@ const SocialProduct = ({
                       : 'SocialProduct__bookWobjName'
                   }
                 >
-                  {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
+                  {!showPostModal && isRecipe ? (
+                    <span itemProp="name">{wobject.name}</span>
+                  ) : (
+                    wobject.name
+                  )}
                 </h1>
               )}
               {!isMobile() && !isEmpty(brand) && (
@@ -465,8 +477,9 @@ const SocialProduct = ({
               >
                 {price}
               </div>
-              {isRecipe && instacardAff && (
+              {!showPostModal && isRecipe && instacardAff && (
                 <div
+                  className={'SocialProduct__instacard'}
                   id={'shop-with-instacart-v1'}
                   data-affiliate_id={instacardAff?.affiliateCode}
                   data-source_origin="affiliate_hub"
@@ -534,7 +547,7 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            {recipePost && isRecipe && (
+            {recipePost && isRecipe && !showPostModal && (
               <div className={'SocialProduct__postWrapper PageContent social'}>
                 <RecipePost signature={signature} recipePost={recipePost} />
                 <br />
@@ -627,6 +640,7 @@ SocialProduct.propTypes = {
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
+  showPostModal: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
   addOns: PropTypes.arrayOf(),

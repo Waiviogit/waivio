@@ -87,6 +87,7 @@ ObjectFeedContainer.defaultProps = {
 };
 const mapStateToProps = state => ({
   wobject: getObjectState(state),
+  userName: getAuthenticatedUserName(state),
 });
 
 ObjectFeedContainer.fetchData = ({ store, match }) =>

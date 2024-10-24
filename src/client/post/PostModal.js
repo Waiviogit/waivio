@@ -28,6 +28,7 @@ class PostModal extends React.Component {
     author: PropTypes.shape(),
     isGuest: PropTypes.bool.isRequired,
     isThread: PropTypes.bool,
+    isObj: PropTypes.bool,
     username: PropTypes.string.isRequired,
     getSocialInfoPost: PropTypes.func,
   };
@@ -125,6 +126,7 @@ class PostModal extends React.Component {
       isGuest,
       username,
       isThread,
+      isObj,
     } = this.props;
     const { permlink, title, url } = currentShownPost;
     const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
@@ -211,6 +213,7 @@ class PostModal extends React.Component {
         </div>
         <PostContent
           isThread={isThread}
+          isObj={isObj}
           content={shownPostContents}
           signature={signature}
           isModal={isModal}
