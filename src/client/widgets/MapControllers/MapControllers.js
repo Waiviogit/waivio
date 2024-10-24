@@ -59,7 +59,7 @@ const MapControllers = React.memo(props => {
           <div
             role="presentation"
             className="MapConfigurationControl__locateGPS"
-            onClick={props.importObjects}
+            onClick={props.showImport}
           >
             <img
               style={{ width: '13px', marginTop: '2px' }}
@@ -82,7 +82,7 @@ const MapControllers = React.memo(props => {
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func,
   decrementZoom: PropTypes.func,
-  importObjects: PropTypes.func,
+  showImport: PropTypes.func,
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
   showImportBtn: PropTypes.bool,
@@ -98,7 +98,7 @@ MapControllers.defaultProps = {
   withoutZoom: false,
   isMapObjType: false,
   showFullscreenBtn: false,
-  importObjects: false,
+  showImport: false,
   showImportBtn: false,
   incrementZoom: () => {},
   decrementZoom: () => {},
