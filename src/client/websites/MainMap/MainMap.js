@@ -62,9 +62,11 @@ import {
 import MainMapView from './MainMapView';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import MapObjectImport from '../MapObjectImport/MapObjectImport';
+import { getVotingInfo } from '../../components/Maps/mapHelpers';
 
 const MainMap = React.memo(props => {
   const [showImportModal, setShowImportModal] = useState(false);
+  const [usersState, setUsersState] = useState(null);
   const query = new URLSearchParams(props.location.search);
   const headerHeight = 132;
   let queryCenter = query.get('center');
@@ -193,6 +195,9 @@ const MainMap = React.memo(props => {
     },
     [props.wobject.author_permlink, props.user],
   );
+  useEffect(() => {
+    getVotingInfo(props.isGuest, props.authUserName, setUsersState);
+  }, []);
 
   useEffect(() => {
     if (
@@ -350,7 +355,11 @@ const MainMap = React.memo(props => {
         wobjectsPoint={props.wobjectsPoint}
         searchType={props.searchType}
       />
-      <MapObjectImport showImportModal={showImportModal} closeModal={closeImportModal} />
+      <MapObjectImport
+        usersState={usersState}
+        showImportModal={showImportModal}
+        closeModal={closeImportModal}
+      />
     </>
   );
 });
@@ -394,6 +403,7 @@ MainMap.propTypes = {
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
   permlink: PropTypes.string,
+  authUserName: PropTypes.string,
   user: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
@@ -404,6 +414,7 @@ MainMap.propTypes = {
   setArea: PropTypes.func.isRequired,
   showLocation: PropTypes.bool.isRequired,
   isUserMap: PropTypes.bool,
+  isGuest: PropTypes.bool,
   setShowLocation: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),

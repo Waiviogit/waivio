@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import MapObjectImport from '../../../../websites/MapObjectImport/MapObjectImport';
 
-const NearbyButton = ({ intl }) => {
+const NearbyButton = ({ intl, usersState }) => {
   const [showImportModal, setShowImportModal] = useState(false);
 
   const setShowImport = () => {
@@ -26,13 +26,18 @@ const NearbyButton = ({ intl }) => {
           {intl.formatMessage({ id: 'nearby', defaultMessage: 'Nearby' })}
         </span>
       </button>
-      <MapObjectImport showImportModal={showImportModal} closeModal={closeImportModal} />
+      <MapObjectImport
+        usersState={usersState}
+        showImportModal={showImportModal}
+        closeModal={closeImportModal}
+      />
     </div>
   );
 };
 
 NearbyButton.propTypes = {
   intl: PropTypes.shape().isRequired,
+  usersState: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(NearbyButton);
