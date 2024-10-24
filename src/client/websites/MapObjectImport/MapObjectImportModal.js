@@ -202,7 +202,9 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
               cancelModal();
 
               if (!res.ok) {
-                message.error('An error occurred');
+                const errorText = res.message ? res.message : 'An error occurred';
+
+                message.error(errorText);
               } else {
                 message.success('Data import started successfully!');
               }
@@ -220,7 +222,9 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
 
               // Since the response will be opaque, you cannot access its body
               if (!res.ok) {
-                message.error('An error occurred');
+                const errorText = res.message ? res.message : 'An error occurred';
+
+                message.error(errorText);
               } else {
                 cancelModal();
                 message.success('Data import started successfully!');
