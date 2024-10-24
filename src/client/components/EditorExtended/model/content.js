@@ -8,6 +8,7 @@ import ImageButtonSlate from '../components/sides/ImageButtonSlate';
 import VideoButtonSlate from '../components/sides/VideoButtonSlate';
 import TableSideButton from '../components/sides/TableSideButton';
 import EmojiSideButton from '../components/sides/EmojiButton';
+import NearbyButton from '../components/sides/NearbyButton';
 
 export const defaultDecorators = new CompositeDecorator([]);
 
@@ -62,6 +63,10 @@ export const SIDE_BUTTONS_SLATE = [
   {
     title: 'Emoji',
     component: EmojiSideButton,
+  },
+  {
+    title: 'Nearby',
+    component: NearbyButton,
   },
 ];
 
