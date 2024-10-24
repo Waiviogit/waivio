@@ -63,6 +63,7 @@ import MainMapView from './MainMapView';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import MapObjectImport from '../MapObjectImport/MapObjectImport';
 import { getVotingInfo } from '../../components/Maps/mapHelpers';
+import { getGuestAuthorityStatus } from '../../../store/authStore/authActions';
 
 const MainMap = React.memo(props => {
   const [showImportModal, setShowImportModal] = useState(false);
@@ -197,6 +198,9 @@ const MainMap = React.memo(props => {
   );
   useEffect(() => {
     getVotingInfo(props.isGuest, props.authUserName, setUsersState);
+    if (props.isGuest) {
+      props.getGuestAuthorityStatus(props.authUserName);
+    }
   }, []);
 
   useEffect(() => {
@@ -416,6 +420,7 @@ MainMap.propTypes = {
   isUserMap: PropTypes.bool,
   isGuest: PropTypes.bool,
   setShowLocation: PropTypes.func.isRequired,
+  getGuestAuthorityStatus: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
@@ -481,5 +486,6 @@ export default connect(
     setShowLocation,
     setArea,
     setMapLoading,
+    getGuestAuthorityStatus,
   },
 )(withRouter(MainMap));

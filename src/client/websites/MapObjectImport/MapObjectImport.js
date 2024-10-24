@@ -11,8 +11,10 @@ import {
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 
 const MapObjectImport = ({ closeModal, showImportModal, usersState }) => {
-  const hasVotingPower = usersState?.resourceCredits > 0.0001;
   const isGuest = useSelector(isGuestUser);
+  const hasVotingPower = isGuest
+    ? usersState?.guestMana > 10
+    : usersState?.resourceCredits > 0.0001;
   const hasImportAuthority = isGuest
     ? useSelector(getGuestAuthority)
     : useSelector(state => getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }));

@@ -14,6 +14,18 @@ const MapControllers = React.memo(props => {
   const isAdmin = useSelector(getUserAdministrator);
   const showImportIcon = props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin);
 
+  // eslint-disable-next-line no-console
+  console.log(
+    ' props.showImportBtn:',
+    props.showImportBtn,
+    'isAuth:',
+    isAuth,
+    '!settings?.objectControl:',
+    !settings?.objectControl,
+    'isAdmin:',
+    isAdmin,
+  );
+
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
 

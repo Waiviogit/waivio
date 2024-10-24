@@ -35,6 +35,7 @@ import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import MapObjectImport from '../../websites/MapObjectImport/MapObjectImport';
+import { getGuestAuthorityStatus } from '../../../store/authStore/authActions';
 
 const ObjectOfTypeMap = props => {
   const [showImportModal, setShowImportModal] = useState(false);
@@ -281,6 +282,9 @@ const ObjectOfTypeMap = props => {
 
   useEffect(() => {
     getVotingInfo(props.isGuest, props.authUserName, setUsersState);
+    if (props.isGuest) {
+      dispatch(getGuestAuthorityStatus(props.authUserName));
+    }
   }, []);
 
   if (emptyMapObject && isMapReady)

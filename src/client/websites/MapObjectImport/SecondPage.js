@@ -86,6 +86,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              useExtendedSearch
               autoFocus={false}
               objectType="hashtag"
               itemsIdsToOmit={tagsToOmit}
@@ -130,6 +131,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              useExtendedSearch
               autoFocus={false}
               objectType="list"
               itemsIdsToOmit={listsToOmit}
