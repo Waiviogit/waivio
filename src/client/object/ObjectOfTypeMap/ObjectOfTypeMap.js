@@ -30,8 +30,10 @@ import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper'
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
+import MapObjectImport from '../../websites/MapObjectImport/MapObjectImport';
 
 const ObjectOfTypeMap = props => {
+  const [showImportModal, setShowImportModal] = useState(false);
   const [nestedWobj, setNestedWobj] = useState({});
   const requestPending = useRef(false);
   const query = useQuery();
@@ -90,6 +92,12 @@ const ObjectOfTypeMap = props => {
   defaultCenter = mapView?.center || defaultCenter;
   defaultZoom = mapView?.zoom || defaultZoom;
 
+  const setShowImport = () => {
+    setShowImportModal(true);
+  };
+  const closeImportModal = () => {
+    setShowImportModal(false);
+  };
   const decrementZoom = () => {
     if (settingMap.zoom >= 1) {
       setSettingMap({
@@ -284,6 +292,8 @@ const ObjectOfTypeMap = props => {
             {isMapReady && (
               <MapControllers
                 isMapObjType
+                showImportBtn
+                showImport={setShowImport}
                 decrementZoom={decrementZoom}
                 incrementZoom={incrementZoom}
                 setPosition={setCoordinates}
@@ -385,6 +395,7 @@ const ObjectOfTypeMap = props => {
           </>
         </div>
       )}
+      <MapObjectImport showImportModal={showImportModal} closeModal={closeImportModal} />
     </>
   );
 };
