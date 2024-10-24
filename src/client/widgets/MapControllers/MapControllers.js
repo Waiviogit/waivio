@@ -2,29 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { useSelector } from 'react-redux';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './MapControllers.less';
 import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 
 const MapControllers = React.memo(props => {
-  const isAuth = useSelector(getIsAuthenticated);
+  const isAuth = useSelector(getIsAuthenticated) || useSelector(isGuestUser);
   const settings = useSelector(getSettingsSite);
   const isAdmin = useSelector(getUserAdministrator);
   const showImportIcon = props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin);
-
-  // eslint-disable-next-line no-console
-  console.log(
-    ' props.showImportBtn:',
-    props.showImportBtn,
-    'isAuth:',
-    isAuth,
-    '!settings?.objectControl:',
-    !settings?.objectControl,
-    'isAdmin:',
-    isAdmin,
-  );
 
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
