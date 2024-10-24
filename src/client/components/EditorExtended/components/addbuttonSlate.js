@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { useSelector } from 'react-redux';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { useSlate } from 'slate-react';
@@ -10,11 +11,14 @@ import { getSelection } from '../util';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
 
 import './addbutton.less';
+import { getVotingInfo } from '../../Maps/mapHelpers';
+import { getAuthenticatedUserName, isGuestUser } from '../../../../store/authStore/authSelectors';
 
 const AddButtonSlate = props => {
   const { editorNode, isComment, initialPosTop, ADD_BTN_DIF } = props;
 
   const [isOpen, setOpen] = useState(false);
+  const [usersState, setUsersState] = useState(null);
   const [, setControl] = useState(false);
   const editor = useSlate();
   const { selection } = editor;
@@ -22,6 +26,12 @@ const AddButtonSlate = props => {
   const sideControl = useRef(null);
   const initialPosOfBtn = useRef(null);
   const firstRender = useRef(false);
+  const isGuest = useSelector(isGuestUser);
+  const authUserName = useSelector(getAuthenticatedUserName);
+
+  useEffect(() => {
+    getVotingInfo(isGuest, authUserName, setUsersState);
+  }, []);
 
   useEffect(() => {
     if (!editorNode) return;
@@ -109,6 +119,7 @@ const AddButtonSlate = props => {
                   >
                     <Button
                       {...extraProps}
+                      usersState={usersState}
                       handleObjectSelect={props.handleObjectSelect}
                       close={handleOpenToolbar}
                       renderControl={renderControl}

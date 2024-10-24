@@ -13,12 +13,16 @@ import mapProvider from '../../../common/helpers/mapProvider';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
-import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
+import {
+  getCurrentScreenSize,
+  getParsedMap,
+  getVotingInfo,
+} from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType, getObject as fetchObject } from '../../../waivioApi/ApiClient';
 import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
@@ -34,6 +38,7 @@ import MapObjectImport from '../../websites/MapObjectImport/MapObjectImport';
 
 const ObjectOfTypeMap = props => {
   const [showImportModal, setShowImportModal] = useState(false);
+  const [usersState, setUsersState] = useState(null);
   const [nestedWobj, setNestedWobj] = useState({});
   const requestPending = useRef(false);
   const query = useQuery();
@@ -274,6 +279,10 @@ const ObjectOfTypeMap = props => {
     }
   }, [nestedObjPermlink, hash]);
 
+  useEffect(() => {
+    getVotingInfo(props.isGuest, props.authUserName, setUsersState);
+  }, []);
+
   if (emptyMapObject && isMapReady)
     return (
       <div role="presentation" className="Threads__row justify-center">
@@ -395,7 +404,11 @@ const ObjectOfTypeMap = props => {
           </>
         </div>
       )}
-      <MapObjectImport showImportModal={showImportModal} closeModal={closeImportModal} />
+      <MapObjectImport
+        usersState={usersState}
+        showImportModal={showImportModal}
+        closeModal={closeImportModal}
+      />
     </>
   );
 };
@@ -407,6 +420,7 @@ ObjectOfTypeMap.propTypes = {
   userLocation: PropTypes.shape(),
   intl: PropTypes.shape(),
   locale: PropTypes.string,
+  isGuest: PropTypes.bool,
   authUserName: PropTypes.string,
 };
 
@@ -419,6 +433,7 @@ export default connect(
     locale: getUsedLocale(state),
     authUserName: getAuthenticatedUserName(state),
     isWaivio: getIsWaivio(state),
+    isGuest: isGuestUser(state),
   }),
   {},
 )(withRouter(injectIntl(ObjectOfTypeMap)));
