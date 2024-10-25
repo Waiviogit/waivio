@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Icon, message, Modal } from 'antd';
+import { Button, Checkbox, Form, Icon, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
@@ -49,6 +49,8 @@ const ShopWebsiteConfigurations = ({
   const [openColorsModal, setOpenColorsModal] = useState('');
   const [openHeaderConfig, setOpenHeaderConfig] = useState('');
   const defaultHashtag = get(config, 'defaultHashtag', null);
+  const advancedAssistant = get(config, 'advancedAI', false);
+  const [advancedAI, setAdvancedAI] = useState(advancedAssistant);
   const [image, setImage] = useState('');
   const [paramsSaving, setParamsSaving] = useState(false);
   const classListHeaderConfig = classNames('WebsitesConfigurations__headers', {
@@ -98,6 +100,12 @@ const ShopWebsiteConfigurations = ({
     handleSubmit({
       [modalsState.type]: image,
     });
+  const handleSubmitAdvancedAI = val => {
+    setAdvancedAI(val);
+    handleSubmit({
+      advancedAI: val,
+    });
+  };
 
   const handleSubmitColors = colors =>
     handleSubmit({
@@ -331,6 +339,24 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage="This hashtag will be recommended for all new posts on the website, ensuring that they consistently appear in the website's custom newsfeed."
                 />
               </p>
+            </Form.Item>
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'advanced_ai_assistant',
+                  defaultMessage: 'Advanced AI Assistant',
+                })}
+                :
+              </h3>
+              <div className={'WebsitesSettings__obj-editing'}>
+                <Checkbox
+                  onClick={() => handleSubmitAdvancedAI(!advancedAI)}
+                  checked={advancedAI}
+                />
+                <p className={'WebsitesSettings__obj-editing-info '}>
+                  Allow advanced information search based on site objects.
+                </p>
+              </div>
             </Form.Item>
             <Form.Item>
               <h3>
