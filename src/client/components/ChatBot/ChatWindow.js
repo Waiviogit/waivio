@@ -24,7 +24,7 @@ import { quickMessages } from './chatBotHelper';
 import {
   getHostAddress,
   getIsWaivio,
-  getUserAdministrator,
+  // getUserAdministrator,
   getWebsiteConfiguration,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -54,8 +54,9 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
-  const isAdministrator = useSelector(getUserAdministrator);
-  const showReload = isAdministrator && advancedAI;
+  // const isAdministrator = useSelector(getUserAdministrator);
+  // const showReload = isAdministrator && advancedAI;
+  const showReload = false;
   const siteNameLength = advancedAI && chatId ? 15 : 23;
   const shortSiteName = siteName?.length < siteNameLength;
   const siteImage = isWaivio
@@ -190,7 +191,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
     if (aiExpiredDate) {
       aiExpiredDate > Date.now()
         ? antdMessage.info('Update AI Assistant can only be done once per day.')
-        : updateAIKnowledge(authUser, '443.socialgifts.pp.ua').then(r => {
+        : updateAIKnowledge(authUser, currHost).then(r => {
             if (!isEmpty(r) && !r.message) {
               Cookie.set('aiExpiredDate', r.timeToNextRequest);
             }
