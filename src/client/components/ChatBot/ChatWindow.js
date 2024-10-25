@@ -24,7 +24,7 @@ import { quickMessages } from './chatBotHelper';
 import {
   getHostAddress,
   getIsWaivio,
-  // getUserAdministrator,
+  getUserAdministrator,
   getWebsiteConfiguration,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -34,9 +34,9 @@ import './ChatWindow.less';
 const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
+  const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const config = useSelector(getWebsiteConfiguration);
   const advancedAI = get(config, 'advancedAI', false);
-  const aiExpiredDate = Cookie.get('aiExpiredDate');
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
@@ -54,9 +54,8 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
-  // const isAdministrator = useSelector(getUserAdministrator);
-  // const showReload = isAdministrator && advancedAI;
-  const showReload = false;
+  const isAdministrator = useSelector(getUserAdministrator);
+  const showReload = isAdministrator && advancedAI;
   const siteNameLength = advancedAI && chatId ? 15 : 23;
   const shortSiteName = siteName?.length < siteNameLength;
   const siteImage = isWaivio
@@ -188,15 +187,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   }, []);
   const onReloadClick = () => {
-    if (aiExpiredDate) {
-      aiExpiredDate > Date.now()
-        ? antdMessage.info('Update AI Assistant can only be done once per day.')
-        : updateAIKnowledge(authUser, currHost).then(r => {
-            if (!isEmpty(r) && !r.message) {
-              Cookie.set('aiExpiredDate', r.timeToNextRequest);
-            }
-          });
-    }
+    aiExpiredDate && aiExpiredDate > Date.now()
+      ? antdMessage.info('Update AI Assistant can only be done once per day.')
+      : updateAIKnowledge(authUser, currHost).then(r => {
+          if (!isEmpty(r) && !r.message) {
+            setAiExpiredDate(r.timeToNextRequest);
+            Cookie.set('aiExpiredDate', r.timeToNextRequest);
+          }
+        });
   };
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
