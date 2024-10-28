@@ -3,12 +3,7 @@ import { Button, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 
-const ImportErrorModal = ({
-  closeImportModal,
-  showImportModal,
-  hasImportAuthority,
-  hasVotingPower,
-}) => (
+const ImportErrorModal = ({ closeImportModal, showImportModal, usersState }) => (
   <Modal
     onCancel={closeImportModal}
     footer={[
@@ -19,24 +14,13 @@ const ImportErrorModal = ({
     visible={showImportModal}
     title={'Data import for Nearby'}
   >
-    <>
-      {!hasImportAuthority && (
-        <p>
-          {' '}
-          There is no data import authorization. Please go to the Data Import page on Waivio and
-          activate it.
-        </p>
-      )}
-      {!hasImportAuthority && <br />}
-      {!hasVotingPower && <p> Not enough voting power to perform the data import.</p>}
-    </>
+    <p className={'flex justify-center'}>{usersState?.message}</p>
   </Modal>
 );
 
 ImportErrorModal.propTypes = {
   closeImportModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.func.isRequired,
-  hasImportAuthority: PropTypes.bool.isRequired,
-  hasVotingPower: PropTypes.bool.isRequired,
+  usersState: PropTypes.shape().isRequired,
 };
 export default ImportErrorModal;

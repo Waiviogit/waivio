@@ -13,11 +13,7 @@ import mapProvider from '../../../common/helpers/mapProvider';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
-import {
-  getCurrentScreenSize,
-  getParsedMap,
-  getVotingInfo,
-} from '../../components/Maps/mapHelpers';
+import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType, getObject as fetchObject } from '../../../waivioApi/ApiClient';
@@ -35,7 +31,7 @@ import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import MapObjectImport from '../../websites/MapObjectImport/MapObjectImport';
-import { getGuestAuthorityStatus } from '../../../store/authStore/authActions';
+import { hasAccessToImport } from '../../../waivioApi/importApi';
 
 const ObjectOfTypeMap = props => {
   const [showImportModal, setShowImportModal] = useState(false);
@@ -281,10 +277,7 @@ const ObjectOfTypeMap = props => {
   }, [nestedObjPermlink, hash]);
 
   useEffect(() => {
-    getVotingInfo(props.isGuest, props.authUserName, setUsersState);
-    if (props.isGuest) {
-      dispatch(getGuestAuthorityStatus(props.authUserName));
-    }
+    hasAccessToImport(props.authUserName).then(r => setUsersState(r));
   }, []);
 
   if (emptyMapObject && isMapReady)
@@ -424,7 +417,6 @@ ObjectOfTypeMap.propTypes = {
   userLocation: PropTypes.shape(),
   intl: PropTypes.shape(),
   locale: PropTypes.string,
-  isGuest: PropTypes.bool,
   authUserName: PropTypes.string,
 };
 
