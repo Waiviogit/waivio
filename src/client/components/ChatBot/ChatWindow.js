@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Drawer, Icon, Input, Tooltip, message as antdMessage } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Drawer, Icon, Input, message as antdMessage, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -36,7 +36,6 @@ const CHAT_ID = 'chatId';
 const ChatWindow = ({ className, hideChat, open }) => {
   const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const config = useSelector(getWebsiteConfiguration);
-  const advancedAI = get(config, 'advancedAI', false);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
@@ -55,8 +54,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const lastMessageRef = useRef(null);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
   const isAdministrator = useSelector(getUserAdministrator);
-  const showReload = isAdministrator && advancedAI;
-  const siteNameLength = advancedAI && chatId ? 15 : 23;
+  const siteNameLength = chatId ? 15 : 23;
   const shortSiteName = siteName?.length < siteNameLength;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
@@ -253,7 +251,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
     <Tooltip
       placement="topLeft"
       title={'Update AI Assistant for the site. Can only be done once per day.'}
-      overlayClassName="HeartButtonContainer"
+      overlayClassName="AiReloadContainer"
       overlayStyle={{ top: '10px' }}
     >
       <Icon type="reload" className="header-button-icon" onClick={onReloadClick} />
@@ -274,10 +272,12 @@ const ChatWindow = ({ className, hideChat, open }) => {
             </div>
             <div
               className={
-                showReload && chatId ? 'chat-header-buttons-wrap--all' : 'chat-header-buttons-wrap'
+                isAdministrator && chatId
+                  ? 'chat-header-buttons-wrap--all'
+                  : 'chat-header-buttons-wrap'
               }
             >
-              {!isWaivio && showReload && reloadBtn}
+              {!isWaivio && isAdministrator && reloadBtn}
               {chatId ? (
                 <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
               ) : (
@@ -297,10 +297,12 @@ const ChatWindow = ({ className, hideChat, open }) => {
             </div>
             <div
               className={
-                showReload && chatId ? 'chat-header-buttons-wrap--all' : 'chat-header-buttons-wrap'
+                isAdministrator && chatId
+                  ? 'chat-header-buttons-wrap--all'
+                  : 'chat-header-buttons-wrap'
               }
             >
-              {!isWaivio && showReload && reloadBtn}
+              {!isWaivio && isAdministrator && reloadBtn}
               {chatId ? (
                 <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
               ) : (

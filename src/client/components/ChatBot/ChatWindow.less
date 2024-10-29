@@ -271,3 +271,20 @@
     }
   }
 }
+
+.AiReloadContainer {
+  &.ant-tooltip.ant-tooltip-placement-topLeft {
+    padding-bottom: 0 !important;
+  }
+
+  & .ant-tooltip-inner {
+    color: @black-text-basic;
+    background: @white;
+    width: 235px;
+    margin-left: 50px;
+  }
+
+  & .ant-tooltip-arrow::before {
+    background: transparent;
+  }
+}
