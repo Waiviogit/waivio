@@ -99,6 +99,20 @@ export const dataManagementSettings = {
     },
   ],
 };
+export const sitesDataManagementSettings = {
+  tab: {
+    name: 'dataManagement',
+    id: 'sidenav_user_data_management',
+    defaultMessage: 'Data management:',
+  },
+  settings: [
+    {
+      to: '/data-import',
+      id: 'data_import',
+      defaultMessage: 'Data import',
+    },
+  ],
+};
 export const websiteSettings = {
   tab: {
     name: 'websites',

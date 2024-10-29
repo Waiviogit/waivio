@@ -208,6 +208,11 @@ const routes = () => ({
           exact: true,
           component: Views.NotificationSettings,
         },
+        {
+          path: '/data-import',
+          exact: true,
+          component: Views.DataImport,
+        },
       ],
     },
     {

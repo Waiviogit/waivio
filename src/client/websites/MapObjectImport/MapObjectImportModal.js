@@ -3,6 +3,7 @@ import { Icon, message, Modal } from 'antd';
 import { Map, Marker } from 'pigeon-maps';
 import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
+import { useHistory } from 'react-router';
 import uuidv4 from 'uuid/v4';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -64,6 +65,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
   const userName = useSelector(getAuthenticatedUserName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const dispatch = useDispatch();
+  const history = useHistory();
   const { lat, lon } = userLocation;
 
   const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
@@ -206,7 +208,9 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
 
                 message.error(errorText);
               } else {
+                cancelModal();
                 message.success('Data import started successfully!');
+                history.push('/data-import');
               }
             })
             .catch(error => {
@@ -228,6 +232,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
               } else {
                 cancelModal();
                 message.success('Data import started successfully!');
+                history.push('/data-import');
               }
             })
             .catch(error => {
