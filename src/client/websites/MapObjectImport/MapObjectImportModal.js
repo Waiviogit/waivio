@@ -47,7 +47,7 @@ const stepsConfig = [
   },
 ];
 
-const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
+const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSettings }) => {
   const [loading, setLoading] = useState(false);
   const [objects, setObjects] = useState([]);
   const [tagsList, setTagsList] = useState([]);
@@ -55,7 +55,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [name, setName] = useState('');
   const [type, setType] = useState('');
-  const [settingMap, setSettingMap] = useState({});
+  const [settingMap, setSettingMap] = useState(initialMapSettings);
   const [checkedIds, setCheckedIds] = useState([]);
   const [markerCoordinates, setMarkerCoordinates] = useState(null);
   const isFirstPage = pageNumber === 1;
@@ -302,6 +302,10 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
     }
   }, [markerCoordinates]);
 
+  useEffect(() => {
+    setSettingMap(initialMapSettings);
+  }, [initialMapSettings]);
+
   const zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
       <div role="presentation" className="MapOS__zoom-button" onClick={incrementZoom}>
@@ -409,6 +413,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
 MapObjectImportModal.propTypes = {
   closeImportModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.func.isRequired,
+  initialMapSettings: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(MapObjectImportModal);

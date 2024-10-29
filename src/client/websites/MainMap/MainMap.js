@@ -357,6 +357,7 @@ const MainMap = React.memo(props => {
         searchType={props.searchType}
       />
       <MapObjectImport
+        initialMapSettings={props.mapData}
         usersState={usersState}
         showImportModal={showImportModal}
         closeModal={closeImportModal}
