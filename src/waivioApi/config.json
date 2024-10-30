@@ -249,5 +249,6 @@
   "text": "/text",
   "objects": "/objects",
   "image": "/image",
-  "custom": "/custom"
+  "custom": "/custom",
+  "validate": "/validate"
 }

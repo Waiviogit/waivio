@@ -62,8 +62,8 @@ import {
 import MainMapView from './MainMapView';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import MapObjectImport from '../MapObjectImport/MapObjectImport';
-import { getVotingInfo } from '../../components/Maps/mapHelpers';
 import { getGuestAuthorityStatus } from '../../../store/authStore/authActions';
+import { hasAccessToImport } from '../../../waivioApi/importApi';
 
 const MainMap = React.memo(props => {
   const [showImportModal, setShowImportModal] = useState(false);
@@ -197,10 +197,7 @@ const MainMap = React.memo(props => {
     [props.wobject.author_permlink, props.user],
   );
   useEffect(() => {
-    getVotingInfo(props.isGuest, props.authUserName, setUsersState);
-    if (props.isGuest) {
-      props.getGuestAuthorityStatus(props.authUserName);
-    }
+    hasAccessToImport(props.authUserName).then(r => setUsersState(r));
   }, []);
 
   useEffect(() => {
@@ -360,6 +357,7 @@ const MainMap = React.memo(props => {
         searchType={props.searchType}
       />
       <MapObjectImport
+        initialMapSettings={props.mapData}
         usersState={usersState}
         showImportModal={showImportModal}
         closeModal={closeImportModal}
@@ -418,9 +416,7 @@ MainMap.propTypes = {
   setArea: PropTypes.func.isRequired,
   showLocation: PropTypes.bool.isRequired,
   isUserMap: PropTypes.bool,
-  isGuest: PropTypes.bool,
   setShowLocation: PropTypes.func.isRequired,
-  getGuestAuthorityStatus: PropTypes.func.isRequired,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,

@@ -48,7 +48,16 @@ const SecondPage = ({
               checked={checkedIds?.includes(obj?.id)}
               onChange={() => setCheckedObjs(obj)}
             />
-            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>
+            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>,
+            <a
+              rel="noopener noreferrer"
+              className={'MapObjectImportModal__obj-address'}
+              target={'_blank'}
+              href={obj.googleMapsLinks.placeUri}
+            >
+              {obj?.shortFormattedAddress}
+              <i className="iconfont icon-send PostModal__icon" />
+            </a>
           </div>
         ))}
       </div>
