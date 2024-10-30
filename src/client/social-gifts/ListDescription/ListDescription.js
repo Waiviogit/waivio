@@ -5,7 +5,7 @@ import { has, isEmpty } from 'lodash';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import './ListDescription.less';
 
-const ListDescription = ({ wobject }) => {
+const ListDescription = ({ wobject, isMap }) => {
   const [showMore, setShowMore] = useState(false);
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
@@ -19,7 +19,7 @@ const ListDescription = ({ wobject }) => {
 
   return (
     (hasTitle || hasDescription) && (
-      <div className={'ListDescription'}>
+      <div className={'ListDescription'} style={isMap && hasAvatar ? { minHeight: '260px' } : {}}>
         <section>
           {hasAvatar && hasDescription && (
             <div className={'ListDescription__image-container'}>
@@ -54,6 +54,7 @@ const ListDescription = ({ wobject }) => {
 };
 
 ListDescription.propTypes = {
+  isMap: PropTypes.bool,
   wobject: PropTypes.shape({
     description: PropTypes.string,
     title: PropTypes.string,
