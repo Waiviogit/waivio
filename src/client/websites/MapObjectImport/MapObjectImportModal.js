@@ -120,21 +120,17 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
   const getObjects = () => {
     const includedType = isEmpty(type) ? undefined : type;
     const textQuery = isEmpty(name) ? undefined : name;
+    const latitude = isNil(markerCoordinates) ? settingMap.center[0] : markerCoordinates[0];
+    const longitude = isNil(markerCoordinates) ? settingMap.center[1] : markerCoordinates[1];
 
     return isEmpty(name)
       ? getObjectsForMapImportObjects(
           userName,
-          markerCoordinates[0],
-          markerCoordinates[1],
+          latitude,
+          longitude,
           includedType ? [includedType] : undefined,
         )
-      : getObjectsForMapImportText(
-          userName,
-          markerCoordinates[0],
-          markerCoordinates[1],
-          includedType,
-          textQuery,
-        );
+      : getObjectsForMapImportText(userName, latitude, longitude, includedType, textQuery);
   };
   const cancelModal = () => {
     closeImportModal();
@@ -152,14 +148,13 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
   const handleOk = () => {
     if (isFirstPage) {
       setLoading(true);
-      if (!isEmpty(markerCoordinates)) {
-        getObjects().then(r => {
-          setObjects(r.result);
-          setLoading(false);
-          setCheckedIds(r.result?.map(o => o.id));
-          setPageNumber(2);
-        });
-      }
+
+      getObjects().then(r => {
+        setObjects(r.result);
+        setLoading(false);
+        setCheckedIds(r.result?.map(o => o.id));
+        setPageNumber(2);
+      });
     } else {
       setLoading(true);
 

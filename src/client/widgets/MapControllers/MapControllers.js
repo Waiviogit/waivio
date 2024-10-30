@@ -12,7 +12,8 @@ const MapControllers = React.memo(props => {
   const isAuth = useSelector(getIsAuthenticated) || useSelector(isGuestUser);
   const settings = useSelector(getSettingsSite);
   const isAdmin = useSelector(getUserAdministrator);
-  const showImportIcon = props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin);
+  const showImportIcon =
+    props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin || props.isUserMap);
 
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
@@ -86,6 +87,7 @@ MapControllers.propTypes = {
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
   showImportBtn: PropTypes.bool,
+  isUserMap: PropTypes.bool,
   showFullscreenBtn: PropTypes.bool,
   isMapObjType: PropTypes.bool,
   successCallback: PropTypes.func.isRequired,

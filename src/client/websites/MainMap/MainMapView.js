@@ -179,6 +179,7 @@ const MainMapView = props => {
           )}
         </Map>
         <MapControllers
+          isUserMap={props.isUserMap}
           isMapObjType
           className={props.mapControllersClassName}
           decrementZoom={decrementZoom}

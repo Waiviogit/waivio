@@ -49,14 +49,14 @@ const SecondPage = ({
               onChange={() => setCheckedObjs(obj)}
             />
             <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>,
-            <span className={'MapObjectImportModal__obj-name'}>{obj?.shortFormattedAddress}</span>,
             <a
               rel="noopener noreferrer"
-              className={'MapObjectImportModal__obj-name'}
+              className={'MapObjectImportModal__obj-address'}
               target={'_blank'}
               href={obj.googleMapsLinks.placeUri}
             >
-              Directions
+              {obj?.shortFormattedAddress}
+              <i className="iconfont icon-send PostModal__icon" />
             </a>
           </div>
         ))}
