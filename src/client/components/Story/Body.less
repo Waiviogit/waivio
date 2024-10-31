@@ -248,17 +248,23 @@ div[data-dir='rtl'] .Body {
 
 .Body,
 .Story {
+  table,
+  tr,
+  td {
+    border: 1px inset transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
   table {
     width: 100%;
     display: table;
     overflow: auto;
     table-layout: fixed;
-    border: 1px solid @black;
+    margin-bottom: 1rem;
 
     th,
     td {
-      border: 1px solid @black;
-
       img {
         margin: 0;
       }
@@ -277,7 +283,7 @@ div[data-dir='rtl'] .Body {
 
     tr > th {
       text-align: left;
-      background-color: @post-table-background-color;
+      //background-color: @post-table-background-color;
     }
 
     tr > th,

@@ -67,8 +67,11 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
   const dispatch = useDispatch();
   const history = useHistory();
   const { lat, lon } = userLocation;
-
-  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
+  const isRestaurant = object =>
+    object?.googleTypes?.some(t => restaurantGoogleTypes.includes(t)) ||
+    object?.types?.some(t => restaurantGoogleTypes.includes(t));
+  const businessTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
+  const restaurantTags = tagsList?.map(t => ({ key: 'Cuisine', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);
 
   const getAvatar = async ({ detailsPhotos, user }) => {
@@ -97,6 +100,8 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
     // eslint-disable-next-line no-return-await
     return await Promise.all(
       filteredObjects?.map(async object => {
+        const waivioTags = isRestaurant(object) ? restaurantTags : businessTags;
+
         const processed = formBusinessObjects({
           object,
           waivio_tags: waivioTags,
@@ -163,9 +168,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
         const restaurantObjects = [];
 
         processedObjects.forEach(obj => {
-          const isRestaurant = obj?.googleTypes?.some(t => restaurantGoogleTypes.includes(t));
-
-          if (isRestaurant) {
+          if (isRestaurant(obj)) {
             restaurantObjects.push(obj);
           } else {
             businessObjects.push(obj);
@@ -360,7 +363,6 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
             setLists={setLists}
             listAssociations={listAssociations}
             lists={lists}
-            waivioTags={waivioTags}
             objects={objects}
             checkedIds={checkedIds}
             setCheckedIds={setCheckedIds}

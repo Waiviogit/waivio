@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
+import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -10,7 +11,7 @@ import { getIsSocial } from '../../../store/appStore/appSelectors';
 
 import './PageContent.less';
 
-const PageContent = ({ wobj }) => {
+const PageContent = ({ wobj, intl }) => {
   const [content, setContent] = useState(wobj.pageContent || '');
   const { name } = useParams();
   const location = useLocation();
@@ -31,14 +32,22 @@ const PageContent = ({ wobj }) => {
     }
   }, [objName]);
 
-  return (
+  return content ? (
     <div className={classnames('PageContent', { social: isSocial })}>
       <BodyContainer isPage full body={content} />
+    </div>
+  ) : (
+    <div className={'Checklist__empty'}>
+      {intl.formatMessage({
+        id: 'page_empty',
+        defaultMessage: 'There is no content on the page',
+      })}
     </div>
   );
 };
 
 PageContent.propTypes = {
   wobj: PropTypes.shape(),
+  intl: PropTypes.shape(),
 };
-export default PageContent;
+export default injectIntl(PageContent);

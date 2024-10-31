@@ -283,7 +283,7 @@ const SearchAllResult = props => {
           ]}
           visible={infoVisible}
         >
-          <ListDescription wobject={props.currObj} />
+          <ListDescription isMap wobject={props.currObj} />
         </Modal>
       )}
     </div>

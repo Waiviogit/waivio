@@ -16,7 +16,7 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
-import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
+// import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
 
 import './Body.less';
 
@@ -59,8 +59,7 @@ export function getHtml(
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
-  parsedBody = addPeakdImage(parsedBody);
-
+  // parsedBody = addPeakdImage(parsedBody);
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
@@ -76,9 +75,8 @@ export function getHtml(
   }
 
   parsedBody = improve(parsedBody);
-  parsedBody = addSpaces(parsedBody);
-  parsedBody = addBreakLines(parsedBody);
   parsedBody = remarkable.render(parsedBody);
+
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
