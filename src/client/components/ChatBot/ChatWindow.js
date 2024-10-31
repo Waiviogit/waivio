@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Drawer, Icon, Input } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Drawer, Icon, Input, message as antdMessage, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,11 +15,16 @@ import {
   setChatBotId,
   setChatBotMessage,
 } from '../../../store/chatBotStore/chatBotActions';
-import { getChatBotHistory, sendChatBotQuestion } from '../../../waivioApi/chatBotApi';
+import {
+  getChatBotHistory,
+  sendChatBotQuestion,
+  updateAIKnowledge,
+} from '../../../waivioApi/chatBotApi';
 import { quickMessages } from './chatBotHelper';
 import {
   getHostAddress,
   getIsWaivio,
+  getUserAdministrator,
   getWebsiteConfiguration,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -29,6 +34,7 @@ import './ChatWindow.less';
 const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
+  const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const config = useSelector(getWebsiteConfiguration);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
@@ -47,7 +53,9 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const touchStartRef = useRef(0);
   const lastMessageRef = useRef(null);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
-  const shortSiteName = siteName?.length < 23;
+  const isAdministrator = useSelector(getUserAdministrator);
+  const siteNameLength = chatId ? 15 : 23;
+  const shortSiteName = siteName?.length < siteNameLength;
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
@@ -176,7 +184,16 @@ const ChatWindow = ({ className, hideChat, open }) => {
       };
     }
   }, []);
-
+  const onReloadClick = () => {
+    aiExpiredDate && aiExpiredDate > Date.now()
+      ? antdMessage.info('Update AI Assistant can only be done once per day.')
+      : updateAIKnowledge(authUser, currHost).then(r => {
+          if (!isEmpty(r) && !r.message) {
+            setAiExpiredDate(r.timeToNextRequest);
+            Cookie.set('aiExpiredDate', r.timeToNextRequest);
+          }
+        });
+  };
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -230,6 +247,17 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   }, []);
 
+  const reloadBtn = (
+    <Tooltip
+      placement="topLeft"
+      title={'Update AI Assistant for the site. Can only be done once per day.'}
+      overlayClassName="AiReloadContainer"
+      overlayStyle={{ top: '10px' }}
+    >
+      <Icon type="reload" className="header-button-icon" onClick={onReloadClick} />
+    </Tooltip>
+  );
+
   const content = (
     <div
       className={`ChatWindow  ${className} ${isMobile() ? 'smooth-height' : ''}`}
@@ -242,7 +270,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
               <img className="chat-logo" src={siteImage} alt={siteName} />
               <div className="chat-header-text">{siteName} AI Assistant</div>
             </div>
-            <div className="chat-header-buttons-wrap">
+            <div
+              className={
+                isAdministrator && chatId
+                  ? 'chat-header-buttons-wrap--all'
+                  : 'chat-header-buttons-wrap'
+              }
+            >
+              {!isWaivio && isAdministrator && reloadBtn}
               {chatId ? (
                 <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
               ) : (
@@ -260,7 +295,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
               <div className="chat-header-text-sites">{siteName}</div>
               <div className="chat-header-text-sites"> AI Assistant</div>
             </div>
-            <div className="chat-header-buttons-wrap">
+            <div
+              className={
+                isAdministrator && chatId
+                  ? 'chat-header-buttons-wrap--all'
+                  : 'chat-header-buttons-wrap'
+              }
+            >
+              {!isWaivio && isAdministrator && reloadBtn}
               {chatId ? (
                 <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
               ) : (

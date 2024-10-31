@@ -136,6 +136,12 @@
     width: 65px;
     align-items: center;
     justify-content: space-between;
+    &--all {
+      display: flex;
+      width: 85px;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   .chat-body {
@@ -263,5 +269,22 @@
     40% {
       transform: scale(1.5);
     }
+  }
+}
+
+.AiReloadContainer {
+  &.ant-tooltip.ant-tooltip-placement-topLeft {
+    padding-bottom: 0 !important;
+  }
+
+  & .ant-tooltip-inner {
+    color: @black-text-basic;
+    background: @white;
+    width: 235px;
+    margin-left: 50px;
+  }
+
+  & .ant-tooltip-arrow::before {
+    background: transparent;
   }
 }

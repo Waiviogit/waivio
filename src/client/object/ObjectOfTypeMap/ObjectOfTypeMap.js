@@ -18,7 +18,7 @@ import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType, getObject as fetchObject } from '../../../waivioApi/ApiClient';
 import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
@@ -30,8 +30,12 @@ import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper'
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
+import MapObjectImport from '../../websites/MapObjectImport/MapObjectImport';
+import { hasAccessToImport } from '../../../waivioApi/importApi';
 
 const ObjectOfTypeMap = props => {
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [usersState, setUsersState] = useState(null);
   const [nestedWobj, setNestedWobj] = useState({});
   const requestPending = useRef(false);
   const query = useQuery();
@@ -90,6 +94,12 @@ const ObjectOfTypeMap = props => {
   defaultCenter = mapView?.center || defaultCenter;
   defaultZoom = mapView?.zoom || defaultZoom;
 
+  const setShowImport = () => {
+    setShowImportModal(true);
+  };
+  const closeImportModal = () => {
+    setShowImportModal(false);
+  };
   const decrementZoom = () => {
     if (settingMap.zoom >= 1) {
       setSettingMap({
@@ -266,6 +276,10 @@ const ObjectOfTypeMap = props => {
     }
   }, [nestedObjPermlink, hash]);
 
+  useEffect(() => {
+    hasAccessToImport(props.authUserName).then(r => setUsersState(r));
+  }, []);
+
   if (emptyMapObject && isMapReady)
     return (
       <div role="presentation" className="Threads__row justify-center">
@@ -284,6 +298,8 @@ const ObjectOfTypeMap = props => {
             {isMapReady && (
               <MapControllers
                 isMapObjType
+                showImportBtn
+                showImport={setShowImport}
                 decrementZoom={decrementZoom}
                 incrementZoom={incrementZoom}
                 setPosition={setCoordinates}
@@ -385,6 +401,11 @@ const ObjectOfTypeMap = props => {
           </>
         </div>
       )}
+      <MapObjectImport
+        usersState={usersState}
+        showImportModal={showImportModal}
+        closeModal={closeImportModal}
+      />
     </>
   );
 };
@@ -408,6 +429,7 @@ export default connect(
     locale: getUsedLocale(state),
     authUserName: getAuthenticatedUserName(state),
     isWaivio: getIsWaivio(state),
+    isGuest: isGuestUser(state),
   }),
   {},
 )(withRouter(injectIntl(ObjectOfTypeMap)));

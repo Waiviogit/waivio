@@ -421,7 +421,15 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
               if (result.ok) dispatch(notify(publicMessage, 'success'));
             }, 5000);
           } else {
-            setTimeout(() => dispatch(push(`/@${author}`)), 3000);
+            setTimeout(() => {
+              const getMessage = getTranslationByKey('post_publication');
+              const publicMessage = getMessage(state);
+
+              dispatch(push(`/@${author}`));
+              if (result?.ok || result?.result?.id) {
+                message.success(publicMessage);
+              }
+            }, 3000);
           }
           if (typeof window !== 'undefined' && window?.gtag)
             window.gtag('event', 'publish_post', { debug_mode: false });

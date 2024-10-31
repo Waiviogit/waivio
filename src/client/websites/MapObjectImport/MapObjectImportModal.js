@@ -3,6 +3,7 @@ import { Icon, message, Modal } from 'antd';
 import { Map, Marker } from 'pigeon-maps';
 import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
+import { useHistory } from 'react-router';
 import uuidv4 from 'uuid/v4';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,7 +48,7 @@ const stepsConfig = [
   },
 ];
 
-const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
+const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSettings }) => {
   const [loading, setLoading] = useState(false);
   const [objects, setObjects] = useState([]);
   const [tagsList, setTagsList] = useState([]);
@@ -55,7 +56,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [name, setName] = useState('');
   const [type, setType] = useState('');
-  const [settingMap, setSettingMap] = useState({});
+  const [settingMap, setSettingMap] = useState(initialMapSettings);
   const [checkedIds, setCheckedIds] = useState([]);
   const [markerCoordinates, setMarkerCoordinates] = useState(null);
   const isFirstPage = pageNumber === 1;
@@ -64,8 +65,13 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const dispatch = useDispatch();
+  const history = useHistory();
   const { lat, lon } = userLocation;
-  const waivioTags = tagsList?.map(t => ({ key: 'Pros', value: t.name }));
+  const isRestaurant = object =>
+    object?.googleTypes?.some(t => restaurantGoogleTypes.includes(t)) ||
+    object?.types?.some(t => restaurantGoogleTypes.includes(t));
+  const businessTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
+  const restaurantTags = tagsList?.map(t => ({ key: 'Cuisine', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);
 
   const getAvatar = async ({ detailsPhotos, user }) => {
@@ -94,6 +100,8 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
     // eslint-disable-next-line no-return-await
     return await Promise.all(
       filteredObjects?.map(async object => {
+        const waivioTags = isRestaurant(object) ? restaurantTags : businessTags;
+
         const processed = formBusinessObjects({
           object,
           waivio_tags: waivioTags,
@@ -117,21 +125,17 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const getObjects = () => {
     const includedType = isEmpty(type) ? undefined : type;
     const textQuery = isEmpty(name) ? undefined : name;
+    const latitude = isNil(markerCoordinates) ? settingMap.center[0] : markerCoordinates[0];
+    const longitude = isNil(markerCoordinates) ? settingMap.center[1] : markerCoordinates[1];
 
     return isEmpty(name)
       ? getObjectsForMapImportObjects(
           userName,
-          markerCoordinates[0],
-          markerCoordinates[1],
+          latitude,
+          longitude,
           includedType ? [includedType] : undefined,
         )
-      : getObjectsForMapImportText(
-          userName,
-          markerCoordinates[0],
-          markerCoordinates[1],
-          includedType,
-          textQuery,
-        );
+      : getObjectsForMapImportText(userName, latitude, longitude, includedType, textQuery);
   };
   const cancelModal = () => {
     closeImportModal();
@@ -149,14 +153,13 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
   const handleOk = () => {
     if (isFirstPage) {
       setLoading(true);
-      if (!isEmpty(markerCoordinates)) {
-        getObjects().then(r => {
-          setObjects(r.result);
-          setLoading(false);
-          setCheckedIds(r.result?.map(o => o.id));
-          setPageNumber(2);
-        });
-      }
+
+      getObjects().then(r => {
+        setObjects(r.result);
+        setLoading(false);
+        setCheckedIds(r.result?.map(o => o.id));
+        setPageNumber(2);
+      });
     } else {
       setLoading(true);
 
@@ -165,9 +168,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
         const restaurantObjects = [];
 
         processedObjects.forEach(obj => {
-          const isRestaurant = obj?.googleTypes?.some(t => restaurantGoogleTypes.includes(t));
-
-          if (isRestaurant) {
+          if (isRestaurant(obj)) {
             restaurantObjects.push(obj);
           } else {
             businessObjects.push(obj);
@@ -201,9 +202,13 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
               cancelModal();
 
               if (!res.ok) {
-                message.error('An error occurred');
+                const errorText = res.message ? res.message : 'An error occurred';
+
+                message.error(errorText);
               } else {
+                cancelModal();
                 message.success('Data import started successfully!');
+                history.push('/data-import');
               }
             })
             .catch(error => {
@@ -219,10 +224,13 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
 
               // Since the response will be opaque, you cannot access its body
               if (!res.ok) {
-                message.error('An error occurred');
+                const errorText = res.message ? res.message : 'An error occurred';
+
+                message.error(errorText);
               } else {
                 cancelModal();
                 message.success('Data import started successfully!');
+                history.push('/data-import');
               }
             })
             .catch(error => {
@@ -297,6 +305,10 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
     }
   }, [markerCoordinates]);
 
+  useEffect(() => {
+    setSettingMap(initialMapSettings);
+  }, [initialMapSettings]);
+
   const zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
       <div role="presentation" className="MapOS__zoom-button" onClick={incrementZoom}>
@@ -351,7 +363,6 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
             setLists={setLists}
             listAssociations={listAssociations}
             lists={lists}
-            waivioTags={waivioTags}
             objects={objects}
             checkedIds={checkedIds}
             setCheckedIds={setCheckedIds}
@@ -404,6 +415,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal }) => {
 MapObjectImportModal.propTypes = {
   closeImportModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.func.isRequired,
+  initialMapSettings: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(MapObjectImportModal);

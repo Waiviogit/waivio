@@ -7,10 +7,11 @@ import {
   currentWebsiteSettings,
   dataManagementSettings,
   personalSettings,
+  sitesDataManagementSettings,
   websiteSettings,
 } from './constants';
 import SettingsItem from './SettingsItem';
-import { getIsWaivio } from '../../../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio } from '../../../../store/appStore/appSelectors';
 import { getOwnWebsites } from '../../../../store/websiteStore/websiteSelectors';
 
 import '../Sidenav.less';
@@ -18,6 +19,7 @@ import '../Sidenav.less';
 const SettingsSidenav = ({ match }) => {
   const ownWebsite = useSelector(getOwnWebsites);
   const isWaivio = useSelector(getIsWaivio);
+  const isSocial = useSelector(getIsSocial);
   const [menuCondition, setMenuCondition] = useState({
     personal: true,
     websites: true,
@@ -56,6 +58,13 @@ const SettingsSidenav = ({ match }) => {
         <SettingsItem
           condition={menuCondition.dataManagement}
           configItem={dataManagementSettings}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      )}{' '}
+      {isSocial && (
+        <SettingsItem
+          condition={menuCondition.dataManagement}
+          configItem={sitesDataManagementSettings}
           toggleMenuCondition={toggleMenuCondition}
         />
       )}

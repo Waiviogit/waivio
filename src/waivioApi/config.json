@@ -248,5 +248,7 @@
   "placesApi": "/places-api",
   "text": "/text",
   "objects": "/objects",
-  "image": "/image"
+  "image": "/image",
+  "custom": "/custom",
+  "validate": "/validate"
 }

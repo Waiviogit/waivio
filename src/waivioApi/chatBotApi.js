@@ -49,3 +49,29 @@ export const sendChatBotQuestion = async (query, id, userName) => {
     .then(res => res.json())
     .catch(error => error);
 };
+export const updateAIKnowledge = async (userName, host) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.assistant}${config.custom}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      ...(isGuest
+        ? {
+            'access-token': token.token,
+            'waivio-auth': true,
+          }
+        : { ...getAuthHeaders() }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      host,
+    }),
+  })
+    .then(res => res.json())
+    .catch(error => error);
+};
