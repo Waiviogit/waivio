@@ -516,10 +516,10 @@ export const addSpaces = string => {
 /** Add empty lines */
 export const addBreakLines = string => string.replace(/\n{3}/g, '\n&nbsp;\n');
 
-const peakDImage = /([^(])(https:\/\/files\.peakd\.com\/file\/peakd-hive\/riverflows\/([\w|\d]*\.(?:jpg|png)))/g;
+const peakDImage = /!\[([^\]]+)\]\((https?:\/\/files\.peakd\.com\/file\/peakd-hive\/[^\s)]+\.(png|jpg))\)/g;
 
 export const addPeakdImage = string =>
   string.replace(
     peakDImage,
-    (match, p1, p2) => `${p1 === '\n' ? '\n\n' : `${p1}\n\n`}![image.png](${p2})\n\n`,
+    (match, p1, p2) => `${p1 === '\n' ? '\n\n' : `\n\n`}![image.png](${p2})\n\n`,
   );
