@@ -2657,5 +2657,6 @@
   "object_field_groupExclude": "Exclude a user",
   "expertise_tags": "Expertise tags",
   "categories": "Categories",
-  "page_empty": "There is no content on the page"
+  "page_empty": "There is no content on the page",
+  "object_field_groupLastActivity": "Activity"
 }
