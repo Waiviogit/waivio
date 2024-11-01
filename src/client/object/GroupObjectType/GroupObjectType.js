@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { isEmpty, last } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useParams } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -22,7 +22,7 @@ import {
 
 const limit = 50;
 const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, loading }) => {
-  const { hasMore, list } = dynamicListInfo;
+  const { hasMore, list, nextCursor } = dynamicListInfo;
   const params = useParams();
   const dispatch = useDispatch();
   const name = params.name;
@@ -40,10 +40,8 @@ const GroupObjectType = ({ unfollowUser, followUser, authUser, dynamicListInfo, 
   };
 
   const loadMore = () => {
-    const lastUser = last(list)?.name;
-
-    if (lastUser) {
-      dispatch(setMoreUsersList(name, authUser, limit, lastUser));
+    if (nextCursor) {
+      dispatch(setMoreUsersList(name, authUser, limit, nextCursor));
     }
   };
 

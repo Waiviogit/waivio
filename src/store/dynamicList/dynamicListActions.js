@@ -141,12 +141,12 @@ export const followObjectInList = (permlink, username, type) => (dispatch, getSt
 
 export const GET_USERS_LIST = createAsyncActionType('@dynamicList/GET_USERS_LIST');
 
-export const setUsersList = (name, authUser, limit, lastUser) => dispatch => {
+export const setUsersList = (name, authUser, limit, cursor) => dispatch => {
   dispatch({
     type: GET_USERS_LIST.START,
   });
 
-  return getGroupObjectUserList(name, authUser, limit, lastUser).then(res =>
+  return getGroupObjectUserList(name, authUser, limit, cursor).then(res =>
     dispatch({
       type: GET_USERS_LIST.SUCCESS,
       payload: { users: res.result, ...res },
@@ -154,12 +154,12 @@ export const setUsersList = (name, authUser, limit, lastUser) => dispatch => {
     }),
   );
 };
-export const setMoreUsersList = (name, authUser, limit, lastUser) => dispatch => {
+export const setMoreUsersList = (name, authUser, limit, cursor) => dispatch => {
   dispatch({
     type: GET_USERS_LIST_MORE.START,
   });
 
-  return getGroupObjectUserList(name, authUser, limit, lastUser).then(res =>
+  return getGroupObjectUserList(name, authUser, limit, cursor).then(res =>
     dispatch({
       type: GET_USERS_LIST_MORE.SUCCESS,
       payload: { users: res.result, ...res },

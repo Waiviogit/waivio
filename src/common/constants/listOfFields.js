@@ -87,6 +87,7 @@ export const objectFields = {
   groupFollowing: 'groupFollowing',
   groupAdd: 'groupAdd',
   groupExclude: 'groupExclude',
+  groupLastActivity: 'groupLastActivity',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -361,6 +362,7 @@ export const errorObjectFields = {
   [objectFields.merchant]: [merchantFields.merchant, merchantFields.merchantName],
   [objectFields.menuItem]: [menuItemFields.menuItemTitle, menuItemFields.menuItemImage],
   [recipeFields.recipeIngredients]: [recipeFields.recipeIngredients],
+  [objectFields.groupLastActivity]: [objectFields.groupLastActivity],
 };
 
 export default null;
