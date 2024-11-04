@@ -25,6 +25,7 @@ import {
   voteAppends,
 } from '../appendStore/appendActions';
 import { getAuthorityList } from '../appendStore/appendSelectors';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -163,6 +164,15 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
         });
       })
   );
+};
+
+export const sendPostError = (author, permlink) => (dispatch, getState, { busyAPI }) => {
+  const authUser = getAuthenticatedUserName(getState());
+
+  busyAPI.instance.sendAsync(subscribeTypes.clientError, [
+    authUser,
+    `shortened post ${author}/${permlink}`,
+  ]);
 };
 
 export const voteHistoryPost = (currentPost, author, permlink, weight) => (

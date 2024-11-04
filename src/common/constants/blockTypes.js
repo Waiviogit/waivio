@@ -8,4 +8,5 @@ export const subscribeTypes = {
   subscribeCampaignRelease: 'subscribeCampaignRelease',
   subscribeCampaignDeactivation: 'subscribeCampaignDeactivation',
   subscribeTransactionId: 'subscribeTransactionId',
+  clientError: 'clientError',
 };

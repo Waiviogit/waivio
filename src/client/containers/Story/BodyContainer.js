@@ -5,9 +5,13 @@ import {
   getExitPageSetting,
   getRewriteLinks,
 } from '../../../store/settingsStore/settingsSelectors';
+import { sendPostError } from '../../../store/postsStore/postActions';
 
-export default connect(state => ({
-  appUrl: getAppHost(state),
-  rewriteLinks: getRewriteLinks(state),
-  exitPageSetting: getExitPageSetting(state),
-}))(Body);
+export default connect(
+  state => ({
+    appUrl: getAppHost(state),
+    rewriteLinks: getRewriteLinks(state),
+    exitPageSetting: getExitPageSetting(state),
+  }),
+  { sendPostError },
+)(Body);
