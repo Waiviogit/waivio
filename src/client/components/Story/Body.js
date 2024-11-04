@@ -19,6 +19,7 @@ import AsyncVideo from '../../vendor/asyncVideo';
 // import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
 
 import './Body.less';
+// import {sendPostError} from "../../../store/postsStore/postActions";
 
 export const remarkable = new Remarkable({
   html: true,
@@ -52,6 +53,7 @@ export function getHtml(
   location,
   isPage,
   baseObj = '',
+  // sendPostError
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
@@ -198,6 +200,7 @@ const Body = props => {
     location,
     props.isPage,
     params.name,
+    props.sendPostError,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
@@ -205,6 +208,7 @@ const Body = props => {
 
 Body.propTypes = {
   appUrl: PropTypes.string.isRequired,
+  sendPostError: PropTypes.func,
   rewriteLinks: PropTypes.bool.isRequired,
   exitPageSetting: PropTypes.bool.isRequired,
   body: PropTypes.string,
