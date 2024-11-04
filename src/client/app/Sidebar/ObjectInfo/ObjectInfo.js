@@ -75,6 +75,7 @@ import RecipeIngredients from '../RecipeIngredients/RecipeIngredients';
 import ExpertiseTags from '../../../object/GroupObjectInfo/ExpertiseTags';
 import './ObjectInfo.less';
 import GroupUsersLayout from '../../../object/GroupObjectInfo/GroupUsersLayout';
+import GroupLastActivity from '../../../object/GroupObjectInfo/GroupLastActivity';
 
 @withRouter
 @connect(
@@ -531,6 +532,7 @@ class ObjectInfo extends React.Component {
     const groupFollowers = parseWobjectField(wobject, 'groupFollowers');
     const groupFollowing = parseWobjectField(wobject, 'groupFollowing');
     const groupAdd = get(wobject, 'groupAdd', []);
+    const groupLastActivity = get(wobject, 'groupLastActivity', []);
     const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
     const customSort = get(wobject, 'sortCustom.include', []);
@@ -990,6 +992,10 @@ class ObjectInfo extends React.Component {
           !isEmpty(groupFollowing) && (
             <GroupUsersLayout title={'following'} list={groupFollowing} />
           ),
+        )}
+        {this.listItem(
+          objectFields.groupLastActivity,
+          !isEmpty(groupLastActivity) && <GroupLastActivity activity={groupLastActivity} />,
         )}
         {this.listItem(
           objectFields.groupAdd,

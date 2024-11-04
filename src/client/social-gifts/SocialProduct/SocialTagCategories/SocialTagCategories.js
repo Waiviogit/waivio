@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom';
 const SocialTagCategories = ({ tagCategoriesList, wobject }) => {
   const renderCategoryItems = (categoryItems = [], category) => {
     const { object_type: type } = wobject;
+    const tags = categoryItems?.sort((a, b) => b.weight - a.weight);
 
     return (
       <span>
-        {categoryItems.map(item => (
+        {tags.map(item => (
           <span key={item.body}>
             <Tag key={`${category}/${item.body}`} className="SocialProduct__tag-item">
               <Link to={`/discover-objects/${type}?category=${category}&tag=${item.body}`}>

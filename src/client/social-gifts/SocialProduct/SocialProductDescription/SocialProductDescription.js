@@ -7,7 +7,9 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [dividedParagraphs, setDividedParagraphs] = useState(description?.split('\n\n'));
-  const photos = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
+  const photosToSort = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
+  const photos = photosToSort?.sort((a, b) => b.weight - a.weight);
+
   const onPicClick = (e, pic) => {
     setOpen(true);
     setPhotoIndex(photos.indexOf(pic));
