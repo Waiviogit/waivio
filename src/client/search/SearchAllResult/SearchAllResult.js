@@ -180,6 +180,13 @@ const SearchAllResult = props => {
       }
     }
   }, [isScrolled]);
+  useEffect(() => {
+    setInfoVisible(
+      props.currObj?.author_permlink &&
+        !shownMaps?.includes(props.currObj?.author_permlink) &&
+        !isMobile(),
+    );
+  }, [props.currObj.author_permlink]);
 
   const getEndScroll = () => {
     const bottom =
