@@ -476,7 +476,6 @@ class AppendForm extends Component {
       case objectFields.groupFollowing:
       case objectFields.groupAdd:
       case objectFields.groupExclude:
-      case objectFields.groupLastActivity:
       case objectFields.publisher:
       case objectFields.related:
       case objectFields.similar:
@@ -547,6 +546,10 @@ class AppendForm extends Component {
       }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
+        break;
+      }
+      case objectFields.groupLastActivity: {
+        fieldBody.push(rest[objectFields.groupLastActivity]);
         break;
       }
       case objectFields.phone: {

@@ -18,8 +18,8 @@ const ListDescription = ({ wobject, isMap }) => {
   const altText = description || `${wobject.name} image`;
 
   return (
-    (hasTitle || hasDescription) && (
-      <div className={'ListDescription'} style={isMap && hasAvatar ? { minHeight: '260px' } : {}}>
+    ((hasTitle && !isMap) || hasDescription) && (
+      <div className={'ListDescription'} style={isMap && hasAvatar ? { minHeight: '350px' } : {}}>
         <section>
           {hasAvatar && hasDescription && (
             <div className={'ListDescription__image-container'}>
