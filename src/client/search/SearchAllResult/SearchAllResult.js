@@ -66,9 +66,7 @@ const SearchAllResult = props => {
       !isMobile(),
   );
   const isUsersSearch = props.searchType === 'Users';
-  const hasTitle = has(props.currObj, 'title');
-  const hasDescription = has(props.currObj, 'description');
-  const showInfo = hasTitle || hasDescription;
+  const showInfo = has(props.currObj, 'description');
   const resultList = useRef();
   const history = useHistory();
 

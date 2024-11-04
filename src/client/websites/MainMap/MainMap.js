@@ -197,7 +197,7 @@ const MainMap = React.memo(props => {
     [props.wobject.author_permlink, props.user],
   );
   useEffect(() => {
-    hasAccessToImport(props.authUserName).then(r => setUsersState(r));
+    props.isAuth && hasAccessToImport(props.authUserName).then(r => setUsersState(r));
   }, []);
 
   useEffect(() => {
@@ -400,6 +400,7 @@ MainMap.propTypes = {
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
+  isAuth: PropTypes.bool,
   socialLoading: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
