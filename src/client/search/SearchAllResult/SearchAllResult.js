@@ -66,9 +66,7 @@ const SearchAllResult = props => {
       !isMobile(),
   );
   const isUsersSearch = props.searchType === 'Users';
-  const hasTitle = has(props.currObj, 'title');
-  const hasDescription = has(props.currObj, 'description');
-  const showInfo = hasTitle || hasDescription;
+  const showInfo = has(props.currObj, 'description');
   const resultList = useRef();
   const history = useHistory();
 
@@ -182,6 +180,13 @@ const SearchAllResult = props => {
       }
     }
   }, [isScrolled]);
+  useEffect(() => {
+    setInfoVisible(
+      props.currObj?.author_permlink &&
+        !shownMaps?.includes(props.currObj?.author_permlink) &&
+        !isMobile(),
+    );
+  }, [props.currObj.author_permlink]);
 
   const getEndScroll = () => {
     const bottom =

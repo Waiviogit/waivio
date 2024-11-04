@@ -19,7 +19,6 @@ import AsyncVideo from '../../vendor/asyncVideo';
 // import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
 
 import './Body.less';
-// import {sendPostError} from "../../../store/postsStore/postActions";
 
 export const remarkable = new Remarkable({
   html: true,
@@ -53,7 +52,7 @@ export function getHtml(
   location,
   isPage,
   baseObj = '',
-  // sendPostError
+  sendPostError,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
@@ -61,7 +60,6 @@ export function getHtml(
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
-  // parsedBody = addPeakdImage(parsedBody);
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
@@ -100,6 +98,10 @@ export function getHtml(
       parsedJsonMetadata,
     }),
   );
+
+  if (body.length - parsedBody.length > 100 && sendPostError) {
+    sendPostError();
+  }
 
   if (returnType === 'text') {
     return parsedBody;
@@ -192,6 +194,9 @@ const Body = props => {
     secureLinks: props.exitPageSetting,
     isPost: props.isPost,
   };
+
+  const sendError = () => props.sendPostError(params?.author, params?.permlink);
+
   const htmlSections = getHtml(
     props.body,
     props.jsonMetadata,
@@ -200,7 +205,7 @@ const Body = props => {
     location,
     props.isPage,
     params.name,
-    props.sendPostError,
+    sendError,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
