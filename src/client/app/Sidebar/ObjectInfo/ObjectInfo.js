@@ -369,11 +369,13 @@ class ObjectInfo extends React.Component {
 
     return (
       <div>
-        {tagArray?.map(item => (
-          <Tag key={`${category}/${item.body}`} color="orange">
-            <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
-          </Tag>
-        ))}
+        {tagArray
+          ?.sort((a, b) => b.weight - a.weight)
+          ?.map(item => (
+            <Tag key={`${category}/${item.body}`} color="orange">
+              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+            </Tag>
+          ))}
         {categoryItems.length > 5 && !this.state.showMore[category] && (
           <span
             role="presentation"

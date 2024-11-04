@@ -19,7 +19,8 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     ?.flatMap(alb => alb?.items)
     ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
   const pics = [...allPhotos, ...get(relatedAlbum, 'items', [])];
-  const pictures = pics?.length > 15 ? pics.slice(0, 15) : pics;
+  const picturesToSort = pics?.length > 15 ? pics.slice(0, 15) : pics;
+  const pictures = picturesToSort?.sort((a, b) => b.weight - a.weight);
   const album = [...albums, relatedAlbum]?.find(alb =>
     alb?.items?.some(pic => pic.body === pics[photoIndex]?.body),
   );
