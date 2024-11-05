@@ -1,19 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import { useSelector } from 'react-redux';
-import { getIsAuthenticated, isGuestUser } from '../../../store/authStore/authSelectors';
-
 import './MapControllers.less';
-import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
-import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 
 const MapControllers = React.memo(props => {
-  const isAuth = useSelector(getIsAuthenticated) || useSelector(isGuestUser);
-  const settings = useSelector(getSettingsSite);
-  const isAdmin = useSelector(getUserAdministrator);
   const showImportIcon =
-    props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin || props.isUserMap);
+    props.showImportBtn &&
+    props.isAuth &&
+    (!props.settings?.objectControl || props.isAdmin || props.isUserMap);
 
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
@@ -90,6 +84,9 @@ MapControllers.propTypes = {
   isUserMap: PropTypes.bool,
   showFullscreenBtn: PropTypes.bool,
   isMapObjType: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  isAdmin: PropTypes.bool,
+  settings: PropTypes.shape(),
   successCallback: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   rejectCallback: PropTypes.func.isRequired,
@@ -101,7 +98,9 @@ MapControllers.defaultProps = {
   isMapObjType: false,
   showFullscreenBtn: false,
   showImport: false,
-  showImportBtn: false,
+  isAuth: false,
+  isAdmin: false,
+  settings: {},
   incrementZoom: () => {},
   decrementZoom: () => {},
 };

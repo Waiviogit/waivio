@@ -12,13 +12,21 @@ import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../common/helpers/mapProvider';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
-import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
+import { getConfiguration, getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType, getObject as fetchObject } from '../../../waivioApi/ApiClient';
-import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import {
+  getIsWaivio,
+  getUsedLocale,
+  getUserAdministrator,
+} from '../../../store/appStore/appSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
@@ -297,6 +305,9 @@ const ObjectOfTypeMap = props => {
           <>
             {isMapReady && (
               <MapControllers
+                settings={props.settings}
+                isAdmin={props.isAdmin}
+                isAuth={props.isAuth}
                 isMapObjType
                 showImportBtn
                 showImport={setShowImport}
@@ -418,6 +429,9 @@ ObjectOfTypeMap.propTypes = {
   intl: PropTypes.shape(),
   locale: PropTypes.string,
   authUserName: PropTypes.string,
+  isAuth: PropTypes.bool,
+  isAdmin: PropTypes.bool,
+  settings: PropTypes.shape(),
 };
 
 export default connect(
@@ -430,6 +444,9 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     isWaivio: getIsWaivio(state),
     isGuest: isGuestUser(state),
+    isAuth: getIsAuthenticated(state),
+    isAdmin: getUserAdministrator(state),
+    settings: getSettingsSite(state),
   }),
   {},
 )(withRouter(injectIntl(ObjectOfTypeMap)));
