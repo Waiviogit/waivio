@@ -549,7 +549,7 @@ class AppendForm extends Component {
         break;
       }
       case objectFields.groupLastActivity: {
-        fieldBody.push(rest[objectFields.groupLastActivity]);
+        fieldBody.push(rest[objectFields.groupLastActivity]?.toString());
         break;
       }
       case objectFields.phone: {
@@ -665,6 +665,7 @@ class AppendForm extends Component {
           const authoritiesInfo = !isEmpty(authoritiesList)
             ? `${!isEmpty(tags) ? ', ' : ' '}Authorities: ${authoritiesList.map(
                 user => `@${user.account}`,
+                get,
               )}`
             : '';
 
@@ -833,7 +834,7 @@ class AppendForm extends Component {
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case objectFields.groupLastActivity:
-          return `@${author} added ${currentField} (${langReadable}): ${appendValue /
+          return `@${author} added ${currentField} (${langReadable}): ${Number(appendValue) /
             86400000} days`;
         case objectFields.departments: {
           const isRecipe = wObject.object_type === 'recipe';
@@ -1050,6 +1051,12 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: formValues[objectFields.affiliateButton],
+        };
+      }
+      if (currentField === objectFields.groupLastActivity) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.groupLastActivity].toString(),
         };
       }
       if (currentField === objectFields.affiliateCode) {

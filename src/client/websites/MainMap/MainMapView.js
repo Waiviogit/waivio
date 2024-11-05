@@ -179,6 +179,9 @@ const MainMapView = props => {
           )}
         </Map>
         <MapControllers
+          settings={props.settings}
+          isAdmin={props.isAdmin}
+          isAuth={props.isAuth}
           isUserMap={props.isUserMap}
           isMapObjType
           className={props.mapControllersClassName}
@@ -214,6 +217,9 @@ MainMapView.propTypes = {
   isSocial: PropTypes.bool.isRequired,
   showLocation: PropTypes.bool.isRequired,
   isUserMap: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+  settings: PropTypes.shape().isRequired,
   showImport: PropTypes.bool.isRequired,
   mapClassList: PropTypes.string.isRequired,
   searchType: PropTypes.string.isRequired,

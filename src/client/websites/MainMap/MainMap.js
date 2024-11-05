@@ -18,7 +18,7 @@ import {
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../helper';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize, getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -27,6 +27,7 @@ import {
   getWebsiteSearchType,
 } from '../../../store/searchStore/searchSelectors';
 import {
+  getSettingsSite,
   getShowReloadButton,
   getSocialSearchResultLoading,
   getWobjectsPoint,
@@ -323,6 +324,9 @@ const MainMap = React.memo(props => {
   return (
     <>
       <MainMapView
+        settings={props.settings}
+        isAdmin={props.isAdmin}
+        isAuth={props.isAuth}
         isUserMap={props.isUserMap}
         hoveredCardPermlink={props.hoveredCardPermlink}
         wobject={props.wobject}
@@ -401,6 +405,8 @@ MainMap.propTypes = {
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
   isAuth: PropTypes.bool,
+  isAdmin: PropTypes.bool,
+  settings: PropTypes.shape(),
   socialLoading: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
@@ -462,6 +468,8 @@ export default connect(
       area: getArea(state),
       authUserName: getAuthenticatedUserName(state),
       isAuth: getIsAuthenticated(state),
+      isAdmin: getUserAdministrator(state),
+      settings: getSettingsSite(state),
     };
   },
   {

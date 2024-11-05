@@ -48,7 +48,12 @@ const stepsConfig = [
   },
 ];
 
-const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSettings }) => {
+const MapObjectImportModal = ({
+  showImportModal,
+  closeImportModal,
+  initialMapSettings,
+  isEditor,
+}) => {
   const [loading, setLoading] = useState(false);
   const [objects, setObjects] = useState([]);
   const [tagsList, setTagsList] = useState([]);
@@ -146,7 +151,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
     setLists([]);
     setName('');
     setType('');
-    setSettingMap({});
+    setSettingMap(initialMapSettings);
     setCheckedIds([]);
     setMarkerCoordinates(null);
   };
@@ -157,7 +162,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
       getObjects().then(r => {
         setObjects(r.result);
         setLoading(false);
-        setCheckedIds(r.result?.map(o => o.id));
+        setCheckedIds(isEditor ? [] : r.result?.map(o => o.id));
         setPageNumber(2);
       });
     } else {
@@ -208,7 +213,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
               } else {
                 cancelModal();
                 message.success('Data import started successfully!');
-                history.push('/data-import');
+                !isEditor && history.push('/data-import');
               }
             })
             .catch(error => {
@@ -230,7 +235,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
               } else {
                 cancelModal();
                 message.success('Data import started successfully!');
-                history.push('/data-import');
+                !isEditor && history.push('/data-import');
               }
             })
             .catch(error => {
@@ -293,7 +298,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
   };
 
   useEffect(() => {
-    dispatch(getCoordinates());
+    !isEditor && dispatch(getCoordinates());
   }, []);
 
   useEffect(() => {
@@ -358,6 +363,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
           />
         ) : (
           <SecondPage
+            isEditor={isEditor}
             tagsList={tagsList}
             setTagsList={setTagsList}
             setLists={setLists}
@@ -416,6 +422,7 @@ MapObjectImportModal.propTypes = {
   closeImportModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.func.isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
+  isEditor: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(MapObjectImportModal);

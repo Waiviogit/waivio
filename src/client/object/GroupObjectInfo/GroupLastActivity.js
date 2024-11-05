@@ -7,7 +7,7 @@ const GroupLastActivity = ({ activity }) => (
     <b>
       <FormattedMessage id="activity" defaultMessage="Activity" />:
     </b>{' '}
-    <span>{activity / 86400000}</span> ]
+    <span>{Number(activity) / 86400000}</span>{' '}
     <FormattedMessage id="days_lowercase" defaultMessage="days" />{' '}
   </div>
 );

@@ -7,6 +7,7 @@ export const listOfSocialObjectTypes = [
   'business',
   'link',
   'restaurant',
+  'map',
 ];
 export const listOfMapObjectTypes = [
   'restaurant',

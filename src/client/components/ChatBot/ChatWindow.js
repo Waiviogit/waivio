@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -185,14 +185,15 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   }, []);
   const onReloadClick = () => {
-    aiExpiredDate && aiExpiredDate > Date.now()
-      ? antdMessage.info('Update AI Assistant can only be done once per day.')
-      : updateAIKnowledge(authUser, currHost).then(r => {
+    isNil(aiExpiredDate) || aiExpiredDate < Date.now()
+      ? updateAIKnowledge(authUser, currHost).then(r => {
           if (!isEmpty(r) && !r.message) {
+            antdMessage.success('The AI assistant update has been enabled.');
             setAiExpiredDate(r.timeToNextRequest);
             Cookie.set('aiExpiredDate', r.timeToNextRequest);
           }
-        });
+        })
+      : antdMessage.info('Update AI Assistant can only be done once per day.');
   };
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
