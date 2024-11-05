@@ -60,7 +60,8 @@ const SecondPage = ({
                 onChange={() => setCheckedObjs(obj, false)}
               />
             )}
-            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>(
+            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>{' '}
+            <span className={'MapObjectImportModal__obj-address'}>(</span>
             <a
               rel="noopener noreferrer"
               className={'MapObjectImportModal__obj-address'}
@@ -69,7 +70,7 @@ const SecondPage = ({
             >
               {obj?.shortFormattedAddress}
             </a>
-            )
+            <span className={'MapObjectImportModal__obj-address'}>)</span>
           </div>
         ))}
       </div>
