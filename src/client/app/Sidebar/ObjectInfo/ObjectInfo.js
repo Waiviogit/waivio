@@ -364,7 +364,9 @@ class ObjectInfo extends React.Component {
 
   renderCategoryItems = (categoryItems = [], category) => {
     const { object_type: type } = this.props.wobject;
-    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+    const onlyFiveItems = categoryItems
+      ?.sort((a, b) => b.weight - a.weight)
+      .filter((f, i) => i < 5);
     const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
     return (
