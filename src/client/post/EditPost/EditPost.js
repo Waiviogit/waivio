@@ -47,6 +47,7 @@ const propTypes = {
   location: PropTypes.shape().isRequired,
   filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handlePasteText: PropTypes.func.isRequired,
+  getCoordinates: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -100,6 +101,7 @@ const EditPost = props => {
 
     const isReview = !isEmpty(campaignId);
 
+    props.getCoordinates();
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
     if (isReview) {
       props.getReviewCheckInfo({ campaignId }, intl, props.campaignType, props.secondaryItem);

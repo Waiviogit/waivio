@@ -29,6 +29,7 @@ import {
   firstParseLinkedObjects,
   getCampaignInfo,
 } from '../../../store/slateEditorStore/editorActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 
 const mapStateToProps = (state, props) => {
   const query = new URLSearchParams(props.location.search);
@@ -69,6 +70,7 @@ const mapDispatchToProps = (dispatch, props) => {
     handleObjectSelect: object => dispatch(handleObjectSelect(object, false, props.intl)),
     setClearState: () => dispatch(setClearState()),
     leaveEditor: () => dispatch(leaveEditor()),
+    getCoordinates: () => dispatch(getCoordinates()),
     handlePasteText: html => dispatch(handlePasteText(html)),
   };
 };
