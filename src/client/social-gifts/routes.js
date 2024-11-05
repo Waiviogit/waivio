@@ -17,7 +17,6 @@ import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import WidgetContent from './WidgetContent/WidgetContent';
 import UserBlogFeed from './FeedMasonry/UserBlogFeed';
-import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
@@ -121,11 +120,6 @@ const routes = () => ({
       path: '/object/page/:name',
       exact: true,
       component: Checklist,
-    },
-    {
-      path: '/object/newsfeed/:name',
-      exact: true,
-      component: ObjectNewsFeed,
     },
     {
       path: '/object/widget/:name',
