@@ -146,7 +146,7 @@ const MapObjectImportModal = ({ showImportModal, closeImportModal, initialMapSet
     setLists([]);
     setName('');
     setType('');
-    setSettingMap({});
+    setSettingMap(initialMapSettings);
     setCheckedIds([]);
     setMarkerCoordinates(null);
   };
