@@ -549,7 +549,7 @@ class AppendForm extends Component {
         break;
       }
       case objectFields.groupLastActivity: {
-        fieldBody.push(rest[objectFields.groupLastActivity]);
+        fieldBody.push(rest[objectFields.groupLastActivity]?.toString());
         break;
       }
       case objectFields.phone: {
@@ -665,6 +665,7 @@ class AppendForm extends Component {
           const authoritiesInfo = !isEmpty(authoritiesList)
             ? `${!isEmpty(tags) ? ', ' : ' '}Authorities: ${authoritiesList.map(
                 user => `@${user.account}`,
+                get,
               )}`
             : '';
 

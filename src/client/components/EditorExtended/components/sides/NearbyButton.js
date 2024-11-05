@@ -45,6 +45,7 @@ const NearbyButton = ({ intl }) => {
       </button>
       {!isNil(usersState) && (
         <MapObjectImport
+          isEditor
           usersState={usersState}
           showImportModal={showImportModal}
           closeModal={closeImportModal}
