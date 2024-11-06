@@ -157,6 +157,8 @@ import AddUserForm from './FormComponents/GroupForms/AddUserForm';
 import ProductIdForm from './FormComponents/MapForms/ProductIdForm';
 import GroupIdForm from './FormComponents/GroupIdForm';
 import CompanyIdForm from './FormComponents/CompanyIdForm';
+import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
+import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
 
 @connect(
   state => ({
@@ -546,6 +548,10 @@ class AppendForm extends Component {
         fieldBody = rest[objectFields.hashtag];
         break;
       }
+      case objectFields.groupLastActivity: {
+        fieldBody.push(rest[objectFields.groupLastActivity]?.toString());
+        break;
+      }
       case objectFields.phone: {
         fieldBody.push(rest[phoneFields.name] || '');
         break;
@@ -659,6 +665,7 @@ class AppendForm extends Component {
           const authoritiesInfo = !isEmpty(authoritiesList)
             ? `${!isEmpty(tags) ? ', ' : ' '}Authorities: ${authoritiesList.map(
                 user => `@${user.account}`,
+                get,
               )}`
             : '';
 
@@ -826,6 +833,9 @@ class AppendForm extends Component {
         case objectFields.affiliateUrlTemplate:
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
+        case objectFields.groupLastActivity:
+          return `@${author} added ${currentField} (${langReadable}): ${Number(appendValue) /
+            86400000} days`;
         case objectFields.departments: {
           const isRecipe = wObject.object_type === 'recipe';
 
@@ -1041,6 +1051,12 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: formValues[objectFields.affiliateButton],
+        };
+      }
+      if (currentField === objectFields.groupLastActivity) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.groupLastActivity].toString(),
         };
       }
       if (currentField === objectFields.affiliateCode) {
@@ -1810,6 +1826,8 @@ class AppendForm extends Component {
     if (currentField === objectFields.publicationDate)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.groupLastActivity)
+      return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.calories) return filtered.some(f => f.body === currentValue);
     if (currentField === recipeFields.cookingTime)
       return filtered.some(f => f.body === currentValue);
@@ -2513,6 +2531,13 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.groupLastActivity:
+        return (
+          <LastActivityForm
+            getFieldDecorator={getFieldDecorator}
+            handleSelectChange={this.handleSelectChange}
+          />
+        );
       case objectFields.language:
       case recipeFields.budget:
       case recipeFields.cookingTime:
@@ -2761,138 +2786,13 @@ class AppendForm extends Component {
       }
       case objectFields.dimensions: {
         return (
-          <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator(dimensionsFields.length, {
-                rules: this.getFieldRules(dimensionsFields.length),
-              })(
-                <Input
-                  autoFocus
-                  type="number"
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'length',
-                    defaultMessage: 'Length',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(dimensionsFields.width, {
-                rules: this.getFieldRules(dimensionsFields.width),
-              })(
-                <Input
-                  type="number"
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'width',
-                    defaultMessage: 'Width',
-                  })}
-                />,
-              )}
-            </Form.Item>{' '}
-            <Form.Item>
-              {getFieldDecorator(dimensionsFields.depth, {
-                rules: this.getFieldRules(dimensionsFields.depth),
-              })(
-                <Input
-                  type="number"
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'depth',
-                    defaultMessage: 'Depth',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(dimensionsFields.unitOfLength)(
-                <Select
-                  placeholder={intl.formatMessage({
-                    id: 'select_unit_of_length',
-                    defaultMessage: 'Select unit of length',
-                  })}
-                  onChange={this.handleSelectChange}
-                >
-                  <Select.Option value="in">
-                    {intl.formatMessage({
-                      id: 'inch',
-                      defaultMessage: 'Inch',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="cm">
-                    {intl.formatMessage({
-                      id: 'centimeter',
-                      defaultMessage: 'Centimeter',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="ft">
-                    {intl.formatMessage({
-                      id: 'foot',
-                      defaultMessage: 'Foot',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="m">
-                    {intl.formatMessage({
-                      id: 'meter',
-                      defaultMessage: 'Meter',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="mm">
-                    {intl.formatMessage({
-                      id: 'millimeter',
-                      defaultMessage: 'Millimeter',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="μm">
-                    {intl.formatMessage({
-                      id: 'micrometer',
-                      defaultMessage: 'Micrometer',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="nm">
-                    {intl.formatMessage({
-                      id: 'nanometer',
-                      defaultMessage: 'Nanometer',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="mi">
-                    {intl.formatMessage({
-                      id: 'mile',
-                      defaultMessage: 'Mile',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="nmi">
-                    {intl.formatMessage({
-                      id: 'nautical_mile',
-                      defaultMessage: 'Nautical mile',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="yd">
-                    {intl.formatMessage({
-                      id: 'yard',
-                      defaultMessage: 'Yard',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="km">
-                    {intl.formatMessage({
-                      id: 'kilometer',
-                      defaultMessage: 'Kilometer',
-                    })}
-                  </Select.Option>
-                </Select>,
-              )}
-            </Form.Item>
-          </React.Fragment>
+          <DimensionsForm
+            getFieldDecorator={getFieldDecorator}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+            getFieldRules={this.getFieldRules}
+            handleSelectChange={this.handleSelectChange}
+          />
         );
       }
       case objectFields.workTime: {
@@ -4244,6 +4144,8 @@ class AppendForm extends Component {
         );
       case objectFields.phone:
         return isEmpty(getFieldValue(phoneFields.number));
+      case objectFields.groupLastActivity:
+        return isNil(getFieldValue(objectFields.groupLastActivity));
       case objectFields.galleryItem:
         return this.state.currentImages.length < 1;
       case objectFields.blog:

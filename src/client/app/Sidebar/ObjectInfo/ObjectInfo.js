@@ -75,6 +75,7 @@ import RecipeIngredients from '../RecipeIngredients/RecipeIngredients';
 import ExpertiseTags from '../../../object/GroupObjectInfo/ExpertiseTags';
 import './ObjectInfo.less';
 import GroupUsersLayout from '../../../object/GroupObjectInfo/GroupUsersLayout';
+import GroupLastActivity from '../../../object/GroupObjectInfo/GroupLastActivity';
 
 @withRouter
 @connect(
@@ -363,16 +364,20 @@ class ObjectInfo extends React.Component {
 
   renderCategoryItems = (categoryItems = [], category) => {
     const { object_type: type } = this.props.wobject;
-    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+    const onlyFiveItems = categoryItems
+      ?.sort((a, b) => b.weight - a.weight)
+      .filter((f, i) => i < 5);
     const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
     return (
       <div>
-        {tagArray?.map(item => (
-          <Tag key={`${category}/${item.body}`} color="orange">
-            <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
-          </Tag>
-        ))}
+        {tagArray
+          ?.sort((a, b) => b.weight - a.weight)
+          ?.map(item => (
+            <Tag key={`${category}/${item.body}`} color="orange">
+              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+            </Tag>
+          ))}
         {categoryItems.length > 5 && !this.state.showMore[category] && (
           <span
             role="presentation"
@@ -531,6 +536,7 @@ class ObjectInfo extends React.Component {
     const groupFollowers = parseWobjectField(wobject, 'groupFollowers');
     const groupFollowing = parseWobjectField(wobject, 'groupFollowing');
     const groupAdd = get(wobject, 'groupAdd', []);
+    const groupLastActivity = get(wobject, 'groupLastActivity', []);
     const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
     const customSort = get(wobject, 'sortCustom.include', []);
@@ -990,6 +996,10 @@ class ObjectInfo extends React.Component {
           !isEmpty(groupFollowing) && (
             <GroupUsersLayout title={'following'} list={groupFollowing} />
           ),
+        )}
+        {this.listItem(
+          objectFields.groupLastActivity,
+          !isEmpty(groupLastActivity) && <GroupLastActivity activity={groupLastActivity} />,
         )}
         {this.listItem(
           objectFields.groupAdd,

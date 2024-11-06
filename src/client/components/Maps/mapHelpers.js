@@ -1,6 +1,8 @@
 import { forEach, get } from 'lodash';
 import { ZOOM, zoomAndRadiusArray } from '../../../common/constants/map';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+import * as ApiClient from '../../../waivioApi/ApiClient';
+import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 
 export const regexCoordsLatitude = /^([+-])?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
 export const regexCoordsLongitude = /^([+-])?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
@@ -215,6 +217,25 @@ export const formBusinessObjects = ({ object, waivio_tags, listAssociations }) =
   waivio_tags,
   listAssociations,
 });
+
+export const getVotingInfo = async (isGuest, authUserName, setUsersState) => {
+  if (isGuest) {
+    const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
+
+    setUsersState({ guestMana: guestUserMana.result });
+  } else {
+    const [acc] = await dHive.database.getAccounts([authUserName]);
+    const rc = await dHive.rc.getRCMana(authUserName, acc);
+    const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
+    const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
+    const resourceCredits = rc.percentage * 0.01 || 0;
+
+    setUsersState({
+      waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
+      resourceCredits,
+    });
+  }
+};
 
 export const handleArrayToFile = array => {
   const jsonData = JSON.stringify(array);

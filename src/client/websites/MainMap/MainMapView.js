@@ -179,12 +179,16 @@ const MainMapView = props => {
           )}
         </Map>
         <MapControllers
+          settings={props.settings}
+          isAdmin={props.isAdmin}
+          isAuth={props.isAuth}
+          isUserMap={props.isUserMap}
           isMapObjType
           className={props.mapControllersClassName}
           decrementZoom={decrementZoom}
           incrementZoom={incrementZoom}
           showImportBtn={props.isSocial || props.isUserMap}
-          importObjects={props.importObjects}
+          showImport={props.showImport}
           successCallback={setLocationFromNavigator}
           rejectCallback={setLocationFromApi}
         />
@@ -213,7 +217,10 @@ MainMapView.propTypes = {
   isSocial: PropTypes.bool.isRequired,
   showLocation: PropTypes.bool.isRequired,
   isUserMap: PropTypes.bool.isRequired,
-  importObjects: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+  settings: PropTypes.shape().isRequired,
+  showImport: PropTypes.bool.isRequired,
   mapClassList: PropTypes.string.isRequired,
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,

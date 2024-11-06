@@ -67,6 +67,7 @@ const dynamicListReducer = (state = initialState, action) => {
           list: [...action.payload.users],
           hasMore: action.payload.hasMore,
           sort: action.sorting,
+          nextCursor: action.payload.nextCursor,
         },
         loading: false,
       };
@@ -77,6 +78,7 @@ const dynamicListReducer = (state = initialState, action) => {
         [action.meta]: {
           list: union(state[action.meta].list, action.payload.users),
           hasMore: action.payload.hasMore,
+          nextCursor: action.payload.nextCursor,
           sort: action.sorting,
         },
         loading: false,

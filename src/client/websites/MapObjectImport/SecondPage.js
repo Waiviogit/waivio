@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox, Icon } from 'antd';
+import { Checkbox, Icon, Radio } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty, map } from 'lodash';
@@ -16,12 +16,18 @@ const SecondPage = ({
   objects,
   checkedIds,
   setCheckedIds,
+  isEditor,
 }) => {
-  const setCheckedObjs = obj => {
-    if (checkedIds?.includes(obj.id)) {
-      setCheckedIds(checkedIds?.filter(id => id !== obj.id));
-    } else {
-      setCheckedIds([...checkedIds, obj.id]);
+  const setCheckedObjs = (obj, inEditor) => {
+    if (inEditor) {
+      setCheckedIds([obj.id]);
+    }
+    if (!inEditor) {
+      if (checkedIds?.includes(obj.id)) {
+        setCheckedIds(checkedIds?.filter(id => id !== obj.id));
+      } else {
+        setCheckedIds([...checkedIds, obj.id]);
+      }
     }
   };
   const handleAddObjectToRule = (obj, list, setList) => {
@@ -44,11 +50,35 @@ const SecondPage = ({
         {objects?.map(obj => (
           <div key={obj?.id} className={'MapObjectImportModal__obj-wrap'}>
             {' '}
-            <Checkbox
-              checked={checkedIds?.includes(obj?.id)}
-              onChange={() => setCheckedObjs(obj)}
-            />
-            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>
+            {isEditor ? (
+              <Radio.Group value={checkedIds[0]} onChange={() => setCheckedObjs(obj, true)}>
+                <Radio value={obj?.id} />
+              </Radio.Group>
+            ) : (
+              <Checkbox
+                checked={checkedIds?.includes(obj?.id)}
+                onChange={() => setCheckedObjs(obj, false)}
+              />
+            )}
+            <span
+              className={
+                isEditor
+                  ? 'MapObjectImportModal__obj-name-editor'
+                  : 'MapObjectImportModal__obj-name'
+              }
+            >
+              {obj?.displayName?.text}
+            </span>{' '}
+            <span className={'MapObjectImportModal__obj-address'}>(</span>
+            <a
+              rel="noopener noreferrer"
+              className={'MapObjectImportModal__obj-address'}
+              target={'_blank'}
+              href={obj.googleMapsLinks.placeUri}
+            >
+              {obj?.shortFormattedAddress}
+            </a>
+            <span className={'MapObjectImportModal__obj-address'}>)</span>
           </div>
         ))}
       </div>
@@ -86,6 +116,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              useExtendedSearch
               autoFocus={false}
               objectType="hashtag"
               itemsIdsToOmit={tagsToOmit}
@@ -130,6 +161,7 @@ const SecondPage = ({
         <React.Fragment>
           <div className="NewsFiltersRule__line-search">
             <SearchObjectsAutocomplete
+              useExtendedSearch
               autoFocus={false}
               objectType="list"
               itemsIdsToOmit={listsToOmit}
@@ -156,6 +188,7 @@ SecondPage.propTypes = {
   lists: PropTypes.arrayOf().isRequired,
   checkedIds: PropTypes.arrayOf().isRequired,
   objects: PropTypes.arrayOf().isRequired,
+  isEditor: PropTypes.bool,
 };
 
 export default injectIntl(SecondPage);

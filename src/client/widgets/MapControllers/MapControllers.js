@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import { useSelector } from 'react-redux';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
-
 import './MapControllers.less';
-import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
-import { getUserAdministrator } from '../../../store/appStore/appSelectors';
 
 const MapControllers = React.memo(props => {
-  const isAuth = useSelector(getIsAuthenticated);
-  const settings = useSelector(getSettingsSite);
-  const isAdmin = useSelector(getUserAdministrator);
-  const showImportIcon = props.showImportBtn && isAuth && (!settings?.objectControl || isAdmin);
+  const showImportIcon =
+    props.showImportBtn &&
+    props.isAuth &&
+    (!props.settings?.objectControl || props.isAdmin || props.isUserMap);
 
   const setCurrentLocation = () =>
     navigator.geolocation.getCurrentPosition(props.successCallback, props.rejectCallback);
@@ -59,7 +54,7 @@ const MapControllers = React.memo(props => {
           <div
             role="presentation"
             className="MapConfigurationControl__locateGPS"
-            onClick={props.importObjects}
+            onClick={props.showImport}
           >
             <img
               style={{ width: '13px', marginTop: '2px' }}
@@ -82,12 +77,16 @@ const MapControllers = React.memo(props => {
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func,
   decrementZoom: PropTypes.func,
-  importObjects: PropTypes.func,
+  showImport: PropTypes.func,
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
   showImportBtn: PropTypes.bool,
+  isUserMap: PropTypes.bool,
   showFullscreenBtn: PropTypes.bool,
   isMapObjType: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  isAdmin: PropTypes.bool,
+  settings: PropTypes.shape(),
   successCallback: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   rejectCallback: PropTypes.func.isRequired,
@@ -98,8 +97,10 @@ MapControllers.defaultProps = {
   withoutZoom: false,
   isMapObjType: false,
   showFullscreenBtn: false,
-  importObjects: false,
-  showImportBtn: false,
+  showImport: false,
+  isAuth: false,
+  isAdmin: false,
+  settings: {},
   incrementZoom: () => {},
   decrementZoom: () => {},
 };

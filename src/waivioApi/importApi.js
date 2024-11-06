@@ -59,6 +59,28 @@ export const getAthorityVote = async userName => {
     .then(response => response)
     .catch(e => e);
 };
+export const hasAccessToImport = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.importProduct}${config.validate}?user=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getAuthorityList = async (userName, skip, limit) => {
   let token = getGuestAccessToken();

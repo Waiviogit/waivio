@@ -16,7 +16,7 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
-import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
+// import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
 
 import './Body.less';
 
@@ -52,14 +52,13 @@ export function getHtml(
   location,
   isPage,
   baseObj = '',
+  sendPostError,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
-
-  parsedBody = addPeakdImage(parsedBody);
 
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
@@ -76,9 +75,8 @@ export function getHtml(
   }
 
   parsedBody = improve(parsedBody);
-  parsedBody = addSpaces(parsedBody);
-  parsedBody = addBreakLines(parsedBody);
   parsedBody = remarkable.render(parsedBody);
+
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
@@ -100,6 +98,10 @@ export function getHtml(
       parsedJsonMetadata,
     }),
   );
+
+  if (body.length - parsedBody.length > 100 && sendPostError) {
+    sendPostError();
+  }
 
   if (returnType === 'text') {
     return parsedBody;
@@ -192,6 +194,9 @@ const Body = props => {
     secureLinks: props.exitPageSetting,
     isPost: props.isPost,
   };
+
+  const sendError = () => props.sendPostError(params?.author, params?.permlink);
+
   const htmlSections = getHtml(
     props.body,
     props.jsonMetadata,
@@ -200,6 +205,7 @@ const Body = props => {
     location,
     props.isPage,
     params.name,
+    sendError,
   );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
@@ -207,6 +213,7 @@ const Body = props => {
 
 Body.propTypes = {
   appUrl: PropTypes.string.isRequired,
+  sendPostError: PropTypes.func,
   rewriteLinks: PropTypes.bool.isRequired,
   exitPageSetting: PropTypes.bool.isRequired,
   body: PropTypes.string,

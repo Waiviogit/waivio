@@ -15,7 +15,7 @@ const ModalFooter = ({
   disabled,
 }) => {
   const load = button => ['submit', 'import'].includes(button.id) && loading;
-  const dis = button => ['submit', 'import'].includes(button.id) && disabled;
+  const dis = button => ['import'].includes(button.id) && disabled;
 
   const handlePrev = () => {
     setPageNumber(1);

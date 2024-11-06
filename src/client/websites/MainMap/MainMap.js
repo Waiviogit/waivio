@@ -18,7 +18,7 @@ import {
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../helper';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize, getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -27,6 +27,7 @@ import {
   getWebsiteSearchType,
 } from '../../../store/searchStore/searchSelectors';
 import {
+  getSettingsSite,
   getShowReloadButton,
   getSocialSearchResultLoading,
   getWobjectsPoint,
@@ -60,16 +61,14 @@ import {
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
 import MainMapView from './MainMapView';
-import * as ApiClient from '../../../waivioApi/ApiClient';
-import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
-import MapObjectImportModal from '../MapObjectImport/MapObjectImportModal';
-import ImportErrorModal from '../MapObjectImport/ImportErrorModal';
+import MapObjectImport from '../MapObjectImport/MapObjectImport';
+import { getGuestAuthorityStatus } from '../../../store/authStore/authActions';
+import { hasAccessToImport } from '../../../waivioApi/importApi';
 
 const MainMap = React.memo(props => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [usersState, setUsersState] = useState(null);
-  const hasVotingPower = usersState?.resourceCredits > 0.0001;
   const query = new URLSearchParams(props.location.search);
   const headerHeight = 132;
   let queryCenter = query.get('center');
@@ -157,30 +156,7 @@ const MainMap = React.memo(props => {
     );
   }
 
-  const getVotingInfo = async () => {
-    if (props.isGuest) {
-      const guestUserMana = await ApiClient.getGuestUserMana(props.authUserName);
-
-      setUsersState({ guestMana: guestUserMana.result });
-    } else {
-      const [acc] = await dHive.database.getAccounts([props.authUserName]);
-      const rc = await dHive.rc.getRCMana(props.authUserName, acc);
-      const waivVotingMana = await ApiClient.getWaivVoteMana(props.authUserName, acc);
-      const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
-      const resourceCredits = rc.percentage * 0.01 || 0;
-
-      setUsersState({
-        waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
-        resourceCredits,
-      });
-    }
-  };
-
-  useEffect(() => {
-    getVotingInfo();
-  }, []);
-
-  const importObjects = () => {
+  const setShowImport = () => {
     setShowImportModal(true);
   };
   const closeImportModal = () => {
@@ -221,6 +197,9 @@ const MainMap = React.memo(props => {
     },
     [props.wobject.author_permlink, props.user],
   );
+  useEffect(() => {
+    props.isAuth && hasAccessToImport(props.authUserName).then(r => setUsersState(r));
+  }, []);
 
   useEffect(() => {
     if (
@@ -345,6 +324,9 @@ const MainMap = React.memo(props => {
   return (
     <>
       <MainMapView
+        settings={props.settings}
+        isAdmin={props.isAdmin}
+        isAuth={props.isAuth}
         isUserMap={props.isUserMap}
         hoveredCardPermlink={props.hoveredCardPermlink}
         wobject={props.wobject}
@@ -368,7 +350,7 @@ const MainMap = React.memo(props => {
         history={props.history}
         mapRef={mapRef}
         mapHeight={mapHeight}
-        importObjects={importObjects}
+        showImport={setShowImport}
         mapControllersClassName={classNames('WebsiteBodyControl', {
           'WebsiteBodyControl--social': props.isSocial,
           'WebsiteBodyControl--userMap': props.isUserMap,
@@ -378,19 +360,12 @@ const MainMap = React.memo(props => {
         wobjectsPoint={props.wobjectsPoint}
         searchType={props.searchType}
       />
-      {hasVotingPower && props.hasImportAuthority ? (
-        <MapObjectImportModal
-          closeImportModal={closeImportModal}
-          showImportModal={showImportModal}
-        />
-      ) : (
-        <ImportErrorModal
-          hasImportAuthority={props.hasImportAuthority}
-          hasVotingPower={hasVotingPower}
-          closeImportModal={closeImportModal}
-          showImportModal={showImportModal}
-        />
-      )}
+      <MapObjectImport
+        initialMapSettings={props.mapData}
+        usersState={usersState}
+        showImportModal={showImportModal}
+        closeModal={closeImportModal}
+      />
     </>
   );
 });
@@ -429,8 +404,9 @@ MainMap.propTypes = {
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
-  hasImportAuthority: PropTypes.bool,
-  isGuest: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  isAdmin: PropTypes.bool,
+  settings: PropTypes.shape(),
   socialLoading: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
@@ -492,6 +468,8 @@ export default connect(
       area: getArea(state),
       authUserName: getAuthenticatedUserName(state),
       isAuth: getIsAuthenticated(state),
+      isAdmin: getUserAdministrator(state),
+      settings: getSettingsSite(state),
     };
   },
   {
@@ -513,5 +491,6 @@ export default connect(
     setShowLocation,
     setArea,
     setMapLoading,
+    getGuestAuthorityStatus,
   },
 )(withRouter(MainMap));

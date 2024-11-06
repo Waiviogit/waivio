@@ -186,18 +186,21 @@ function linkifyNode(child, state) {
       : child?.parentNode.tagName;
     if (tag === 'code') return;
     if (tag === 'a') return;
-
     if (imageRegex.test(child?.nodeValue)) {
-      const value = child?.nodeValue.match(imageRegex)[0];
-      const src = value.includes('waivio.') ? value : getProxyImageURL(value);
-      if (typeof document !== 'undefined') {
-        const newChild = document.createElement('img');
-        newChild.alt = '';
-        newChild.src = src;
-        const textNode = child.splitText(child.nodeValue.indexOf(value));
+      const values = child?.nodeValue.match(imageRegex);
 
-        child.parentNode.insertBefore(newChild, textNode);
-      }
+      values.forEach(item => {
+        const src = item.includes('waivio.') ? item : getProxyImageURL(item);
+        if (typeof document !== 'undefined') {
+          const newEl = document.createElement('p');
+          const textNode = `<img src="${item}" alt="" />`;
+
+          newEl.innerHTML = child?.nodeValue.replace(item, textNode);
+          child.parentNode.insertBefore(newEl, textNode);
+        }
+      });
+
+      return;
     }
 
     const { mutate } = state;
