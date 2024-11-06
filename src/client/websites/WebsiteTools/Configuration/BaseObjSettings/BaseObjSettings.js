@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
-import { AutoComplete, Button, Checkbox, Icon, Modal } from 'antd';
+import { AutoComplete, Button, Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -22,6 +22,7 @@ import { getAuthenticatedUserName } from '../../../../../store/authStore/authSel
 
 import './BaseObjSettings.less';
 import { userMenuTabsList } from '../../../../social-gifts/Header/TopNavigation/WebsiteTopNavigation';
+import DnDItems from './DnDItems';
 
 const BaseObjSettings = ({
   handleSubmit,
@@ -39,6 +40,7 @@ const BaseObjSettings = ({
   const [edit, setEdit] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [filters, setFilters] = useState(tabsFilter);
+  const [sortedTabs, setSortedTabs] = useState(userMenuTabsList);
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
@@ -99,7 +101,7 @@ const BaseObjSettings = ({
     });
   };
   const submitFilters = () => {
-    handleSubmitTabFilters(filters);
+    handleSubmitTabFilters(filters, sortedTabs);
     setShowDetails(false);
   };
 
@@ -193,18 +195,12 @@ const BaseObjSettings = ({
           <div className={'flex flex-column'}>
             <div className={'BaseObjSettings__tab'}>Tabs to be displayed on the site:</div>
             <div className={'BaseObjSettings__tabs-list'}>
-              {userMenuTabsList.map(tab => (
-                <Checkbox
-                  onChange={e => {
-                    changeTabFilters(e, tab);
-                  }}
-                  className={'BaseObjSettings__tab'}
-                  checked={!filters?.includes(tab)}
-                  key={tab}
-                >
-                  {tab}
-                </Checkbox>
-              ))}
+              <DnDItems
+                filters={filters}
+                changeTabFilters={changeTabFilters}
+                sortedTabs={sortedTabs}
+                setSortedTabs={setSortedTabs}
+              />
             </div>
           </div>
         </Modal>

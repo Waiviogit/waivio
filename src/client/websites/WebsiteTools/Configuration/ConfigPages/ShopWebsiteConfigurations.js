@@ -103,9 +103,10 @@ const ShopWebsiteConfigurations = ({
     handleSubmit({
       colors,
     });
-  const handleSubmitTabFilters = filters =>
+  const handleSubmitTabFilters = (filters, sortedTabs) =>
     handleSubmit({
       tabsFilter: filters,
+      tabsSorting: sortedTabs,
     });
 
   const handleSubmitObjMain = obj => {
