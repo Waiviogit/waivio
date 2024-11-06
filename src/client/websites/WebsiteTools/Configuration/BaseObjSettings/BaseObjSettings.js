@@ -31,6 +31,7 @@ const BaseObjSettings = ({
   hideActions,
   tabsFilter,
   handleSubmitTabFilters,
+  tabsSorting,
 }) => {
   const dispatch = useDispatch();
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
@@ -40,7 +41,9 @@ const BaseObjSettings = ({
   const [edit, setEdit] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [filters, setFilters] = useState(tabsFilter);
-  const [sortedTabs, setSortedTabs] = useState(userMenuTabsList);
+  const [sortedTabs, setSortedTabs] = useState(
+    isEmpty(tabsSorting) ? userMenuTabsList : tabsSorting,
+  );
   const dataSource =
     isEmpty(autoCompleteSearchResults) || loading
       ? []
@@ -212,6 +215,7 @@ const BaseObjSettings = ({
 BaseObjSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
   tabsFilter: PropTypes.arrayOf().isRequired,
+  tabsSorting: PropTypes.arrayOf().isRequired,
   shopSettings: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,

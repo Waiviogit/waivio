@@ -35,6 +35,7 @@ import {
 
 import './WebsitesConfigurations.less';
 import AvatarComp from './AvatarComp';
+import { userMenuTabsList } from '../../../../social-gifts/Header/TopNavigation/WebsiteTopNavigation';
 
 const ShopWebsiteConfigurations = ({
   intl,
@@ -57,6 +58,7 @@ const ShopWebsiteConfigurations = ({
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
   const tabsFilter = get(config, 'tabsFilter', []);
+  const tabsSorting = get(config, 'tabsSorting', userMenuTabsList);
   const banner = get(config, 'mainBanner');
   const listDefaultImage = get(config, 'defaultListImage');
   const desktopLogo = get(config, 'desktopLogo');
@@ -263,6 +265,7 @@ const ShopWebsiteConfigurations = ({
                 :
               </h3>
               <BaseObjSettings
+                tabsSorting={tabsSorting}
                 handleSubmitTabFilters={handleSubmitTabFilters}
                 tabsFilter={tabsFilter}
                 hideActions
