@@ -137,20 +137,24 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
       <div className={'FeedMasonry__item'}>
         {isEmpty(embeds) ? (
           <div className="FeedMasonry__imgWrap">
-            {take(imagePath, photoQuantity)?.map((image, index) => (
-              <CustomImage
-                className={classNames('FeedMasonry__img', {
-                  'FeedMasonry__img--bottom':
-                    lastIndex && (index === photoQuantity - 1 || index === lastIndex),
-                  'FeedMasonry__img--top': lastIndex && !index,
-                  'FeedMasonry__img--only': !lastIndex,
-                })}
-                onClick={handleShowPostModal}
-                src={image}
-                alt={post.title}
-                key={image}
-              />
-            ))}
+            {take(imagePath, photoQuantity)?.map((image, index) => {
+              if (image === '') return null;
+
+              return (
+                <CustomImage
+                  className={classNames('FeedMasonry__img', {
+                    'FeedMasonry__img--bottom':
+                      lastIndex && (index === photoQuantity - 1 || index === lastIndex),
+                    'FeedMasonry__img--top': lastIndex && !index,
+                    'FeedMasonry__img--only': !lastIndex,
+                  })}
+                  onClick={handleShowPostModal}
+                  src={image}
+                  alt={post.title}
+                  key={image}
+                />
+              );
+            })}
           </div>
         ) : (
           <div
