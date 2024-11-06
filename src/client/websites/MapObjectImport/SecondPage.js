@@ -60,7 +60,15 @@ const SecondPage = ({
                 onChange={() => setCheckedObjs(obj, false)}
               />
             )}
-            <span className={'MapObjectImportModal__obj-name'}>{obj?.displayName?.text}</span>{' '}
+            <span
+              className={
+                isEditor
+                  ? 'MapObjectImportModal__obj-name-editor'
+                  : 'MapObjectImportModal__obj-name'
+              }
+            >
+              {obj?.displayName?.text}
+            </span>{' '}
             <span className={'MapObjectImportModal__obj-address'}>(</span>
             <a
               rel="noopener noreferrer"
