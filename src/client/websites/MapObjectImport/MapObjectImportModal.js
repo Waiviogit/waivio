@@ -162,7 +162,7 @@ const MapObjectImportModal = ({
       getObjects().then(r => {
         setObjects(r.result);
         setLoading(false);
-        setCheckedIds(isEditor ? [] : r.result?.map(o => o.id));
+        setCheckedIds(isEditor ? [r.result?.[0]?.id] : r.result?.map(o => o.id));
         setPageNumber(2);
       });
     } else {
