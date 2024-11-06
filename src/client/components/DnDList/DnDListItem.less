@@ -1,6 +1,6 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
-
+.dnd-list-item-settings,
 .dnd-list-item {
   display: flex;
   justify-content: flex-start;
@@ -30,5 +30,11 @@
     &__type {
       opacity: 0.7;
     }
+  }
+}
+.dnd-list-item-settings {
+  .ant-checkbox-wrapper {
+    width: 25px;
+    padding-right: 7px;
   }
 }

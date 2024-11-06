@@ -17,7 +17,7 @@ import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
-export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes', 'Legal'];
+export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
   {
     id: 'Blog',
