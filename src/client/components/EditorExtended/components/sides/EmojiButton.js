@@ -5,7 +5,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { Modal } from 'antd';
 import './emoji.less';
 
-const allEmojis = [
+export const allEmojis = [
   '😀',
   '😁',
   '😂',

@@ -1,3 +1,5 @@
+import { allEmojis } from '../../components/EditorExtended/components/sides/EmojiButton';
+
 export const objAuthorPermlink = obj => obj.authorPermlink || obj.author_permlink;
 
 export const isTabletOrMobile = typeof window !== 'undefined' && window.innerWidth <= 820;
@@ -175,11 +177,12 @@ export const cleanIngredientString = ingredient => {
     `\\b(${listOfIngredientsHelpingWords.map(word => `${word}s?`).join('|')})\\b`,
     'gi',
   );
-
+  const removeEmojis = new RegExp(`[${allEmojis.join('')}]`, 'g');
   const removeQuantitiesAndMeasurements = /(\d+|\u00BC|\u00BD|\u00BE|\u2150|\u2151|\u2152|\u2153|\u2154|\u2155|\u2156|\u2157|\u2158|\u2159|\u215A|\u215B|\u215C|\u215D|\u215E)\s*(g(?![a-zA-Z])|kg|ml|l|oz|tsp|tbsp|cup|cups|pint|quart|gallon|pound|lb)?|[()/,;.!:-]/gi;
 
   return ingredient
     ?.replace(removeHelpingWords, '')
+    ?.replace(removeEmojis, '')
     ?.replace(removeQuantitiesAndMeasurements, '')
     ?.trim()
     ?.split(/\s+/)
