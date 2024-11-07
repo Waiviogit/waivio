@@ -12,9 +12,9 @@ import {
 } from '../../../store/appStore/appSelectors';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { userMenuTabsList } from '../Header/TopNavigation/WebsiteTopNavigation';
 import UserFirstPageSwitcher from '../UserFirstPageSwitcher/UserFirstPageSwitcher';
 import './ShopSwitcher.less';
-import { userMenuTabsList } from '../Header/TopNavigation/WebsiteTopNavigation';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
