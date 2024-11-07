@@ -1,3 +1,5 @@
+import { allEmojis } from '../../components/EditorExtended/components/sides/EmojiButton';
+
 export const objAuthorPermlink = obj => obj.authorPermlink || obj.author_permlink;
 
 export const isTabletOrMobile = typeof window !== 'undefined' && window.innerWidth <= 820;
@@ -168,6 +170,27 @@ export const listOfIngredientsHelpingWords = [
   'drained',
   'cut into',
   'for drizzling',
+  'enough to cover the meat in the pot',
+  'your choice of meat',
+  'version',
+];
+
+export const recipeEmoji = [
+  '🐖',
+  '🧄',
+  '🧂',
+  '🍃',
+  '🌿',
+  '🌶️',
+  '🌰',
+  '🧅',
+  '🐓',
+  '🥫',
+  '💧',
+  '🥬',
+  '🌸',
+  '🍋',
+  '🫓',
 ];
 
 export const cleanIngredientString = ingredient => {
@@ -175,17 +198,24 @@ export const cleanIngredientString = ingredient => {
     `\\b(${listOfIngredientsHelpingWords.map(word => `${word}s?`).join('|')})\\b`,
     'gi',
   );
-
+  const removeEmojis = new RegExp(`[${[...allEmojis, ...recipeEmoji].join('')}]`, 'g');
+  const emojiRegex = /[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
   const removeQuantitiesAndMeasurements = /(\d+|\u00BC|\u00BD|\u00BE|\u2150|\u2151|\u2152|\u2153|\u2154|\u2155|\u2156|\u2157|\u2158|\u2159|\u215A|\u215B|\u215C|\u215D|\u215E)\s*(g(?![a-zA-Z])|kg|ml|l|oz|tsp|tbsp|cup|cups|pint|quart|gallon|pound|lb)?|[()/,;.!:-]/gi;
 
-  return ingredient
-    ?.replace(removeHelpingWords, '')
-    ?.replace(removeQuantitiesAndMeasurements, '')
-    ?.trim()
-    ?.split(/\s+/)
-    ?.filter(Boolean)
-    ?.map(word => word.replace(/s\b/g, ''))
-    ?.join(' ');
+  return (
+    ingredient
+      ?.replace(removeHelpingWords, '')
+      // eslint-disable-next-line no-control-regex
+      ?.replace(/[^\x00-\x7F]+/g, '')
+      ?.replace(removeEmojis, '')
+      ?.replace(emojiRegex, '')
+      ?.replace(removeQuantitiesAndMeasurements, '')
+      ?.trim()
+      ?.split(/\s+/)
+      ?.filter(Boolean)
+      ?.map(word => word.replace(/s\b/g, ''))
+      ?.join(' ')
+  );
 };
 
 export default null;

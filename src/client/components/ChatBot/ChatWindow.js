@@ -188,7 +188,9 @@ const ChatWindow = ({ className, hideChat, open }) => {
     isNil(aiExpiredDate) || aiExpiredDate < Date.now()
       ? updateAIKnowledge(authUser, currHost).then(r => {
           if (!isEmpty(r) && !r.message) {
-            antdMessage.success('The AI assistant update has been enabled.');
+            r.result
+              ? antdMessage.success('The AI assistant update has been enabled.')
+              : antdMessage.info('Update AI Assistant can only be done once per day.');
             setAiExpiredDate(r.timeToNextRequest);
             Cookie.set('aiExpiredDate', r.timeToNextRequest);
           }
