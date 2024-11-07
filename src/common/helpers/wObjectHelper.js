@@ -3,6 +3,7 @@ import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/lis
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
 import { getFeedContentByObject } from '../../waivioApi/ApiClient';
+import { getHtml } from '../../client/components/Story/Body';
 
 export const getObjectName = (wobj = {}) =>
   get(wobj, 'name') ||
@@ -569,3 +570,8 @@ export const isObjectReviewTab = (wobject, match) => {
 
   return false;
 };
+
+export const getBrandName = brand =>
+  brand.name?.includes('<font')
+    ? getHtml(brand.name, {}, 'text')?.replace(/<\/?p>/g, '')
+    : brand.name;

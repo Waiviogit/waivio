@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../socialProductHelper';
 import { objectFields, recipeFields } from '../../../../common/constants/listOfFields';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { getBrandName, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
-import { getHtml } from '../../../components/Story/Body';
 
 const SocialListItem = ({ fieldName, field, title, showTitle }) => {
   const fieldPermlink = field.author_permlink || field.authorPermlink;
@@ -21,11 +20,11 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
           <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>
         );
       case objectFields.brand: {
-        const brand = field.name?.includes('<font')
-          ? getHtml(field.name, {}, 'text')?.replace(/<\/?p>/g, '')
-          : field.name;
-
-        return <Link to={`/discover-objects/product?search=${brand}`}>{brand}</Link>;
+        return (
+          <Link to={`/discover-objects/product?search=${getBrandName(field)}`}>
+            {getBrandName(field)}
+          </Link>
+        );
       }
       case objectFields.productWeight:
         return (
