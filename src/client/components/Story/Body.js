@@ -169,7 +169,12 @@ export function getHtml(
     if (content.component) return content.component;
 
     // eslint-disable-next-line react/no-danger
-    return <div key={content} dangerouslySetInnerHTML={{ __html: content }} />;
+    return (
+      <div
+        key={(Math.random() + 1).toString(36).substring(7)}
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    );
   });
 }
 
