@@ -150,13 +150,7 @@ const MessageBot = ({ intl }) => {
             'This bot is designed to send messages in the form of threads to a specified group of users. This functionality ensures that your messages are effectively delivered to the right audience, enhancing engagement and relevance.',
         })}
       </p>
-      <p>
-        {intl.formatMessage({
-          id: 'list_duplicator_bot_description2',
-          defaultMessage:
-            'Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in WAIV power.',
-        })}
-      </p>
+
       <p>
         {intl.formatMessage({
           id: 'list_duplicator_bot_description3',
