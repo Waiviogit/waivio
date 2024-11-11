@@ -186,26 +186,19 @@ function linkifyNode(child, state) {
       : child?.parentNode.tagName;
     if (tag === 'code') return;
     if (tag === 'a') return;
+
     if (imageRegex.test(child?.nodeValue)) {
-      const values = child?.nodeValue.match(imageRegex);
-
-      values.forEach(item => {
-        const src = item.includes('waivio.') ? item : getProxyImageURL(item);
-        if (typeof document !== 'undefined') {
-          const newEl = document.createElement('p');
-          const textNode = `<img src="${item}" alt="" />`;
-
-          newEl.innerHTML = child?.nodeValue.replace(item, textNode);
-          child.parentNode.insertBefore(newEl, textNode);
-        }
-      });
-
-      return;
+      const dataWithImg = XMLSerializer.serializeToString(child);
+      const contentWithImg = imagify(dataWithImg);
+      if (contentWithImg !== dataWithImg) {
+        const newChild = DOMParser.parseFromString(`<span>${contentWithImg}</span>`);
+        child?.parentNode.replaceChild(newChild, child);
+        return newChild;
+      }
     }
 
     const { mutate } = state;
     if (!child.data) return;
-
     if (isEmbedable(child, state.links, state.images, state.resolveIframe)) return;
 
     const data = XMLSerializer.serializeToString(child);
@@ -225,6 +218,15 @@ function linkifyNode(child, state) {
   } catch (error) {
     console.log(error);
   }
+}
+
+function imagify(content) {
+  // hashtag
+  content = content.replace(imageRegex, item => {
+    return `<img src="${item}" alt="" />`;
+  });
+
+  return content;
 }
 
 function linkify(content, mutate, hashtags, usertags, images, links) {

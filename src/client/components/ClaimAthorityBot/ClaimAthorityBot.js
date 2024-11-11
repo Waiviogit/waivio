@@ -46,8 +46,13 @@ const ClaimAthorityBot = ({ intl }) => {
   const [hasMoreAuthorities, setHasMoreAuthorities] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
-    setMoreObjs(res.hasMore);
-    setObjs(res.result);
+    if (res.length > limit) {
+      setMoreObjs(true);
+      setObjs(isLoadMore ? [...list, ...res.slice(0, -1)] : res.slice(0, -1));
+    } else {
+      setObjs(isLoadMore ? [...list, ...res] : res);
+      setMoreObjs(false);
+    }
   };
 
   const getAthList = () =>
