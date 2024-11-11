@@ -84,8 +84,51 @@ export const configProductTable = [
     name: 'stop',
   },
 ];
+export const configMessageBotTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'usersTotal',
+    intl: {
+      id: 'number_of_users',
+      defaultMessage: 'Number of users',
+    },
+  },
+  {
+    id: 'usersProcessed',
+    intl: {
+      id: 'updated_users',
+      defaultMessage: 'Updated users',
+    },
+  },
 
-export const configHistoryTable = [
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
+  },
+];
+
+export const configMessageBotHistoryTable = [
   {
     id: 'createdAt',
     intl: {
@@ -103,24 +146,10 @@ export const configHistoryTable = [
     type: 'date',
   },
   {
-    id: 'objectType',
+    id: 'groupPermlink',
     intl: {
-      id: 'object_type',
-      defaultMessage: 'Object type',
-    },
-  },
-  {
-    id: 'authority',
-    intl: {
-      id: 'claimed_athority',
-      defaultMessage: 'Claimed authority',
-    },
-  },
-  {
-    id: 'objectsCount',
-    intl: {
-      id: 'submitted_object',
-      defaultMessage: 'Submitted objects',
+      id: 'group',
+      defaultMessage: 'Group',
     },
     type: 'openModal',
     modal: {
@@ -138,17 +167,17 @@ export const configHistoryTable = [
     },
   },
   {
-    id: 'fieldsCount',
+    id: 'usersTotal',
     intl: {
-      id: 'submitted_updates',
-      defaultMessage: 'Submitted updates',
+      id: 'number_of_users',
+      defaultMessage: 'Number of users',
     },
   },
   {
-    id: 'fieldsCreatedCount',
+    id: 'usersProcessed',
     intl: {
-      id: 'posted_updates',
-      defaultMessage: 'Posted updates',
+      id: 'updated_users',
+      defaultMessage: 'Updated users',
     },
   },
 ];

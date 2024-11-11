@@ -141,6 +141,7 @@ export default {
       'payments',
       'new-accounts',
       'data-import',
+      'message-bot',
       'ASIN-scanner',
       'chrome-extension',
       'claim-authority',
