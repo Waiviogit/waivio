@@ -88,7 +88,7 @@ export const dataManagementSettings = {
       defaultMessage: 'List duplication',
     },
     {
-      to: 'message-bot',
+      to: '/message-bot',
       id: 'message_bot',
       defaultMessage: 'Message bot',
     },

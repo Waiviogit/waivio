@@ -899,6 +899,7 @@ export const createMessage = async (
     method: 'POST',
     body: JSON.stringify({
       groupPermlink,
+      pagePermlink,
       user,
       limit,
       dailyLimit,

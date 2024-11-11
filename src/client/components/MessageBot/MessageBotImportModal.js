@@ -10,23 +10,25 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import '../DataImport/ImportModal/ImportModal.less';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 
 const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMessagesList }) => {
   const authName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
   const [loading, setLoading] = useState(false);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('');
   const [limit, setLimit] = useState('');
   const [skip, setSkip] = useState('');
   const [group, setGroup] = useState('');
   const [page, setPage] = useState('');
-  const [repeatedMessages, setRepeatedMessages] = useState(false);
+  const [repeatedMessages, setRepeatedMessages] = useState(true);
 
   const handleSubmit = () => {
     setLoading(true);
     createMessage(
-      group,
-      page,
+      group.author_permlink,
+      page.author_permlink,
       isEmpty(amount) ? 0 : amount,
       isEmpty(limit) ? 0 : limit,
       isEmpty(skip) ? 0 : skip,
@@ -44,7 +46,7 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
     <Modal
       visible={visible}
       title={intl.formatMessage({ id: 'message_bot', defaultMessage: 'Message bot' })}
-      className={'ImportModal'}
+      className={'MessageBot'}
       onCancel={toggleModal}
       onOk={handleSubmit}
       okButtonProps={{
@@ -55,26 +57,37 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
     >
       <div>
         <h4>{intl.formatMessage({ id: 'group', defaultMessage: 'Group' })}:</h4>
+        {!isEmpty(group) && (
+          <div className={'MessageBot__resulItem'}>
+            <ObjectSearchCard object={group} name={getObjectName(group)} type={'group'} />
+          </div>
+        )}
         <SearchObjectsAutocomplete
           autoFocus
           objectType={'group'}
           placeholder={'Find a group'}
-          handleSelect={g => setGroup(g.author_permlink)}
+          handleSelect={setGroup}
         />
       </div>
+
       <div>
         <h4>
           {intl.formatMessage({
-            id: 'page_import_field_title',
-            defaultMessage: 'Page (message content)',
+            id: 'page',
+            defaultMessage: 'Page',
           })}
           :
         </h4>
+        {!isEmpty(page) && (
+          <div className={'MessageBot__resulItem'}>
+            <ObjectSearchCard object={page} name={getObjectName(page)} type={'page'} />
+          </div>
+        )}
         <SearchObjectsAutocomplete
           autoFocus={false}
           objectType={'page'}
           placeholder={'Find a page'}
-          handleSelect={p => setPage(p.author_permlink)}
+          handleSelect={setPage}
         />
       </div>
       <div>
@@ -117,7 +130,7 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
           message).
         </p>
       </div>
-      <div className="ImportModal__checkbox-wrap">
+      <div className="MessageBot__checkbox-wrap">
         <Checkbox checked={repeatedMessages} onClick={() => setRepeatedMessages(!repeatedMessages)}>
           {intl.formatMessage({
             id: 'avoid_repeated_messages',
