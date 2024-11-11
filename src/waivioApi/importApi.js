@@ -875,6 +875,45 @@ export const createDescription = async (user, authorPermlink, scanEmbedded) => {
       return response;
     });
 };
+export const createMessage = async (
+  groupPermlink,
+  pagePermlink,
+  dailyLimit,
+  limit,
+  skip,
+  user,
+  avoidRepetition,
+  locale,
+) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.threads}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      groupPermlink,
+      user,
+      limit,
+      dailyLimit,
+      skip,
+      avoidRepetition,
+      locale,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+};
 
 export const getDescriptionsList = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -898,6 +937,28 @@ export const getDescriptionsList = async (userName, skip, limit) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getMessagesList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.threads}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const changeDescriptions = async (user, status, importId) => {
   let token = getGuestAccessToken();
@@ -906,6 +967,29 @@ export const changeDescriptions = async (user, status, importId) => {
   if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const changeMessages = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.threads}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
@@ -945,6 +1029,28 @@ export const deleteDescriptions = async (user, importId) => {
     .then(response => response)
     .catch(e => e);
 };
+export const deleteMessage = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.threads}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getHistoryDescriptionsObjects = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -954,6 +1060,28 @@ export const getHistoryDescriptionsObjects = async (userName, skip, limit) => {
 
   return fetch(
     `${config.importApiPrefix}${config.descriptionBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getHistoryMessageBot = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.threads}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers: {
         ...headers,
