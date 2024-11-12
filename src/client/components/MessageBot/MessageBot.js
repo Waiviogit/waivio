@@ -13,18 +13,17 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 import './MessageBot.less';
 
 import {
+  changeMessageBotRc,
   changeMessages,
   deleteMessage,
   getHistoryMessageBot,
-  getImportVote,
+  getMessageBotRc,
   getMessagesList,
-  setImportVote,
 } from '../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
-
-import '../DataImport/DataImport.less';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import MessageBotImportModal from './MessageBotImportModal';
+import '../DataImport/DataImport.less';
 
 const limit = 30;
 
@@ -73,8 +72,8 @@ const MessageBot = ({ intl }) => {
     });
 
   useEffect(() => {
-    getImportVote(authUserName).then(res => {
-      setVotingValue(res.minVotingPower / 100);
+    getMessageBotRc(authUserName).then(res => {
+      setVotingValue(res.minRc / 100);
     });
 
     getMessagesList(authUserName, 0, limit + 1).then(res => {
@@ -94,7 +93,7 @@ const MessageBot = ({ intl }) => {
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
   const handleSetMinVotingPower = voting => {
-    setImportVote(authUserName, voting * 100);
+    changeMessageBotRc(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
   };
@@ -114,13 +113,13 @@ const MessageBot = ({ intl }) => {
   const handleDeleteObject = item => {
     Modal.confirm({
       title: intl.formatMessage({
-        id: 'stop_json_title',
-        defaultMessage: 'Stop JSON data file import',
+        id: 'stop_message_bot',
+        defaultMessage: 'Stop writing messages',
       }),
       content: intl.formatMessage({
-        id: 'stop_json_message',
+        id: 'stop_json_message_bot',
         defaultMessage:
-          'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+          'Once stopped, message writing cannot be resumed. To temporarily suspend/resume message writing, please consider using the Active checkbox.',
       }),
       onOk: () => {
         deleteMessage(authUserName, item.importId).then(() => {
@@ -129,7 +128,7 @@ const MessageBot = ({ intl }) => {
           });
         });
       },
-      okText: intl.formatMessage({ id: 'stop_import_ok_button', defaultMessage: 'Stop import' }),
+      okText: intl.formatMessage({ id: 'stop', defaultMessage: 'Stop' }),
       cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };
@@ -161,8 +160,8 @@ const MessageBot = ({ intl }) => {
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'message_bot'} onlyAuth />
       <p>
         {intl.formatMessage({
-          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
-          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'resource_credits_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'Resource credits threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -176,6 +175,7 @@ const MessageBot = ({ intl }) => {
         })}
       </p>
       <VoteInfoBlock
+        isMessageBot
         info={intl.formatMessage({
           id: 'message_bot_service',
           defaultMessage: 'The Message bot service is provided on as-is / as-available basis.',
