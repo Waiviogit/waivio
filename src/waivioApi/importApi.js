@@ -1192,4 +1192,45 @@ export const setGuestImportStatus = async (userName, importAuthorization) => {
     .catch(e => e);
 };
 
+export const getMessageBotRc = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.threads}${config.rc}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const changeMessageBotRc = async (user, minRc) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.threads}${config.rc}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minRc,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

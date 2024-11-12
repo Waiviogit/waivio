@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getMessageBotRc } from '../../../waivioApi/importApi';
 
-const VoteInfoBlock = ({ intl, info }) => {
+const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
   const [usersState, setUsersState] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
   const isGuest = useSelector(isGuestUser);
@@ -18,6 +19,13 @@ const VoteInfoBlock = ({ intl, info }) => {
       const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
 
       setUsersState({ guestMana: guestUserMana.result });
+    } else if (isMessageBot) {
+      const rc = await getMessageBotRc(authUserName);
+      const resourceCredits = rc.minRc * 0.01 || 0;
+
+      setUsersState({
+        resourceCredits,
+      });
     } else {
       const [acc] = await dHive.database.getAccounts([authUserName]);
       const rc = await dHive.rc.getRCMana(authUserName, acc);
@@ -60,10 +68,15 @@ const VoteInfoBlock = ({ intl, info }) => {
             })}
             :
           </b>{' '}
-          <div>
-            {intl.formatMessage({ id: 'waiv_upvoting_mana', defaultMessage: 'WAIV upvoting mana' })}
-            : {round(usersState.waivPowerMana, 2)}%
-          </div>
+          {!isMessageBot && (
+            <div>
+              {intl.formatMessage({
+                id: 'waiv_upvoting_mana',
+                defaultMessage: 'WAIV upvoting mana',
+              })}
+              : {round(usersState.waivPowerMana, 2)}%
+            </div>
+          )}
           <div>
             {intl.formatMessage({ id: 'resource_credits', defaultMessage: 'Resource credits' })}:{' '}
             {round(usersState.resourceCredits, 2)}%
@@ -80,6 +93,7 @@ const VoteInfoBlock = ({ intl, info }) => {
 VoteInfoBlock.propTypes = {
   intl: PropTypes.shape(),
   info: PropTypes.string,
+  isMessageBot: PropTypes.bool,
 };
 
 export default injectIntl(VoteInfoBlock);

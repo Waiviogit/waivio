@@ -172,6 +172,7 @@ export function getHtml(
     return (
       <div
         key={(Math.random() + 1).toString(36).substring(7)}
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: content }}
       />
     );

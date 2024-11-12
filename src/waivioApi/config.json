@@ -251,5 +251,6 @@
   "image": "/image",
   "custom": "/custom",
   "validate": "/validate",
-  "threads": "/threads"
+  "threads": "/threads",
+  "rc": "/rc"
 }
