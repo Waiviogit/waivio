@@ -127,7 +127,7 @@ const EditPost = props => {
     if (editorData.title || editorData.body) props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
-  }, [props.draftId, props.campaignId]);
+  }, [props.draftId, props.campaignId, props.currDraft?.draftId]);
 
   React.useEffect(() => {
     if (!currDraft && props.currDraft && isEditPost) {
