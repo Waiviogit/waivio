@@ -101,7 +101,8 @@ export const DynamicTable = ({
         );
 
       case 'openModal':
-        const label = has(item, 'groupPermlink') ? 1 : item[head.id];
+        const hasGroupPermlink = has(item, 'groupPermlink');
+        const label = hasGroupPermlink ? 1 : item[head.id];
 
         return (
           <React.Fragment>

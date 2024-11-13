@@ -22,9 +22,13 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
     } else if (isMessageBot) {
       const rc = await getMessageBotRc(authUserName);
       const resourceCredits = rc.minRc * 0.01 || 0;
+      const [acc] = await dHive.database.getAccounts([authUserName]);
+      const hiveRc = await dHive.rc.getRCMana(authUserName, acc);
+      const hiveResourceCredits = hiveRc.percentage * 0.01 || 0;
 
       setUsersState({
         resourceCredits,
+        hiveResourceCredits,
       });
     } else {
       const [acc] = await dHive.database.getAccounts([authUserName]);
@@ -79,7 +83,10 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
           )}
           <div>
             {intl.formatMessage({ id: 'resource_credits', defaultMessage: 'Resource credits' })}:{' '}
-            {round(usersState.resourceCredits, 2)}%
+            {isMessageBot
+              ? round(usersState.hiveResourceCredits, 2)
+              : round(usersState.resourceCredits, 2)}
+            %
           </div>
         </p>
       )}
