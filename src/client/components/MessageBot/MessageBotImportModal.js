@@ -64,7 +64,7 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
             <div className="NewsFiltersRule__line-card">
               <ObjectCard wobject={group} showFollow={false} />
               <div className="NewsFiltersRule__line-close">
-                <Icon type="close-circle" onClick={() => setGroup('')} />
+                <Icon type="close-circle" size={15} onClick={() => setGroup('')} />
               </div>
             </div>
           ) : (
@@ -91,7 +91,7 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
             <div className="NewsFiltersRule__line-card">
               <ObjectCard wobject={page} showFollow={false} />
               <div className="NewsFiltersRule__line-close">
-                <Icon type="close-circle" onClick={() => setPage('')} />
+                <Icon type="close-circle" size={15} onClick={() => setPage('')} />
               </div>
             </div>
           ) : (
@@ -118,9 +118,9 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
           value={amount}
           placeholder={'Enter the amount'}
         />
-        <p className={'MessageBot__info-text '}>
+        <div className={'MessageBot__info-text '}>
           Specify how many posts will be published per day.
-        </p>
+        </div>
       </div>
       <div>
         <h4>
@@ -132,9 +132,9 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
           value={limit}
           placeholder={'Enter the amount'}
         />
-        <p className={'MessageBot__info-text '}>
+        <div className={'MessageBot__info-text '}>
           Specify the number of users who will receive the message.
-        </p>
+        </div>
       </div>
       <div>
         <h4>
@@ -146,10 +146,10 @@ const MessageBotImportModal = ({ visible, toggleModal, intl, onClose, updateMess
           value={skip}
           placeholder={'Enter the amount'}
         />
-        <p className={'MessageBot__info-text '}>
+        <div className={'MessageBot__info-text '}>
           Skip a set number of users (e.g., skipping 10 means the first 10 won’t receive the
           message).
-        </p>
+        </div>
       </div>
       <div className="MessageBot__checkbox-wrap">
         <Checkbox checked={repeatedMessages} onClick={() => setRepeatedMessages(!repeatedMessages)}>

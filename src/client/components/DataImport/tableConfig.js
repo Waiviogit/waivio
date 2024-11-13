@@ -120,7 +120,11 @@ export const configMessageBotTable = [
       body: item => (
         <ol>
           <li key={item.groupPermlink}>
-            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.groupPermlink}`}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`/object/${item.groupPermlink}/group`}
+            >
               {item.groupPermlink}
             </a>
           </li>
@@ -234,7 +238,11 @@ export const configMessageBotHistoryTable = [
       body: item => (
         <ol>
           <li key={item.groupPermlink}>
-            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.groupPermlink}`}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`/object/${item.groupPermlink}/group`}
+            >
               {item.groupPermlink}
             </a>
           </li>

@@ -152,7 +152,7 @@ const MessageBot = ({ intl }) => {
 
       <p>
         {intl.formatMessage({
-          id: 'list_duplicator_bot_description3',
+          id: 'message_bot_description3',
           defaultMessage:
             'If the Resource credits on the account are insufficient to write a comment, the message bot will gradually recover and publish at a slower pace.',
         })}
