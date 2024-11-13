@@ -171,7 +171,7 @@ const MessageBot = ({ intl }) => {
         <br />
         {intl.formatMessage({
           id: 'message_bot_pause',
-          defaultMessage: `The Message bot will pause if WAIV voting power on the account drops below the set threshold.`,
+          defaultMessage: `The Message bot will pause if RC on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock
