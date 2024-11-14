@@ -30,6 +30,7 @@ import {
   getCampaignInfo,
 } from '../../../store/slateEditorStore/editorActions';
 import { getCoordinates } from '../../../store/userStore/userActions';
+import { getUserMetadata } from '../../../store/usersStore/usersActions';
 
 const mapStateToProps = (state, props) => {
   const query = new URLSearchParams(props.location.search);
@@ -71,6 +72,7 @@ const mapDispatchToProps = (dispatch, props) => {
     setClearState: () => dispatch(setClearState()),
     leaveEditor: () => dispatch(leaveEditor()),
     getCoordinates: () => dispatch(getCoordinates()),
+    getUserMetadata: () => dispatch(getUserMetadata()),
     handlePasteText: html => dispatch(handlePasteText(html)),
   };
 };

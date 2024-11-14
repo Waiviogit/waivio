@@ -84,7 +84,65 @@ export const configProductTable = [
     name: 'stop',
   },
 ];
+export const configMessageBotTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'usersTotal',
+    intl: {
+      id: 'number_of_users',
+      defaultMessage: 'Number of users',
+    },
+  },
+  {
+    id: 'usersProcessed',
+    intl: {
+      id: 'updated_users',
+      defaultMessage: 'Updated users',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          <li key={item.groupPermlink}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`/object/${item.groupPermlink}/group`}
+            >
+              {item.groupPermlink}
+            </a>
+          </li>
+        </ol>
+      ),
+    },
+  },
 
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
+  },
+];
 export const configHistoryTable = [
   {
     id: 'createdAt',
@@ -126,13 +184,11 @@ export const configHistoryTable = [
     modal: {
       body: item => (
         <ol>
-          {item.objectsLinks.map(link => (
-            <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
-                {link}
-              </a>
-            </li>
-          ))}
+          <li key={item.groupPermlink}>
+            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.groupPermlink}`}>
+              {item.groupPermlink}
+            </a>
+          </li>
         </ol>
       ),
     },
@@ -149,6 +205,61 @@ export const configHistoryTable = [
     intl: {
       id: 'posted_updates',
       defaultMessage: 'Posted updates',
+    },
+  },
+];
+export const configMessageBotHistoryTable = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'finishedAt',
+    intl: {
+      id: 'finish_date',
+      defaultMessage: 'Finish date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'groupPermlink',
+    intl: {
+      id: 'group',
+      defaultMessage: 'Group',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          <li key={item.groupPermlink}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`/object/${item.groupPermlink}/group`}
+            >
+              {item.groupPermlink}
+            </a>
+          </li>
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'usersTotal',
+    intl: {
+      id: 'number_of_users',
+      defaultMessage: 'Number of users',
+    },
+  },
+  {
+    id: 'usersProcessed',
+    intl: {
+      id: 'updated_users',
+      defaultMessage: 'Updated users',
     },
   },
 ];

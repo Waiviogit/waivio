@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from 'antd';
 import Helmet from 'react-helmet';
+import { has, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import {
   getHelmetIcon,
@@ -12,9 +13,9 @@ import {
 } from '../../../store/appStore/appSelectors';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { userMenuTabsList } from '../Header/TopNavigation/WebsiteTopNavigation';
 import UserFirstPageSwitcher from '../UserFirstPageSwitcher/UserFirstPageSwitcher';
 import './ShopSwitcher.less';
-import { userMenuTabsList } from '../Header/TopNavigation/WebsiteTopNavigation';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
@@ -25,7 +26,12 @@ const ShopSwitcher = () => {
   const title = siteName;
   const desc = mainObj?.description;
   const { canonicalUrl } = useSeoInfo();
-  const type = userMenuTabsList.find(tab => !config.tabsFilter?.includes(tab)) || 'Shop';
+  const tabsSorting =
+    has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
+      ? config?.tabsSorting[0]
+      : userMenuTabsList.find(tab => !config.tabsFilter?.includes(tab));
+
+  const type = tabsSorting || 'Shop';
 
   const firstPage = () => {
     switch (shopSettings?.type) {

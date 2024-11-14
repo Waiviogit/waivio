@@ -250,5 +250,7 @@
   "objects": "/objects",
   "image": "/image",
   "custom": "/custom",
-  "validate": "/validate"
+  "validate": "/validate",
+  "threads": "/threads",
+  "rc": "/rc"
 }

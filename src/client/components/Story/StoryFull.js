@@ -301,10 +301,7 @@ class StoryFull extends React.Component {
       src: getImagePath(unescape(image.src.replace('https://images.hive.blog/0x0/', ''))),
     }));
 
-    const body = this.images.reduce(
-      (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
-      initialPostBody,
-    );
+    const body = initialPostBody;
 
     let signedBody = body?.replaceAll('http://', 'https://');
 
@@ -379,6 +376,7 @@ class StoryFull extends React.Component {
               jsonMetadata={post.json_metadata}
               isModal={isModal}
               isGuest={!isEmpty(post.guestInfo)}
+              postId={post.id}
             />
           )}
         </div>

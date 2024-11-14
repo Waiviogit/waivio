@@ -148,6 +148,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'data_import';
       break;
+    case '/message-bot':
+      pageName = 'tools';
+      filterName = 'message_bot';
+      break;
     case '/departments-bot':
       pageName = 'tools';
       filterName = 'departments_bot';

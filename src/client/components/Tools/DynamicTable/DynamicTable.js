@@ -5,7 +5,7 @@ import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import { useRouteMatch } from 'react-router';
 
-import { get, isEmpty, size, isNil, round } from 'lodash';
+import { get, isEmpty, size, isNil, round, has } from 'lodash';
 import { Checkbox, Modal, Radio } from 'antd';
 import Loading from '../../Icon/Loading';
 import USDDisplay from '../../Utils/USDDisplay';
@@ -31,7 +31,6 @@ export const DynamicTable = ({
   const match = useRouteMatch();
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
-
     switch (head.type) {
       case 'checkbox':
         const getChecked = head.getChecked
@@ -102,6 +101,9 @@ export const DynamicTable = ({
         );
 
       case 'openModal':
+        const hasGroupPermlink = has(item, 'groupPermlink');
+        const label = hasGroupPermlink ? 1 : item[head.id];
+
         return (
           <React.Fragment>
             <span
@@ -114,7 +116,7 @@ export const DynamicTable = ({
                   });
               }}
             >
-              {Array.isArray(item[head.id]) ? item[head.id].length : item[head.id]}
+              {Array.isArray(item[head.id]) ? item[head.id].length : label}
             </span>
           </React.Fragment>
         );

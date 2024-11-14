@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, take, takeRight } from 'lodash';
+import { has, isEmpty, take, takeRight } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -17,7 +17,7 @@ import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
-export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes', 'Legal'];
+export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
   {
     id: 'Blog',
@@ -49,9 +49,20 @@ const userNav = (user, intl) => [
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const config = useSelector(getWebsiteConfiguration);
-  const filteredUserTab = userNav(shopSettings?.value, intl)?.filter(
-    i => !config?.tabsFilter?.includes(i?.id),
-  );
+  const tabsSorting =
+    has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
+      ? config?.tabsSorting
+      : userMenuTabsList;
+  const sortedTabs = [...tabsSorting, 'Legal'];
+  const filteredUserTab = userNav(shopSettings?.value, intl)
+    ?.filter(i => !config?.tabsFilter?.includes(i?.id))
+    ?.sort((a, b) => {
+      const orderA = sortedTabs.indexOf(a?.id);
+      const orderB = sortedTabs.indexOf(b?.id);
+
+      return orderA - orderB;
+    });
+
   const linkList = shopSettings?.type === 'user' ? filteredUserTab : listItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);

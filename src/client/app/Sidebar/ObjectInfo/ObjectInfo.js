@@ -12,6 +12,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   accessTypesArr,
   getBlogItems,
+  getBrandName,
   getFormItems,
   getMenuItems,
   getObjectName,
@@ -1530,10 +1531,10 @@ class ObjectInfo extends React.Component {
               <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={brand} size={34} />{' '}
                 <Link
-                  to={`/object/${wobject.author_permlink}/search/${brand.name}`}
+                  to={`/object/${wobject.author_permlink}/search/${getBrandName(brand)}`}
                   className="ObjectCard__name"
                 >
-                  {brand.name}
+                  {getBrandName(brand)}
                 </Link>
               </div>
             )),

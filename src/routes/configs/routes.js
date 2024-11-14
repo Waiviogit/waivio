@@ -263,6 +263,11 @@ const routes = {
           component: Views.DataImport,
         },
         {
+          path: '/message-bot',
+          exact: true,
+          component: Views.MessageBot,
+        },
+        {
           path: '/chrome-extension',
           exact: true,
           component: Views.ProductExtension,

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../socialProductHelper';
 import { objectFields, recipeFields } from '../../../../common/constants/listOfFields';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { getBrandName, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
 
 const SocialListItem = ({ fieldName, field, title, showTitle }) => {
@@ -19,8 +19,13 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
         ) : (
           <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>
         );
-      case objectFields.brand:
-        return <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>;
+      case objectFields.brand: {
+        return (
+          <Link to={`/discover-objects/product?search=${getBrandName(field)}`}>
+            {getBrandName(field)}
+          </Link>
+        );
+      }
       case objectFields.productWeight:
         return (
           <span>
