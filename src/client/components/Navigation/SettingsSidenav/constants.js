@@ -91,6 +91,7 @@ export const dataManagementSettings = {
       to: '/message-bot',
       id: 'message_bot',
       defaultMessage: 'Message bot',
+      forUser: true,
     },
     {
       to: '/tags-bot',

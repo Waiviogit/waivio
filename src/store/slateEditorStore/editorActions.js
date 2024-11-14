@@ -404,7 +404,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         .then(async result => {
           if (draftId) {
             batch(() => {
-              if (result.ok) dispatch(deleteDraft(draftId));
+              if (result.ok || result?.result?.id) dispatch(deleteDraft(draftId));
               dispatch(addEditedPost(permlink));
             });
           }

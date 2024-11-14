@@ -124,7 +124,8 @@ const EditPost = props => {
       body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
-    if (editorData.title || editorData.body) props.saveDraft(editorData);
+    if ((editorData.title || editorData.body) && currDraft?.draftId !== props.draftId)
+      props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
   }, [props.draftId, props.campaignId, props.currDraft?.draftId]);
