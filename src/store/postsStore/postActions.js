@@ -166,13 +166,10 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
   );
 };
 
-export const sendPostError = (author, permlink) => (dispatch, getState, { busyAPI }) => {
+export const sendPostError = postId => (dispatch, getState, { busyAPI }) => {
   const authUser = getAuthenticatedUserName(getState());
 
-  busyAPI.instance.sendAsync(subscribeTypes.clientError, [
-    authUser,
-    `shortened post ${author}/${permlink}`,
-  ]);
+  busyAPI.instance.sendAsync(subscribeTypes.clientError, [authUser, `shortened post ${postId}`]);
 };
 
 export const voteHistoryPost = (currentPost, author, permlink, weight) => (

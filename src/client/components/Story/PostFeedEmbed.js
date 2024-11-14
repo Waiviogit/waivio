@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isPostVideo } from './StoryHelper';
-import './PostFeedEmbed.less';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { TikTokEmbed } from 'react-social-media-embed';
 import AsyncVideo from '../../vendor/asyncVideo';
 import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
+import { isPostVideo } from './StoryHelper';
+
+import './PostFeedEmbed.less';
 
 export default class PostFeedEmbed extends React.Component {
   static propTypes = {
@@ -60,9 +63,14 @@ export default class PostFeedEmbed extends React.Component {
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
+
     if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) && embed.thumbnail) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
+      if (embed?.url?.includes('tiktok')) {
+        return <TikTokEmbed height={'460px'} url={embed.url} />;
+      }
+
       return this.renderWithIframe(embed.embed);
     }
 
