@@ -9,6 +9,7 @@ import steemAPI from './steemAPI';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
 import { webPage, sitemap } from './seo-service/seoServiceApi';
 import botRateLimit from './middleware/botRateLimit';
+import path from 'path';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -115,6 +116,15 @@ app.get('/robots.txt', (req, res) => {
 
   res.set('Content-Type', 'text/plain');
   res.send(fileContent);
+});
+
+app.get('/whitepaper', (req, res, next) => {
+  const { host } = req.headers;
+  if (!['www.waivio.com', 'waivio.com', 'waiviodev.com'].includes(host)) return next();
+
+  const filePath = path.resolve(__dirname, '../../whitepaper.pdf');
+  res.setHeader('Content-Type', 'application/pdf');
+  return res.sendFile(filePath);
 });
 
 app.get('/@:author/:permlink/amp', ssrHandler);
