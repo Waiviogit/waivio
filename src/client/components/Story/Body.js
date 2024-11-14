@@ -77,7 +77,7 @@ export function getHtml(
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody?.replace(imageRegex, img => {
-    if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
+    if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
     }
   });
