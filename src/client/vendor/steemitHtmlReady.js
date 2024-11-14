@@ -186,7 +186,6 @@ function linkifyNode(child, state) {
       : child?.parentNode.tagName;
     if (tag === 'code') return;
     if (tag === 'a') return;
-
     if (imageRegex.test(child?.nodeValue)) {
       const dataWithImg = XMLSerializer.serializeToString(child);
       const contentWithImg = imagify(dataWithImg);

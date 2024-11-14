@@ -17,8 +17,24 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
 // import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
+// import { Map, Marker } from 'pigeon-maps';
 
 import './Body.less';
+
+// function parseGPSCoordinates(text) {
+//   const gpsRegex = /([-+]?\d{1,2}\.\d+)\s*lat\s*([-+]?\d{1,3}\.\d+)\s*long/g;
+//   const matches = [];
+//   let match;
+//
+//   while ((match = gpsRegex.exec(text)) !== null) {
+//     const lat = parseFloat(match[1]);
+//     const lng = parseFloat(match[2]);
+//
+//     matches.push({ lat, lng });
+//   }
+//
+//   return matches;
+// }
 
 export const remarkable = new Remarkable({
   html: true,
@@ -61,7 +77,7 @@ export function getHtml(
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody?.replace(imageRegex, img => {
-    if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
+    if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
     }
   });
@@ -73,10 +89,25 @@ export function getHtml(
 
     if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
+  // const mapRegex = /\[\/\/]:# \((.*?)\)/g;
+  // const mapPreviewResult = parsedBody.match(mapRegex);
+  //
+  // if (!isEmpty(mapPreviewResult)) {
+  //   const parsedMap = parseGPSCoordinates(mapPreviewResult[0]);
+  //
+  //   parsedBody = parsedBody?.replace(
+  //     mapPreviewResult[0],
+  //     ReactDOMServer.renderToString(
+  //       <Map center={[parsedMap[0].lat, parsedMap[0].lng]}>
+  //         <Marker anchor={[parsedMap[0].lat, parsedMap[0].lng]} payload={1} />
+  //       </Map>,
+  //     ),
+  //   );
+  // }
 
   parsedBody = improve(parsedBody);
-  parsedBody = remarkable.render(parsedBody);
 
+  parsedBody = remarkable.render(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
@@ -99,7 +130,7 @@ export function getHtml(
     }),
   );
 
-  if (body.length - parsedBody.length > 100 && sendPostError) {
+  if (body.length - parsedBody.length > 500 && sendPostError) {
     sendPostError();
   }
 
@@ -201,7 +232,7 @@ const Body = props => {
     isPost: props.isPost,
   };
 
-  const sendError = () => props.sendPostError(params?.author, params?.permlink);
+  const sendError = () => props.sendPostError(props.postId);
 
   const htmlSections = getHtml(
     props.body,
@@ -224,6 +255,7 @@ Body.propTypes = {
   exitPageSetting: PropTypes.bool.isRequired,
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
+  postId: PropTypes.string,
   full: PropTypes.bool,
   isPage: PropTypes.bool,
   isPost: PropTypes.bool,
