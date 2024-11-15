@@ -104,6 +104,9 @@ export const DynamicTable = ({
         let label = item[head.id];
 
         switch (head.id) {
+          case 'objectsPosted':
+            label = item.objectsLinks?.length;
+            break;
           case 'usersProcessed':
             label = item.usersProcessed;
             break;
@@ -113,13 +116,15 @@ export const DynamicTable = ({
           default:
             item[head.id];
         }
+        const openLink =
+          head.id === 'objectsPosted' ? item.objectsLinks?.length > 0 : item[head.id];
 
         return (
           <React.Fragment>
             <span
-              style={item[head.id] ? { color: '#f87007', cursor: 'pointer' } : {}}
+              style={openLink ? { color: '#f87007', cursor: 'pointer' } : {}}
               onClick={() => {
-                if (item[head.id])
+                if (openLink)
                   setModalVisible({
                     ...head.modal,
                     body: head.modal.body(item),
