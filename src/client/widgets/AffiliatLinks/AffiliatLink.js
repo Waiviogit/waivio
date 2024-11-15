@@ -16,7 +16,9 @@ const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
   const isAmazon = link.link?.includes('amazon');
   const needsFitContent =
-    link.link?.includes('www.paypal.com') || link.link?.includes('calendly.com');
+    link.link?.includes('www.paypal.com') ||
+    link.link?.includes('calendly.com') ||
+    link.link?.includes('calendar.google.com');
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
