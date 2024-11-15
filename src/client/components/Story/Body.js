@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
-import { Map, Marker } from 'pigeon-maps';
+// import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
@@ -30,8 +30,8 @@ function parseGPSCoordinates(text) {
 
     return {
       latitude,
-      longitude
-    }
+      longitude,
+    };
   }
 
   return null;
@@ -93,7 +93,7 @@ export function getHtml(
   const mapPreviewResult = parsedBody.match(mapRegex);
 
   if (!isEmpty(mapPreviewResult)) {
-    mapPreviewResult.forEach((match) => {
+    mapPreviewResult.forEach(match => {
       const parsedMap = parseGPSCoordinates(match);
 
       const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
@@ -215,7 +215,9 @@ const Body = props => {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
+        // eslint-disable-next-line no-param-reassign
         imgNode.onerror = () => {
+          // eslint-disable-next-line no-param-reassign
           imgNode.src = imgNode.alt;
         };
       });
