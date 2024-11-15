@@ -516,8 +516,8 @@ const SocialProduct = ({
                   <div className="SocialProduct__subtitle">
                     <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                   </div>
-                  <div className="ShopObjectCard__affiliatLinksWrap">
-                    <div className="ShopObjectCard__affiliatLinks">
+                  <div>
+                    <div>
                       {affiliateLinks
                         .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
                         .map(affLink => {
