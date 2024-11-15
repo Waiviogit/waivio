@@ -5,6 +5,7 @@ import { ReactSVG } from 'react-svg';
 import { useSelector } from 'react-redux';
 import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import './AffiliatLink.less';
+import { isSafari } from '../../../common/helpers/apiHelpers';
 
 const images = {
   walmart: '/images/walmart-logo.svg',
@@ -19,10 +20,9 @@ const AffiliatLink = ({ link, disabled }) => {
     link.link?.includes('www.paypal.com') ||
     link.link?.includes('calendly.com') ||
     link.link?.includes('calendar.google.com');
-  const supportsWebkitFillAvailable = CSS.supports('width', '-webkit-fill-available');
 
   const needsFitContentStyle = {
-    width: supportsWebkitFillAvailable ? '-webkit-fill-available' : 'auto',
+    width: isSafari() ? 'auto' : '-webkit-fill-available',
   };
 
   const onClick = () => {
