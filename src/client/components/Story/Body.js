@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
+import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
@@ -16,25 +17,25 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
-// import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
-// import { Map, Marker } from 'pigeon-maps';
 
 import './Body.less';
 
-// function parseGPSCoordinates(text) {
-//   const gpsRegex = /([-+]?\d{1,2}\.\d+)\s*lat\s*([-+]?\d{1,3}\.\d+)\s*long/g;
-//   const matches = [];
-//   let match;
-//
-//   while ((match = gpsRegex.exec(text)) !== null) {
-//     const lat = parseFloat(match[1]);
-//     const lng = parseFloat(match[2]);
-//
-//     matches.push({ lat, lng });
-//   }
-//
-//   return matches;
-// }
+function parseGPSCoordinates(text) {
+  const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
+  const match = text.match(regex);
+
+  if (match) {
+    const latitude = match[1];
+    const longitude = match[2];
+
+    return {
+      latitude,
+      longitude
+    }
+  }
+
+  return null;
+}
 
 export const remarkable = new Remarkable({
   html: true,
@@ -58,8 +59,6 @@ const getEmbed = link => {
   return embed;
 };
 
-// Should return text(html) if returnType is text
-// Should return Object(React Compatible) if returnType is Object
 export function getHtml(
   body,
   jsonMetadata = {},
@@ -89,21 +88,19 @@ export function getHtml(
 
     if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
-  // const mapRegex = /\[\/\/]:# \((.*?)\)/g;
-  // const mapPreviewResult = parsedBody.match(mapRegex);
-  //
-  // if (!isEmpty(mapPreviewResult)) {
-  //   const parsedMap = parseGPSCoordinates(mapPreviewResult[0]);
-  //
-  //   parsedBody = parsedBody?.replace(
-  //     mapPreviewResult[0],
-  //     ReactDOMServer.renderToString(
-  //       <Map center={[parsedMap[0].lat, parsedMap[0].lng]}>
-  //         <Marker anchor={[parsedMap[0].lat, parsedMap[0].lng]} payload={1} />
-  //       </Map>,
-  //     ),
-  //   );
-  // }
+
+  const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
+  const mapPreviewResult = parsedBody.match(mapRegex);
+
+  if (!isEmpty(mapPreviewResult)) {
+    mapPreviewResult.forEach((match) => {
+      const parsedMap = parseGPSCoordinates(match);
+
+      const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
+
+      parsedBody = parsedBody.replace(match, mapLink);
+    });
+  }
 
   parsedBody = improve(parsedBody);
 
@@ -139,13 +136,13 @@ export function getHtml(
   }
 
   const sections = [];
-
   const splittedBody = parsedBody.split('~~~ embed:');
 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const extractedLinks = extractLinks(section);
     const match = section.match(/^([A-Za-z0-9./_@:,?=&;-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
+    // const map = section.match(/map=(\d+\.\d+,\d+\.\d+)/g);
 
     if (match && match.length >= 4) {
       const id = match[1];
@@ -172,7 +169,6 @@ export function getHtml(
         [],
       );
 
-      // eslint-disable-next-line no-loop-func
       uniqueLinks.forEach(item => {
         let link = item;
 
@@ -190,6 +186,13 @@ export function getHtml(
         }
       });
     }
+    // if(map[0]) {
+    //   const center = map[0].split('=')[0].split('map=')[1].split(',');
+    //
+    //   sections.push({
+    //     component: <Map center={center}><Marker anchor={center}/></Map>,
+    //   });
+    // }
 
     if (section !== '') {
       sections.push(section);
@@ -199,11 +202,9 @@ export function getHtml(
   return sections.map(content => {
     if (content.component) return content.component;
 
-    // eslint-disable-next-line react/no-danger
     return (
       <div
         key={(Math.random() + 1).toString(36).substring(7)}
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: content }}
       />
     );
@@ -214,9 +215,7 @@ const Body = props => {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-        // eslint-disable-next-line no-param-reassign
         imgNode.onerror = () => {
-          // eslint-disable-next-line no-param-reassign
           imgNode.src = imgNode.alt;
         };
       });

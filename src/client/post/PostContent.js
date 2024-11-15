@@ -310,11 +310,11 @@ class PostContent extends React.Component {
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
-    const htmlBody = getHtml(body, content.json_metadata, 'text', { isPost: true });
-    const bodyText = sanitize(htmlBody, { allowedTags: [] });
+    // const htmlBody = getHtml(body, content.json_metadata, 'text', { isPost: true });
+    // const bodyText = sanitize(htmlBody, { allowedTags: [] });
     const authorFacebook = !isEmpty(userFacebook) ? `by @${userFacebook}` : '';
     const wobjectFacebook = !isEmpty(wobjectsFacebook) ? `@${wobjectsFacebook}` : '';
-    const desc = `${truncate(bodyText, { length: 143 })} ${truncate(hashtags, {
+    const desc = `${truncate(body, { length: 143 })} ${truncate(hashtags, {
       length: 120,
     })} ${wobjectFacebook} ${authorFacebook}`;
 
