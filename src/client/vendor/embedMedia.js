@@ -192,11 +192,16 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
     };
   }
 };
+const youtubeShortUrlRegex = /^(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})(?:\?.*)?$/;
 
 SteemEmbed.isYoutube = function(url) {
-  const match = url.includes('shorts')
-    ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)
+  let match = url.includes('youtu.be')
+    ? url.match(youtubeShortUrlRegex)
     : url.match(VIDEO_MATCH_URL.YOUTUBE);
+
+  if (url.includes('shorts')) {
+    match = url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS);
+  }
   return match ? match[1] : false;
 };
 
@@ -325,7 +330,8 @@ SteemEmbed.tikTok = function(url, id, options) {
     '" src="' +
     TIKTOK_PREFIX +
     id +
-    '&autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+    (`${id}`.includes('?') ? '&' : '?') +
+    'autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
 };
 

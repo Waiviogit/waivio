@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { TikTokEmbed } from 'react-social-media-embed';
+
 import AsyncVideo from '../../vendor/asyncVideo';
 import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
 import { isPostVideo } from './StoryHelper';
@@ -67,10 +66,6 @@ export default class PostFeedEmbed extends React.Component {
     if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) && embed.thumbnail) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
-      if (embed?.url?.includes('tiktok')) {
-        return <TikTokEmbed height={'460px'} url={embed.url} />;
-      }
-
       return this.renderWithIframe(embed.embed);
     }
 

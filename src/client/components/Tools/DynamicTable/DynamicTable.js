@@ -5,7 +5,7 @@ import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import { useRouteMatch } from 'react-router';
 
-import { get, isEmpty, size, isNil, round, has } from 'lodash';
+import { get, isEmpty, size, isNil, round } from 'lodash';
 import { Checkbox, Modal, Radio } from 'antd';
 import Loading from '../../Icon/Loading';
 import USDDisplay from '../../Utils/USDDisplay';
@@ -101,8 +101,18 @@ export const DynamicTable = ({
         );
 
       case 'openModal':
-        const hasGroupPermlink = has(item, 'groupPermlink');
-        const label = hasGroupPermlink ? 1 : item[head.id];
+        let label = item[head.id];
+
+        switch (head.id) {
+          case 'usersProcessed':
+            label = item.usersProcessed;
+            break;
+          case 'groupPermlink':
+            label = 1;
+            break;
+          default:
+            item[head.id];
+        }
 
         return (
           <React.Fragment>

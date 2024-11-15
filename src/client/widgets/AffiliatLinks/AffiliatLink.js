@@ -5,6 +5,7 @@ import { ReactSVG } from 'react-svg';
 import { useSelector } from 'react-redux';
 import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import './AffiliatLink.less';
+import { isSafari } from '../../../common/helpers/apiHelpers';
 
 const images = {
   walmart: '/images/walmart-logo.svg',
@@ -16,7 +17,14 @@ const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
   const isAmazon = link.link?.includes('amazon');
   const needsFitContent =
-    link.link?.includes('www.paypal.com') || link.link?.includes('calendly.com');
+    link.link?.includes('www.paypal.com') ||
+    link.link?.includes('calendly.com') ||
+    link.link?.includes('calendar.google.com');
+
+  const needsFitContentStyle = {
+    width: isSafari() ? 'auto' : '-webkit-fill-available',
+    paddingRight: isSafari() ? '2px' : '0',
+  };
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
@@ -41,13 +49,13 @@ const AffiliatLink = ({ link, disabled }) => {
       {link.image ? (
         <img
           className={!isAmazon ? 'AffiliatLink__image' : 'AffiliatLink__image-amazon'}
-          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
+          style={needsFitContent ? needsFitContentStyle : {}}
           src={link.image || images[link.type]}
           alt={'Affiliate button logo'}
         />
       ) : (
         <ReactSVG
-          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
+          style={needsFitContent ? needsFitContentStyle : {}}
           className={!isAmazon ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
           src={images[link.type]}
         />
