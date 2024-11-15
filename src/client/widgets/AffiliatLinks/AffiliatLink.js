@@ -19,6 +19,11 @@ const AffiliatLink = ({ link, disabled }) => {
     link.link?.includes('www.paypal.com') ||
     link.link?.includes('calendly.com') ||
     link.link?.includes('calendar.google.com');
+  const supportsWebkitFillAvailable = CSS.supports('width', '-webkit-fill-available');
+
+  const needsFitContentStyle = {
+    width: supportsWebkitFillAvailable ? '-webkit-fill-available' : 'auto',
+  };
 
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
@@ -43,13 +48,13 @@ const AffiliatLink = ({ link, disabled }) => {
       {link.image ? (
         <img
           className={!isAmazon ? 'AffiliatLink__image' : 'AffiliatLink__image-amazon'}
-          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
+          style={needsFitContent ? needsFitContentStyle : {}}
           src={link.image || images[link.type]}
           alt={'Affiliate button logo'}
         />
       ) : (
         <ReactSVG
-          style={needsFitContent ? { width: '-webkit-fill-available' } : {}}
+          style={needsFitContent ? needsFitContentStyle : {}}
           className={!isAmazon ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
           src={images[link.type]}
         />
