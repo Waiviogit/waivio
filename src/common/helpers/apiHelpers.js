@@ -2,7 +2,7 @@ import SteemAPI from '../../client/steemAPI';
 import { jsonParse } from './formatter';
 import * as accountHistoryConstants from '../constants/accountHistory';
 import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
-import { appleDevice, mobileUserAgents } from './regexHelpers';
+import { appleDevice, mobileUserAgents, safariDevice } from './regexHelpers';
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
@@ -165,6 +165,9 @@ export const isMobile = () =>
 
 export const isAppleDevice = () =>
   typeof navigator !== 'undefined' && appleDevice.test(navigator.userAgent);
+
+export const isSafari = () =>
+  typeof navigator !== 'undefined' && safariDevice.test(navigator.userAgent);
 
 export const isMobileDevice = () => {
   if (isMobile()) return { device: 'mobile' };
