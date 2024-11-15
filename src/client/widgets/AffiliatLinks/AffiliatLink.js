@@ -23,6 +23,7 @@ const AffiliatLink = ({ link, disabled }) => {
 
   const needsFitContentStyle = {
     width: isSafari() ? 'auto' : '-webkit-fill-available',
+    paddingRight: isSafari() ? '2px' : '0',
   };
 
   const onClick = () => {
