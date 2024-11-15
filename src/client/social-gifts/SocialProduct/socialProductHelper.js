@@ -75,6 +75,7 @@ export const listOfIngredientsHelpingWords = [
   'boiled',
   'simmered',
   'steamed',
+  'halved',
   'fried',
   'sautéed',
   'baked',

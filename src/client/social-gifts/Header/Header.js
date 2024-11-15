@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { has, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
@@ -11,7 +12,7 @@ import {
   getHostAddress,
 } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
-import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
+import WebsiteTopNavigation, { userMenuTabsList } from './TopNavigation/WebsiteTopNavigation';
 
 import './Header.less';
 
@@ -19,6 +20,13 @@ const Header = () => {
   const [searchBarActive, setSearchBarActive] = useState(false);
   const config = useSelector(getConfigurationValues);
   const link = useSelector(getNavigItems)[0];
+  const userTabs =
+    has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
+      ? config?.tabsSorting
+      : userMenuTabsList;
+  const filteredTabs = userTabs?.filter(i => !config?.tabsFilter?.includes(i));
+  const currUserTab =
+    filteredTabs?.[0]?.toLowerCase() === 'recipes' ? 'recipe' : filteredTabs[0]?.toLowerCase();
   const mainObj = useSelector(getMainObj);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
@@ -36,7 +44,7 @@ const Header = () => {
           <Link
             to={
               config?.shopSettings?.type === 'user'
-                ? `/user-shop/${config?.shopSettings?.value}`
+                ? `/${currUserTab}/${config?.shopSettings?.value}`
                 : link?.link
             }
             className={logoClassList}
