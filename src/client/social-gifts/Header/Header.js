@@ -25,8 +25,19 @@ const Header = () => {
       ? config?.tabsSorting
       : userMenuTabsList;
   const filteredTabs = userTabs?.filter(i => !config?.tabsFilter?.includes(i));
-  const currUserTab =
-    filteredTabs?.[0]?.toLowerCase() === 'recipes' ? 'recipe' : filteredTabs[0]?.toLowerCase();
+  const firstTab = filteredTabs?.[0]?.toLowerCase();
+  let currUserTab;
+
+  switch (firstTab) {
+    case 'recipes':
+      currUserTab = 'recipe';
+      break;
+    case 'shop':
+      currUserTab = 'user-shop';
+      break;
+    default:
+      currUserTab = firstTab;
+  }
   const mainObj = useSelector(getMainObj);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
