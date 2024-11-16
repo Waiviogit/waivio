@@ -20,22 +20,22 @@ import AsyncVideo from '../../vendor/asyncVideo';
 
 import './Body.less';
 
-function parseGPSCoordinates(text) {
-  const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
-  const match = text.match(regex);
-
-  if (match) {
-    const latitude = match[1];
-    const longitude = match[2];
-
-    return {
-      latitude,
-      longitude,
-    };
-  }
-
-  return null;
-}
+// function parseGPSCoordinates(text) {
+//   const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
+//   const match = text.match(regex);
+//
+//   if (match) {
+//     const latitude = match[1];
+//     const longitude = match[2];
+//
+//     return {
+//       latitude,
+//       longitude,
+//     };
+//   }
+//
+//   return null;
+// }
 
 export const remarkable = new Remarkable({
   html: true,
@@ -89,18 +89,18 @@ export function getHtml(
     if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
 
-  const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
-  const mapPreviewResult = parsedBody.match(mapRegex);
-
-  if (!isEmpty(mapPreviewResult)) {
-    mapPreviewResult.forEach(match => {
-      const parsedMap = parseGPSCoordinates(match);
-
-      const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
-
-      parsedBody = parsedBody.replace(match, mapLink);
-    });
-  }
+  // const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
+  // const mapPreviewResult = parsedBody.match(mapRegex);
+  //
+  // if (!isEmpty(mapPreviewResult)) {
+  //   mapPreviewResult.forEach(match => {
+  //     const parsedMap = parseGPSCoordinates(match);
+  //
+  //     const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
+  //
+  //     parsedBody = parsedBody.replace(match, mapLink);
+  //   });
+  // }
 
   parsedBody = improve(parsedBody);
 
