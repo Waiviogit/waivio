@@ -20,22 +20,22 @@ import AsyncVideo from '../../vendor/asyncVideo';
 
 import './Body.less';
 
-function parseGPSCoordinates(text) {
-  const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
-  const match = text.match(regex);
-
-  if (match) {
-    const latitude = match[1];
-    const longitude = match[2];
-
-    return {
-      latitude,
-      longitude,
-    };
-  }
-
-  return null;
-}
+// function parseGPSCoordinates(text) {
+//   const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
+//   const match = text.match(regex);
+//
+//   if (match) {
+//     const latitude = match[1];
+//     const longitude = match[2];
+//
+//     return {
+//       latitude,
+//       longitude,
+//     };
+//   }
+//
+//   return null;
+// }
 
 export const remarkable = new Remarkable({
   html: true,
@@ -73,7 +73,23 @@ export function getHtml(
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
-  let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
+  let parsedBody = body
+    ?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)')
+    // eslint-disable-next-line consistent-return
+    .replace(/(?:\s|^)https:\/\/youtu(.*)(?:\s|$)/g, match => {
+      if (match) {
+        const embed = steemEmbed.get(match.replace(/\s/g, '') || '', {
+          width: '100%',
+          height: 400,
+        });
+
+        if (embed && embed.id) {
+          return `~~~ embed:${embed.id} ${embed.provider_name} ${embed.url} ~~~`;
+        }
+
+        return match;
+      }
+    });
 
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
@@ -89,25 +105,24 @@ export function getHtml(
     if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
 
-  const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
-  const mapPreviewResult = parsedBody.match(mapRegex);
-
-  if (!isEmpty(mapPreviewResult)) {
-    mapPreviewResult.forEach(match => {
-      const parsedMap = parseGPSCoordinates(match);
-
-      const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
-
-      parsedBody = parsedBody.replace(match, mapLink);
-    });
-  }
+  // const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
+  // const mapPreviewResult = parsedBody.match(mapRegex);
+  //
+  // if (!isEmpty(mapPreviewResult)) {
+  //   mapPreviewResult.forEach(match => {
+  //     const parsedMap = parseGPSCoordinates(match);
+  //
+  //     const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
+  //
+  //     parsedBody = parsedBody.replace(match, mapLink);
+  //   });
+  // }
 
   parsedBody = improve(parsedBody);
-
   parsedBody = remarkable.render(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
-  parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
+  parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);
