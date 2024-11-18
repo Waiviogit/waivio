@@ -663,6 +663,7 @@ class ObjectInfo extends React.Component {
           facebook: linkField[linkFields.linkFacebook] || '',
           twitter: linkField[linkFields.linkTwitter] || '',
           youtube: linkField[linkFields.linkYouTube] || '',
+          tiktok: linkField[linkFields.linkTikTok] || '',
           instagram: linkField[linkFields.linkInstagram] || '',
           github: linkField[linkFields.linkGitHub] || '',
         }

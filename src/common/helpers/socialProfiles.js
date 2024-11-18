@@ -3,6 +3,7 @@ import { uniq } from 'lodash';
 const socialTransformers = {
   facebook: id => `https://www.facebook.com/profile.php?id=${id}`,
   twitter: id => `https://twitter.com/${id}`,
+  tiktok: id => `https://www.tiktok.com/@${id}`,
   linkedin: id => `https://www.linkedin.com/in/${id}`,
   youtube: id => `https://www.youtube.com/${id}`,
   instagram: id => `https://instagram.com/${id}`,
@@ -59,6 +60,7 @@ export default [
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
+  { id: 'tiktok', icon: 'tiktok', color: 'black', name: 'TikTok' },
   // { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin', shortName: 'BTC' },
   // { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum', shortName: 'ETH' },
 ];
