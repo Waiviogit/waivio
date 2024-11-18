@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 import { isNil } from 'lodash';
+import { ReactSVG } from 'react-svg';
 import classNames from 'classnames';
 import WAValidator from 'multicoin-address-validator';
 import PropTypes from 'prop-types';
@@ -25,6 +26,19 @@ const SocialInputItem = ({
   const invalidText = 'Invalid address';
   const validText = 'Address is valid';
   const addressValue = getFieldValue(profile.id);
+  const icons =
+    profile.icon === 'tiktok' ? (
+      <div className="tiktok-icon-container">
+        <ReactSVG className="tiktok-icon" src="/images/icons/tiktok.svg" wrapper="span" />
+      </div>
+    ) : (
+      <i
+        className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
+        style={{
+          color: profile.color,
+        }}
+      />
+    );
 
   useEffect(() => {
     setErrors({ ...errors, [profile.id]: isInvalid });
@@ -74,12 +88,7 @@ const SocialInputItem = ({
                   alt={''}
                 />
               ) : (
-                <i
-                  className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-                  style={{
-                    color: profile.color,
-                  }}
-                />
+                icons
               )
             }
             placeholder={isWallet ? profile.shortName : profile.name}

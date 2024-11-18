@@ -182,22 +182,17 @@ export const configHistoryTable = [
     },
     type: 'openModal',
     modal: {
-      body: item => {
-        // eslint-disable-next-line no-console
-        console.log(item);
-
-        return (
-          <ol>
-            {item.objectsLinks.map(link => (
-              <li key={link}>
-                <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ol>
-        );
-      },
+      body: item => (
+        <ol>
+          {item.objectsLinks.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
     },
   },
   {

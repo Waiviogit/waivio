@@ -204,8 +204,8 @@ export const linkFields = {
   linkTwitter: 'linkTwitter',
   linkYouTube: 'linkYouTube',
   linkInstagram: 'linkInstagram',
-  linkGitHub: 'linkGitHub',
   linkTikTok: 'linkTikTok',
+  linkGitHub: 'linkGitHub',
 };
 
 export const websiteFields = {
@@ -284,8 +284,8 @@ export const socialObjectFields = [
   { id: 'twitter', icon: 'twitter', color: '#00aced', name: 'Twitter' },
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
-  { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
   { id: 'tiktok', icon: 'tiktok', color: 'black', name: 'TikTok' },
+  { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
 ];
 
 export const cryptocurrenciesList = [
