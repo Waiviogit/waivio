@@ -184,11 +184,13 @@ export const configHistoryTable = [
     modal: {
       body: item => (
         <ol>
-          <li key={item.groupPermlink}>
-            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.groupPermlink}`}>
-              {item.groupPermlink}
-            </a>
-          </li>
+          {item.objectsLinks.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+                {link}
+              </a>
+            </li>
+          ))}
         </ol>
       ),
     },
