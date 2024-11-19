@@ -8,7 +8,7 @@ import MapObjectImport from '../../../../websites/MapObjectImport/MapObjectImpor
 import { hasAccessToImport } from '../../../../../waivioApi/importApi';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
-const NearbyButton = ({ intl }) => {
+const NearbyButton = ({ intl, close }) => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [usersState, setUsersState] = useState(null);
@@ -23,6 +23,7 @@ const NearbyButton = ({ intl }) => {
     setShowImportModal(true);
   };
   const closeImportModal = () => {
+    close();
     setShowImportModal(false);
   };
 
@@ -57,6 +58,7 @@ const NearbyButton = ({ intl }) => {
 
 NearbyButton.propTypes = {
   intl: PropTypes.shape().isRequired,
+  close: PropTypes.func,
 };
 
 export default injectIntl(NearbyButton);
