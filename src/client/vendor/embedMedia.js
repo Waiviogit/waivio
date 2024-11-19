@@ -49,6 +49,17 @@ SteemEmbed.getAll = function(text, options, mediaSize) {
 
 SteemEmbed.get = function(url, options = {}, mediumSize) {
   const youtubeId = this.isYoutube(url);
+  if (youtubeId) {
+    const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'YouTube',
+      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + imageName,
+      id: youtubeId,
+      embed: this.youtube(url, youtubeId, options),
+    };
+  }
   const dTubeId = this.isDTube(url);
   const threeSpeakId = this.is3Speak(url);
   const twitch = this.isTwitch(url);
@@ -64,17 +75,7 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
   const instagramId = this.isInstagram(url);
   const peerTubeId = this.isPeerTube(url);
 
-  if (youtubeId) {
-    const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
-    return {
-      type: 'video',
-      url: url,
-      provider_name: 'YouTube',
-      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + imageName,
-      id: youtubeId,
-      embed: this.youtube(url, youtubeId, options),
-    };
-  } else if (dTubeId) {
+  if (dTubeId) {
     return {
       type: 'video',
       url: url,

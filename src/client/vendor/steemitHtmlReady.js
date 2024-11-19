@@ -286,7 +286,7 @@ function isEmbedable(child, links, images, resolveIframe) {
             embed.url
           } ~~~${data.slice(foundLinks.index + foundLinks[0].length, data.length)}`;
       const v = DOMParser.parseFromString(domString);
-      console.log(domString, v.nodeValue);
+
       if (v) child?.parentNode.replaceChild(v, child);
       if (links) links.add(embed.url);
       if (images) images.add(`https://img.youtube.com/vi/${embed.id}/hqdefault.jpg`);

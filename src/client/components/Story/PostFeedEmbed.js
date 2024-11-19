@@ -63,7 +63,11 @@ export default class PostFeedEmbed extends React.Component {
       return <AsyncVideo url={embed.url} />;
     }
 
-    if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) && embed.thumbnail) {
+    if (
+      isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
+      embed.thumbnail &&
+      !embed.url.includes('shorts')
+    ) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);
