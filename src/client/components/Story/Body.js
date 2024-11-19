@@ -122,14 +122,17 @@ export function getHtml(
 
   const sections = [];
   const splittedBody = parsedBody
-    .replace(/(?:\s|^)https:\/\/youtu(.*)(?:\s|$)/g, match => {
-      const embed = steemEmbed.get(match);
+    // eslint-disable-next-line consistent-return
+    .replace(/https:\/\/youtu\.be\/[A-Za-z0-9_-]+/g, match => {
+      if (match) {
+        const embed = steemEmbed.get(match);
 
-      if (embed && embed.id) {
-        return `~~~ embed:${embed.id} ${embed.provider_name} ${embed.url} ~~~`;
+        if (embed && embed.id) {
+          return `~~~ embed:${embed.id} ${embed.provider_name} ${embed.url} ~~~`;
+        }
+
+        return match;
       }
-
-      return match;
     })
     .split('~~~ embed:');
 
@@ -236,17 +239,23 @@ const Body = props => {
   return (
     <React.Fragment>
       <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>
-      {!isEmpty(withMap) && (
-        <Map
-          height={300}
-          animate
-          defaultCenter={parseGPSCoordinates(withMap[0])}
-          provider={mapProvider}
-          defaultZoom={16}
-        >
-          <Marker anchor={parseGPSCoordinates(withMap[0])} />
-        </Map>
-      )}
+      {!isEmpty(withMap) &&
+        withMap.map(map => {
+          const center = parseGPSCoordinates(map);
+
+          return (
+            <Map
+              key={map}
+              height={300}
+              animate
+              defaultCenter={center}
+              provider={mapProvider}
+              defaultZoom={10}
+            >
+              <Marker anchor={center} />
+            </Map>
+          );
+        })}
     </React.Fragment>
   );
 };
