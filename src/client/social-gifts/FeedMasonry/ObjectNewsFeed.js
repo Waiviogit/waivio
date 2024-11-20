@@ -83,7 +83,8 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
   const image = getObjectAvatar(wobj) || favicon;
   const objName = isNested
     ? wobj?.author_permlink || getLastPermlinksFromHash(location.hash)
-    : name;
+    : name || wobj?.author_permlink;
+
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
