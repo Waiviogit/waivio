@@ -26,9 +26,9 @@ import ModalFooter from './ModalFooter';
 import SecondPage from './SecondPage';
 import { restaurantGoogleTypes } from '../../components/Maps/mapHelpers';
 import mapProvider from '../../../common/helpers/mapProvider';
-import { prepareAndImportObjects } from './importHelper';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
+import { prepareAndImportObjects } from '../../../store/slateEditorStore/editorActions';
 
 const stepsConfig = [
   {
@@ -116,22 +116,23 @@ const MapObjectImportModal = ({
       });
     } else {
       setLoading(true);
-      prepareAndImportObjects(
-        isRestaurant,
-        isEditor,
-        setLoading,
-        cancelModal,
-        history,
-        objects,
-        checkedIds,
-        restaurantTags,
-        businessTags,
-        listAssociations,
-        dispatch,
-        locale,
-        userName,
-        objectTypes,
-        intl,
+      dispatch(
+        prepareAndImportObjects(
+          isRestaurant,
+          isEditor,
+          setLoading,
+          cancelModal,
+          history,
+          objects,
+          checkedIds,
+          restaurantTags,
+          businessTags,
+          listAssociations,
+          locale,
+          userName,
+          objectTypes,
+          intl,
+        ),
       );
     }
   };

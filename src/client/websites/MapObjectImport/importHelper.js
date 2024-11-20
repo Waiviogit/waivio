@@ -1,19 +1,10 @@
 import { message } from 'antd';
 import uuidv4 from 'uuid/v4';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { formBusinessObjects, handleArrayToFile } from '../../components/Maps/mapHelpers';
 import { uploadObject } from '../../../waivioApi/importApi';
-import {
-  getObjectInfo,
-  getObjectsForMapImportAvatars,
-  getObjPermlinkByCompanyId,
-} from '../../../waivioApi/ApiClient';
-import { createWaivioObject } from '../../../store/wObjectStore/wobjectsActions';
-import { getAppendData } from '../../../common/helpers/wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
-import { appendObject } from '../../../store/appendStore/appendActions';
-import { handleObjectSelect } from '../../../store/slateEditorStore/editorActions';
+import { getObjectsForMapImportAvatars } from '../../../waivioApi/ApiClient';
 
 export const getAvatar = async ({ detailsPhotos, user }) => {
   // eslint-disable-next-line no-restricted-syntax
@@ -152,108 +143,6 @@ export const importData = (
         message.error('Failed to upload. Please check your network connection.');
         console.error('Network Error:', error);
       });
-};
-export const prepareAndImportObjects = (
-  isRestaurant,
-  isEditor,
-  setLoading,
-  cancelModal,
-  history,
-  objects,
-  checkedIds,
-  restaurantTags,
-  businessTags,
-  listAssociations,
-  dispatch,
-  locale,
-  userName,
-  objectTypes,
-  intl,
-) => {
-  prepareObjects(
-    objects,
-    checkedIds,
-    isRestaurant,
-    restaurantTags,
-    businessTags,
-    listAssociations,
-    userName,
-  ).then(async processedObjects => {
-    if (isEditor) {
-      const type = isRestaurant(processedObjects[0]) ? 'restaurant' : 'business';
-      const selectedType = objectTypes[type];
-      const objData = {
-        ...processedObjects[0],
-        type,
-        id: processedObjects[0]?.name,
-        parentAuthor: selectedType.author,
-        parentPermlink: selectedType.permlink,
-      };
-      const { companyIdType, companyId } = objData?.companyIds[0];
-      const existWobjPermlink = (await getObjPermlinkByCompanyId(companyId, companyIdType))?.result;
-
-      if (!isEmpty(existWobjPermlink) && !isNil(existWobjPermlink)) {
-        const objsForEditor = await getObjectInfo([existWobjPermlink]);
-        const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
-
-        dispatch(handleObjectSelect(importedObj, false, intl));
-        cancelModal();
-      } else {
-        dispatch(createWaivioObject(objData)).then(res => {
-          const { parentPermlink, parentAuthor } = res;
-          const comanyIdBody = JSON.stringify(objData?.companyIds[0]);
-
-          dispatch(
-            appendObject(
-              getAppendData(
-                userName,
-                {
-                  id: parentPermlink,
-                  author: parentAuthor,
-                  creator: userName,
-                  name: objData.name,
-                  locale,
-                  author_permlink: parentPermlink,
-                },
-                '',
-                {
-                  name: objectFields.companyId,
-                  body: comanyIdBody,
-                  locale,
-                },
-              ),
-            ),
-          ).then(async r => {
-            const objsForEditor = await getObjectInfo([r?.parentPermlink]);
-            const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
-
-            dispatch(handleObjectSelect(importedObj, false, intl));
-            if (r?.transactionId) {
-              importData(
-                processedObjects,
-                isRestaurant,
-                userName,
-                locale,
-                isEditor,
-                setLoading,
-                cancelModal,
-              );
-            }
-          });
-        });
-      }
-    } else {
-      importData(
-        processedObjects,
-        isRestaurant,
-        userName,
-        locale,
-        isEditor,
-        setLoading,
-        cancelModal,
-      );
-    }
-  });
 };
 
 export default null;
