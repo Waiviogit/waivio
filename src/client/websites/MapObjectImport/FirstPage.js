@@ -54,7 +54,8 @@ const FirstPage = ({
       </Map>
     </div>
     <div>
-      Zoom in to the maximum level and click to mark the center point for searching nearby objects.
+      Focus the map on the area where the place you want to add is located. For a more precise
+      search, click on the map to set a pointer.
     </div>
     <br />
     <div className={'MapObjectImportModal__title-text'}>
