@@ -68,6 +68,7 @@ export const importData = (
   isEditor,
   setLoading,
   cancelModal,
+  history,
 ) => {
   const businessObjects = [];
   const restaurantObjects = [];

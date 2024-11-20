@@ -974,6 +974,8 @@ export const prepareAndImportObjects = (
         id: processedObjects[0]?.name,
         parentAuthor: selectedType.author,
         parentPermlink: selectedType.permlink,
+        isExtendingOpen: true,
+        isPostingOpen: true,
       };
       const { companyIdType, companyId } = objData?.companyIds[0];
       const existWobjPermlink = (await getObjPermlinkByCompanyId(companyId, companyIdType))?.result;
@@ -983,6 +985,16 @@ export const prepareAndImportObjects = (
         const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
 
         dispatch(handleObjectSelect(importedObj, false, intl));
+        importData(
+          processedObjects,
+          isRestaurant,
+          userName,
+          locale,
+          isEditor,
+          setLoading,
+          cancelModal,
+          history,
+        );
         cancelModal();
       } else {
         dispatch(createWaivioObject(objData)).then(res => {
@@ -1029,6 +1041,7 @@ export const prepareAndImportObjects = (
                   isEditor,
                   setLoading,
                   cancelModal,
+                  history,
                 );
               }
             }, 6000);
@@ -1044,6 +1057,7 @@ export const prepareAndImportObjects = (
         isEditor,
         setLoading,
         cancelModal,
+        history,
       );
     }
   });
