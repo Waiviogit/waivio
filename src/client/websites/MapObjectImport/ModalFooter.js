@@ -14,7 +14,7 @@ const ModalFooter = ({
   loading,
   disabled,
 }) => {
-  const load = button => ['submit', 'import'].includes(button.id) && loading;
+  const load = button => ['next', 'import'].includes(button.id) && loading;
   const dis = button => ['import'].includes(button.id) && disabled;
 
   const handlePrev = () => {
@@ -37,8 +37,8 @@ const ModalFooter = ({
           }
         : {
             isPrimary: true,
-            id: 'submit',
-            intl: { id: 'submit', defaultMessage: 'Submit' },
+            id: 'next',
+            intl: { id: 'next', defaultMessage: 'Next' },
             handler: handleOk,
           }),
       classList: 'WebsiteWelcomeModal__button WebsiteWelcomeModal__button--second',
