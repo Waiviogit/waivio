@@ -17,6 +17,8 @@ export default class PostFeedEmbed extends React.Component {
       url: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
+    isPreview: PropTypes.bool,
+    isSocial: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -46,11 +48,7 @@ export default class PostFeedEmbed extends React.Component {
 
   renderThumbFirst(thumb) {
     return (
-      <div
-        role="presentation"
-        className={getIframeContainerClass(this.props.embed, this.props.inPost)}
-        onClick={this.handleThumbClick}
-      >
+      <div role="presentation" className="PostFeedEmbed" onClick={this.handleThumbClick}>
         <div className="PostFeedEmbed__playButton">
           <i className="iconfont icon-group icon-playon_fill" />
         </div>
@@ -69,15 +67,16 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const { embed } = this.props;
-    const shouldRenderThumb = !this.state.showIframe;
+    const { embed, inPost, isSocial, isPreview } = this.props;
+    const shouldRenderThumb =
+      inPost && !isPreview && !embed.url.includes('tiktok') ? false : !this.state.showIframe;
 
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
 
     if (
-      isPostVideo(embed.provider_name, shouldRenderThumb) &&
+      isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
       embed.thumbnail &&
       !embed.url.includes('shorts')
     ) {

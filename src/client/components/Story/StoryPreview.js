@@ -115,7 +115,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       />
     ),
 
-    embed: () => embeds && embed && <PostFeedEmbed inPost key="embed" embed={embed} />,
+    embed: () => embeds && embed && <PostFeedEmbed isPreview inPost key="embed" embed={embed} />,
     image: () =>
       imagePath && (
         <div key={imagePath} className="Story__content__img-container">

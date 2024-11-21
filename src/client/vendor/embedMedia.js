@@ -208,8 +208,7 @@ SteemEmbed.isYoutube = function(url) {
 
 SteemEmbed.youtube = function(url, id, options) {
   let timerMatches = url.match(/[?&]t=([0-9]+h)*([0-9]+m)*([0-9]+s)+/);
-  let autoplayValue = options.autoplay ? 1 : 0;
-  let srcUrl = '//www.youtube.com/embed/' + id + '?autoplay=' + autoplayValue;
+  let srcUrl = '//www.youtube.com/embed/' + id + '?autoplay=false';
   if (timerMatches && timerMatches[3]) {
     srcUrl +=
       '&start=' +
