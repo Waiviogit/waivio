@@ -29,6 +29,7 @@ import mapProvider from '../../../common/helpers/mapProvider';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
 import { prepareAndImportObjects } from '../../../store/slateEditorStore/editorActions';
+import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
 
 const stepsConfig = [
   {
@@ -48,6 +49,7 @@ const MapObjectImportModal = ({
   closeImportModal,
   initialMapSettings,
   isEditor,
+  isComment,
   intl,
 }) => {
   const [loading, setLoading] = useState(false);
@@ -120,6 +122,7 @@ const MapObjectImportModal = ({
         prepareAndImportObjects(
           isRestaurant,
           isEditor,
+          isComment,
           setLoading,
           cancelModal,
           history,
@@ -189,6 +192,9 @@ const MapObjectImportModal = ({
 
   useEffect(() => {
     !isEditor && dispatch(getCoordinates());
+    if (isEmpty(objectTypes)) {
+      dispatch(getObjectTypes());
+    }
   }, []);
 
   useEffect(() => {
@@ -313,7 +319,8 @@ MapObjectImportModal.propTypes = {
   showImportModal: PropTypes.func.isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
   intl: PropTypes.shape(),
-  isEditor: PropTypes.bool.isRequired,
+  isEditor: PropTypes.bool,
+  isComment: PropTypes.bool,
 };
 
 export default injectIntl(MapObjectImportModal);
