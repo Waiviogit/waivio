@@ -103,6 +103,7 @@ function traverse(node, state, depth = 0) {
   if (!node || !node.childNodes || isEmpty(node.childNodes)) return;
   Array.from(node.childNodes).forEach(child => {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
+
     if (tag) state.htmltags.add(tag);
 
     if (tag === 'img') img(state, child);
@@ -184,6 +185,7 @@ function linkifyNode(child, state) {
     const tag = child?.parentNode.tagName
       ? child?.parentNode.tagName.toLowerCase()
       : child?.parentNode.tagName;
+
     if (tag === 'code') return;
     if (tag === 'a') return;
     if (imageRegex.test(child?.nodeValue)) {
@@ -198,6 +200,9 @@ function linkifyNode(child, state) {
 
     const { mutate } = state;
     if (!child.data) return;
+    if ('https://youtu.be/AkoCulqwlCc' === child?.nodeValue) {
+      console.log(tag);
+    }
     if (isEmbedable(child, state.links, state.images, state.resolveIframe)) return;
 
     const data = XMLSerializer.serializeToString(child);
@@ -275,10 +280,12 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
 function isEmbedable(child, links, images, resolveIframe) {
   try {
     if (!child.data) return false;
+    // /https:\/\/youtu\.be\/[A-Za-z0-9_-]+/g
     const data = child.data;
     const foundLinks = data.match(linksRe.any);
     if (!foundLinks) return false;
     const embed = steemEmbed.get(foundLinks[0] || '', { width: '100%', height: 400 });
+
     if (embed && embed.id) {
       const domString = resolveIframe
         ? embed.embed
@@ -286,7 +293,6 @@ function isEmbedable(child, links, images, resolveIframe) {
             embed.url
           } ~~~${data.slice(foundLinks.index + foundLinks[0].length, data.length)}`;
       const v = DOMParser.parseFromString(domString);
-      console.log(domString, v.nodeValue);
       if (v) child?.parentNode.replaceChild(v, child);
       if (links) links.add(embed.url);
       if (images) images.add(`https://img.youtube.com/vi/${embed.id}/hqdefault.jpg`);

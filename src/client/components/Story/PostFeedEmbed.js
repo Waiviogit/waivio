@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import AsyncVideo from '../../vendor/asyncVideo';
 import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
@@ -16,6 +17,7 @@ export default class PostFeedEmbed extends React.Component {
       url: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
+    isPreview: PropTypes.bool,
     isSocial: PropTypes.bool,
   };
 
@@ -36,7 +38,7 @@ export default class PostFeedEmbed extends React.Component {
   };
 
   renderWithIframe = embed => {
-    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed);
+    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed, this.props.inPost);
 
     return (
       // eslint-disable-next-line react/no-danger
@@ -50,20 +52,34 @@ export default class PostFeedEmbed extends React.Component {
         <div className="PostFeedEmbed__playButton">
           <i className="iconfont icon-group icon-playon_fill" />
         </div>
-        <img alt="thumbnail" className="PostFeedEmbed__preview" src={thumb} />
+        <img
+          alt="thumbnail"
+          className={classNames('PostFeedEmbed__preview', {
+            'PostFeedEmbed__preview--thin':
+              (this.props.embed.provider_name === 'TikTok' ||
+                this.props.embed.url.includes('shorts')) &&
+              this.props.inPost,
+          })}
+          src={thumb}
+        />
       </div>
     );
   }
 
   render() {
-    const { embed, inPost, isSocial } = this.props;
-    const shouldRenderThumb = inPost ? false : !this.state.showIframe;
+    const { embed, inPost, isSocial, isPreview } = this.props;
+    const shouldRenderThumb =
+      inPost && !isPreview && !embed.url.includes('tiktok') ? false : !this.state.showIframe;
 
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
 
-    if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) && embed.thumbnail) {
+    if (
+      isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
+      embed.thumbnail &&
+      !embed.url.includes('shorts')
+    ) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);

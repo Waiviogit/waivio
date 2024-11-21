@@ -19,6 +19,7 @@ import {
   uniqWith,
   size,
   differenceBy,
+  isNil,
 } from 'lodash';
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
@@ -38,7 +39,13 @@ import { clearBeneficiariesUsers } from '../searchStore/searchActions';
 import { getCurrentHost, getTranslationByKey } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getCampaign, getMentionCampaign, getObjectsByIds } from '../../waivioApi/ApiClient';
+import {
+  getCampaign,
+  getMentionCampaign,
+  getObjectInfo,
+  getObjectsByIds,
+  getObjPermlinkByCompanyId,
+} from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
@@ -62,7 +69,7 @@ import {
   getTitleValue,
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString } from '../reducers';
-import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import { getAppendData, getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
@@ -71,6 +78,10 @@ import objectTypes from '../../client/object/const/objectTypes';
 import { editorStateToMarkdownSlate } from '../../client/components/EditorExtended/util/editorStateToMarkdown';
 import { insertObject } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
 import { setGuestMana } from '../usersStore/usersActions';
+import { createWaivioObject } from '../wObjectStore/wobjectsActions';
+import { appendObject } from '../appendStore/appendActions';
+import { objectFields } from '../../common/constants/listOfFields';
+import { importData, prepareObjects } from '../../client/websites/MapObjectImport/importHelper';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -927,4 +938,131 @@ export const selectObjectFromSearch = (selectedObject, editor, match) => (dispat
     dispatch(saveDraft(draftId, null, updatedStateBody));
     dispatch(firstParseLinkedObjects(updatedStateBody, textReplace));
   }
+};
+
+export const prepareAndImportObjects = (
+  isRestaurant,
+  isEditor,
+  isComment,
+  setLoading,
+  cancelModal,
+  history,
+  objects,
+  checkedIds,
+  restaurantTags,
+  businessTags,
+  listAssociations,
+  locale,
+  userName,
+  objTypes,
+  intl,
+) => dispatch => {
+  prepareObjects(
+    objects,
+    checkedIds,
+    isRestaurant,
+    restaurantTags,
+    businessTags,
+    listAssociations,
+    userName,
+  ).then(async processedObjects => {
+    if (isEditor) {
+      const type = isRestaurant(processedObjects[0]) ? 'restaurant' : 'business';
+      const selectedType = objTypes[type];
+      const objData = {
+        ...processedObjects[0],
+        type,
+        id: processedObjects[0]?.name,
+        parentAuthor: selectedType.author,
+        parentPermlink: selectedType.permlink,
+        isExtendingOpen: true,
+        isPostingOpen: true,
+      };
+      const { companyIdType, companyId } = objData?.companyIds[0];
+      const existWobjPermlink = (await getObjPermlinkByCompanyId(companyId, companyIdType))?.result;
+
+      if (!isEmpty(existWobjPermlink) && !isNil(existWobjPermlink)) {
+        const objsForEditor = await getObjectInfo([existWobjPermlink]);
+        const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
+
+        dispatch(handleObjectSelect(importedObj, false, intl));
+        importData(
+          processedObjects,
+          isRestaurant,
+          userName,
+          locale,
+          isEditor,
+          isComment,
+          setLoading,
+          cancelModal,
+          history,
+        );
+        cancelModal();
+      } else {
+        dispatch(createWaivioObject(objData)).then(res => {
+          const { parentPermlink, parentAuthor } = res;
+          const comanyIdBody = JSON.stringify(objData?.companyIds[0]);
+
+          dispatch(
+            appendObject(
+              getAppendData(
+                userName,
+                {
+                  id: parentPermlink,
+                  author: parentAuthor,
+                  creator: userName,
+                  name: objData.name,
+                  locale,
+                  author_permlink: parentPermlink,
+                },
+                '',
+                {
+                  name: objectFields.companyId,
+                  body: comanyIdBody,
+                  locale,
+                },
+              ),
+            ),
+          ).then(async r => {
+            setTimeout(async () => {
+              if (r?.transactionId) {
+                const importedObj = {
+                  ...objData,
+                  author_permlink: r.parentPermlink,
+                  _id: r.parentPermlink,
+                  object_type: type,
+                };
+
+                dispatch(handleObjectSelect(importedObj, false, intl));
+                cancelModal();
+                importData(
+                  processedObjects,
+                  isRestaurant,
+                  userName,
+                  locale,
+                  isEditor,
+                  isComment,
+                  setLoading,
+                  cancelModal,
+                  history,
+                );
+              }
+            }, 6000);
+          });
+        });
+      }
+    } else {
+      importData(
+        processedObjects,
+        isRestaurant,
+        userName,
+        locale,
+        isEditor,
+        isComment,
+        setLoading,
+        cancelModal,
+        history,
+      );
+    }
+  });
 };

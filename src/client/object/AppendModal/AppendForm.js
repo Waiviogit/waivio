@@ -3443,22 +3443,35 @@ class AppendForm extends Component {
                       'validation-error': !this.state.isSomeValue,
                     })}
                     size="large"
-                    prefix={
-                      profile.id === 'twitter' ? (
-                        <ReactSVG
-                          className={'twitter-icon'}
-                          src="/images/icons/twitter-x.svg"
-                          wrapper={'span'}
-                        />
-                      ) : (
-                        <i
-                          className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-                          style={{
-                            color: profile.color,
-                          }}
-                        />
-                      )
-                    }
+                    prefix={(() => {
+                      switch (profile.id) {
+                        case 'twitter':
+                          return (
+                            <ReactSVG
+                              className="twitter-icon"
+                              src="/images/icons/twitter-x.svg"
+                              wrapper="span"
+                            />
+                          );
+                        case 'tiktok':
+                          return (
+                            <ReactSVG
+                              className="tiktok-icon"
+                              src="/images/icons/tiktok.svg"
+                              wrapper="span"
+                            />
+                          );
+                        default:
+                          return (
+                            <i
+                              className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
+                              style={{
+                                color: profile.color,
+                              }}
+                            />
+                          );
+                      }
+                    })()}
                     disabled={loading}
                     placeholder={profile.id === 'twitter' ? 'X' : profile.name}
                   />,
@@ -4226,6 +4239,7 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkTwitter')) &&
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
+          isEmpty(getFieldValue('linkTikTok')) &&
           isEmpty(getFieldValue('linkGitHub'))
         );
       case objectFields.walletAddress:

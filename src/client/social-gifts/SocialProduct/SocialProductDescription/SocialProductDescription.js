@@ -37,30 +37,42 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
     setDividedParagraphs(newParagraphs);
   }, [authorPermlink]);
 
-  const renderedParagraphs = dividedParagraphs?.map((paragraph, index) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <div key={index} className="SocialProductDescription__paragraph-container">
-      <p
+  const renderedParagraphs = dividedParagraphs?.map((paragraph, index) => {
+    const isOnlyParagraph = photos && index + 1 > photos.length;
+
+    return (
+      <div
+        // eslint-disable-next-line react/no-array-index-key
+        key={index}
         className={
-          photos && index < photos.length
-            ? 'SocialProductDescription__paragraph'
-            : 'SocialProductDescription__paragraph--only'
+          isOnlyParagraph
+            ? 'SocialProductDescription__paragraph-only-container'
+            : 'SocialProductDescription__paragraph-container'
         }
       >
-        {paragraph}
-      </p>
-      {photos && index < photos.length && (
-        <div key={photos[index].body}>
-          <img
-            className="SocialProductDescription__image"
-            onClick={e => onPicClick(e, photos[index])}
-            src={photos[index]?.body}
-            alt={paragraph}
-          />
-        </div>
-      )}
-    </div>
-  ));
+        <p
+          className={
+            isOnlyParagraph
+              ? 'SocialProductDescription__paragraph--only'
+              : 'SocialProductDescription__paragraph'
+          }
+        >
+          {paragraph}
+        </p>
+        {photos && index < photos.length && (
+          <div key={photos[index].body}>
+            <img
+              className="SocialProductDescription__image"
+              onClick={e => onPicClick(e, photos[index])}
+              src={photos[index]?.body}
+              alt={paragraph}
+            />
+          </div>
+        )}
+      </div>
+    );
+  });
+
   const renderOnePictureParagraph = () => (
     <div className={'SocialProductDescription__single-paragraph-container'}>
       <section className={'SocialProductDescription__single-paragraph'}>

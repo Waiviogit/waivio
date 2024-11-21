@@ -104,6 +104,7 @@ class Wrapper extends React.PureComponent {
     getTokenRates: PropTypes.func,
     getCryptoPriceHistory: PropTypes.func,
     getGlobalProperties: PropTypes.func,
+    getCoordinates: PropTypes.func,
     nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
@@ -176,6 +177,7 @@ class Wrapper extends React.PureComponent {
 
     this.props.getRate();
     this.props.getRewardFund();
+    this.props.getCoordinates();
     this.props.getGlobalProperties();
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { get, has } from 'lodash';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
@@ -21,6 +23,7 @@ import { getHtml } from './Body';
 import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex, videoPreviewRegex2 } from '../../../common/helpers/regexHelpers';
+import { getTiktokPreviewFromState } from '../../../store/feedStore/feedSelectors';
 
 const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
 
@@ -28,6 +31,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const storyContentBodyClassList = classNames('Story__content__body', {
     'Story__content__body-vimeo': isVimeo,
   });
+  const previews = useSelector(getTiktokPreviewFromState);
 
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
@@ -96,6 +100,10 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       embeds[0] = steemEmbed.get(videoLink.replaceAll('\\', ''), options);
     }
   }
+  const isTiktok = embeds[0]?.provider_name === 'TikTok';
+  const embed = isTiktok
+    ? { ...embeds?.[0], thumbnail: previews?.find(i => i.url === embeds?.[0]?.url)?.urlPreview }
+    : embeds?.[0];
 
   const hasVideo = embeds && embeds[0];
   const preview = {
@@ -107,7 +115,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       />
     ),
 
-    embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
+    embed: () => embeds && embed && <PostFeedEmbed isPreview inPost key="embed" embed={embed} />,
     image: () =>
       imagePath && (
         <div key={imagePath} className="Story__content__img-container">

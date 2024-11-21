@@ -9,10 +9,12 @@ const MapObjectImport = ({
   usersState,
   initialMapSettings,
   isEditor,
+  isComment,
 }) => (
   <div>
     {usersState?.result ? (
       <MapObjectImportModal
+        isComment={isComment}
         isEditor={isEditor}
         initialMapSettings={initialMapSettings}
         closeImportModal={closeModal}
@@ -32,6 +34,7 @@ MapObjectImport.propTypes = {
   closeModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.bool.isRequired,
   isEditor: PropTypes.bool,
+  isComment: PropTypes.bool,
   usersState: PropTypes.shape().isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
 };

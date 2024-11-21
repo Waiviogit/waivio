@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Icon, message, Modal } from 'antd';
+import { Icon, Modal } from 'antd';
 import { Map, Marker } from 'pigeon-maps';
 import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
-import uuidv4 from 'uuid/v4';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -17,7 +16,6 @@ import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import './MapObjectImport.less';
 import {
-  getObjectsForMapImportAvatars,
   getObjectsForMapImportObjects,
   getObjectsForMapImportText,
 } from '../../../waivioApi/ApiClient';
@@ -26,14 +24,12 @@ import '../WebsiteWelcomeModal/WebsiteWelcomeModal.less';
 import FirstPage from './FirstPage';
 import ModalFooter from './ModalFooter';
 import SecondPage from './SecondPage';
-import {
-  formBusinessObjects,
-  handleArrayToFile,
-  restaurantGoogleTypes,
-} from '../../components/Maps/mapHelpers';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
-import { uploadObject } from '../../../waivioApi/importApi';
+import { restaurantGoogleTypes } from '../../components/Maps/mapHelpers';
 import mapProvider from '../../../common/helpers/mapProvider';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
+import { prepareAndImportObjects } from '../../../store/slateEditorStore/editorActions';
+import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
 
 const stepsConfig = [
   {
@@ -53,6 +49,8 @@ const MapObjectImportModal = ({
   closeImportModal,
   initialMapSettings,
   isEditor,
+  isComment,
+  intl,
 }) => {
   const [loading, setLoading] = useState(false);
   const [objects, setObjects] = useState([]);
@@ -69,6 +67,7 @@ const MapObjectImportModal = ({
   const locale = useSelector(getUsedLocale);
   const userName = useSelector(getAuthenticatedUserName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
+  const objectTypes = useSelector(getObjectTypesList);
   const dispatch = useDispatch();
   const history = useHistory();
   const { lat, lon } = userLocation;
@@ -78,54 +77,6 @@ const MapObjectImportModal = ({
   const businessTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
   const restaurantTags = tagsList?.map(t => ({ key: 'Cuisine', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);
-
-  const getAvatar = async ({ detailsPhotos, user }) => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const photo of detailsPhotos) {
-      // eslint-disable-next-line no-await-in-loop
-      const { result: photoString, error: photoError } = await getObjectsForMapImportAvatars(
-        user,
-        photo.name,
-      );
-
-      if (photoError || !photoString) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-
-      return photoString;
-    }
-
-    return '';
-  };
-
-  const prepareObjects = async () => {
-    const filteredObjects = objects?.filter(obj => checkedIds?.includes(obj.id));
-
-    // eslint-disable-next-line no-return-await
-    return await Promise.all(
-      filteredObjects?.map(async object => {
-        const waivioTags = isRestaurant(object) ? restaurantTags : businessTags;
-
-        const processed = formBusinessObjects({
-          object,
-          waivio_tags: waivioTags,
-          listAssociations,
-        });
-
-        const avatar = await getAvatar({
-          detailsPhotos: object?.photos ?? [],
-          user: userName,
-        });
-
-        if (avatar) {
-          processed.primaryImageURLs = [avatar];
-        }
-
-        return processed;
-      }),
-    );
-  };
 
   const getObjects = () => {
     const includedType = isEmpty(type) ? undefined : type;
@@ -167,83 +118,25 @@ const MapObjectImportModal = ({
       });
     } else {
       setLoading(true);
-
-      prepareObjects().then(processedObjects => {
-        const businessObjects = [];
-        const restaurantObjects = [];
-
-        processedObjects.forEach(obj => {
-          if (isRestaurant(obj)) {
-            restaurantObjects.push(obj);
-          } else {
-            businessObjects.push(obj);
-          }
-        });
-
-        const uploadedBusinessFile = handleArrayToFile(businessObjects);
-        const businessFormData = new FormData();
-        const uploadedRestaurantFile = handleArrayToFile(restaurantObjects);
-        const restaurantFormData = new FormData();
-
-        businessFormData.append('file', uploadedBusinessFile, `${uuidv4()}.json`);
-        businessFormData.append('user', userName);
-        businessFormData.append('locale', locale);
-        businessFormData.append('objectType', 'business');
-        businessFormData.append('authority', 'administrative');
-        businessFormData.append('useGPT', true);
-        businessFormData.append('forceImport', true);
-        restaurantFormData.append('file', uploadedRestaurantFile, `${uuidv4()}-1.json`);
-        restaurantFormData.append('user', userName);
-        restaurantFormData.append('locale', locale);
-        restaurantFormData.append('objectType', 'restaurant');
-        restaurantFormData.append('authority', 'administrative');
-        restaurantFormData.append('useGPT', true);
-        restaurantFormData.append('forceImport', true);
-
-        if (!isEmpty(businessObjects))
-          uploadObject(businessFormData)
-            .then(async res => {
-              setLoading(false);
-              cancelModal();
-
-              if (!res.ok) {
-                const errorText = res.message ? res.message : 'An error occurred';
-
-                message.error(errorText);
-              } else {
-                cancelModal();
-                message.success('Data import started successfully!');
-                !isEditor && history.push('/data-import');
-              }
-            })
-            .catch(error => {
-              setLoading(false);
-              message.error('Failed to upload. Please check your network connection.');
-              console.error('Network Error:', error);
-            });
-
-        if (!isEmpty(restaurantObjects))
-          uploadObject(restaurantFormData)
-            .then(async res => {
-              setLoading(false);
-
-              // Since the response will be opaque, you cannot access its body
-              if (!res.ok) {
-                const errorText = res.message ? res.message : 'An error occurred';
-
-                message.error(errorText);
-              } else {
-                cancelModal();
-                message.success('Data import started successfully!');
-                !isEditor && history.push('/data-import');
-              }
-            })
-            .catch(error => {
-              setLoading(false);
-              message.error('Failed to upload. Please check your network connection.');
-              console.error('Network Error:', error);
-            });
-      });
+      dispatch(
+        prepareAndImportObjects(
+          isRestaurant,
+          isEditor,
+          isComment,
+          setLoading,
+          cancelModal,
+          history,
+          objects,
+          checkedIds,
+          restaurantTags,
+          businessTags,
+          listAssociations,
+          locale,
+          userName,
+          objectTypes,
+          intl,
+        ),
+      );
     }
   };
 
@@ -299,6 +192,9 @@ const MapObjectImportModal = ({
 
   useEffect(() => {
     !isEditor && dispatch(getCoordinates());
+    if (isEmpty(objectTypes)) {
+      dispatch(getObjectTypes());
+    }
   }, []);
 
   useEffect(() => {
@@ -422,7 +318,9 @@ MapObjectImportModal.propTypes = {
   closeImportModal: PropTypes.func.isRequired,
   showImportModal: PropTypes.func.isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
-  isEditor: PropTypes.bool.isRequired,
+  intl: PropTypes.shape(),
+  isEditor: PropTypes.bool,
+  isComment: PropTypes.bool,
 };
 
 export default injectIntl(MapObjectImportModal);

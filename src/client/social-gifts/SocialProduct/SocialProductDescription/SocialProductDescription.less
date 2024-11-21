@@ -15,6 +15,15 @@
       }
     }
   }
+  &__paragraph-only-container {
+    display: flex;
+    flex-direction: column;
+
+    @media @small {
+      flex-direction: row;
+      margin-bottom: 20px;
+    }
+  }
   &__single-paragraph-container {
     display: flex;
     flex-direction: column;
@@ -58,16 +67,17 @@
   &__image {
     border: 1px solid @white-gainsboro;
     cursor: pointer;
-    width: auto;
     max-width: 100%;
     height: auto;
     margin-bottom: 20px;
     width: -webkit-fill-available;
+    width: auto;
     @media @small {
       margin: 20px;
       margin-bottom: 0;
       object-fit: contain;
       max-height: 500px;
+      max-width: 95%;
     }
   }
   &__single-image {

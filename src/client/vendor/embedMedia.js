@@ -49,6 +49,17 @@ SteemEmbed.getAll = function(text, options, mediaSize) {
 
 SteemEmbed.get = function(url, options = {}, mediumSize) {
   const youtubeId = this.isYoutube(url);
+  if (youtubeId) {
+    const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'YouTube',
+      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + imageName,
+      id: youtubeId,
+      embed: this.youtube(url, youtubeId, options),
+    };
+  }
   const dTubeId = this.isDTube(url);
   const threeSpeakId = this.is3Speak(url);
   const twitch = this.isTwitch(url);
@@ -64,17 +75,7 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
   const instagramId = this.isInstagram(url);
   const peerTubeId = this.isPeerTube(url);
 
-  if (youtubeId) {
-    const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
-    return {
-      type: 'video',
-      url: url,
-      provider_name: 'YouTube',
-      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + imageName,
-      id: youtubeId,
-      embed: this.youtube(url, youtubeId, options),
-    };
-  } else if (dTubeId) {
+  if (dTubeId) {
     return {
       type: 'video',
       url: url,
@@ -207,8 +208,7 @@ SteemEmbed.isYoutube = function(url) {
 
 SteemEmbed.youtube = function(url, id, options) {
   let timerMatches = url.match(/[?&]t=([0-9]+h)*([0-9]+m)*([0-9]+s)+/);
-  let autoplayValue = options.autoplay ? 1 : 0;
-  let srcUrl = '//www.youtube.com/embed/' + id + '?autoplay=' + autoplayValue;
+  let srcUrl = '//www.youtube.com/embed/' + id + '?autoplay=false';
   if (timerMatches && timerMatches[3]) {
     srcUrl +=
       '&start=' +

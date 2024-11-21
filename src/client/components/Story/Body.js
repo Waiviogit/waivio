@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
-// import { Map, Marker } from 'pigeon-maps';
+import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
@@ -17,25 +17,23 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
+import mapProvider from '../../../common/helpers/mapProvider';
 
 import './Body.less';
 
-// function parseGPSCoordinates(text) {
-//   const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
-//   const match = text.match(regex);
-//
-//   if (match) {
-//     const latitude = match[1];
-//     const longitude = match[2];
-//
-//     return {
-//       latitude,
-//       longitude,
-//     };
-//   }
-//
-//   return null;
-// }
+function parseGPSCoordinates(text) {
+  const regex = /(?<=!worldmappin\s)(-?\d+\.\d+)\s*lat\s*(-?\d+\.\d+)\s*long/;
+  const match = text.match(regex);
+
+  if (match) {
+    const latitude = match[1];
+    const longitude = match[2];
+
+    return [+latitude, +longitude];
+  }
+
+  return null;
+}
 
 export const remarkable = new Remarkable({
   html: true,
@@ -74,6 +72,7 @@ export function getHtml(
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
+  // eslint-disable-next-line consistent-return
 
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
@@ -89,25 +88,11 @@ export function getHtml(
     if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
 
-  // const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
-  // const mapPreviewResult = parsedBody.match(mapRegex);
-  //
-  // if (!isEmpty(mapPreviewResult)) {
-  //   mapPreviewResult.forEach(match => {
-  //     const parsedMap = parseGPSCoordinates(match);
-  //
-  //     const mapLink = `map=${parsedMap.latitude},${parsedMap.longitude}`;
-  //
-  //     parsedBody = parsedBody.replace(match, mapLink);
-  //   });
-  // }
-
   parsedBody = improve(parsedBody);
-
   parsedBody = remarkable.render(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
-  parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;
+  parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);
@@ -136,13 +121,13 @@ export function getHtml(
   }
 
   const sections = [];
+
   const splittedBody = parsedBody.split('~~~ embed:');
 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const extractedLinks = extractLinks(section);
     const match = section.match(/^([A-Za-z0-9./_@:,?=&;-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
-    // const map = section.match(/map=(\d+\.\d+,\d+\.\d+)/g);
 
     if (match && match.length >= 4) {
       const id = match[1];
@@ -163,6 +148,7 @@ export function getHtml(
       }
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
+
     if (!isEmpty(extractedLinks)) {
       const uniqueLinks = extractedLinks.reduce(
         (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
@@ -186,13 +172,6 @@ export function getHtml(
         }
       });
     }
-    // if(map[0]) {
-    //   const center = map[0].split('=')[0].split('map=')[1].split(',');
-    //
-    //   sections.push({
-    //     component: <Map center={center}><Marker anchor={center}/></Map>,
-    //   });
-    // }
 
     if (section !== '') {
       sections.push(section);
@@ -213,6 +192,9 @@ export function getHtml(
 }
 
 const Body = props => {
+  const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
+  const withMap = props.body.match(mapRegex);
+
   useEffect(() => {
     if (typeof document !== 'undefined') {
       Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
@@ -247,7 +229,28 @@ const Body = props => {
     sendError,
   );
 
-  return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
+  return (
+    <React.Fragment>
+      <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>
+      {!isEmpty(withMap) &&
+        withMap.map(map => {
+          const center = parseGPSCoordinates(map);
+
+          return (
+            <Map
+              key={map}
+              height={300}
+              animate
+              defaultCenter={center}
+              provider={mapProvider}
+              defaultZoom={10}
+            >
+              <Marker anchor={center} />
+            </Map>
+          );
+        })}
+    </React.Fragment>
+  );
 };
 
 Body.propTypes = {

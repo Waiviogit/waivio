@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
+import { useHistory } from 'react-router';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { isNil } from 'lodash';
@@ -8,11 +9,13 @@ import MapObjectImport from '../../../../websites/MapObjectImport/MapObjectImpor
 import { hasAccessToImport } from '../../../../../waivioApi/importApi';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 
-const NearbyButton = ({ intl }) => {
+const NearbyButton = ({ intl, close }) => {
   const [showImportModal, setShowImportModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [usersState, setUsersState] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const history = useHistory();
+  const isComment = !history?.location?.pathname?.includes('editor');
   const setShowImport = () => {
     setLoading(true);
     hasAccessToImport(authUserName).then(r => {
@@ -23,6 +26,7 @@ const NearbyButton = ({ intl }) => {
     setShowImportModal(true);
   };
   const closeImportModal = () => {
+    close();
     setShowImportModal(false);
   };
 
@@ -46,6 +50,7 @@ const NearbyButton = ({ intl }) => {
       {!isNil(usersState) && (
         <MapObjectImport
           isEditor
+          isComment={isComment}
           usersState={usersState}
           showImportModal={showImportModal}
           closeModal={closeImportModal}
@@ -57,6 +62,7 @@ const NearbyButton = ({ intl }) => {
 
 NearbyButton.propTypes = {
   intl: PropTypes.shape().isRequired,
+  close: PropTypes.func,
 };
 
 export default injectIntl(NearbyButton);

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
+import { withRouter } from 'react-router';
 import { debounce, get, includes, find, uniqWith, isEqual, isEmpty, isNull } from 'lodash';
 import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
@@ -42,6 +43,7 @@ const propTypes = {
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
@@ -219,6 +221,7 @@ const EditPost = props => {
             displayTitle
             draftId={props.draftId}
             handlePasteText={handlePasteText}
+            match={props.match}
           />
           {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">
@@ -290,4 +293,4 @@ const EditPost = props => {
 EditPost.propTypes = propTypes;
 EditPost.defaultProps = defaultProps;
 
-export default EditPost;
+export default withRouter(EditPost);
