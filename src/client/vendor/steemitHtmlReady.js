@@ -275,10 +275,12 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
 function isEmbedable(child, links, images, resolveIframe) {
   try {
     if (!child.data) return false;
+    // /https:\/\/youtu\.be\/[A-Za-z0-9_-]+/g
     const data = child.data;
     const foundLinks = data.match(linksRe.any);
     if (!foundLinks) return false;
     const embed = steemEmbed.get(foundLinks[0] || '', { width: '100%', height: 400 });
+
     if (embed && embed.id) {
       const domString = resolveIframe
         ? embed.embed
@@ -286,7 +288,9 @@ function isEmbedable(child, links, images, resolveIframe) {
             embed.url
           } ~~~${data.slice(foundLinks.index + foundLinks[0].length, data.length)}`;
       const v = DOMParser.parseFromString(domString);
-
+      // if('https://youtu.be/AkoCulqwlCc' === foundLinks[0]) {
+      //   console.log(v);
+      // }
       if (v) child?.parentNode.replaceChild(v, child);
       if (links) links.add(embed.url);
       if (images) images.add(`https://img.youtube.com/vi/${embed.id}/hqdefault.jpg`);

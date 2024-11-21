@@ -270,6 +270,7 @@ const ObjectOfTypePage = props => {
                       locale={editorLocale}
                       onChange={handleChangeContent}
                       displayTitle={false}
+                      match={props.match}
                     />
                   </div>
                 )}
@@ -331,6 +332,7 @@ ObjectOfTypePage.propTypes = {
 
   /* passed */
   wobject: PropTypes.shape(),
+  match: PropTypes.shape(),
   nestedWobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,

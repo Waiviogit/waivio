@@ -34,8 +34,8 @@ const isPostStartsWithAPicture = tagPositions => postWithPicture(tagPositions, S
 const isPostStartsWithAnEmbed = tagPositions => postWithAnEmbed(tagPositions, START_WITH_PERCENT);
 const isPostWithPictureBeforeFirstHalf = tagPositions => postWithPicture(tagPositions, 50);
 const isPostWithEmbedBeforeFirstHalf = tagPositions => postWithAnEmbed(tagPositions, 50);
-const isPostVideo = (providerName, shouldRenderThumb, isSocial) => {
-  const providerNames = isSocial ? ['YouTube', 'DTube', 'TikTok', '3Speak'] : ['YouTube', 'DTube'];
+const isPostVideo = (providerName, shouldRenderThumb) => {
+  const providerNames = ['YouTube', 'DTube', 'TikTok', '3Speak'];
 
   return providerNames.includes(providerName) && shouldRenderThumb;
 };

@@ -121,20 +121,8 @@ export function getHtml(
   }
 
   const sections = [];
-  const splittedBody = parsedBody
-    // eslint-disable-next-line consistent-return
-    .replace(/https:\/\/youtu\.be\/[A-Za-z0-9_-]+/g, match => {
-      if (match) {
-        const embed = steemEmbed.get(match);
 
-        if (embed && embed.id) {
-          return `~~~ embed:${embed.id} ${embed.provider_name} ${embed.url} ~~~`;
-        }
-
-        return match;
-      }
-    })
-    .split('~~~ embed:');
+  const splittedBody = parsedBody.split('~~~ embed:');
 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
@@ -168,8 +156,13 @@ export function getHtml(
       );
 
       uniqueLinks.forEach(item => {
-        if (item.includes('3speak.tv/watch/')) {
-          const embed = getEmbed(item);
+        let link = item;
+
+        if (link.includes('3speak.tv/watch/')) {
+          const type = 'video';
+          const embed = getEmbed(link);
+
+          link = link.substring(` ${type} ${link}`.length);
 
           sections.push(
             ReactDOMServer.renderToString(
