@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import AsyncVideo from '../../vendor/asyncVideo';
 import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
@@ -16,7 +17,6 @@ export default class PostFeedEmbed extends React.Component {
       url: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
-    isSocial: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -36,7 +36,7 @@ export default class PostFeedEmbed extends React.Component {
   };
 
   renderWithIframe = embed => {
-    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed);
+    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed, this.props.inPost);
 
     return (
       // eslint-disable-next-line react/no-danger
@@ -46,25 +46,38 @@ export default class PostFeedEmbed extends React.Component {
 
   renderThumbFirst(thumb) {
     return (
-      <div role="presentation" className="PostFeedEmbed" onClick={this.handleThumbClick}>
+      <div
+        role="presentation"
+        className={getIframeContainerClass(this.props.embed, this.props.inPost)}
+        onClick={this.handleThumbClick}
+      >
         <div className="PostFeedEmbed__playButton">
           <i className="iconfont icon-group icon-playon_fill" />
         </div>
-        <img alt="thumbnail" className="PostFeedEmbed__preview" src={thumb} />
+        <img
+          alt="thumbnail"
+          className={classNames('PostFeedEmbed__preview', {
+            'PostFeedEmbed__preview--thin':
+              (this.props.embed.provider_name === 'TikTok' ||
+                this.props.embed.url.includes('shorts')) &&
+              this.props.inPost,
+          })}
+          src={thumb}
+        />
       </div>
     );
   }
 
   render() {
-    const { embed, inPost, isSocial } = this.props;
-    const shouldRenderThumb = inPost ? false : !this.state.showIframe;
+    const { embed } = this.props;
+    const shouldRenderThumb = !this.state.showIframe;
 
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
 
     if (
-      isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
+      isPostVideo(embed.provider_name, shouldRenderThumb) &&
       embed.thumbnail &&
       !embed.url.includes('shorts')
     ) {

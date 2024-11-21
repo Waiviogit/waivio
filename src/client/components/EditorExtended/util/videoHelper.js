@@ -50,11 +50,12 @@ export const isInstagramReel = url => VIDEO_MATCH_URL.INSTAGRAM_REEL.test(url);
 
 export const isPeerTube = url => VIDEO_MATCH_URL.PEERTUBE.test(url);
 
-export const getIframeContainerClass = embed =>
+export const getIframeContainerClass = (embed, inPost) =>
   classNames('PostFeedEmbed__container', {
     'PostFeedEmbed__container-vimeo': embed.provider_name === 'Vimeo',
     PostFeedEmbed__container_high:
       embed.url && (embed.url.includes('tiktok.com/') || embed.url.includes('shorts')),
+    'PostFeedEmbed__container--width': embed.url.includes('shorts') && inPost,
     'PostFeedEmbed__container_instagram-reel': VIDEO_MATCH_URL.INSTAGRAM_REEL.test(embed.url),
     PostFeedEmbed__container_instagram: VIDEO_MATCH_URL.INSTAGRAM.test(embed.url),
   });

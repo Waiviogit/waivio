@@ -18,8 +18,16 @@ import {
   getFeedLoadingFromState,
 } from '../../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import { getBlogFilters, getFeed } from '../../../store/feedStore/feedSelectors';
-import { getUserProfileBlogPosts, resetProfileFilters } from '../../../store/feedStore/feedActions';
+import {
+  getBlogFilters,
+  getFeed,
+  getPreviewLoadingFromState,
+} from '../../../store/feedStore/feedSelectors';
+import {
+  getTiktokPreviewAction,
+  getUserProfileBlogPosts,
+  resetProfileFilters,
+} from '../../../store/feedStore/feedActions';
 import { showPostModal } from '../../../store/appStore/appActions';
 import { getUsersMentionCampaign } from '../../../waivioApi/ApiClient';
 import Campaing from '../../newRewards/reuseble/Campaing';
@@ -30,6 +38,8 @@ const limit = 10;
 const UserBlog = props => {
   const { name } = useParams();
   const user = useSelector(state => getUser(state, name));
+  const previewLoading = useSelector(getPreviewLoadingFromState);
+
   const [mentions, setMentions] = useState({});
   const isOwnProfile = name === props.authenticatedUserName;
   const content = getFeedFromState('blog', name, props.feed);
@@ -43,7 +53,10 @@ const UserBlog = props => {
     "Browse a rich collection of user-generated posts, covering a myriad of topics. Engage with our diverse community's insights, stories, and perspectives.";
 
   useEffect(() => {
-    if (isEmpty(content)) props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (isEmpty(content))
+      props.getUserProfileBlogPosts(name, { limit, initialLoad: true }).then(res => {
+        props.getTiktokPreviewAction(res.value.posts);
+      });
   }, [props?.tagsCondition?.length, name]);
 
   useEffect(() => {
@@ -56,7 +69,9 @@ const UserBlog = props => {
   }, [name]);
 
   const loadMoreContentAction = () =>
-    props.getUserProfileBlogPosts(name, { limit, initialLoad: false });
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: false }).then(res => {
+      props.getTiktokPreviewAction(res.value.posts);
+    });
 
   return (
     <div className="profile">
@@ -70,7 +85,7 @@ const UserBlog = props => {
         mentions.secondary.map(propos => <Proposition key={propos._id} proposition={propos} />)}
       <Feed
         content={content}
-        isFetching={isFetching}
+        isFetching={isFetching || previewLoading}
         hasMore={hasMore}
         loadMoreContent={loadMoreContentAction}
         showPostModal={props.showPostModal}
@@ -91,6 +106,7 @@ UserBlog.propTypes = {
   getUserProfileBlogPosts: PropTypes.func,
   showPostModal: PropTypes.func,
   resetProfileFilters: PropTypes.func,
+  getTiktokPreviewAction: PropTypes.func,
 };
 
 export default withRouter(
@@ -105,6 +121,7 @@ export default withRouter(
       getUserProfileBlogPosts,
       showPostModal,
       resetProfileFilters,
+      getTiktokPreviewAction,
     },
   )(UserBlog),
 );
