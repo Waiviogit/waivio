@@ -66,6 +66,7 @@ export const importData = (
   userName,
   locale,
   isEditor,
+  isComment,
   setLoading,
   cancelModal,
   history,
@@ -114,7 +115,7 @@ export const importData = (
         } else {
           cancelModal();
           message.success('Data import started successfully!');
-          !isEditor && history.push('/data-import');
+          (isComment || !isEditor) && history.push('/data-import');
         }
       })
       .catch(error => {
@@ -136,7 +137,7 @@ export const importData = (
         } else {
           cancelModal();
           message.success('Data import started successfully!');
-          !isEditor && history.push('/data-import');
+          (isComment || !isEditor) && history.push('/data-import');
         }
       })
       .catch(error => {
