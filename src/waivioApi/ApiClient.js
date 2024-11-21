@@ -4505,5 +4505,27 @@ export const getObjectsForMapImportAvatars = async (userName, placesUrl) => {
     .then(objects => objects)
     .catch(error => error);
 };
+export const getObjPermlinkByCompanyId = async (id, idType) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.idType}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      id,
+      idType,
+    }),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+};
 
 export default null;

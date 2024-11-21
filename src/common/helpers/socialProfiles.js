@@ -2,10 +2,10 @@ import { uniq } from 'lodash';
 
 const socialTransformers = {
   facebook: id => `https://www.facebook.com/profile.php?id=${id}`,
-  twitter: id => `https://twitter.com/${id}`,
+  twitter: id => `https://x.com/${id}`,
   tiktok: id => `https://www.tiktok.com/@${id}`,
   linkedin: id => `https://www.linkedin.com/in/${id}`,
-  youtube: id => `https://www.youtube.com/${id}`,
+  youtube: id => `https://www.youtube.com/@${id}`,
   instagram: id => `https://instagram.com/${id}`,
   github: id => `https://github.com/${id}`,
   bitcoin: id => `https://blockchain.info/address/${id}`,

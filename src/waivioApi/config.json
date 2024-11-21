@@ -252,5 +252,6 @@
   "custom": "/custom",
   "validate": "/validate",
   "threads": "/threads",
-  "rc": "/rc"
+  "rc": "/rc",
+  "idType": "/id-type"
 }
