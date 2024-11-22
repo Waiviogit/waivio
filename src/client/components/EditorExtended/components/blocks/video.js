@@ -13,7 +13,7 @@ const Video = ({ url }) => {
 
   if (src) {
     return (
-      <div className={getIframeContainerClass({ url })}>
+      <div className={getIframeContainerClass({ url }, true)}>
         <iframe
           title={src}
           width="100%"
