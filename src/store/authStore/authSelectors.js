@@ -31,11 +31,6 @@ export const getAuthenticatedUserNotificationsSettings = createSelector(
   userMetaData => get(userMetaData, ['settings', 'userNotifications'], {}),
 );
 
-export const getAuthenticatedUserDrafts = createSelector(
-  [getAuthenticatedUserMetaData],
-  userMetaData => get(userMetaData, ['drafts'], {}),
-);
-
 export const getAuthenticatedUserAvatar = createSelector([getAuthenticatedUser], state =>
   getUserAvatar(state),
 );

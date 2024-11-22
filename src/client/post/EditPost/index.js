@@ -3,10 +3,11 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import EditPost from './EditPost';
 import requiresLogin from '../../auth/requiresLogin';
-import { getAuthenticatedUserDrafts, isGuestUser } from '../../../store/authStore/authSelectors';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getEditor,
+  getDraftPosts,
   getCurrentDraft,
   getIsEditorSaving,
   getIsEditorLoading,
@@ -40,7 +41,7 @@ const mapStateToProps = (state, props) => {
     campaignType: query.get('type'),
     secondaryItem: query.get('secondaryItem'),
     locale: getSuitableLanguage(state),
-    draftPosts: getAuthenticatedUserDrafts(state),
+    draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),

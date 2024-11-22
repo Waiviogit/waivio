@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { filter, uniqBy, get } from 'lodash';
-import { getAuthenticatedUserDrafts } from '../authStore/authSelectors';
 
 // selector
 export const editorState = state => state.editor;
@@ -31,7 +30,7 @@ export const getEditorDraftBody = createSelector(
 );
 
 export const getCurrentDraft = (state, { draftId }) => {
-  const draftPosts = getAuthenticatedUserDrafts(state);
+  const draftPosts = getDraftPosts(state);
 
   return draftPosts.find(d => d.draftId === draftId);
 };
