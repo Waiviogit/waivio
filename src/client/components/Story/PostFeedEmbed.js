@@ -38,7 +38,11 @@ export default class PostFeedEmbed extends React.Component {
   };
 
   renderWithIframe = embed => {
-    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed, this.props.inPost);
+    const postFeedEmbedClassList = getIframeContainerClass(
+      this.props.embed,
+      this.props.inPost,
+      this.props.isSocial,
+    );
 
     return (
       // eslint-disable-next-line react/no-danger
