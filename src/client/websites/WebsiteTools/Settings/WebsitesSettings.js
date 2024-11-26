@@ -289,6 +289,7 @@ const WebsitesSettings = ({
             <>
               {isEmpty(mapImportState) ? (
                 <SearchObjectsAutocomplete
+                  autoFocus={false}
                   handleSelect={handleSelectImportTag}
                   objectType={'hashtag'}
                   placeholder={'Find a tag'}
@@ -315,7 +316,7 @@ const WebsitesSettings = ({
             </>,
           )}
 
-          <p>A tag will be added to the Nearby import on social site.</p>
+          <p>A tag will be added to the Nearby import on the site.</p>
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
