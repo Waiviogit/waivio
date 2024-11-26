@@ -197,6 +197,7 @@ const CommentForm = props => {
       ? Transforms.select(editor, beforeRange)
       : Transforms.select(editor, Editor.end(editor, []));
     insertObject(editor, url, textReplace, true);
+    props.setImportObject({});
   };
 
   const { username, isSmall, isEdit, isThread } = props;
