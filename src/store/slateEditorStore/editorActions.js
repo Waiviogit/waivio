@@ -123,6 +123,7 @@ export const SET_EDITOR_EXTENDED_STATE = '@editor/SET_EDITOR_EXTENDED_STATE';
 export const SET_EDITOR_SEARCH_VALUE = '@editor/SET_EDITOR_SEARCH_VALUE';
 export const CLEAR_EDITOR_SEARCH_OBJECTS = '@editor/CLEAR_EDITOR_SEARCH_OBJECTS';
 export const SET_EDITOR = '@editor/SET_EDITOR';
+export const SET_IMPORT_OBJECT = '@editor/SET_IMPORT_OBJECT';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
@@ -956,6 +957,7 @@ export const prepareAndImportObjects = (
   isRestaurant,
   isEditor,
   isComment,
+  parentPost,
   setLoading,
   cancelModal,
   history,
@@ -997,7 +999,11 @@ export const prepareAndImportObjects = (
         const objsForEditor = await getObjectInfo([existWobjPermlink]);
         const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
 
-        dispatch(handleObjectSelect(importedObj, false, intl));
+        if (isComment) {
+          dispatch(setImportObject({ [parentPost.id]: importedObj }));
+        } else {
+          dispatch(handleObjectSelect(importedObj, false, intl));
+        }
         importData(
           processedObjects,
           isRestaurant,
@@ -1041,12 +1047,16 @@ export const prepareAndImportObjects = (
                 const importedObj = {
                   ...objData,
                   author_permlink: r.parentPermlink,
+                  id: r.parentPermlink,
                   _id: r.parentPermlink,
                   object_type: type,
                 };
 
-                dispatch(handleObjectSelect(importedObj, false, intl));
-                cancelModal();
+                if (isComment) {
+                  dispatch(setImportObject({ [parentPost.id]: importedObj }));
+                } else {
+                  dispatch(handleObjectSelect(importedObj, false, intl));
+                }
                 importData(
                   processedObjects,
                   isRestaurant,
@@ -1058,6 +1068,7 @@ export const prepareAndImportObjects = (
                   cancelModal,
                   history,
                 );
+                cancelModal();
               }
             }, 6000);
           });
@@ -1076,5 +1087,12 @@ export const prepareAndImportObjects = (
         history,
       );
     }
+  });
+};
+
+export const setImportObject = obj => dispatch => {
+  return dispatch({
+    type: SET_IMPORT_OBJECT,
+    payload: obj,
   });
 };

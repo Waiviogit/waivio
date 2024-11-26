@@ -52,6 +52,7 @@ const MapObjectImportModal = ({
   initialMapSettings,
   isEditor,
   isComment,
+  parentPost,
   intl,
 }) => {
   const settings = useSelector(getSettingsSite);
@@ -126,6 +127,7 @@ const MapObjectImportModal = ({
           isRestaurant,
           isEditor,
           isComment,
+          parentPost,
           setLoading,
           cancelModal,
           history,
@@ -329,6 +331,7 @@ MapObjectImportModal.propTypes = {
   showImportModal: PropTypes.func.isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
   intl: PropTypes.shape(),
+  parentPost: PropTypes.shape(),
   isEditor: PropTypes.bool,
   isComment: PropTypes.bool,
 };
