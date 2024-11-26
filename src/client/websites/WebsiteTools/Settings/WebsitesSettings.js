@@ -68,11 +68,13 @@ const WebsitesSettings = ({
         const objControl = get(res, ['value', 'objectControl']);
         const mapImportTag = get(res, ['value', 'mapImportTag']);
 
-        const importTag = (await getObjectInfo([mapImportTag]))?.wobjects[0];
+        const importTag = !isEmpty(mapImportTag)
+          ? (await getObjectInfo([mapImportTag]))?.wobjects[0]
+          : '';
 
         setBeneficiaryPercent(percent);
         setGoogleGSCState(googleGscTag);
-        if (!isEmpty(mapImportTag)) setMapImportTagState(importTag);
+        setMapImportTagState(importTag);
         setGoogleEventSnippetState(googleEventSnippet);
         setGoogleAdsConfigState(googleAdsConfig);
         setObjectControl(objControl);
@@ -115,7 +117,7 @@ const WebsitesSettings = ({
         const gscTag = values.googleGSCTag || '';
         const googleEventSnippetTag = values.googleEventSnippet || '';
         const googleAdsConfigTag = values.googleAdsConfig || '';
-        const mapImportTag = values.mapImportTag || '';
+        const mapImportTag = isEmpty(values.mapImportTag) ? '' : values.mapImportTag || '';
         const beneficiary = { account, percent };
 
         setButtonLoading(true);
@@ -313,7 +315,7 @@ const WebsitesSettings = ({
             </>,
           )}
 
-          <p>A tag will be added to the Nearby import on social site maps.</p>
+          <p>A tag will be added to the Nearby import on social site.</p>
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
