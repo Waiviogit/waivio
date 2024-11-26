@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import AsyncVideo from '../../vendor/asyncVideo';
 import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
 import { isPostVideo } from './StoryHelper';
+import { sendTiktokPriview } from '../../../waivioApi/ApiClient';
 
 import './PostFeedEmbed.less';
 
@@ -29,7 +30,28 @@ export default class PostFeedEmbed extends React.Component {
     super(props);
     this.state = {
       showIframe: false,
+      thumbnail: '',
     };
+  }
+
+  componentDidMount() {
+    const { embed } = this.props;
+
+    if (embed.url.includes('tiktok.com')) {
+      if (!embed.thumbnail) {
+        fetch(
+          `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embed.url.replace(
+            /\?.*/,
+            '',
+          )}`,
+        )
+          .then(data => data.json())
+          .then(data => {
+            this.setState({ thumbnail: data.thumbnail_url });
+            sendTiktokPriview(embed.url, data.thumbnail_url);
+          });
+      }
+    }
   }
 
   handleThumbClick = e => {
@@ -81,10 +103,10 @@ export default class PostFeedEmbed extends React.Component {
 
     if (
       isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
-      embed.thumbnail &&
+      (embed.thumbnail || this.state.thumbnail) &&
       !embed.url.includes('shorts')
     ) {
-      return this.renderThumbFirst(embed.thumbnail);
+      return this.renderThumbFirst(embed.thumbnail || this.state.thumbnail);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);
     }

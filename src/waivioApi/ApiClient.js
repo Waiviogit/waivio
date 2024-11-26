@@ -3437,7 +3437,6 @@ export const getBlackListInfo = user =>
     .catch(e => e);
 
 export const getObjectsRewards = (requiredObj, userName) => {
-  console.log(userName);
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.object}/${requiredObj}${
       userName ? `?userName=${userName}` : ''
