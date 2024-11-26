@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
-import { debounce } from 'lodash';
-import { Transforms } from 'slate';
+import { debounce, isEmpty } from 'lodash';
+import { Editor, Transforms } from 'slate';
 import { injectIntl } from 'react-intl';
 
 import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
@@ -15,19 +15,28 @@ import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { getSelection, getSelectionRect } from '../EditorExtended/util';
-import { setCursorCoordinates } from '../../../store/slateEditorStore/editorActions';
+import {
+  setCursorCoordinates,
+  setImportObject,
+} from '../../../store/slateEditorStore/editorActions';
 import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
+import { getImportObject } from '../../../store/slateEditorStore/editorSelectors';
 
-@connect(state => ({
-  isAuth: getIsAuthenticated(state),
-  signature: getAuthUserSignature(state),
-}))
+@connect(
+  state => ({
+    isAuth: getIsAuthenticated(state),
+    signature: getAuthUserSignature(state),
+    importObj: getImportObject(state),
+  }),
+  { setImportObject },
+)
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
+    importObj: PropTypes.shape(),
     signature: PropTypes.string,
     isLoading: PropTypes.bool,
     isEdit: PropTypes.bool,
@@ -57,6 +66,20 @@ class QuickCommentEditor extends React.Component {
       isShowEditorSearch: false,
     };
   }
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.importObj &&
+      !isEmpty(this.props.importObj) &&
+      this.props.importObj !== prevProps.importObj
+    ) {
+      const values = Object.entries(this.props.importObj);
+      const [key, obj] = values[0];
+
+      if (key === this.props.parentPost.id) {
+        this.handleObjectSelect(obj);
+      }
+    }
+  }
 
   setEditor = editor => {
     this.editor = editor;
@@ -84,6 +107,7 @@ class QuickCommentEditor extends React.Component {
         this.props.onSubmit(this.props.parentPost, bodyWithSignature).then(() => {
           this.setState({ commentMsg: '', currentImage: [] });
           resetEditorState(this.editor);
+          this.props.setImportObject({});
         });
       }
     }
@@ -140,7 +164,9 @@ class QuickCommentEditor extends React.Component {
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
-    Transforms.select(this.editor, beforeRange);
+    isEmpty(this.props.importObj)
+      ? Transforms.select(this.editor, beforeRange)
+      : Transforms.select(this.editor, Editor.end(this.editor, []));
     insertObject(this.editor, url, textReplace, true);
     this.handleMsgChange(this.editor);
   };
@@ -164,6 +190,7 @@ class QuickCommentEditor extends React.Component {
                 id: 'write_comment',
                 defaultMessage: 'Write your comment...',
               })}
+              parentPost={this.props.parentPost}
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
@@ -194,6 +221,7 @@ class QuickCommentEditor extends React.Component {
 
 QuickCommentEditor.propTypes = {
   setCursorCoordinates: PropTypes.func,
+  setImportObject: PropTypes.func,
   searchObjects: PropTypes.func,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
