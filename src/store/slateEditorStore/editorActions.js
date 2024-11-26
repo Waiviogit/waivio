@@ -567,7 +567,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     isUpdating,
     draftId,
     ...settings,
-    permlink: permlink || kebabCase(titleValue),
+    ...(permlink || titleValue ? { permlink: permlink || kebabCase(titleValue) } : {}),
   };
 
   if (titleValue || title) {
