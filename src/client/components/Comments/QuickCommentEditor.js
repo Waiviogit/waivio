@@ -169,6 +169,7 @@ class QuickCommentEditor extends React.Component {
       : Transforms.select(this.editor, Editor.end(this.editor, []));
     insertObject(this.editor, url, textReplace, true);
     this.handleMsgChange(this.editor);
+    this.props.setImportObject({});
   };
 
   render() {

@@ -1035,6 +1035,7 @@ export const prepareAndImportObjects = (
                 const importedObj = {
                   ...objData,
                   author_permlink: r.parentPermlink,
+                  id: r.parentPermlink,
                   _id: r.parentPermlink,
                   object_type: type,
                 };
@@ -1044,7 +1045,6 @@ export const prepareAndImportObjects = (
                 } else {
                   dispatch(handleObjectSelect(importedObj, false, intl));
                 }
-                cancelModal();
                 importData(
                   processedObjects,
                   isRestaurant,
@@ -1056,6 +1056,7 @@ export const prepareAndImportObjects = (
                   cancelModal,
                   history,
                 );
+                cancelModal();
               }
             }, 6000);
           });
