@@ -115,7 +115,7 @@ export const importData = (
         } else {
           cancelModal();
           message.success('Data import started successfully!');
-          (isComment || !isEditor) && history.push('/data-import');
+          !isEditor && history.push('/data-import');
         }
       })
       .catch(error => {
@@ -137,7 +137,7 @@ export const importData = (
         } else {
           cancelModal();
           message.success('Data import started successfully!');
-          (isComment || !isEditor) && history.push('/data-import');
+          !isEditor && history.push('/data-import');
         }
       })
       .catch(error => {

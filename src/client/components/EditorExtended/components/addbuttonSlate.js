@@ -12,7 +12,7 @@ import { SIDE_BUTTONS_SLATE } from '../model/content';
 import './addbutton.less';
 
 const AddButtonSlate = props => {
-  const { editorNode, isComment, initialPosTop, ADD_BTN_DIF } = props;
+  const { editorNode, isComment, initialPosTop, ADD_BTN_DIF, parentPost } = props;
 
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
@@ -117,6 +117,7 @@ const AddButtonSlate = props => {
                       handleClose={handleClose}
                       editorNode={editorNode}
                       isComment={isComment}
+                      parentPost={parentPost}
                     />
                   </CSSTransition>
                 );
@@ -133,6 +134,7 @@ AddButtonSlate.propTypes = {
   setEditorState: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
+  parentPost: PropTypes.shape(),
   focus: PropTypes.func,
   sideButtons: PropTypes.arrayOf(PropTypes.shape()),
   handleHashtag: PropTypes.func.isRequired,

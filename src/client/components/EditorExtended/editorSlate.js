@@ -80,6 +80,7 @@ const EditorSlate = props => {
     clearEditor,
     ADD_BTN_DIF,
     isNewReview,
+    parentPost,
   } = props;
 
   const params = useParams();
@@ -334,6 +335,7 @@ const EditorSlate = props => {
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
+            parentPost={parentPost}
             editor={editor}
             sideButtons={SIDE_BUTTONS_SLATE}
             handleHashtag={handleHashtag}
@@ -357,6 +359,7 @@ EditorSlate.propTypes = {
   isVimeo: PropTypes.bool,
   body: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
+  parentPost: PropTypes.shape(),
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
