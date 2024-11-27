@@ -565,9 +565,9 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   let secondaryItem = get(currDraft, 'secondaryItem', undefined);
 
   if (campaign) {
-    secondaryItem = campaign?.secondaryObject?.name
-      ? `@${get(campaign, ['secondaryObject', 'name'], undefined)}`
-      : get(campaign, ['secondaryObject', 'author_permlink'], undefined);
+    secondaryItem = campaign?.secondaryObject?.author_permlink
+      ? get(campaign, ['secondaryObject', 'author_permlink'], undefined)
+      : `@${get(campaign, ['secondaryObject', 'name'], undefined)}`;
   }
 
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
