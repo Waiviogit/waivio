@@ -8,6 +8,7 @@ import { changeRepostingBotHost } from '../../../waivioApi/importApi';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import '../DataImport/ImportModal/ImportModal.less';
+import { DEFAULT_REPOSTING_HOST } from './RepostingBot';
 
 const RepostingBotModal = ({
   visible,
@@ -20,10 +21,12 @@ const RepostingBotModal = ({
 }) => {
   const authName = useSelector(getAuthenticatedUserName);
   const [loading, setLoading] = useState(false);
+  const [currHost, setCurrHost] = useState(host);
 
   const handleSubmit = () => {
     setLoading(true);
-    changeRepostingBotHost(authName, host).then(() => {
+    setHost(isEmpty(currHost) ? DEFAULT_REPOSTING_HOST : currHost);
+    changeRepostingBotHost(authName, currHost).then(() => {
       onClose();
       setLoading(false);
       updateRepostingList();
@@ -38,7 +41,6 @@ const RepostingBotModal = ({
       onCancel={toggleModal}
       onOk={handleSubmit}
       okButtonProps={{
-        disabled: isEmpty(host),
         loading,
       }}
       okText={intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
@@ -46,8 +48,8 @@ const RepostingBotModal = ({
       <div>
         <h4>{intl.formatMessage({ id: 'site', defaultMessage: 'Site' })}:</h4>
         <Input
-          onChange={e => setHost(e.target.value)}
-          value={host}
+          onChange={e => setCurrHost(e.target.value)}
+          value={currHost}
           placeholder={'Enter a site (e.g., example.com)'}
         />
       </div>
