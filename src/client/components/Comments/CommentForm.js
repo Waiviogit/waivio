@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import { debounce, get, trimEnd } from 'lodash';
+import { debounce, get, isEmpty, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Transforms } from 'slate';
+import { Editor, Transforms } from 'slate';
 import { Button, Modal } from 'antd';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import Scroll from 'react-scroll';
 import {
   getAuthenticatedUserName,
@@ -17,8 +17,11 @@ import Avatar from '../Avatar';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
-import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
-import { setCursorCoordinates } from '../../../store/slateEditorStore/editorActions';
+import { getEditorSlate, getImportObject } from '../../../store/slateEditorStore/editorSelectors';
+import {
+  setCursorCoordinates,
+  setImportObject,
+} from '../../../store/slateEditorStore/editorActions';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import objectTypes from '../../object/const/objectTypes';
@@ -39,6 +42,7 @@ const CommentForm = props => {
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
+  const importObj = useSelector(getImportObject);
   const parent = props.isEdit ? props.currentComment : props.parentPost;
   const getPermlink = () => {
     if (props.isReply) return `${parent?.permlink}-reply`;
@@ -95,6 +99,17 @@ const CommentForm = props => {
       setBodyAndRender(props.inputValue);
     }
   }, [props.isLoading, props.inputValue, props.submitted]);
+
+  useEffect(() => {
+    if (!isEmpty(importObj)) {
+      const values = Object.entries(importObj);
+      const [key, obj] = values[0];
+
+      if (key === props.parentPost.id) {
+        handleObjectSelect(obj);
+      }
+    }
+  }, [importObj]);
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
@@ -163,6 +178,7 @@ const CommentForm = props => {
           setBody('');
           setHTML('');
           resetEditorState(editor);
+          props.setImportObject({});
         }
         setLoading(false);
       });
@@ -177,8 +193,11 @@ const CommentForm = props => {
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
-    Transforms.select(editor, beforeRange);
+    isEmpty(importObj)
+      ? Transforms.select(editor, beforeRange)
+      : Transforms.select(editor, Editor.end(editor, []));
     insertObject(editor, url, textReplace, true);
+    props.setImportObject({});
   };
 
   const { username, isSmall, isEdit, isThread } = props;
@@ -211,6 +230,7 @@ const CommentForm = props => {
           <div className="CommentForm__editor">
             {init && (
               <EditorSlate
+                parentPost={props.parentPost}
                 onChange={handleBodyUpdate}
                 handleObjectSelect={handleObjectSelect}
                 isCommentEdit={props.isEdit}
@@ -247,7 +267,6 @@ const CommentForm = props => {
 };
 
 CommentForm.propTypes = {
-  parentPost: PropTypes.shape().isRequired,
   currentComment: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
   // top: PropTypes.bool,
@@ -257,7 +276,9 @@ CommentForm.propTypes = {
   submitted: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
+  setImportObject: PropTypes.func,
   editor: PropTypes.shape(),
+  parentPost: PropTypes.shape(),
   signature: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
@@ -288,6 +309,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
+  setImportObject: data => dispatch(setImportObject(data)),
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 

@@ -6,6 +6,7 @@ export const editorState = state => state.editor;
 
 // reselect function
 export const getDraftPosts = createSelector([editorState], state => state.draftPosts);
+export const getImportObject = createSelector([editorState], state => state.importObject);
 
 export const getIsEditorLoading = createSelector([editorState], state => state.loading);
 

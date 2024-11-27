@@ -12,6 +12,7 @@ const defaultState = {
   draftPosts: [],
   pendingDrafts: [],
   editedPosts: [],
+  importObject: {},
   loadingImg: false,
   editor: [],
   editorSlate: {},
@@ -30,6 +31,11 @@ const defaultState = {
 
 const editor = (state = defaultState, action) => {
   switch (action.type) {
+    case editorActions.SET_IMPORT_OBJECT:
+      return {
+        ...state,
+        importObject: action.payload,
+      };
     case editorActions.ADD_EDITED_POST:
       return {
         ...state,

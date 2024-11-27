@@ -123,6 +123,7 @@ export const SET_EDITOR_EXTENDED_STATE = '@editor/SET_EDITOR_EXTENDED_STATE';
 export const SET_EDITOR_SEARCH_VALUE = '@editor/SET_EDITOR_SEARCH_VALUE';
 export const CLEAR_EDITOR_SEARCH_OBJECTS = '@editor/CLEAR_EDITOR_SEARCH_OBJECTS';
 export const SET_EDITOR = '@editor/SET_EDITOR';
+export const SET_IMPORT_OBJECT = '@editor/SET_IMPORT_OBJECT';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
@@ -559,14 +560,26 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   }
   dispatch(setUpdatedEditorData(updatedEditor));
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
+  const campaignType =
+    get(campaign, 'type', undefined) || get(currDraft, 'campaignType', undefined);
+  let secondaryItem = get(currDraft, 'secondaryItem', undefined);
+
+  if (campaign) {
+    secondaryItem = campaign?.secondaryObject?.author_permlink
+      ? get(campaign, ['secondaryObject', 'author_permlink'], undefined)
+      : `@${get(campaign, ['secondaryObject', 'name'], undefined)}`;
+  }
+
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
     body: body || content || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,
+    campaignType,
+    secondaryItem,
     ...settings,
-    permlink: permlink || kebabCase(titleValue),
+    ...(permlink || titleValue ? { permlink: permlink || kebabCase(titleValue) } : {}),
   };
 
   if (titleValue || title) {
@@ -944,6 +957,7 @@ export const prepareAndImportObjects = (
   isRestaurant,
   isEditor,
   isComment,
+  parentPost,
   setLoading,
   cancelModal,
   history,
@@ -985,7 +999,11 @@ export const prepareAndImportObjects = (
         const objsForEditor = await getObjectInfo([existWobjPermlink]);
         const importedObj = { ...objsForEditor?.wobjects[0], object_type: type };
 
-        dispatch(handleObjectSelect(importedObj, false, intl));
+        if (isComment) {
+          dispatch(setImportObject({ [parentPost.id]: importedObj }));
+        } else {
+          dispatch(handleObjectSelect(importedObj, false, intl));
+        }
         importData(
           processedObjects,
           isRestaurant,
@@ -1029,12 +1047,16 @@ export const prepareAndImportObjects = (
                 const importedObj = {
                   ...objData,
                   author_permlink: r.parentPermlink,
+                  id: r.parentPermlink,
                   _id: r.parentPermlink,
                   object_type: type,
                 };
 
-                dispatch(handleObjectSelect(importedObj, false, intl));
-                cancelModal();
+                if (isComment) {
+                  dispatch(setImportObject({ [parentPost.id]: importedObj }));
+                } else {
+                  dispatch(handleObjectSelect(importedObj, false, intl));
+                }
                 importData(
                   processedObjects,
                   isRestaurant,
@@ -1046,6 +1068,7 @@ export const prepareAndImportObjects = (
                   cancelModal,
                   history,
                 );
+                cancelModal();
               }
             }, 6000);
           });
@@ -1064,5 +1087,12 @@ export const prepareAndImportObjects = (
         history,
       );
     }
+  });
+};
+
+export const setImportObject = obj => dispatch => {
+  return dispatch({
+    type: SET_IMPORT_OBJECT,
+    payload: obj,
   });
 };

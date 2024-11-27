@@ -7,9 +7,8 @@ import PropTypes from 'prop-types';
 import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import { getMessageBotRc } from '../../../waivioApi/importApi';
 
-const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
+const VoteInfoBlock = ({ intl, info, isRcBot }) => {
   const [usersState, setUsersState] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
   const isGuest = useSelector(isGuestUser);
@@ -19,17 +18,6 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
       const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
 
       setUsersState({ guestMana: guestUserMana.result });
-    } else if (isMessageBot) {
-      const rc = await getMessageBotRc(authUserName);
-      const resourceCredits = rc.minRc * 0.01 || 0;
-      const [acc] = await dHive.database.getAccounts([authUserName]);
-      const hiveRc = await dHive.rc.getRCMana(authUserName, acc);
-      const hiveResourceCredits = hiveRc.percentage * 0.01 || 0;
-
-      setUsersState({
-        resourceCredits,
-        hiveResourceCredits,
-      });
     } else {
       const [acc] = await dHive.database.getAccounts([authUserName]);
       const rc = await dHive.rc.getRCMana(authUserName, acc);
@@ -72,7 +60,7 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
             })}
             :
           </b>{' '}
-          {!isMessageBot && (
+          {!isRcBot && (
             <div>
               {intl.formatMessage({
                 id: 'waiv_upvoting_mana',
@@ -83,10 +71,7 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
           )}
           <div>
             {intl.formatMessage({ id: 'resource_credits', defaultMessage: 'Resource credits' })}:{' '}
-            {isMessageBot
-              ? round(usersState.hiveResourceCredits, 2)
-              : round(usersState.resourceCredits, 2)}
-            %
+            {round(usersState.resourceCredits, 2)}%
           </div>
         </p>
       )}
@@ -100,7 +85,7 @@ const VoteInfoBlock = ({ intl, info, isMessageBot }) => {
 VoteInfoBlock.propTypes = {
   intl: PropTypes.shape(),
   info: PropTypes.string,
-  isMessageBot: PropTypes.bool,
+  isRcBot: PropTypes.bool,
 };
 
 export default injectIntl(VoteInfoBlock);

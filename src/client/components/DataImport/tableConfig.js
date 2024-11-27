@@ -143,6 +143,63 @@ export const configMessageBotTable = [
     name: 'stop',
   },
 ];
+export const configRepostingBotTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'postsTotal',
+    intl: {
+      id: 'number_of_posts',
+      defaultMessage: 'Number of posts',
+    },
+  },
+  {
+    id: 'postsProcessed',
+    intl: {
+      id: 'published_posts',
+      defaultMessage: 'Published posts',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.posts.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/@${link}`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
+  },
+];
 export const configHistoryTable = [
   {
     id: 'createdAt',
@@ -262,6 +319,59 @@ export const configMessageBotHistoryTable = [
     intl: {
       id: 'updated_users',
       defaultMessage: 'Updated users',
+    },
+  },
+];
+export const configRepostingBotHistoryTable = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'finishedAt',
+    intl: {
+      id: 'finish_date',
+      defaultMessage: 'Finish date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'postsProcessed',
+    intl: {
+      id: 'posts',
+      defaultMessage: 'Posts',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.posts.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/@${link}`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'postsTotal',
+    intl: {
+      id: 'number_of_posts',
+      defaultMessage: 'Number of posts',
+    },
+  },
+  {
+    id: 'postsProcessed',
+    intl: {
+      id: 'published_posts',
+      defaultMessage: 'Published posts',
     },
   },
 ];

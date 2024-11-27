@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, Checkbox, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import languages from '../../../../common/translations/languages';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -26,6 +27,10 @@ import {
   showGoogleGSCTagError,
   showGoogleAdsConfigError,
 } from '../../helper';
+import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectAvatar from '../../../components/ObjectAvatar';
+import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
+import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 const WebsitesSettings = ({
   intl,
@@ -39,6 +44,7 @@ const WebsitesSettings = ({
 }) => {
   const { getFieldDecorator } = form;
   const [beneficiaryAccount, setBeneficiaryAccount] = useState('');
+  const [mapImportState, setMapImportTagState] = useState({});
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
@@ -52,7 +58,7 @@ const WebsitesSettings = ({
   useEffect(() => {
     setSettingsLoading(true);
     getWebSettings(host)
-      .then(res => {
+      .then(async res => {
         const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
         const account = get(res, ['value', 'beneficiary', 'account']);
         const googleGscTag = get(res, ['value', 'googleGSCTag']);
@@ -60,9 +66,15 @@ const WebsitesSettings = ({
         const googleAdsConfig = get(res, ['value', 'googleAdsConfig']);
         const referral = get(res, ['value', 'referralCommissionAcc']);
         const objControl = get(res, ['value', 'objectControl']);
+        const mapImportTag = get(res, ['value', 'mapImportTag']);
+
+        const importTag = !isEmpty(mapImportTag)
+          ? (await getObjectInfo([mapImportTag]))?.wobjects[0]
+          : '';
 
         setBeneficiaryPercent(percent);
         setGoogleGSCState(googleGscTag);
+        setMapImportTagState(importTag);
         setGoogleEventSnippetState(googleEventSnippet);
         setGoogleAdsConfigState(googleAdsConfig);
         setObjectControl(objControl);
@@ -78,6 +90,10 @@ const WebsitesSettings = ({
   const handleChangeAndCheckField = (e, field, setFunction) => {
     form.setFieldsValue({ [field]: e.currentTarget.value });
     setFunction(e.currentTarget.value);
+  };
+  const handleSelectImportTag = tag => {
+    form.setFieldsValue({ mapImportTag: tag.author_permlink });
+    setMapImportTagState(tag);
   };
 
   const resetBeneficiaryUser = () => {
@@ -101,6 +117,7 @@ const WebsitesSettings = ({
         const gscTag = values.googleGSCTag || '';
         const googleEventSnippetTag = values.googleEventSnippet || '';
         const googleAdsConfigTag = values.googleAdsConfig || '';
+        const mapImportTag = isEmpty(values.mapImportTag) ? '' : values.mapImportTag || '';
         const beneficiary = { account, percent };
 
         setButtonLoading(true);
@@ -110,6 +127,7 @@ const WebsitesSettings = ({
           gscTag,
           googleEventSnippetTag,
           googleAdsConfigTag,
+          mapImportTag,
           beneficiary,
           values.currency,
           values.language,
@@ -258,6 +276,48 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'google_event_snippet_description_info' })}</p>
         </Form.Item>
+        <Form.Item>
+          <h3>
+            {intl.formatMessage({
+              id: 'map_import_default_tag',
+              defaultMessage: 'Map Import Default Tag:',
+            })}
+          </h3>
+          {getFieldDecorator('mapImportTag', {
+            initialValue: mapImportState,
+          })(
+            <>
+              {isEmpty(mapImportState) ? (
+                <SearchObjectsAutocomplete
+                  autoFocus={false}
+                  handleSelect={handleSelectImportTag}
+                  objectType={'hashtag'}
+                  placeholder={'Find a tag'}
+                />
+              ) : (
+                <div>
+                  <div className="BaseObjSettings__searchCard">
+                    <Link
+                      to={getObjectUrlForLink(mapImportState)}
+                      className="BaseObjSettings__content"
+                    >
+                      <ObjectAvatar item={mapImportState} size={40} />
+                      <span className="BaseObjSettings__name">{getObjectName(mapImportState)}</span>
+                    </Link>
+
+                    <span
+                      role="presentation"
+                      onClick={() => setMapImportTagState({})}
+                      className="iconfont icon-delete"
+                    />
+                  </div>
+                </div>
+              )}
+            </>,
+          )}
+
+          <p>A tag will be added to the Nearby import on the site.</p>
+        </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
         <div className="WebsitesSettings__benefic-block">
@@ -276,6 +336,7 @@ const WebsitesSettings = ({
               />
             )}
           </Form.Item>
+
           <Form.Item>
             <h3>{intl.formatMessage({ id: 'beneficiary_percent' })}</h3>
             {getFieldDecorator('beneficiaryPercent', {

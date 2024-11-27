@@ -142,6 +142,7 @@ export default {
       'new-accounts',
       'data-import',
       'message-bot',
+      'reposting-bot',
       'ASIN-scanner',
       'chrome-extension',
       'claim-authority',

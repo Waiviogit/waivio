@@ -94,6 +94,11 @@ export const dataManagementSettings = {
       forUser: true,
     },
     {
+      to: '/reposting-bot',
+      id: 'reposting_bot',
+      defaultMessage: 'Reposting bot',
+    },
+    {
       to: '/tags-bot',
       id: 'tag_bot',
       defaultMessage: 'Tags bot',

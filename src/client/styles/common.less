@@ -458,4 +458,19 @@ a {
   color: var(--website-color) !important;
 }
 
+.main-color-button {
+  outline: none;
+  background: transparent;
+  border: none;
+  color: var(--website-color);
+  &:hover {
+    cursor: pointer;
+    color: var(--website-hover-color);
+  }
+  &:disabled {
+    color: @silver;
+    cursor: initial;
+  }
+}
+
 @import 'common-nightmode';

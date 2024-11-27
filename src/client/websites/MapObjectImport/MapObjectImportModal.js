@@ -16,6 +16,7 @@ import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import './MapObjectImport.less';
 import {
+  getObjectInfo,
   getObjectsForMapImportObjects,
   getObjectsForMapImportText,
 } from '../../../waivioApi/ApiClient';
@@ -30,6 +31,7 @@ import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
 import { prepareAndImportObjects } from '../../../store/slateEditorStore/editorActions';
 import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
+import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 
 const stepsConfig = [
   {
@@ -50,8 +52,10 @@ const MapObjectImportModal = ({
   initialMapSettings,
   isEditor,
   isComment,
+  parentPost,
   intl,
 }) => {
+  const settings = useSelector(getSettingsSite);
   const [loading, setLoading] = useState(false);
   const [objects, setObjects] = useState([]);
   const [tagsList, setTagsList] = useState([]);
@@ -123,6 +127,7 @@ const MapObjectImportModal = ({
           isRestaurant,
           isEditor,
           isComment,
+          parentPost,
           setLoading,
           cancelModal,
           history,
@@ -196,6 +201,13 @@ const MapObjectImportModal = ({
       dispatch(getObjectTypes());
     }
   }, []);
+  useEffect(() => {
+    if (!isEmpty(settings?.mapImportTag)) {
+      getObjectInfo([settings?.mapImportTag]).then(r => {
+        setTagsList([r?.wobjects[0]]);
+      });
+    }
+  }, [settings?.mapImportTag]);
 
   useEffect(() => {
     if (markerCoordinates) {
@@ -319,6 +331,7 @@ MapObjectImportModal.propTypes = {
   showImportModal: PropTypes.func.isRequired,
   initialMapSettings: PropTypes.shape().isRequired,
   intl: PropTypes.shape(),
+  parentPost: PropTypes.shape(),
   isEditor: PropTypes.bool,
   isComment: PropTypes.bool,
 };
