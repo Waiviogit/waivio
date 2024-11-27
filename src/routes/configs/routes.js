@@ -268,6 +268,11 @@ const routes = {
           component: Views.MessageBot,
         },
         {
+          path: '/reposting-bot',
+          exact: true,
+          component: Views.RepostingBot,
+        },
+        {
           path: '/chrome-extension',
           exact: true,
           component: Views.ProductExtension,

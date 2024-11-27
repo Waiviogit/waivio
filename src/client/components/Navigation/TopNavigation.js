@@ -41,6 +41,7 @@ const LINKS = {
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
   MESSAGE_BOT: '/message-bot',
+  REPOSTING_BOT: '/reposting-bot',
   LIST_DUPLICATOR: '/list-duplication',
   CLAIM_AUTHORITY_BOT: '/claim-authority',
   DEPARTMENTS_BOT: '/departments-bot',

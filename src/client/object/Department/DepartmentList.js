@@ -41,7 +41,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts, isEditMode, isRec
         </React.Fragment>
       ))}
       {hasMore && (
-        <button onClick={onShowMoreClick} className="WalletTable__csv-button">
+        <button onClick={onShowMoreClick} className="main-color-button">
           {isSocialGifts ? (
             <span className="ml2">
               <FormattedMessage id="show_all" defaultMessage="Show all" />

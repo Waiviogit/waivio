@@ -915,6 +915,33 @@ export const createMessage = async (
       return response;
     });
 };
+export const createReposting = async (user, host, dailyLimit, posts) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      host,
+      dailyLimit,
+      posts,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+};
 
 export const getDescriptionsList = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -946,6 +973,28 @@ export const getMessagesList = async (userName, skip, limit) => {
 
   return fetch(
     `${config.importApiPrefix}${config.threads}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getRepostingList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.postImport}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers: {
         ...headers,
@@ -1007,6 +1056,29 @@ export const changeMessages = async (user, status, importId) => {
     .then(response => response)
     .catch(e => e);
 };
+export const changeReposting = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const deleteDescriptions = async (user, importId) => {
   let token = getGuestAccessToken();
@@ -1037,6 +1109,28 @@ export const deleteMessage = async (user, importId) => {
   if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.importApiPrefix}${config.threads}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const deleteReposting = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
@@ -1083,6 +1177,28 @@ export const getHistoryMessageBot = async (userName, skip, limit) => {
 
   return fetch(
     `${config.importApiPrefix}${config.threads}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getHistoryRepostingBot = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.postImport}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers: {
         ...headers,
@@ -1209,6 +1325,23 @@ export const getMessageBotRc = async userName => {
     .then(response => response)
     .catch(e => e);
 };
+export const getRepostingBotRc = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}${config.rc}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const changeMessageBotRc = async (user, minRc) => {
   let token = getGuestAccessToken();
@@ -1226,6 +1359,69 @@ export const changeMessageBotRc = async (user, minRc) => {
     body: JSON.stringify({
       user,
       minRc,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const changeRepostingBotRc = async (user, minRc) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}${config.rc}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minRc,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getRepostingBotHost = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}${config.host}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const changeRepostingBotHost = async (user, host) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.postImport}${config.host}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      host,
     }),
   })
     .then(res => res.json())
