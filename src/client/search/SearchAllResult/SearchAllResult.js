@@ -259,7 +259,7 @@ const SearchAllResult = props => {
             {props.isSocial && showInfo && (
               <Icon
                 type="info-circle"
-                className="WalletTable__csv-button info-button"
+                className="main-color-button info-button"
                 onClick={() => setInfoVisible(true)}
               />
             )}

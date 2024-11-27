@@ -253,5 +253,7 @@
   "validate": "/validate",
   "threads": "/threads",
   "rc": "/rc",
-  "idType": "/id-type"
+  "idType": "/id-type",
+  "postImport": "/post-import",
+  "host": "/host"
 }

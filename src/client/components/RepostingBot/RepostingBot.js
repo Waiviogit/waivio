@@ -1,43 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import { configMessageBotHistoryTable, configMessageBotTable } from '../DataImport/tableConfig';
+import { configRepostingBotHistoryTable, configRepostingBotTable } from '../DataImport/tableConfig';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import {
-  changeMessageBotRc,
-  changeMessages,
-  deleteMessage,
-  getHistoryMessageBot,
-  getMessageBotRc,
-  getMessagesList,
+  changeReposting,
+  changeRepostingBotRc,
+  deleteReposting,
+  getHistoryRepostingBot,
+  getRepostingBotHost,
+  getRepostingBotRc,
+  getRepostingList,
 } from '../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
-import MessageBotImportModal from './MessageBotImportModal';
+import RepostingBotImportModal from './RepostingBotImportModal';
 import '../DataImport/DataImport.less';
-import './MessageBot.less';
+import './RepostingBot.less';
 
 const limit = 30;
 
-const MessageBot = ({ intl }) => {
+export const DEFAULT_REPOSTING_HOST = 'www.waivio.com';
+
+const RepostingBot = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [votingValue, setVotingValue] = useState(100);
-  const [messages, setMessages] = useState([]);
-  const [hasMoreImports, setHasMoreImports] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [hasMorePosts, setHasMorePosts] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistory] = useState([]);
+  const [host, setHost] = useState('');
+
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -48,42 +54,46 @@ const MessageBot = ({ intl }) => {
     }
   };
 
-  const updateMessagesList = () =>
-    getMessagesList(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, messages, false, setMessages, setHasMoreImports);
+  const updateRepostingList = () =>
+    getRepostingList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, posts, false, setPosts, setHasMorePosts);
     });
 
-  const updateImportDate = () => {
-    getMessagesList(authUserName, 0, limit + 1).then(res => {
-      getHistoryMessageBot(authUserName, 0, limit + 1).then(his => {
+  const updateRepostingDate = () => {
+    getRepostingList(authUserName, 0, limit + 1).then(res => {
+      getHistoryRepostingBot(authUserName, 0, limit + 1).then(his => {
         setListAndSetHasMore(his, history, false, setHistory, setHasMoreHistory);
       });
-      setListAndSetHasMore(res, messages, false, setMessages, setHasMoreImports);
+      setListAndSetHasMore(res, posts, false, setPosts, setHasMorePosts);
     });
   };
 
-  const loadMoreImportDate = () =>
-    getMessagesList(authUserName, messages.length, limit + 1).then(res => {
-      setListAndSetHasMore(res, messages, true, setMessages, setHasMoreImports);
+  const loadMoreRepostingDate = () =>
+    getRepostingList(authUserName, posts.length, limit + 1).then(res => {
+      setListAndSetHasMore(res, posts, true, setPosts, setHasMorePosts);
     });
   const loadMoreHistoryDate = () =>
-    getHistoryMessageBot(authUserName, history.length, limit + 1).then(his => {
+    getHistoryRepostingBot(authUserName, history.length, limit + 1).then(his => {
       setListAndSetHasMore(his, history, true, setHistory, setHasMoreHistory);
     });
 
   useEffect(() => {
-    getMessageBotRc(authUserName).then(res => {
+    getRepostingBotRc(authUserName).then(res => {
       setVotingValue(res.minRc / 100);
     });
 
-    getMessagesList(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, messages, false, setMessages, setHasMoreImports);
+    getRepostingBotHost(authUserName).then(res =>
+      setHost(isEmpty(res.host) ? DEFAULT_REPOSTING_HOST : res.host),
+    );
+
+    getRepostingList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, posts, false, setPosts, setHasMorePosts());
     });
-    getHistoryMessageBot(authUserName, 0, limit + 1).then(his => {
+    getHistoryRepostingBot(authUserName, 0, limit + 1).then(his => {
       setListAndSetHasMore(his, history, false, setHistory, setHasMoreHistory);
     });
 
-    dispatch(getImportUpdate(updateImportDate));
+    dispatch(getImportUpdate(updateRepostingDate));
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -93,7 +103,7 @@ const MessageBot = ({ intl }) => {
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
   const handleSetMinVotingPower = voting => {
-    changeMessageBotRc(authUserName, voting * 100);
+    changeRepostingBotRc(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
   };
@@ -103,9 +113,9 @@ const MessageBot = ({ intl }) => {
       ? 'onHold'
       : 'active';
 
-    changeMessages(authUserName, status, item.importId).then(() => {
-      getMessagesList(authUserName, 0, messages.length).then(res => {
-        setMessages(res);
+    changeReposting(authUserName, status, item.importId).then(() => {
+      getRepostingList(authUserName, 0, posts.length).then(res => {
+        setPosts(res);
       });
     });
   };
@@ -113,18 +123,18 @@ const MessageBot = ({ intl }) => {
   const handleDeleteObject = item => {
     Modal.confirm({
       title: intl.formatMessage({
-        id: 'stop_message_bot',
-        defaultMessage: 'Stop writing messages',
+        id: 'stop_reposting_bot',
+        defaultMessage: 'Stop posts publishing',
       }),
       content: intl.formatMessage({
         id: 'stop_json_message_bot',
         defaultMessage:
-          'Once stopped, message writing cannot be resumed. To temporarily suspend/resume message writing, please consider using the Active checkbox.',
+          'Once stopped, posts publishing cannot be resumed. To temporarily suspend/resume posts publishing, please consider using the Active checkbox.',
       }),
       onOk: () => {
-        deleteMessage(authUserName, item.importId).then(() => {
-          getMessagesList(authUserName, 0, messages.length).then(res => {
-            setMessages(res);
+        deleteReposting(authUserName, item.importId).then(() => {
+          getRepostingList(authUserName, 0, posts.length).then(res => {
+            setPosts(res);
           });
         });
       },
@@ -134,30 +144,30 @@ const MessageBot = ({ intl }) => {
   };
 
   return (
-    <div className="MessageBot">
+    <div className="ReposingBot">
       <MatchBotsTitle
         botType={MATCH_BOTS_TYPES.IMPORT}
         botTitle={intl.formatMessage({
-          id: 'message_bot',
-          defaultMessage: 'Message bot',
+          id: 'reposting_bot',
+          defaultMessage: 'Reposting bot',
         })}
       />
       <p>
         {intl.formatMessage({
-          id: 'message_bot_description1',
+          id: 'reposting_bot_description1',
           defaultMessage:
-            'This bot is designed to send messages in the form of threads to a specified group of users. This functionality ensures that your messages are effectively delivered to the right audience, enhancing engagement and relevance.',
+            'This bot is designed to publish posts from various platforms to Waivio. By automating the reposting process, it ensures consistent content sharing, wider reach, and streamlined cross-platform engagement.',
         })}
       </p>
 
       <p>
         {intl.formatMessage({
-          id: 'message_bot_description3',
+          id: 'reposting_bot_description2',
           defaultMessage:
-            'If the Resource credits on the account are insufficient to write a comment, the message bot will gradually recover and publish at a slower pace.',
+            'If the Resource credits on the account are insufficient to write a post, the reposting bot will gradually recover and publish at a slower pace.',
         })}
       </p>
-      <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'message_bot'} onlyAuth />
+      <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'reposting_bot'} onlyAuth />
       <p>
         {intl.formatMessage({
           id: isGuest ? 'guest_mana_threshold' : 'resource_credits_threshold',
@@ -170,26 +180,36 @@ const MessageBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'message_bot_pause',
-          defaultMessage: `The Message bot will pause if RC on the account drops below the set threshold.`,
+          id: 'reposting_bot_pause',
+          defaultMessage: `The Reposting bot will pause if RC on the account drops below the set threshold.`,
         })}
+      </p>
+      <p>
+        <div>
+          <b>Publishing domain:</b> {host} (
+          <span className={'main-color-button'} onClick={toggleModal}>
+            change
+          </span>
+          )
+        </div>
+        <div>
+          This domain will be associated with all published posts, serving as their canonical site.
+        </div>
       </p>
       <VoteInfoBlock
         isRcBot
         info={intl.formatMessage({
-          id: 'message_bot_service',
-          defaultMessage: 'The Message bot service is provided on as-is / as-available basis.',
+          id: 'reposting_bot_service',
+          defaultMessage: 'The Reposting bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />
-      <Button type="primary" onClick={toggleModal}>
-        {intl.formatMessage({ id: 'add_message', defaultMessage: 'Add message' })}
-      </Button>
+
       <DynamicTbl
-        handleShowMore={loadMoreImportDate}
-        showMore={hasMoreImports}
-        header={configMessageBotTable}
-        bodyConfig={messages}
+        handleShowMore={loadMoreRepostingDate}
+        showMore={hasMorePosts}
+        header={configRepostingBotTable}
+        bodyConfig={posts}
         onChange={handleChangeStatus}
         deleteItem={handleDeleteObject}
       />
@@ -197,15 +217,17 @@ const MessageBot = ({ intl }) => {
       <DynamicTbl
         handleShowMore={loadMoreHistoryDate}
         showMore={hasMoreHistory}
-        header={configMessageBotHistoryTable}
+        header={configRepostingBotHistoryTable}
         bodyConfig={history}
       />
       {visible && (
-        <MessageBotImportModal
+        <RepostingBotImportModal
+          host={host}
+          setHost={setHost}
           visible={visible}
           toggleModal={toggleModal}
           onClose={() => setVisible(false)}
-          updateMessagesList={updateMessagesList}
+          updateRepostingList={updateRepostingList}
         />
       )}
       {visibleVoting && (
@@ -220,8 +242,8 @@ const MessageBot = ({ intl }) => {
   );
 };
 
-MessageBot.propTypes = {
+RepostingBot.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(MessageBot);
+export default injectIntl(RepostingBot);

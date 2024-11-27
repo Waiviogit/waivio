@@ -179,7 +179,7 @@ const BaseObjSettings = ({
       {selectedObj?.account && !edit && (
         <button
           onClick={() => setShowDetails(true)}
-          className="WalletTable__csv-button BaseObjSettings__details"
+          className="main-color-button BaseObjSettings__details"
         >
           {intl.formatMessage({
             id: 'details',

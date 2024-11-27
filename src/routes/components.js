@@ -159,6 +159,7 @@ export default {
   MatchBotsSponsors: loableComponent(import('../client/rewards/MatchBotSponsors')),
   DataImport: loableComponent(import('../client/components/DataImport/DataImport')),
   MessageBot: loableComponent(import('../client/components/MessageBot/MessageBot')),
+  RepostingBot: loableComponent(import('../client/components/RepostingBot/RepostingBot')),
   DuplicateList: loableComponent(
     import('../client/components/DataImport/DuplicateList/DuplicateList'),
   ),
