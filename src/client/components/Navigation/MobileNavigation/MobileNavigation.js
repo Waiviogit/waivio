@@ -152,6 +152,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'message_bot';
       break;
+    case '/reposting-bot':
+      pageName = 'tools';
+      filterName = 'reposting_bot';
+      break;
     case '/departments-bot':
       pageName = 'tools';
       filterName = 'departments_bot';

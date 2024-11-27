@@ -37,7 +37,7 @@ const ListDescription = ({ wobject, isMap }) => {
                   {!isEmpty(secondDescrPart) && !showMore && (
                     <button
                       onClick={() => setShowMore(!showMore)}
-                      className="WalletTable__csv-button ml2"
+                      className="main-color-button ml2"
                     >
                       <FormattedMessage id="show_more" defaultMessage="Show more" />
                     </button>

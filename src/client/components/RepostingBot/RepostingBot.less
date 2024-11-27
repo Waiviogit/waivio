@@ -1,0 +1,75 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.ReposingBot {
+  .NewsFiltersRule__line-card {
+    padding: 10px;
+    font-weight: 600;
+    color: #000000a6;
+    .anticon {
+      font-size: 16px !important;
+    }
+  }
+
+  &__resulItem {
+    border: @base-border;
+    background: @white;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  h4 {
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+  p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-top: 5px;
+  }
+  &__info-text {
+    margin-bottom: 20px;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  .NewsFiltersRule__line-close {
+    //position: absolute;
+    //top: -5px;
+    //right: 5px;
+  }
+
+  hr {
+    margin: 15px 0;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    .ant-switch {
+      background: #d9534f;
+    }
+
+    .ant-switch.ant-switch-checked {
+      background: #30b580;
+    }
+  }
+
+  .DynamicTable {
+    margin: 15px 0;
+  }
+}
+
+.DynamicTable__modal .ant-modal-body {
+  padding: 24px 35px;
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  li::marker {
+    color: @blue-botticelli;
+  }
+}

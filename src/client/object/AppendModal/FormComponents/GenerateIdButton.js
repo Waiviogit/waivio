@@ -9,7 +9,7 @@ const GenerateIdButton = ({ field, setFieldsValue }) => {
   };
 
   return (
-    <span className={'WalletTable__csv-button'} onClick={generateId}>
+    <span className={'main-color-button'} onClick={generateId}>
       Need an ID?
     </span>
   );
