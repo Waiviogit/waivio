@@ -3,6 +3,7 @@ import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
@@ -14,9 +15,8 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 import {
   changeReposting,
   changeRepostingBotRc,
-  deleteMessage,
+  deleteReposting,
   getHistoryRepostingBot,
-  getMessagesList,
   getRepostingBotHost,
   getRepostingBotRc,
   getRepostingList,
@@ -28,6 +28,8 @@ import '../DataImport/DataImport.less';
 import './RepostingBot.less';
 
 const limit = 30;
+
+export const DEFAULT_REPOSTING_HOST = 'www.waivio.com';
 
 const RepostingBot = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -80,7 +82,9 @@ const RepostingBot = ({ intl }) => {
       setVotingValue(res.minRc / 100);
     });
 
-    getRepostingBotHost(authUserName).then(res => setHost(res.host));
+    getRepostingBotHost(authUserName).then(res =>
+      setHost(isEmpty(res.host) ? DEFAULT_REPOSTING_HOST : res.host),
+    );
 
     getRepostingList(authUserName, 0, limit + 1).then(res => {
       setListAndSetHasMore(res, posts, false, setPosts, setHasMorePosts());
@@ -128,8 +132,8 @@ const RepostingBot = ({ intl }) => {
           'Once stopped, posts publishing cannot be resumed. To temporarily suspend/resume posts publishing, please consider using the Active checkbox.',
       }),
       onOk: () => {
-        deleteMessage(authUserName, item.importId).then(() => {
-          getMessagesList(authUserName, 0, posts.length).then(res => {
+        deleteReposting(authUserName, item.importId).then(() => {
+          getRepostingList(authUserName, 0, posts.length).then(res => {
             setPosts(res);
           });
         });
@@ -193,7 +197,7 @@ const RepostingBot = ({ intl }) => {
         </div>
       </p>
       <VoteInfoBlock
-        isRepostingBot
+        isRcBot
         info={intl.formatMessage({
           id: 'reposting_bot_service',
           defaultMessage: 'The Reposting bot service is provided on as-is / as-available basis.',

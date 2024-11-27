@@ -175,7 +175,7 @@ const MessageBot = ({ intl }) => {
         })}
       </p>
       <VoteInfoBlock
-        isMessageBot
+        isRcBot
         info={intl.formatMessage({
           id: 'message_bot_service',
           defaultMessage: 'The Message bot service is provided on as-is / as-available basis.',
