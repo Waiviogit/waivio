@@ -560,12 +560,24 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   }
   dispatch(setUpdatedEditorData(updatedEditor));
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
+  const campaignType =
+    get(campaign, 'type', undefined) || get(currDraft, 'campaignType', undefined);
+  let secondaryItem = get(currDraft, 'secondaryItem', undefined);
+
+  if (campaign) {
+    secondaryItem = campaign?.secondaryObject?.name
+      ? `@${get(campaign, ['secondaryObject', 'name'], undefined)}`
+      : get(campaign, ['secondaryObject', 'author_permlink'], undefined);
+  }
+
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
     body: body || content || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,
+    campaignType,
+    secondaryItem,
     ...settings,
     ...(permlink || titleValue ? { permlink: permlink || kebabCase(titleValue) } : {}),
   };

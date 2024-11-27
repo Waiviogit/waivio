@@ -94,6 +94,7 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
     if (!mutate) return state;
     return { html: doc ? XMLSerializer.serializeToString(doc) : '', ...state };
   } catch (error) {
+    console.error(error);
     // Not Used, parseFromString might throw an error in the future
     return { html };
   }
@@ -149,7 +150,7 @@ function iframe(state, child) {
   if (tag === 'div' && child?.parentNode.getAttribute('class') === 'videoWrapper') return;
   const html = XMLSerializer.serializeToString(child);
   if (resolveIframe) domString = `<div class="videoWrapper">${html}</div>`;
-  child?.parentNode.replaceChild(DOMParser.parseFromString(domString), child);
+  if (domString) child?.parentNode.replaceChild(DOMParser.parseFromString(domString), child);
 }
 
 function img(state, child) {
@@ -200,9 +201,6 @@ function linkifyNode(child, state) {
 
     const { mutate } = state;
     if (!child.data) return;
-    if ('https://youtu.be/AkoCulqwlCc' === child?.nodeValue) {
-      console.log(tag);
-    }
     if (isEmbedable(child, state.links, state.images, state.resolveIframe)) return;
 
     const data = XMLSerializer.serializeToString(child);
@@ -303,19 +301,4 @@ function isEmbedable(child, links, images, resolveIframe) {
     console.log(error);
     return false;
   }
-}
-
-/** @return {id, url} or <b>null</b> */
-function youTubeId(data) {
-  if (!data) return null;
-
-  const m1 = data.match(linksRe.youTube);
-  const url = m1 ? m1[0] : null;
-  if (!url) return null;
-
-  const m2 = url.match(linksRe.youTubeId);
-  const id = m2 && m2.length >= 2 ? m2[1] : null;
-  if (!id) return null;
-
-  return { id, url };
 }

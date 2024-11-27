@@ -86,6 +86,21 @@ const EditPost = props => {
   } = props;
   const [currDraft, setCurrDraft] = React.useState();
   const [isNewReview, setIsNewReview] = React.useState(false);
+  const getCampaignInfo = () => {
+    let campaignId = props.campaignId;
+
+    if (props.currDraft) {
+      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
+    }
+    const isReview = !isEmpty(campaignId);
+
+    if (isReview) {
+      const campaignType = props.campaignType || props.currDraft?.campaignType;
+      const secondaryItem = props.secondaryItem || props.currDraft?.secondaryItem;
+
+      props.getReviewCheckInfo({ campaignId }, intl, campaignType, secondaryItem);
+    }
+  };
 
   React.useEffect(() => {
     props.history.replace({
@@ -108,7 +123,7 @@ const EditPost = props => {
     props.getUserMetadata();
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
     if (isReview) {
-      props.getReviewCheckInfo({ campaignId }, intl, props.campaignType, props.secondaryItem);
+      getCampaignInfo();
     }
 
     return () => {
@@ -129,6 +144,7 @@ const EditPost = props => {
     if (editorData.title || editorData.body) props.saveDraft(editorData);
     props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
+    getCampaignInfo();
   }, [props.draftId, props.campaignId]);
 
   React.useEffect(() => {
