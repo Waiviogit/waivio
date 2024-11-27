@@ -50,8 +50,8 @@ import {
 } from '../../../store/authStore/authSelectors';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
-const limit = 15;
-let skip = 20;
+const limit = 25;
+let skip = 25;
 
 const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
   const readLanguages = useSelector(getReadLanguages);
@@ -111,7 +111,7 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
           getObjectPosts({
             object: objName,
             username: objName,
-            limit: 20,
+            limit,
             newsPermlink: res?.value?.newsFeed?.permlink,
           }),
         ).then(() => {
@@ -136,7 +136,12 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
       });
   }, [objName]);
 
-  useEffect(() => () => dispatch(setFirstLoading(true)), []);
+  useEffect(
+    () => () => {
+      dispatch(setFirstLoading(true));
+    },
+    [name],
+  );
 
   const loadMore = () => {
     try {

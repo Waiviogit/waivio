@@ -46,6 +46,7 @@ const Wobj = ({
   const wobject = useSelector(getObjectState);
   const nestedWobject = useSelector(getWobjectNested);
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(true);
   const params = useParams();
   const appendAlbum = () => {
     const formData = {
@@ -61,6 +62,10 @@ const Wobj = ({
   };
 
   useEffect(() => {
+    setLoading(true);
+  }, [params.name]);
+
+  useEffect(() => {
     const objectType = getObjectType(wobject);
     const newsFilter = params[1] === 'newsFilter' ? { newsFilter: params.itemId } : {};
 
@@ -70,6 +75,7 @@ const Wobj = ({
     }
     if (!isEmpty(wobject) && typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', `view_${objectType}`, { debug_mode: false });
+    setLoading(false);
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
@@ -78,7 +84,7 @@ const Wobj = ({
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
-    if (isEmpty(wobject)) {
+    if (isEmpty(wobject) || loading) {
       return (
         <React.Fragment>
           <Helmet>
