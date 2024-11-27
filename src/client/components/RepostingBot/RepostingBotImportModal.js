@@ -8,7 +8,6 @@ import { changeRepostingBotHost } from '../../../waivioApi/importApi';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import '../DataImport/ImportModal/ImportModal.less';
-import { DEFAULT_REPOSTING_HOST } from './RepostingBot';
 
 const RepostingBotModal = ({
   visible,
@@ -25,7 +24,7 @@ const RepostingBotModal = ({
 
   const handleSubmit = () => {
     setLoading(true);
-    setHost(isEmpty(currHost) ? DEFAULT_REPOSTING_HOST : currHost);
+    setHost(currHost);
     changeRepostingBotHost(authName, currHost).then(() => {
       onClose();
       setLoading(false);
@@ -41,6 +40,7 @@ const RepostingBotModal = ({
       onCancel={toggleModal}
       onOk={handleSubmit}
       okButtonProps={{
+        disabled: isEmpty(currHost),
         loading,
       }}
       okText={intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}

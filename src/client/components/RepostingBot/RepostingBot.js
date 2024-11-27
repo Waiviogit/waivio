@@ -156,7 +156,7 @@ const RepostingBot = ({ intl }) => {
         {intl.formatMessage({
           id: 'reposting_bot_description1',
           defaultMessage:
-            'This bot is designed to publish posts from various platforms to Waivio. By automating the reposting process, it ensures consistent content sharing, wider reach, and streamlined cross-platform engagement.',
+            'This bot is designed to publish posts from various platforms to Waivio. By automating the reposting process using an extension, it ensures consistent content sharing, wider reach, and streamlined cross-platform engagement.',
         })}
       </p>
 
