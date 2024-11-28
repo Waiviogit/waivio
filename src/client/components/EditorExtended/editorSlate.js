@@ -87,17 +87,12 @@ const EditorSlate = props => {
   const [initiallized, setInitiallized] = useState(false);
   const editorRef = useRef(null);
   const handlePastedFiles = async event => {
-    event.preventDefault();
+    const html = event.clipboardData.getData('text/html');
 
-    const plainText = event.clipboardData.getData('text/plain');
-
-    if (plainText) {
-      Transforms.insertText(editor, plainText.trim()); // Ensure no extra spaces/newlines
-
-      return;
-    }
+    if (html) return;
 
     const uploadedImages = [];
+
     const dT = event.clipboardData || (window && window.clipboardData);
 
     if (dT.files === 0) {
