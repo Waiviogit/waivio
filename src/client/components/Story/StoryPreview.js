@@ -115,7 +115,27 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       />
     ),
 
-    embed: () => embeds && embed && <PostFeedEmbed isPreview inPost key="embed" embed={embed} />,
+    embed: () => {
+      if (embeds && embed) {
+        if (embed?.type === 'music') {
+          const iframeRegex = /<iframe[^>]*src="([^"]*)"[^>]*><\/iframe>/g;
+
+          const extractIframe = body => {
+            const matches = body.match(iframeRegex);
+
+            return matches ? matches[0] : null;
+          };
+
+          const iframe = extractIframe(post.fullBody || post.body);
+
+          return <div dangerouslySetInnerHTML={{ __html: iframe }} />;
+        }
+
+        return <PostFeedEmbed isPreview inPost key="embed" embed={embed} />;
+      }
+
+      return null;
+    },
     image: () =>
       imagePath && (
         <div key={imagePath} className="Story__content__img-container">
