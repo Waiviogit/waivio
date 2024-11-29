@@ -57,16 +57,16 @@ const getEmbed = link => {
   return embed;
 };
 
-const addExplicitNumbersToLists = html =>
-  html?.replace(/<ol>([\s\S]*?)<\/ol>/g, (match, listContent) => {
-    let count = 1;
-    const updatedList = listContent?.replace(
-      /<li>([\s\S]*?)<\/li>/g,
-      (_, item) => `<li>${count++}. ${item}</li>`, // Add numbers explicitly
-    );
-
-    return `<ol>${updatedList}</ol>`;
-  });
+// const addExplicitNumbersToLists = html =>
+//   html?.replace(/<ol>([\s\S]*?)<\/ol>/g, (match, listContent) => {
+//     let count = 1;
+//     const updatedList = listContent?.replace(
+//       /<li>([\s\S]*?)<\/li>/g,
+//       (_, item) => `<li>${count++}. ${item}</li>`, // Add numbers explicitly
+//     );
+//
+//     return `<ol>${updatedList}</ol>`;
+//   });
 
 export function getHtml(
   body,
@@ -101,7 +101,7 @@ export function getHtml(
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
 
-  if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
+  // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
