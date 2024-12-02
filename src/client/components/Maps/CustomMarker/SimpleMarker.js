@@ -16,7 +16,7 @@ const SimpleMarker = React.memo(props => (
     <path
       d="M16.5751 2.78801L16.5869 2.78255L16.5985 2.77679L16.6136 2.76932C19.6305 1.27686 24.4451 0.701074 29.4121 1.14702C34.3877 1.59376 38.9124 3.01124 41.4317 4.93867C49.6915 11.3255 53.2971 17.7512 52.9809 25.8616C52.6517 34.3065 48.0764 45.0299 38.5456 59.8736C35.454 64.6334 33.1053 68.0351 31.1262 70.2453C29.08 72.5304 27.8953 73 27.1905 73C26.4913 73 25.3184 72.5363 23.2971 70.2549L23.297 70.2549C21.3404 68.0467 19.0249 64.6468 15.9774 59.8862L15.9757 59.8834L15.975 59.8823L15.9718 59.8772L15.9678 59.871C11.0079 52.215 7.27959 45.5352 4.77809 39.9848C2.25972 34.397 1.08399 30.1669 1.00002 27.3206C1.01458 17.3112 7.42961 7.04017 16.5611 2.79447L16.5751 2.78801Z"
       fill={props.markerColor}
-      fillOpacity="0.5"
+      fillOpacity={props.isPromoted ? '1' : '0.5'}
       stroke={props.markerText}
       strokeWidth="2"
     />
@@ -29,5 +29,6 @@ SimpleMarker.propTypes = {
   height: PropTypes.number.isRequired,
   markerColor: PropTypes.string.isRequired,
   markerText: PropTypes.string.isRequired,
+  isPromoted: PropTypes.bool,
 };
 export default SimpleMarker;

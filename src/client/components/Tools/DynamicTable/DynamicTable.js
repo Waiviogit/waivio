@@ -4,12 +4,15 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import { useRouteMatch } from 'react-router';
+import { useSelector } from 'react-redux';
 
 import { get, isEmpty, size, isNil, round } from 'lodash';
 import { Checkbox, Modal, Radio } from 'antd';
 import Loading from '../../Icon/Loading';
 import USDDisplay from '../../Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { getWebsiteConfiguration } from '../../../../store/appStore/appSelectors';
+import { initialColors } from '../../../websites/constants/colors';
 
 import './DynamicTable.less';
 
@@ -28,6 +31,8 @@ export const DynamicTable = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(null);
+  const configuration = useSelector(getWebsiteConfiguration);
+  const mainColor = configuration.colors?.mapMarkerBody || initialColors.marker;
   const match = useRouteMatch();
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
@@ -122,7 +127,7 @@ export const DynamicTable = ({
         return (
           <React.Fragment>
             <span
-              style={openLink ? { color: '#f87007', cursor: 'pointer' } : {}}
+              style={openLink ? { color: mainColor, cursor: 'pointer' } : {}}
               onClick={() => {
                 if (openLink)
                   setModalVisible({
