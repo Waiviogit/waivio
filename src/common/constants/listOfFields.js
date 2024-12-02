@@ -88,6 +88,7 @@ export const objectFields = {
   groupAdd: 'groupAdd',
   groupExclude: 'groupExclude',
   groupLastActivity: 'groupLastActivity',
+  promotion: 'promotion',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -166,6 +167,11 @@ export const removePostFields = {
 export const authorsFields = {
   name: 'name',
   author: 'author',
+};
+export const promotionFields = {
+  promotionSite: 'promotionSite',
+  promotionFrom: 'promotionFrom',
+  promotionTill: 'promotionTill',
 };
 export const manufacturerFields = {
   manufacturer: 'manufacturer',

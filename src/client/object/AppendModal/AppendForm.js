@@ -63,6 +63,7 @@ import {
   mapObjectTypeFields,
   walletAddressFields,
   recipeFields,
+  promotionFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -159,6 +160,7 @@ import GroupIdForm from './FormComponents/GroupIdForm';
 import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
+import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
 
 @connect(
   state => ({
@@ -851,6 +853,12 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${moment(
             getFieldValue(objectFields.publicationDate),
           ).format('MMMM DD, YYYY')}`;
+        case objectFields.promotion:
+          return `@${author} added ${currentField} (${langReadable}): Site: ${getFieldValue(
+            promotionFields.promotionSite,
+          )}, from ${moment(getFieldValue(promotionFields.promotionFrom)).format(
+            'MMMM DD, YYYY',
+          )} till ${moment(getFieldValue(promotionFields.promotionTill)).format('MMMM DD, YYYY')}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -973,6 +981,14 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: this.state.selectedObject.author_permlink,
+        };
+      }
+      if (currentField === objectFields.promotion) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: getFieldValue(promotionFields.promotionSite),
+          startDate: getFieldValue(promotionFields.promotionFrom)?.valueOf(),
+          endDate: getFieldValue(promotionFields.promotionTill)?.valueOf(),
         };
       }
       if ([objectFields.groupFollowers, objectFields.groupFollowing].includes(currentField)) {
@@ -2462,6 +2478,17 @@ class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.promotion: {
+        return (
+          <PromotionForm
+            getFieldValue={this.props.form.getFieldValue}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+          />
         );
       }
       case objectFields.printLength: {
@@ -4091,6 +4118,12 @@ class AppendForm extends Component {
       case objectFields.website:
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
+        );
+      case objectFields.promotion:
+        return (
+          isEmpty(getFieldValue(promotionFields.promotionSite)) ||
+          isEmpty(getFieldValue(promotionFields.promotionFrom)) ||
+          isEmpty(getFieldValue(promotionFields.promotionTill))
         );
       case objectFields.authors:
         return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;

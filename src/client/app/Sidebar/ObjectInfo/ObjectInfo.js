@@ -74,9 +74,10 @@ import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
 import WalletAddress from '../WalletAddress/WalletAddress';
 import RecipeIngredients from '../RecipeIngredients/RecipeIngredients';
 import ExpertiseTags from '../../../object/GroupObjectInfo/ExpertiseTags';
-import './ObjectInfo.less';
 import GroupUsersLayout from '../../../object/GroupObjectInfo/GroupUsersLayout';
 import GroupLastActivity from '../../../object/GroupObjectInfo/GroupLastActivity';
+import PromotionInfo from '../../../object/PromotionInfo/PromotionInfo';
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
@@ -541,6 +542,7 @@ class ObjectInfo extends React.Component {
     const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
     const customSort = get(wobject, 'sortCustom.include', []);
+    const promotion = get(wobject, 'promotion', []);
     const companyIdBody = wobject.companyId
       ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -1606,6 +1608,10 @@ ${obj.productId}`}
                 </div>
               )),
           )}
+        {this.listItem(
+          objectFields.promotion,
+          !isEmpty(promotion) && <PromotionInfo promotion={promotion} />,
+        )}
       </React.Fragment>
     );
 

@@ -27,6 +27,7 @@ class CustomMarker extends React.Component {
     // eslint-disable-next-line react/forbid-prop-types
     payload: PropTypes.any.isRequired,
     isMarked: PropTypes.bool,
+    isPromoted: PropTypes.bool,
     currLocation: PropTypes.bool,
     hoveredWobj: PropTypes.bool,
     colors: PropTypes.shape({
@@ -96,7 +97,7 @@ class CustomMarker extends React.Component {
   };
 
   render() {
-    const { left, top, onClick, isMarked, currLocation, hoveredWobj } = this.props;
+    const { left, top, onClick, isMarked, currLocation, hoveredWobj, isPromoted } = this.props;
     let width = 29;
     let height = 30;
     let currTop = imageOffset.top;
@@ -150,6 +151,7 @@ class CustomMarker extends React.Component {
         <SimpleMarker
           width={width}
           height={height}
+          isPromoted={isPromoted}
           markerColor={markerColor}
           markerText={markerTextColor}
         />
