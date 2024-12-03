@@ -9,7 +9,7 @@ const PromotionInfo = ({ promotion }) =>
         <b>Promotion:</b> <span>active</span>
       </div>
       <div>
-        From <span>{moment(p.startDate).format('MMMM DD, YYYY')}</span> Till{' '}
+        From: <span>{moment(p.startDate).format('MMMM DD, YYYY')}</span> Till:{' '}
         <span>{moment(p.endDate).format('MMMM DD, YYYY')}</span>
       </div>
     </div>
