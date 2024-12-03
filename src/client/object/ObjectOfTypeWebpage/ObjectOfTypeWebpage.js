@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router';
-import { has, isNil, isEmpty } from 'lodash';
+import { has, isNil } from 'lodash';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
 import image from '@react-page/plugins-image';
@@ -86,7 +86,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
   const locale = useSelector(getUsedLocale);
-  const currObj = isEmpty(nestedWobject) ? wobject : nestedWobject;
+  const currObj = history?.location.hash ? nestedWobject : wobject;
   const [currentValue, setCurrentValue] = useState(getWebpageJson(currObj, isSocial));
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
