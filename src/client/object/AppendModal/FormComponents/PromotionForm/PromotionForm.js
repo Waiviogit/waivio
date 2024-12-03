@@ -19,7 +19,9 @@ const PromotionForm = ({
   const till = getFieldValue(promotionFields.promotionTill);
 
   const disabledDate = current => current < moment().startOf('day');
-  const disabledTillDate = (current, f) => current < f;
+  const disabledTillDate = (current, f) =>
+    current && (current.isBefore(f, 'day') || current.isSameOrBefore(moment().endOf('day')));
+
   const onOpenChange = () => setIsOpen(!isOpen);
 
   const handleChangeEndDate = value => {
@@ -136,6 +138,7 @@ const PromotionForm = ({
             ],
           })(
             <DatePicker
+              showToday={false}
               format={'LL'}
               placeholder={intl.formatMessage({
                 id: 'table_end_date_picker',
