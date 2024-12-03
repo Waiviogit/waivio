@@ -105,7 +105,7 @@ class CustomMarker extends React.Component {
     const style = {
       position: 'absolute',
       cursor: onClick ? 'pointer' : 'default',
-      zIndex: isMarked ? 2 : 1,
+      zIndex: isMarked || isPromoted ? 2 : 1,
     };
 
     if (currLocation) {

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import moment from 'moment/moment';
 import { promotionFields } from '../../../../../common/constants/listOfFields';
-import { validateDate } from '../../../../wallet/WalletHelper';
 
 const PromotionForm = ({
   getFieldDecorator,
@@ -19,7 +18,7 @@ const PromotionForm = ({
   const from = getFieldValue(promotionFields.promotionFrom);
   const till = getFieldValue(promotionFields.promotionTill);
 
-  const disabledDate = current => current > moment().endOf('day');
+  const disabledDate = current => current < moment().startOf('day');
   const disabledTillDate = (current, f) => current < f;
   const onOpenChange = () => setIsOpen(!isOpen);
 
@@ -42,6 +41,7 @@ const PromotionForm = ({
 
   const startDate = handleChangeStartDate(from);
   const endDate = handleChangeEndDate(till);
+
   const invalidFields = endDate < startDate;
 
   return (
@@ -68,8 +68,7 @@ const PromotionForm = ({
         only if you are the owner or administrator of the site.
       </p>
       <br />
-      <p className={'ant-form-item-label AppendForm__appendTitles'}>Period</p>
-      <br />
+      <p className={'ant-form-item-label AppendForm__appendTitles mb1'}>Period</p>
       <div className="WalletTable__date-wrap">
         <span className={'AppendForm__appendTitles mt1 mr3'}>
           {intl.formatMessage({
@@ -87,14 +86,14 @@ const PromotionForm = ({
                   defaultMessage: 'Field "from" is required',
                 }),
               },
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_after_till_validation',
-                  defaultMessage: 'The selected date must be before or equal the current date',
-                }),
-                validator: validateDate,
-              },
+              // {
+              //   required: true,
+              //   message: intl.formatMessage({
+              //     id: 'table_after_till_validation',
+              //     defaultMessage: 'The selected date must be before or equal the current date',
+              //   }),
+              //   validator: validateDate,
+              // },
             ],
           })(
             <DatePicker
