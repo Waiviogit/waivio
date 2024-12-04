@@ -854,11 +854,13 @@ class AppendForm extends Component {
             getFieldValue(objectFields.publicationDate),
           ).format('MMMM DD, YYYY')}`;
         case objectFields.promotion:
-          return `@${author} added ${currentField} (${langReadable}): Site: ${getFieldValue(
+          return `@${author} added ${currentField} (${langReadable}):\nSite: ${getFieldValue(
             promotionFields.promotionSite,
-          )}, from ${moment(getFieldValue(promotionFields.promotionFrom)).format(
+          )},\nFrom: ${moment(getFieldValue(promotionFields.promotionFrom)).format(
             'MMMM DD, YYYY',
-          )} till ${moment(getFieldValue(promotionFields.promotionTill)).format('MMMM DD, YYYY')}`;
+          )},\nTill: ${moment(getFieldValue(promotionFields.promotionTill)).format(
+            'MMMM DD, YYYY',
+          )}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
