@@ -2004,6 +2004,15 @@ export const getObjectTypeFilters = (objectType, wobjectLinks) =>
     .then(res => res)
     .catch(e => e);
 
+export const getWaivMetric = () =>
+  fetch(`${config.apiPrefix}/waiv${config.metrics}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export const setWebsiteObjCoordinates = (params = {}) =>
   fetch(`${config.apiPrefix}${config.sites}/map`, {
     headers: { ...headers, ...getAuthHeaders() },
@@ -2517,8 +2526,28 @@ export const getTokensEngineRates = currency =>
     .then(response => response)
     .catch(e => e);
 
+export const getTokensEngineChart = (currency, period) =>
+  fetch(`${config.currenciesApiPrefix}${config.engineChart}?base=${currency}&period=${period}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getUserVoteValueInfo = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getWaivSwapTokensHistory = (skip, limit) =>
+  fetch(`${config.apiPrefix}/waiv${config.swapHistory}?skip=${skip}&limit=${limit}`, {
     headers,
     method: 'GET',
   })

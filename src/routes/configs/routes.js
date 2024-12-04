@@ -26,6 +26,7 @@ import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsLi
 import UserFavorites from '../../client/components/Favorites/UserFavorites';
 import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import GroupObjectType from '../../client/object/GroupObjectType/GroupObjectType';
+import WaivPage from '../../client/components/WaivPage/WaivPage';
 
 const routes = {
   component: Wrapper,
@@ -175,6 +176,11 @@ const routes = {
           component: Views.ReportsNew,
         },
       ],
+    },
+    {
+      pathScope: '/waiv-page',
+      exact: true,
+      component: WaivPage,
     },
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],

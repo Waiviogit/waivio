@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { LineChart } from 'react-easy-chart';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-
+import { LineChart } from 'react-easy-chart';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import USDDisplay from '../../Utils/USDDisplay';
 
