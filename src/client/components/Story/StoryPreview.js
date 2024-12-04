@@ -128,6 +128,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
 
           const iframe = extractIframe(post.fullBody || post.body);
 
+          // eslint-disable-next-line react/no-danger
           return <div dangerouslySetInnerHTML={{ __html: iframe }} />;
         }
 
