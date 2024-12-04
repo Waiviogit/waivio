@@ -5,53 +5,27 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import moment from 'moment/moment';
 import { promotionFields } from '../../../../../common/constants/listOfFields';
+import validateRules from '../../../../websites/constants/validateRules';
+import './PromotionForm.less';
 
-const PromotionForm = ({
-  getFieldDecorator,
-  getFieldRules,
-  loading,
-  intl,
-  isSomeValue,
-  getFieldValue,
-}) => {
+const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getFieldValue }) => {
   const [isOpen, setIsOpen] = useState(false);
   const from = getFieldValue(promotionFields.promotionFrom);
-  const till = getFieldValue(promotionFields.promotionTill);
 
   const disabledDate = current => current < moment().startOf('day');
   const disabledTillDate = (current, f) =>
-    current && (current.isBefore(f, 'day') || current.isSameOrBefore(moment().endOf('day')));
+    current &&
+    (current === f || current.isBefore(f, 'day') || current.isSameOrBefore(moment().endOf('day')));
 
   const onOpenChange = () => setIsOpen(!isOpen);
-
-  const handleChangeEndDate = value => {
-    const date = moment(value);
-    const isToday =
-      date.startOf('day').unix() ===
-      moment()
-        .startOf('day')
-        .unix();
-    const end = isToday ? value || date : date.endOf('day');
-
-    return end.unix();
-  };
-
-  const handleChangeStartDate = value =>
-    moment(value)
-      .startOf('day')
-      .unix();
-
-  const startDate = handleChangeStartDate(from);
-  const endDate = handleChangeEndDate(till);
-
-  const invalidFields = endDate < startDate;
 
   return (
     <div>
       <p className={'ant-form-item-label AppendForm__appendTitles'}>Site</p>
       <Form.Item>
         {getFieldDecorator(promotionFields.promotionSite, {
-          rules: getFieldRules(promotionFields.promotionSite),
+          rules: validateRules.host,
+          getValueFromEvent: e => e.target.value.toLowerCase(),
         })(
           <Input
             className={classNames({
@@ -150,9 +124,6 @@ const PromotionForm = ({
           )}
         </Form.Item>
       </div>
-      {invalidFields && (
-        <span style={{ color: 'red' }}>The From date must be earlier than the Till date</span>
-      )}
       <p>Select the promotion period during which the object will be highlighted.</p>
     </div>
   );
@@ -161,7 +132,6 @@ const PromotionForm = ({
 PromotionForm.propTypes = {
   intl: PropTypes.shape().isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
-  getFieldRules: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   isSomeValue: PropTypes.bool.isRequired,
