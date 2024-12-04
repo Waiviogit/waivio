@@ -92,7 +92,7 @@ const WebsitesSettings = ({
     setFunction(e.currentTarget.value);
   };
   const handleSelectImportTag = tag => {
-    form.setFieldsValue({ mapImportTag: tag.author_permlink });
+    form.setFieldsValue({ mapImportTag: tag });
     setMapImportTagState(tag);
   };
 
@@ -117,7 +117,9 @@ const WebsitesSettings = ({
         const gscTag = values.googleGSCTag || '';
         const googleEventSnippetTag = values.googleEventSnippet || '';
         const googleAdsConfigTag = values.googleAdsConfig || '';
-        const mapImportTag = isEmpty(values.mapImportTag) ? '' : values.mapImportTag || '';
+        const mapImportTag = isEmpty(values.mapImportTag)
+          ? ''
+          : values.mapImportTag?.author_permlink || '';
         const beneficiary = { account, percent };
 
         setButtonLoading(true);

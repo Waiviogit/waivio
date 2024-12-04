@@ -15,8 +15,10 @@ const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getField
   const disabledDate = current => current < moment().startOf('day');
   const disabledTillDate = (current, f) =>
     current &&
-    (current === f || current.isBefore(f, 'day') || current.isSameOrBefore(moment().endOf('day')));
-
+    (current === f ||
+      current.isSameOrBefore(moment(f).startOf('day'), 'day') ||
+      current.isBefore(f, 'day') ||
+      current.isSameOrBefore(moment().endOf('day')));
   const onOpenChange = () => setIsOpen(!isOpen);
 
   return (
@@ -62,15 +64,8 @@ const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getField
                   defaultMessage: 'Field "from" is required',
                 }),
               },
-              // {
-              //   required: true,
-              //   message: intl.formatMessage({
-              //     id: 'table_after_till_validation',
-              //     defaultMessage: 'The selected date must be before or equal the current date',
-              //   }),
-              //   validator: validateDate,
-              // },
             ],
+            getValueFromEvent: date => date && moment(date).startOf('day'),
           })(
             <DatePicker
               format={'LL'}
@@ -101,15 +96,8 @@ const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getField
                   defaultMessage: 'Field "till" is required',
                 }),
               },
-              // {
-              //   required: true,
-              //   message: intl.formatMessage({
-              //     id: 'table_after_till_validation',
-              //     defaultMessage: 'The selected date must be before or equal the current date',
-              //   }),
-              //   validator: validateDate,
-              // },
             ],
+            getValueFromEvent: date => date && moment(date).endOf('day'),
           })(
             <DatePicker
               showToday={false}

@@ -371,6 +371,7 @@ export const errorObjectFields = {
   [objectFields.menuItem]: [menuItemFields.menuItemTitle, menuItemFields.menuItemImage],
   [recipeFields.recipeIngredients]: [recipeFields.recipeIngredients],
   [objectFields.groupLastActivity]: [objectFields.groupLastActivity],
+  [objectFields.promotion]: [promotionFields.promotionSite],
 };
 
 export default null;

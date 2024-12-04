@@ -36,8 +36,8 @@ const GroupFollowersForm = props => (
     </div>
     <p>
       {props.isFollowing
-        ? 'Choose users, and their following users will be in the group.'
-        : 'Choose users whose followers should be in the group.'}
+        ? 'Select users, and all the users they follow will be added to the group.'
+        : 'Select users, and all their followers will be added to the group.'}
     </p>
   </div>
 );
