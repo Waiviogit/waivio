@@ -196,6 +196,7 @@ const SocialWrapper = props => {
     }
     props.getRate();
     props.getRewardFund();
+    props.getCoordinates();
     props.getGlobalProperties();
     props.getTokenRates('WAIV');
     props.getCryptoPriceHistory();
@@ -282,6 +283,7 @@ SocialWrapper.propTypes = {
   getRewardFund: PropTypes.func,
   getGlobalProperties: PropTypes.func,
   busyLogin: PropTypes.func,
+  getCoordinates: PropTypes.func,
   setFavoriteObjectTypes: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   nightmode: PropTypes.bool,

@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { debounce, isEmpty, isEqual, round, get, map } from 'lodash';
 import { Map } from 'pigeon-maps';
+import { useSelector } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import mapProvider from '../../../common/helpers/mapProvider';
 import TagFilters from '../TagFilters/TagFilters';
@@ -13,8 +14,12 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getFirstOffsetNumber } from '../helper';
 import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
+import { getWebsiteConfiguration } from '../../../store/appStore/appSelectors';
+import { initialColors } from '../constants/colors';
 
 const MainMapView = props => {
+  const configuration = useSelector(getWebsiteConfiguration);
+  const mainColor = configuration.colors?.mapMarkerBody || initialColors.marker;
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
       if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
@@ -140,6 +145,8 @@ const MainMapView = props => {
           <CustomMarker
             key={get(wobject, '_id')}
             isMarked={isMarked}
+            mainColor={mainColor}
+            isPromoted={wobject.isPromotedForSite}
             anchor={anchor}
             payload={wobject}
             onClick={handleMarkerClick}

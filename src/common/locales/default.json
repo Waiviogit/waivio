@@ -2663,5 +2663,6 @@
   "match_bots_message_bot_auth_text": "The Message bot requires authorization to distribute votes on your behalf: ",
   "match_bots_reposting_bot_auth_text": "The Reposting bot requires authorization to distribute votes on your behalf: ",
   "reposting_bot": "Reposting bot",
-  "mobnav_reposting_bot": "Reposting bot"
+  "mobnav_reposting_bot": "Reposting bot",
+  "object_field_promotion": "Promotion"
 }

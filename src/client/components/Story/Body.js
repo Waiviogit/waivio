@@ -57,6 +57,17 @@ const getEmbed = link => {
   return embed;
 };
 
+// const addExplicitNumbersToLists = html =>
+//   html?.replace(/<ol>([\s\S]*?)<\/ol>/g, (match, listContent) => {
+//     let count = 1;
+//     const updatedList = listContent?.replace(
+//       /<li>([\s\S]*?)<\/li>/g,
+//       (_, item) => `<li>${count++}. ${item}</li>`, // Add numbers explicitly
+//     );
+//
+//     return `<ol>${updatedList}</ol>`;
+//   });
+
 export function getHtml(
   body,
   jsonMetadata = {},
@@ -72,7 +83,6 @@ export function getHtml(
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
-  // eslint-disable-next-line consistent-return
 
   parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
@@ -90,6 +100,9 @@ export function getHtml(
 
   parsedBody = improve(parsedBody);
   parsedBody = remarkable.render(parsedBody);
+
+  // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
+
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
@@ -121,7 +134,6 @@ export function getHtml(
   }
 
   const sections = [];
-
   const splittedBody = parsedBody.split('~~~ embed:');
 
   for (let i = 0; i < splittedBody.length; i += 1) {

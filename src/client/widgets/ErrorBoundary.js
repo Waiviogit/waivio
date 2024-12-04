@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { FormattedMessage } from 'react-intl';
+import apiConfig from '../../waivioApi/routes';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 import './widgetsStyle.less';
 
@@ -19,10 +21,25 @@ const ErrorBoundary = ComposedComponent => {
       error: '',
     };
 
-    componentDidCatch() {
+    componentDidCatch(error) {
       this.setState({
         hasError: true,
       });
+
+      if (typeof WebSocket !== 'undefined' && !location.href.includes('localhost')) {
+        const socket = new WebSocket(
+          `wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`,
+        );
+
+        setTimeout(() => {
+          socket.send(
+            JSON.stringify({
+              method: subscribeTypes.clientError,
+              params: ['user', `Page crashed ${location.href}`, error.stack],
+            }),
+          );
+        }, 300);
+      }
     }
 
     render() {
