@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { truncate } from 'lodash';
 
 const PromotionInfo = ({ promotion }) =>
   promotion.map(p => (
@@ -10,7 +11,14 @@ const PromotionInfo = ({ promotion }) =>
         <span>active</span>
       </div>
       <div>
-        Site: <span>{p.body}</span>
+        Site:{' '}
+        <span>
+          {' '}
+          {truncate(p.body, {
+            length: 20,
+            separator: '...',
+          })}
+        </span>
       </div>
       <div>
         From: <span>{moment(p.startDate).format('MMMM DD, YYYY')}</span>
