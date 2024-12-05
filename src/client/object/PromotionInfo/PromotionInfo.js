@@ -6,14 +6,17 @@ const PromotionInfo = ({ promotion }) =>
   promotion.map(p => (
     <div key={p.id} className={'mb2'}>
       <div>
-        <b>Promotion:</b> <span>active</span>
+        <b>Promotion: </b>
+        <span>active</span>
       </div>
       <div>
-        <b>Site:</b> <span>{p.body}</span>
+        Site: <span>{p.body}</span>
       </div>
       <div>
-        From <span>{moment(p.startDate).format('MMMM DD, YYYY')}</span> Till{' '}
-        <span>{moment(p.endDate).format('MMMM DD, YYYY')}</span>
+        From: <span>{moment(p.startDate).format('MMMM DD, YYYY')}</span>
+      </div>
+      <div>
+        Till: <span>{moment(p.endDate).format('MMMM DD, YYYY')}</span>
       </div>
     </div>
   ));
