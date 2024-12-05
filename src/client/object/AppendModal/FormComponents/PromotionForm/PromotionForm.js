@@ -107,6 +107,7 @@ const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getField
                 defaultMessage: 'Select end date',
               })}
               disabled={!from}
+              defaultPickerValue={from || undefined} // Ensure it aligns with the "from" date
               disabledDate={curr => disabledTillDate(curr, from)}
             />,
           )}
