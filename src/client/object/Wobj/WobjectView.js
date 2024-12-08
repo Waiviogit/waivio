@@ -87,7 +87,7 @@ const WobjectView = ({
   const currentForm = formsList?.find(item => item?.permlink === match.params.parentName) || {};
   const currentWobject = history.location.hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
-  const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';
+  const isWidgetPage = isNil(match.params[1]) && match.params[0] === 'widget';
   const isWebPage = match.params[0] === 'webpage';
   const currentColumn = get(currentForm, 'column', '');
   const currentWidgetColumn = get(widgetForm, 'column', '');
