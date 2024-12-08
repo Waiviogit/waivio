@@ -33,7 +33,7 @@ const WaivPriceChart = () => {
 
           return {
             name,
-            rate: round(r.rates.USD, 8),
+            Price: round(r.rates.USD, 8),
             amt: r.rates.USD,
           };
         }),
@@ -56,22 +56,22 @@ const WaivPriceChart = () => {
           </span>
         ))}
       </div>
-      <h3 style={{ textAlign: 'center' }}>Price</h3>
       <AreaChart
         width={900}
-        height={250}
+        height={400}
         data={dataArr}
-        margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+        margin={{ top: 5, right: 30, left: 0, bottom: 30 }}
+        padding={{ top: 10, left: 0, right: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" hide>
-          <Label value="Price" offset={0} position="insideBottom" />
-        </XAxis>
-        <YAxis />
-        <Tooltip />
+        <XAxis dataKey="name" hide />
+        <YAxis>
+          <Label value={'USD'} position={'bottom'} style={{ fontWeight: 'bold' }} />
+        </YAxis>
+        <Tooltip separator={': '} />
         <Area
           type="monotone"
-          dataKey="rate"
+          dataKey="Price"
           stroke="#f87007"
           fillOpacity={1}
           fill="url(#colorUv)"

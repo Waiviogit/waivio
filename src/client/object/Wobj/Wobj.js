@@ -46,7 +46,7 @@ const Wobj = ({
   const wobject = useSelector(getObjectState);
   const nestedWobject = useSelector(getWobjectNested);
   const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(typeof window !== 'undefined');
   const params = useParams();
   const appendAlbum = () => {
     const formData = {
