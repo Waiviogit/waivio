@@ -201,7 +201,7 @@
   "lastPost": "/last-post",
   "requiredObject": "/required-object",
   "engineRates": "/engine-rates",
-  "engineChart": "/engine-chart",
+  "voteValueInfo": "/vote-value-info",
   "engineChart": "/engine-chart",
   "swapHistory": "/swap-history",
   "likePost": "/like-post",
