@@ -10,7 +10,7 @@ import { getTokensEngineChart } from '../../../waivioApi/ApiClient';
 
 import './WaivPriceChart.less';
 
-const period = ['1d', '7d', '1m', '3m', '6m', '1y', '2y', 'all'];
+const periods = ['1d', '7d', '1m', '3m', '6m', '1y', '2y', 'all'];
 
 const WaivPriceChart = () => {
   const [type, setType] = React.useState('1m');
@@ -22,7 +22,7 @@ const WaivPriceChart = () => {
         res.reverse().map(r => {
           let format = 'll';
 
-          if (type === period[1]) {
+          if (type === periods[1]) {
             format = 'ddd';
           }
 
@@ -34,7 +34,10 @@ const WaivPriceChart = () => {
           return {
             name,
             Price: round(r.rates.USD, 8),
-            amt: r.rates.USD,
+            title: moment
+              .utc(r.dateString)
+              // .locale(locale)
+              .format('DD/MM'),
           };
         }),
       );
@@ -44,7 +47,7 @@ const WaivPriceChart = () => {
   return (
     <div className={'WaivPriceChart'}>
       <div className={'WaivPriceChart__container'}>
-        {period.map(p => (
+        {periods.map(p => (
           <span
             className={classNames('WaivPriceChart__period', {
               'WaivPriceChart__period--active': type === p,
@@ -64,7 +67,7 @@ const WaivPriceChart = () => {
         padding={{ top: 10, left: 0, right: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" hide />
+        <XAxis dataKey="title" hide={type === periods[0] || type === periods[1]} />
         <YAxis>
           <Label value={'USD'} position={'bottom'} style={{ fontWeight: 'bold' }} />
         </YAxis>
