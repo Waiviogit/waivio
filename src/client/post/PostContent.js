@@ -49,6 +49,7 @@ import {
   likeComment,
 } from '../../store/commentsStore/commentsActions';
 import { buildPost } from '../../store/slateEditorStore/editorActions';
+import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelectors';
 
 @injectIntl
 @withRouter
@@ -58,6 +59,7 @@ import { buildPost } from '../../store/slateEditorStore/editorActions';
     bookmarks: getBookmarks(state),
     pendingBookmarks: getPendingBookmarks(state),
     pendingLikes: getPendingLikes(state),
+    commentsPendingLikes: getCommentsPendingVotes(state),
     reblogList: getRebloggedList(state),
     pendingReblogs: getPendingReblogs(state),
     followingList: getFollowingList(state),
@@ -94,6 +96,7 @@ class PostContent extends React.Component {
     content: PropTypes.shape().isRequired,
     signature: PropTypes.string,
     pendingLikes: PropTypes.shape(),
+    commentsPendingLikes: PropTypes.shape(),
     reblogList: PropTypes.arrayOf(PropTypes.string),
     pendingReblogs: PropTypes.arrayOf(PropTypes.string),
     followingList: PropTypes.arrayOf(PropTypes.string),
@@ -200,10 +203,12 @@ class PostContent extends React.Component {
   };
 
   handleLikeClick = (post, postState, weight = 10000) => {
-    const { sliderMode, defaultVotePercent } = this.props;
+    const { sliderMode, defaultVotePercent, user, content } = this.props;
     const authorName = post.guestInfo ? post.root_author : post.author;
     const { id, permlink } = post;
-    const voteType = postState.isLiked ? 'dislike' : 'like';
+    const userVote = find(content.active_votes, { voter: user.name }) || {};
+    const isLiked = userVote.percent > 0 && !userVote.fake;
+    const voteType = isLiked ? 'dislike' : 'like';
 
     let voteWeight;
 
@@ -214,7 +219,7 @@ class PostContent extends React.Component {
     }
 
     isEmpty(post.title)
-      ? this.props.likeComment(id, voteWeight, voteType)
+      ? this.props.likeComment(id, voteWeight, voteType, 0, true)
       : this.props.votePost(id, authorName, permlink, voteWeight);
   };
 
@@ -281,6 +286,7 @@ class PostContent extends React.Component {
       content,
       signature,
       pendingLikes,
+      commentsPendingLikes,
       reblogList,
       pendingReblogs,
       followingList,
@@ -315,15 +321,20 @@ class PostContent extends React.Component {
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(getAuthorName(content)),
     };
-    const pendingLike =
-      pendingLikes[content.id] &&
-      (pendingLikes[content.id].weight > 0 ||
-        (pendingLikes[content.id].weight === 0 && postState.isLiked));
+    const isComment = isEmpty(content?.title);
+    const pendings = isComment ? commentsPendingLikes : pendingLikes;
 
-    const pendingFlag =
-      pendingLikes[content.id] &&
-      (pendingLikes[content.id].weight < 0 ||
-        (pendingLikes[content.id].weight === 0 && postState.isReported));
+    const pendingLike = isComment
+      ? pendings?.some(c => c.id === content.id)
+      : pendings[content.id] &&
+        (pendings[content.id].weight > 0 ||
+          (pendings[content.id].weight === 0 && postState.isLiked));
+
+    const pendingFlag = isComment
+      ? pendings?.some(c => c.id === content.id)
+      : pendings[content.id] &&
+        (pendings[content.id].weight < 0 ||
+          (pendings[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo, videoPreview } = content;
     let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
