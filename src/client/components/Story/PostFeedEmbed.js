@@ -37,7 +37,7 @@ export default class PostFeedEmbed extends React.Component {
   componentDidMount() {
     const { embed } = this.props;
 
-    if (embed.url.includes('tiktok.com')) {
+    if (embed.url?.includes('tiktok.com')) {
       if (!embed.thumbnail) {
         fetch(
           `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embed.url.replace(
@@ -83,7 +83,7 @@ export default class PostFeedEmbed extends React.Component {
           className={classNames('PostFeedEmbed__preview', {
             'PostFeedEmbed__preview--thin':
               (this.props.embed.provider_name === 'TikTok' ||
-                this.props.embed.url.includes('shorts')) &&
+                this.props.embed.url?.includes('shorts')) &&
               this.props.inPost,
           })}
           src={thumb}
@@ -95,7 +95,7 @@ export default class PostFeedEmbed extends React.Component {
   render() {
     const { embed, inPost, isSocial, isPreview } = this.props;
     const shouldRenderThumb =
-      inPost && !isPreview && !embed.url.includes('tiktok') ? false : !this.state.showIframe;
+      inPost && !isPreview && !embed.url?.includes('tiktok') ? false : !this.state.showIframe;
 
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
@@ -104,7 +104,7 @@ export default class PostFeedEmbed extends React.Component {
     if (
       isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
       (embed.thumbnail || this.state.thumbnail) &&
-      !embed.url.includes('shorts')
+      !embed.url?.includes('shorts')
     ) {
       return this.renderThumbFirst(embed.thumbnail || this.state.thumbnail);
     } else if (embed.embed) {
