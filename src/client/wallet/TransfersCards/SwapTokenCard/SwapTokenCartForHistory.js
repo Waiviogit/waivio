@@ -2,6 +2,8 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import CardsTimeStamp from '../CardsTimeStamp';
 import Avatar from '../../../components/Avatar';
@@ -25,7 +27,10 @@ const SwapTokenCartForHistory = props => {
         <div className="UserWalletTransactions__content">
           <div className="UserWalletTransactions__content-recipient SwapTokenCard__amount_column">
             <div>
-              <FormattedMessage id="swap" defaultMessage="Swap" /> by {props.from}
+              <FormattedMessage id="swap" defaultMessage="Swap" /> by{' '}
+              <Link to={`/@${props.from}`} style={{ color: '#595959', fontWeight: 500 }}>
+                {props.from}
+              </Link>
             </div>
             <div className={largeAmount && 'SwapTokenCard__large-amount-column'}>
               <span className={'SwapTokenCard__from'}>
