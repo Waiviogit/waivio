@@ -106,28 +106,16 @@ const StatisticPage = () => {
         <h3>Inflation distribution</h3>
         <PieChart width={730} height={250}>
           <Legend align="right" verticalAlign="middle" layout="vertical" height={36} />
-          <Pie
-            data={data02}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            label
-          />
+          <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
+            <LabelList position={'inside'} />
+          </Pie>
         </PieChart>{' '}
         <h3>Rewards pool</h3>
-        <PieChart width={730} height={400}>
+        <PieChart width={730} height={250}>
           <Legend align="right" verticalAlign="middle" layout="vertical" height={36} />
-          <Pie
-            data={data03}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            label
-          />
+          <Pie data={data03} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
+            <LabelList position={'inside'} />
+          </Pie>
         </PieChart>{' '}
         <h3>Development fund</h3>
         <p>Available: {round(metrics?.availableInMonthUSD, 2)} USD/month</p>
