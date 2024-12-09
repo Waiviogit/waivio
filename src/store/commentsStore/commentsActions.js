@@ -22,6 +22,7 @@ import { getAppendList } from '../appendStore/appendSelectors';
 import { updateCounter } from '../appendStore/appendActions';
 import { getCurrentShownPost } from '../appStore/appSelectors';
 import { editThreadState } from '../feedStore/feedActions';
+import { getContent } from '../postsStore/postActions';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -397,7 +398,7 @@ export const sendCommentMessages = (
   });
 };
 
-export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount = 0) => (
+export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount = 0, isPost) => (
   dispatch,
   getState,
   { steemConnectAPI, busyAPI },
@@ -418,7 +419,12 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(async data => {
         const res = isGuest ? await data.json() : data.result;
         const blockNumber = await getLastBlockNum();
-        const subscribeCallback = () => dispatch(getSingleComment(author, permlink));
+        const postCallback = () => {
+          dispatch(getSingleComment(author, permlink));
+          dispatch(getContent(author, permlink));
+        };
+        const subscribeCallback = () =>
+          isPost ? postCallback() : dispatch(getSingleComment(author, permlink));
 
         if (data.status !== 200 && isGuest) throw new Error(data.message);
         busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
