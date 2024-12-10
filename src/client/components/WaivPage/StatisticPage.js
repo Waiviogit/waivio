@@ -7,6 +7,7 @@ import { FormattedNumber } from 'react-intl';
 import { getWaivMetric } from '../../../waivioApi/ApiClient';
 import WaivPriceChart from './WaivPriceChart';
 import USDDisplay from '../Utils/USDDisplay';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './StatisticPage.less';
 
@@ -15,6 +16,7 @@ const secondColor = '#f0b645';
 const thirdColor = '#f48b0a';
 
 const StatisticPage = () => {
+  const isMobl = isMobile();
   const [metrics, setMetrics] = React.useState([]);
   const liquidWaiv = round(
     ((metrics?.tokensInCirculation - metrics?.tokensStaked) * 100) / metrics?.tokensInCirculation,
@@ -24,7 +26,7 @@ const StatisticPage = () => {
     {
       name: `Liquid WAIV (${liquidWaiv}%)`,
       value: round(metrics?.tokensInCirculation - metrics?.tokensStaked, 8),
-      label: liquidWaiv.toLocaleString('en-IN'),
+      label: (metrics?.tokensInCirculation - metrics?.tokensStaked).toLocaleString('en-IN'),
       fill: secondColor,
     },
     {
@@ -73,6 +75,10 @@ const StatisticPage = () => {
     });
   }, []);
 
+  const legendProps = !isMobl
+    ? { align: 'right', verticalAlign: 'middle' }
+    : { align: 'center', verticalAlign: 'bottom' };
+
   return (
     <div className={'StatisticPage'}>
       <div className={'StatisticPage__section'}>
@@ -94,8 +100,8 @@ const StatisticPage = () => {
         <h3>Annual inflation</h3>
         <p>{metrics?.annualInflation}</p>
         <h3>WAIV staking</h3>
-        <PieChart width={730} height={250}>
-          <Legend align="right" verticalAlign="middle" layout="vertical" height={36} />
+        <PieChart width={500} height={250}>
+          <Legend {...legendProps} layout="vertical" height={36} />
           <Pie data={data01} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
             <LabelList position={'inside'} dataKey={'label'} />
           </Pie>
@@ -104,17 +110,17 @@ const StatisticPage = () => {
       <div className={'StatisticPage__section'}>
         <h2>WAIV tokenomics</h2>
         <h3>Inflation distribution</h3>
-        <PieChart width={730} height={250}>
-          <Legend align="right" verticalAlign="middle" layout="vertical" height={36} />
+        <PieChart width={500} height={isMobl ? 300 : 250}>
+          <Legend {...legendProps} layout="vertical" height={66} />
           <Pie data={data02} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
-            <LabelList position={'inside'} />
+            <LabelList formatter={value => `${value}%`} position={'inside'} />
           </Pie>
         </PieChart>{' '}
         <h3>Rewards pool</h3>
-        <PieChart width={730} height={250}>
-          <Legend align="right" verticalAlign="middle" layout="vertical" height={36} />
+        <PieChart width={500} height={250}>
+          <Legend {...legendProps} layout="vertical" height={36} />
           <Pie data={data03} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
-            <LabelList position={'inside'} />
+            <LabelList formatter={value => `${value}%`} position={'inside'} />
           </Pie>
         </PieChart>{' '}
         <h3>Development fund</h3>
