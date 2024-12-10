@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { isEmpty, trimEnd } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import { isEmpty, size, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal } from 'antd';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
@@ -23,6 +24,8 @@ import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
+import { getHtml } from '../../components/Story/Body';
+import { extractImageTags } from '../../../common/helpers/parser';
 import CatalogWrap from '../Catalog/CatalogWrap';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
@@ -46,7 +49,33 @@ const ObjectOfTypePage = props => {
   const [littleVotePower, setLittleVotePower] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(0);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
+  const parsedBody = getHtml(content, {}, 'text', { isPost: true });
+  const contentDiv = useRef();
+
+  const images = extractImageTags(parsedBody).map(image => ({
+    ...image,
+    src: unescape(image.src.replace('https://images.hive.blog/0x0/', '')),
+  }));
+
+  const imagesArraySize = size(images);
+
+  const handleContentClick = e => {
+    if (e.target.tagName === 'IMG' && images) {
+      const tags = contentDiv.current?.getElementsByTagName('img');
+
+      for (let i = 0; i < tags.length; i += 1) {
+        if (tags[i] === e.target && images.length > i) {
+          if (e.target?.parentNode && e.target?.parentNode.tagName === 'A') return;
+
+          setIndex(i);
+          setOpen(true);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (!isEditMode) {
@@ -221,7 +250,7 @@ const ObjectOfTypePage = props => {
       ) : (
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
-          <div className={classObjPage}>
+          <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? (
               <React.Fragment>
                 {isReadyToPublish ? (
@@ -277,6 +306,24 @@ const ObjectOfTypePage = props => {
               </React.Fragment>
             ) : (
               <React.Fragment>{renderBody()}</React.Fragment>
+            )}
+            {open && (
+              <Lightbox
+                wrapperClassName="LightboxTools"
+                mainSrc={images[index].src}
+                nextSrc={imagesArraySize > 1 && images[(index + 1) % imagesArraySize].src}
+                prevSrc={
+                  imagesArraySize > 1 &&
+                  images[(index + (imagesArraySize - 1)) % imagesArraySize].src
+                }
+                onCloseRequest={() => {
+                  setOpen(false);
+                }}
+                onMovePrevRequest={() =>
+                  setIndex((index + (imagesArraySize - 1)) % imagesArraySize)
+                }
+                onMoveNextRequest={() => setIndex((index + (images.length + 1)) % images.length)}
+              />
             )}
           </div>
           {isEditMode && !isReadyToPublish && (
