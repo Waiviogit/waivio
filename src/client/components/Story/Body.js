@@ -80,15 +80,17 @@ export function getHtml(
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
-  parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
+  if (!isEmpty(parsedJsonMetadata.image))
+    parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
   let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
-  parsedBody?.replace(imageRegex, img => {
-    if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
-      parsedJsonMetadata.image.push(img);
-    }
-  });
+  if (!isEmpty(parsedJsonMetadata.image))
+    parsedBody?.replace(imageRegex, img => {
+      if (filter(parsedJsonMetadata.image, i => i?.indexOf(img) !== -1).length === 0) {
+        parsedJsonMetadata.image.push(img);
+      }
+    });
 
   const videoPreviewResult = parsedBody.match(videoPreviewRegex);
 
