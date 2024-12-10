@@ -34,6 +34,7 @@ export const SEND_COMMENT_SUCCESS = '@comments/SEND_COMMENT_SUCCESS';
 export const SEND_COMMENT_ERROR = '@comments/SEND_COMMENT_ERROR';
 
 export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
+export const FAKE_COMMENT_SUCCESS = '@comments/FAKE_COMMENT_SUCCESS';
 
 export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMMENT');
 
@@ -420,8 +421,7 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
         const res = isGuest ? await data.json() : data.result;
         const blockNumber = await getLastBlockNum();
         const postCallback = () => {
-          dispatch(getSingleComment(author, permlink));
-          dispatch(getContent(author, permlink));
+          dispatch(getContent(author, permlink, false, true));
         };
         const subscribeCallback = () =>
           isPost ? postCallback() : dispatch(getSingleComment(author, permlink));

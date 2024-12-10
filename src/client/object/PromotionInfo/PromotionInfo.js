@@ -15,7 +15,7 @@ const PromotionInfo = ({ promotion }) =>
         <span>
           {' '}
           {truncate(p.body, {
-            length: 20,
+            length: 19,
             separator: '...',
           })}
         </span>

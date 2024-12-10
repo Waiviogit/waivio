@@ -140,6 +140,12 @@ const pendingVotes = (state = initialState.pendingVotes, action) => {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case commentsTypes.FAKE_COMMENT_SUCCESS: {
+      return {
+        ...state,
+        pendingVotes: state.pendingVotes?.filter(item => item.id !== action.meta.commentId),
+      };
+    }
     case commentsTypes.GET_SINGLE_COMMENT.SUCCESS:
       return {
         ...state,
