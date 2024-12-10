@@ -25,8 +25,7 @@ const SwapHistory = () => {
   };
 
   return (
-    <div>
-      <h2>Trade history</h2>
+    <div style={{ padding: '20px' }}>
       {swapHistoryLoading ? (
         <Loading />
       ) : (
