@@ -26,6 +26,7 @@ import {
 } from '../appendStore/appendActions';
 import { getAuthorityList } from '../appendStore/appendSelectors';
 import { subscribeTypes } from '../../common/constants/blockTypes';
+import { FAKE_COMMENT_SUCCESS } from '../commentsStore/commentsActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -34,7 +35,10 @@ export const LIKE_POST = createAsyncActionType('@post/LIKE_POST');
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
 export const LIKE_POST_HISTORY = '@post/LIKE_POST_HISTORY';
 
-export const getContent = (author, permlink, afterLike) => (dispatch, getState) => {
+export const getContent = (author, permlink, afterLike, isComment = false) => (
+  dispatch,
+  getState,
+) => {
   if (!author || !permlink) {
     return null;
   }
@@ -85,6 +89,12 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState) 
           } catch (e) {
             console.error(e);
           }
+        }
+        if (isComment) {
+          dispatch({
+            type: FAKE_COMMENT_SUCCESS,
+            meta: { commentId: `${author}/${permlink}` },
+          });
         }
 
         return { ...res, videoPreview };
