@@ -3,12 +3,14 @@ import { Icon, message, Modal, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
-import { getAppHost } from '../../../store/appStore/appSelectors';
+import { getAppHost, getUserAdministrator } from '../../../store/appStore/appSelectors';
 
 import './EmailDraft.less';
 
 const EmailDraft = ({ accessExtend, email, name, permlink, mapObjPermlink, center }) => {
   const host = useSelector(getAppHost);
+  const isAdministrator = useSelector(getUserAdministrator);
+  const hasAccess = accessExtend || isAdministrator;
   const mapLink = mapObjPermlink;
   const [showModal, setShowModal] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -44,31 +46,33 @@ The ${host} Team`;
     <div className={'BusinessObject__email mb5px'}>
       <Icon type="mail" className="text-icon email" />
       <span>
-        {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
-        <Tooltip
-          placement="topLeft"
-          visible={visible}
-          title={
+        {hasAccess ? email : <a href={`mailto:${email}`}> {email}</a>}
+        {hasAccess && (
+          <Tooltip
+            placement="topLeft"
+            visible={visible}
+            title={
+              <span
+                onClick={() => {
+                  setShowModal(true);
+                  setVisible(false);
+                }}
+              >
+                <Icon type="user" /> Request backlink
+              </span>
+            }
+            overlayClassName="EmailDraft__tooltip"
+            overlayStyle={{ top: '10px' }}
+          >
             <span
               onClick={() => {
-                setShowModal(true);
-                setVisible(false);
+                setVisible(true);
               }}
             >
-              <Icon type="user" /> Request backlink
+              <Icon type="ellipsis" style={{ fontSize: '20px' }} />
             </span>
-          }
-          overlayClassName="EmailDraft__tooltip"
-          overlayStyle={{ top: '10px' }}
-        >
-          <span
-            onClick={() => {
-              setVisible(true);
-            }}
-          >
-            <Icon type="ellipsis" style={{ fontSize: '20px' }} />
-          </span>
-        </Tooltip>
+          </Tooltip>
+        )}
       </span>
       <Modal
         className={'EmailDraft'}

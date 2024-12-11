@@ -40,6 +40,7 @@
     width: 100%;
     position: relative;
     padding-bottom: 56%;
+
     &_high {
       min-height: 600px;
     }
@@ -64,10 +65,14 @@
 
     iframe {
       top: 0;
-      left: 0;
-      width: 100%;
+      left: -20px;
+      width: calc(100% + 40px);
       height: calc(100% + 2px);
       position: absolute;
+      @media @small {
+        left: 0;
+        width: 100%;
+      }
     }
   }
 
