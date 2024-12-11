@@ -11,27 +11,22 @@
   img {
     cursor: pointer;
     border: 1px solid @white-gainsboro;
-  }
-
-  @media @small {
-    margin: 20px 130px;
-  }
-}
-
-&.social {
-  img {
-    cursor: pointer;
-    border: 1px solid @white-gainsboro;
     margin: -20px -20px 0;
     max-width: calc(100% + 40px);
   }
 
   @media @small {
-    max-width: 900px;
-    margin: 20px auto;
+    margin: 20px 130px;
     img {
       margin: 0;
       max-width: 100%;
     }
+  }
+}
+
+&.social {
+  @media @small {
+    max-width: 900px;
+    margin: 20px auto;
   }
 }
