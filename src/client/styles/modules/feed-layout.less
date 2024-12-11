@@ -117,8 +117,12 @@
     }
 
     &--middleForm {
-      width: calc(100% - (@right-width));
-      margin-left: @margin;
+      width: 100%;
+
+      @media @small, @medium {
+        width: calc(100% - (@right-width));
+        margin-left: @margin;
+      }
     }
 
     &--fullForm {
