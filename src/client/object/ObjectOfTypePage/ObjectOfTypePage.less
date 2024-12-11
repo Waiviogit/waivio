@@ -8,6 +8,16 @@
   img {
     cursor: pointer;
     border: 1px solid @white-gainsboro;
+    margin: -17px -17px 0;
+    max-width: calc(100% + 34px);
+  }
+
+  @media @small {
+    //margin: 20px 130px;
+    img {
+      margin: 0;
+      max-width: 100%;
+    }
   }
 
   &.view-mode {
