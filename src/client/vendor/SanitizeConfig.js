@@ -148,7 +148,7 @@ export const parseLink = (
           parsedJsonMetadata?.app?.includes('dining')) &&
         linkUrl?.pathname?.includes('/object/')
       ) {
-        href = linkUrl.pathname;
+        href = linkUrl.path;
       }
 
       attys.target = '';

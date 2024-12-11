@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { find, truncate, isEmpty } from 'lodash';
+import { find, isEmpty, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import {
+  dropCategory,
+  getAuthorName,
   isBannedPost,
   replaceBotWithGuestName,
-  getAuthorName,
-  dropCategory,
 } from '../../common/helpers/postHelpers';
 import { editPost } from '../../store/editorStore/editorActions';
 import {
@@ -43,8 +43,13 @@ import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bo
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 import { getCanonicalHostForPost } from '../../hooks/useSeoInfo';
-import { editThread as editThreadAction } from '../../store/commentsStore/commentsActions';
+import {
+  editThread as editThreadAction,
+  getSingleComment,
+  likeComment,
+} from '../../store/commentsStore/commentsActions';
 import { buildPost } from '../../store/slateEditorStore/editorActions';
+import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelectors';
 
 @injectIntl
 @withRouter
@@ -54,6 +59,7 @@ import { buildPost } from '../../store/slateEditorStore/editorActions';
     bookmarks: getBookmarks(state),
     pendingBookmarks: getPendingBookmarks(state),
     pendingLikes: getPendingLikes(state),
+    commentsPendingLikes: getCommentsPendingVotes(state),
     reblogList: getRebloggedList(state),
     pendingReblogs: getPendingReblogs(state),
     followingList: getFollowingList(state),
@@ -66,6 +72,8 @@ import { buildPost } from '../../store/slateEditorStore/editorActions';
     siteName: getWebsiteName(state),
   }),
   {
+    likeComment,
+    getSingleComment,
     editPost,
     votePost,
     muteAuthorPost,
@@ -88,6 +96,7 @@ class PostContent extends React.Component {
     content: PropTypes.shape().isRequired,
     signature: PropTypes.string,
     pendingLikes: PropTypes.shape(),
+    commentsPendingLikes: PropTypes.shape(),
     reblogList: PropTypes.arrayOf(PropTypes.string),
     pendingReblogs: PropTypes.arrayOf(PropTypes.string),
     followingList: PropTypes.arrayOf(PropTypes.string),
@@ -102,6 +111,8 @@ class PostContent extends React.Component {
     isObj: PropTypes.bool,
     isRecipe: PropTypes.bool,
     editPost: PropTypes.func,
+    getSingleComment: PropTypes.func,
+    likeComment: PropTypes.func,
     editThreadAction: PropTypes.func,
     buildPost: PropTypes.func,
     toggleBookmark: PropTypes.func,
@@ -146,6 +157,7 @@ class PostContent extends React.Component {
     super(props);
     this.state = {
       editThread: false,
+
       newBody: null,
     };
     this.handleReportClick = this.handleReportClick.bind(this);
@@ -153,6 +165,12 @@ class PostContent extends React.Component {
 
   componentDidMount() {
     this.renderWithCommentsSettings();
+    const { content } = this.props;
+    const { author, permlink, title } = content;
+
+    if (isEmpty(title)) {
+      this.props.getSingleComment(author, permlink, false);
+    }
   }
 
   componentDidUpdate() {
@@ -185,16 +203,24 @@ class PostContent extends React.Component {
   };
 
   handleLikeClick = (post, postState, weight = 10000) => {
-    const { sliderMode, defaultVotePercent } = this.props;
+    const { sliderMode, defaultVotePercent, user, content } = this.props;
     const authorName = post.guestInfo ? post.root_author : post.author;
+    const { id, permlink } = post;
+    const userVote = find(content.active_votes, { voter: user.name }) || {};
+    const isLiked = userVote.percent > 0 && !userVote.fake;
+    const voteType = isLiked ? 'dislike' : 'like';
 
-    if (sliderMode && !postState.isLiked) {
-      this.props.votePost(post.id, authorName, post.permlink, weight);
-    } else if (postState.isLiked) {
-      this.props.votePost(post.id, authorName, post.permlink, 0);
+    let voteWeight;
+
+    if (sliderMode) {
+      voteWeight = postState.isLiked ? 0 : weight;
     } else {
-      this.props.votePost(post.id, authorName, post.permlink, defaultVotePercent);
+      voteWeight = postState.isLiked ? 0 : defaultVotePercent;
     }
+
+    isEmpty(post.title)
+      ? this.props.likeComment(id, voteWeight, voteType, 0, true)
+      : this.props.votePost(id, authorName, permlink, voteWeight);
   };
 
   handleReportClick(post, postState) {
@@ -260,6 +286,7 @@ class PostContent extends React.Component {
       content,
       signature,
       pendingLikes,
+      commentsPendingLikes,
       reblogList,
       pendingReblogs,
       followingList,
@@ -294,15 +321,20 @@ class PostContent extends React.Component {
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(getAuthorName(content)),
     };
-    const pendingLike =
-      pendingLikes[content.id] &&
-      (pendingLikes[content.id].weight > 0 ||
-        (pendingLikes[content.id].weight === 0 && postState.isLiked));
+    const isComment = isEmpty(content?.title);
+    const pendings = isComment ? commentsPendingLikes : pendingLikes;
 
-    const pendingFlag =
-      pendingLikes[content.id] &&
-      (pendingLikes[content.id].weight < 0 ||
-        (pendingLikes[content.id].weight === 0 && postState.isReported));
+    const pendingLike = isComment
+      ? pendings?.some(c => c.id === content.id)
+      : pendings[content.id] &&
+        (pendings[content.id].weight > 0 ||
+          (pendings[content.id].weight === 0 && postState.isLiked));
+
+    const pendingFlag = isComment
+      ? pendings?.some(c => c.id === content.id)
+      : pendings[content.id] &&
+        (pendings[content.id].weight < 0 ||
+          (pendings[content.id].weight === 0 && postState.isReported));
 
     const { title, category, created, body, guestInfo, videoPreview } = content;
     let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
@@ -310,7 +342,7 @@ class PostContent extends React.Component {
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
     const authorName = getAuthorName(content);
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
-    const htmlBody = getHtml(body, content.json_metadata, 'text', { isPost: true });
+    const htmlBody = getHtml(body, content?.json_metadata, 'text', { isPost: true });
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
     const authorFacebook = !isEmpty(userFacebook) ? `by @${userFacebook}` : '';
     const wobjectFacebook = !isEmpty(wobjectsFacebook) ? `@${wobjectsFacebook}` : '';

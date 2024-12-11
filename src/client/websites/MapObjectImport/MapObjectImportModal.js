@@ -40,8 +40,8 @@ const stepsConfig = [
     num: 1,
   },
   {
-    id: 'data_import',
-    title: 'Data import',
+    id: 'search_results',
+    title: 'Search results',
     num: 2,
   },
 ];

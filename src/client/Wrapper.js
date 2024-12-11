@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+import classNames from 'classnames';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
@@ -312,7 +313,11 @@ class Wrapper extends React.PureComponent {
                   <Topnav username={user.name} />
                 </Layout.Header>
               )}
-              <div className="content">
+              <div
+                className={classNames('content', {
+                  'content--widget': isWidget,
+                })}
+              >
                 {!isWidget && (
                   <TopNavigation
                     authenticated={isAuthenticated}
