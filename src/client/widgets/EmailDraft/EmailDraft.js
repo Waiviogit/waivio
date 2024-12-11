@@ -45,30 +45,32 @@ The ${host} Team`;
       <Icon type="mail" className="text-icon email" />
       <span>
         {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
-        <Tooltip
-          placement="topLeft"
-          visible={visible}
-          title={
+        {accessExtend && (
+          <Tooltip
+            placement="topLeft"
+            visible={visible}
+            title={
+              <span
+                onClick={() => {
+                  setShowModal(true);
+                  setVisible(false);
+                }}
+              >
+                <Icon type="user" /> Request backlink
+              </span>
+            }
+            overlayClassName="EmailDraft__tooltip"
+            overlayStyle={{ top: '10px' }}
+          >
             <span
               onClick={() => {
-                setShowModal(true);
-                setVisible(false);
+                setVisible(true);
               }}
             >
-              <Icon type="user" /> Request backlink
+              <Icon type="ellipsis" style={{ fontSize: '20px' }} />
             </span>
-          }
-          overlayClassName="EmailDraft__tooltip"
-          overlayStyle={{ top: '10px' }}
-        >
-          <span
-            onClick={() => {
-              setVisible(true);
-            }}
-          >
-            <Icon type="ellipsis" style={{ fontSize: '20px' }} />
-          </span>
-        </Tooltip>
+          </Tooltip>
+        )}
       </span>
       <Modal
         className={'EmailDraft'}

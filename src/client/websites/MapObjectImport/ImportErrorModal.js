@@ -21,8 +21,7 @@ const errorMessages = {
   noAuthorization: {
     trigger:
       'There is no data import authorization. Please go to the Data Import page and activate it.',
-    message:
-      'Please authorize the Data Import bot to post object updates on the Hive blockchain. You can include the Authorize button here for convenience. The Ok button can be replaced with Cancel.',
+    message: 'Please authorize the Data Import bot to post object updates on the Hive blockchain.',
   },
 };
 
