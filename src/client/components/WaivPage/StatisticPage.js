@@ -14,19 +14,20 @@ import './StatisticPage.less';
 const mainColor = '#ff7449';
 const secondColor = '#f0b645';
 const thirdColor = '#f48b0a';
+const locale = 'en-US';
 
 const StatisticPage = () => {
   const isMobl = isMobile();
   const [metrics, setMetrics] = React.useState([]);
-  const liquidWaiv = round(
-    ((metrics?.tokensInCirculation - metrics?.tokensStaked) * 100) / metrics?.tokensInCirculation,
-    2,
-  );
   const data01 = [
     {
-      name: `Liquid WAIV (${liquidWaiv}%)`,
+      name: `Liquid WAIV (${round(
+        ((metrics?.tokensInCirculation - metrics?.tokensStaked) * 100) /
+          metrics?.tokensInCirculation,
+        2,
+      )}%)`,
       value: round(metrics?.tokensInCirculation - metrics?.tokensStaked, 8),
-      label: (metrics?.tokensInCirculation - metrics?.tokensStaked).toLocaleString('en-IN'),
+      label: (metrics?.tokensInCirculation - metrics?.tokensStaked).toLocaleString(locale),
       fill: secondColor,
     },
     {
@@ -35,7 +36,7 @@ const StatisticPage = () => {
         2,
       )}%)`,
       value: round(+metrics?.tokensStaked, 8),
-      label: Number(metrics?.tokensStaked).toLocaleString('en-IN'),
+      label: Number(metrics?.tokensStaked).toLocaleString(locale),
       fill: mainColor,
     },
   ];
@@ -90,7 +91,7 @@ const StatisticPage = () => {
         <p>
           <FormattedNumber
             value={metrics?.tokensInCirculation}
-            locale={'en-IN'}
+            locale={locale}
             minimumFractionDigits={8}
             maximumFractionDigits={8}
           />
@@ -129,7 +130,7 @@ const StatisticPage = () => {
           Distributed:{' '}
           <FormattedNumber
             value={metrics?.distributedInMonthUSD}
-            locale={'en-IN'}
+            locale={locale}
             minimumFractionDigits={2}
             maximumFractionDigits={2}
           />{' '}
