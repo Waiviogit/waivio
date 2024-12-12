@@ -461,6 +461,11 @@ const routes = {
       pathScope: '/object/:name',
       routes: [
         {
+          path: '',
+          exact: true,
+          component: Views.WobjSwitcherPage,
+        },
+        {
           path: ['/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?'],
           exact: true,
           component: ObjectFeed,
