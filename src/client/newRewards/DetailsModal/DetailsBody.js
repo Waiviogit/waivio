@@ -205,6 +205,11 @@ const DetailsModalBody = ({
               ;
             </li>
           )}
+          {proposition?.qualifiedPayoutToken && (
+            <li>
+              <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>;
+            </li>
+          )}
           {proposition?.description && (
             <li>
               <span>
@@ -342,6 +347,7 @@ DetailsModalBody.propTypes = {
     }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
+    qualifiedPayoutToken: PropTypes.bool,
     frequencyAssign: PropTypes.number,
     payoutToken: PropTypes.string,
     defaultShowLink: PropTypes.string,
