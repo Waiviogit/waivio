@@ -84,6 +84,7 @@ export default {
   ObjectReviewsAndThreads: loableComponent(
     import('../client/object/ObjectReviewsAndThreads/ObjectReviewsAndThreads'),
   ),
+  WobjSwitcherPage: loableComponent(import('../client/object/WobjSwitcherPage/WobjSwitcherPage')),
   CatalogWrap: loableComponent(import('../client/object/Catalog/CatalogWrap')),
   WobjExpertise: loableComponent(import('../client/object/WobjExpertise')),
   UserExpertise: loableComponent(import('../client/user/UserExpertise')),

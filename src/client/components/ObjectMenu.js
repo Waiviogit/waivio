@@ -40,8 +40,12 @@ const ObjectMenu = props => {
   const isNewsfeed = hasType(props.wobject, OBJECT_TYPE.NEWSFEED);
   const isShop = hasType(props.wobject, OBJECT_TYPE.SHOP);
   const isHashtag = hasType(props.wobject, OBJECT_TYPE.HASHTAG);
-  const { name, 0: tab = TAB_NAME.REVIEWS } = useParams();
-
+  const isSpesialPage =
+    isList || isPage || isWidget || isMap || isWebpage || isGroup || isNewsfeed || isShop;
+  const {
+    name,
+    0: tab = isSpesialPage ? props.wobject?.object_type : TAB_NAME.REVIEWS,
+  } = useParams();
   const getItemClasses = key =>
     classNames('ObjectMenu__item', {
       'ObjectMenu__item--active': key.includes(tab),
@@ -115,12 +119,7 @@ const ObjectMenu = props => {
             </li>
           )}
           <li
-            className={getItemClasses([
-              TAB_NAME.REVIEWS,
-              TAB_NAME.THREADS,
-              // isMobile() ? '' : TAB_NAME.ABOUT,
-              '',
-            ])}
+            className={getItemClasses([TAB_NAME.REVIEWS, TAB_NAME.THREADS])}
             data-key={TAB_NAME.REVIEWS}
           >
             <Link to={createLink(TAB_NAME.REVIEWS)}>

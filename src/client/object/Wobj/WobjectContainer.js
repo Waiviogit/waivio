@@ -276,7 +276,7 @@ WobjectContainer.propTypes = {
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
-  weightValue: PropTypes.number.isRequired,
+  weightValue: PropTypes.number,
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
   updates: PropTypes.arrayOf(PropTypes.shape({})),
