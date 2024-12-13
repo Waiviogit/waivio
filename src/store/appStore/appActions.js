@@ -71,6 +71,7 @@ export const getCryptoPriceHistory = (refresh = false) => dispatch => {
     type: GET_CRYPTO_PRICE_HISTORY.ACTION,
     payload: {
       promise: ApiClient.getWalletCryptoPriceHistory(symbols).then(response => {
+        if (!response?.current) return dispatch({ type: GET_CRYPTO_PRICE_HISTORY.ERROR });
         const storeObject = {};
         const eng = adaptMarketDataToEngine(response, symbols);
 
