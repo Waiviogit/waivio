@@ -54,6 +54,10 @@ const WaivPriceChart = () => {
       return moment.utc(tick).format('ddd');
     }
 
+    if (formatType === '1y' && tickValue) {
+      return moment.utc(tick).format('MMM');
+    }
+
     return tickValue;
   };
 
@@ -74,6 +78,7 @@ const WaivPriceChart = () => {
         index,
         dataArr.map(item => item.dateString),
         1,
+        type,
       );
     }
 

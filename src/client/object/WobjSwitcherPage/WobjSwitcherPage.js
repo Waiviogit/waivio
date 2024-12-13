@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useRouteMatch } from 'react-router';
+
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import ObjectReviewsAndThreads from '../ObjectReviewsAndThreads/ObjectReviewsAndThreads';
 import CatalogWrap from '../Catalog/CatalogWrap';
@@ -13,6 +15,7 @@ import WidgetPage from '../WidgetPage/WidgetPage';
 
 const WobjSwitcherPage = () => {
   const wobject = useSelector(getObject);
+  const match = useRouteMatch();
 
   const getPageComponent = () => {
     switch (wobject.object_type) {
@@ -31,7 +34,7 @@ const WobjSwitcherPage = () => {
       case 'shop':
         return <ObjectDepartmentsWobjList wobject={wobject} />;
       case 'group':
-        return <GroupObjectType wobject={wobject} />;
+        return <GroupObjectType match={match} wobject={wobject} />;
 
       default:
         return <ObjectReviewsAndThreads wobject={wobject} />;
