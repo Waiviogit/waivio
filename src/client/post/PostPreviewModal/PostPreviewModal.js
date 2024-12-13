@@ -274,6 +274,7 @@ class PostPreviewModal extends Component {
         )}
         {reviewData?.requirements && this.state.isCheckReviewModalOpen && (
           <CheckReviewModal
+            tags={topics}
             intl={intl}
             isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}
             isReviewValid={this.state.isReviewValid}

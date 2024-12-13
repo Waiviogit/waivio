@@ -21,10 +21,14 @@ const CheckReviewModal = ({
   onCancel,
   onEdit,
   onSubmit,
+  tags,
 }) => {
   const primaryObject = reviewData.requiredObject;
   const secondaryObject = reviewData.secondaryObject;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= reviewData.requirements.minPhotos;
+  const hasWaivioTag = postBody?.includes('#waivio') || tags?.includes('waivio');
+  const isMention = reviewData?.type === 'mentions';
+  const meetsWaivioTagReq = isMention && hasWaivioTag;
   const hasReceipt =
     size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
@@ -107,6 +111,12 @@ const CheckReviewModal = ({
             })}{' '}
             {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
           </div>
+          {isMention && reviewData?.qualifiedPayoutToken && (
+            <div className="check-review-modal__list-item">
+              {getIcon(meetsWaivioTagReq)}
+              Hashtag #waivio
+            </div>
+          )}
         </div>
         <div className="check-review-modal__buttons">
           <Button htmlType="button" onClick={onEdit} size="large">
@@ -140,7 +150,9 @@ CheckReviewModal.propTypes = {
   postBody: PropTypes.string.isRequired,
   isCheckReviewModalOpen: PropTypes.bool,
   reviewData: PropTypes.shape({
+    qualifiedPayoutToken: PropTypes.bool,
     name: PropTypes.string,
+    type: PropTypes.string,
     alias: PropTypes.string,
     guideName: PropTypes.string,
     requirements: PropTypes.shape({
@@ -151,6 +163,7 @@ CheckReviewModal.propTypes = {
     secondaryObject: PropTypes.shape().isRequired,
   }),
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+  tags: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,

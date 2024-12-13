@@ -31,6 +31,7 @@ const DetailsModalBody = ({
     rate,
   });
   const isMentions = proposition?.type === 'mentions';
+  const showQualifiedInfo = proposition?.qualifiedPayoutToken && proposition?.type !== 'reviews';
 
   return (
     <div className="DetailsModal__text-wrap">
@@ -205,7 +206,7 @@ const DetailsModalBody = ({
               ;
             </li>
           )}
-          {proposition?.qualifiedPayoutToken && (
+          {showQualifiedInfo && (
             <li>
               <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>.
             </li>
