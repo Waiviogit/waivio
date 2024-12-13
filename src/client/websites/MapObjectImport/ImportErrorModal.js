@@ -23,6 +23,15 @@ const errorMessages = {
       'There is no data import authorization. Please go to the Data Import page and activate it.',
     message: 'Please authorize the Data Import bot to post object updates on the Hive blockchain.',
   },
+  noBalance: {
+    trigger: 'No info about user WAIV balance',
+    message:
+      'A minimum of $10 worth of WAIV Power is required to perform data import. Please power up some WAIV to continue.',
+  },
+  noWaivPower: {
+    trigger: 'No info about user voting power',
+    message: ' Please like any post to activate the full functionality of your new account.',
+  },
 };
 
 const ImportErrorModal = ({
