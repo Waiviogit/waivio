@@ -330,6 +330,12 @@ export function editorStateToMarkdownSlate(value) {
           url: node.url,
           children: next([{ text: node.hashtag }]),
         }),
+        image: node => ({
+          type: 'image',
+          url: node.url,
+          alt: node.alt || '',
+          title: node.title || '',
+        }),
       },
     })
     .use(remarkGfm)
