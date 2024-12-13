@@ -48,7 +48,11 @@ const CheckReviewModal = ({
   };
 
   const modalBody =
-    hasMinPhotos && hasReceipt && hasObject(secondaryObject) && hasObject(primaryObject) ? (
+    hasMinPhotos &&
+    hasReceipt &&
+    hasObject(secondaryObject) &&
+    hasObject(primaryObject) &&
+    meetsWaivioTagReq ? (
       <React.Fragment>
         <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">
@@ -114,7 +118,7 @@ const CheckReviewModal = ({
           {isMention && reviewData?.qualifiedPayoutToken && (
             <div className="check-review-modal__list-item">
               {getIcon(meetsWaivioTagReq)}
-              Hashtag #waivio
+              #waivio
             </div>
           )}
         </div>
