@@ -207,7 +207,7 @@ const DetailsModalBody = ({
           )}
           {proposition?.qualifiedPayoutToken && (
             <li>
-              <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>;
+              <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>.
             </li>
           )}
           {proposition?.description && (
