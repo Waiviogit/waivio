@@ -129,6 +129,7 @@ export default class ObjectGalleryAlbum extends Component {
             objName={getObjectName(this.props.wObject)}
             key={selectedAlbum.body + selectedAlbum.weight}
             album={selectedAlbum}
+            albums={albumsForRender}
             getMoreRelatedAlbum={moreRelatedAlbum}
             permlink={albumPermlink}
           />

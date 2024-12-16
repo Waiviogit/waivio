@@ -27,8 +27,7 @@ const LightboxHeader = ({
   isPost,
 }) => {
   const avatarOption = 'Set as avatar picture';
-  const filteredAlbums = albums?.filter(album => album?.body !== 'Related');
-  const options = [...filteredAlbums, { body: avatarOption }];
+  const options = [...albums, { body: avatarOption }];
 
   const onSelectOption = opt => {
     if (opt === avatarOption) {
