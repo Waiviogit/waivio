@@ -30,7 +30,11 @@ const CryptoRateInCurrency = ({
             {currency}
           </React.Fragment>
         ) : (
-          <USDDisplay value={currentUSDPrice} currencyDisplay={currencyDisplay} />
+          <USDDisplay
+            precision={minimumFractionDigits}
+            value={currentUSDPrice}
+            currencyDisplay={currencyDisplay}
+          />
         )}
       </span>
       {!withoutPercent && (

@@ -26,7 +26,7 @@ const StatisticPage = () => {
           metrics?.tokensInCirculation,
         2,
       )}%)`,
-      value: round(metrics?.tokensInCirculation - metrics?.tokensStaked, 8),
+      value: round(metrics?.tokensInCirculation - metrics?.tokensStaked, 2),
       label: (metrics?.tokensInCirculation - metrics?.tokensStaked).toLocaleString(locale),
       fill: secondColor,
     },
@@ -35,7 +35,7 @@ const StatisticPage = () => {
         (metrics?.tokensStaked * 100) / metrics?.tokensInCirculation,
         2,
       )}%)`,
-      value: round(+metrics?.tokensStaked, 8),
+      value: round(+metrics?.tokensStaked, 2),
       label: Number(metrics?.tokensStaked).toLocaleString(locale),
       fill: mainColor,
     },
@@ -92,12 +92,16 @@ const StatisticPage = () => {
           <FormattedNumber
             value={metrics?.tokensInCirculation}
             locale={locale}
-            minimumFractionDigits={8}
-            maximumFractionDigits={8}
+            minimumFractionDigits={0}
+            maximumFractionDigits={0}
           />
         </p>
         <h3>Total market capitalization</h3>
-        <USDDisplay value={metrics?.totalMarketCapitalizationUSD} currencyDisplay={'symbol'} />
+        <USDDisplay
+          percision={0}
+          value={round(metrics?.totalMarketCapitalizationUSD)}
+          currencyDisplay={'symbol'}
+        />
         <h3>Annual inflation</h3>
         <p>{metrics?.annualInflation}</p>
         <h3>WAIV staking</h3>

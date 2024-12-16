@@ -176,10 +176,17 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
   );
 };
 
-export const sendPostError = postId => (dispatch, getState, { busyAPI }) => {
-  const authUser = getAuthenticatedUserName(getState());
+export const ADD_POST_IN_SHORTED_LIST = '@post/ADD_POST_IN_SHORTED_LIST';
 
-  busyAPI.instance.sendAsync(subscribeTypes.clientError, [authUser, `shortened post ${postId}`]);
+export const sendPostError = postId => (dispatch, getState, { busyAPI }) => {
+  const state = getState();
+  const authUser = getAuthenticatedUserName(state);
+  const shortedPosts = state.posts.shortedPosts;
+
+  if (!shortedPosts.includes(postId)) {
+    dispatch({ type: ADD_POST_IN_SHORTED_LIST, payload: postId });
+    busyAPI.instance.sendAsync(subscribeTypes.clientError, [authUser, `shortened post ${postId}`]);
+  }
 };
 
 export const voteHistoryPost = (currentPost, author, permlink, weight) => (
