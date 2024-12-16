@@ -5,17 +5,24 @@ import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import moment from 'moment/moment';
 import { isEmpty, round } from 'lodash';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { getTokensEngineChart } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import Loading from '../Icon/Loading';
+import CryptoRateInUsd from '../Sidebar/CrypoCharts/CryptoRateInCurrency';
+import {
+  getTokenRatesInSelectCurrency,
+  getTokenRatesInSelectCurrencyChanged,
+} from '../../../store/walletStore/walletSelectors';
 
 import './WaivPriceChart.less';
-import Loading from '../Icon/Loading';
 
 const periods = ['1d', '7d', '1m', '3m', '6m', '1y', '2y', 'all'];
 const yearsPeriods = ['1y', '2y', 'all'];
 
-const WaivPriceChart = () => {
+const WaivPriceChart = props => {
   const querySelectorSearchParams = new URLSearchParams(location?.search);
   const isWidget = querySelectorSearchParams.get('display');
   const [type, setType] = React.useState('1m');
@@ -101,18 +108,16 @@ const WaivPriceChart = () => {
   return (
     <div className={'WaivPriceChart'}>
       <div className={'WaivPriceChart__container'}>
-        {periods.map(p => (
-          <span
-            className={classNames('WaivPriceChart__period', {
-              'WaivPriceChart__period--active': type === p,
-            })}
-            key={p}
-            onClick={() => setType(p)}
-          >
-            {p}
-          </span>
-        ))}
+        <CryptoRateInUsd
+          currentUSDPrice={props.currencyPrice}
+          priceDifference={props.currencyPriceChange}
+          minimumFractionDigits={2}
+          // currency={'USD'}
+          currencyDisplay={'symbol'}
+          valueClassName={'CryptoTrendingCharts__btc-price'}
+        />
       </div>
+
       <b
         style={{
           display: 'inline-block',
@@ -138,7 +143,7 @@ const WaivPriceChart = () => {
           width={getChartsWidth()}
           height={isMobl ? 250 : 400}
           data={dataArr}
-          margin={{ top: 5, right: 30, left: 0, bottom: 30 }}
+          margin={{ top: 5, right: 30, left: 0, bottom: 10 }}
           padding={{ top: 10, left: 0, right: 0 }}
         >
           {!yearsPeriods && <CartesianGrid strokeDasharray="3 3" />}
@@ -168,8 +173,29 @@ const WaivPriceChart = () => {
           />
         </AreaChart>
       )}
+      <div className={'WaivPriceChart__container'}>
+        {periods.map(p => (
+          <span
+            className={classNames('WaivPriceChart__period', {
+              'WaivPriceChart__period--active': type === p,
+            })}
+            key={p}
+            onClick={() => setType(p)}
+          >
+            {p}
+          </span>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default injectIntl(WaivPriceChart);
+WaivPriceChart.propTypes = {
+  currencyPrice: PropTypes.number,
+  currencyPriceChange: PropTypes.number,
+};
+
+export default connect(state => ({
+  currencyPrice: getTokenRatesInSelectCurrency(state, 'WAIV', 'USD'),
+  currencyPriceChange: getTokenRatesInSelectCurrencyChanged(state, 'WAIV', 'USD'),
+}))(injectIntl(WaivPriceChart));

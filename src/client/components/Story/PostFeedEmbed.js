@@ -16,6 +16,7 @@ export default class PostFeedEmbed extends React.Component {
       thumbnail: PropTypes.string,
       embed: PropTypes.string,
       url: PropTypes.string,
+      id: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
     isPreview: PropTypes.bool,
@@ -103,10 +104,13 @@ export default class PostFeedEmbed extends React.Component {
 
     if (
       isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) &&
-      (embed.thumbnail || this.state.thumbnail) &&
-      !embed.url?.includes('shorts')
+      (embed.thumbnail || this.state.thumbnail)
     ) {
-      return this.renderThumbFirst(embed.thumbnail || this.state.thumbnail);
+      const thumb = embed.url?.includes('shorts')
+        ? `https://i.ytimg.com/vi/${embed?.id}/maxresdefault.jpg`
+        : embed.thumbnail || this.state.thumbnail;
+
+      return this.renderThumbFirst(thumb);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);
     }

@@ -18,7 +18,7 @@ import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getMetadata } from '../../../../common/helpers/postingMetadata';
 import BTooltip from '../../../components/BTooltip';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
-import { getRate, getRewardFund, getWeightValue } from '../../../../store/appStore/appSelectors';
+import { getRate, getRewardFund } from '../../../../store/appStore/appSelectors';
 import { getSideBarLoading, getUser } from '../../../../store/usersStore/usersSelectors';
 import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
@@ -33,7 +33,7 @@ import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
     user,
     rewardFund: getRewardFund(state),
     rate: getRate(state),
-    weightValue: getWeightValue(state, user.wobjects_weight),
+    weightValue: user.wobjects_weight,
     sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
   };
 })

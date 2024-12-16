@@ -124,18 +124,18 @@ const StatisticPage = () => {
             <LabelList formatter={value => `${value}%`} position={'inside'} />
           </Pie>
         </PieChart>{' '}
-        <h3>Development fund</h3>
-        <p>Available: {round(metrics?.availableInMonthUSD, 2)} USD/month</p>
-        <p>
-          Distributed:{' '}
-          <FormattedNumber
-            value={metrics?.distributedInMonthUSD}
-            locale={locale}
-            minimumFractionDigits={2}
-            maximumFractionDigits={2}
-          />{' '}
-          USD/month
-        </p>
+        {/* <h3>Development fund</h3> */}
+        {/* <p>Available: {round(metrics?.availableInMonthUSD, 2)} USD/month</p> */}
+        {/* <p> */}
+        {/*  Distributed:{' '} */}
+        {/*  <FormattedNumber */}
+        {/*    value={metrics?.distributedInMonthUSD} */}
+        {/*    locale={locale} */}
+        {/*    minimumFractionDigits={2} */}
+        {/*    maximumFractionDigits={2} */}
+        {/*  />{' '} */}
+        {/*  USD/month */}
+        {/* </p> */}
       </div>
     </div>
   );

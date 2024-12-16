@@ -1,10 +1,4 @@
 import WebSocket from 'ws';
-import events from 'events';
-
-const emitter = new events.EventEmitter();
-
-const REQUESTS_TO_DISABLE = 15;
-const REQUESTS_TO_RENEW = 3000;
 
 const HIVE_SOCKET_ERR = {
   ERROR: 'error socket closed',
@@ -13,30 +7,27 @@ const HIVE_SOCKET_ERR = {
   TIMEOUT: 'Timeout exceed',
 };
 
+const CONNECTION_ENV = {
+  STAGING: 'wss://waiviodev.com/notifications-api',
+  PRODUCTION: 'wss://www.waivio.com/notifications-api',
+};
+
+const CONNECTION_STRING =
+  process.env.NODE_ENV === 'production' ? CONNECTION_ENV.PRODUCTION : CONNECTION_ENV.STAGING;
+
 class SocketClient {
-  constructor(url, key = '') {
+  constructor(url) {
     this.url = url;
-    this.timeoutCount = 0;
-    this.key = key;
   }
 
   async init() {
     return new Promise(resolve => {
-      this.ws = new WebSocket(this.url, { headers: { 'api-key': this.key } });
+      this.ws = new WebSocket(this.url);
 
       this.ws.on('error', () => {
         console.error('error socket closed');
         this.ws.close();
         resolve({ error: new Error(HIVE_SOCKET_ERR.ERROR) });
-      });
-
-      this.ws.on('message', message => {
-        try {
-          const data = JSON.parse(message.toString());
-
-          emitter.emit(data.id, { data, error: data.error });
-          // eslint-disable-next-line no-empty
-        } catch (error) {}
       });
 
       this.ws.on('open', () => {
@@ -47,22 +38,7 @@ class SocketClient {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  getUniqId() {
-    return `${Date.now().toString()}#${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
-  }
-
-  async sendMessage(message = {}) {
-    if (this.timeoutCount >= REQUESTS_TO_DISABLE) {
-      this.timeoutCount++;
-      if (this.timeoutCount > REQUESTS_TO_RENEW) {
-        this.timeoutCount = 0;
-      }
-
-      return { error: new Error(HIVE_SOCKET_ERR.TIMEOUT) };
-    }
+  async sendMessage(message = '') {
     if (this?.ws?.readyState !== 1) {
       await this.init();
     }
@@ -72,25 +48,12 @@ class SocketClient {
         resolve({ error: new Error(HIVE_SOCKET_ERR.CLOSED) });
       }
 
-      const id = this.getUniqId();
-
-      // eslint-disable-next-line no-param-reassign
-      message.id = id;
-      this.ws.send(JSON.stringify(message));
-      emitter.once(id, ({ data, error }) => {
-        if (error) resolve({ error });
-        resolve(data);
-      });
-
-      setTimeout(() => {
-        if (emitter.eventNames().includes(id)) {
-          this.timeoutCount++;
-          emitter.off(id, () => {});
-          resolve({ error: new Error(HIVE_SOCKET_ERR.TIMEOUT) });
-        }
-      }, 2 * 1000);
+      this.ws.send(message);
+      resolve();
     });
   }
 }
 
-export default SocketClient;
+const wsSocketClient = new SocketClient(CONNECTION_STRING);
+
+export default wsSocketClient;
