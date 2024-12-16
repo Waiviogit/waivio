@@ -68,13 +68,10 @@ const UserBlog = props => {
     return () => props.resetProfileFilters();
   }, [name]);
 
-  const loadMoreContentAction = () => {
-    if (!isFetching && hasMore) {
-      props.getUserProfileBlogPosts(name, { limit, initialLoad: false }).then(res => {
-        props.getTiktokPreviewAction(res.value.posts);
-      });
-    }
-  };
+  const loadMoreContentAction = () =>
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: false }).then(res => {
+      props.getTiktokPreviewAction(res.value.posts);
+    });
 
   return (
     <div className="profile">
