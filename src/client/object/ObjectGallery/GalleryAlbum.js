@@ -21,7 +21,7 @@ const GalleryAlbum = ({ album, intl }) => {
     <div className="GalleryAlbum">
       <Card hoverable cover={<img alt="example" src={imagePath} className="GalleryAlbum__image" />}>
         <Card.Meta
-          title={`${intl.formatMessage({ id: album.body.toLowerCase() })} (${albumCount})`}
+          title={`${intl.formatMessage({ id: album?.body?.toLowerCase() })} (${albumCount})`}
         />
       </Card>
     </div>

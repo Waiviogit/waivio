@@ -1,7 +1,21 @@
 .WaivPriceChart {
   &__container {
-    margin-bottom: 10px;
-    margin-left: 50px;
+    //margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+
+    .CryptoTrendingCharts__btc-price {
+      color: rgb(37 37 38);
+    }
+
+    .CryptoTrendingCharts__chart-caret {
+      display: none;
+    }
+
+    .CryptoTrendingCharts__btc-price,
+    .CryptoTrendingCharts__chart-percent {
+      font-size: 18px;
+    }
   }
 
   &__period {

@@ -21,17 +21,19 @@ const USDDisplay = React.memo(({ value, currencyDisplay }) => {
   );
 
   const formattedCurrency = num => {
+    const type = currencyInfo.type || 'USD';
+
     switch (currencyDisplay) {
       case 'code':
         return (
           <React.Fragment>
-            {formatted(num)} {currencyInfo.type}
+            {formatted(num)} {type}
           </React.Fragment>
         );
       case 'symbol':
         return (
           <React.Fragment>
-            {currencyPrefix[currencyInfo.type]} {formatted(num)}
+            {currencyPrefix[type]} {formatted(num)}
           </React.Fragment>
         );
       default:
