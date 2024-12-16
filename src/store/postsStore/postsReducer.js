@@ -40,6 +40,7 @@ const initialState = {
   list: {},
   postsStates: {},
   lastId: null,
+  shortedPosts: [],
 };
 
 const posts = (state = initialState, action) => {
@@ -486,6 +487,13 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         recommendedPosts: [],
+      };
+    }
+
+    case postsActions.ADD_POST_IN_SHORTED_LIST: {
+      return {
+        ...state,
+        shortedPosts: [...state.shortedPosts, action.payload],
       };
     }
 

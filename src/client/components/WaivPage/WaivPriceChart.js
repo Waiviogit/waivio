@@ -57,7 +57,7 @@ const WaivPriceChart = props => {
     const prevYear = index > 0 ? ticks[index - 1].split('-')[itemIndex] : currentYear;
     const tickValue = currentYear === prevYear ? '' : currentYear;
 
-    if (formatType === '7d' && tickValue) {
+    if (['1d', '7d'].includes(formatType) && tickValue) {
       return moment.utc(tick).format('ddd');
     }
 
@@ -69,7 +69,7 @@ const WaivPriceChart = props => {
   };
 
   const tickFormatterXAxis = (value, index) => {
-    if (type === '7d') {
+    if (type === '7d' || type === '1d') {
       return CustomTickFormatter(
         value,
         index,
@@ -111,7 +111,7 @@ const WaivPriceChart = props => {
         <CryptoRateInUsd
           currentUSDPrice={props.currencyPrice}
           priceDifference={props.currencyPriceChange}
-          minimumFractionDigits={2}
+          minimumFractionDigits={3}
           // currency={'USD'}
           currencyDisplay={'symbol'}
           valueClassName={'CryptoTrendingCharts__btc-price'}
@@ -148,11 +148,10 @@ const WaivPriceChart = props => {
         >
           {!yearsPeriods && <CartesianGrid strokeDasharray="3 3" />}
           <XAxis
-            tickLine={!isYearPeriod && type !== '7d'}
-            interval={isYearPeriod || type === '7d' ? 0 : 'preserveEnd'}
+            tickLine={!isYearPeriod && type !== '7d' && type !== '1d'}
+            interval={isYearPeriod || type === '7d' || type === '1d' ? 0 : 'preserveEnd'}
             tickFormatter={tickFormatterXAxis}
             dataKey="dateString"
-            tick={![periods[0]].includes(type)}
           />
           <YAxis />
           <Tooltip
@@ -173,7 +172,7 @@ const WaivPriceChart = props => {
           />
         </AreaChart>
       )}
-      <div className={'WaivPriceChart__container'}>
+      <div className={'WaivPriceChart__container WaivPriceChart__container--marginBottom'}>
         {periods.map(p => (
           <span
             className={classNames('WaivPriceChart__period', {

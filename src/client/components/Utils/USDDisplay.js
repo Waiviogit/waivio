@@ -6,17 +6,24 @@ import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
-const USDDisplay = React.memo(({ value, currencyDisplay }) => {
+const USDDisplay = React.memo(({ value, currencyDisplay, precision }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const absValue = Math.abs(value) || 0;
-  const precision = absValue > 0.01 || absValue === 0 || absValue < 0.001 ? 2 : 3;
+  // eslint-disable-next-line no-nested-ternary
+  const percisionValue =
+    // eslint-disable-next-line no-nested-ternary
+    typeof precision === 'number'
+      ? precision
+      : absValue > 0.01 || absValue === 0 || absValue < 0.001
+      ? 2
+      : 3;
   const sum = absValue * currencyInfo.rate;
   const formatted = num => (
     <FormattedNumber
       value={num}
       locale={'en-IN'}
-      minimumFractionDigits={precision}
-      maximumFractionDigits={precision}
+      minimumFractionDigits={percisionValue}
+      maximumFractionDigits={percisionValue}
     />
   );
 
@@ -50,6 +57,7 @@ const USDDisplay = React.memo(({ value, currencyDisplay }) => {
 
 USDDisplay.propTypes = {
   value: PropTypes.number,
+  precision: PropTypes.number,
   currencyDisplay: PropTypes.string,
   style: PropTypes.shape({}),
 };
