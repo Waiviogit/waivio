@@ -25,7 +25,16 @@
   }
 
   &__selector {
-    .filters-selector();
+    font-size: 1rem;
+    font-weight: 400;
+
+    & > span {
+      color: var(--website-color);
+    }
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
 
     & > span {
       color: var(--website-color);

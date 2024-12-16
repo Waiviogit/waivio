@@ -4,21 +4,22 @@
 .MatchBots {
   &__title-wrap {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
 
     @media @small {
       justify-content: space-between;
+      align-items: center;
     }
   }
 
   &__title {
-    display: none;
-    font-size: 1.7em;
+    font-size: 20px;
     font-weight: 500;
     margin-bottom: 1rem;
 
     @media @small {
+      font-size: 1.7em;
       display: block;
     }
   }
