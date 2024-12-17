@@ -118,18 +118,14 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     embed: () => {
       if (embeds && embed) {
         if (embed?.type === 'music') {
-          const iframeRegex = /<iframe[^>]*src="([^"]*)"[^>]*><\/iframe>/g;
-
-          const extractIframe = body => {
-            const matches = body.match(iframeRegex);
-
-            return matches ? matches[0] : null;
-          };
-
-          const iframe = extractIframe(post.fullBody || post.body);
-
           // eslint-disable-next-line react/no-danger
-          return <div dangerouslySetInnerHTML={{ __html: iframe }} />;
+          return (
+            imagePath && (
+              <div key={imagePath} className="Story__content__img-container">
+                <LazyLoadImage src={getImagePathPost(imagePath)} threshold={250} />
+              </div>
+            )
+          );
         }
 
         return <PostFeedEmbed isPreview inPost key="embed" embed={embed} />;

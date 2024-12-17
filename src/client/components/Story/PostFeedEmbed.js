@@ -87,8 +87,7 @@ export default class PostFeedEmbed extends React.Component {
                 this.props.embed.url?.includes('shorts')) &&
               this.props.inPost,
             'PostFeedEmbed__preview--thinFeedMas':
-              this.props.embed.provider_name === 'TikTok' ||
-              (this.props.embed.url?.includes('shorts') && this.props.isSocial),
+              this.props.embed.url?.includes('shorts') && this.props.isSocial,
           })}
           src={thumb}
         />
