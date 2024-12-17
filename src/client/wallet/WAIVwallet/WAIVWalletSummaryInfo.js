@@ -147,7 +147,7 @@ const WAIVWalletSummaryInfo = props => {
           </p>
           <WalletAction
             mainKey={props.isGuest ? 'transfer' : 'power_up'}
-            withdrawCurrencyOption={['LTC', 'BTC', 'ETH', 'HIVE']}
+            withdrawCurrencyOption={['LTC', 'BTC', 'ETH', 'HIVE', 'HBD']}
             options={props.isGuest ? [] : ['transfer']}
             mainCurrency={'WAIV'}
           />

@@ -153,13 +153,15 @@ const WithdrawModal = props => {
   // eslint-disable-next-line consistent-return
   const handleWithdraw = async () => {
     let json = null;
+    const isHbd = pair.to_coin_symbol === 'HBD';
+    const address = isHbd ? userName : walletAddress;
 
     if (pair.symbol === 'WAIV') {
       const data = {
         quantity: String(fromAmount),
         inputSymbol: pair.symbol,
         outputSymbol: pair.to_coin_symbol,
-        address: pair.to_coin_symbol === 'HIVE' ? hiveBeneficiaryAccount : walletAddress,
+        address: pair.to_coin_symbol === 'HIVE' ? hiveBeneficiaryAccount : address,
       };
 
       if (isGuest) {
@@ -168,6 +170,7 @@ const WithdrawModal = props => {
       const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
 
       if (!customJsonPayload) return null;
+
       json = JSON.stringify(customJsonPayload);
     } else {
       // eslint-disable-next-line no-lonely-if

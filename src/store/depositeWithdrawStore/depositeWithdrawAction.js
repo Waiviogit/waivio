@@ -106,6 +106,14 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
           pair: 'WAIV -> SWAP.HIVE',
           title: 'WAIV - HIVE',
         },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'HBD',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.HBD',
+          title: 'WAIV - HBD',
+        },
       ]);
 
       return {

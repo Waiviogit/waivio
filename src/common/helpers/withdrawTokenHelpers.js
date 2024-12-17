@@ -11,6 +11,7 @@ const AVAILABLE_TOKEN_WITHDRAW = {
   HIVE: 'SWAP.HIVE',
   LTC: 'SWAP.LTC',
   ETH: 'SWAP.ETH',
+  HBD: 'SWAP.HBD',
 };
 
 const DEFAULT_PRECISION = 8;
@@ -155,6 +156,8 @@ const validateAmount = async ({ amount, outputSymbol }) => {
     'SWAP.BTC': validateBtcAmount,
     LTC: validateLtcAmount,
     'SWAP.LTC': validateLtcAmount,
+    HBD: validateLtcAmount,
+    'SWAP.HBD': validateLtcAmount,
   };
 
   return validation[outputSymbol](amount);
@@ -266,6 +269,13 @@ const withdrawParams = Object.freeze({
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.BTC'],
+    exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
+  },
+  HBD: {
+    getSwapData: indirectSwapData,
+    withdrawContract: getWithdrawToAddress,
+    tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.HBD'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
     prediction: 8,
   },
