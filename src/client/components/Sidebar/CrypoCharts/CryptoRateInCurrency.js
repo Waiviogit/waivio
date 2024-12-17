@@ -26,6 +26,7 @@ const CryptoRateInCurrency = ({
             <FormattedNumber
               value={currentUSDPrice}
               minimumFractionDigits={minimumFractionDigits}
+              maximumFractionDigits={minimumFractionDigits}
             />{' '}
             {currency}
           </React.Fragment>
@@ -82,6 +83,7 @@ CryptoRateInCurrency.defaultProps = {
   currency: '',
   withoutPercent: false,
   currencyDisplay: 'code',
+  minimumFractionDigits: 2,
 };
 
 export default CryptoRateInCurrency;

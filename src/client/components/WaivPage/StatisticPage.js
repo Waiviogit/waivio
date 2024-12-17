@@ -98,7 +98,7 @@ const StatisticPage = () => {
         </p>
         <h3>Total market capitalization</h3>
         <USDDisplay
-          percision={0}
+          precision={0}
           value={round(metrics?.totalMarketCapitalizationUSD)}
           currencyDisplay={'symbol'}
         />

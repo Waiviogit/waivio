@@ -43,10 +43,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   const isNewsfeedObjectPosts = (match.params[0] === 'newsfeed' || inNewsFeed) && parentName;
   const loadingCondition =
     wobject.object_type === 'newsfeed'
-      ? !isNil(newsPermlink) &&
-        ((loadingPropositions && content?.length < limit) ||
-          (isFetching && content?.length < limit))
-      : (loadingPropositions && content?.length < limit) || (isFetching && content?.length < limit);
+      ? !isNil(newsPermlink) && (loadingPropositions || (isFetching && !content?.length))
+      : loadingPropositions || (isFetching && !content?.length);
   let newsPerml;
 
   const getFeedPosts = permlink => {
@@ -61,6 +59,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
             newsPermlink: res?.newsFeed?.permlink,
           }),
         );
+
         setNewsPermlink(res?.newsFeed?.permlink);
       });
     } else {
@@ -82,7 +81,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   const getNewsPermlink = () => {
     if (
       (isEmpty(match.params[1]) || isNil(match.params[1])) &&
-      (!['newsfeed', 'newsFilter'].includes(match.params[0]) || !inNewsFeed)
+      !['newsfeed', 'newsFilter'].includes(match.params[0]) &&
+      !inNewsFeed
     )
       return undefined;
 
@@ -94,7 +94,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
       getFeedPosts(wobject?.newsFeed?.permlink);
     } else if (parentName) {
       isNewsfeedObjectPosts
-        ? getObject(parentName).then(wobj => {
+        ? getObject(name).then(wobj => {
             newsPerml = wobj?.newsFeed?.permlink;
             setNewsPermlink(newsPerml);
             getFeedPosts(newsPerml);
