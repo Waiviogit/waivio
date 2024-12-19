@@ -83,7 +83,7 @@ const StatisticPage = () => {
   return (
     <div className={'StatisticPage'}>
       <div className={'StatisticPage__section'}>
-        <h2>WAIV token at a glance</h2>
+        <h2>WAIV TOKEN PRICE</h2>
         <div>
           <WaivPriceChart />
         </div>
