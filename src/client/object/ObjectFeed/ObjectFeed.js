@@ -23,6 +23,8 @@ import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './ObjectFeed.less';
 
+let skip = 0;
+
 const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) => {
   const [loadingPropositions, setLoadingPropositions] = useState(false);
   const [newsPermlink, setNewsPermlink] = useState('');
@@ -37,7 +39,6 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   const content = uniq(objectFeed);
   const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
   const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
-  const skip = content.length;
   const query = new URLSearchParams(history.location.search);
   const isNewsfeedCategoryType = query.get('category') === 'newsfeed';
   const isNewsfeedObjectPosts = (match.params[0] === 'newsfeed' || inNewsFeed) && parentName;
@@ -48,6 +49,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   let newsPerml;
 
   const getFeedPosts = permlink => {
+    skip = +limit;
     if (isNewsfeedCategoryType) {
       getObject(name).then(res => {
         dispatch(
@@ -108,6 +110,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   }, [parentName]);
 
   const loadMoreContentAction = () => {
+    skip += limit;
     hasMore &&
       dispatch(
         getMoreObjectPosts({
