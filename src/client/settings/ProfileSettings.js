@@ -512,7 +512,7 @@ export default class ProfileSettings extends React.Component {
                       handleObjectSelect={this.handleObjectSelect}
                       editorEnabled
                       initialPosTopBtn={'11.5px'}
-                      initialBody={form.getFieldValue('signature')}
+                      initialBody={profile.signature}
                       setShowEditorSearch={this.setShowEditorSearch}
                       setEditorCb={this.setEditor}
                     />,
