@@ -31,6 +31,7 @@ const DetailsModalBody = ({
     rate,
   });
   const isMentions = proposition?.type === 'mentions';
+  const showQualifiedInfo = proposition?.qualifiedPayoutToken && proposition?.type !== 'reviews';
 
   return (
     <div className="DetailsModal__text-wrap">
@@ -205,6 +206,11 @@ const DetailsModalBody = ({
               ;
             </li>
           )}
+          {showQualifiedInfo && (
+            <li>
+              <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>.
+            </li>
+          )}
           {proposition?.description && (
             <li>
               <span>
@@ -342,6 +348,7 @@ DetailsModalBody.propTypes = {
     }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
+    qualifiedPayoutToken: PropTypes.bool,
     frequencyAssign: PropTypes.number,
     payoutToken: PropTypes.string,
     defaultShowLink: PropTypes.string,

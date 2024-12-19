@@ -153,8 +153,6 @@ const CatalogWrap = props => {
     setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {})));
   };
 
-  const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
-
   const getListRow = listItem => {
     const isRejected = getAppendDownvotes(listItem?.active_votes).some(
       item => item?.voter === userName,
@@ -217,7 +215,7 @@ const CatalogWrap = props => {
       );
     }
 
-    return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
+    return <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
   const getMenuList = () => {

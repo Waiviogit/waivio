@@ -5,9 +5,9 @@ import { Icon, Tag } from 'antd';
 import { isNaN } from 'lodash';
 import { connect } from 'react-redux';
 import WeightDisplay from './Utils/WeightDisplay';
-import { getRate, getRewardFund, getWeightValue } from '../../store/appStore/appSelectors';
+import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 
-const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
+const WeightTag = ({ intl, weight, rewardFund, rate }) => {
   const isValidWeight = isNaN(weight);
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const tagTitle = intl.formatMessage({
@@ -17,7 +17,7 @@ const WeightTag = ({ intl, weight, rewardFund, rate, weightValue }) => {
   });
 
   if (isFullParams) {
-    const expertize = weightValue > 0 ? weightValue : 0;
+    const expertize = weight > 0 ? weight : 0;
 
     return (
       <span className="Weight" title={tagTitle}>
@@ -40,7 +40,6 @@ WeightTag.propTypes = {
   weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   rewardFund: PropTypes.shape().isRequired,
   rate: PropTypes.number,
-  weightValue: PropTypes.number,
 };
 
 WeightTag.defaultProps = {
@@ -49,8 +48,7 @@ WeightTag.defaultProps = {
   weightValue: 0,
 };
 
-export default connect((state, ownProp) => ({
-  weightValue: getWeightValue(state, ownProp.weight),
+export default connect(state => ({
   rate: getRate(state),
   rewardFund: getRewardFund(state),
 }))(injectIntl(WeightTag));

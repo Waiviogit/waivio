@@ -22,7 +22,15 @@ import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObject } from '../../../waivioApi/ApiClient';
 
-const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode, intl }) => {
+const ObjectFeedContainer = ({
+  history,
+  match,
+  wobject,
+  userName,
+  isPageMode,
+  intl,
+  inNewsFeed,
+}) => {
   const [nestedWobj, setNestedWobj] = useState({});
   const isAuthenticated = useSelector(getIsAuthenticated);
   const locale = useSelector(getUsedLocale);
@@ -67,6 +75,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode, in
           history={history}
           handleCreatePost={handleWriteReviewClick}
           wobject={wobject}
+          inNewsFeed={inNewsFeed}
         />
       )}
     </React.Fragment>
@@ -80,6 +89,7 @@ ObjectFeedContainer.propTypes = {
   wobject: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   isPageMode: PropTypes.bool,
+  inNewsFeed: PropTypes.bool,
 };
 
 ObjectFeedContainer.defaultProps = {

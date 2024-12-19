@@ -116,6 +116,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'drafts';
       break;
+    case '/new-accounts':
+      pageName = 'tools';
+      filterName = 'new_accounts';
+      break;
     case '/user-affiliate-codes':
       pageName = 'tools';
       filterName = 'affiliate_codes';
@@ -185,6 +189,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'website';
       filterName = 'create';
       break;
+    case '/manage':
+      pageName = 'website';
+      filterName = 'manage';
+      break;
     case '/payments':
       pageName = 'website';
       filterName = 'payments';
@@ -201,6 +209,7 @@ const MobileNavigation = ({ location, match }) => {
     default:
       break;
   }
+
   const page = <FormattedMessage id={`mobnav_${pageName}`} defaultMessage={pageName} />;
 
   return (

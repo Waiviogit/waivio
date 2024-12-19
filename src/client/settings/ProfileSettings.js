@@ -39,24 +39,6 @@ import './Settings.less';
 
 const FormItem = Form.Item;
 
-function mapPropsToFields(props) {
-  const metadata = getMetadata(props.user);
-
-  const profile = metadata.profile || {};
-  const getSingatureBody = body =>
-    body?.children ? editorStateToMarkdownSlate(body?.children) : body;
-
-  return Object.keys(profile).reduce(
-    (a, b) => ({
-      ...a,
-      [b]: Form.createFormField({
-        value: b === 'signature' ? getSingatureBody(profile[b]) : profile[b],
-      }),
-    }),
-    {},
-  );
-}
-
 @requiresLogin
 @injectIntl
 @connect(
@@ -74,9 +56,7 @@ function mapPropsToFields(props) {
     searchObjectsAutoCompete,
   },
 )
-@Form.create({
-  mapPropsToFields,
-})
+@Form.create()
 export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -338,7 +318,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   render() {
-    const { intl, form } = this.props;
+    const { intl, form, user } = this.props;
     const {
       bodyHTML,
       isModal,
@@ -352,6 +332,9 @@ export default class ProfileSettings extends React.Component {
       errors,
     } = this.state;
     const { getFieldDecorator, getFieldValue } = form;
+    const metadata = getMetadata(user);
+    const profile = metadata.profile || {};
+
     const hasErrors = Object.values(errors).some(e => e);
 
     return (
@@ -368,7 +351,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('name')(
+                    {getFieldDecorator('name', { initialValue: profile.name || '' })(
                       <Input
                         size="large"
                         placeholder={intl.formatMessage({
@@ -386,7 +369,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('about')(
+                    {getFieldDecorator('about', { initialValue: profile.about || '' })(
                       <Input.TextArea
                         autoSize={{ minRows: 2, maxRows: 6 }}
                         placeholder={intl.formatMessage({
@@ -405,7 +388,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('location')(
+                    {getFieldDecorator('location', { initialValue: profile.location || '' })(
                       <Input
                         size="large"
                         placeholder={intl.formatMessage({
@@ -424,7 +407,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('email')(
+                    {getFieldDecorator('email', { initialValue: profile.email || '' })(
                       <Input
                         size="large"
                         placeholder={intl.formatMessage({
@@ -443,7 +426,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('website')(
+                    {getFieldDecorator('website', { initialValue: profile.website || '' })(
                       <Input
                         size="large"
                         placeholder={intl.formatMessage({
@@ -461,7 +444,9 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('profile_image')(
+                    {getFieldDecorator('profile_image', {
+                      initialValue: profile.profile_image || '',
+                    })(
                       <div className="Settings__profile-image">
                         <Avatar
                           size="large"
@@ -485,7 +470,7 @@ export default class ProfileSettings extends React.Component {
                 </h3>
                 <div className="Settings__section__inputs">
                   <FormItem>
-                    {getFieldDecorator('cover_image')(
+                    {getFieldDecorator('cover_image', { initialValue: profile.cover_image || '' })(
                       <div className="Settings__profile-image">
                         <Avatar size="large" shape="square" icon="picture" src={coverPicture} />
                         <Button type="primary" onClick={this.onOpenChangeCoverModal}>
@@ -507,6 +492,7 @@ export default class ProfileSettings extends React.Component {
                   <SocialInputs
                     setErrors={val => this.setState({ errors: val })}
                     intl={intl}
+                    metadata={metadata}
                     getFieldDecorator={getFieldDecorator}
                     getFieldValue={getFieldValue}
                     errors={errors}
@@ -518,7 +504,7 @@ export default class ProfileSettings extends React.Component {
                   <FormattedMessage id="profile_signature" defaultMessage="Signature" />
                 </h3>
                 <div className="Settings__editor">
-                  {getFieldDecorator('signature')(
+                  {getFieldDecorator('signature', { initialValue: profile.signature || '' })(
                     <EditorSlate
                       isComment
                       isShowEditorSearch={this.state.isShowEditorSearch}
@@ -526,7 +512,7 @@ export default class ProfileSettings extends React.Component {
                       handleObjectSelect={this.handleObjectSelect}
                       editorEnabled
                       initialPosTopBtn={'11.5px'}
-                      initialBody={form.getFieldValue('signature')}
+                      initialBody={profile.signature}
                       setShowEditorSearch={this.setShowEditorSearch}
                       setEditorCb={this.setEditor}
                     />,

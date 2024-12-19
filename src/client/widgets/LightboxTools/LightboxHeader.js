@@ -90,11 +90,13 @@ const LightboxHeader = ({
                 className={'LightboxTools__select'}
                 dropdownClassName={'LightboxTools__dropdown'}
               >
-                {options.map(al => (
-                  <Select.Option key={al.body} label={al.body}>
-                    {al.body}{' '}
-                  </Select.Option>
-                ))}
+                {options
+                  ?.filter(a => albumName !== a.body)
+                  .map(al => (
+                    <Select.Option key={al.body} label={al.body}>
+                      {avatarOption === al.body ? al.body : `Add to album: ${al.body}`}{' '}
+                    </Select.Option>
+                  ))}
               </Select>
             </>
           )}

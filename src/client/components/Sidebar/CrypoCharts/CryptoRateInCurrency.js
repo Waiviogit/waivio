@@ -11,6 +11,7 @@ const CryptoRateInCurrency = ({
   currency,
   valueClassName,
   withoutPercent,
+  currencyDisplay,
 }) => {
   const usdIncrease = priceDifference ? priceDifference >= 0 : false;
   let usdPriceDifferencePercent = priceDifference;
@@ -25,11 +26,16 @@ const CryptoRateInCurrency = ({
             <FormattedNumber
               value={currentUSDPrice}
               minimumFractionDigits={minimumFractionDigits}
+              maximumFractionDigits={minimumFractionDigits}
             />{' '}
             {currency}
           </React.Fragment>
         ) : (
-          <USDDisplay value={currentUSDPrice} currencyDisplay={'code'} />
+          <USDDisplay
+            precision={minimumFractionDigits}
+            value={currentUSDPrice}
+            currencyDisplay={currencyDisplay}
+          />
         )}
       </span>
       {!withoutPercent && (
@@ -69,12 +75,15 @@ CryptoRateInCurrency.propTypes = {
   minimumFractionDigits: PropTypes.number.isRequired,
   withoutPercent: PropTypes.bool,
   currency: PropTypes.string,
+  currencyDisplay: PropTypes.string,
   valueClassName: PropTypes.string.isRequired,
 };
 
 CryptoRateInCurrency.defaultProps = {
   currency: '',
   withoutPercent: false,
+  currencyDisplay: 'code',
+  minimumFractionDigits: 2,
 };
 
 export default CryptoRateInCurrency;

@@ -2664,5 +2664,9 @@
   "match_bots_reposting_bot_auth_text": "The Reposting bot requires authorization to distribute votes on your behalf: ",
   "reposting_bot": "Reposting bot",
   "mobnav_reposting_bot": "Reposting bot",
-  "object_field_promotion": "Promotion"
+  "object_field_promotion": "Promotion",
+  "mobnav_new_accounts": "New accounts",
+  "mobnav_claim_authority": "Claim authority",
+  "mobnav_tags_bot": "Tags bot",
+  "mobnav_payments": "Reports"
 }

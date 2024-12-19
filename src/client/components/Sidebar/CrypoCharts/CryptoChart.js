@@ -52,7 +52,7 @@ const CryptoChart = props => {
             currentUSDPrice={props.usdPrice}
             priceDifference={props.usdPriceChange}
             withoutPercent={props.withoutPercent}
-            minimumFractionDigits={3}
+            minimumFractionDigits={2}
             valueClassName={'CryptoTrendingCharts__usd-price'}
           />
           {props.currency && (

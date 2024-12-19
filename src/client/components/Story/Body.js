@@ -127,7 +127,7 @@ export function getHtml(
     }),
   );
 
-  if (body.length - parsedBody.length > 500 && sendPostError) {
+  if (body.length - parsedBody.length > 1000 && sendPostError) {
     sendPostError();
   }
 

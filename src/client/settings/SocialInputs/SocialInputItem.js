@@ -15,6 +15,7 @@ const SocialInputItem = ({
   getFieldDecorator,
   setErrors,
   errors,
+  metadata,
 }) => {
   const [isInvalid, setIsInvalid] = useState();
   const validateWalletAddressClassList = classNames('SocialInputItem__addressValidate', {
@@ -66,6 +67,7 @@ const SocialInputItem = ({
     <>
       <Form.Item key={profile.id}>
         {getFieldDecorator(profile.id, {
+          initialValue: metadata?.profile[profile.id] || '',
           rules: [
             {
               message: intl.formatMessage({
@@ -106,6 +108,7 @@ const SocialInputItem = ({
 
 SocialInputItem.propTypes = {
   profile: PropTypes.shape().isRequired,
+  metadata: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   errors: PropTypes.arrayOf().isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
