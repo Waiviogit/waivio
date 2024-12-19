@@ -234,7 +234,13 @@ class ObjectInfo extends React.Component {
 
         return [
           ...res,
-          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+          {
+            ...curr,
+            body: JSON.stringify({
+              ...itemBody,
+              title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+            }),
+          },
         ];
       }
 
