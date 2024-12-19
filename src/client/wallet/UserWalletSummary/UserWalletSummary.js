@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
+import { Button } from 'antd';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
@@ -24,8 +25,14 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 import './UserWalletSummary.less';
+import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
 
-const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
+const getFormattedTotalDelegatedSP = (
+  user,
+  totalVestingShares,
+  totalVestingFundSteem,
+  showBrackets = true,
+) => {
   const totalDelegatedSP = calculateTotalDelegatedSP(
     user,
     totalVestingShares,
@@ -46,9 +53,9 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {totalDelegatedSP > 0 ? ' (+' : ' ('}
+          {showBrackets && (totalDelegatedSP > 0 ? ' (+' : ' (')}
           <FormattedNumber value={totalDelegatedSP} />
-          {')'}
+          {showBrackets && ')'}
         </span>
       </BTooltip>
     );
@@ -57,7 +64,12 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
   return null;
 };
 
-const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingFundSteem) => {
+const getFormattedPendingWithdrawalSP = (
+  user,
+  totalVestingShares,
+  totalVestingFundSteem,
+  showMinus = true,
+) => {
   const pendingWithdrawalSP = calculatePendingWithdrawalSP(
     user,
     totalVestingShares,
@@ -80,7 +92,7 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {' - '}
+          {showMinus && ' - '}
           <FormattedNumber value={pendingWithdrawalSP} />
         </span>
       </BTooltip>
@@ -102,6 +114,7 @@ const UserWalletSummary = ({
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
@@ -122,6 +135,7 @@ const UserWalletSummary = ({
         totalVestingFundSteem,
       ),
     }));
+
     const delegateMapList = lists.delegated.map(item => ({
       to: item.delegatee,
       quantity: formatter.vestToSteem(
@@ -145,6 +159,12 @@ const UserWalletSummary = ({
     setUndeligatedList(undelegateMapList);
   };
 
+  const openDetailsModal = () => {
+    if (hasDelegations) {
+      setVisible(true);
+    }
+  };
+
   useEffect(() => {
     if (totalVestingShares && totalVestingFundSteem && !isGuest) setDelegationLists();
   }, [totalVestingShares, totalVestingFundSteem]);
@@ -155,7 +175,7 @@ const UserWalletSummary = ({
         <div className="UserWalletSummary__item">
           <img
             className="UserWalletSummary__icon hive"
-            src="/images/icons/logo-hive-wallet.svg"
+            src="/images/icons/cryptocurrencies/hive.png"
             alt="hive"
           />
           <div className="UserWalletSummary__label">
@@ -193,18 +213,11 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__label">
                 <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
               </div>
-              <div
-                className={powerClassList}
-                onClick={() => {
-                  if (hasDelegations) {
-                    setVisible(true);
-                  }
-                }}
-              >
+              <div className={powerClassList} onClick={openDetailsModal}>
                 {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
-                  <span className={`${user.to_withdraw ? 'red' : ''}`}>
+                  <span>
                     <FormattedNumber
                       value={parseFloat(
                         formatter.vestToSteem(
@@ -231,10 +244,81 @@ const UserWalletSummary = ({
               </p>
               <WalletAction mainCurrency={'HP'} mainKey={'power_down'} options={['delegate']} />
             </div>
+            {user.to_withdraw !== 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="power_down" defaultMessage="Power Down" />
+                  </div>
+                  <div className={powerClassList}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        {getFormattedPendingWithdrawalSP(
+                          user,
+                          totalVestingShares,
+                          totalVestingFundSteem,
+                          false,
+                        )}
+                        {' HP'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
+                    <FormattedDate value={`${user.next_vesting_withdrawal}Z`} />{' '}
+                    <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
+                  </p>
+                  <Button
+                    onClick={() => setShowCancelPowerDown(true)}
+                    className={'UserWalletSummary__button'}
+                  >
+                    Cancel{' '}
+                  </Button>
+                </div>
+              </div>
+            )}
+            {hasDelegations && (
+              <div className="UserWalletSummary__itemWrap--no-border">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="hive_delegated" defaultMessage="HIVE Delegated" />
+                  </div>
+                  <div className={powerClassList}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        {getFormattedTotalDelegatedSP(
+                          user,
+                          totalVestingShares,
+                          totalVestingFundSteem,
+                          false,
+                        )}
+                        {' HP'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">User-delegated staked tokens</p>
+                  <Button className={'UserWalletSummary__button'} onClick={openDetailsModal}>
+                    Details{' '}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
           <div className="UserWalletSummary__itemWrap">
             <div className="UserWalletSummary__item">
-              <i className="iconfont icon-Dollar UserWalletSummary__icon" />
+              <img
+                className="UserWalletSummary__icon hive"
+                src="/images/icons/cryptocurrencies/hbd-icon.svg"
+                alt="hive"
+              />
               <div className="UserWalletSummary__label">Hive Backed Dollar</div>
               <div className="UserWalletSummary__value">
                 {user.fetching ? (
@@ -292,6 +376,13 @@ const UserWalletSummary = ({
           recivedList={recivedList}
           undeligatedList={undeligatedList}
           symbol={'HP'}
+        />
+      )}
+      {showCancelPowerDown && (
+        <CancelPowerDownModal
+          account={user.name}
+          showCancelPowerDown={showCancelPowerDown}
+          setShowCancelPowerDown={setShowCancelPowerDown}
         />
       )}
     </WalletSummaryInfo>
