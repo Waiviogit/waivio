@@ -15,8 +15,9 @@ const divideString = (input, length) => {
 };
 
 const errorFormatter = (error, origin) => {
-  const string = `Caught exception: ${error}
-  Exception origin: ${origin}`;
+  const string = `
+  Caught exception: ${error}
+  Exception origin: ${JSON.stringify(origin)}`;
 
   return divideString(string, maxLength);
 };
