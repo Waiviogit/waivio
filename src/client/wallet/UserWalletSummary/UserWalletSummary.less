@@ -2,6 +2,17 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .UserWalletSummary {
+  &__button {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--website-color);
+    border-radius: 4px;
+    color: var(--website-color);
+    &:hover {
+      border: 1px solid var(--website-hover-color);
+      color: var(--website-hover-color);
+    }
+  }
   &__item {
     display: flex;
     align-items: center;
@@ -12,6 +23,13 @@
   &__itemWrap {
     padding: 10px 0;
     border-bottom: @base-border;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+  &__itemWrap--no-border {
+    margin: 20px 0;
 
     &:last-of-type {
       border-bottom: 0;
@@ -34,6 +52,7 @@
     margin-right: 10px;
 
     &.icon-flashlight_fill {
+      color: @hive-red;
       height: 30px;
       line-height: 30px;
     }
@@ -50,6 +69,9 @@
     color: @black;
     display: flex;
     font-size: 18px;
+    &.power-down {
+      margin-left: 35px;
+    }
   }
 
   &__value {
