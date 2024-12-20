@@ -26,11 +26,11 @@ const CancelPowerDownModal = ({ setShowCancelPowerDown, showCancelPowerDown, acc
     <Modal
       visible={showCancelPowerDown}
       okText={'Confirm'}
-      title={'Cancel Unstake (Power Down)?'}
+      title={'Power down'}
       onCancel={handleCloseModal}
       onOk={handleCancelPowerDown}
     >
-      <p>This will cancel the current unstake (power down) request. Are you sure?</p>
+      <p>This will cancel the current power down request. Are you sure?</p>
     </Modal>
   );
 };
