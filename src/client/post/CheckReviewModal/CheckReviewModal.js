@@ -52,7 +52,7 @@ const CheckReviewModal = ({
     hasReceipt &&
     hasObject(secondaryObject) &&
     hasObject(primaryObject) &&
-    (meetsWaivioTagReq || !isMention) ? (
+    (!reviewData?.qualifiedPayoutToken || meetsWaivioTagReq || !isMention) ? (
       <React.Fragment>
         <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">

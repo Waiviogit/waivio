@@ -18,7 +18,7 @@ import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
-import { isGuestUser } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -104,6 +104,7 @@ const getFormattedPendingWithdrawalSP = (
 
 const UserWalletSummary = ({
   user,
+  isAuth,
   totalVestingShares,
   totalVestingFundSteem,
   loadingGlobalProperties,
@@ -121,6 +122,7 @@ const UserWalletSummary = ({
   const powerClassList = classNames('UserWalletSummary__value', {
     'UserWalletSummary__value--cursorPointer': hasDelegations,
   });
+
   const isGuest = guestUserRegex.test(user.name);
   const estAccValue = isGuest
     ? user.balance * steemRate
@@ -169,6 +171,8 @@ const UserWalletSummary = ({
     if (totalVestingShares && totalVestingFundSteem && !isGuest) setDelegationLists();
   }, [totalVestingShares, totalVestingFundSteem]);
 
+  const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS';
+
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
       <div className="UserWalletSummary__itemWrap">
@@ -178,9 +182,7 @@ const UserWalletSummary = ({
             src="/images/icons/cryptocurrencies/hive.png"
             alt="hive"
           />
-          <div className="UserWalletSummary__label">
-            <FormattedMessage id="hive" defaultMessage="Hive" />
-          </div>
+          <div className="UserWalletSummary__label">HIVE</div>
           <div className="UserWalletSummary__value">
             {user.fetching ? (
               <Loading />
@@ -211,7 +213,7 @@ const UserWalletSummary = ({
             <div className="UserWalletSummary__item">
               <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
               <div className="UserWalletSummary__label">
-                <FormattedMessage id="steem_power" defaultMessage="Hive Power" />
+                <FormattedMessage id="steem_power" defaultMessage="HIVE Power" />
               </div>
               <div className={powerClassList} onClick={openDetailsModal}>
                 {user.fetching || loadingGlobalProperties ? (
@@ -272,16 +274,18 @@ const UserWalletSummary = ({
                     <FormattedDate value={`${user.next_vesting_withdrawal}Z`} />{' '}
                     <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
                   </p>
-                  <Button
-                    onClick={() => setShowCancelPowerDown(true)}
-                    className={'UserWalletSummary__button'}
-                  >
-                    Cancel{' '}
-                  </Button>
+                  {isAuth && (
+                    <Button
+                      onClick={() => setShowCancelPowerDown(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
-            {hasDelegations && (
+            {showDelegation && (
               <div className="UserWalletSummary__itemWrap--no-border">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
@@ -305,9 +309,15 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">User-delegated staked tokens</p>
-                  <Button className={'UserWalletSummary__button'} onClick={openDetailsModal}>
-                    Details{' '}
-                  </Button>
+                  {isAuth && (
+                    <WalletAction
+                      mainKey={'details'}
+                      options={['transfer']}
+                      mainCurrency={'HIVE'}
+                      // withdrawCurrencyOption={isCurrentGuest ? ['LTC', 'BTC', 'ETH'] : []}
+                      // swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
+                    />
+                  )}
                 </div>
               </div>
             )}
@@ -319,7 +329,7 @@ const UserWalletSummary = ({
                 src="/images/icons/cryptocurrencies/hbd-icon.svg"
                 alt="hive"
               />
-              <div className="UserWalletSummary__label">Hive Backed Dollar</div>
+              <div className="UserWalletSummary__label">HIVE Backed Dollar</div>
               <div className="UserWalletSummary__value">
                 {user.fetching ? (
                   <Loading />
@@ -391,6 +401,7 @@ const UserWalletSummary = ({
 
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
+  isAuth: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
@@ -405,4 +416,5 @@ UserWalletSummary.defaultProps = {
 
 export default connect((state, ownProps) => ({
   user: getUser(state, ownProps.userName),
+  isAuth: getIsAuthenticated(state),
 }))(withRouter(UserWalletSummary));
