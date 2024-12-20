@@ -110,7 +110,6 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
   }, [parentName]);
 
   const loadMoreContentAction = () => {
-    skip += limit;
     hasMore &&
       dispatch(
         getMoreObjectPosts({
@@ -121,6 +120,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
           newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
         }),
       );
+
+    skip += limit;
   };
 
   const handleShowPostModal = post => dispatch(showPostModal(post));
