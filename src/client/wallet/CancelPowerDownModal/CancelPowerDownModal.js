@@ -30,7 +30,9 @@ const CancelPowerDownModal = ({ setShowCancelPowerDown, showCancelPowerDown, acc
       onCancel={handleCloseModal}
       onOk={handleCancelPowerDown}
     >
-      <p>This will cancel the current power down request. Are you sure?</p>
+      <p className={'flex justify-center'}>
+        This will cancel the current power down request. Are you sure?
+      </p>
     </Modal>
   );
 };

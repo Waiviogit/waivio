@@ -312,10 +312,8 @@ const UserWalletSummary = ({
                   {isAuth && (
                     <WalletAction
                       mainKey={'details'}
-                      options={['transfer']}
+                      options={['delegate']}
                       mainCurrency={'HIVE'}
-                      // withdrawCurrencyOption={isCurrentGuest ? ['LTC', 'BTC', 'ETH'] : []}
-                      // swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
                     />
                   )}
                 </div>
@@ -329,7 +327,7 @@ const UserWalletSummary = ({
                 src="/images/icons/cryptocurrencies/hbd-icon.svg"
                 alt="hive"
               />
-              <div className="UserWalletSummary__label">HIVE Backed Dollar</div>
+              <div className="UserWalletSummary__label">HBD (Hive Backed Dollar)</div>
               <div className="UserWalletSummary__value">
                 {user.fetching ? (
                   <Loading />
