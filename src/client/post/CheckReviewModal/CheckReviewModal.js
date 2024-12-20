@@ -25,6 +25,7 @@ const CheckReviewModal = ({
 }) => {
   const primaryObject = reviewData.requiredObject;
   const secondaryObject = reviewData.secondaryObject;
+  const withoutSecondary = primaryObject.author_permlink === secondaryObject?.author_permlink;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= reviewData.requirements.minPhotos;
   const hasWaivioTag = postBody?.includes('#waivio') || tags?.includes('waivio');
   const isMention = reviewData?.type === 'mentions';
@@ -99,14 +100,16 @@ const CheckReviewModal = ({
               Photo of the receipt (without personal details).
             </div>
           )}
-          <div className="check-review-modal__list-item">
-            {getIcon(hasObject(secondaryObject))}
-            {intl.formatMessage({
-              id: 'rewards_details_link_to',
-              defaultMessage: 'Link to',
-            })}{' '}
-            {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
-          </div>
+          {!withoutSecondary && (
+            <div className="check-review-modal__list-item">
+              {getIcon(hasObject(secondaryObject))}
+              {intl.formatMessage({
+                id: 'rewards_details_link_to',
+                defaultMessage: 'Link to',
+              })}{' '}
+              {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
+            </div>
+          )}
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(primaryObject))}
             {intl.formatMessage({
