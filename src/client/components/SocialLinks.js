@@ -13,6 +13,7 @@ import WalletItem from './WalletItem';
 const SocialLinks = ({ profile, isSocial }) => {
   const params = useParams();
   const history = useHistory();
+  const currHost = typeof location !== 'undefined' && location.hostname;
 
   const union = intersection(
     socialProfiles.map(socialProfile => socialProfile.id),
@@ -55,6 +56,48 @@ const SocialLinks = ({ profile, isSocial }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href={transform(socialProfile.id, profile[socialProfile.id])}
+                >
+                  {' '}
+                  {socialProfile.name}
+                </a>
+              </div>
+            );
+          case 'snapchat':
+            return (
+              <div
+                key={socialProfile.id}
+                className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
+              >
+                <ReactSVG
+                  className="snapchat-icon"
+                  src="/images/icons/snapchat.svg"
+                  wrapper="span"
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={transform(socialProfile.id, profile[socialProfile.id])}
+                >
+                  {' '}
+                  {socialProfile.name}
+                </a>
+              </div>
+            );
+          case 'hive':
+            return (
+              <div
+                key={socialProfile.id}
+                className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
+              >
+                <img
+                  className="snapchat-icon"
+                  src="/images/icons/cryptocurrencies/hive.png"
+                  alt={'hive-logo'}
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://${currHost}/@${socialProfile.id}`}
                 >
                   {' '}
                   {socialProfile.name}

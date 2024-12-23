@@ -35,6 +35,7 @@ const BusinessDetails = ({
         twitter: linkField[linkFields.linkTwitter] || '',
         youtube: linkField[linkFields.linkYouTube] || '',
         tiktok: linkField[linkFields.linkTikTok] || '',
+        snapchat: linkField[linkFields.linkSnapchat] || '',
         instagram: linkField[linkFields.linkInstagram] || '',
         github: linkField[linkFields.linkGitHub] || '',
       }

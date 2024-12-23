@@ -211,6 +211,8 @@ export const linkFields = {
   linkYouTube: 'linkYouTube',
   linkInstagram: 'linkInstagram',
   linkTikTok: 'linkTikTok',
+  linkSnapchat: 'linkSnapchat',
+  linkHive: 'linkHive',
   linkGitHub: 'linkGitHub',
 };
 
@@ -291,6 +293,8 @@ export const socialObjectFields = [
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'tiktok', icon: 'tiktok', color: 'black', name: 'TikTok' },
+  { id: 'snapchat', icon: 'snapchat', color: 'yellow', name: 'Snapchat' },
+  { id: 'hive', icon: 'hive', color: 'red', name: 'Hive' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
 ];
 
