@@ -19,7 +19,7 @@
     }
 
     @media @medium-max {
-      max-height: 252px;
+      max-height: 243px;
     }
 
     &--thin {
@@ -76,10 +76,17 @@
     }
 
     &--shotsPost {
-      width: 255px !important;
+      width: 220px !important;
       max-height: 750px;
       height: 460px;
       margin: 0 auto;
+
+      @media @small {
+        width: 255px !important;
+        max-height: 750px;
+        height: 500px;
+        margin: 0 auto;
+      }
     }
 
     &--shotsSocial {
