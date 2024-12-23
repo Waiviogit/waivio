@@ -3494,6 +3494,22 @@ class AppendForm extends Component {
                               wrapper="span"
                             />
                           );
+                        case 'snapchat':
+                          return (
+                            <ReactSVG
+                              className="snapchat-icon"
+                              src="/images/icons/snapchat.svg"
+                              wrapper="span"
+                            />
+                          );
+                        case 'hive':
+                          return (
+                            <img
+                              className="snapchat-icon"
+                              src="/images/icons/cryptocurrencies/hive.png"
+                              alt={'hive-logo'}
+                            />
+                          );
                         default:
                           return (
                             <i
@@ -4279,6 +4295,7 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
           isEmpty(getFieldValue('linkTikTok')) &&
+          isEmpty(getFieldValue('linkSnapchat')) &&
           isEmpty(getFieldValue('linkGitHub'))
         );
       case objectFields.walletAddress:
