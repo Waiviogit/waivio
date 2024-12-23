@@ -514,14 +514,18 @@ class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const allowList = this.state.allowList
+          .filter(item => item.length > 0)
+          .map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
 
         fieldBody.push(JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList }));
         break;
       }
       case objectFields.newsFeed: {
-        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const allowList = this.state.allowList
+          .filter(item => item.length > 0)
+          .map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
         const authors = this.state.selectedUsers.map(o => o);
 
