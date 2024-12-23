@@ -39,6 +39,14 @@ const getFormattedTotalDelegatedSP = (
     totalVestingFundSteem,
   );
 
+  const getBracketText = () => {
+    if (showBrackets) {
+      return totalDelegatedSP > 0 ? ' (+' : ' (';
+    }
+
+    return totalDelegatedSP > 0 ? ' +' : ' ';
+  };
+
   if (totalDelegatedSP !== 0) {
     return (
       <BTooltip
@@ -53,7 +61,7 @@ const getFormattedTotalDelegatedSP = (
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {showBrackets && (totalDelegatedSP > 0 ? ' (+' : ' (')}
+          {getBracketText()}
           <FormattedNumber value={totalDelegatedSP} />
           {showBrackets && ')'}
         </span>
