@@ -5,6 +5,9 @@ import { getGuestWaivBalance } from '../../waivioApi/walletApi';
 
 export const compareTokensList = async (name, tokens) => {
   const tokensList = tokens?.map(token => token.symbol || token);
+
+  if (tokensList.length === 0) return Promise.reject('No tokens provided');
+
   const isGuest = guestUserRegex.test(name);
   const userBalances = isGuest
     ? await getGuestWaivBalance(name)
@@ -12,7 +15,9 @@ export const compareTokensList = async (name, tokens) => {
   const tokensInfo = await ApiClient.getTokensInformation(tokensList);
   const compareList = tokens?.map(token => {
     const tokenName = token.symbol || token;
-    const userBalanceInfo = isGuest ? userBalances : userBalances.find(r => r.symbol === tokenName);
+    const userBalanceInfo = isGuest
+      ? userBalances
+      : userBalances?.find(r => r.symbol === tokenName);
     const info = tokensInfo.find(r => r.symbol === tokenName);
     const balance = isGuest ? userBalanceInfo.WAIV : +get(userBalanceInfo, 'balance', 0);
 

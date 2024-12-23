@@ -587,6 +587,8 @@ export const getUserTokensBalanceList = (
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getTokenBalance(name, symbol).then(async res => {
+      if (res?.error) dispatch({ type: type.ERROR, payload: res.error });
+
       const tokensList = res?.map(item => item.symbol);
       const rates = await ApiClient.getTokensRate(isEmpty(tokensList) ? [symbol] : tokensList);
       const infos = await ApiClient.getTokensInformation(tokensList);

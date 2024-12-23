@@ -2481,10 +2481,19 @@ export const engineProxy = async (params, attempts = 5, hostUrl = sample(HIVE_EN
     const newUrl = getNewNodeUrl(hostUrl);
     return engineProxy(params, attempts - 1, newUrl);
   }
+
   return response;
 };
 
-const hiveEngineContract = async params => engineProxy(params);
+const hiveEngineContract = async params => {
+  return engineProxy(params).then(response => {
+    if (response.error) {
+      return Promise.reject('Something went wrong. Please reload page');
+    }
+
+    return response;
+  });
+};
 
 export const getMarketPools = async ({ query }) =>
   engineProxy({
