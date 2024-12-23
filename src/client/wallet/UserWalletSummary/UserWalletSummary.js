@@ -286,7 +286,7 @@ const UserWalletSummary = ({
               </div>
             )}
             {showDelegation && (
-              <div className="UserWalletSummary__itemWrap--no-border">
+              <div className="UserWalletSummary__itemWrap--no-border delegation-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
                     <FormattedMessage id="hive_delegated" defaultMessage="HIVE Delegated" />
@@ -311,9 +311,10 @@ const UserWalletSummary = ({
                   <p className="UserWalletSummary__description">User-delegated staked tokens</p>
                   {isAuth && (
                     <WalletAction
+                      openDetailsModal={openDetailsModal}
                       mainKey={'details'}
                       options={['delegate']}
-                      mainCurrency={'HIVE'}
+                      mainCurrency={'HP'}
                     />
                   )}
                 </div>
