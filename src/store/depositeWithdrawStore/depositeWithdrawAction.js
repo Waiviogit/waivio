@@ -121,7 +121,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
         depositPairs,
       };
     }),
-  });
+  }).catch(e => console.error(e));
 };
 
 export const SET_TOKEN_PAIR = createAsyncActionType('@depositWithdraw/SET_TOKEN_PAIR');

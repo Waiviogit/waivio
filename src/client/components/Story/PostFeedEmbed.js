@@ -109,7 +109,7 @@ export default class PostFeedEmbed extends React.Component {
       (embed.thumbnail || this.state.thumbnail)
     ) {
       const thumb = embed.url?.includes('shorts')
-        ? `https://i.ytimg.com/vi/${embed?.id}/maxresdefault.jpg`
+        ? `https://i.ytimg.com/vi/${embed?.id}/maxres2.jpg`
         : embed.thumbnail || this.state.thumbnail;
 
       return this.renderThumbFirst(thumb);

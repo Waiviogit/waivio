@@ -118,7 +118,13 @@ const WithdrawModal = props => {
   };
 
   useEffect(() => {
-    getWithdraws().then(res => setDelay(res?.length));
+    getWithdraws()
+      .then(res => setDelay(res?.length))
+      .catch(() => {
+        message.error(
+          'The requested information isn’t available right now. Please close and reopen to try again.',
+        );
+      });
     openLinkedModal(pair);
   }, [pair]);
 

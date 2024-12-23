@@ -14,6 +14,14 @@
     margin: 0 auto;
     object-fit: cover;
 
+    @media @xsmall-max-2 {
+      max-height: 235px;
+    }
+
+    @media @medium-max {
+      max-height: 252px;
+    }
+
     &--thin {
       max-height: 600px;
       height: 574px;
@@ -84,7 +92,15 @@
       width: calc(100% + 40px);
       height: calc(100% + 2px);
       position: absolute;
+
       @media @small {
+        left: 0;
+        width: 100%;
+      }
+    }
+
+    &--shotsSocial {
+      iframe {
         left: 0;
         width: 100%;
       }
