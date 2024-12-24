@@ -3,7 +3,8 @@ import socialProfiles, { socialWallets } from '../../../common/helpers/socialPro
 import SocialInputItem from './SocialInputItem';
 
 const SocialInputs = ({ getFieldDecorator, getFieldValue, setErrors, intl, errors, metadata }) => {
-  const allProfiles = [...socialProfiles, ...socialWallets];
+  const filteredSocialProfiles = socialProfiles?.filter(profile => profile.id !== 'hive');
+  const allProfiles = [...filteredSocialProfiles, ...socialWallets];
 
   return allProfiles.map(profile => (
     <SocialInputItem

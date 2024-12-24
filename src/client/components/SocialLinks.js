@@ -90,14 +90,14 @@ const SocialLinks = ({ profile, isSocial }) => {
                 className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
               >
                 <img
-                  className="snapchat-icon"
+                  className="hive-icon"
                   src="/images/icons/cryptocurrencies/hive.png"
                   alt={'hive-logo'}
                 />
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://${currHost}/@${socialProfile.id}`}
+                  href={`https://${currHost}/@${profile[socialProfile.id]}`}
                 >
                   {' '}
                   {socialProfile.name}
