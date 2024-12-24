@@ -173,7 +173,7 @@ const routes = (host, page) => ({
       component: Post,
     },
     {
-      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+      path: [`/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:parentName?/:itemId?`],
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
