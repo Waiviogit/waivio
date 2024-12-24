@@ -5,6 +5,7 @@ import { message } from 'antd';
 
 import { converHiveEngineCoins, getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
+import { fixedNumber } from './parser';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
   BTC: 'SWAP.BTC',
@@ -198,7 +199,7 @@ const getWithdrawContract = ({ amount }) => ({
     contractName: 'hivepegged',
     contractAction: 'withdraw',
     contractPayload: {
-      quantity: new BigNumber(amount).toFixed(3),
+      quantity: fixedNumber(amount, 3).toString(),
     },
   },
 });

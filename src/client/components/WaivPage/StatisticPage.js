@@ -144,7 +144,7 @@ const StatisticPage = () => {
           <p>
             Distributed:{' '}
             <FormattedNumber
-              value={metrics?.distributedInMonthUSD}
+              value={metrics?.distributedInMonthWAIV}
               locale={locale}
               minimumFractionDigits={0}
               maximumFractionDigits={0}

@@ -19,7 +19,7 @@
     }
 
     @media @medium-max {
-      max-height: 243px;
+      max-height: 240px;
     }
 
     &--thin {
@@ -59,10 +59,7 @@
     height: 0;
     width: 100%;
     position: relative;
-    padding-bottom: 62%;
-    @media @small {
-      padding-bottom: 56%;
-    }
+    padding-bottom: 56%;
 
     &_high {
       min-height: 600px;
@@ -89,15 +86,11 @@
       }
     }
 
-    &--shotsSocial {
-      height: 515px;
-    }
-
     iframe {
       top: 0;
-      left: -20px;
-      width: calc(100% + 40px);
-      height: calc(100% + 2px);
+      left: 0;
+      width: 100%;
+      height: 100%;
       position: absolute;
 
       @media @small {
@@ -107,6 +100,8 @@
     }
 
     &--shotsSocial {
+      height: 515px;
+
       iframe {
         left: 0;
         width: 100%;
