@@ -63,7 +63,7 @@ const PicturesSlider = ({
       setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
       setPhotoIndex(0);
     });
-  }, [authorPermlink, currentWobj.author_permlink, albums.length]);
+  }, [authorPermlink, currentWobj.author_permlink, albums?.length]);
 
   useEffect(() => {
     if (photoIndex === 0) {
@@ -72,7 +72,7 @@ const PicturesSlider = ({
   }, [photoIndex]);
 
   const carouselSettings = pics => {
-    const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
+    const slidesToShow = pics?.length > limitToShow ? limitToShow : pics?.length;
     const showLeftArrow = photoIndex >= 0 && !nextArrowClicked;
 
     return {
@@ -80,7 +80,7 @@ const PicturesSlider = ({
       arrows: !isMobile(),
       lazyLoad: true,
       rows: 1,
-      nextArrow: lastSlideToShow >= pics.length - 1 ? <></> : <Icon type="caret-right" />,
+      nextArrow: lastSlideToShow >= pics?.length - 1 ? <></> : <Icon type="caret-right" />,
       prevArrow: showLeftArrow ? <></> : <Icon type="caret-left" />,
       infinite: false,
       slidesToShow,
@@ -165,14 +165,16 @@ const PicturesSlider = ({
           wrapperClassName="LightboxTools"
           mainSrc={pictures[photoIndex]?.body}
           nextSrc={
-            pictures.length <= 1 || photoIndex === pictures.length - 1
+            pictures?.length <= 1 || photoIndex === pictures?.length - 1
               ? null
-              : pictures[(photoIndex + 1) % pictures.length]?.body
+              : pictures[(photoIndex + 1) % pictures?.length]?.body
           }
-          prevSrc={pictures.length <= 1 ? null : pictures[(photoIndex - 1) % pictures.length]?.body}
+          prevSrc={
+            pictures?.length <= 1 ? null : pictures[(photoIndex - 1) % pictures?.length]?.body
+          }
           onCloseRequest={onClosePicture}
-          onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures.length)}
-          onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures.length)}
+          onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures?.length)}
+          onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures?.length)}
         />
       )}
     </div>
