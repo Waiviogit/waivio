@@ -38,7 +38,7 @@ const BusinessMenuItemsList = ({
     arrows: !isTabletOrMobile,
     lazyLoad: false,
     rows: 1,
-    nextArrow: currentSlide >= linkList.length - slidesToShow ? null : <Icon type="caret-right" />,
+    nextArrow: currentSlide >= linkList?.length - slidesToShow ? null : <Icon type="caret-right" />,
     prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
     slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
     swipeToSlide: isTabletOrMobile,
@@ -52,7 +52,7 @@ const BusinessMenuItemsList = ({
 
   useEffect(() => {
     setMenuItems(prepareMenuItems(menuItem));
-  }, [menuItem.length]);
+  }, [menuItem?.length]);
 
   if (isEmpty(menuItems)) return null;
 
