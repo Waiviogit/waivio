@@ -104,7 +104,7 @@ export const fixedNumber = (num, precision) => {
 
   const currPrecision = num > 0.001 ? 3 : 5;
 
-  return num.toFixed(currPrecision);
+  return Number(num).toFixed(currPrecision);
 };
 
 export default null;
