@@ -19,7 +19,7 @@ const {
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
-  const IS_PROD = !IS_DEV;
+  const IS_PROD = env === 'production';
   const appPath = IS_DEV ? paths.build : paths.buildPublic;
   const smp = new SpeedMeasurePlugin();
 
