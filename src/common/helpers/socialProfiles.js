@@ -62,7 +62,7 @@ export default [
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'tiktok', icon: 'tiktok', color: 'black', name: 'TikTok' },
   { id: 'snapchat', icon: 'snapchat', color: 'yellow', name: 'Snapchat' },
-  { id: 'hive', icon: 'hive', color: 'red', name: 'Hive' },
+  { id: 'hive', icon: 'hive', color: 'red', name: 'Hive', identifier: 'hive-link' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
   // { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin', shortName: 'BTC' },
   // { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum', shortName: 'ETH' },
