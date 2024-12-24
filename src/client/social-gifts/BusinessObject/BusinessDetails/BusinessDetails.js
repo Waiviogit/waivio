@@ -38,6 +38,7 @@ const BusinessDetails = ({
         snapchat: linkField[linkFields.linkSnapchat] || '',
         instagram: linkField[linkFields.linkInstagram] || '',
         github: linkField[linkFields.linkGitHub] || '',
+        hive: linkField[linkFields.linkHive] || '',
       }
     : {};
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]) && isEditMode;
