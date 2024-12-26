@@ -100,7 +100,7 @@ const BusinessDetails = ({
           )}
           {has(wobject, 'walletAddress') && (
             <div className={` ${!isMobile() ? 'BusinessObject__margin-b' : ''}`}>
-              <WalletAddress walletAddress={walletAddress} />
+              <WalletAddress walletAddress={walletAddress} isSocial />
             </div>
           )}
         </React.Fragment>
