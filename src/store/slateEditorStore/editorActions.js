@@ -604,11 +604,12 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
         percent: get(objPercentage, [obj._id, 'percent']),
       })),
   };
+  const metaData = { ...oldMetadata, host: location?.hostname };
 
   postData.jsonMetadata = createPostMetadata(
     content,
     topics,
-    oldMetadata,
+    metaData,
     waivioData,
     campaignId,
     host,
