@@ -16,6 +16,7 @@ import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite'
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import WebsiteFeed from '../../client/websites/WebsiteFeed/WebsiteFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
+import WaivPage from '../../client/components/WaivPage/WaivPage';
 
 const routes = (host, page) => ({
   component: WebsiteWrapper,
@@ -37,6 +38,11 @@ const routes = (host, page) => ({
       path: '/confirmation',
       exact: true,
       component: Views.ConfirmationModal,
+    },
+    {
+      pathScope: '/waiv-page',
+      exact: true,
+      component: WaivPage,
     },
     {
       path: [`/(${URL.SETTINGS.tabs})`],
@@ -167,7 +173,7 @@ const routes = (host, page) => ({
       component: Post,
     },
     {
-      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+      path: [`/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:parentName?/:itemId?`],
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',

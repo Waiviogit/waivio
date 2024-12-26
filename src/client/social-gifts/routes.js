@@ -25,6 +25,7 @@ import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../components/Favorites/UserFavorites';
 import WebsiteBody from '../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import GroupObjectType from '../object/GroupObjectType/GroupObjectType';
+import WaivPage from '../components/WaivPage/WaivPage';
 
 const routes = () => ({
   component: SocialWrapper,
@@ -130,6 +131,11 @@ const routes = () => ({
       path: '/confirmation',
       exact: true,
       component: Views.ConfirmationModal,
+    },
+    {
+      pathScope: '/waiv-page',
+      exact: true,
+      component: WaivPage,
     },
     {
       path: [`/(${URL.SETTINGS.tabs})`],

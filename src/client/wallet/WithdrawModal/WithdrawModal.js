@@ -1,8 +1,8 @@
 import Cookie from 'js-cookie';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Input, message, Modal } from 'antd';
+import { Button, Input, message, Modal, Skeleton } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, round, debounce, isNil } from 'lodash';
+import { get, round, debounce, isNil, isEmpty } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -118,7 +118,13 @@ const WithdrawModal = props => {
   };
 
   useEffect(() => {
-    getWithdraws().then(res => setDelay(res?.length));
+    getWithdraws()
+      .then(res => setDelay(res?.length))
+      .catch(() => {
+        message.error(
+          'The requested information isn’t available right now. Please close and reopen to try again.',
+        );
+      });
     openLinkedModal(pair);
   }, [pair]);
 
@@ -341,127 +347,140 @@ const WithdrawModal = props => {
             />
           </p>
         </section>
-        <div className="WithdrawModal__block">
-          <h3 className="WithdrawModal__title">
-            <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />:
-          </h3>
-          <TokensSelect
-            list={withdraList}
-            setToken={setTokenPair}
-            amount={fromAmount}
-            handleChangeValue={handleFromAmoundChange}
-            addErrorHiveWithdraw={isSwapHiveToHive}
-            token={{
-              ...pair,
-              balance: isSwapHiveToHive ? toFixed(pair?.balance, 1000) : pair?.balance,
-            }}
-            handleClickBalance={handleFromAmoundChange}
-            isError={isError}
-          />
-        </div>
-        <div className="WithdrawModal__block">
-          <h3 className="WithdrawModal__title">
-            {' '}
-            <FormattedMessage id="receive" defaultMessage="Receive" />:
-          </h3>
-          <div className="WithdrawModal__inputWrap">
-            <Input
-              type="number"
-              value={toAmount}
-              disabled={pair?.symbol === 'WAIV'}
-              onChange={handleToAmoundChange}
-            />
-            <span className="WithdrawModal__currency">{get(pair, 'to_coin_symbol')}</span>
-          </div>
-        </div>
-        <p>
-          <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
-          <USDDisplay value={estimateValue || 0} />
-        </p>
-        {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
-          <p>
-            <FormattedMessage
-              id="minimal_withdraw_amount"
-              defaultMessage="Minimal withdraw amount"
-            />
-            :{' '}
-            {pair?.to_coin_symbol === 'BTC' ? (
-              <span>0,01 {get(pair, 'to_coin_symbol')}</span>
-            ) : (
-              <span>
-                {withdrawFee} {get(pair, 'from_coin_symbol')}
-              </span>
-            )}
-          </p>
-        )}
-        <div className="WithdrawModal__block">
-          <h3 className="WithdrawModal__title">
-            <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
-          </h3>
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
-            isGuest && !hiveBeneficiaryAccount ? (
-              <div>
-                Guests are only allowed to make transfers to their own Hive accounts. This account
-                should be first linked to the guest account.{' '}
-                <a onClick={() => setShowLinkToHive(true)}>Link account</a>
-              </div>
-            ) : (
-              <SelectUserForAutocomplete account={isGuest ? hiveBeneficiaryAccount : userName} />
-            )
-          ) : (
-            <React.Fragment>
-              <div className="WithdrawModal__address-wrapper">
+        {isEmpty(pair) ? (
+          <Skeleton />
+        ) : (
+          <div>
+            <div className="WithdrawModal__block">
+              <h3 className="WithdrawModal__title">
+                <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />:
+              </h3>
+              <TokensSelect
+                list={withdraList}
+                setToken={setTokenPair}
+                amount={fromAmount}
+                handleChangeValue={handleFromAmoundChange}
+                addErrorHiveWithdraw={isSwapHiveToHive}
+                token={{
+                  ...pair,
+                  balance: isSwapHiveToHive ? toFixed(pair?.balance, 1000) : pair?.balance,
+                }}
+                handleClickBalance={handleFromAmoundChange}
+                isError={isError}
+              />
+            </div>
+            <div className="WithdrawModal__block">
+              <h3 className="WithdrawModal__title">
+                {' '}
+                <FormattedMessage id="receive" defaultMessage="Receive" />:
+              </h3>
+              <div className="WithdrawModal__inputWrap">
                 <Input
-                  className={walletAddressClassList}
-                  value={walletAddress}
-                  onChange={handleChange}
-                  placeholder={props.intl.formatMessage({
-                    id: 'enter_address',
-                    defaultMessage: 'Enter address',
-                  })}
+                  type="number"
+                  value={toAmount}
+                  disabled={pair?.symbol === 'WAIV'}
+                  onChange={handleToAmoundChange}
                 />
-                <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
-                  <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
-                  <span>
-                    {' '}
-                    <FormattedMessage id="qr_scanner" defaultMessage="QR scanner" />
-                  </span>
-                </Button>
+                <span className="WithdrawModal__currency">{get(pair, 'to_coin_symbol')}</span>
               </div>
-              {walletAddress && !isNil(invalidAddress) && (
-                <span className={validateWalletAddressClassList}>
-                  {invalidAddress ? 'Invalid address' : 'Address is valid'}
-                </span>
+            </div>
+            <p>
+              <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
+              <USDDisplay value={estimateValue || 0} />
+            </p>
+            {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
+              <p>
+                <FormattedMessage
+                  id="minimal_withdraw_amount"
+                  defaultMessage="Minimal withdraw amount"
+                />
+                :{' '}
+                {pair?.to_coin_symbol === 'BTC' ? (
+                  <span>0,01 {get(pair, 'to_coin_symbol')}</span>
+                ) : (
+                  <span>
+                    {withdrawFee} {get(pair, 'from_coin_symbol')}
+                  </span>
+                )}
+              </p>
+            )}
+            <div className="WithdrawModal__block">
+              <h3 className="WithdrawModal__title">
+                <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
+              </h3>
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
+                isGuest && !hiveBeneficiaryAccount ? (
+                  <div>
+                    Guests are only allowed to make transfers to their own Hive accounts. This
+                    account should be first linked to the guest account.{' '}
+                    <a onClick={() => setShowLinkToHive(true)}>Link account</a>
+                  </div>
+                ) : (
+                  <SelectUserForAutocomplete
+                    account={isGuest ? hiveBeneficiaryAccount : userName}
+                  />
+                )
+              ) : (
+                <React.Fragment>
+                  <div className="WithdrawModal__address-wrapper">
+                    <Input
+                      className={walletAddressClassList}
+                      value={walletAddress}
+                      onChange={handleChange}
+                      placeholder={props.intl.formatMessage({
+                        id: 'enter_address',
+                        defaultMessage: 'Enter address',
+                      })}
+                    />
+                    <Button
+                      className="WithdrawModal__qr-button"
+                      onClick={() => setShowScanner(true)}
+                    >
+                      <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
+                      <span>
+                        {' '}
+                        <FormattedMessage id="qr_scanner" defaultMessage="QR scanner" />
+                      </span>
+                    </Button>
+                  </div>
+                  {walletAddress && !isNil(invalidAddress) && (
+                    <span className={validateWalletAddressClassList}>
+                      {invalidAddress ? 'Invalid address' : 'Address is valid'}
+                    </span>
+                  )}
+                </React.Fragment>
               )}
-            </React.Fragment>
-          )}
-        </div>
-        <p>
-          <FormattedMessage
-            id="withdraw_info_part3"
-            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
-          />
-        </p>
-        {isShowScanner && (
-          <QrModal
-            visible={isShowScanner}
-            setDataScan={setWalletAddressForScanner}
-            handleClose={setShowScanner}
-            setScanAmount={handleSetScanAmount}
-            setToken={name => {
-              const codeToken = withdraList.find(k => k.display_name.toLowerCase().includes(name));
+            </div>
+            <p>
+              <FormattedMessage
+                id="withdraw_info_part3"
+                defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
+              />
+            </p>
+            {isShowScanner && (
+              <QrModal
+                visible={isShowScanner}
+                setDataScan={setWalletAddressForScanner}
+                handleClose={setShowScanner}
+                setScanAmount={handleSetScanAmount}
+                setToken={name => {
+                  const codeToken = withdraList.find(k =>
+                    k.display_name.toLowerCase().includes(name),
+                  );
 
-              dispatch(setWithdrawPair(codeToken));
-            }}
-          />
+                  dispatch(setWithdrawPair(codeToken));
+                }}
+              />
+            )}
+            <LinkHiveAccountModal
+              handleClose={handleCloseLinkModal}
+              showModal={showLinkToHive}
+              hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+            />
+          </div>
         )}
       </Modal>
-      <LinkHiveAccountModal
-        handleClose={handleCloseLinkModal}
-        showModal={showLinkToHive}
-        hiveBeneficiaryAccount={hiveBeneficiaryAccount}
-      />
     </React.Fragment>
   );
 };

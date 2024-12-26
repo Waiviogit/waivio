@@ -27,19 +27,35 @@ const SocialInputItem = ({
   const invalidText = 'Invalid address';
   const validText = 'Address is valid';
   const addressValue = getFieldValue(profile.id);
-  const icons =
-    profile.icon === 'tiktok' ? (
-      <div className="tiktok-icon-container">
-        <ReactSVG className="tiktok-icon" src="/images/icons/tiktok.svg" wrapper="span" />
-      </div>
-    ) : (
-      <i
-        className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-        style={{
-          color: profile.color,
-        }}
-      />
-    );
+  let icons;
+
+  switch (profile.icon) {
+    case 'tiktok':
+      icons = (
+        <div className="tiktok-icon-container">
+          <ReactSVG className="tiktok-icon" src="/images/icons/tiktok.svg" wrapper="span" />
+        </div>
+      );
+      break;
+    case 'snapchat':
+      icons = (
+        <div className="tiktok-icon-container">
+          <ReactSVG className="snapchat-icon" src="/images/icons/snapchat.svg" wrapper="span" />
+        </div>
+      );
+      break;
+
+    default:
+      icons = (
+        <i
+          className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
+          style={{
+            color: profile.color,
+          }}
+        />
+      );
+      break;
+  }
 
   useEffect(() => {
     setErrors({ ...errors, [profile.id]: isInvalid });

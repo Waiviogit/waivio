@@ -53,6 +53,7 @@ const WalletAction = props => {
     },
     delegate: () =>
       dispatch(toggleDelegateModal(delegationModalTypes.DELEGATION, props.mainCurrency)),
+    details: () => props.openDetailsModal(),
   };
 
   return (
@@ -126,6 +127,7 @@ WalletAction.propTypes = {
   }).isRequired,
   mainKey: PropTypes.string.isRequired,
   mainCurrency: PropTypes.string.isRequired,
+  openDetailsModal: PropTypes.func.isRequired,
   swapCurrencyOptions: PropTypes.arrayOf(PropTypes.string),
   withdrawCurrencyOption: PropTypes.arrayOf(PropTypes.string),
   options: PropTypes.arrayOf(PropTypes.string),

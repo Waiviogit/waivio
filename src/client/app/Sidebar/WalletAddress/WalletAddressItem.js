@@ -5,7 +5,7 @@ import { cryptocurrenciesList } from '../../../../common/constants/listOfFields'
 import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import WalletAddressModal from './WalletAddressModal';
 
-const WalletAddressItem = ({ address }) => {
+const WalletAddressItem = ({ address, isSocial }) => {
   const addressBody = parseWobjectField(address, 'body');
   const username = addressBody.address;
   const [openModal, setOpenModal] = useState(false);
@@ -27,7 +27,7 @@ const WalletAddressItem = ({ address }) => {
     <div className={'WalletAddressItem__container'}>
       <span className={'WalletAddressItem'} onClick={onWalletAddressClick}>
         <img
-          className={'WalletAddressItem__icon'}
+          className={isSocial ? 'WalletAddressItem__icon--social' : 'WalletAddressItem__icon'}
           src={`/images/icons/cryptocurrencies/${cryptocurrency?.icon}`}
           alt={''}
         />
@@ -49,5 +49,6 @@ const WalletAddressItem = ({ address }) => {
 
 WalletAddressItem.propTypes = {
   address: PropTypes.shape().isRequired,
+  isSocial: PropTypes.bool,
 };
 export default WalletAddressItem;

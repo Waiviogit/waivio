@@ -83,9 +83,9 @@ export default class PostFeedEmbed extends React.Component {
           alt="thumbnail"
           className={classNames('PostFeedEmbed__preview', {
             'PostFeedEmbed__preview--thin':
-              (this.props.embed.provider_name === 'TikTok' ||
-                this.props.embed.url?.includes('shorts')) &&
-              this.props.inPost,
+              this.props.embed.provider_name === 'TikTok' && this.props.inPost,
+            'PostFeedEmbed__preview--thinYoutube':
+              this.props.embed.url?.includes('shorts') && this.props.inPost,
             'PostFeedEmbed__preview--thinFeedMas':
               this.props.embed.url?.includes('shorts') && this.props.isSocial,
           })}
@@ -109,7 +109,7 @@ export default class PostFeedEmbed extends React.Component {
       (embed.thumbnail || this.state.thumbnail)
     ) {
       const thumb = embed.url?.includes('shorts')
-        ? `https://i.ytimg.com/vi/${embed?.id}/maxresdefault.jpg`
+        ? `https://i.ytimg.com/vi/${embed?.id}/maxres2.jpg`
         : embed.thumbnail || this.state.thumbnail;
 
       return this.renderThumbFirst(thumb);

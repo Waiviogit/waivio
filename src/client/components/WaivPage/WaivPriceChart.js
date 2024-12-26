@@ -12,10 +12,7 @@ import { getTokensEngineChart } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../Icon/Loading';
 import CryptoRateInUsd from '../Sidebar/CrypoCharts/CryptoRateInCurrency';
-import {
-  getTokenRatesInSelectCurrency,
-  getTokenRatesInSelectCurrencyChanged,
-} from '../../../store/walletStore/walletSelectors';
+import { getTokenRatesInSelectCurrency } from '../../../store/walletStore/walletSelectors';
 
 import './WaivPriceChart.less';
 
@@ -27,6 +24,7 @@ const WaivPriceChart = props => {
   const isWidget = querySelectorSearchParams.get('display');
   const [type, setType] = React.useState('1m');
   const [dataArr, setData] = React.useState([]);
+  const [currencyPriceChange, setCurrencyPriceChange] = React.useState(0);
   const isMobl = isMobile();
   const isYearPeriod = yearsPeriods.includes(type);
 
@@ -43,8 +41,9 @@ const WaivPriceChart = props => {
     setData([]);
 
     getTokensEngineChart('WAIV', type).then(res => {
+      setCurrencyPriceChange(res.change.USD);
       setData(
-        res.reverse().map(r => ({
+        res.result.reverse().map(r => ({
           Price: round(r.rates.USD, 8),
           dateString: r.dateString,
         })),
@@ -110,7 +109,7 @@ const WaivPriceChart = props => {
       <div className={'WaivPriceChart__container'}>
         <CryptoRateInUsd
           currentUSDPrice={props.currencyPrice}
-          priceDifference={props.currencyPriceChange}
+          priceDifference={currencyPriceChange}
           minimumFractionDigits={3}
           // currency={'USD'}
           currencyDisplay={'symbol'}
@@ -191,10 +190,8 @@ const WaivPriceChart = props => {
 
 WaivPriceChart.propTypes = {
   currencyPrice: PropTypes.number,
-  currencyPriceChange: PropTypes.number,
 };
 
 export default connect(state => ({
   currencyPrice: getTokenRatesInSelectCurrency(state, 'WAIV', 'USD'),
-  currencyPriceChange: getTokenRatesInSelectCurrencyChanged(state, 'WAIV', 'USD'),
 }))(injectIntl(WaivPriceChart));

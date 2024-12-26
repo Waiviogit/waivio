@@ -13,27 +13,30 @@ import WalletItem from './WalletItem';
 const SocialLinks = ({ profile, isSocial }) => {
   const params = useParams();
   const history = useHistory();
-
+  const currHost = typeof location !== 'undefined' && location.hostname;
+  const isUserProfile = history?.location?.pathname?.includes(`/@${params.name}`);
   const union = intersection(
     socialProfiles.map(socialProfile => socialProfile.id),
     Object.keys(profile),
   );
 
-  const availableProfiles = socialProfiles.filter(
+  const filteredProfiles = socialProfiles.filter(
     socialProfile =>
       union.includes(socialProfile.id) &&
       profile[socialProfile.id] !== '' &&
       !['bitcoin', 'ethereum'].includes(socialProfile.id),
   );
 
+  const availableProfiles = isUserProfile
+    ? filteredProfiles.filter(p => p?.identifier !== 'hive-link')
+    : filteredProfiles;
+
   const wallets = intersection(
     socialWallets.map(wallet => wallet.id),
     Object.keys(profile),
   );
 
-  const hiveHbdWallets = history?.location?.pathname?.includes(`/@${params.name}`)
-    ? defaultSocialWallets
-    : [];
+  const hiveHbdWallets = isUserProfile ? defaultSocialWallets : [];
 
   const availableWallets = [
     ...hiveHbdWallets,
@@ -55,6 +58,48 @@ const SocialLinks = ({ profile, isSocial }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href={transform(socialProfile.id, profile[socialProfile.id])}
+                >
+                  {' '}
+                  {socialProfile.name}
+                </a>
+              </div>
+            );
+          case 'snapchat':
+            return (
+              <div
+                key={socialProfile.id}
+                className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
+              >
+                <ReactSVG
+                  className="snapchat-icon"
+                  src="/images/icons/snapchat.svg"
+                  wrapper="span"
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={transform(socialProfile.id, profile[socialProfile.id])}
+                >
+                  {' '}
+                  {socialProfile.name}
+                </a>
+              </div>
+            );
+          case 'hive':
+            return (
+              <div
+                key={socialProfile.id}
+                className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
+              >
+                <img
+                  className="hive-icon"
+                  src="/images/icons/cryptocurrencies/hive.png"
+                  alt={'hive-logo'}
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://${currHost}/@${profile[socialProfile.id]}`}
                 >
                   {' '}
                   {socialProfile.name}

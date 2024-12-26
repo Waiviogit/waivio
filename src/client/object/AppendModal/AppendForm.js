@@ -514,14 +514,18 @@ class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const allowList = this.state.allowList
+          .filter(item => item.length > 0)
+          .map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
 
         fieldBody.push(JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList }));
         break;
       }
       case objectFields.newsFeed: {
-        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const allowList = this.state.allowList
+          .filter(item => item.length > 0)
+          .map(o => o.map(item => item.author_permlink));
         const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
         const authors = this.state.selectedUsers.map(o => o);
 
@@ -3490,6 +3494,22 @@ class AppendForm extends Component {
                               wrapper="span"
                             />
                           );
+                        case 'snapchat':
+                          return (
+                            <ReactSVG
+                              className="snapchat-icon"
+                              src="/images/icons/snapchat.svg"
+                              wrapper="span"
+                            />
+                          );
+                        case 'hive':
+                          return (
+                            <img
+                              className="snapchat-icon"
+                              src="/images/icons/cryptocurrencies/hive.png"
+                              alt={'hive-logo'}
+                            />
+                          );
                         default:
                           return (
                             <i
@@ -4275,6 +4295,7 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
           isEmpty(getFieldValue('linkTikTok')) &&
+          isEmpty(getFieldValue('linkSnapchat')) &&
           isEmpty(getFieldValue('linkGitHub'))
         );
       case objectFields.walletAddress:

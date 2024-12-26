@@ -35,8 +35,10 @@ const BusinessDetails = ({
         twitter: linkField[linkFields.linkTwitter] || '',
         youtube: linkField[linkFields.linkYouTube] || '',
         tiktok: linkField[linkFields.linkTikTok] || '',
+        snapchat: linkField[linkFields.linkSnapchat] || '',
         instagram: linkField[linkFields.linkInstagram] || '',
         github: linkField[linkFields.linkGitHub] || '',
+        hive: linkField[linkFields.linkHive] || '',
       }
     : {};
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]) && isEditMode;
@@ -98,7 +100,7 @@ const BusinessDetails = ({
           )}
           {has(wobject, 'walletAddress') && (
             <div className={` ${!isMobile() ? 'BusinessObject__margin-b' : ''}`}>
-              <WalletAddress walletAddress={walletAddress} />
+              <WalletAddress walletAddress={walletAddress} isSocial />
             </div>
           )}
         </React.Fragment>

@@ -1,4 +1,4 @@
-import { isError, get, attempt, size, unescape, round } from 'lodash';
+import { isError, get, attempt, size, unescape } from 'lodash';
 import { parseJSON } from './parseJSON';
 
 export const linkifyText = text => {
@@ -99,13 +99,12 @@ export const replacer = value => value.replace(/^@/g, '');
 
 export const fixedNumber = (num, precision) => {
   if (!num) return 0;
-
   if (precision)
     return typeof num === 'number' ? num.toFixed(precision) : Number(num).toFixed(precision);
 
   const currPrecision = num > 0.001 ? 3 : 5;
 
-  return round(num, currPrecision);
+  return Number(num).toFixed(currPrecision);
 };
 
 export default null;

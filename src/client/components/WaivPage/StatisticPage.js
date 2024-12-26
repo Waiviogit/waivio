@@ -83,7 +83,7 @@ const StatisticPage = () => {
   return (
     <div className={'StatisticPage'}>
       <div className={'StatisticPage__section'}>
-        <h2>WAIV token at a glance</h2>
+        <h2>WAIV TOKEN PRICE</h2>
         <div>
           <WaivPriceChart />
         </div>
@@ -128,18 +128,31 @@ const StatisticPage = () => {
             <LabelList formatter={value => `${value}%`} position={'inside'} />
           </Pie>
         </PieChart>{' '}
-        {/* <h3>Development fund</h3> */}
-        {/* <p>Available: {round(metrics?.availableInMonthUSD, 2)} USD/month</p> */}
-        {/* <p> */}
-        {/*  Distributed:{' '} */}
-        {/*  <FormattedNumber */}
-        {/*    value={metrics?.distributedInMonthUSD} */}
-        {/*    locale={locale} */}
-        {/*    minimumFractionDigits={2} */}
-        {/*    maximumFractionDigits={2} */}
-        {/*  />{' '} */}
-        {/*  USD/month */}
-        {/* </p> */}
+        <h3>Development fund</h3>
+        <p>
+          Available:{' '}
+          <FormattedNumber
+            value={metrics?.availableInMonthWAIV}
+            locale={locale}
+            minimumFractionDigits={0}
+            maximumFractionDigits={0}
+          />{' '}
+          WAIV (<USDDisplay value={metrics?.availableInMonthUSD} currencyDisplay={'symbol'} />
+          )/month
+        </p>
+        <p>
+          <p>
+            Distributed:{' '}
+            <FormattedNumber
+              value={metrics?.distributedInMonthWAIV}
+              locale={locale}
+              minimumFractionDigits={0}
+              maximumFractionDigits={0}
+            />{' '}
+            WAIV (<USDDisplay value={metrics?.distributedInMonthUSD} currencyDisplay={'symbol'} />
+            )/month
+          </p>
+        </p>
       </div>
     </div>
   );
