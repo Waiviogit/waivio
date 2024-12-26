@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import WalletAddressItem from './WalletAddressItem';
 import './WalletAddress.less';
 
-const WalletAddress = ({ walletAddress }) => (
+const WalletAddress = ({ walletAddress, isSocial }) => (
   <div className={'WalletAddress'}>
     {walletAddress.map(address => (
-      <WalletAddressItem key={address._id} address={address} />
+      <WalletAddressItem key={address._id} address={address} isSocial={isSocial} />
     ))}
   </div>
 );
 
 WalletAddress.propTypes = {
   walletAddress: PropTypes.arrayOf(),
+  isSocial: PropTypes.bool,
 };
 
 export default WalletAddress;
