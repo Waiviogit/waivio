@@ -41,6 +41,7 @@ const WalletAction = props => {
 
   const config = {
     power_up: () => dispatch(openPowerUpOrDown()),
+    manage: () => dispatch(toggleDelegateModal()),
     power_down: () => dispatch(openPowerUpOrDown(true)),
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
