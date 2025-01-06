@@ -323,9 +323,11 @@ export const roundNumberToThousands = number => {
 const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
 const PRODUCTION_REQUEST_NODES = [
-  'https://anyx.io',
   'https://api.hive.blog',
+  'https://api.deathwing.me',
+  'https://api.openhive.network',
   'https://rpc.ecency.com',
+  // 'https://anyx.io',
 ];
 
 const STAGING_REQUEST_NODES = [

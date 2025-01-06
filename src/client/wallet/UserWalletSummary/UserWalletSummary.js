@@ -18,7 +18,11 @@ import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
-import { getIsAuthenticated, isGuestUser } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -118,6 +122,7 @@ const UserWalletSummary = ({
   loadingGlobalProperties,
   steemRate,
   sbdRate,
+  authUserName,
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
@@ -125,6 +130,7 @@ const UserWalletSummary = ({
   const [visible, setVisible] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+  const authUserPage = user.name === authUserName;
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
@@ -282,7 +288,7 @@ const UserWalletSummary = ({
                     <FormattedDate value={`${user.next_vesting_withdrawal}Z`} />{' '}
                     <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
                   </p>
-                  {isAuth && (
+                  {isAuth && authUserPage && (
                     <Button
                       onClick={() => setShowCancelPowerDown(true)}
                       className={'UserWalletSummary__button'}
@@ -411,6 +417,7 @@ UserWalletSummary.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   totalVestingShares: PropTypes.string.isRequired,
+  authUserName: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
@@ -424,4 +431,5 @@ UserWalletSummary.defaultProps = {
 export default connect((state, ownProps) => ({
   user: getUser(state, ownProps.userName),
   isAuth: getIsAuthenticated(state),
+  authUserName: getAuthenticatedUserName(state),
 }))(withRouter(UserWalletSummary));
