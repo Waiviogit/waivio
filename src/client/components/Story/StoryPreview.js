@@ -10,15 +10,7 @@ import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
 import { jsonParse } from '../../../common/helpers/formatter';
 import { getImageForPreview } from '../../../common/helpers/postHelpers';
-import {
-  getPositions,
-  isPostStartsWithAnEmbed,
-  isPostStartsWithAPicture,
-  isPostWithEmbedBeforeFirstHalf,
-  isPostWithPictureBeforeFirstHalf,
-  postWithAnEmbed,
-  postWithPicture,
-} from './StoryHelper';
+import { getFirstMediaFromHtml } from './StoryHelper';
 import { getHtml } from './Body';
 import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
@@ -105,7 +97,6 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     ? { ...embeds?.[0], thumbnail: previews?.find(i => i.url === embeds?.[0]?.url)?.urlPreview }
     : embeds?.[0];
 
-  const hasVideo = embeds && embeds[0];
   const preview = {
     text: () => (
       <BodyShort
@@ -117,7 +108,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
 
     embed: () => {
       if (embeds && embed) {
-        if (embed?.type === 'music') {
+        if (embed?.type === 'music' && imagePath) {
           // eslint-disable-next-line react/no-danger
           return (
             imagePath && (
@@ -141,35 +132,18 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       ),
   };
 
-  const htmlBody = getHtml(post.body, {}, 'Object');
-  const tagPositions = getPositions(htmlBody);
+  const htmlBody = getHtml(post.body, {}, 'text');
   const bodyData = [];
+
+  const typeMedia = getFirstMediaFromHtml(htmlBody);
 
   if (isUpdates) {
     bodyData.push(preview.text());
     bodyData.push(preview.image());
-  } else if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {
-    bodyData.push(preview.image());
-    bodyData.push(preview.text());
-  } else if (htmlBody.length <= 1500 && postWithAnEmbed(tagPositions, 100)) {
+  } else if (typeMedia && typeMedia === 'video') {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
-  } else if (isPostStartsWithAPicture(tagPositions)) {
-    bodyData.push(preview.image());
-    bodyData.push(preview.text());
-  } else if (isPostStartsWithAnEmbed(tagPositions)) {
-    bodyData.push(preview.embed());
-    bodyData.push(preview.text());
-  } else if (isPostWithPictureBeforeFirstHalf(tagPositions)) {
-    bodyData.push(preview.text());
-    bodyData.push(preview.image());
-  } else if (isPostWithEmbedBeforeFirstHalf(tagPositions)) {
-    bodyData.push(preview.text());
-    bodyData.push(preview.embed());
-  } else if (hasVideo) {
-    bodyData.push(preview.embed());
-    bodyData.push(preview.text());
-  } else if (imagePath !== '') {
+  } else if (typeMedia && typeMedia === 'image') {
     bodyData.push(preview.image());
     bodyData.push(preview.text());
   } else {

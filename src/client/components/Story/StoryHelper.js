@@ -10,6 +10,29 @@ const getPositions = text => {
   return { embed: firstEmbed, image: firstImage };
 };
 
+const getFirstMediaFromHtml = value => {
+  const indexVideo = value.indexOf('<iframe');
+  const indexImage = value.indexOf('<img');
+
+  if (indexVideo >= 0 && indexImage >= 0) {
+    if (indexVideo > indexImage) {
+      return 'image';
+    }
+
+    return 'video';
+  }
+
+  if (indexVideo < 0 && indexImage >= 0) {
+    return 'image';
+  }
+
+  if (indexImage < 0 && indexVideo >= 0) {
+    return 'video';
+  }
+
+  return '';
+};
+
 const postWithPicture = (tagPositions, searchPosition) => {
   const result = tagPositions.image && tagPositions.image < searchPosition;
 
@@ -49,4 +72,5 @@ export {
   isPostWithPictureBeforeFirstHalf,
   isPostWithEmbedBeforeFirstHalf,
   isPostVideo,
+  getFirstMediaFromHtml,
 };

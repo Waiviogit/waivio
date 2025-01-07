@@ -49,7 +49,7 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS: {
       const commentsMoreList = {};
 
-      action.payload.forEach(comment => {
+      action.payload?.forEach(comment => {
         const key = getPostKey(comment);
 
         commentsMoreList[key] = { ...comment, id: key };

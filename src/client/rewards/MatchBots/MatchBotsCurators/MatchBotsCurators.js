@@ -34,7 +34,7 @@ const MatchBotsCurators = ({ intl, isEngLocale, getMatchBots, matchBots, clearMa
       <MatchBotsCuratorsContent isEngLocale={isEngLocale} />
       <MatchBotsService botName={MATCH_BOTS_NAMES.CURATORS} botType={MATCH_BOTS_TYPES.CURATORS} />
       <ModalsCurators modalType="add" />
-      {!!matchBots.length && (
+      {!!matchBots?.length && (
         <MatchBotsTable type={MATCH_BOTS_NAMES.CURATORS} botType={MATCH_BOTS_TYPES.CURATORS} />
       )}
     </div>
