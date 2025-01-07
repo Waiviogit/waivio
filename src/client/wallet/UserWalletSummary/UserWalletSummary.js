@@ -18,7 +18,11 @@ import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
-import { getIsAuthenticated, isGuestUser } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -26,6 +30,7 @@ import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletAct
 
 import './UserWalletSummary.less';
 import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
+import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
 
 const getFormattedTotalDelegatedSP = (
   user,
@@ -53,8 +58,8 @@ const getFormattedTotalDelegatedSP = (
         title={
           <span>
             <FormattedMessage
-              id="steem_power_delegated_to_account_tooltip"
-              defaultMessage="Hive Power delegated to this account"
+              id="steem_power_balance_account_tooltip"
+              defaultMessage="Balance of HIVE Power delegations to/from other users"
             />
           </span>
         }
@@ -118,13 +123,16 @@ const UserWalletSummary = ({
   loadingGlobalProperties,
   steemRate,
   sbdRate,
+  authUserName,
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
+  const [showPowerDownProgress, setPowerDownProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+  const authUserPage = user.name === authUserName;
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
@@ -180,6 +188,13 @@ const UserWalletSummary = ({
   }, [totalVestingShares, totalVestingFundSteem]);
 
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS';
+  const nextPowerDownDate = (
+    <>
+      {' '}
+      <FormattedDate value={`${user.next_vesting_withdrawal}Z`} />{' '}
+      <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
+    </>
+  );
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -223,7 +238,7 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__label">
                 <FormattedMessage id="steem_power" defaultMessage="HIVE Power" />
               </div>
-              <div className={powerClassList} onClick={openDetailsModal}>
+              <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
                 {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
@@ -237,12 +252,12 @@ const UserWalletSummary = ({
                         ),
                       )}
                     />
-                    {getFormattedPendingWithdrawalSP(
-                      user,
-                      totalVestingShares,
-                      totalVestingFundSteem,
-                    )}
-                    {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
+                    {/* {getFormattedPendingWithdrawalSP( */}
+                    {/*  user, */}
+                    {/*  totalVestingShares, */}
+                    {/*  totalVestingFundSteem, */}
+                    {/* )} */}
+                    {/* {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)} */}
                     {' HP'}
                   </span>
                 )}
@@ -252,7 +267,7 @@ const UserWalletSummary = ({
               <p className="UserWalletSummary__description">
                 <FormattedMessage id="staked_hive_tokens" defaultMessage="Staked HIVE tokens" />
               </p>
-              <WalletAction mainCurrency={'HP'} mainKey={'power_down'} options={['delegate']} />
+              <WalletAction mainCurrency={'HP'} mainKey={'delegate'} options={['power_down']} />
             </div>
             {user.to_withdraw !== 0 && (
               <div className="UserWalletSummary__itemWrap--no-border">
@@ -279,10 +294,9 @@ const UserWalletSummary = ({
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
                     <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
-                    <FormattedDate value={`${user.next_vesting_withdrawal}Z`} />{' '}
-                    <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
+                    {isMobile() ? <div>{nextPowerDownDate}</div> : nextPowerDownDate}
                   </p>
-                  {isAuth && (
+                  {isAuth && authUserPage && (
                     <Button
                       onClick={() => setShowCancelPowerDown(true)}
                       className={'UserWalletSummary__button'}
@@ -297,9 +311,9 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__itemWrap--no-border delegation-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
-                    <FormattedMessage id="hive_delegated" defaultMessage="HIVE Delegated" />
+                    <FormattedMessage id="hive_delegations" defaultMessage="HIVE Delegations" />
                   </div>
-                  <div className={powerClassList}>
+                  <div className={powerClassList} onClick={openDetailsModal}>
                     {user.fetching || loadingGlobalProperties ? (
                       <Loading />
                     ) : (
@@ -316,14 +330,9 @@ const UserWalletSummary = ({
                   </div>
                 </div>
                 <div className="UserWalletSummary__actions">
-                  <p className="UserWalletSummary__description">User-delegated staked tokens</p>
+                  <p className="UserWalletSummary__description">Delegations to/from other users</p>
                   {isAuth && (
-                    <WalletAction
-                      openDetailsModal={openDetailsModal}
-                      mainKey={'details'}
-                      options={['delegate']}
-                      mainCurrency={'HP'}
-                    />
+                    <WalletAction mainKey={'manage'} options={['delegate']} mainCurrency={'HP'} />
                   )}
                 </div>
               </div>
@@ -402,6 +411,13 @@ const UserWalletSummary = ({
           setShowCancelPowerDown={setShowCancelPowerDown}
         />
       )}
+      {showPowerDownProgress && (
+        <PowerDownProgressModal
+          nextVestingWithdrawal={user.next_vesting_withdrawal}
+          showModal={showPowerDownProgress}
+          setShowModal={setPowerDownProgress}
+        />
+      )}
     </WalletSummaryInfo>
   );
 };
@@ -411,6 +427,7 @@ UserWalletSummary.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   totalVestingShares: PropTypes.string.isRequired,
+  authUserName: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
@@ -424,4 +441,5 @@ UserWalletSummary.defaultProps = {
 export default connect((state, ownProps) => ({
   user: getUser(state, ownProps.userName),
   isAuth: getIsAuthenticated(state),
+  authUserName: getAuthenticatedUserName(state),
 }))(withRouter(UserWalletSummary));
