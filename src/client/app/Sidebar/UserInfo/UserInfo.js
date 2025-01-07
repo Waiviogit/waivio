@@ -148,7 +148,7 @@ class UserInfo extends React.Component {
                   :&nbsp;
                   <WeightDisplay value={this.props.weightValue} />
                 </div>
-                {!isGuestPage && (
+                {!isGuestPage && lastActive && (
                   <React.Fragment>
                     <div>
                       <i className="iconfont icon-time text-icon" />

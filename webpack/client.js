@@ -20,6 +20,7 @@ const {
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
   const IS_PROD = env === 'production';
+  const IS_STAGING = env === 'staging';
   const appPath = IS_DEV ? paths.build : paths.buildPublic;
   const smp = new SpeedMeasurePlugin();
 
@@ -101,7 +102,7 @@ module.exports = function createConfig(env = 'dev') {
     };
   }
 
-  if (IS_PROD) {
+  if (IS_PROD || IS_STAGING) {
     config.plugins = [
       ...config.plugins,
       new webpack.optimize.AggressiveMergingPlugin(),
@@ -121,6 +122,7 @@ module.exports = function createConfig(env = 'dev') {
       }),
     ];
     config.optimization = {
+      minimize: IS_PROD,
       splitChunks: {
         chunks: 'initial',
         minSize: 30000,

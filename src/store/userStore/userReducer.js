@@ -75,7 +75,7 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_FOLLOWING_SUCCESS:
       const following = {};
 
-      action.payload.forEach(user => {
+      action.payload?.forEach(user => {
         following[user.name] = true;
       });
 
