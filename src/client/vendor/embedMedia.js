@@ -130,7 +130,7 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
     };
   } else if (vimeoId) {
     return {
-      type: 'music',
+      type: 'video',
       url: url,
       provider_name: 'Vimeo',
       id: vimeoId,

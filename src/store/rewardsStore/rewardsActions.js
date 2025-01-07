@@ -168,7 +168,7 @@ export const setMatchBot = ruleObj => (dispatch, getState, { steemConnectAPI, bu
         const res = isGuest ? await data.json() : data.result;
         const blockNumber = await getLastBlockNum();
         const subscribeCallback = () => {
-          if (!hasMore) dispatch(getMatchBotsLoadMore(ruleObj.type, bots?.length, 1));
+          if (!hasMore) dispatch(getMatchBotsLoadMore(ruleObj.type, bots?.length || 0, 1));
         };
 
         if (data.status !== 200 && isGuest) throw new Error(data.message);
