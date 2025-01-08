@@ -154,7 +154,7 @@ const WAIVWalletSummaryInfo = props => {
             <div className="WalletSummaryInfo__item">
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
-              <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
+              <div className={powerClassList}>
                 {formattedNumber(stake + delegationsOut)}
                 {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
                 {/* {getFormattedTotalDelegated(delegation)}{' '} */}
@@ -170,7 +170,7 @@ const WAIVWalletSummaryInfo = props => {
               <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">Power down</div>
-                  <div className={powerClassList}>
+                  <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
                     {getFormattedPendingWithdrawal(unstake)}
                     {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
                   </div>
