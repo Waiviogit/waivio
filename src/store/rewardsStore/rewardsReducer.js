@@ -113,7 +113,9 @@ const rewardsReducer = (state = initialState, action) => {
     case LOAD_MORE_MATCH_BOTS.SUCCESS: {
       return {
         ...state,
-        matchBots: [...state.matchBots, ...action.payload.result],
+        matchBots: action.payload.result
+          ? [...state.matchBots, ...action.payload.result]
+          : state.matchBots,
         matchBotsHasMore: action.payload.hasMore,
       };
     }
