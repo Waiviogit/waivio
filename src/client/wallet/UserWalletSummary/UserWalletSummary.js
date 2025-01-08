@@ -238,7 +238,7 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__label">
                 <FormattedMessage id="steem_power" defaultMessage="HIVE Power" />
               </div>
-              <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
+              <div className={powerClassList}>
                 {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
@@ -275,7 +275,7 @@ const UserWalletSummary = ({
                   <div className="UserWalletSummary__label power-down">
                     <FormattedMessage id="power_down" defaultMessage="Power Down" />
                   </div>
-                  <div className={powerClassList}>
+                  <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
                     {user.fetching || loadingGlobalProperties ? (
                       <Loading />
                     ) : (
@@ -413,7 +413,8 @@ const UserWalletSummary = ({
       )}
       {showPowerDownProgress && (
         <PowerDownProgressModal
-          nextVestingWithdrawal={user.next_vesting_withdrawal}
+          maxWeeks={13}
+          nextWithdrawal={user.next_vesting_withdrawal}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
         />

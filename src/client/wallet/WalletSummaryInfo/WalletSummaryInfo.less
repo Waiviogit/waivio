@@ -40,6 +40,9 @@
     color: @black;
     display: flex;
     font-size: 18px;
+    &.power-down {
+      margin-left: 35px;
+    }
   }
 
   &__value {
@@ -65,6 +68,25 @@
   &__itemWrap {
     border-bottom: @base-border;
     padding: 10px 0;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+  &__itemWrap {
+    border-bottom: @base-border;
+    padding: 10px 0;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+  &__itemWrap--no-border {
+    margin: 20px 0;
+
+    &.delegation-block {
+      margin-bottom: 0;
+    }
 
     &:last-of-type {
       border-bottom: 0;
