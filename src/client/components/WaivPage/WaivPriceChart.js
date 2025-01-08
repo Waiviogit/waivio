@@ -5,24 +5,25 @@ import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import moment from 'moment/moment';
 import { isEmpty, round } from 'lodash';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { truncateNumber } from '../../../common/helpers/parser';
 
 import { getTokensEngineChart } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../Icon/Loading';
 import CryptoRateInUsd from '../Sidebar/CrypoCharts/CryptoRateInCurrency';
-import { getTokenRatesInSelectCurrency } from '../../../store/walletStore/walletSelectors';
+import USDDisplay from '../Utils/USDDisplay';
 
 import './WaivPriceChart.less';
 
 const periods = ['1d', '7d', '1m', '3m', '6m', '1y', '2y', 'all'];
 const yearsPeriods = ['1y', '2y', 'all'];
 
-const WaivPriceChart = props => {
+const WaivPriceChart = () => {
   const querySelectorSearchParams = new URLSearchParams(location?.search);
   const isWidget = querySelectorSearchParams.get('display');
   const [type, setType] = React.useState('1m');
+  const [lowUSD, setLowUSD] = React.useState(0);
+  const [highUSD, setHighUSD] = React.useState(0);
   const [dataArr, setData] = React.useState([]);
   const [currencyPriceChange, setCurrencyPriceChange] = React.useState(0);
   const isMobl = isMobile();
@@ -42,6 +43,8 @@ const WaivPriceChart = props => {
 
     getTokensEngineChart('WAIV', type).then(res => {
       setCurrencyPriceChange(res.change.USD);
+      setLowUSD(res.lowUSD);
+      setHighUSD(res.highUSD);
       setData(
         res.result.reverse().map(r => ({
           Price: round(r.rates.USD, 8),
@@ -108,7 +111,7 @@ const WaivPriceChart = props => {
     <div className={'WaivPriceChart'}>
       <div className={'WaivPriceChart__container'}>
         <CryptoRateInUsd
-          currentUSDPrice={props.currencyPrice}
+          currentUSDPrice={truncateNumber(dataArr?.[dataArr?.length - 1]?.Price, 3)}
           priceDifference={currencyPriceChange}
           minimumFractionDigits={3}
           // currency={'USD'}
@@ -116,7 +119,14 @@ const WaivPriceChart = props => {
           valueClassName={'CryptoTrendingCharts__btc-price'}
         />
       </div>
-
+      <div className={'WaivPriceChart__lowHight'}>
+        <span>
+          Low: <USDDisplay value={lowUSD} precision={3} currencyDisplay={'symbol'} />
+        </span>
+        <span>
+          High: <USDDisplay value={highUSD} precision={3} currencyDisplay={'symbol'} />
+        </span>
+      </div>
       <b
         style={{
           display: 'inline-block',
@@ -188,10 +198,6 @@ const WaivPriceChart = props => {
   );
 };
 
-WaivPriceChart.propTypes = {
-  currencyPrice: PropTypes.number,
-};
+WaivPriceChart.propTypes = {};
 
-export default connect(state => ({
-  currencyPrice: getTokenRatesInSelectCurrency(state, 'WAIV', 'USD'),
-}))(injectIntl(WaivPriceChart));
+export default injectIntl(WaivPriceChart);
