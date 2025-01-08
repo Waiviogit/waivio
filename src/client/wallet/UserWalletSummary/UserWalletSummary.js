@@ -136,7 +136,7 @@ const UserWalletSummary = ({
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
-    'UserWalletSummary__value--cursorPointer': hasDelegations,
+    'UserWalletSummary__value--cursorPointer': hasDelegations || user.to_withdraw !== 0,
   });
 
   const isGuest = guestUserRegex.test(user.name);
@@ -238,7 +238,7 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__label">
                 <FormattedMessage id="steem_power" defaultMessage="HIVE Power" />
               </div>
-              <div className={powerClassList}>
+              <div className={'UserWalletSummary__value'}>
                 {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
@@ -417,6 +417,7 @@ const UserWalletSummary = ({
           nextWithdrawal={user.next_vesting_withdrawal}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
+          user={user}
         />
       )}
     </WalletSummaryInfo>
