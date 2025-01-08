@@ -413,7 +413,8 @@ const UserWalletSummary = ({
       )}
       {showPowerDownProgress && (
         <PowerDownProgressModal
-          nextVestingWithdrawal={user.next_vesting_withdrawal}
+          maxWeeks={13}
+          nextWithdrawal={user.next_vesting_withdrawal}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
         />
