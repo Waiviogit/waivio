@@ -76,6 +76,7 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsIn = Number(get(props.currencyInfo, 'delegationsIn', null));
   const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const delegation = delegationsIn - delegationsOut;
+  const showPowerDown = unstake !== 0 && !isNil(unstake) && !isNaN(unstake);
   const estAccValue =
     props?.rates?.WAIV *
     props?.rates?.HIVE *
@@ -84,13 +85,8 @@ const WAIVWalletSummaryInfo = props => {
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('WalletSummaryInfo__value', {
     // 'WalletSummaryInfo__value--unstake': unstake,
-    'WalletSummaryInfo__value--cursorPointer': hasDelegations,
+    'WalletSummaryInfo__value--cursorPointer': hasDelegations || showPowerDown,
   });
-  const showPowerDown =
-    unstake !== 0 &&
-    !isNil(unstake) &&
-    !isNaN(unstake) &&
-    !isNil(unstakesTokenInfo.nextTransactionTimestamp);
 
   const authUserPage = props.match.params.name === props.authUserName;
   const timestamp = epochToUTC(unstakesTokenInfo?.nextTransactionTimestamp / 1000);
@@ -154,10 +150,10 @@ const WAIVWalletSummaryInfo = props => {
             <div className="WalletSummaryInfo__item">
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
-              <div className={powerClassList}>
+              <div className={'WalletSummaryInfo__value'}>
                 {formattedNumber(stake + delegationsOut)}
                 {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
-                {/* {getFormattedTotalDelegated(delegation)}{' '} */}
+                {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
                 {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
               </div>
             </div>
@@ -171,7 +167,7 @@ const WAIVWalletSummaryInfo = props => {
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">Power down</div>
                   <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
-                    {getFormattedPendingWithdrawal(unstake)}
+                    {getFormattedPendingWithdrawal(unstake)}{' '}
                     {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
                   </div>
                 </div>
