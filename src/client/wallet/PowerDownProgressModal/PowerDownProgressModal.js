@@ -17,7 +17,7 @@ const PowerDownProgressModal = ({
     const timeDifference = target - currentDate;
 
     // Convert milliseconds to weeks
-    return Math.max(0, Math.ceil(timeDifference / (1000 * 60 * 60 * 24 * 7)));
+    return Math.max(0, Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7)));
   };
 
   const weeksLeft = calculateWeeksLeft(nextWithdrawal);
@@ -57,7 +57,7 @@ const PowerDownProgressModal = ({
           <FormattedTime value={`${nextWithdrawal}Z`} />
         </div>
         <div>
-          Remaining: {weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
+          Remaining: {maxWeeks - weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
         </div>
       </div>
       <div>
@@ -66,7 +66,7 @@ const PowerDownProgressModal = ({
           marks={marks}
           tipFormatter={null}
           // disabled
-          value={maxWeeks - weeksLeft}
+          value={weeksLeft}
           min={0}
           max={maxWeeks}
         />
