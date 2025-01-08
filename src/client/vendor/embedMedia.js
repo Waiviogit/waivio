@@ -361,9 +361,7 @@ SteemEmbed.isSoundcloud = function(url) {
 
 SteemEmbed.soundcloud = function(url, id, options) {
   return (
-    '<iframe width="' +
-    options.width +
-    '" height="100px" src="//w.soundcloud.com/player/?url=' +
+    '<iframe width="100%" height="100px" src="//w.soundcloud.com/player/?url=' +
     encodeURIComponent(url) +
     `&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true" frameborder="0" allowfullscreen="allowfullscreen" loading="lazy" width="100%" height="420" sandbox="allow-scripts allow-same-origin allow-popups` +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'

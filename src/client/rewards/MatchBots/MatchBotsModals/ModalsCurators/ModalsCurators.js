@@ -55,14 +55,14 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             }),
           ),
         )
-        .catch(() =>
+        .catch(() => {
           message.error(
             intl.formatMessage({
               id: 'append_validate_common_message',
               defaultMessage: 'Something went wrong',
             }),
-          ),
-        );
+          );
+        });
       setIsModalOpen(false);
       setIsModalOpenConfirmEdit(false);
     }

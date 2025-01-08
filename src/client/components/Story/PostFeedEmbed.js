@@ -97,6 +97,9 @@ export default class PostFeedEmbed extends React.Component {
 
   render() {
     const { embed, inPost, isSocial, isPreview } = this.props;
+
+    if (!embed) return <div />;
+
     const shouldRenderThumb =
       inPost && !isPreview && !embed.url?.includes('tiktok') ? false : !this.state.showIframe;
 

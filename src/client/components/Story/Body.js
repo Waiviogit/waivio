@@ -18,6 +18,7 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
 import mapProvider from '../../../common/helpers/mapProvider';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './Body.less';
 
@@ -79,6 +80,7 @@ export function getHtml(
   sendPostError,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
+  const isMobl = isMobile();
 
   if (!isEmpty(parsedJsonMetadata.image))
     parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
@@ -124,6 +126,7 @@ export function getHtml(
       isChatBotLink: options.isChatBotLink,
       baseObj,
       parsedJsonMetadata,
+      large: !isMobl,
     }),
   );
 
