@@ -231,7 +231,7 @@ const WAIVWalletSummaryInfo = props => {
         <PowerDownProgressModal
           isWaivWallet
           maxWeeks={4}
-          nextWithdrawal={unstakesTokenInfo.nextTransactionTimestamp}
+          nextWithdrawal={unstakesTokenInfo.numberTransactionsLeft}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
         />
