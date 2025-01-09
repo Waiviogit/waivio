@@ -4,7 +4,11 @@ import { round } from 'lodash';
 import { LabelList, Legend, Pie, PieChart } from 'recharts';
 import { FormattedNumber } from 'react-intl';
 
-import { getWaivMetric } from '../../../waivioApi/ApiClient';
+import {
+  getWaivMetric,
+  getEngineStatisticWaivOwners,
+  getEngineStatisticWaivActiveUsers,
+} from '../../../waivioApi/ApiClient';
 import WaivPriceChart from './WaivPriceChart';
 import USDDisplay from '../Utils/USDDisplay';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -19,6 +23,8 @@ const locale = 'en-US';
 const StatisticPage = () => {
   const isMobl = isMobile();
   const [metrics, setMetrics] = React.useState([]);
+  const [waivOwners, setWaivOwners] = React.useState(0);
+  const [waivActiveUsers, setWaivActiveUsers] = React.useState(0);
   const data01 = [
     {
       name: `Liquid WAIV (${round(
@@ -71,6 +77,12 @@ const StatisticPage = () => {
   ];
 
   useEffect(() => {
+    getEngineStatisticWaivOwners().then(res => {
+      setWaivOwners(res);
+    });
+    getEngineStatisticWaivActiveUsers().then(res => {
+      setWaivActiveUsers(res);
+    });
     getWaivMetric().then(res => {
       setMetrics(res);
     });
@@ -111,6 +123,10 @@ const StatisticPage = () => {
             <LabelList position={'inside'} dataKey={'label'} />
           </Pie>
         </PieChart>{' '}
+        <h3>Accounts holding WAIV</h3>
+        <span>{waivOwners}</span>
+        <h3>Daily active counts</h3>
+        <span>{waivActiveUsers}</span>
       </div>
       <div className={'StatisticPage__section'}>
         <h2>WAIV tokenomics</h2>
