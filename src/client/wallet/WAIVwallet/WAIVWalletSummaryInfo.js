@@ -158,7 +158,9 @@ const WAIVWalletSummaryInfo = props => {
               </div>
             </div>
             <div className="WalletSummaryInfo__actions">
-              <p className="WalletSummaryInfo__description"> Delegations to/from other users</p>
+              <p className="WalletSummaryInfo__description">
+                <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
+              </p>
               <WalletAction mainCurrency={'WP'} mainKey={'delegate'} options={['power_down']} />
             </div>
 
@@ -206,10 +208,7 @@ const WAIVWalletSummaryInfo = props => {
                   </div>
                 </div>
                 <div className="WalletSummaryInfo__actions">
-                  <p className="WalletSummaryInfo__description">
-                    {' '}
-                    <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
-                  </p>
+                  <p className="WalletSummaryInfo__description"> Delegations to/from other users</p>
                   <WalletAction mainCurrency={'WP'} mainKey={'manage'} options={['delegate']} />
                 </div>
               </div>
@@ -232,6 +231,7 @@ const WAIVWalletSummaryInfo = props => {
           isWaivWallet
           maxWeeks={4}
           nextWithdrawal={unstakesTokenInfo.nextTransactionTimestamp}
+          weeks={unstakesTokenInfo.numberTransactionsLeft}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
         />
