@@ -124,9 +124,19 @@ const StatisticPage = () => {
           </Pie>
         </PieChart>{' '}
         <h3>Accounts holding WAIV</h3>
-        <span>{waivOwners}</span>
-        <h3>Daily active counts</h3>
-        <span>{waivActiveUsers}</span>
+        <FormattedNumber
+          value={waivOwners}
+          locale={locale}
+          minimumFractionDigits={0}
+          maximumFractionDigits={0}
+        />
+        <h3>Monthly active accounts</h3>
+        <FormattedNumber
+          value={waivActiveUsers}
+          locale={locale}
+          minimumFractionDigits={0}
+          maximumFractionDigits={0}
+        />
       </div>
       <div className={'StatisticPage__section'}>
         <h2>WAIV tokenomics</h2>
