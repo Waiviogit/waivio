@@ -7,6 +7,7 @@ const PowerDownProgressModal = ({
   showModal,
   setShowModal,
   nextWithdrawal,
+  weeks,
   isWaivWallet,
   maxWeeks,
   user,
@@ -19,7 +20,7 @@ const PowerDownProgressModal = ({
   };
 
   const weeksLeft = isWaivWallet
-    ? nextWithdrawal
+    ? weeks
     : calculateWeeksLeft(user.to_withdraw, user.withdrawn, user.vesting_withdraw_rate);
 
   const nextDate = isWaivWallet ? nextWithdrawal : `${nextWithdrawal}Z`;
@@ -86,6 +87,7 @@ const PowerDownProgressModal = ({
 PowerDownProgressModal.propTypes = {
   isWaivWallet: PropTypes.bool,
   user: PropTypes.shape(),
+  weeks: PropTypes.number,
   showModal: PropTypes.bool.isRequired,
   maxWeeks: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
