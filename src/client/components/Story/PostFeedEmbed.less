@@ -130,7 +130,24 @@
   .PostFeedEmbed__container_high {
     height: 600px;
   }
+
+  .PostFeedEmbed__container {
+    iframe {
+      top: 0;
+      left: 0;
+      width: calc(100% + 40px);
+      height: 100%;
+      position: absolute;
+      margin-left: -20px;
+
+      @media @small {
+        left: 0;
+        width: 100%;
+      }
+    }
+  }
 }
+
 .PostFeedEmbed__container_instagram-reel {
   padding-bottom: 112%;
 }

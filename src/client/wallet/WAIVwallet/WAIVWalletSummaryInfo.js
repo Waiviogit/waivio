@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { round, get, isNil, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { Button } from 'antd';
+import { withRouter } from 'react-router';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import classNames from 'classnames';
 
@@ -19,34 +21,23 @@ import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 import BTooltip from '../../components/BTooltip';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { epochToUTC } from '../../../common/helpers/formatter';
+import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
+import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 
 const getFormattedTotalDelegated = delegate => {
   if (delegate !== 0 && !isNil(delegate) && !isNaN(delegate)) {
     return (
       <BTooltip
-        title={
-          delegate < 0 ? (
-            <span>
-              <FormattedMessage
-                id="waiv_power_delegated_from_account_tooltip"
-                defaultMessage="Waiv Power delegated from this account"
-              />
-            </span>
-          ) : (
-            <span>
-              <FormattedMessage
-                id="waiv_power_delegated_to_account_tooltip"
-                defaultMessage="Waiv Power delegated to this account"
-              />
-            </span>
-          )
-        }
+        title={'Balance of WAIV Power delegations to/from other users'}
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {delegate > 0 ? ' (+' : ' ('}
+          {delegate > 0 ? ' +' : ' '}
           <FormattedNumber value={delegate} />
-          {')'}
         </span>
       </BTooltip>
     );
@@ -54,25 +45,14 @@ const getFormattedTotalDelegated = delegate => {
 
   return null;
 };
-const getFormattedPendingWithdrawal = (pendingWithdrawal, unstakesTokenInfo = {}) => {
+const getFormattedPendingWithdrawal = (pendingWithdrawal = {}) => {
   if (pendingWithdrawal !== 0 && !isNil(pendingWithdrawal) && !isNaN(pendingWithdrawal)) {
-    const timestamp = epochToUTC(unstakesTokenInfo.nextTransactionTimestamp / 1000);
-
     return (
       <BTooltip
-        title={
-          <span>
-            <FormattedMessage
-              id="steem_power_pending_withdrawal_tooltip"
-              defaultMessage="The next power down is scheduled to happen on "
-            />
-            <FormattedDate value={timestamp} /> <FormattedTime value={timestamp} />
-          </span>
-        }
+        title={'Balance of WAIV Power delegations to/from other users'}
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {' - '}
           <FormattedNumber value={pendingWithdrawal} />
         </span>
       </BTooltip>
@@ -88,12 +68,15 @@ const WAIVWalletSummaryInfo = props => {
   const [unstakesTokenInfo, setUnstakesTokenInfo] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
+  const [showPowerDownProgress, setPowerDownProgress] = useState(false);
   const balance = Number(get(props.currencyInfo, 'balance', null));
   const stake = Number(get(props.currencyInfo, 'stake', null));
   const unstake = Number(get(props.currencyInfo, 'pendingUnstake', null));
   const delegationsIn = Number(get(props.currencyInfo, 'delegationsIn', null));
   const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const delegation = delegationsIn - delegationsOut;
+  const showPowerDown = unstake !== 0 && !isNil(unstake) && !isNaN(unstake);
   const estAccValue =
     props?.rates?.WAIV *
     props?.rates?.HIVE *
@@ -101,9 +84,17 @@ const WAIVWalletSummaryInfo = props => {
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('WalletSummaryInfo__value', {
-    'WalletSummaryInfo__value--unstake': unstake,
-    'WalletSummaryInfo__value--cursorPointer': hasDelegations,
+    // 'WalletSummaryInfo__value--unstake': unstake,
+    'WalletSummaryInfo__value--cursorPointer': hasDelegations || showPowerDown,
   });
+
+  const authUserPage = props.match.params.name === props.authUserName;
+  const timestamp = epochToUTC(unstakesTokenInfo?.nextTransactionTimestamp / 1000);
+  const nextPowerDownDate = (
+    <>
+      <FormattedDate value={timestamp} /> <FormattedTime value={timestamp} />
+    </>
+  );
 
   const setDelegationLists = async () => {
     const delegated = await getDelegateList({ from: props.name, symbol: 'WAIV' });
@@ -154,32 +145,76 @@ const WAIVWalletSummaryInfo = props => {
         </div>
       </div>
       {!props.isGuest && (
-        <div className="WalletSummaryInfo__itemWrap">
-          <div className="WalletSummaryInfo__item">
-            <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
-            <div className="WalletSummaryInfo__label">WAIV Power</div>
-            <div
-              className={powerClassList}
-              onClick={() => {
-                if (hasDelegations) {
-                  setVisible(true);
-                }
-              }}
-            >
-              {formattedNumber(stake + delegationsOut)}
-              {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)}
-              {getFormattedTotalDelegated(delegation)}{' '}
-              {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+        <>
+          <div className="WalletSummaryInfo__itemWrap">
+            <div className="WalletSummaryInfo__item">
+              <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
+              <div className="WalletSummaryInfo__label">WAIV Power</div>
+              <div className={'WalletSummaryInfo__value'}>
+                {formattedNumber(stake + delegationsOut)}
+                {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
+                {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
+                {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+              </div>
             </div>
+            <div className="WalletSummaryInfo__actions">
+              <p className="WalletSummaryInfo__description">
+                <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
+              </p>
+              <WalletAction mainCurrency={'WP'} mainKey={'delegate'} options={['power_down']} />
+            </div>
+
+            {showPowerDown && (
+              <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
+                <div className="WalletSummaryInfo__item">
+                  <div className="WalletSummaryInfo__label power-down">Power down</div>
+                  <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
+                    {getFormattedPendingWithdrawal(unstake)}{' '}
+                    {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                  </div>
+                </div>
+                <div className="WalletSummaryInfo__actions">
+                  <p className="WalletSummaryInfo__description">
+                    {' '}
+                    Next power down:{' '}
+                    {isMobile() ? <div>{nextPowerDownDate}</div> : nextPowerDownDate}
+                  </p>
+                  {props.isAuth && authUserPage && (
+                    <Button
+                      onClick={() => setShowCancelPowerDown(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!isNil(delegation) && !isNaN(delegation) && delegation !== 0 && (
+              <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
+                <div className="WalletSummaryInfo__item">
+                  <div className="WalletSummaryInfo__label power-down">WAIV delegations</div>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      if (hasDelegations) {
+                        setVisible(true);
+                      }
+                    }}
+                  >
+                    {getFormattedTotalDelegated(delegation)}{' '}
+                    {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                  </div>
+                </div>
+                <div className="WalletSummaryInfo__actions">
+                  <p className="WalletSummaryInfo__description"> Delegations to/from other users</p>
+                  <WalletAction mainCurrency={'WP'} mainKey={'manage'} options={['delegate']} />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="WalletSummaryInfo__actions">
-            <p className="WalletSummaryInfo__description">
-              {' '}
-              <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
-            </p>
-            <WalletAction mainCurrency={'WP'} mainKey={'power_down'} options={['delegate']} />
-          </div>
-        </div>
+        </>
       )}
       {hasDelegations && (
         <DelegateListModal
@@ -191,15 +226,38 @@ const WAIVWalletSummaryInfo = props => {
           symbol={'WP'}
         />
       )}
+      {showPowerDownProgress && (
+        <PowerDownProgressModal
+          isWaivWallet
+          maxWeeks={4}
+          nextWithdrawal={unstakesTokenInfo.nextTransactionTimestamp}
+          weeks={unstakesTokenInfo.numberTransactionsLeft}
+          showModal={showPowerDownProgress}
+          setShowModal={setPowerDownProgress}
+        />
+      )}
+      {showCancelPowerDown && (
+        <CancelPowerDownModal
+          account={props.authUserName}
+          txID={unstakesTokenInfo?.txID}
+          isWaivWallet
+          showCancelPowerDown={showCancelPowerDown}
+          setShowCancelPowerDown={setShowCancelPowerDown}
+        />
+      )}
     </WalletSummaryInfo>
   );
 };
 
 WAIVWalletSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
+  user: PropTypes.shape({}).isRequired,
+  match: PropTypes.shape().isRequired,
   rates: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  authUserName: PropTypes.string.isRequired,
   isGuest: PropTypes.bool,
+  isAuth: PropTypes.bool,
 };
 
 WAIVWalletSummaryInfo.defaultProps = {
@@ -209,4 +267,6 @@ WAIVWalletSummaryInfo.defaultProps = {
 export default connect(state => ({
   currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
   rates: getRatesList(state),
-}))(WAIVWalletSummaryInfo);
+  isAuth: getIsAuthenticated(state),
+  authUserName: getAuthenticatedUserName(state),
+}))(withRouter(WAIVWalletSummaryInfo));

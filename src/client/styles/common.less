@@ -181,6 +181,11 @@ video {
 iframe {
   border: none;
   height: calc(100% + 2px);
+
+  @media @small {
+    width: 100%;
+    margin: inherit;
+  }
 }
 
 .float-right {

@@ -4373,6 +4373,26 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     .then(r => r)
     .catch(error => error);
 };
+
+export const getEngineStatisticWaivOwners = () => {
+  return fetch(`https://engine.waivio.com/engine-statistic/waiv/owners`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(error => error);
+};
+
+export const getEngineStatisticWaivActiveUsers = () => {
+  return fetch(`https://engine.waivio.com/engine-statistic/waiv/active-users`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(error => error);
+};
 export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10, skip) => {
   return fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}${config.map}`, {
     headers: { ...headers, follower: authUserName },

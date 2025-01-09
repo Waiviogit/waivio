@@ -130,7 +130,7 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
     };
   } else if (vimeoId) {
     return {
-      type: 'music',
+      type: 'video',
       url: url,
       provider_name: 'Vimeo',
       id: vimeoId,
@@ -361,12 +361,9 @@ SteemEmbed.isSoundcloud = function(url) {
 
 SteemEmbed.soundcloud = function(url, id, options) {
   return (
-    '<iframe width="' +
-    options.width +
-    '" height="' +
-    options.height +
-    '" src="//w.soundcloud.com/player/?url=' +
-    encodeURIComponent(url + '?visual=true') +
+    '<iframe width="100%" height="100px" src="//w.soundcloud.com/player/?url=' +
+    encodeURIComponent(url) +
+    `&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true" frameborder="0" allowfullscreen="allowfullscreen" loading="lazy" width="100%" height="420" sandbox="allow-scripts allow-same-origin allow-popups` +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
 };

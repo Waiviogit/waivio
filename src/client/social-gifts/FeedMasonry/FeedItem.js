@@ -163,7 +163,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               'FeedMasonry__videoContainer--tiktok': isTiktok,
             })}
           >
-            <PostFeedEmbed key="embed" isSocial embed={embed} />
+            {embed && <PostFeedEmbed key="embed" isSocial embed={embed} />}
             {!withoutImage && (
               <img
                 className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}

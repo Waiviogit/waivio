@@ -5,6 +5,8 @@ process.env.NODE_ENV = 'development';
 const webpack = require('webpack');
 const DevServer = require('webpack-dev-server');
 
+// const LOCAL_NETWORK_IP = '0.0.0.0';
+
 const createClientConfig = require('../webpack/client');
 const createServerConfig = require('../webpack/server');
 
@@ -28,11 +30,13 @@ async function main() {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
+    // host: '0.0.0.0',
     historyApiFallback: {
       disableDotRule: true,
     },
   });
 
+  // clientDevServer.listen(CONTENT_PORT, LOCAL_NETWORK_IP, () => console.log('server started'));
   clientDevServer.listen(CONTENT_PORT, () => console.log('server started'));
 }
 
