@@ -11,12 +11,6 @@ const PowerDownProgressModal = ({
   maxWeeks,
   user,
 }) => {
-  const calculateWaivWeeksLeft = date => {
-    const currentDate = new Date().getTime();
-    const timeDifference = date - currentDate;
-
-    return Math.max(0, Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7)));
-  };
   const calculateWeeksLeft = (toWithdraw, withdrawn, vestingWithdrawRate) => {
     const rate = parseFloat(vestingWithdrawRate);
     const remainingAmount = toWithdraw - withdrawn;
@@ -25,7 +19,7 @@ const PowerDownProgressModal = ({
   };
 
   const weeksLeft = isWaivWallet
-    ? calculateWaivWeeksLeft(nextWithdrawal)
+    ? nextWithdrawal
     : calculateWeeksLeft(user.to_withdraw, user.withdrawn, user.vesting_withdraw_rate);
 
   const nextDate = isWaivWallet ? nextWithdrawal : `${nextWithdrawal}Z`;
