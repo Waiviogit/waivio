@@ -9,18 +9,26 @@ const PowerDownProgressModal = ({
   nextWithdrawal,
   isWaivWallet,
   maxWeeks,
+  user,
 }) => {
-  const calculateWeeksLeft = date => {
-    const currentDate = isWaivWallet ? new Date().getTime() : new Date();
-    const target = isWaivWallet ? date : new Date(date);
+  const calculateWaivWeeksLeft = date => {
+    const currentDate = new Date().getTime();
+    const timeDifference = date - currentDate;
 
-    const timeDifference = target - currentDate;
-
-    // Convert milliseconds to weeks
     return Math.max(0, Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 7)));
   };
+  const calculateWeeksLeft = (toWithdraw, withdrawn, vestingWithdrawRate) => {
+    const rate = parseFloat(vestingWithdrawRate);
+    const remainingAmount = toWithdraw - withdrawn;
 
-  const weeksLeft = calculateWeeksLeft(nextWithdrawal);
+    return Math.round(remainingAmount / rate) / 1000000;
+  };
+
+  const weeksLeft = isWaivWallet
+    ? calculateWaivWeeksLeft(nextWithdrawal)
+    : calculateWeeksLeft(user.to_withdraw, user.withdrawn, user.vesting_withdraw_rate);
+
+  const nextDate = isWaivWallet ? nextWithdrawal : `${nextWithdrawal}Z`;
   const marks = isWaivWallet
     ? {
         0: '0',
@@ -32,9 +40,17 @@ const PowerDownProgressModal = ({
     : {
         0: '0',
         1: '1',
+        2: '2',
         3: '3',
+        4: '4',
+        5: '5',
         6: '6',
+        7: '7',
+        8: '8',
         9: '9',
+        10: '10',
+        11: '11',
+        12: '12',
         13: '13',
       };
 
@@ -53,11 +69,10 @@ const PowerDownProgressModal = ({
         <div>
           {' '}
           <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
-          <FormattedDate value={`${nextWithdrawal}Z`} />{' '}
-          <FormattedTime value={`${nextWithdrawal}Z`} />
+          <FormattedDate value={nextDate} /> <FormattedTime value={nextDate} />
         </div>
         <div>
-          Remaining: {maxWeeks - weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
+          Remaining: {weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
         </div>
       </div>
       <div>
@@ -65,8 +80,7 @@ const PowerDownProgressModal = ({
         <Slider
           marks={marks}
           tipFormatter={null}
-          // disabled
-          value={weeksLeft}
+          value={maxWeeks - weeksLeft}
           min={0}
           max={maxWeeks}
         />
@@ -77,6 +91,7 @@ const PowerDownProgressModal = ({
 
 PowerDownProgressModal.propTypes = {
   isWaivWallet: PropTypes.bool,
+  user: PropTypes.shape(),
   showModal: PropTypes.bool.isRequired,
   maxWeeks: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
@@ -84,6 +99,7 @@ PowerDownProgressModal.propTypes = {
 };
 PowerDownProgressModal.defaultProps = {
   isWaivWallet: false,
+  user: {},
 };
 
 export default PowerDownProgressModal;
