@@ -25,6 +25,7 @@ const WaivPriceChart = () => {
   const [lowUSD, setLowUSD] = React.useState(0);
   const [highUSD, setHighUSD] = React.useState(0);
   const [dataArr, setData] = React.useState([]);
+  const [currPrice, setCurrPrice] = React.useState(0);
   const [currencyPriceChange, setCurrencyPriceChange] = React.useState(0);
   const isMobl = isMobile();
   const isYearPeriod = yearsPeriods.includes(type);
@@ -45,6 +46,7 @@ const WaivPriceChart = () => {
       setCurrencyPriceChange(res.change.USD);
       setLowUSD(res.lowUSD);
       setHighUSD(res.highUSD);
+      setCurrPrice(res?.result?.[0].rates.USD);
       setData(
         res.result.reverse().map(r => ({
           Price: round(r.rates.USD, 8),
@@ -111,7 +113,7 @@ const WaivPriceChart = () => {
     <div className={'WaivPriceChart'}>
       <div className={'WaivPriceChart__container'}>
         <CryptoRateInUsd
-          currentUSDPrice={truncateNumber(dataArr?.[dataArr?.length - 1]?.Price, 3)}
+          currentUSDPrice={truncateNumber(currPrice, 3)}
           priceDifference={currencyPriceChange}
           minimumFractionDigits={3}
           // currency={'USD'}
