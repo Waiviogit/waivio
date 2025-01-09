@@ -44,8 +44,8 @@ const WaivPriceChart = () => {
 
     getTokensEngineChart('WAIV', type).then(res => {
       setCurrencyPriceChange(res.change.USD);
-      setLowUSD(res.lowUSD);
-      setHighUSD(res.highUSD);
+      setLowUSD(truncateNumber(res.lowUSD, 3));
+      setHighUSD(truncateNumber(res.highUSD, 3));
       setCurrPrice(res?.result?.[0].rates.USD);
       setData(
         res.result.reverse().map(r => ({
