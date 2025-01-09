@@ -187,17 +187,24 @@ const CommentForm = props => {
 
   const handleObjectSelect = selectedObject => {
     const { editor } = props;
-    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const { beforeRange } = checkCursorInSearchSlate(editor) || {};
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
-    isEmpty(importObj)
-      ? Transforms.select(editor, beforeRange)
-      : Transforms.select(editor, Editor.end(editor, []));
-    insertObject(editor, url, textReplace, true);
-    props.setImportObject({});
+    try {
+      const rangeToSelect = isEmpty(importObj) ? beforeRange : Editor.end(editor, []);
+
+      if (rangeToSelect) {
+        Transforms.select(editor, rangeToSelect);
+      }
+
+      insertObject(editor, url, textReplace, true);
+      props.setImportObject({});
+    } catch (error) {
+      console.error('Error during object selection:', error);
+    }
   };
 
   const { username, isSmall, isEdit, isThread } = props;
