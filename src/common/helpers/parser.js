@@ -97,14 +97,14 @@ export function extractLinks(body) {
 
 export const replacer = value => value.replace(/^@/g, '');
 
-export const fixedNumber = (num, precision) => {
+export const fixedNumber = (num, precision = 0) => {
   if (!num) return 0;
-  if (precision)
-    return typeof num === 'number' ? num.toFixed(precision) : Number(num).toFixed(precision);
+  let currPrecision;
 
-  const currPrecision = num > 0.001 ? 3 : 5;
+  if (precision) currPrecision = precision;
+  else currPrecision = num > 0.001 ? 3 : 5;
 
-  return Number(num).toFixed(currPrecision);
+  return truncateNumber(Number(num), currPrecision);
 };
 
 export function truncateNumber(num, decimalPlaces) {
