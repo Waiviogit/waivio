@@ -321,6 +321,9 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
 
+  // eslint-disable-next-line no-console
+  console.log(postData);
+
   return (dispatch, getState, { steemConnectAPI }) => {
     if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
