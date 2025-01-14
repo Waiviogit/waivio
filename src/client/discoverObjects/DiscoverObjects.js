@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { getObjectTypes } from '../../store/objectTypesStore/objectTypesActions';
+// import {getObjectTypeByStateFilters} from "../../store/objectTypeStore/objectTypeActions";
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
@@ -87,6 +88,10 @@ const DiscoverObjects = ({ intl, history, match }) => {
     </div>
   );
 };
+
+// DiscoverObjects.fetchData = ({match, store}) => {
+//   return [store.dispatch(getObjectTypeByStateFilters(match.params.typeName))];
+// };
 
 DiscoverObjects.propTypes = {
   intl: PropTypes.shape().isRequired,

@@ -84,4 +84,8 @@ Discover.propTypes = {
   history: PropTypes.shape().isRequired,
 };
 
+// Discover.fetchData = ({ store, match }) => {
+//
+// }
+
 export default Discover;
