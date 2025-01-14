@@ -163,10 +163,21 @@ class PostPreviewModal extends Component {
   };
 
   handleSubmit = () => {
-    if (this.props.reviewData && !this.props.isUpdating) {
-      this.setState({ isCheckReviewModalOpen: true });
-    } else {
-      this.props.onSubmit();
+    try {
+      if (this.props.reviewData && !this.props.isUpdating) {
+        // eslint-disable-next-line no-console
+        console.log(this.props.reviewData?.requirements, 168);
+        // eslint-disable-next-line no-console
+        console.log(this.state.isCheckReviewModalOpen, 170);
+        this.setState({ isCheckReviewModalOpen: true });
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('onSubmit', 173);
+        this.props.onSubmit();
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e, 'error');
     }
   };
 

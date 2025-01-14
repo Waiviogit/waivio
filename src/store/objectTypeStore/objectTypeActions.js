@@ -63,7 +63,8 @@ export const getObjectType = (
   };
 
   if (username) preparedData.userName = username;
-  dispatch({
+
+  return dispatch({
     type: actionType,
     payload: ApiClient.getObjectType(objectTypeName, preparedData),
     meta: {
