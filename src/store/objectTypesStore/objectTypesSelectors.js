@@ -29,3 +29,13 @@ export const getObjectTypesLoading = createSelector(
   [objectTypesState],
   objectTypes => objectTypes.fetching,
 );
+
+export const getObjectsByDepartmentSelector = createSelector(
+  [objectTypesState],
+  objectTypes => objectTypes.listDepartment,
+);
+
+export const getHasMoreObjectsByDepartmentSelector = createSelector(
+  [objectTypesState],
+  objectTypes => objectTypes.hasMore,
+);

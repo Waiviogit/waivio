@@ -1,72 +1,80 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
 import Helmet from 'react-helmet';
+import {
+  getMoreObjectsByDepartment,
+  resetObjectsByDepartment,
+  getObjectsByDepartment,
+} from '../../../store/objectTypesStore/objectTypesActions';
+import {
+  getObjectsByDepartmentSelector,
+  getHasMoreObjectsByDepartmentSelector,
+} from '../../../store/objectTypesStore/objectTypesSelectors';
 import Loading from '../../components/Icon/Loading';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { getAppHost, getHelmetIcon } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
-import './DepartmentsSearch.less';
 import useQuery from '../../../hooks/useQuery';
+
+import './DepartmentsSearch.less';
 
 const wobjects_count = 20;
 
 const DepatmentsSearch = () => {
   const { name, department } = useParams();
-  const siteName = location.hostname;
+  const dispatch = useDispatch();
+  const siteName = typeof location !== 'undefined' ? location.hostname : '';
   const favicon = useSelector(getHelmetIcon);
   const userName = useSelector(getAuthenticatedUserName);
+  const objects = useSelector(getObjectsByDepartmentSelector);
+  const hasMoreObjects = useSelector(getHasMoreObjectsByDepartmentSelector);
   const host = useSelector(getAppHost);
   const history = useHistory();
   const query = useQuery();
   const isRecipe = query.get('isRecipe') === 'true' || false;
   const schema = isRecipe ? 'recipe' : undefined;
-  const [objects, setObjects] = useState([]);
-  const [hasMoreObjects, setHasMoreObjects] = useState();
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
-  const { canonicalUrl } = useSeoInfo();
-  const title = `Discover - ${siteName}`;
+  const canonicalUrl = `https://${host}/discover-departments/${department || ''}${
+    history.location.search
+  }`;
+  const title = `Discover - ${siteName || host}`;
 
   useEffect(() => {
     const ac = new AbortController();
 
     setLoading(true);
 
-    getObjectsByDepartment(userName, [department], schema, host, 0, wobjects_count).then(res => {
-      setObjects(res.wobjects);
-      setHasMoreObjects(res.hasMore);
-      setLoading(false);
-    });
+    dispatch(getObjectsByDepartment(userName, [department], schema, host, 0, wobjects_count)).then(
+      () => {
+        setLoading(false);
+      },
+    );
 
     return () => ac.abort();
   }, [department]);
 
   const loadMore = () => {
-    getObjectsByDepartment(
-      userName,
-      [department],
-      schema,
-      host,
-      objects.length,
-      wobjects_count,
-    ).then(res => {
-      setObjects([...objects, ...res.wobjects]);
-      setHasMoreObjects(res?.hasMore);
-    });
+    dispatch(
+      getMoreObjectsByDepartment(
+        userName,
+        [department],
+        schema,
+        host,
+        objects.length,
+        wobjects_count,
+      ),
+    );
   };
 
   const handleDeleteTag = () => {
     history.push(`/object/${name}`);
-    setObjects([]);
-    setHasMoreObjects(false);
+    dispatch(resetObjectsByDepartment());
     setLoading(true);
   };
 
@@ -113,6 +121,26 @@ const DepatmentsSearch = () => {
       )}
     </div>
   );
+};
+
+DepatmentsSearch.fetchData = ({ match, store, query }) => {
+  const state = store.getState();
+  const department = match.params.department;
+  const schema = query.get('isRecipe') === 'true' ? 'recipe' : undefined;
+  const userName = getAuthenticatedUserName(state);
+
+  return Promise.allSettled([
+    store.dispatch(
+      getObjectsByDepartment(
+        userName,
+        [department.replace('%20', ' ')],
+        schema,
+        getAppHost(state),
+        0,
+        wobjects_count,
+      ),
+    ),
+  ]);
 };
 
 export default DepatmentsSearch;
