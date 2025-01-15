@@ -20,7 +20,6 @@ export const getIsReloading = createSelector([authState], state => state.isReloa
 export const getAuthenticatedUser = createSelector([authState], state => state.user);
 
 export const getAuthenticatedUserName = createSelector([getAuthenticatedUser], user => user.name);
-export const getAppAdministrators = createSelector([authState], state => state.appAdmins);
 
 export const getAuthenticatedUserMetaData = createSelector(
   [authState],
