@@ -1,0 +1,58 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.AdminPage {
+  width: fit-content;
+  p {
+    margin-bottom: 20px;
+  }
+
+  hr {
+    margin: 15px 0;
+  }
+
+  &__title-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media @small {
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+
+    @media @small {
+      font-size: 1.7em;
+      display: block;
+    }
+    &.no-mb {
+      margin-bottom: 0;
+    }
+  }
+
+  &__info {
+    color: @blue-botticelli;
+  }
+
+  .DynamicTable {
+    margin: 15px 0;
+  }
+}
+
+.DynamicTable__modal .ant-modal-body {
+  padding: 24px 35px;
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  li::marker {
+    color: @blue-botticelli;
+  }
+}

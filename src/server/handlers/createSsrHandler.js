@@ -46,8 +46,11 @@ function createTimeout(timeout, promise) {
 
 const removeQueryParams = url => url.split('?')[0];
 
-const isPageExistSitemap = async ({ url, host }) => {
+const isPageExistSitemap = async ({ url = '', host }) => {
   if (url === '/') return true;
+
+  const searchPage = url.startsWith('/discover-objects') || url.startsWith('/discover-departments');
+  if (searchPage) return true;
 
   const pathOnly = removeQueryParams(url);
   const key = `${REDIS_KEYS.SSR_SITEMAP_SET}:${host}`;

@@ -14,6 +14,7 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import FavoritesSideNav from '../../components/Favorites/FavoritesSideNav';
+import AdminSidenav from '../../components/Navigation/AdminSidenav/AdminSidenav';
 
 const LeftSidebar = () => {
   const isWidget =
@@ -64,6 +65,7 @@ const LeftSidebar = () => {
         <Route path="/discover" component={SidenavDiscoverObjects} />
         <Route path="/replies" component={SidebarMenu} />
         <Route path={`/(${URL.SETTINGS.tabs})`} component={SettingsSidenav} />
+        <Route path={`/(${URL.ADMIN.tabs})`} component={AdminSidenav} />
         <Route path={`/:site/(${URL.WEBSITES.tabs})`} component={SettingsSidenav} />
         {isSocial && <Route path={'/:department?'} component={GlobalShopDepartments} />}
         <Route path="/" component={SidebarMenu} />
