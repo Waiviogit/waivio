@@ -182,11 +182,11 @@ class Wrapper extends React.PureComponent {
     this.props.getRate();
     this.props.getRewardFund();
     this.props.getCoordinates();
-    this.props.setAppAdministrators();
     this.props.getGlobalProperties();
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
+    if (this.props.isAuthenticated) this.props.setAppAdministrators();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
