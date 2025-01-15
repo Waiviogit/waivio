@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { message, Modal } from 'antd';
+import Cookie from 'js-cookie';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, round } from 'lodash';
 import { useHistory } from 'react-router';
@@ -26,10 +27,12 @@ const AdminWebsites = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
   const currency = useSelector(getCurrentCurrency);
+  const appAdmins = Cookie.get('appAdmins');
+  const iaAppAdmin = appAdmins?.includes(authUserName);
   const history = useHistory();
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAuth && iaAppAdmin) {
       setLoading(true);
       getWebsitesInfoForAdmins(authUserName).then(info => {
         setWebsitesInfo(info);
