@@ -14,7 +14,7 @@ export const websiteStatisticsConfig = [
       id: 'accountBalance.paid',
       intl: {
         id: 'balance_usd',
-        defaultMessage: 'Balance (USD)',
+        defaultMessage: 'Balance ({currency})',
       },
     },
     {
@@ -28,7 +28,7 @@ export const websiteStatisticsConfig = [
       id: 'accountBalance.dailyCost',
       intl: {
         id: 'daily_usd',
-        defaultMessage: 'Daily cost (USD)',
+        defaultMessage: 'Daily cost ({currency})',
       },
     },
     {
