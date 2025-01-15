@@ -55,6 +55,30 @@ export const personalSettings = {
     },
   ],
 };
+export const adminSettings = {
+  tab: {
+    name: 'admin',
+    id: 'admin_beta',
+    defaultMessage: 'Admin (BETA):',
+  },
+  settings: [
+    {
+      to: '/admin-websites',
+      id: 'admin_websites',
+      defaultMessage: 'Websites',
+    },
+    // {
+    //   to: '/admin-whitelist',
+    //   id: 'whitelist',
+    //   defaultMessage: 'Whitelist',
+    // },
+    // {
+    //   to: '/admin-new-accounts',
+    //   id: 'new_accounts',
+    //   defaultMessage: 'New accounts',
+    // },
+  ],
+};
 export const dataManagementSettings = {
   tab: {
     name: 'dataManagement',

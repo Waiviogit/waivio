@@ -258,5 +258,6 @@
   "rc": "/rc",
   "idType": "/id-type",
   "postImport": "/post-import",
-  "host": "/host"
+  "host": "/host",
+  "admins": "/admins"
 }

@@ -166,6 +166,9 @@ export default {
       'adsense',
     ].join('|'),
   },
+  ADMIN: {
+    tabs: ['admin-websites', 'admin-whitelist', 'admin-new-accounts'].join('|'),
+  },
   REFERRAL: {
     tabs: ['referral-details', 'referral-instructions', 'referral-status'].join('|'),
   },

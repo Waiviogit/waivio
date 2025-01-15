@@ -72,17 +72,21 @@ export const DynamicTable = ({
 
         return (
           <Link disabled={disabledLink} to={head.to(item, match)}>
-            {head.name || item[head.id]}
+            {head.name || item[head.id] || head?.getName(item)}
           </Link>
         );
 
       case 'websiteName':
         return item.status === 'active' ? (
-          <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
-            {item[head.id]}
+          <a
+            href={`https://${item.host || head?.getName(item)}`}
+            target={'_blank'}
+            rel="noreferrer"
+          >
+            {item[head.id] || head?.getName(item)}
           </a>
         ) : (
-          <span>{item[head.id]}</span>
+          <span>{item[head.id] || head?.getName(item)}</span>
         );
 
       case 'date':

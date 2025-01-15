@@ -23,6 +23,7 @@ import LanguageSettings from '../Navigation/LanguageSettings';
 import { setCurrentPage } from '../../../store/appStore/appActions';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
+  getAppAdministrators,
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getRewardsTab,
@@ -37,6 +38,10 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
   const rewardsTab = useSelector(getRewardsTab);
+  const appAdmins = useSelector(getAppAdministrators);
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const showAdminTab = appAdmins?.includes(authUserName);
+
   const [notificationsPopoverVisible, setNotificationsPopoverVisible] = useState(false);
   const {
     intl,
@@ -71,6 +76,13 @@ const HeaderButtons = props => {
     <PopoverMenuItem key="settings" topNav>
       <FormattedMessage id="settings" defaultMessage="Settings" />
     </PopoverMenuItem>,
+    ...(showAdminTab
+      ? [
+          <PopoverMenuItem key="admin" topNav>
+            <FormattedMessage id="admin" defaultMessage="Admin" />
+          </PopoverMenuItem>,
+        ]
+      : []),
     <PopoverMenuItem key="logout" topNav>
       <FormattedMessage id="logout" defaultMessage="Logout" />
     </PopoverMenuItem>,
@@ -131,6 +143,9 @@ const HeaderButtons = props => {
         break;
       case 'activity':
         history.push('/activity');
+        break;
+      case 'admin':
+        history.push('/admin-websites');
         break;
       case 'replies':
         history.push('/replies');

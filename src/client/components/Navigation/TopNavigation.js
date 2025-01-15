@@ -55,6 +55,9 @@ const LINKS = {
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
+  ADMIN_WEBSITES: '/admin-websites',
+  ADMIN_WHITELIST: '/admin-whitelist',
+  ADMIN_NEW_ACCOUNTS: '/admin-new-accounts',
 };
 
 const FEED_URLS = [
