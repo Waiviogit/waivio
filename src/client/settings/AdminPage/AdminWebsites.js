@@ -29,7 +29,7 @@ const AdminWebsites = ({ intl }) => {
   }, []);
 
   return (
-    <div className=" shifted">
+    <div className="shifted">
       <div className="container settings-layout">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
@@ -37,104 +37,100 @@ const AdminWebsites = ({ intl }) => {
           </div>
         </Affix>
         <div className={classNames('center')}>
-          {
+          {loading ? (
+            <Loading />
+          ) : (
             <div className="">
               <div className={'AdminPage'}>
                 <div className={'AdminPage__title-wrap'}>
                   <div className={'AdminPage__title no-mb'}>Website statistics</div>
                 </div>
-                {loading ? (
-                  <Loading />
-                ) : (
-                  !isEmpty(websitesInfo) && (
-                    <table className="DynamicTable">
-                      <thead>
-                        {websiteStatisticsConfig.map((row, rowIndex) => (
-                          // eslint-disable-next-line react/no-array-index-key
-                          <tr key={`row-${rowIndex}`}>
-                            {row.map((column, colIndex) => {
-                              if (!column.intl || !column.id) return null;
+                {!isEmpty(websitesInfo) && (
+                  <table className="DynamicTable">
+                    <thead>
+                      {websiteStatisticsConfig.map((row, rowIndex) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <tr key={`row-${rowIndex}`}>
+                          {row.map((column, colIndex) => {
+                            if (!column.intl || !column.id) return null;
 
-                              return (
-                                <th
-                                  // eslint-disable-next-line react/no-array-index-key
-                                  key={`column-${colIndex}`}
-                                  rowSpan={column.rowspan || 1}
-                                  colSpan={column.colspan || 1}
-                                >
-                                  {intl.formatMessage(column.intl)}
-                                </th>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </thead>
-                      <tbody>
-                        {websitesInfo.map(row => {
-                          const rowSpan = row.websites.length;
+                            return (
+                              <th
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={`column-${colIndex}`}
+                                rowSpan={column.rowspan || 1}
+                                colSpan={column.colspan || 1}
+                              >
+                                {intl.formatMessage(column.intl)}
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {websitesInfo.map(row => {
+                        const rowSpan = row.websites.length;
 
-                          return (
-                            <React.Fragment key={row.userName}>
-                              {row.websites.map((website, index) => (
-                                <tr key={website.host || index}>
-                                  {/* Shared cells are rendered only for the first website */}
-                                  {index === 0 && (
-                                    <>
-                                      <td rowSpan={rowSpan}>
-                                        <Link to={`/@${row.userName}`}>{row.userName}</Link>
-                                      </td>
-                                      <td rowSpan={rowSpan}>{row.accountBalance.paid}</td>
-                                      <td rowSpan={rowSpan}>{row.accountBalance.avgDau}</td>
-                                      <td rowSpan={rowSpan}>{row.accountBalance.dailyCost}</td>
-                                      <td rowSpan={rowSpan}>{row.accountBalance.remainingDays}</td>
-                                    </>
+                        return (
+                          <React.Fragment key={row.userName}>
+                            {row.websites.map((website, index) => (
+                              <tr key={website.host || index}>
+                                {/* Shared cells are rendered only for the first website */}
+                                {index === 0 && (
+                                  <>
+                                    <td rowSpan={rowSpan}>
+                                      <Link to={`/@${row.userName}`}>{row.userName}</Link>
+                                    </td>
+                                    <td rowSpan={rowSpan}>{row.accountBalance.paid}</td>
+                                    <td rowSpan={rowSpan}>{row.accountBalance.avgDau}</td>
+                                    <td rowSpan={rowSpan}>{row.accountBalance.dailyCost}</td>
+                                    <td rowSpan={rowSpan}>{row.accountBalance.remainingDays}</td>
+                                  </>
+                                )}
+                                {/* Website-specific cells */}
+                                <td>
+                                  {website.status === 'active' ? (
+                                    <a
+                                      href={`https://${website.host}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {website.host}
+                                    </a>
+                                  ) : (
+                                    website.host
                                   )}
-                                  {/* Website-specific cells */}
-                                  <td>
-                                    {website.status === 'active' ? (
-                                      <a
-                                        href={`https://${website.host}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        {website.host}
-                                      </a>
-                                    ) : (
-                                      website.host
-                                    )}
-                                  </td>
-                                  <td>{website.parent}</td>
-                                  <td>{website.status}</td>
-                                  <td>{website.averageDau}</td>
-                                  <td>
-                                    {['pending', 'inactive', 'suspended'].includes(
-                                      website.status,
-                                    ) ? (
-                                      // eslint-disable-next-line jsx-a11y/interactive-supports-focus
-                                      <a
-                                        role="button"
-                                        className="DynamicTable__delete"
-                                        onClick={() =>
-                                          setModalState({ visible: true, hostInfo: website.host })
-                                        }
-                                      >
-                                        {intl.formatMessage({
-                                          id: 'delete',
-                                          defaultMessage: 'Delete',
-                                        })}
-                                      </a>
-                                    ) : (
-                                      '-'
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                            </React.Fragment>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )
+                                </td>
+                                <td>{website.parent}</td>
+                                <td>{website.status}</td>
+                                <td>{website.averageDau}</td>
+                                <td>
+                                  {['pending', 'inactive', 'suspended'].includes(website.status) ? (
+                                    // eslint-disable-next-line jsx-a11y/interactive-supports-focus
+                                    <a
+                                      role="button"
+                                      className="DynamicTable__delete"
+                                      onClick={() =>
+                                        setModalState({ visible: true, hostInfo: website.host })
+                                      }
+                                    >
+                                      {intl.formatMessage({
+                                        id: 'delete',
+                                        defaultMessage: 'Delete',
+                                      })}
+                                    </a>
+                                  ) : (
+                                    '-'
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 )}
                 <p className={'AdminPage__info'}>
                   * Daily active users are averaged over the last 7 days.
@@ -147,7 +143,7 @@ const AdminWebsites = ({ intl }) => {
                 </p>
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
       <Modal
