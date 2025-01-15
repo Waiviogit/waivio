@@ -4585,4 +4585,22 @@ export const getObjPermlinkByCompanyId = async (id, idType) => {
     .catch(error => error);
 };
 
+export const getAppAdmins = () =>
+  fetch(`${config.apiPrefix}${config.admins}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getWebsitesInfoForAdmins = userName =>
+  fetch(`${config.apiPrefix}${config.admins}${config.sites}`, {
+    headers: { ...headers, admin: userName, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export default null;

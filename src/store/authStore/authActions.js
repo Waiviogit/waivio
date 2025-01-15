@@ -16,6 +16,7 @@ import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../../common/helpers/getToken';
 import {
+  getAppAdmins,
   getGuestPaymentsHistory,
   getPrivateEmail,
   getRewardTab,
@@ -62,6 +63,7 @@ export const LOGOUT = '@auth/LOGOUT';
 export const SET_SIGNATURE = '@auth/SET_SIGNATURE';
 
 export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
+export const GET_APP_ADMINS = '@auth/GET_APP_ADMINS';
 
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
@@ -88,6 +90,18 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   }
 
   return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
+};
+export const setAppAdministrators = () => async dispatch => {
+  try {
+    const response = await getAppAdmins();
+
+    dispatch({
+      type: GET_APP_ADMINS,
+      payload: response,
+    });
+  } catch (error) {
+    console.error('Failed to fetch app admins:', error);
+  }
 };
 
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {

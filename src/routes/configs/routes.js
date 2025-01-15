@@ -183,6 +183,21 @@ const routes = {
       component: WaivPage,
     },
     {
+      path: '/admin-websites',
+      exact: true,
+      component: Views.AdminWebsites,
+    },
+    {
+      path: '/admin-whitelist',
+      exact: true,
+      component: Views.AdminWhitelist,
+    },
+    {
+      path: '/admin-new-accounts',
+      exact: true,
+      component: Views.AdminNewAccounts,
+    },
+    {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
       component: SettingsMain,

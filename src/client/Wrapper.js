@@ -15,6 +15,7 @@ import {
   login,
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
+  setAppAdministrators,
 } from '../store/authStore/authActions';
 import { getCoordinates, getNotifications } from '../store/userStore/userActions';
 import {
@@ -84,6 +85,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getSwapEnginRates,
     getCoordinates,
     getGlobalProperties,
+    setAppAdministrators,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -101,6 +103,7 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
+    setAppAdministrators: PropTypes.func,
     getRewardFund: PropTypes.func,
     getTokenRates: PropTypes.func,
     getCryptoPriceHistory: PropTypes.func,
@@ -183,6 +186,7 @@ class Wrapper extends React.PureComponent {
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
+    if (this.props.isAuthenticated) this.props.setAppAdministrators();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
