@@ -43,31 +43,34 @@ const Editor = props => {
     [],
   );
 
-  const handleContentChangeSlate = debounce(editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+  const handleContentChangeSlate = useCallback(
+    debounce(editor => {
+      const searchInfo = checkCursorInSearchSlate(editor);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
-        const nativeSelection = getSelection(window);
-        const selectionBoundary = getSelectionRect(nativeSelection);
+      if (searchInfo.isNeedOpenSearch) {
+        if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
+          const nativeSelection = getSelection(window);
+          const selectionBoundary = getSelectionRect(nativeSelection);
 
-        props.setCursorCoordinates({
-          selectionBoundary,
-          selectionState: editor.selection,
-          searchString: searchInfo.searchString,
-          isShowEditorSearch: true,
-        });
+          props.setCursorCoordinates({
+            selectionBoundary,
+            selectionState: editor.selection,
+            searchString: searchInfo.searchString,
+            isShowEditorSearch: true,
+          });
+        }
+        setPrevSearch(searchInfo.searchString);
+        if (prevSearchValue !== searchInfo.searchString) {
+          debouncedSearch(searchInfo.searchString);
+        }
+      } else if (props.isShowEditorSearch) {
+        props.setShowEditorSearch(false);
       }
-      setPrevSearch(searchInfo.searchString);
-      if (prevSearchValue !== searchInfo.searchString) {
-        debouncedSearch(searchInfo.searchString);
-      }
-    } else if (props.isShowEditorSearch) {
-      props.setShowEditorSearch(false);
-    }
 
-    props.onChange(editor, props.editorExtended.titleValue);
-  }, 350);
+      props.onChange(editor, props.editorExtended.titleValue);
+    }, 500),
+    [props.isShowEditorSearch, prevSearchValue],
+  );
 
   const validateLength = event => {
     const updatedTitleValue = event.target.value;

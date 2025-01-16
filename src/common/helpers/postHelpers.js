@@ -368,7 +368,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
-        body: get(draftPost, 'originalBody', '') || get(draftPost, 'body', ''),
+        body: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,

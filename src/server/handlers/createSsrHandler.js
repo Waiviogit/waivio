@@ -115,7 +115,7 @@ export default function createSsrHandler(template) {
       try {
         await store.dispatch(loginFromServer(data)).then(async res => {
           try {
-            const language = res?.value?.userMetaData?.settings.locale;
+            const language = res?.value?.userMetaData?.settings?.locale;
             store.dispatch(setLocale(language));
             store.dispatch(setUsedLocale(await loadLanguage(language)));
           } catch (e) {
@@ -139,22 +139,22 @@ export default function createSsrHandler(template) {
     }
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
-    if (isUser) {
-      return res.send(
-        renderSsrPage(
-          store,
-          null,
-          assets,
-          template,
-          isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-          get(settings, 'googleGSCTag', ''),
-          get(settings, 'googleEventSnippet', ''),
-          get(settings, 'googleAdsConfig', ''),
-          get(adsenseSettings, 'code', ''),
-        ),
-      );
-    }
+    // if (isUser) {
+    //   return res.send(
+    //     renderSsrPage(
+    //       store,
+    //       null,
+    //       assets,
+    //       template,
+    //       isWaivio,
+    //       get(settings, 'googleAnalyticsTag', ''),
+    //       get(settings, 'googleGSCTag', ''),
+    //       get(settings, 'googleEventSnippet', ''),
+    //       get(settings, 'googleAdsConfig', ''),
+    //       get(adsenseSettings, 'code', ''),
+    //     ),
+    //   );
+    // }
 
     try {
       const searchBot = isbot(req.get('User-Agent'));

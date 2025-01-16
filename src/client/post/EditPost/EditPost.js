@@ -139,7 +139,7 @@ const EditPost = props => {
       body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
-    if (editorData.title || editorData.body) props.saveDraft(editorData);
+    if (editorData.title || editorData.body) props.setUpdatedEditorData(editorData);
     props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
     setCurrDraft(props.currDraft);
     getCampaignInfo();
@@ -173,7 +173,7 @@ const EditPost = props => {
         props.setUpdatedEditorData(updatedStore);
       }
     }, 500),
-    [props.draftId, content, titleValue],
+    [content, titleValue, currDraft],
   );
 
   const handleSettingsChange = updatedValue =>

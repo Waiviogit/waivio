@@ -63,6 +63,7 @@ export const LOGOUT = '@auth/LOGOUT';
 export const SET_SIGNATURE = '@auth/SET_SIGNATURE';
 
 export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
+export const GET_APP_ADMINS = '@auth/GET_APP_ADMINS';
 
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
@@ -89,6 +90,18 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
   }
 
   return dispatch({ type: UPDATE_GUEST_BALANCE.ERROR });
+};
+export const setAppAdministrators = () => async dispatch => {
+  try {
+    const response = await getAppAdmins();
+
+    dispatch({
+      type: GET_APP_ADMINS,
+      payload: response,
+    });
+  } catch (error) {
+    console.error('Failed to fetch app admins:', error);
+  }
 };
 
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
@@ -161,7 +174,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         dispatch(changeAdminStatus(hiveAuthData.username));
         dispatch(setSignature(userMetaData?.profile?.signature || ''));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
         Cookie.set('appAdmins', appAdmins);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
@@ -187,7 +200,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
     }
 
-    dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+    dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
     const appAdmins = await getAppAdmins();
 
     Cookie.set('appAdmins', appAdmins);
@@ -205,7 +218,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         Cookie.set('appAdmins', appAdmins);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
 
         resolve({
@@ -245,7 +258,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         Cookie.set('appAdmins', appAdmins);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -303,7 +316,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
 
           dispatch(changeAdminStatus(hiveAuthData.username));
           dispatch(setSignature(userMetaData?.profile?.signature || ''));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
           resolve({
             account,
@@ -323,7 +336,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
           const { WAIV } = await getGuestWaivBalance(userData.name);
 
           dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
           dispatch(changeAdminStatus(userData.name));
 
           resolve({
@@ -354,7 +367,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
 
           dispatch(changeAdminStatus(scUserData.name));
           dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
           resolve({
             ...scUserData,
