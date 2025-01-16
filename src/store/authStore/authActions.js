@@ -170,10 +170,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
+        const appAdmins = await getAppAdmins();
 
         dispatch(changeAdminStatus(hiveAuthData.username));
         dispatch(setSignature(userMetaData?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
+
+        Cookie.set('appAdmins', appAdmins);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -198,6 +201,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     }
 
     dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
+    const appAdmins = await getAppAdmins();
+
+    Cookie.set('appAdmins', appAdmins);
     dispatch(changeAdminStatus(authenticatedUserName));
     promise = Promise.resolve({ account });
   } else if (accessToken && socialNetwork) {
@@ -208,7 +214,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(userData.name);
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
+        const appAdmins = await getAppAdmins();
 
+        Cookie.set('appAdmins', appAdmins);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -245,7 +253,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+        const appAdmins = await getAppAdmins();
 
+        Cookie.set('appAdmins', appAdmins);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));

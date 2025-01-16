@@ -3,30 +3,45 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { message, Modal } from 'antd';
+import Cookie from 'js-cookie';
 import { injectIntl } from 'react-intl';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, round } from 'lodash';
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import Affix from '../../components/Utils/Affix';
 import LeftSidebar from '../../app/Sidebar/LeftSidebar';
 import { websiteStatisticsConfig } from '../../newRewards/constants/adminPageConfigs';
 import { deleteSite, getWebsitesInfoForAdmins } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import './AdminPage.less';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import Loading from '../../components/Icon/Loading';
+import './AdminPage.less';
+import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 
 const AdminWebsites = ({ intl }) => {
   const [modalState, setModalState] = useState({});
   const [loading, setLoading] = useState(false);
   const [websitesInfo, setWebsitesInfo] = useState([]);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isAuth = useSelector(getIsAuthenticated);
+  const currency = useSelector(getCurrentCurrency);
+  const appAdmins = Cookie.get('appAdmins');
+  const iaAppAdmin = appAdmins?.includes(authUserName);
+  const history = useHistory();
 
   useEffect(() => {
-    setLoading(true);
-    getWebsitesInfoForAdmins(authUserName).then(info => {
-      setWebsitesInfo(info);
-      setLoading(false);
-    });
-  }, []);
+    if (isAuth && iaAppAdmin) {
+      setLoading(true);
+      getWebsitesInfoForAdmins(authUserName).then(info => {
+        setWebsitesInfo(info);
+        setLoading(false);
+      });
+    } else {
+      history.push('/');
+    }
+  }, [isAuth, authUserName]);
 
   return (
     <div className="shifted">
@@ -61,7 +76,7 @@ const AdminWebsites = ({ intl }) => {
                                 rowSpan={column.rowspan || 1}
                                 colSpan={column.colspan || 1}
                               >
-                                {intl.formatMessage(column.intl)}
+                                {intl.formatMessage(column.intl, { currency: currency.type })}
                               </th>
                             );
                           })}
@@ -82,9 +97,13 @@ const AdminWebsites = ({ intl }) => {
                                     <td rowSpan={rowSpan}>
                                       <Link to={`/@${row.userName}`}>{row.userName}</Link>
                                     </td>
-                                    <td rowSpan={rowSpan}>{row.accountBalance.paid}</td>
+                                    <td rowSpan={rowSpan}>
+                                      {round(row.accountBalance.paid * currency.rate, 2)}
+                                    </td>
                                     <td rowSpan={rowSpan}>{row.accountBalance.avgDau}</td>
-                                    <td rowSpan={rowSpan}>{row.accountBalance.dailyCost}</td>
+                                    <td rowSpan={rowSpan}>
+                                      {round(row.accountBalance.dailyCost * currency.rate, 2)}
+                                    </td>
                                     <td rowSpan={rowSpan}>{row.accountBalance.remainingDays}</td>
                                   </>
                                 )}
