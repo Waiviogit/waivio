@@ -158,7 +158,7 @@ export const saveDraft = (draftId, intl, data = {}) => (dispatch, getState) => {
   if (saving || (pathname !== '/editor' && pathname !== `/${data.author}`)) return;
   const draft = dispatch(buildPost(draftId, data));
 
-  const postBody = draft.originalBody || draft.body;
+  const postBody = draft.body;
 
   if (!postBody) return;
 

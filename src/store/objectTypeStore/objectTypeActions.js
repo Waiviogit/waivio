@@ -43,6 +43,7 @@ export const getObjectType = (
   filters,
   { limit = 30, skip = 0, simplified = false } = {},
   filterBody,
+  ac,
 ) => (dispatch, getState) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
@@ -66,7 +67,7 @@ export const getObjectType = (
 
   return dispatch({
     type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData),
+    payload: ApiClient.getObjectType(objectTypeName, preparedData, ac),
     meta: {
       locale,
     },

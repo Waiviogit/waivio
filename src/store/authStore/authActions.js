@@ -173,7 +173,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         dispatch(changeAdminStatus(hiveAuthData.username));
         dispatch(setSignature(userMetaData?.profile?.signature || ''));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -197,7 +197,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
     }
 
-    dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+    dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
     dispatch(changeAdminStatus(authenticatedUserName));
     promise = Promise.resolve({ account });
   } else if (accessToken && socialNetwork) {
@@ -210,7 +210,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = await getGuestWaivBalance(userData.name);
 
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
 
         resolve({
@@ -248,7 +248,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
-        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -306,7 +306,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
 
           dispatch(changeAdminStatus(hiveAuthData.username));
           dispatch(setSignature(userMetaData?.profile?.signature || ''));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
           resolve({
             account,
@@ -326,7 +326,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
           const { WAIV } = await getGuestWaivBalance(userData.name);
 
           dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
           dispatch(changeAdminStatus(userData.name));
 
           resolve({
@@ -357,7 +357,7 @@ export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI 
 
           dispatch(changeAdminStatus(scUserData.name));
           dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
-          dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+          dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
           resolve({
             ...scUserData,

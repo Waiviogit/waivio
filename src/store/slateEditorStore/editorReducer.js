@@ -14,7 +14,7 @@ const defaultState = {
   editedPosts: [],
   importObject: {},
   loadingImg: false,
-  editor: [],
+  editor: {},
   editorSlate: {},
   editorExtended: {
     wordForCountWidth: '',
