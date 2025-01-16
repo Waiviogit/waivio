@@ -67,16 +67,16 @@ export const adminSettings = {
       id: 'admin_websites',
       defaultMessage: 'Websites',
     },
-    // {
-    //   to: '/admin-whitelist',
-    //   id: 'whitelist',
-    //   defaultMessage: 'Whitelist',
-    // },
-    // {
-    //   to: '/admin-new-accounts',
-    //   id: 'new_accounts',
-    //   defaultMessage: 'New accounts',
-    // },
+    {
+      to: '/admin-whitelist',
+      id: 'whitelist',
+      defaultMessage: 'Whitelist',
+    },
+    {
+      to: '/admin-new-accounts',
+      id: 'new_accounts',
+      defaultMessage: 'New accounts',
+    },
   ],
 };
 export const dataManagementSettings = {

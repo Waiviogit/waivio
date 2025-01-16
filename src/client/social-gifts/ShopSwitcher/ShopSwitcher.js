@@ -28,7 +28,7 @@ const ShopSwitcher = () => {
   const { canonicalUrl } = useSeoInfo();
   const tabsSorting =
     has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
-      ? config?.tabsSorting[0]
+      ? config?.tabsSorting.find(tab => !config.tabsFilter?.includes(tab))
       : userMenuTabsList.find(tab => !config.tabsFilter?.includes(tab));
 
   const type = tabsSorting || 'Shop';
