@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
+import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import { filter, get, includes, isUndefined, size } from 'lodash';
 import { Icon, Menu } from 'antd';
@@ -23,7 +24,6 @@ import LanguageSettings from '../Navigation/LanguageSettings';
 import { setCurrentPage } from '../../../store/appStore/appActions';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
-  getAppAdministrators,
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getRewardsTab,
@@ -38,7 +38,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
   const rewardsTab = useSelector(getRewardsTab);
-  const appAdmins = useSelector(getAppAdministrators);
+  const appAdmins = Cookie.get('appAdmins');
   const authUserName = useSelector(getAuthenticatedUserName);
   const showAdminTab = appAdmins?.includes(authUserName);
 
