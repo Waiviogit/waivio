@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import { useSelector } from 'react-redux';
@@ -14,6 +13,7 @@ import WhitelistContent from './WhitelistContent';
 import '../AdminPage.less';
 
 import Loading from '../../../components/Icon/Loading';
+import MobileNavigation from '../../../components/Navigation/MobileNavigation/MobileNavigation';
 
 const AdminWhitelist = () => {
   const [whiteListUsers, setWhitelistUsers] = useState([]);
@@ -44,11 +44,12 @@ const AdminWhitelist = () => {
           </div>
         </Affix>
         <div className={classNames('center')}>
+          <MobileNavigation />
           {loading ? (
             <Loading />
           ) : (
             <div className="">
-              <div className={'AdminPage'}>
+              <div className={'AdminPage min-width'}>
                 <div className={'AdminPage__title-wrap'}>
                   <div className={'AdminPage__title no-mb'}>Whitelist</div>
                 </div>
@@ -57,11 +58,7 @@ const AdminWhitelist = () => {
                   userList={whiteListUsers}
                   title={'Add user to the whitelist'}
                   caption={
-                    <p>
-                      Whitelisted users can participate in any campaign (subject to campaign
-                      eligibility criteria) sponsored by{' '}
-                      <Link to={`/@${authUserName}`}>{authUserName}</Link>
-                    </p>
+                    <p>Whitelisted users will have access to benefits on the Waivio platform.</p>
                   }
                   setMainList={setWhitelistUsers}
                 />

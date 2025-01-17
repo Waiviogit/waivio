@@ -4603,6 +4603,15 @@ export const getWebsitesInfoForAdmins = userName =>
     .then(res => res)
     .catch(error => error);
 
+export const getAdminVipTickets = userName =>
+  fetch(`${config.apiPrefix}${config.admins}${config.vipTickets}`, {
+    headers: { ...headers, admin: userName, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export const getWhitelistForAdmins = userName =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
     headers: { ...headers, admin: userName, ...getAuthHeaders() },

@@ -83,7 +83,7 @@ const WhitelistContent = ({ intl, title, userList, caption, type, buttonTitle, s
       {!isEmpty(userList) ? (
         <div className="Blacklist__container">
           {map(userList, u => (
-            <BlacklistUser user={u} handleDeleteUsers={handleDeleteListUser} />
+            <BlacklistUser key={u.account} user={u} handleDeleteUsers={handleDeleteListUser} />
           ))}
         </div>
       ) : (

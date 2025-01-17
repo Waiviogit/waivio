@@ -83,4 +83,33 @@ export const websiteStatisticsConfig = [
     },
   ],
 ];
+export const websiteNewAccountsConfig = [
+  [
+    {
+      id: 'userName',
+      intl: {
+        id: 'user',
+        defaultMessage: 'User',
+      },
+      type: 'link',
+      to: item => `/@${item.result.userName}`,
+      getName: item => item.result.userName,
+    },
+    {
+      id: 'purchased',
+      intl: {
+        id: 'purchased',
+        defaultMessage: 'Purchased',
+      },
+    },
+    {
+      id: 'used',
+      intl: {
+        id: 'used',
+        defaultMessage: 'Used',
+      },
+    },
+  ],
+];
+
 export default null;

@@ -58,8 +58,8 @@ export const personalSettings = {
 export const adminSettings = {
   tab: {
     name: 'admin',
-    id: 'admin_beta',
-    defaultMessage: 'Admin (BETA):',
+    id: 'admin',
+    defaultMessage: 'Admin:',
   },
   settings: [
     {
