@@ -3,6 +3,14 @@
 
 .AdminPage {
   width: fit-content;
+  &.min-width {
+    width: 100%;
+    //@media @small{
+    //  min-width: 750px;
+    //}    //@media @small{
+    //  min-width: 750px;
+    //}
+  }
   p {
     margin-bottom: 20px;
   }
@@ -10,13 +18,16 @@
   hr {
     margin: 15px 0;
   }
-
+  &__tr {
+    line-height: 40px;
+  }
   &__title-wrap {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 
     @media @small {
+      color: @black-text;
       justify-content: space-between;
       align-items: center;
     }

@@ -46,7 +46,9 @@ export default {
   ),
   Drafts: loableComponent(import('../client/post/Write/Drafts')),
   AdminWebsites: loableComponent(import('../client/settings/AdminPage/AdminWebsites')),
-  AdminWhitelist: loableComponent(import('../client/settings/AdminPage/AdminWhitelist')),
+  AdminWhitelist: loableComponent(
+    import('../client/settings/AdminPage/AdminWhitelist/AdminWhitelist'),
+  ),
   AdminNewAccounts: loableComponent(import('../client/settings/AdminPage/AdminNewAccounts')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),

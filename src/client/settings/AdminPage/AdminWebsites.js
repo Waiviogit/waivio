@@ -19,6 +19,7 @@ import {
 import Loading from '../../components/Icon/Loading';
 import './AdminPage.less';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import MobileNavigation from '../../components/Navigation/MobileNavigation/MobileNavigation';
 
 const AdminWebsites = ({ intl }) => {
   const [modalState, setModalState] = useState({});
@@ -52,6 +53,7 @@ const AdminWebsites = ({ intl }) => {
           </div>
         </Affix>
         <div className={classNames('center')}>
+          <MobileNavigation />
           {loading ? (
             <Loading />
           ) : (
