@@ -259,5 +259,6 @@
   "idType": "/id-type",
   "postImport": "/post-import",
   "host": "/host",
-  "admins": "/admins"
+  "admins": "/admins",
+  "whitelist": "/whitelist"
 }

@@ -4605,4 +4605,53 @@ export const getWebsitesInfoForAdmins = userName =>
     .then(res => res)
     .catch(error => error);
 
+export const getAdminVipTickets = userName =>
+  fetch(`${config.apiPrefix}${config.admins}${config.vipTickets}`, {
+    headers: { ...headers, admin: userName, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getWhitelistForAdmins = userName =>
+  fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
+    headers: { ...headers, admin: userName, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(error => error);
+
+export const addUserToAdminWhitelist = (userName, name) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
+    headers: {
+      ...headers,
+      admin: userName,
+      ...getAuthHeaders(),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      name,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const deleteUserFromAdminWhitelist = (userName, name) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
+    headers: {
+      ...headers,
+      admin: userName,
+      ...getAuthHeaders(),
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      name,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
 export default null;
