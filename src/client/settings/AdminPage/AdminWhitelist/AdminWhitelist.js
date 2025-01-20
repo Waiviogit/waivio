@@ -51,7 +51,7 @@ const AdminWhitelist = () => {
             <div className="">
               <div className={'AdminPage min-width'}>
                 <div className={'AdminPage__title-wrap'}>
-                  <div className={'AdminPage__title no-mb'}>Whitelist</div>
+                  <div className={'AdminPage__title '}>Whitelist</div>
                 </div>
                 <WhitelistContent
                   type={'Whitelist'}

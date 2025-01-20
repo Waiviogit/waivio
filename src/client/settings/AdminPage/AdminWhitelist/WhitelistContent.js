@@ -44,8 +44,8 @@ const WhitelistContent = ({ intl, title, userList, caption, type, buttonTitle, s
   };
 
   return (
-    <div className="Blacklist">
-      <h4 className="Blacklist__title">{title}</h4>
+    <div className={'WhitelistContent'}>
+      <h4 className="WhitelistContent__title">{title}</h4>
       <SearchUsersAutocomplete
         disabled={!isEmpty(user)}
         allowClear={false}
@@ -58,9 +58,9 @@ const WhitelistContent = ({ intl, title, userList, caption, type, buttonTitle, s
         autoFocus={false}
         itemsIdsToOmit={[user, ...userList].map(u => u.account)}
       />
-      <p className="Blacklist__caption">{caption}</p>
+      <p className="WhitelistContent__caption">{caption}</p>
       {!isEmpty(user) && (
-        <div className="Blacklist__selectUserList">
+        <div className="WhitelistContent__selectUserList">
           <SelectUserForAutocomplete
             key={user.account}
             account={user.account}
@@ -68,20 +68,20 @@ const WhitelistContent = ({ intl, title, userList, caption, type, buttonTitle, s
           />
         </div>
       )}
-      <div className="Blacklist__button-container">
+      <div className="WhitelistContent__button-container">
         <Button
           disabled={isEmpty(user)}
           loading={loading}
           type="primary"
           onClick={handleSaveListUsers}
-          className="Blacklist__button"
+          className="WhitelistContent__button"
         >
           {buttonTitle}
         </Button>
       </div>
-      <h3 className="Blacklist__title">{type}</h3>
+      <h3 className="WhitelistContent__title">{type}</h3>
       {!isEmpty(userList) ? (
-        <div className="Blacklist__container">
+        <div className="WhitelistContent__container">
           {map(userList, u => (
             <BlacklistUser key={u.account} user={u} handleDeleteUsers={handleDeleteListUser} />
           ))}

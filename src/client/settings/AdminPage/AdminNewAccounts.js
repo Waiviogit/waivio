@@ -55,7 +55,7 @@ const AdminNewAccounts = ({ intl }) => {
             <div className="">
               <div className={'AdminPage min-width'}>
                 <div className={'AdminPage__title-wrap'}>
-                  <div className={'AdminPage__title no-mb'}>Website New Accounts</div>
+                  <div className={'AdminPage__title no-mb'}>New accounts (VIP tickets)</div>
                 </div>
                 <table className="DynamicTable">
                   <thead>
