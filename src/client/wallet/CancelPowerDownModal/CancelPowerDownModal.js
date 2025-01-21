@@ -5,6 +5,7 @@ import { createQuery } from '../../../common/helpers/apiHelpers';
 
 const CancelPowerDownModal = ({
   setShowCancelPowerDown,
+  showPowerDownProgress,
   showCancelPowerDown,
   account,
   isWaivWallet,
@@ -12,6 +13,7 @@ const CancelPowerDownModal = ({
 }) => {
   const handleCloseModal = () => {
     setShowCancelPowerDown(false);
+    showPowerDownProgress(false);
   };
 
   const handleCancelPowerDown = () => {
@@ -66,6 +68,7 @@ const CancelPowerDownModal = ({
 
 CancelPowerDownModal.propTypes = {
   setShowCancelPowerDown: PropTypes.func.isRequired,
+  showPowerDownProgress: PropTypes.func.isRequired,
   showCancelPowerDown: PropTypes.bool.isRequired,
   isWaivWallet: PropTypes.bool,
   account: PropTypes.string.isRequired,

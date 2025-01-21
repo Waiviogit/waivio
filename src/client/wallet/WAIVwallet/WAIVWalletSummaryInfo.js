@@ -67,6 +67,7 @@ const WAIVWalletSummaryInfo = props => {
   const [recivedList, setRecivedList] = useState([]);
   const [unstakesTokenInfo, setUnstakesTokenInfo] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
+  const [currPowerDown, setCurrPowerDown] = useState({});
   const [visible, setVisible] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
@@ -89,7 +90,7 @@ const WAIVWalletSummaryInfo = props => {
   });
 
   const authUserPage = props.match.params.name === props.authUserName;
-  const timestamp = epochToUTC(unstakesTokenInfo?.nextTransactionTimestamp / 1000);
+  const timestamp = epochToUTC(unstakesTokenInfo[0]?.nextTransactionTimestamp / 1000);
   const nextPowerDownDate = (
     <>
       <FormattedDate value={timestamp} /> <FormattedTime value={timestamp} />
@@ -105,7 +106,7 @@ const WAIVWalletSummaryInfo = props => {
     setDeligateList(delegated);
     setRecivedList(recived);
     setUndeligatedList(undeligated);
-    setUnstakesTokenInfo(unstakeTokens[0]);
+    setUnstakesTokenInfo(unstakeTokens);
   };
 
   useEffect(() => {
@@ -168,7 +169,13 @@ const WAIVWalletSummaryInfo = props => {
               <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">Power down</div>
-                  <div className={powerClassList} onClick={() => setPowerDownProgress(true)}>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setCurrPowerDown(unstakesTokenInfo[0]);
+                      setPowerDownProgress(true);
+                    }}
+                  >
                     {getFormattedPendingWithdrawal(unstake)}{' '}
                     {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
                   </div>
@@ -230,8 +237,9 @@ const WAIVWalletSummaryInfo = props => {
         <PowerDownProgressModal
           isWaivWallet
           maxWeeks={4}
-          nextWithdrawal={unstakesTokenInfo.nextTransactionTimestamp}
-          weeks={unstakesTokenInfo.numberTransactionsLeft}
+          setCurrPowerDown={setCurrPowerDown}
+          setShowCancelPowerDown={setShowCancelPowerDown}
+          unstakesTokenInfo={unstakesTokenInfo}
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
         />
@@ -239,10 +247,11 @@ const WAIVWalletSummaryInfo = props => {
       {showCancelPowerDown && (
         <CancelPowerDownModal
           account={props.authUserName}
-          txID={unstakesTokenInfo?.txID}
+          txID={currPowerDown.txID}
           isWaivWallet
           showCancelPowerDown={showCancelPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
+          showPowerDownProgress={showPowerDownProgress}
         />
       )}
     </WalletSummaryInfo>
