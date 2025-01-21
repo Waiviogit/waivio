@@ -187,7 +187,7 @@ const UserWalletSummary = ({
     if (totalVestingShares && totalVestingFundSteem && !isGuest) setDelegationLists();
   }, [totalVestingShares, totalVestingFundSteem]);
 
-  const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS';
+  const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const nextPowerDownDate = (
     <>
       {' '}
