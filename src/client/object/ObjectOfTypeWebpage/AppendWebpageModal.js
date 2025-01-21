@@ -37,6 +37,7 @@ const AppendWebpageModal = ({
   const [loading, setLoading] = useState(false);
   const [votePercent, setVotePercent] = useState(defaultVotePercent / 100 || 100);
   const dispatch = useDispatch();
+  const disabledSubmit = webpageBody?.length > 65280;
 
   const calculateVoteWorth = (value, voteWorthVal) => {
     setVotePercent(value);
@@ -154,6 +155,12 @@ const AppendWebpageModal = ({
             {languageOptions}
           </Select>
         </Form.Item>
+        {disabledSubmit && (
+          <p className={'error-text'}>
+            {' '}
+            The webpage content is too long. The maximum allowed length is 65,280 symbols.
+          </p>
+        )}
         <AppendFormFooter
           loading={loading}
           calcVote={calculateVoteWorth}
@@ -162,7 +169,7 @@ const AppendWebpageModal = ({
           votePercent={votePercent}
           voteWorth={voteWorth}
           selectWobj={wObject}
-          disabled={false}
+          disabled={disabledSubmit}
         />
       </Form>
     </Modal>
