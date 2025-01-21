@@ -14,6 +14,8 @@ const ProgressModalBody = ({
   setCurrPowerDown,
   info,
   index,
+  isAuth,
+  authUserPage,
 }) => (
   <div>
     <div>
@@ -21,15 +23,17 @@ const ProgressModalBody = ({
         <>
           <div className={'flex justify-between'}>
             <b>Power down #{index + 1}</b>
-            <Button
-              onClick={() => {
-                setCurrPowerDown(info);
-                setShowCancelPowerDown(true);
-              }}
-              className={'UserWalletSummary__button'}
-            >
-              Cancel{' '}
-            </Button>
+            {isAuth && authUserPage && (
+              <Button
+                onClick={() => {
+                  setCurrPowerDown(info);
+                  setShowCancelPowerDown(true);
+                }}
+                className={'UserWalletSummary__button'}
+              >
+                Cancel{' '}
+              </Button>
+            )}
           </div>
           <div>
             Amount: <FormattedNumber value={info.quantityLeft} />
@@ -65,6 +69,8 @@ ProgressModalBody.propTypes = {
   nextDate: PropTypes.number,
   index: PropTypes.number,
   addSpace: PropTypes.bool,
+  authUserPage: PropTypes.bool,
+  isAuth: PropTypes.bool,
   isWaivWallet: PropTypes.bool,
   maxWeeks: PropTypes.number,
   weeksLeft: PropTypes.number,

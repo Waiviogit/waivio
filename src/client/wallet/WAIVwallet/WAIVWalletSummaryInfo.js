@@ -237,6 +237,8 @@ const WAIVWalletSummaryInfo = props => {
         <PowerDownProgressModal
           isWaivWallet
           maxWeeks={4}
+          isAuth={props.isAuth}
+          authUserPage={authUserPage}
           setCurrPowerDown={setCurrPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
           unstakesTokenInfo={unstakesTokenInfo}
@@ -251,7 +253,6 @@ const WAIVWalletSummaryInfo = props => {
           isWaivWallet
           showCancelPowerDown={showCancelPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
-          showPowerDownProgress={showPowerDownProgress}
         />
       )}
     </WalletSummaryInfo>
