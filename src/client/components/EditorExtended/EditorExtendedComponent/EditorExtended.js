@@ -69,7 +69,7 @@ const Editor = props => {
 
       props.onChange(editor, props.editorExtended.titleValue);
     }, 500),
-    [props.isShowEditorSearch, prevSearchValue],
+    [props.isShowEditorSearch, prevSearchValue, props.draftId, props.editorExtended.titleValue],
   );
 
   const validateLength = event => {
