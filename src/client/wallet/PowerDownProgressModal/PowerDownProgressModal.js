@@ -14,6 +14,8 @@ const PowerDownProgressModal = ({
   unstakesTokenInfo,
   setCurrPowerDown,
   setShowCancelPowerDown,
+  isAuth,
+  authUserPage,
 }) => {
   const calculateWeeksLeft = (toWithdraw, withdrawn, vestingWithdrawRate) => {
     const rate = parseFloat(vestingWithdrawRate);
@@ -72,6 +74,8 @@ const PowerDownProgressModal = ({
             marks={marks}
             setShowCancelPowerDown={setShowCancelPowerDown}
             setCurrPowerDown={setCurrPowerDown}
+            authUserPage={authUserPage}
+            isAuth={isAuth}
           />
         ))
       ) : (
@@ -92,6 +96,8 @@ const PowerDownProgressModal = ({
 
 PowerDownProgressModal.propTypes = {
   isWaivWallet: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  authUserPage: PropTypes.bool,
   user: PropTypes.shape(),
   unstakesTokenInfo: PropTypes.arrayOf(),
   showModal: PropTypes.bool.isRequired,
