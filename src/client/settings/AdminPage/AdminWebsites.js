@@ -58,7 +58,7 @@ const AdminWebsites = ({ intl }) => {
             <Loading />
           ) : (
             <div className="">
-              <div className={'AdminPage'}>
+              <div className={'AdminPage__wrapper'}>
                 <div className={'AdminPage__title-wrap'}>
                   <div className={'AdminPage__title no-mb'}>Website statistics</div>
                 </div>
