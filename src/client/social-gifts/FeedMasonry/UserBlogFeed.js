@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
@@ -95,37 +96,46 @@ const UserBlogFeed = ({ user }) => {
       {firstLoading && previewLoading ? (
         <Loading margin />
       ) : (
-        <ReduxInfiniteScroll
-          className="Feed"
-          loadMore={loadMore}
-          loader={<Loading />}
-          loadingMore={isFetching || previewLoading}
-          hasMore={hasMore}
-          elementIsScrollable={false}
-          threshold={2500}
-        >
-          <Masonry
-            breakpointCols={breakpointColumnsObj(posts?.length)}
-            className="FeedMasonry my-masonry-grid"
-            columnClassName="my-masonry-grid_column"
+        !isEmpty(posts) && (
+          <ReduxInfiniteScroll
+            className="Feed"
+            loadMore={loadMore}
+            loader={<Loading />}
+            loadingMore={isFetching || previewLoading}
+            hasMore={hasMore}
+            elementIsScrollable={false}
+            threshold={2500}
           >
-            {posts?.map(post => {
-              const urlPreview = isEmpty(previews)
-                ? ''
-                : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
+            <Masonry
+              breakpointCols={breakpointColumnsObj(posts?.length)}
+              className="FeedMasonry my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
+            >
+              {posts?.map(post => {
+                const urlPreview = isEmpty(previews)
+                  ? ''
+                  : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
 
-              return (
-                <FeedItem
-                  key={`${post.author}/${post?.permlink}`}
-                  preview={urlPreview}
-                  photoQuantity={2}
-                  post={post}
-                />
-              );
-            })}
-          </Masonry>
-          <PostModal />
-        </ReduxInfiniteScroll>
+                return (
+                  <FeedItem
+                    key={`${post.author}/${post?.permlink}`}
+                    preview={urlPreview}
+                    photoQuantity={2}
+                    post={post}
+                  />
+                );
+              })}
+            </Masonry>
+            <PostModal />
+          </ReduxInfiniteScroll>
+        )
+      )}
+      {isEmpty(posts) && (
+        <div className="FeedMasonry__emptyFeed">
+          <div>
+            <FormattedMessage id="no_posts" defaultMessage="There are no posts." />
+          </div>
+        </div>
       )}
     </React.Fragment>
   );
