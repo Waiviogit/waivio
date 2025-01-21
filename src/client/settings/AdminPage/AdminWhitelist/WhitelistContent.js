@@ -30,7 +30,7 @@ const WhitelistContent = ({ intl, title, userList, caption, type, buttonTitle, s
     setLoading(true);
     addUserToAdminWhitelist(authUserName, user.account).then(res => {
       if (res.result) {
-        setMainList([...userList, { ...user, name: user.account }]);
+        setMainList([{ ...user, name: user.account }, ...userList]);
         setUser({});
         setLoading(false);
       }
