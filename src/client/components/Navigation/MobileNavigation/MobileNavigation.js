@@ -197,6 +197,18 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'website';
       filterName = 'payments';
       break;
+    case '/admin-websites':
+      pageName = 'admin';
+      filterName = 'admin_websites';
+      break;
+    case '/admin-whitelist':
+      pageName = 'admin';
+      filterName = 'admin_whitelist';
+      break;
+    case '/admin-new-accounts':
+      pageName = 'admin';
+      filterName = 'admin_new_accounts';
+      break;
     case '/':
       if (!authenticated) {
         pageName = pages.hive.id;

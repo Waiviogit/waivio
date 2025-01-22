@@ -150,12 +150,27 @@
   }
 }
 
-.PostFeedEmbed__container_instagram-reel {
-  padding-bottom: 112%;
+.Body.Body--full .PostFeedEmbed__container_instagram.PostFeedEmbed__container,
+.Body.Body--full .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container {
+  width: 323px;
+  height: 574px;
+
+  @media @small {
+    width: 470px;
+    height: 675px;
+    margin: 0 auto;
+  }
 }
 
-.PostFeedEmbed__container_instagram {
-  padding-bottom: 87%;
+.Story__content__preview .PostFeedEmbed__container_instagram.PostFeedEmbed__container,
+.Story__content__preview .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container {
+  width: 100%;
+  height: 630px;
+
+  @media @small {
+    width: 100%;
+    height: 575px;
+  }
 }
 
 @media screen and (max-width: @medium-bp) {

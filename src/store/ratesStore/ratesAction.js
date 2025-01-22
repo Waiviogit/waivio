@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../common/constants/swapList';
@@ -31,13 +32,15 @@ export const getMainCurrencyRate = rates => dispatch =>
 export const getAllRates = rates => dispatch => {
   dispatch({
     type: GET_RATES.SUCCESS,
-    payload: rates.reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.symbol]: curr.lastPrice,
-      }),
-      {},
-    ),
+    payload:
+      !isEmpty(rates) &&
+      rates?.reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr.symbol]: curr.lastPrice,
+        }),
+        {},
+      ),
   });
 };
 

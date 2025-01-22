@@ -47,7 +47,19 @@ const iframeWhitelist = [
   },
   {
     re: /^(https?:)?\/\/(?:www\.)?(?:periscope.tv\/)(.*)?$/i,
-    fn: src => src, // handled by embedjs
+    fn: src => {
+      return src.replaceAll('\\', '');
+    }, // handled by embedjs
+  },
+  {
+    re: /^(https?:)?\/\/(www\.)?instagram\.com\/(p|reel)\/[A-Za-z0-9_-]+\/?/i,
+    fn: src => src.replace(/\?.+$/, ''), // strip query string
+  },
+  {
+    re: /^(https?:\/\/)?(www\.)?instagram\.com\/p\/[A-Za-z0-9_-]+\/?\?.*$/i,
+    fn: src => {
+      return src.replaceAll('\\', '');
+    }, // strip query string
   },
   {
     re: /^(https?:)?\/\/(?:www\.)?(?:(player.)?twitch.tv\/)(.*)?$/i,

@@ -13,7 +13,6 @@ const initialState = {
   isReloading: false,
   loaded: false,
   user: {},
-  appAdmins: [],
   userMetaData: {},
   privateEmail: '',
   isGuestUser: false,
@@ -107,11 +106,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         showSettings: true,
-      };
-    case types.GET_APP_ADMINS:
-      return {
-        ...state,
-        appAdmins: action.payload,
       };
 
     case types.RELOAD_START:

@@ -9,8 +9,10 @@ const CancelPowerDownModal = ({
   account,
   isWaivWallet,
   txID,
+  setPowerDownProgress,
 }) => {
   const handleCloseModal = () => {
+    setPowerDownProgress(false);
     setShowCancelPowerDown(false);
   };
 
@@ -66,6 +68,7 @@ const CancelPowerDownModal = ({
 
 CancelPowerDownModal.propTypes = {
   setShowCancelPowerDown: PropTypes.func.isRequired,
+  setPowerDownProgress: PropTypes.func.isRequired,
   showCancelPowerDown: PropTypes.bool.isRequired,
   isWaivWallet: PropTypes.bool,
   account: PropTypes.string.isRequired,

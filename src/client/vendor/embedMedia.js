@@ -47,7 +47,9 @@ SteemEmbed.getAll = function(text, options, mediaSize) {
   return embeds;
 };
 
-SteemEmbed.get = function(url, options = {}, mediumSize) {
+SteemEmbed.get = function(urlCurr, options = {}, mediumSize) {
+  const url = urlCurr.replace('\\', '');
+
   const youtubeId = this.isYoutube(url);
   if (youtubeId) {
     const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
@@ -60,20 +62,31 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       embed: this.youtube(url, youtubeId, options),
     };
   }
-  const dTubeId = this.isDTube(url);
-  const threeSpeakId = this.is3Speak(url);
-  const twitch = this.isTwitch(url);
-  const twitchPlayer = this.isTwitchPlayer(url);
-  const periscopeId = this.isPeriscope(url);
-  const soundcloudId = this.isSoundcloud(url);
-  const vimeoId = this.isVimeo(url);
-  const bitchuteId = this.isBitchute(url);
-  const rumbleId = this.isRumble(url);
-  const odyseeId = this.isOdysee(url);
-  const tikTokId = this.isTikTok(url);
-  const facebookId = this.isFaceBook(url);
+
   const instagramId = this.isInstagram(url);
-  const peerTubeId = this.isPeerTube(url);
+  if (instagramId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'Instagram',
+      id: instagramId,
+      embed: this.instagram(url, instagramId, options),
+    };
+  }
+
+  const tikTokId = this.isTikTok(url);
+
+  if (tikTokId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'TikTok',
+      id: tikTokId,
+      embed: this.tikTok(url, tikTokId, options),
+    };
+  }
+
+  const dTubeId = this.isDTube(url);
 
   if (dTubeId) {
     return {
@@ -86,7 +99,11 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: dTubeId,
       embed: this.dTube(url, dTubeId, options),
     };
-  } else if (threeSpeakId) {
+  }
+
+  const threeSpeakId = this.is3Speak(url);
+
+  if (threeSpeakId) {
     const [, permlink] = threeSpeakId.split('/');
     return {
       type: 'video',
@@ -96,7 +113,10 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: threeSpeakId,
       embed: this.threeSpeak(url, threeSpeakId, options),
     };
-  } else if (twitch) {
+  }
+  const twitch = this.isTwitch(url);
+
+  if (twitch) {
     return {
       type: 'video',
       url: url,
@@ -104,7 +124,11 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: twitch,
       embed: this.twitch(url, options),
     };
-  } else if (twitchPlayer) {
+  }
+
+  const twitchPlayer = this.isTwitchPlayer(url);
+
+  if (twitchPlayer) {
     return {
       type: 'video',
       url: url,
@@ -112,7 +136,11 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: twitchPlayer,
       embed: this.twitchPlayer(url, options),
     };
-  } else if (periscopeId) {
+  }
+
+  const periscopeId = this.isPeriscope(url);
+
+  if (periscopeId) {
     return {
       type: 'video',
       url: url,
@@ -120,7 +148,11 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: periscopeId,
       embed: this.periscope(url, periscopeId, options),
     };
-  } else if (soundcloudId) {
+  }
+
+  const soundcloudId = this.isSoundcloud(url);
+
+  if (soundcloudId) {
     return {
       type: 'music',
       url: url,
@@ -128,7 +160,11 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: soundcloudId,
       embed: this.soundcloud(url, soundcloudId, options),
     };
-  } else if (vimeoId) {
+  }
+
+  const vimeoId = this.isVimeo(url);
+
+  if (vimeoId) {
     return {
       type: 'video',
       url: url,
@@ -136,7 +172,10 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: vimeoId,
       embed: this.vimeo(url, vimeoId, options),
     };
-  } else if (bitchuteId) {
+  }
+  const bitchuteId = this.isBitchute(url);
+
+  if (bitchuteId) {
     return {
       type: 'video',
       url: url,
@@ -144,7 +183,10 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: bitchuteId,
       embed: this.bitchute(url, bitchuteId, options),
     };
-  } else if (rumbleId) {
+  }
+
+  const rumbleId = this.isRumble(url);
+  if (rumbleId) {
     return {
       type: 'video',
       url: url,
@@ -152,22 +194,20 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: rumbleId,
       embed: this.rumble(url, rumbleId, options),
     };
-  } else if (odyseeId) {
+  }
+
+  const odyseeId = this.isOdysee(url);
+  if (odyseeId) {
     return {
       type: 'video',
       url: url,
       provider_name: 'Odysee',
       id: odyseeId,
     };
-  } else if (tikTokId) {
-    return {
-      type: 'video',
-      url: url,
-      provider_name: 'TikTok',
-      id: tikTokId,
-      embed: this.tikTok(url, tikTokId, options),
-    };
-  } else if (facebookId) {
+  }
+
+  const facebookId = this.isFaceBook(url);
+  if (facebookId) {
     return {
       type: 'video',
       url: url,
@@ -175,15 +215,10 @@ SteemEmbed.get = function(url, options = {}, mediumSize) {
       id: facebookId,
       embed: this.facebook(url, facebookId, options),
     };
-  } else if (instagramId) {
-    return {
-      type: 'video',
-      url: url,
-      provider_name: 'Instagram',
-      id: instagramId,
-      embed: this.instagram(url, instagramId, options),
-    };
-  } else if (peerTubeId) {
+  }
+  const peerTubeId = this.isPeerTube(url);
+
+  if (peerTubeId) {
     return {
       type: 'video',
       url: url,
@@ -441,6 +476,7 @@ SteemEmbed.facebook = function(url, id, options) {
 
 SteemEmbed.isInstagram = function(url) {
   let match = url.match(VIDEO_MATCH_URL.INSTAGRAM) || url.match(VIDEO_MATCH_URL.INSTAGRAM_REEL);
+
   return match ? match[0] : false;
 };
 

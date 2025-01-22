@@ -378,28 +378,31 @@ class Comment extends React.Component {
             {!this.state.collapsed &&
               commentsChildren &&
               commentsChildren[comment.id] &&
-              sortComments(commentsChildren[comment.id], sort).map(child => (
-                <Comment
-                  key={child.id}
-                  user={user}
-                  depth={depth + 1}
-                  intl={this.props.intl}
-                  comment={child}
-                  isQuickComment={this.props.isQuickComment}
-                  parent={comment}
-                  sort={sort}
-                  pendingVotes={pendingVotes}
-                  rootPostAuthor={rootPostAuthor}
-                  commentsChildren={commentsChildren}
-                  notify={this.props.notify}
-                  rewardFund={rewardFund}
-                  sliderMode={sliderMode}
-                  defaultVotePercent={defaultVotePercent}
-                  onLikeClick={this.props.onLikeClick}
-                  onDislikeClick={this.props.onDislikeClick}
-                  onSendComment={this.props.onSendComment}
-                />
-              ))}
+              sortComments(commentsChildren[comment.id], sort).map(
+                child =>
+                  child && (
+                    <Comment
+                      key={child.id}
+                      user={user}
+                      depth={depth + 1}
+                      intl={this.props.intl}
+                      comment={child}
+                      isQuickComment={this.props.isQuickComment}
+                      parent={comment}
+                      sort={sort}
+                      pendingVotes={pendingVotes}
+                      rootPostAuthor={rootPostAuthor}
+                      commentsChildren={commentsChildren}
+                      notify={this.props.notify}
+                      rewardFund={rewardFund}
+                      sliderMode={sliderMode}
+                      defaultVotePercent={defaultVotePercent}
+                      onLikeClick={this.props.onLikeClick}
+                      onDislikeClick={this.props.onDislikeClick}
+                      onSendComment={this.props.onSendComment}
+                    />
+                  ),
+              )}
           </div>
         </div>
       </div>

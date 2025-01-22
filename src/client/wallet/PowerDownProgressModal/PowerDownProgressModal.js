@@ -1,16 +1,21 @@
 import React from 'react';
-import { Button, Modal, Slider } from 'antd';
-import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl';
+import { Button, Modal } from 'antd';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import ProgressModalBody from './ProgressModalBody';
 
 const PowerDownProgressModal = ({
   showModal,
   setShowModal,
   nextWithdrawal,
-  weeks,
   isWaivWallet,
   maxWeeks,
   user,
+  unstakesTokenInfo,
+  setCurrPowerDown,
+  setShowCancelPowerDown,
+  isAuth,
+  authUserPage,
 }) => {
   const calculateWeeksLeft = (toWithdraw, withdrawn, vestingWithdrawRate) => {
     const rate = parseFloat(vestingWithdrawRate);
@@ -19,11 +24,6 @@ const PowerDownProgressModal = ({
     return Math.round(remainingAmount / rate) / 1000000;
   };
 
-  const weeksLeft = isWaivWallet
-    ? weeks
-    : calculateWeeksLeft(user.to_withdraw, user.withdrawn, user.vesting_withdraw_rate);
-
-  const nextDate = isWaivWallet ? nextWithdrawal : `${nextWithdrawal}Z`;
   const marks = isWaivWallet
     ? {
         0: '0',
@@ -60,37 +60,51 @@ const PowerDownProgressModal = ({
       title={'Power down'}
       onCancel={() => setShowModal(false)}
     >
-      <div>
-        <div>
-          {' '}
-          <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
-          <FormattedDate value={nextDate} /> <FormattedTime value={nextDate} />
-        </div>
-        <div>
-          Remaining: {weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
-        </div>
-      </div>
-      <div>
-        {' '}
-        <Slider
+      {isWaivWallet ? (
+        unstakesTokenInfo?.map((info, i) => (
+          <ProgressModalBody
+            isWaivWallet
+            addSpace={i !== unstakesTokenInfo.length - 1}
+            key={info._id}
+            maxWeeks={maxWeeks}
+            info={info}
+            index={i}
+            weeksLeft={info.numberTransactionsLeft}
+            nextDate={info.nextTransactionTimestamp}
+            marks={marks}
+            setShowCancelPowerDown={setShowCancelPowerDown}
+            setCurrPowerDown={setCurrPowerDown}
+            authUserPage={authUserPage}
+            isAuth={isAuth}
+          />
+        ))
+      ) : (
+        <ProgressModalBody
+          maxWeeks={maxWeeks}
+          weeksLeft={calculateWeeksLeft(
+            user.to_withdraw,
+            user.withdrawn,
+            user.vesting_withdraw_rate,
+          )}
+          nextDate={`${nextWithdrawal}Z`}
           marks={marks}
-          tipFormatter={null}
-          value={maxWeeks - weeksLeft}
-          min={0}
-          max={maxWeeks}
         />
-      </div>
+      )}
     </Modal>
   );
 };
 
 PowerDownProgressModal.propTypes = {
   isWaivWallet: PropTypes.bool,
+  isAuth: PropTypes.bool,
+  authUserPage: PropTypes.bool,
   user: PropTypes.shape(),
-  weeks: PropTypes.number,
+  unstakesTokenInfo: PropTypes.arrayOf(),
   showModal: PropTypes.bool.isRequired,
   maxWeeks: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
+  setCurrPowerDown: PropTypes.func.isRequired,
+  setShowCancelPowerDown: PropTypes.func.isRequired,
   nextWithdrawal: PropTypes.string.isRequired,
 };
 PowerDownProgressModal.defaultProps = {

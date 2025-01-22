@@ -115,7 +115,7 @@ export default function createSsrHandler(template) {
       try {
         await store.dispatch(loginFromServer(data)).then(async res => {
           try {
-            const language = res?.value?.userMetaData?.settings.locale;
+            const language = res?.value?.userMetaData?.settings?.locale;
             store.dispatch(setLocale(language));
             store.dispatch(setUsedLocale(await loadLanguage(language)));
           } catch (e) {

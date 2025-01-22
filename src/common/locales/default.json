@@ -2668,5 +2668,8 @@
   "mobnav_new_accounts": "New accounts",
   "mobnav_claim_authority": "Claim authority",
   "mobnav_tags_bot": "Tags bot",
-  "mobnav_payments": "Reports"
+  "mobnav_payments": "Reports",
+  "mobnav_admin_websites": "Websites",
+  "mobnav_admin_whitelist": "Whitelist",
+  "mobnav_admin_new_accounts": "New accounts"
 }
