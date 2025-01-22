@@ -574,7 +574,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
 
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
-    body: body || content || originalBody,
+    body: content || body || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,

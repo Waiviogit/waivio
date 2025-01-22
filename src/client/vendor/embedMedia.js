@@ -64,6 +64,7 @@ SteemEmbed.get = function(urlCurr, options = {}, mediumSize) {
   }
 
   const instagramId = this.isInstagram(url);
+  console.log(instagramId);
   if (instagramId) {
     return {
       type: 'video',
@@ -476,6 +477,7 @@ SteemEmbed.facebook = function(url, id, options) {
 
 SteemEmbed.isInstagram = function(url) {
   let match = url.match(VIDEO_MATCH_URL.INSTAGRAM) || url.match(VIDEO_MATCH_URL.INSTAGRAM_REEL);
+
   return match ? match[0] : false;
 };
 
