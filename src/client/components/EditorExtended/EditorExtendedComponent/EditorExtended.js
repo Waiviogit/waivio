@@ -43,34 +43,31 @@ const Editor = props => {
     [],
   );
 
-  const handleContentChangeSlate = useCallback(
-    debounce(editor => {
-      const searchInfo = checkCursorInSearchSlate(editor);
+  const handleContentChangeSlate = editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
 
-      if (searchInfo.isNeedOpenSearch) {
-        if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
-          const nativeSelection = getSelection(window);
-          const selectionBoundary = getSelectionRect(nativeSelection);
+    if (searchInfo.isNeedOpenSearch) {
+      if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
 
-          props.setCursorCoordinates({
-            selectionBoundary,
-            selectionState: editor.selection,
-            searchString: searchInfo.searchString,
-            isShowEditorSearch: true,
-          });
-        }
-        setPrevSearch(searchInfo.searchString);
-        if (prevSearchValue !== searchInfo.searchString) {
-          debouncedSearch(searchInfo.searchString);
-        }
-      } else if (props.isShowEditorSearch) {
-        props.setShowEditorSearch(false);
+        props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+          isShowEditorSearch: true,
+        });
       }
+      setPrevSearch(searchInfo.searchString);
+      if (prevSearchValue !== searchInfo.searchString) {
+        debouncedSearch(searchInfo.searchString);
+      }
+    } else if (props.isShowEditorSearch) {
+      props.setShowEditorSearch(false);
+    }
 
-      props.onChange(editor, props.editorExtended.titleValue);
-    }, 500),
-    [props.isShowEditorSearch, prevSearchValue, props.draftId, props.editorExtended.titleValue],
-  );
+    props.onChange(editor, props.editorExtended.titleValue);
+  };
 
   const validateLength = event => {
     const updatedTitleValue = event.target.value;
