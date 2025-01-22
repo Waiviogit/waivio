@@ -64,7 +64,6 @@ SteemEmbed.get = function(urlCurr, options = {}, mediumSize) {
   }
 
   const instagramId = this.isInstagram(url);
-  console.log(instagramId);
   if (instagramId) {
     return {
       type: 'video',
