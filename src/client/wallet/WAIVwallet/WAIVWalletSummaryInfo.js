@@ -253,6 +253,7 @@ const WAIVWalletSummaryInfo = props => {
           isWaivWallet
           showCancelPowerDown={showCancelPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
+          setPowerDownProgress={setPowerDownProgress}
         />
       )}
     </WalletSummaryInfo>
