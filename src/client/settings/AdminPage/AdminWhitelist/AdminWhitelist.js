@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet';
 import Cookie from 'js-cookie';
 import { useSelector } from 'react-redux';
 import Affix from '../../../components/Utils/Affix';
@@ -22,6 +23,7 @@ const AdminWhitelist = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const appAdmins = Cookie.get('appAdmins');
   const iaAppAdmin = appAdmins?.includes(authUserName);
+  const title = 'Whitelist';
 
   useEffect(() => {
     if (isAuth && iaAppAdmin) {
@@ -37,6 +39,9 @@ const AdminWhitelist = () => {
 
   return (
     <div className=" shifted">
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <div className="container settings-layout">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
@@ -51,7 +56,7 @@ const AdminWhitelist = () => {
             <div className="">
               <div className={'AdminPage min-width'}>
                 <div className={'AdminPage__title-wrap'}>
-                  <div className={'AdminPage__title '}>Whitelist</div>
+                  <div className={'AdminPage__title '}>{title}</div>
                 </div>
                 <WhitelistContent
                   type={'Whitelist'}

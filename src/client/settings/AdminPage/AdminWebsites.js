@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { message, Modal } from 'antd';
 import Cookie from 'js-cookie';
+import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, round } from 'lodash';
 import { useHistory } from 'react-router';
@@ -28,6 +29,7 @@ const AdminWebsites = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
   const currency = useSelector(getCurrentCurrency);
+  const title = `Website statistics`;
   const appAdmins = Cookie.get('appAdmins');
   const iaAppAdmin = appAdmins?.includes(authUserName);
   const history = useHistory();
@@ -46,6 +48,9 @@ const AdminWebsites = ({ intl }) => {
 
   return (
     <div className="shifted">
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <div className="container settings-layout">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
@@ -60,7 +65,7 @@ const AdminWebsites = ({ intl }) => {
             <div className="">
               <div className={'AdminPage__wrapper'}>
                 <div className={'AdminPage__title-wrap'}>
-                  <div className={'AdminPage__title no-mb'}>Website statistics</div>
+                  <div className={'AdminPage__title no-mb'}>{title}</div>
                 </div>
                 {!isEmpty(websitesInfo) && (
                   <table className="DynamicTable">
@@ -153,6 +158,7 @@ const AdminWebsites = ({ intl }) => {
                     </tbody>
                   </table>
                 )}
+                <br />
                 <p className={'AdminPage__info'}>
                   * Daily active users are averaged over the last 7 days.
                 </p>
@@ -162,6 +168,7 @@ const AdminWebsites = ({ intl }) => {
                   estimate of the Days remaining is based on the current website usage and is
                   subject to change.
                 </p>
+                <br />
               </div>
             </div>
           )}
