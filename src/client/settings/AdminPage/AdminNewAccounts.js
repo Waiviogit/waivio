@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import Cookie from 'js-cookie';
+import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -25,6 +26,7 @@ const AdminNewAccounts = ({ intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const appAdmins = Cookie.get('appAdmins');
   const isAppAdmin = appAdmins?.includes(authUserName);
+  const title = 'New accounts (VIP tickets)';
 
   useEffect(() => {
     if (isAuth && isAppAdmin) {
@@ -40,6 +42,9 @@ const AdminNewAccounts = ({ intl }) => {
 
   return (
     <div className="shifted">
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <div className="container settings-layout">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
@@ -55,7 +60,7 @@ const AdminNewAccounts = ({ intl }) => {
             <div className="">
               <div className={'AdminPage min-width'}>
                 <div className={'AdminPage__title-wrap'}>
-                  <div className={'AdminPage__title no-mb'}>New accounts (VIP tickets)</div>
+                  <div className={'AdminPage__title no-mb'}>{title}</div>
                 </div>
                 <table className="DynamicTable">
                   <thead>
