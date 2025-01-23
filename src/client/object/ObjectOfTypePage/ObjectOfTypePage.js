@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { isEmpty, size, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -212,7 +213,14 @@ const ObjectOfTypePage = props => {
   const handleReadyPublishClick = e => {
     e.preventDefault();
     setIsReadyToPublish(!isReadyToPublish);
-    setCurrentContent(content);
+    // setCurrentContent(content);
+  };
+
+  const closePublishViev = e => {
+    e.preventDefault();
+    setIsReadyToPublish(!isReadyToPublish);
+    setLittleVotePower(null);
+    // setCurrentContent(content);
   };
 
   const renderBody = () => {
@@ -253,56 +261,55 @@ const ObjectOfTypePage = props => {
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? (
               <React.Fragment>
-                {isReadyToPublish ? (
+                {isReadyToPublish && (
                   <div className="object-page-preview">
                     <div className="object-page-preview__header">
                       <div>Preview</div>
                       <IconButton
                         className="object-page-preview__close-btn"
                         icon={<Icon type="close" />}
-                        onClick={handleReadyPublishClick}
+                        onClick={closePublishViev}
                       />
                     </div>
-                    {
-                      <React.Fragment>
-                        <BodyContainer isPage full body={content} />
-                        <div className="object-page-preview__options">
-                          <LikeSection
-                            form={form}
-                            onVotePercentChange={handleVotePercentChange}
-                            selectedType={wobject}
-                            setLittleVotePower={setLittleVotePower}
-                          />
-                          {followingList.includes(wobject.author_permlink) ? null : (
-                            <FollowObjectForm form={form} />
-                          )}
-                        </div>
-                        <div className="object-of-type-page__row align-center">
-                          <Button
-                            htmlType="submit"
-                            disabled={form.getFieldError('like')}
-                            onClick={handleSubmit}
-                            size="large"
-                          >
-                            {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
-                          </Button>
-                        </div>
-                      </React.Fragment>
-                    }
-                  </div>
-                ) : (
-                  <div className="object-of-type-page__editor-wrapper">
-                    <Editor
-                      withTitle={false}
-                      enabled
-                      initialContent={{ body: contentForPublish }}
-                      locale={editorLocale}
-                      onChange={handleChangeContent}
-                      displayTitle={false}
-                      match={props.match}
-                    />
+                    <BodyContainer isPage full body={content} />
+                    <div className="object-page-preview__options">
+                      <LikeSection
+                        form={form}
+                        onVotePercentChange={handleVotePercentChange}
+                        selectedType={wobject}
+                        setLittleVotePower={setLittleVotePower}
+                      />
+                      {followingList.includes(wobject.author_permlink) ? null : (
+                        <FollowObjectForm form={form} />
+                      )}
+                    </div>
+                    <div className="object-of-type-page__row align-center">
+                      <Button
+                        htmlType="submit"
+                        disabled={form.getFieldError('like')}
+                        onClick={handleSubmit}
+                        size="large"
+                      >
+                        {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+                      </Button>
+                    </div>
                   </div>
                 )}
+                <div
+                  className={classNames('object-of-type-page__editor-wrapper', {
+                    'object-of-type-page__editor-wrapper--hide': isReadyToPublish,
+                  })}
+                >
+                  <Editor
+                    withTitle={false}
+                    enabled
+                    initialContent={{ body: contentForPublish }}
+                    locale={editorLocale}
+                    onChange={handleChangeContent}
+                    displayTitle={false}
+                    match={props.match}
+                  />
+                </div>
               </React.Fragment>
             ) : (
               <React.Fragment>{renderBody()}</React.Fragment>

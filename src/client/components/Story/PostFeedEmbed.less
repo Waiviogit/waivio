@@ -165,11 +165,19 @@
 .Story__content__preview .PostFeedEmbed__container_instagram.PostFeedEmbed__container,
 .Story__content__preview .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container {
   width: 100%;
-  height: 630px;
+  height: 575px;
 
   @media @small {
     width: 100%;
     height: 575px;
+  }
+}
+
+.Story__content__preview {
+  img.PostFeedEmbed__preview.PostFeedEmbed__preview--standard {
+    @media @xsmall-max-2 {
+      max-height: 210px;
+    }
   }
 }
 
