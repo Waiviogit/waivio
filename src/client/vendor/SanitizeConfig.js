@@ -1,5 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
+import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 
 /**
@@ -67,6 +68,10 @@ const iframeWhitelist = [
   },
   {
     re: /^(https?:)?\/\/(?:www\.)?(?:bitchute\.com\/)(.*)?$/i,
+    fn: src => src, // handled by embedjs
+  },
+  {
+    re: VIDEO_MATCH_URL.TIKTOK,
     fn: src => src, // handled by embedjs
   },
 ];
