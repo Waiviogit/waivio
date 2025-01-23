@@ -107,6 +107,7 @@ const WAIVWalletSummaryInfo = props => {
     setRecivedList(recived);
     setUndeligatedList(undeligated);
     setUnstakesTokenInfo(unstakeTokens);
+    setCurrPowerDown(unstakeTokens[0]);
   };
 
   useEffect(() => {
