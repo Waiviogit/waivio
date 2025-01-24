@@ -213,14 +213,12 @@ const ObjectOfTypePage = props => {
   const handleReadyPublishClick = e => {
     e.preventDefault();
     setIsReadyToPublish(!isReadyToPublish);
-    // setCurrentContent(content);
   };
 
   const closePublishViev = e => {
     e.preventDefault();
     setIsReadyToPublish(!isReadyToPublish);
     setLittleVotePower(null);
-    // setCurrentContent(content);
   };
 
   const renderBody = () => {
