@@ -67,7 +67,7 @@ export default function createSsrHandler(template) {
 
     if (inheritedHost) {
       const { redirect, redirectPath } = await checkAppStatus(hostname);
-      if (redirect) return res.redirect(302, redirectPath);
+      if (redirect) return res.redirect(301, redirectPath);
     }
 
     if (req.url.includes('/checklist/'))
@@ -160,7 +160,7 @@ export default function createSsrHandler(template) {
       const searchBot = isbot(req.get('User-Agent'));
       if (inheritedHost && searchBot) {
         const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-        if (!pageExist) return res.redirect(302, `https://www.waivio.com${req.url}`);
+        if (!pageExist) return res.redirect(301, `https://www.waivio.com${req.url}`);
       }
 
       if (searchBot) {
