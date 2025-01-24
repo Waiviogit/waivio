@@ -62,7 +62,7 @@ const GroupObjectType = ({ authUser, dynamicListInfo, loading, intl }) => {
     };
     const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
 
-    const bodyMessage = `@${authUserName} added ${objectFields.groupExclude} (${langReadable}): ${user.name}`;
+    const bodyMessage = `@${authUserName} added ${objectFields.groupExclude} (${langReadable}): ${user}`;
     const postData = getAppendData(authUser, wObject, bodyMessage, pageContentField);
 
     dispatch(
