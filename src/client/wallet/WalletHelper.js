@@ -623,7 +623,7 @@ export const getFormattedClaimRewardPayout = (
   };
 };
 
-export const getSavingsTransactionMessage = (transactionType, transactionDetails, amount) => {
+export const getSavingsTransactionMessage = (transactionType, transactionDetails) => {
   switch (transactionType) {
     case 'cancel_transfer_from_savings':
       return (
@@ -636,35 +636,9 @@ export const getSavingsTransactionMessage = (transactionType, transactionDetails
         />
       );
     case 'transfer_to_savings':
-      return (
-        <FormattedMessage
-          id="transfer_to_savings"
-          defaultMessage="Transfer to savings {amount} from {username}"
-          values={{
-            amount,
-            username: (
-              <Link to={`/@${transactionDetails.to}`}>
-                <span className="username">{transactionDetails.to}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
+      return <FormattedMessage id="transfer_to_savings" defaultMessage="Transfer to savings " />;
     case 'transfer_from_savings':
-      return (
-        <FormattedMessage
-          id="transfer_from_savings"
-          defaultMessage="Transfer from savings {amount} to {username}"
-          values={{
-            amount,
-            username: (
-              <Link to={`/@${transactionDetails.from}`}>
-                <span className="username">{transactionDetails.from}</span>
-              </Link>
-            ),
-          }}
-        />
-      );
+      return <FormattedMessage id="transfer_from_savings" defaultMessage="Transfer from savings" />;
     default:
       return null;
   }
