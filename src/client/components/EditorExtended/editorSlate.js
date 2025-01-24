@@ -266,7 +266,7 @@ const EditorSlate = props => {
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
   const renderLeaf = useCallback(newProps => <Leaf {...newProps} />, []);
 
-  useEditor(
+  useEffect(
     () => () => {
       resetEditorState(editor);
       clearEditor();
