@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Form, Modal, message, Input } from 'antd';
 import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
@@ -13,6 +13,7 @@ import QrModal from '../../widgets/QrModal';
 import {
   getEstimatedHiveAmount,
   getMinMaxHiveAmount,
+  withdrawHive,
   withdrawHiveForGuest,
 } from '../../../waivioApi/ApiClient';
 // import EmailConfirmation from '../../widgets/EmailConfirmation';
@@ -23,10 +24,12 @@ import {
 import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
+import { fixedNumber } from '../../../common/helpers/parser';
+import { createQuery } from '../../../common/helpers/apiHelpers';
 
 const Withdraw = ({
   intl,
@@ -53,11 +56,13 @@ const Withdraw = ({
   // const hiveAmount = get(hiveInput, ['current', 'value'], 0);
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   // const draftTransfer = store.get('withdrawData');
+  const isGuest = useSelector(isGuestUser);
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const estimateValue = ceil(hiveCount * hivePrice, 2) || 0;
-  const currentBalance = `${user.balance} HIVE`;
+  const userBalance = Number(user.balance.replace('HIVE', ''));
+  const currentBalance = `${userBalance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
-    'Withdraw__input-text--error': hiveAmount > user.balance,
+    'Withdraw__input-text--error': hiveAmount > userBalance,
   });
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
@@ -191,11 +196,46 @@ const Withdraw = ({
     //   currentCurrency,
     //   hiveAmount: hiveCount,
     // });
+    if (isGuest) {
+      return withdrawHiveForGuest(hiveAmount, currentCurrency, user.name, walletAddress)
+        .then(r => {
+          if (r) {
+            closeWithdrawModal();
+            message.success(
+              intl.formatMessage({
+                id: 'transaction_success',
+                defaultMessage: 'Your transaction is successful',
+              }),
+            );
+          }
 
-    return withdrawHiveForGuest(hiveAmount, currentCurrency, user.name, walletAddress)
+          if (r.message) message.error(r.message);
+
+          return r;
+        })
+        .catch(e => {
+          message.error(e.message);
+
+          return e;
+        });
+    }
+
+    return withdrawHive(Number(hiveAmount), currentCurrency, user.name, walletAddress)
       .then(r => {
-        if (r) {
+        if (r && !r.message) {
           closeWithdrawModal();
+          const transferQuery = {
+            amount: `${fixedNumber(parseFloat(r.amount), 3)} HIVE`,
+            memo: r.memo,
+            to: r.receiver,
+          };
+
+          window &&
+            window.open(
+              `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
+              '_blank',
+            );
+
           message.success(
             intl.formatMessage({
               id: 'transaction_success',
@@ -258,7 +298,7 @@ const Withdraw = ({
               HIVE
             </span>
           </div>
-          {user.balance < hiveAmount && (
+          {userBalance < hiveAmount && (
             <p className="invalid">
               {intl.formatMessage({
                 id: 'amount_error_funds',

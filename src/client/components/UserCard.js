@@ -7,8 +7,19 @@ import Avatar from '../components/Avatar';
 
 import './UserCard.less';
 
-const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine, handleClick }) => {
-  const cardView = showFollow ? 'UserCard__left' : 'UserCard__sidebar';
+const UserCard = ({
+  user,
+  alt,
+  showFollow,
+  unfollow,
+  follow,
+  withoutLine,
+  handleClick,
+  customBtn,
+  customBtnName,
+  onCustomBtnClick,
+}) => {
+  const cardView = showFollow || customBtn ? 'UserCard__left' : 'UserCard__sidebar';
   const weightBlock = showFollow ? 'UserCard__alt BlockWeight' : 'UserCard__short';
   const followersCountBlock = showFollow ? 'reblogged' : 'rebloggedFollowersNone';
   const userCardClassList = classNames('UserCard', {
@@ -47,6 +58,11 @@ const UserCard = ({ user, alt, showFollow, unfollow, follow, withoutLine, handle
             secondary
           />
         )}
+        {customBtn && (
+          <span className={'main-color-button'} onClick={onCustomBtnClick}>
+            {customBtnName}
+          </span>
+        )}
       </div>
     )
   );
@@ -57,15 +73,19 @@ UserCard.propTypes = {
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
   withoutLine: PropTypes.bool,
+  customBtn: PropTypes.bool,
+  customBtnName: PropTypes.string,
   unfollow: PropTypes.func,
   follow: PropTypes.func,
   handleClick: PropTypes.func,
+  onCustomBtnClick: PropTypes.func,
 };
 
 UserCard.defaultProps = {
   alt: '',
   user: {},
   showFollow: true,
+  customBtn: false,
   withoutLine: false,
   authUser: '',
   unfollow: () => {},

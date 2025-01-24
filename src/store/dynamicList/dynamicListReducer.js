@@ -8,6 +8,7 @@ import {
   FOLLOW_USER_IN_LIST,
   GET_USERS_LIST_MORE,
   GET_OBJECT_MORE_LIST,
+  UPDATE_USERS_LIST,
 } from './dynamicListActions';
 
 const initialState = {
@@ -68,6 +69,14 @@ const dynamicListReducer = (state = initialState, action) => {
           hasMore: action.payload.hasMore,
           sort: action.sorting,
           nextCursor: action.payload.nextCursor,
+        },
+        loading: false,
+      };
+    case UPDATE_USERS_LIST:
+      return {
+        ...state,
+        [action.meta]: {
+          list: state[action.meta].list.filter(u => u.name !== action.payload),
         },
         loading: false,
       };

@@ -140,6 +140,7 @@ export const followObjectInList = (permlink, username, type) => (dispatch, getSt
 };
 
 export const GET_USERS_LIST = createAsyncActionType('@dynamicList/GET_USERS_LIST');
+export const UPDATE_USERS_LIST = '@dynamicList/UPDATE_USERS_LIST';
 
 export const setUsersList = (name, authUser, limit, cursor) => dispatch => {
   dispatch({
@@ -153,6 +154,13 @@ export const setUsersList = (name, authUser, limit, cursor) => dispatch => {
       meta: name,
     }),
   );
+};
+export const updateUsersList = (user, name) => dispatch => {
+  dispatch({
+    type: UPDATE_USERS_LIST,
+    payload: user,
+    meta: name,
+  });
 };
 export const setMoreUsersList = (name, authUser, limit, cursor) => dispatch => {
   dispatch({

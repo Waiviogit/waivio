@@ -4248,6 +4248,27 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
     .then(r => r)
     .catch(error => error);
 };
+export const withdrawHive = (amount, outputCoinType, userName, address) => {
+  const guestToken = getGuestAccessToken();
+  return fetch(`${config.apiPrefix}${config.users}${config.hiveWithdraw}`, {
+    headers: {
+      ...headers,
+      'access-token': guestToken || Cookie.get('access_token'),
+      'waivio-auth': Boolean(guestToken),
+      'hive-auth': Boolean(Cookie.get('auth')),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      amount,
+      outputCoinType,
+      userName,
+      address,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
 
 export const saveCommentDraft = async (user, author, permlink, body) => {
   let isGuest;
