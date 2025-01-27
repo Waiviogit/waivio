@@ -8,6 +8,7 @@ import { getSimilarObjectsFromDepartments } from '../../../../waivioApi/ApiClien
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { addOnsRelatedSimilarTypes } from '../../../object/const/objectTypes';
 
 const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const [similarObjects, setSimilarObjects] = useState([]);
@@ -20,7 +21,7 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     if (
       !isEmpty(wobject.author_permlink) &&
-      ['product', 'book', 'service'].includes(wobject.object_type)
+      addOnsRelatedSimilarTypes.includes(wobject.object_type)
     ) {
       getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setSimilarObjects(res.wobjects || []),

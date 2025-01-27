@@ -7,6 +7,7 @@ import { getAddOnObjectsFromDepartments } from '../../../../waivioApi/ApiClient'
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { addOnsRelatedSimilarTypes } from '../../../object/const/objectTypes';
 
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [addOnObjects, setAddOnObjects] = useState([]);
@@ -28,7 +29,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     if (
       !isEmpty(wobject.author_permlink) &&
-      ['product', 'book', 'service'].includes(wobject.object_type)
+      addOnsRelatedSimilarTypes.includes(wobject.object_type)
     ) {
       getAddOnObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setAddOnObjects(res.wobjects),
