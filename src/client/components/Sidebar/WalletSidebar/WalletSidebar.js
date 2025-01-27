@@ -137,7 +137,7 @@ class WalletSidebar extends React.Component {
         )}
         {<CryptoTrendingCharts cryptos={cryptos} />}
         {ownProfile && <ClaimRewardsBlock />}
-        {!isEmpty(user) && ownProfile && isNotWaivWallet && (
+        {!isEmpty(user) && ownProfile && isGuest && isNotWaivWallet && (
           <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
             <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
           </Action>
@@ -169,6 +169,11 @@ class WalletSidebar extends React.Component {
               </Action>
             )}
           </div>
+        )}
+        {!isEmpty(user) && ownProfile && isNotWaivWallet && (
+          <Action big className="WalletSidebar__transfer" primary onClick={this.props.openWithdraw}>
+            <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+          </Action>
         )}
         {!isGuestUserProfile && !isNotWaivWallet && (
           <React.Fragment>

@@ -223,7 +223,7 @@ const UserWalletSummary = ({
           </p>
           <WalletAction
             mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
-            options={isCurrentGuest ? [] : ['transfer', 'convert']}
+            options={isCurrentGuest ? [] : ['transfer', 'convert', 'withdraw']}
             mainCurrency={'HIVE'}
             withdrawCurrencyOption={isCurrentGuest ? ['LTC', 'BTC', 'ETH'] : []}
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
