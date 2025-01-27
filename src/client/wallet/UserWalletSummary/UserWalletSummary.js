@@ -223,9 +223,9 @@ const UserWalletSummary = ({
           </p>
           <WalletAction
             mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
-            options={isCurrentGuest ? [] : ['transfer', 'convert', 'withdraw']}
+            options={isCurrentGuest ? ['withdraw'] : ['transfer', 'convert']}
             mainCurrency={'HIVE'}
-            withdrawCurrencyOption={isCurrentGuest ? ['LTC', 'BTC', 'ETH'] : []}
+            withdrawCurrencyOption={['LTC', 'BTC', 'ETH']}
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
           />
         </div>
@@ -252,12 +252,6 @@ const UserWalletSummary = ({
                         ),
                       )}
                     />
-                    {/* {getFormattedPendingWithdrawalSP( */}
-                    {/*  user, */}
-                    {/*  totalVestingShares, */}
-                    {/*  totalVestingFundSteem, */}
-                    {/* )} */}
-                    {/* {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)} */}
                     {' HP'}
                   </span>
                 )}
