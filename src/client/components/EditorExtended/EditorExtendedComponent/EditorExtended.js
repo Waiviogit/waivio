@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { debounce, get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
@@ -16,6 +16,7 @@ const Editor = props => {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
   const [prevSearchValue, setPrevSearch] = React.useState('');
+  const abortController = useRef(null);
 
   React.useEffect(() => {
     props.setUpdatedEditorExtendedData({
@@ -39,8 +40,16 @@ const Editor = props => {
   };
 
   const debouncedSearch = useCallback(
-    debounce(searchStr => props.searchObjects(searchStr), 150),
-    [],
+    debounce(searchStr => {
+      if (abortController.current) {
+        abortController.current.abort();
+      }
+
+      abortController.current = new AbortController();
+
+      props.searchObjects(searchStr, abortController.current);
+    }, 300),
+    [props.searchObjects],
   );
 
   const handleContentChangeSlate = editor => {
