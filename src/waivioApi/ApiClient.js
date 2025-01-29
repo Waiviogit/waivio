@@ -418,7 +418,6 @@ export const extendedSearchObjects = (
   skip,
 ) => {
   const requestBody = { search_string: searchString, limit, skip, ...body };
-
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
 
