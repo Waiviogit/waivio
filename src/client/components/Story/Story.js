@@ -50,7 +50,6 @@ class Story extends React.Component {
     isThread: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
-    saving: PropTypes.bool,
     ownPost: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
@@ -82,7 +81,6 @@ class Story extends React.Component {
     pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
-    saving: false,
     ownPost: false,
     singlePostVew: false,
     sliderMode: false,
@@ -327,7 +325,6 @@ class Story extends React.Component {
       pendingFlag,
       pendingFollow,
       pendingBookmark,
-      saving,
       rewardFund,
       ownPost,
       singlePostVew,
@@ -503,7 +500,6 @@ class Story extends React.Component {
                 onShareClick={this.handleShareClick}
                 pendingFollow={pendingFollow}
                 pendingBookmark={pendingBookmark}
-                saving={saving}
                 handleFollowClick={this.handleFollowClick}
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { debounce, get } from 'lodash';
+import { debounce } from 'lodash';
 import { AutoComplete } from 'antd';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import {
   clearSearchObjectsResults,
@@ -20,107 +20,42 @@ import {
 
 import './SearchObjectsAutocomplete.less';
 
-@injectIntl
-@connect(
-  state => ({
-    searchObjectsResults: getSearchObjectsResults(state),
-    isSearchObject: getIsStartSearchObject(state),
-  }),
-  {
-    searchObjects: searchObjectsAutoCompete,
-    clearSearchResults: clearSearchObjectsResults,
-    resetIsClearSearchFlag: resetToInitialIsClearSearchObj,
-  },
-)
-class SearchObjectsAutocomplete extends Component {
-  static defaultProps = {
-    intl: {},
-    style: { width: '100%' },
-    className: '',
-    dropdownClassName: '',
-    searchObjectsResults: [],
-    addedItemsPermlinks: [],
-    itemsIdsToOmit: [],
-    objectType: '',
-    searchObjects: () => {},
-    clearSearchResults: () => {},
-    resetIsClearSearchFlag: () => {},
-    handleSelect: () => {},
-    allowClear: true,
-    rowIndex: 0,
-    ruleIndex: 0,
-    disabled: false,
-    useExtendedSearch: false,
-    placeholder: '',
-    parentPermlink: '',
-    autoFocus: true,
-    isSearchObject: false,
-    addHashtag: false,
-    parentObject: {},
+const SearchObjectsAutocomplete = props => {
+  const [searchString, setSearchString] = useState('');
+  const dispatch = useDispatch();
+  const searchObjectsResults = useSelector(getSearchObjectsResults);
+  const isSearchObject = useSelector(getIsStartSearchObject);
+  const abortController = useRef(null);
+
+  const handleChange = (value = '') => {
+    setSearchString(value.toLowerCase());
   };
 
-  static propTypes = {
-    itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
-    onlyObjectTypes: PropTypes.arrayOf(PropTypes.string),
-    addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
-    objectType: PropTypes.string,
-    className: PropTypes.string,
-    allowClear: PropTypes.bool,
-    intl: PropTypes.shape(),
-    searchObjectsResults: PropTypes.arrayOf(PropTypes.shape()),
-    searchObjects: PropTypes.func,
-    clearSearchResults: PropTypes.func,
-    handleSelect: PropTypes.func,
-    rowIndex: PropTypes.number,
-    ruleIndex: PropTypes.number,
-    disabled: PropTypes.bool,
-    useExtendedSearch: PropTypes.bool,
-    placeholder: PropTypes.string,
-    parentPermlink: PropTypes.string,
-    dropdownClassName: PropTypes.string,
-    autoFocus: PropTypes.bool,
-    style: PropTypes.shape({}),
-    isSearchObject: PropTypes.bool,
-    resetIsClearSearchFlag: PropTypes.func,
-    parentObject: PropTypes.shape(),
-    addHashtag: PropTypes.bool,
-  };
+  const debouncedSearch = useCallback(
+    debounce((searchStr, objType = '', parent) => {
+      if (abortController.current) {
+        abortController.current.abort();
+      }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchString: '',
-    };
-    this.abortController = null;
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
-  }
+      abortController.current = new AbortController();
+      dispatch(
+        searchObjectsAutoCompete(
+          searchStr,
+          objType,
+          parent,
+          props.addHashtag,
+          props.useExtendedSearch,
+          props.onlyObjectTypes,
+          abortController.current,
+        ),
+      );
+    }, 300),
+    [dispatch, props.addHashtag, props.useExtendedSearch, props.onlyObjectTypes],
+  );
 
-  handleChange(value = '') {
-    this.setState({ searchString: value.toLowerCase() });
-  }
-
-  debouncedSearch = debounce((searchString, objType = '', parent) => {
-    if (this.abortController) {
-      this.abortController.abort();
-    }
-
-    this.abortController = new AbortController();
-    this.props.searchObjects(
-      searchString,
-      objType,
-      parent,
-      this.props.addHashtag,
-      this.props.useExtendedSearch,
-      this.props.onlyObjectTypes,
-      this.abortController,
-    );
-  }, 300);
-
-  handleSearch(value) {
+  const handleSearch = value => {
     let val = value;
-    const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
+    const parentPermlink = props.parentPermlink ? props.parentPermlink : null;
     const link = val.match(linkRegex);
 
     if (link && link.length > 0 && link[0] !== '') {
@@ -131,39 +66,37 @@ class SearchObjectsAutocomplete extends Component {
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val, this.props.objectType, parentPermlink);
+      debouncedSearch(val, props.objectType, parentPermlink);
     }
-  }
+  };
 
-  handleSelect(objId) {
-    const selectedObject = this.props.searchObjectsResults.find(
-      obj => obj.author_permlink === objId,
-    );
+  const handleSelect = objId => {
+    const selectedObject = searchObjectsResults.find(obj => obj.author_permlink === objId);
 
-    this.props.handleSelect(
+    props.handleSelect(
       selectedObject || {
         author_permlink: objId,
         fields: [
           {
             name: 'name',
-            body: this.state.searchString,
+            body: searchString,
           },
         ],
         isNew: true,
       },
-      this.props.rowIndex,
-      this.props.ruleIndex,
+      props.rowIndex,
+      props.ruleIndex,
     );
-    this.props.clearSearchResults();
-    setTimeout(() => this.props.resetIsClearSearchFlag(), 300);
-    this.setState({ searchString: '' });
-  }
+    dispatch(clearSearchObjectsResults());
+    setTimeout(() => dispatch(resetToInitialIsClearSearchObj()), 300);
+    setSearchString('');
+  };
 
-  renderSearchObjectsOptions = searchString => {
-    const { searchObjectsResults, itemsIdsToOmit } = this.props;
+  const renderSearchObjectsOptions = searchStr => {
+    const { itemsIdsToOmit } = props;
     let searchObjectsOptions = [];
 
-    if (searchString) {
+    if (searchStr) {
       searchObjectsOptions = searchObjectsResults
         .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
         .map(obj => (
@@ -172,10 +105,10 @@ class SearchObjectsAutocomplete extends Component {
             label={obj.author_permlink}
             value={obj.author_permlink}
             className="obj-search-option item"
-            disabled={this.props.addedItemsPermlinks?.includes(obj.author_permlink)}
+            disabled={props.addedItemsPermlinks?.includes(obj.author_permlink)}
           >
             <ObjectSearchCard
-              isInList={this.props.addedItemsPermlinks?.includes(obj.author_permlink)}
+              isInList={props.addedItemsPermlinks?.includes(obj.author_permlink)}
               object={obj}
               name={getObjectName(obj)}
               type={obj.type || obj.object_type}
@@ -189,55 +122,80 @@ class SearchObjectsAutocomplete extends Component {
     return searchObjectsOptions;
   };
 
-  getListItemAuthorPermlink = item => get(item, 'author_permlink', '');
+  return (
+    <AutoComplete
+      style={props.style}
+      className={props.className}
+      dropdownClassName={props.dropdownClassName}
+      onChange={handleChange}
+      onSelect={handleSelect}
+      onSearch={handleSearch}
+      optionLabelProp={'label'}
+      dataSource={
+        isSearchObject
+          ? pendingSearch(searchString, props.intl)
+          : renderSearchObjectsOptions(searchString, props.intl)
+      }
+      placeholder={
+        !props.placeholder
+          ? props.intl.formatMessage({
+              id: 'objects_auto_complete_placeholder',
+              defaultMessage: 'Find an object',
+            })
+          : props.placeholder
+      }
+      value={searchString}
+      allowClear={props.allowClear}
+      autoFocus={props.autoFocus}
+      disabled={props.disabled}
+    />
+  );
+};
 
-  searchObjectListed = searchObjectPermlink => {
-    const parentListItems = get(this.props.parentObject, 'listItems', []);
+SearchObjectsAutocomplete.defaultProps = {
+  intl: {},
+  style: { width: '100%' },
+  className: '',
+  dropdownClassName: '',
+  searchObjectsResults: [],
+  addedItemsPermlinks: [],
+  itemsIdsToOmit: [],
+  objectType: '',
+  searchObjects: () => {},
+  clearSearchResults: () => {},
+  handleSelect: () => {},
+  allowClear: true,
+  rowIndex: 0,
+  ruleIndex: 0,
+  disabled: false,
+  useExtendedSearch: false,
+  placeholder: '',
+  parentPermlink: '',
+  autoFocus: true,
+  isSearchObject: false,
+  addHashtag: false,
+  parentObject: {},
+};
 
-    return (
-      parentListItems.some(item => this.getListItemAuthorPermlink(item) === searchObjectPermlink) &&
-      (parentListItems.some(
-        item => getObjectName(item).toLowerCase() === this.state.searchString,
-      ) ||
-        parentListItems.some(item =>
-          this.state.searchString.includes(this.getListItemAuthorPermlink(item)),
-        ))
-    );
-  };
+SearchObjectsAutocomplete.propTypes = {
+  itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
+  onlyObjectTypes: PropTypes.arrayOf(PropTypes.string),
+  addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
+  objectType: PropTypes.string,
+  className: PropTypes.string,
+  allowClear: PropTypes.bool,
+  intl: PropTypes.shape(),
+  handleSelect: PropTypes.func,
+  rowIndex: PropTypes.number,
+  ruleIndex: PropTypes.number,
+  disabled: PropTypes.bool,
+  useExtendedSearch: PropTypes.bool,
+  placeholder: PropTypes.string,
+  parentPermlink: PropTypes.string,
+  dropdownClassName: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  style: PropTypes.shape({}),
+  addHashtag: PropTypes.bool,
+};
 
-  render() {
-    const { searchString } = this.state;
-    const { intl, style, allowClear, disabled, autoFocus, isSearchObject } = this.props;
-
-    return (
-      <AutoComplete
-        style={style}
-        className={this.props.className}
-        dropdownClassName={this.props.dropdownClassName}
-        onChange={this.handleChange}
-        onSelect={this.handleSelect}
-        onSearch={this.handleSearch}
-        optionLabelProp={'label'}
-        dataSource={
-          isSearchObject
-            ? pendingSearch(searchString, intl)
-            : this.renderSearchObjectsOptions(searchString, intl)
-        }
-        placeholder={
-          !this.props.placeholder
-            ? intl.formatMessage({
-                id: 'objects_auto_complete_placeholder',
-                defaultMessage: 'Find an object',
-              })
-            : this.props.placeholder
-        }
-        value={searchString}
-        allowClear={allowClear}
-        autoFocus={autoFocus}
-        disabled={disabled}
-      />
-    );
-  }
-}
-
-export default SearchObjectsAutocomplete;
+export default injectIntl(SearchObjectsAutocomplete);

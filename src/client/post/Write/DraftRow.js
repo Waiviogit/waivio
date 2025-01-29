@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { isUndefined } from 'lodash';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
@@ -7,107 +7,84 @@ import { Checkbox } from 'antd';
 import DeleteDraftModal from './DeleteDraftModal';
 import './DraftRow.less';
 
-class DraftRow extends React.Component {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    draft: PropTypes.shape({
-      draftId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      lastUpdated: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      title: PropTypes.string,
-      body: PropTypes.string,
-    }).isRequired,
-    selected: PropTypes.bool,
-    onCheck: PropTypes.func,
+const DraftRow = ({ id, draft, selected, onCheck }) => {
+  const [showModalDelete, setShowModalDelete] = useState(false);
+
+  const showModal = () => {
+    setShowModalDelete(true);
   };
 
-  static defaultProps = {
-    selected: false,
-    onCheck: () => {},
+  const hideModal = () => {
+    setShowModalDelete(false);
   };
 
-  constructor(props) {
-    super(props);
+  const handleCheck = e => {
+    onCheck(id, e.target.checked);
+  };
 
-    this.state = {
-      showModalDelete: false,
-    };
+  const { lastUpdated } = draft;
+  const hasLastUpdated = !isUndefined(lastUpdated);
+  let { title = '', body = '' } = draft;
 
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-    this.handleCheck = this.handleCheck.bind(this);
-  }
+  title = title.trim();
+  body = body.replace(/\r?\n|\r|[\u200B-\u200D\uFEFF]/g, ' ').substring(0, 50);
+  let draftTitle = title.length ? title : body;
 
-  showModal() {
-    this.setState({ showModalDelete: true });
-  }
+  draftTitle = draftTitle.trim();
 
-  hideModal() {
-    this.setState({ showModalDelete: false });
-  }
-
-  handleCheck(e) {
-    const { id } = this.props;
-
-    this.props.onCheck(id, e.target.checked);
-  }
-
-  render() {
-    const { id, draft, selected } = this.props;
-    const { lastUpdated } = draft;
-    const hasLastUpdated = !isUndefined(lastUpdated);
-    let { title = '', body = '' } = draft;
-
-    title = title.trim();
-    body = body.replace(/\r?\n|\r|[\u200B-\u200D\uFEFF]/g, ' ').substring(0, 50);
-    let draftTitle = title.length ? title : body;
-
-    draftTitle = draftTitle.trim();
-
-    return (
-      <div
-        className="DraftRow"
-        onMouseEnter={this.handleDisplayDelete}
-        onMouseLeave={this.handleHideDelete}
-      >
-        <div className="DraftRow__contents">
-          <div className="DraftRow__contents__main">
-            <Checkbox checked={selected} onChange={this.handleCheck} />
-            <div>
-              <Link to={{ pathname: '/editor', search: `?draft=${id}` }}>
-                <h3>
-                  {draftTitle.length === 0 ? (
-                    <FormattedMessage id="draft_untitled" defaultMessage="Untitled draft" />
-                  ) : (
-                    draftTitle
-                  )}
-                </h3>
-              </Link>
-              <span className="DraftRow__date">
-                {hasLastUpdated && (
-                  <span>
-                    <FormattedMessage id="last_updated" defaultMessage="Last updated" />{' '}
-                    <FormattedRelative value={new Date(lastUpdated)} />
-                  </span>
+  return (
+    <div className="DraftRow">
+      <div className="DraftRow__contents">
+        <div className="DraftRow__contents__main">
+          <Checkbox checked={selected} onChange={handleCheck} />
+          <div>
+            <Link to={{ pathname: '/editor', search: `?draft=${id}` }}>
+              <h3>
+                {draftTitle.length === 0 ? (
+                  <FormattedMessage id="draft_untitled" defaultMessage="Untitled draft" />
+                ) : (
+                  draftTitle
                 )}
-              </span>
-            </div>
+              </h3>
+            </Link>
+            <span className="DraftRow__date">
+              {hasLastUpdated && (
+                <span>
+                  <FormattedMessage id="last_updated" defaultMessage="Last updated" />{' '}
+                  <FormattedRelative value={new Date(lastUpdated)} />
+                </span>
+              )}
+            </span>
           </div>
-
-          <a role="presentation" onClick={this.showModal} className="DraftRow__delete">
-            <i className="iconfont icon-trash DraftRow__delete__icon" />
-            <FormattedMessage id="delete" defaultMessage="Delete" />
-          </a>
         </div>
-        {this.state.showModalDelete && (
-          <DeleteDraftModal
-            draftIds={[this.props.id]}
-            onDelete={this.hideModal}
-            onCancel={this.hideModal}
-          />
-        )}
+
+        <a role="presentation" onClick={showModal} className="DraftRow__delete">
+          <i className="iconfont icon-trash DraftRow__delete__icon" />
+          <FormattedMessage id="delete" defaultMessage="Delete" />
+        </a>
       </div>
-    );
-  }
-}
+      {showModalDelete && (
+        <DeleteDraftModal draftIds={[id]} onDelete={hideModal} onCancel={hideModal} />
+      )}
+    </div>
+  );
+};
+
+DraftRow.propTypes = {
+  id: PropTypes.string.isRequired,
+  draft: PropTypes.shape({
+    draftId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    lastUpdated: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
+  selected: PropTypes.bool,
+  onCheck: PropTypes.func,
+};
+
+DraftRow.defaultProps = {
+  selected: false,
+  onCheck: () => {},
+};
 
 export default DraftRow;

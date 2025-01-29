@@ -9,13 +9,11 @@ import {
   votePost,
 } from '../../store/postsStore/postActions';
 import { toggleBookmark } from '../../store/bookmarksStore/bookmarksActions';
-import { editPost } from '../../store/editorStore/editorActions';
 import { reblog } from '../../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../../common/helpers/voteHelpers';
 import { getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
-import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes, getPosts } from '../../store/postsStore/postsSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
@@ -30,7 +28,7 @@ import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 import { getPinnedPostsUrls } from '../../store/feedStore/feedSelectors';
 import { getObject } from '../../store/wObjectStore/wObjectSelectors';
 import { editThread } from '../../store/commentsStore/commentsActions';
-import { buildPost } from '../../store/slateEditorStore/editorActions';
+import { buildPost, editPost } from '../../store/slateEditorStore/editorActions';
 
 const mapStateToProps = (state, { id, isThread }) => {
   const user = getAuthenticatedUser(state);
@@ -73,7 +71,6 @@ const mapStateToProps = (state, { id, isThread }) => {
     pendingLike,
     pendingFlag,
     pendingBookmark: getPendingBookmarks(state).includes(post.id),
-    saving: getIsEditorSaving(state),
     ownPost: post.guestInfo ? post.guestInfo.userId === user.name : user.name === post.author,
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),

@@ -25,21 +25,16 @@ const propTypes = {
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   draftId: PropTypes.string,
   campaignId: PropTypes.string,
-  campaignType: PropTypes.string,
-  secondaryItem: PropTypes.string,
   publishing: PropTypes.bool,
   saving: PropTypes.bool,
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
-  getUserMetadata: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
   leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
-  getReviewCheckInfo: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
-  firstParseLinkedObjects: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
@@ -47,10 +42,8 @@ const propTypes = {
   match: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
-  location: PropTypes.shape().isRequired,
   filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handlePasteText: PropTypes.func.isRequired,
-  getCoordinates: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -82,49 +75,24 @@ const EditPost = props => {
       titleValue,
       draftId: draftIdEditor,
     },
-    intl,
+    draftId,
   } = props;
-  const [currDraft, setCurrDraft] = React.useState();
   const [isNewReview, setIsNewReview] = React.useState(false);
-  const getCampaignInfo = () => {
-    let campaignId = props.campaignId;
-
-    if (props.currDraft) {
-      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
-    }
-    const isReview = !isEmpty(campaignId);
-
-    if (isReview) {
-      const campaignType = props.campaignType || props.currDraft?.campaignType;
-      const secondaryItem = props.secondaryItem || props.currDraft?.secondaryItem;
-
-      props.getReviewCheckInfo({ campaignId }, intl, campaignType, secondaryItem);
-    }
-  };
+  const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
+  const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
-    props.history.replace({
-      pathname: props.location.pathname,
-      search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
-    });
-    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
-
-    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
-
-    let campaignId = props.campaignId;
-
-    if (props.currDraft) {
-      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
-    }
-
     const isReview = !isEmpty(campaignId);
 
-    props.getCoordinates();
-    props.getUserMetadata();
+    props.setEditorState(
+      getInitialState({ ...props, draftId: props.draftId }, hideLinkedObjectsSession),
+    );
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
-    if (isReview) {
-      getCampaignInfo();
-    }
+
+    props.history.replace({
+      pathname: props.location.pathname,
+      search: `draft=${draftId}`,
+    });
 
     return () => {
       props.leaveEditor();
@@ -133,7 +101,6 @@ const EditPost = props => {
 
   React.useEffect(() => {
     setIsNewReview(!props.draftPosts.some(d => d.draftId === props.draftId));
-    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
 
     setDraftId(hideLinkedObjectsSession);
     const editorData = {
@@ -142,18 +109,7 @@ const EditPost = props => {
     };
 
     if (editorData.title || editorData.body) props.setUpdatedEditorData(editorData);
-    props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
-    setCurrDraft(props.currDraft);
-    getCampaignInfo();
-  }, [props.draftId, props.campaignId]);
-
-  React.useEffect(() => {
-    if (!currDraft && props.currDraft && isEditPost) {
-      props.firstParseLinkedObjects(props.currDraft);
-      props.setEditorState(getInitialState(props));
-      setCurrDraft(props.currDraft);
-    }
-  }, [props.currDraft]);
+  }, [props.draftId]);
 
   const setDraftId = hideObjects => {
     if (props.draftId && props.draftId !== draftIdEditor) {
@@ -175,7 +131,7 @@ const EditPost = props => {
         props.setUpdatedEditorData(updatedStore);
       }
     }, 500),
-    [content, titleValue, props.draftId, currDraft],
+    [content, titleValue, props.draftId],
   );
 
   const handleSettingsChange = updatedValue =>
@@ -204,6 +160,7 @@ const EditPost = props => {
 
     prohibitedObjectCards.push(currentObj);
     localStorage.setItem(props.draftId, JSON.stringify(prohibitedObjectCards));
+
     props.setUpdatedEditorData({
       topics,
       linkedObjects: linkedObjects.filter(object => object._id !== uniqId),

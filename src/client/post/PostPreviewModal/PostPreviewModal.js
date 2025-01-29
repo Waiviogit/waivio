@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 import { throttle } from 'lodash';
+import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
@@ -13,7 +14,6 @@ import { isContentValid } from '../../../common/helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../../store/searchStore/searchActions';
-import { setUpdatedEditorData } from '../../../store/editorStore/editorActions';
 import { getConfigurationValues } from '../../../store/appStore/appSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 

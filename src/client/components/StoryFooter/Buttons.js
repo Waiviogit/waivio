@@ -30,7 +30,6 @@ export default class Buttons extends React.Component {
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
-    saving: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onCommentClick: PropTypes.func,
@@ -48,7 +47,6 @@ export default class Buttons extends React.Component {
     pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
-    saving: false,
     onLikeClick: () => {},
     onShareClick: () => {},
     onCommentClick: () => {},
@@ -198,7 +196,6 @@ export default class Buttons extends React.Component {
       pendingFlag,
       pendingFollow,
       pendingBookmark,
-      saving,
       handlePostPopoverMenuClick,
       userComments,
       isThread,
@@ -401,7 +398,6 @@ export default class Buttons extends React.Component {
           pendingFlag={pendingFlag}
           pendingFollow={pendingFollow}
           pendingBookmark={pendingBookmark}
-          saving={saving}
           postState={postState}
           intl={intl}
           post={post}

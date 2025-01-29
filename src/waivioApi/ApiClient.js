@@ -43,7 +43,7 @@ const HIVE_ENGINE_NODES = [
 
 export function handleErrors(response) {
   if (!response.ok) {
-    throw new Error(response.statusText);
+    Promise.reject();
   }
 
   return response;
@@ -418,7 +418,6 @@ export const extendedSearchObjects = (
   skip,
 ) => {
   const requestBody = { search_string: searchString, limit, skip, ...body };
-
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
 
@@ -4675,4 +4674,37 @@ export const deleteUserFromAdminWhitelist = (userName, name) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => error);
+
+export const getDraftsListAsync = ({ author }) =>
+  fetch(`${config.apiPrefix}${config.draft}${config.posts}?author=${author}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const deleteDraftFromList = ({ author, ids }) =>
+  fetch(`${config.apiPrefix}${config.draft}${config.post}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'DELETE',
+    body: JSON.stringify({
+      author,
+      ids,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const saveDraft = body =>
+  fetch(`${config.apiPrefix}${config.draft}${config.post}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export default null;

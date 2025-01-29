@@ -117,7 +117,7 @@ export function createPostMetadata(
   body,
   tags,
   oldMetadata = {},
-  waivioData,
+  wobjects,
   campaignId,
   host,
   reservationPermlink,
@@ -164,8 +164,9 @@ export function createPostMetadata(
   metaData.links = links.slice(0, 10);
   metaData.image = images;
 
-  if (waivioData) {
-    metaData[WAIVIO_META_FIELD_NAME] = waivioData;
+  if (wobjects) {
+    metaData[WAIVIO_META_FIELD_NAME] = { wobjects };
+    metaData.linkedObjects = wobjects;
   }
   if (campaignId) metaData.campaignId = campaignId;
   if (reservationPermlink) metaData.reservation_permlink = reservationPermlink;
@@ -263,22 +264,22 @@ const setBody = (initObjects, props, authors, users) => {
     link?.includes('https')
       ? link
       : `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}${link}`;
-  let body =
-    get(props, 'editor.draftContent.body', false) || size(initObjects)
-      ? initObjects.reduce((acc, curr) => {
-          const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
-          if (!isNil(matches) && matches[1] && matches[2]) {
-            if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
+  let body = size(initObjects)
+    ? initObjects.reduce((acc, curr) => {
+        const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
-            return initObjects.length <= 1
-              ? `${acc}[${matches[1]}](${getLink(matches[2])})`
-              : `${acc}[${matches[1]}](${getLink(matches[2])}), `;
-          }
+        if (!isNil(matches) && matches[1] && matches[2]) {
+          if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
 
-          return acc;
-        }, '')
-      : '';
+          return initObjects.length <= 1
+            ? `${acc}[${matches[1]}](${getLink(matches[2])})`
+            : `${acc}[${matches[1]}](${getLink(matches[2])}), `;
+        }
+
+        return acc;
+      }, '')
+    : '';
 
   if (!isEmpty(authors)) {
     authors.forEach((author, i) => {
@@ -318,18 +319,24 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     : query.getAll('object').map(obj => obj.replace('*amp*', '&'));
   const users = query.getAll('user');
   const authors = query.getAll('author');
-  const type = query.get('type');
-  const secondaryItem = query.get('secondaryItem');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
-  const campaignId = props.campaignId ? { id: props.campaignId } : null;
-  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
+  const type = query.get('type');
+  let linkedObjects = [];
+  const campaign = props?.campaing;
+
+  if (campaign) {
+    linkedObjects =
+      campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
+        ? [campaign.requiredObject.author_permlink]
+        : [campaign.requiredObject.author_permlink, campaign.secondaryObject.author_permlink];
+  }
+
   const title = setTitle(initObjects, props, authors, users);
   let state = {
     campaign: props.campaignId
       ? {
           ...campaign,
           type,
-          secondaryItem,
         }
       : null,
     draftId: props.draftId || uuidv4(),
@@ -340,7 +347,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     },
     content: '',
     topics: [],
-    linkedObjects: [],
+    linkedObjects,
     hideLinkedObjects: hideObjects,
     objPercentage: {},
     settings: {
@@ -362,6 +369,8 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
+    linkedObjects = get(draftPost, ['jsonMetadata', 'linkedObjects'], []);
+
     state = {
       campaign,
       draftId: props.draftId,
@@ -372,7 +381,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       },
       content: '',
       topics: typeof tags === 'string' ? [tags] : tags,
-      linkedObjects: draftPost.linkedObjects || [],
+      linkedObjects,
       hideLinkedObjects: hideObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
