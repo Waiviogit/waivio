@@ -124,7 +124,9 @@ class SearchObjectsAutocomplete extends Component {
     const link = val.match(linkRegex);
 
     if (link && link.length > 0 && link[0] !== '') {
-      const permlink = link[0].split('/');
+      const permlink = link[0]?.endsWith('/page')
+        ? link[0]?.replace('/page', '').split('/')
+        : link[0].split('/');
 
       val = permlink[permlink.length - 1].replace('@', '');
     }

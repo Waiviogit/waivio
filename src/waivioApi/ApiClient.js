@@ -418,7 +418,6 @@ export const extendedSearchObjects = (
   skip,
 ) => {
   const requestBody = { search_string: searchString, limit, skip, ...body };
-
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
 
@@ -4230,6 +4229,27 @@ export const getMinRejectVote = (userName, author, permlink, authorPermlink) => 
 export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) => {
   const guestToken = getGuestAccessToken();
   return fetch(`${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdraw}`, {
+    headers: {
+      ...headers,
+      'access-token': guestToken || Cookie.get('access_token'),
+      'waivio-auth': Boolean(guestToken),
+      'hive-auth': Boolean(Cookie.get('auth')),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      amount,
+      outputCoinType,
+      userName,
+      address,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+export const withdrawHive = (amount, outputCoinType, userName, address) => {
+  const guestToken = getGuestAccessToken();
+  return fetch(`${config.apiPrefix}${config.users}${config.hiveWithdraw}`, {
     headers: {
       ...headers,
       'access-token': guestToken || Cookie.get('access_token'),

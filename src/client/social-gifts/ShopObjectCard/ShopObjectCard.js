@@ -55,6 +55,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
 
   switch (wObject.object_type) {
     case 'product':
+    case 'recipe':
     case 'business':
     case 'link':
     case 'restaurant':

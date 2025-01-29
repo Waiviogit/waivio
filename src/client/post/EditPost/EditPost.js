@@ -32,6 +32,7 @@ const propTypes = {
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
   saveDraft: PropTypes.func,
+  getUserMetadata: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
   leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
@@ -119,6 +120,7 @@ const EditPost = props => {
     const isReview = !isEmpty(campaignId);
 
     props.getCoordinates();
+    props.getUserMetadata();
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
     if (isReview) {
       getCampaignInfo();

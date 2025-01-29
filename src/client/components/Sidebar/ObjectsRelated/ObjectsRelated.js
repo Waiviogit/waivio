@@ -8,6 +8,7 @@ import { getRelatedObjectsFromDepartments } from '../../../../waivioApi/ApiClien
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import './ObjectsRelated.less';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { addOnsRelatedSimilarTypes } from '../../../object/const/objectTypes';
 
 const ObjectsRelated = ({
   currWobject,
@@ -27,7 +28,7 @@ const ObjectsRelated = ({
   useEffect(() => {
     if (
       !isEmpty(currWobject.author_permlink) &&
-      ['product', 'book', 'service'].includes(currWobject.object_type)
+      addOnsRelatedSimilarTypes.includes(currWobject.object_type)
     ) {
       getRelatedObjectsFromDepartments(
         currWobject.author_permlink,
