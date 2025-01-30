@@ -44,6 +44,12 @@ const WalletAction = props => {
     manage: () => dispatch(toggleDelegateModal()),
     power_down: () => dispatch(openPowerUpOrDown(true)),
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
+    transfer_to_saving: () =>
+      dispatch(openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, true)),
+    transfer_from_saving: () =>
+      dispatch(
+        openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, false, true),
+      ),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
     withdraw: () => {
       if (props.mainCurrency === 'HIVE') {

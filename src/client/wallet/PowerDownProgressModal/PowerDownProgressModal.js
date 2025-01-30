@@ -66,10 +66,11 @@ const PowerDownProgressModal = ({
             isWaivWallet
             addSpace={i !== unstakesTokenInfo.length - 1}
             key={info._id}
-            maxWeeks={maxWeeks}
+            max={maxWeeks}
+            amount={info.quantityLeft}
             info={info}
             index={i}
-            weeksLeft={info.numberTransactionsLeft}
+            left={info.numberTransactionsLeft}
             nextDate={info.nextTransactionTimestamp}
             marks={marks}
             setShowCancelPowerDown={setShowCancelPowerDown}
@@ -80,12 +81,8 @@ const PowerDownProgressModal = ({
         ))
       ) : (
         <ProgressModalBody
-          maxWeeks={maxWeeks}
-          weeksLeft={calculateWeeksLeft(
-            user.to_withdraw,
-            user.withdrawn,
-            user.vesting_withdraw_rate,
-          )}
+          max={maxWeeks}
+          left={calculateWeeksLeft(user.to_withdraw, user.withdrawn, user.vesting_withdraw_rate)}
           nextDate={`${nextWithdrawal}Z`}
           marks={marks}
         />
