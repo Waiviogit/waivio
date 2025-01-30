@@ -39,6 +39,8 @@ import {
   getCurrentWalletType,
   getIsTransferVisible,
   getIsVipTickets,
+  getIsToSavings,
+  getIsFromSavings,
   getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -88,6 +90,8 @@ const InputGroup = Input.Group;
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
     isVipTickets: getIsVipTickets(state),
+    isToSavings: getIsToSavings(state),
+    isFromSavings: getIsFromSavings(state),
     showModal: isOpenLinkModal(state),
     tokensList: getTokensBalanceListForTransfer(state),
     walletType: getCurrentWalletType(state),
@@ -127,6 +131,8 @@ export default class Transfer extends React.Component {
     memo: PropTypes.string,
     app: PropTypes.string,
     isGuest: PropTypes.bool,
+    isToSavings: PropTypes.bool,
+    isFromSavings: PropTypes.bool,
     notify: PropTypes.func,
     hiveBeneficiaryAccount: PropTypes.string,
     saveSettings: PropTypes.func.isRequired,
@@ -329,6 +335,8 @@ export default class Transfer extends React.Component {
       match,
       getPayables,
       isTip,
+      isToSavings,
+      isFromSavings,
     } = this.props;
     const matchPath = get(match, ['params', '0']);
     const params = ['payables', 'receivables'];
@@ -345,6 +353,8 @@ export default class Transfer extends React.Component {
           memo,
         };
 
+        if (isFromSavings) transferQuery.request_id = Date.now();
+
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = {
@@ -359,11 +369,16 @@ export default class Transfer extends React.Component {
         if (app) transferQuery.memo = { ...(transferQuery.memo || {}), app };
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
+
         if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
         const isHiveCurrency = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
+        let contractAction = 'transfer';
+
+        if (isToSavings) contractAction = 'transfer_to_savings';
+        if (isFromSavings) contractAction = 'transfer_from_savings';
         const json = JSON.stringify({
           contractName: 'tokens',
-          contractAction: 'transfer',
+          contractAction,
           contractPayload: {
             symbol: this.state.currency,
             to: transferQuery.to,
@@ -434,7 +449,7 @@ export default class Transfer extends React.Component {
             const transferMethod = isHiveCurrency
               ? window &&
                 window.open(
-                  `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
+                  `https://hivesigner.com/sign/${contractAction}?${createQuery(transferQuery)}`,
                   '_blank',
                 )
               : window &&
@@ -639,6 +654,8 @@ export default class Transfer extends React.Component {
       hiveBeneficiaryAccount,
       isTip,
       sendTo,
+      isToSavings,
+      isFromSavings,
     } = this.props;
     const { isSelected, searchBarValue, isClosedFind } = this.state;
     const { getFieldDecorator, getFieldValue, resetFields } = this.props.form;
@@ -647,6 +664,7 @@ export default class Transfer extends React.Component {
       { symbol: 'HIVE', balance: parseFloat(user.balance) },
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
     ];
+    const savingsTransactions = isToSavings || isFromSavings;
     const isChangesDisabled = (!!memo && this.props.amount) || this.props.isVipTickets;
     const isChangesDisabledToken = !!memo || this.props.amount || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
@@ -694,11 +712,22 @@ export default class Transfer extends React.Component {
       Transfer.CURRENCIES.HIVE === this.state.currency;
     const validationPattern = hbdHiveCurrency ? amountRegexHiveHbdHp : amountRegex;
     const numberOfCharacters = hbdHiveCurrency ? 3 : 8;
+    let title = intl.formatMessage({
+      id: 'transfer_modal_title',
+      defaultMessage: 'Transfer funds',
+    });
+
+    if (savingsTransactions) {
+      title = intl.formatMessage({
+        id: isToSavings ? 'transfer_to_saving' : 'transfer_from_saving',
+        defaultMessage: isToSavings ? 'Deposit to Savings' : 'Transfer from savings',
+      });
+    }
 
     return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (
       <Modal
         visible={visible}
-        title={intl.formatMessage({ id: 'transfer_modal_title', defaultMessage: 'Transfer funds' })}
+        title={title}
         okText={intl.formatMessage({ id: 'continue', defaultMessage: 'Continue' })}
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         okButtonProps={{
@@ -709,36 +738,38 @@ export default class Transfer extends React.Component {
         wrapClassName="Transfer__wrapper"
       >
         <Form className="Transfer" hideRequiredMark>
-          <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
-            {getFieldDecorator('to', {
-              initialValue: to,
-              rules: [
-                {
-                  required: true,
-                  message: intl.formatMessage({
-                    id: 'to_error_empty',
-                    defaultMessage: 'Recipient is required.',
-                  }),
-                },
-                { validator: this.validateUsername },
-              ],
-            })(
-              isSelected || !isEmpty(this.props.to) || (isGuest && hiveBeneficiaryAccount) ? (
-                this.showSelectedUser()
-              ) : (
-                <SearchUsersAutocomplete
-                  allowClear={false}
-                  handleSelect={this.handleUserSelect}
-                  placeholder={intl.formatMessage({
-                    id: 'find_users_placeholder',
-                    defaultMessage: 'Find user',
-                  })}
-                  style={{ width: '100%' }}
-                  autoFocus={false}
-                />
-              ),
-            )}
-          </Form.Item>
+          {!savingsTransactions && (
+            <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
+              {getFieldDecorator('to', {
+                initialValue: to,
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'to_error_empty',
+                      defaultMessage: 'Recipient is required.',
+                    }),
+                  },
+                  { validator: this.validateUsername },
+                ],
+              })(
+                isSelected || !isEmpty(this.props.to) || (isGuest && hiveBeneficiaryAccount) ? (
+                  this.showSelectedUser()
+                ) : (
+                  <SearchUsersAutocomplete
+                    allowClear={false}
+                    handleSelect={this.handleUserSelect}
+                    placeholder={intl.formatMessage({
+                      id: 'find_users_placeholder',
+                      defaultMessage: 'Find user',
+                    })}
+                    style={{ width: '100%' }}
+                    autoFocus={false}
+                  />
+                ),
+              )}
+            </Form.Item>
+          )}
           {guestName && (
             <FormattedMessage
               id="transferThroughBank"
@@ -841,40 +872,59 @@ export default class Transfer extends React.Component {
               </React.Fragment>
             )}
           </div>
-          <div className={'Transfer__info-text'}>
-            <FormattedMessage
-              id="estimated_value"
-              defaultMessage="Estimated transaction value: {estimate}"
-              values={{
-                estimate: (
-                  <span role="presentation" className="estimate">
-                    <USDDisplay
-                      value={amount ? this.estimatedValue(amount) : this.state.currentEstimate}
-                    />
-                  </span>
-                ),
-              }}
-            />
-          </div>
-          <Form.Item
-            label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
-          >
-            {memo ? (
-              <div className="Transfer__memo">
-                {typeof memo === 'object' ? JSON.stringify(memo) : memo}
-              </div>
-            ) : (
-              getFieldDecorator('memo', {
-                rules: [{ validator: this.validateMemo }],
-              })(
-                <Input.TextArea
-                  disabled={sendTo || isChangesDisabled || (this.props.manageWebsites && isGuest)}
-                  autoSize={{ minRows: 2, maxRows: 6 }}
-                  placeHolder={memoPlaceHolder}
-                />,
-              )
-            )}
-          </Form.Item>
+          {!savingsTransactions && (
+            <div className={'Transfer__info-text'}>
+              <FormattedMessage
+                id="estimated_value"
+                defaultMessage="Estimated transaction value: {estimate}"
+                values={{
+                  estimate: (
+                    <span role="presentation" className="estimate">
+                      <USDDisplay
+                        value={amount ? this.estimatedValue(amount) : this.state.currentEstimate}
+                      />
+                    </span>
+                  ),
+                }}
+              />
+            </div>
+          )}
+          {!savingsTransactions && (
+            <Form.Item
+              label={<FormattedMessage id="memo_optional" defaultMessage="Memo (optional)" />}
+            >
+              {memo ? (
+                <div className="Transfer__memo">
+                  {typeof memo === 'object' ? JSON.stringify(memo) : memo}
+                </div>
+              ) : (
+                getFieldDecorator('memo', {
+                  rules: [{ validator: this.validateMemo }],
+                })(
+                  <Input.TextArea
+                    disabled={sendTo || isChangesDisabled || (this.props.manageWebsites && isGuest)}
+                    autoSize={{ minRows: 2, maxRows: 6 }}
+                    placeHolder={memoPlaceHolder}
+                  />,
+                )
+              )}
+            </Form.Item>
+          )}
+          {savingsTransactions && (
+            <div>
+              <b>Notice:</b>
+              <p className={'Transfer__info-text'}>
+                Please note that the deposit to the savings account is instant, whereas the
+                withdrawal from the savings account takes 3 days.
+              </p>
+              <p className={'Transfer__info-text'}>
+                {' '}
+                Hive witnesses offers 20% APR interest on HBD deposits in Savings. Interest is paid
+                on deposits that are more than 30 days old. Interest is calculated and paid at the
+                time of withdrawal from Savings.
+              </p>
+            </div>
+          )}
         </Form>
         {!isGuest && (
           <FormattedMessage

@@ -22,6 +22,8 @@ export const getTransferMemo = createSelector([walletState], state => state.memo
 export const getTransferApp = createSelector([walletState], state => state.app);
 
 export const getIsVipTickets = createSelector([walletState], state => state.isVipTicket);
+export const getIsToSavings = createSelector([walletState], state => state.isToSavings);
+export const getIsFromSavings = createSelector([walletState], state => state.isFromSavings);
 
 export const getTransferIsTip = createSelector([walletState], state => state.isTip);
 

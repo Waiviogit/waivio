@@ -77,6 +77,8 @@ export const openTransfer = (
   app,
   tip = false,
   isVipTicket = false,
+  isToSavings = false,
+  isFromSavings = false,
 ) => (dispatch, getState) => {
   const walletType = getCurrentWalletType(getState());
   let currentCurrency = currency || 'HIVE';
@@ -93,6 +95,8 @@ export const openTransfer = (
       app,
       tip,
       isVipTicket,
+      isToSavings,
+      isFromSavings,
     },
   });
 };
