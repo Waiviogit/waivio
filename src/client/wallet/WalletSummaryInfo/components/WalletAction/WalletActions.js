@@ -78,7 +78,7 @@ const WalletAction = props => {
           overlay={
             <Menu className={'WalletAction__select-dropdown'}>
               {props.options.map(opt => {
-                if (opt === 'convert') return null;
+                if (opt === 'convert' || opt === 'transfer_to_saving') return null;
 
                 return (
                   <Menu.Item onClick={() => config[opt]()} key={opt}>
@@ -113,6 +113,11 @@ const WalletAction = props => {
                     {props.intl.formatMessage({ id: 'withdraw' })} to {cyrrency}
                   </Menu.Item>
                 ))}
+              {props.options?.includes('transfer_to_saving') && (
+                <Menu.Item onClick={() => config.transfer_to_saving()} key={'transfer_to_saving'}>
+                  {props.intl.formatMessage({ id: 'transfer_to_saving' })}
+                </Menu.Item>
+              )}
             </Menu>
           }
         >

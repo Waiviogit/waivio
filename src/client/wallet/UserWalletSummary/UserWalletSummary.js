@@ -366,6 +366,62 @@ const UserWalletSummary = ({
               </div>
             )}
           </div>
+          <div className="UserWalletSummary__itemWrap--no-border">
+            <div className="UserWalletSummary__item">
+              <ReactSVG
+                wrapper="span"
+                src="/images/transfer-savings-icon.svg"
+                className="UserWalletSummary__icon UserWalletSummary__icon--savings"
+              />
+              <div className="UserWalletSummary__label">
+                <FormattedMessage id="hive_savings" defaultMessage="HIVE Savings" />
+              </div>
+              <div className="UserWalletSummary__value">
+                {user.fetching ? (
+                  <Loading />
+                ) : (
+                  <span>
+                    <FormattedNumber value={parseFloat(user.savings_balance)} />
+                    {' HIVE'}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">3-day unstaking period</p>
+              <WalletAction mainKey={'transfer_from_saving'} mainCurrency={'HIVE'} />
+            </div>
+          </div>
+          {!isEmpty(savingsInfo) && (
+            <div className="UserWalletSummary__itemWrap">
+              <div className="UserWalletSummary__item">
+                <div className="UserWalletSummary__label power-down">
+                  <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+                </div>
+                <div className={powerClassList} onClick={() => setShowSavingsProgress(true)}>
+                  {user.fetching || loadingGlobalProperties ? (
+                    <Loading />
+                  ) : (
+                    <span>{currWithdrawSaving.amount}</span>
+                  )}
+                </div>
+              </div>
+              <div className="UserWalletSummary__actions">
+                <p className="UserWalletSummary__description">
+                  Withdraw will complete in{' '}
+                  {calculateDaysLeftForSavings(currWithdrawSaving.complete)} days
+                </p>
+                {isAuth && authUserPage && (
+                  <Button
+                    onClick={() => setShowCancelWithdrawSavings(true)}
+                    className={'UserWalletSummary__button'}
+                  >
+                    Cancel{' '}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
           <div className="UserWalletSummary__itemWrap">
             <div className="UserWalletSummary__item">
               <img
@@ -400,64 +456,6 @@ const UserWalletSummary = ({
               />
             </div>
           </div>
-          <div className="UserWalletSummary__itemWrap--no-border">
-            <div className="UserWalletSummary__item">
-              <ReactSVG
-                wrapper="span"
-                src="/images/transfer-savings-icon.svg"
-                className="UserWalletSummary__icon UserWalletSummary__icon--savings"
-              />
-              <div className="UserWalletSummary__label">
-                <FormattedMessage id="hive_savings" defaultMessage="HIVE Savings" />
-              </div>
-              <div className="UserWalletSummary__value">
-                {user.fetching ? (
-                  <Loading />
-                ) : (
-                  <span>
-                    <FormattedNumber value={parseFloat(user.savings_balance)} />
-                    {' HIVE, '}
-                    <FormattedNumber value={parseFloat(user.savings_hbd_balance)} />
-                    {' HBD'}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="UserWalletSummary__actions">
-              <p className="UserWalletSummary__description">3-day unstaking period</p>
-              <WalletAction mainKey={'transfer_from_saving'} mainCurrency={'HIVE'} />
-            </div>
-          </div>
-          {!isEmpty(savingsInfo) && (
-            <div className="UserWalletSummary__itemWrap--no-border">
-              <div className="UserWalletSummary__item">
-                <div className="UserWalletSummary__label power-down">
-                  <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
-                </div>
-                <div className={powerClassList} onClick={() => setShowSavingsProgress(true)}>
-                  {user.fetching || loadingGlobalProperties ? (
-                    <Loading />
-                  ) : (
-                    <span>{currWithdrawSaving.amount}</span>
-                  )}
-                </div>
-              </div>
-              <div className="UserWalletSummary__actions">
-                <p className="UserWalletSummary__description">
-                  Withdraw will complete in{' '}
-                  {calculateDaysLeftForSavings(currWithdrawSaving.complete)} days
-                </p>
-                {isAuth && authUserPage && (
-                  <Button
-                    onClick={() => setShowCancelWithdrawSavings(true)}
-                    className={'UserWalletSummary__button'}
-                  >
-                    Cancel{' '}
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
         </React.Fragment>
       )}
       {hasDelegations && (
