@@ -123,7 +123,7 @@ class SearchObjectsAutocomplete extends Component {
     const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
     const link = val.match(linkRegex);
 
-    const wordsToRemove = ['page', 'webpage', 'list', 'about', 'widget', 'newsfeed'];
+    const wordsToRemove = ['list', 'page', 'newsfeed', 'widget', 'webpage', 'map', 'shop', 'group'];
 
     if (link && link.length > 0 && link[0] !== '') {
       let permlink = link[0];

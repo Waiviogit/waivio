@@ -675,7 +675,8 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = currAmount;
+    const currentBalance = savingsTransactions ? parseFloat(user.savings_balance) : currAmount;
+
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
       : intl.formatMessage({
@@ -704,6 +705,9 @@ export default class Transfer extends React.Component {
         },
       );
     }
+    const currencies = savingsTransactions
+      ? userBalances?.filter(i => i.symbol === 'HIVE')
+      : userBalances;
 
     const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
     const amountRegexHiveHbdHp = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -719,7 +723,7 @@ export default class Transfer extends React.Component {
 
     if (savingsTransactions) {
       title = intl.formatMessage({
-        id: isToSavings ? 'transfer_to_saving' : 'transfer_from_saving',
+        id: isToSavings ? 'transfer_to_saving' : 'transfer_from_savings_title',
         defaultMessage: isToSavings ? 'Deposit to Savings' : 'Transfer from savings',
       });
     }
@@ -834,7 +838,7 @@ export default class Transfer extends React.Component {
                   disabled={isChangesDisabledToken || (this.props.manageWebsites && isGuest)}
                   dropdownClassName={'Transfer__currency-list'}
                 >
-                  {userBalances.map(token => (
+                  {currencies.map(token => (
                     <Select.Option
                       key={token.symbol}
                       onClick={() => {
@@ -847,7 +851,9 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {fixedNumber(token.balance)}
+                        {savingsTransactions
+                          ? `${currentBalance} ${this.state.currency}`
+                          : fixedNumber(token.balance)}
                       </span>
                     </Select.Option>
                   ))}
@@ -858,7 +864,7 @@ export default class Transfer extends React.Component {
           <div className={'Transfer__info-text'}>
             {authenticated && (
               <React.Fragment>
-                <FormattedMessage id="balance_amount" defaultMessage="Your balance" />
+                <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:
                 <span
                   role="presentation"
                   onClick={e => {
@@ -913,11 +919,11 @@ export default class Transfer extends React.Component {
           {savingsTransactions && (
             <div>
               <b>Notice:</b>
-              <p className={'Transfer__info-text'}>
+              <p className={'Transfer__info-text bold'}>
                 Please note that the deposit to the savings account is instant, whereas the
                 withdrawal from the savings account takes 3 days.
               </p>
-              <p className={'Transfer__info-text'}>
+              <p className={'Transfer__info-text bold'}>
                 {' '}
                 Hive witnesses offers 20% APR interest on HBD deposits in Savings. Interest is paid
                 on deposits that are more than 30 days old. Interest is calculated and paid at the
