@@ -230,9 +230,12 @@ const UserWalletSummary = ({
     </>
   );
 
-  const totalWithdrawSavings = savingsInfo?.reduce(
-    (acc, val) => Number(acc.amount?.replace('HIVE', '')) + Number(val.amount?.replace('HIVE', '')),
-  );
+  const totalWithdrawSavings = isEmpty(savingsInfo)
+    ? 0
+    : savingsInfo?.reduce(
+        (acc, val) =>
+          Number(acc.amount?.replace('HIVE', '')) + Number(val.amount?.replace('HIVE', '')),
+      );
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
