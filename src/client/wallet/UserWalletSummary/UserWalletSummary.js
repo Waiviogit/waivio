@@ -232,10 +232,11 @@ const UserWalletSummary = ({
 
   const totalWithdrawSavings = isEmpty(savingsInfo)
     ? 0
-    : savingsInfo?.reduce(
-        (acc, val) =>
-          Number(acc.amount?.replace('HIVE', '')) + Number(val.amount?.replace('HIVE', '')),
-      );
+    : savingsInfo.reduce((acc, val) => {
+        const amount = Number(val.amount?.replace('HIVE', '').trim());
+
+        return acc + amount;
+      }, 0);
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -459,7 +460,7 @@ const UserWalletSummary = ({
               </p>
               <WalletAction
                 mainKey={'transfer'}
-                options={['convert']}
+                options={['convert', 'transfer_to_saving']}
                 swapCurrencyOptions={['SWAP.HBD']}
                 mainCurrency={'HBD'}
               />

@@ -68,7 +68,8 @@ const ProgressModalBody = ({
           </div>
         )}
         <div>
-          Remaining: {left} {left === 1 ? timePeriod : `${timePeriod}s`} out of {max}.
+          Remaining: {left < 0 ? 0 : left} {left === 1 ? timePeriod : `${timePeriod}s`} out of {max}
+          .
         </div>
       </div>
       <div>
