@@ -727,7 +727,7 @@ export default class Transfer extends React.Component {
     if (savingsTransactions) {
       title = intl.formatMessage({
         id: isToSavings ? 'transfer_to_saving' : 'transfer_from_savings_title',
-        defaultMessage: isToSavings ? 'Deposit to Savings' : 'Transfer from savings',
+        defaultMessage: isToSavings ? 'Deposit to Savings' : 'Withdraw from Savings',
       });
     }
 
