@@ -305,7 +305,10 @@ export default class Transfer extends React.Component {
   };
 
   handleClickMax = () => {
-    const currentBalance = this.getTokensBalanceList()[this.state.currency];
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
+    const currentBalance = this.props.isFromSavings
+      ? parseFloat(this.props.user.savings_balance)
+      : currAmount;
 
     this.props.form.setFieldsValue({ amount: currentBalance });
     this.setState({
@@ -675,7 +678,7 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = savingsTransactions ? parseFloat(user.savings_balance) : currAmount;
+    const currentBalance = isFromSavings ? parseFloat(user.savings_balance) : currAmount;
 
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
