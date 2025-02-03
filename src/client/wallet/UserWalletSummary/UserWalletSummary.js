@@ -230,6 +230,10 @@ const UserWalletSummary = ({
     </>
   );
 
+  const totalWithdrawSavings = savingsInfo?.reduce(
+    (acc, val) => Number(acc.amount?.replace('HIVE', '')) + Number(val.amount?.replace('HIVE', '')),
+  );
+
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
       <div className="UserWalletSummary__itemWrap">
@@ -336,7 +340,7 @@ const UserWalletSummary = ({
               </div>
             )}
             {showDelegation && (
-              <div className="UserWalletSummary__itemWrap--no-border delegation-block">
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
                     <FormattedMessage id="hive_delegations" defaultMessage="HIVE Delegations" />
@@ -366,7 +370,7 @@ const UserWalletSummary = ({
               </div>
             )}
           </div>
-          <div className="UserWalletSummary__itemWrap--no-border">
+          <div className="UserWalletSummary__itemWrap">
             <div className="UserWalletSummary__item">
               <ReactSVG
                 wrapper="span"
@@ -391,37 +395,39 @@ const UserWalletSummary = ({
               <p className="UserWalletSummary__description">3-day unstaking period</p>
               <WalletAction mainKey={'transfer_from_saving'} mainCurrency={'HIVE'} />
             </div>
-          </div>
-          {!isEmpty(savingsInfo) && (
-            <div className="UserWalletSummary__itemWrap">
-              <div className="UserWalletSummary__item">
-                <div className="UserWalletSummary__label power-down">
-                  <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+            {!isEmpty(savingsInfo) && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+                  </div>
+                  <div className={powerClassList} onClick={() => setShowSavingsProgress(true)}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={totalWithdrawSavings} /> {' HIVE'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className={powerClassList} onClick={() => setShowSavingsProgress(true)}>
-                  {user.fetching || loadingGlobalProperties ? (
-                    <Loading />
-                  ) : (
-                    <span>{currWithdrawSaving.amount}</span>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    Withdraw will complete in{' '}
+                    {calculateDaysLeftForSavings(currWithdrawSaving.complete)} days
+                  </p>
+                  {isAuth && authUserPage && (
+                    <Button
+                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
                   )}
                 </div>
               </div>
-              <div className="UserWalletSummary__actions">
-                <p className="UserWalletSummary__description">
-                  Withdraw will complete in{' '}
-                  {calculateDaysLeftForSavings(currWithdrawSaving.complete)} days
-                </p>
-                {isAuth && authUserPage && (
-                  <Button
-                    onClick={() => setShowCancelWithdrawSavings(true)}
-                    className={'UserWalletSummary__button'}
-                  >
-                    Cancel{' '}
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
+            )}
+          </div>
           <div className="UserWalletSummary__itemWrap">
             <div className="UserWalletSummary__item">
               <img

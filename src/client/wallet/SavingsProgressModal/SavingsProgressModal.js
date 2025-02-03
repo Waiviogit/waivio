@@ -39,10 +39,11 @@ const SavingsProgressModal = ({
           isSaving
           showNextDate={false}
           title={'Withdraw'}
-          timePeriod={'days'}
+          timePeriod={'day'}
           addSpace={i !== savingsInfo.length - 1}
           key={info._id}
           max={3}
+          min={1}
           info={info}
           index={i}
           setShowSavingsProgress={setShowSavingsProgress}
