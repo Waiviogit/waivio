@@ -36,12 +36,11 @@ import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressM
 import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
 import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
 
-const calculateDaysLeftForSavings = targetDate => {
-  const now = new Date();
+const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   const target = new Date(targetDate);
+  const now = new Date();
 
-  // Calculate the difference in milliseconds
-  const diffTime = target - now;
+  const diffTime = isDaysFromDate ? now - target : target - now;
 
   // Convert milliseconds to days
   return Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -143,13 +142,21 @@ const UserWalletSummary = ({
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [savingsInfo, setSavingsInfo] = useState([]);
+  const [savingSymbol, setSavingSymbol] = useState('');
   const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
+  const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
   const [visible, setVisible] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const [showCancelWithdrawSavings, setShowCancelWithdrawSavings] = useState(false);
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+
+  const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
+  const interest =
+    ((savingsHbdBalance * 0.15) / 365) *
+    calculateDaysLeftForSavings(user.savings_hbd_seconds_last_update, true);
+
   const authUserPage = user.name === authUserName;
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
@@ -208,18 +215,19 @@ const UserWalletSummary = ({
   useEffect(() => {
     const fetchWithdrawals = async () => {
       try {
-        if (!authUserName) return;
-        const r = await dHive.database.call('get_savings_withdraw_from', [authUserName]);
+        if (!user.name) return;
+        const r = await dHive.database.call('get_savings_withdraw_from', [user.name]);
 
         setSavingsInfo(r);
-        setCurrWithdrawSaving(r[0]);
+        setCurrWithdrawSaving(r?.find(w => w.amount?.includes('HIVE')));
+        setCurrWithdrawHbdSaving(r?.find(w => w.amount?.includes('HBD')));
       } catch (error) {
         console.error('Error fetching savings withdrawals:', error);
       }
     };
 
     fetchWithdrawals();
-  }, [authUserName]);
+  }, [user.name]);
 
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const nextPowerDownDate = (
@@ -233,7 +241,7 @@ const UserWalletSummary = ({
   const totalWithdrawSavings = isEmpty(savingsInfo)
     ? 0
     : savingsInfo.reduce((acc, val) => {
-        const amount = Number(val.amount?.replace('HIVE', '').trim());
+        const amount = parseFloat(val.amount);
 
         return acc + amount;
       }, 0);
@@ -405,7 +413,13 @@ const UserWalletSummary = ({
                   <div className="UserWalletSummary__label power-down">
                     <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
                   </div>
-                  <div className={powerClassList} onClick={() => setShowSavingsProgress(true)}>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setShowSavingsProgress(true);
+                      setSavingSymbol('HIVE');
+                    }}
+                  >
                     {user.fetching || loadingGlobalProperties ? (
                       <Loading />
                     ) : (
@@ -418,7 +432,10 @@ const UserWalletSummary = ({
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
                     Withdraw will complete in{' '}
-                    {calculateDaysLeftForSavings(currWithdrawSaving.complete)} days
+                    {currWithdrawSaving?.complete
+                      ? calculateDaysLeftForSavings(currWithdrawSaving?.complete)
+                      : 3}{' '}
+                    days
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -465,6 +482,84 @@ const UserWalletSummary = ({
                 mainCurrency={'HBD'}
               />
             </div>
+            {savingsHbdBalance > 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+                  </div>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setShowSavingsProgress(true);
+                      setSavingSymbol('HBD');
+                    }}
+                  >
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={savingsHbdBalance} /> {' HBD'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    Withdraw will complete in{' '}
+                    {currWithdrawHbdSaving
+                      ? calculateDaysLeftForSavings(currWithdrawHbdSaving.complete)
+                      : 3}{' '}
+                    days
+                  </p>
+                  {isAuth && authUserPage && (
+                    <Button
+                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}{' '}
+            {savingsHbdBalance > 0 && interest > 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="interest" defaultMessage="Interest" />
+                  </div>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setShowSavingsProgress(true);
+                      setSavingSymbol('HBD');
+                    }}
+                  >
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={interest} /> {' HBD'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    HBD staking earnings ready to be claimed.
+                  </p>
+                  {/* {isAuth && authUserPage && ( */}
+                  {/*  <Button */}
+                  {/*    onClick={() => {}} */}
+                  {/*    className={'UserWalletSummary__button'} */}
+                  {/*  > */}
+                  {/*    Claim{' '} */}
+                  {/*  </Button> */}
+                  {/* )} */}
+                </div>
+              </div>
+            )}
           </div>
         </React.Fragment>
       )}
@@ -487,7 +582,7 @@ const UserWalletSummary = ({
       )}
       {showCancelWithdrawSavings && (
         <CancelWithdrawSavings
-          currWithdrawSaving={currWithdrawSaving}
+          currWithdrawSaving={savingSymbol === 'HIVE' ? currWithdrawSaving : currWithdrawHbdSaving}
           account={authUserName}
           showCancelWithdrawSavings={showCancelWithdrawSavings}
           setShowSavingsProgress={setShowSavingsProgress}
@@ -505,6 +600,7 @@ const UserWalletSummary = ({
       )}{' '}
       {showSavingsProgress && (
         <SavingsProgressModal
+          symbol={savingSymbol}
           calculateDaysLeftForSavings={calculateDaysLeftForSavings}
           savingsInfo={savingsInfo}
           showModal={showSavingsProgress}

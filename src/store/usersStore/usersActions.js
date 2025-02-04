@@ -39,6 +39,7 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
       savings_balance: acc?.savings_balance,
       vesting_shares: acc?.vesting_shares,
       savings_hbd_balance: acc?.savings_hbd_balance,
+      savings_hbd_seconds_last_update: acc?.savings_hbd_seconds_last_update,
       received_vesting_shares: acc?.received_vesting_shares,
       delegated_vesting_shares: acc?.delegated_vesting_shares,
       downvote_manabar: acc?.downvote_manabar,

@@ -25,7 +25,7 @@ const ProgressModalBody = ({
   setShowCancelWithdrawSavings,
   min = 0,
 }) => {
-  const currAmount = amount?.replace('HIVE', '');
+  const currAmount = parseFloat(amount);
 
   return (
     <div>

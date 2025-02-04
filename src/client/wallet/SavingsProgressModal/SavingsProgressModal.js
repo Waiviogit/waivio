@@ -14,6 +14,7 @@ const SavingsProgressModal = ({
   setCurrWithdrawSaving,
   setShowCancelWithdrawSavings,
   setShowSavingsProgress,
+  symbol,
 }) => {
   const marks = {
     1: '1',
@@ -32,35 +33,37 @@ const SavingsProgressModal = ({
       title={'Withdraw Savings'}
       onCancel={() => setShowModal(false)}
     >
-      {savingsInfo?.map((info, i) => (
-        <ProgressModalBody
-          set
-          amount={info.amount}
-          isSaving
-          showNextDate={false}
-          title={'Withdraw'}
-          timePeriod={'day'}
-          addSpace={i !== savingsInfo.length - 1}
-          key={info._id}
-          max={3}
-          min={1}
-          info={info}
-          index={i}
-          setShowSavingsProgress={setShowSavingsProgress}
-          setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
-          setCurrWithdrawSaving={setCurrWithdrawSaving}
-          left={calculateDaysLeftForSavings(info.complete)}
-          marks={marks}
-          authUserPage={authUserPage}
-          isAuth={isAuth}
-        />
-      ))}
+      {savingsInfo
+        ?.filter(inf => inf?.amount?.includes(symbol))
+        ?.map((info, i) => (
+          <ProgressModalBody
+            amount={info.amount}
+            isSaving
+            showNextDate={false}
+            title={'Withdraw'}
+            timePeriod={'day'}
+            addSpace={i !== savingsInfo.length - 1}
+            key={info._id}
+            max={3}
+            min={1}
+            info={info}
+            index={i}
+            setShowSavingsProgress={setShowSavingsProgress}
+            setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
+            setCurrWithdrawSaving={setCurrWithdrawSaving}
+            left={calculateDaysLeftForSavings(info.complete)}
+            marks={marks}
+            authUserPage={authUserPage}
+            isAuth={isAuth}
+          />
+        ))}
     </Modal>
   );
 };
 
 SavingsProgressModal.propTypes = {
   savingsInfo: PropTypes.arrayOf().isRequired,
+  symbol: PropTypes.string,
   isAuth: PropTypes.bool,
   authUserPage: PropTypes.bool,
   showModal: PropTypes.bool.isRequired,
