@@ -59,6 +59,7 @@ export default function usersReducer(state = initialState, action) {
             hbd_balance: 0,
             savings_balance: 0,
             savings_hbd_balance: 0,
+            savings_hbd_seconds_last_update: 0,
             vesting_shares: 0,
             ...state.users[action.meta.username],
             ...action.payload,

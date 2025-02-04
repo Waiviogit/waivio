@@ -709,7 +709,7 @@ export default class Transfer extends React.Component {
       );
     }
     const currencies = savingsTransactions
-      ? userBalances?.filter(i => i.symbol === 'HIVE')
+      ? userBalances?.filter(i => i.symbol === this.state.currency)
       : userBalances;
 
     const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
