@@ -46,6 +46,8 @@ const WalletAction = props => {
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
     transfer_to_saving: () =>
       dispatch(openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, true)),
+    deposit: () =>
+      dispatch(openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, true)),
     transfer_from_saving: () =>
       dispatch(
         openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, false, true),
