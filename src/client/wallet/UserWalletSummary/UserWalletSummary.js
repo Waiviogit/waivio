@@ -42,8 +42,9 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
 
   const diffTime = isDaysFromDate ? now - target : target - now;
 
-  // Convert milliseconds to days
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  return days > 0 ? days : 0;
 };
 const getFormattedTotalDelegatedSP = (
   user,
@@ -405,7 +406,14 @@ const UserWalletSummary = ({
             </div>
             <div className="UserWalletSummary__actions">
               <p className="UserWalletSummary__description">3-day unstaking period</p>
-              <WalletAction mainKey={'transfer_from_saving'} mainCurrency={'HIVE'} />
+              {
+                <WalletAction
+                  mainKey={
+                    parseFloat(user.savings_balance) > 0 ? 'transfer_from_saving' : 'deposit'
+                  }
+                  mainCurrency={'HIVE'}
+                />
+              }
             </div>
             {!isEmpty(savingsInfo) && (
               <div className="UserWalletSummary__itemWrap--no-border last-block">

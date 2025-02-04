@@ -551,7 +551,10 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    const selectedBalance = this.getTokensBalanceList()[this.state.currency];
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
+    const selectedBalance = this.props.isFromSavings
+      ? parseFloat(this.props.user.savings_balance)
+      : currAmount;
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
       callback([

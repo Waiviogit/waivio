@@ -2677,5 +2677,6 @@
   "transfer_to_saving": "Deposit to Savings",
   "transfer_from_saving": "Withdraw",
   "withdraw_hive": "Withdraw HIVE",
-  "withdraw_hbd": "Withdraw HBD"
+  "withdraw_hbd": "Withdraw HBD",
+  "deposit": "Deposit"
 }
