@@ -9,6 +9,7 @@ const CancelWithdrawSavings = ({
   setShowCancelWithdrawSavings,
   account,
   currWithdrawSaving,
+  symbol,
 }) => {
   const handleCloseModal = () => {
     setShowSavingsProgress(false);
@@ -34,7 +35,7 @@ const CancelWithdrawSavings = ({
     <Modal
       visible={showCancelWithdrawSavings}
       okText={'Confirm'}
-      title={'HIVE Savings'}
+      title={`${symbol} Savings`}
       onCancel={handleCloseModal}
       onOk={handleCancelPowerDown}
     >
@@ -50,6 +51,7 @@ CancelWithdrawSavings.propTypes = {
   setShowSavingsProgress: PropTypes.func.isRequired,
   showCancelWithdrawSavings: PropTypes.bool.isRequired,
   account: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
   currWithdrawSaving: PropTypes.shape().isRequired,
 };
 
