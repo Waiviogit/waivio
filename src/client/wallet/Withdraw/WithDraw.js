@@ -59,7 +59,7 @@ const Withdraw = ({
   const isGuest = useSelector(isGuestUser);
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const estimateValue = ceil(hiveCount * hivePrice, 2) || 0;
-  const userBalance = Number(user.balance.replace('HIVE', ''));
+  const userBalance = parseFloat(user?.balance);
   const currentBalance = `${userBalance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
     'Withdraw__input-text--error': hiveAmount > userBalance,

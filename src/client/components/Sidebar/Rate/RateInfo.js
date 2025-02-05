@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 
-import { averageRate, calculateRateCurrUser, rateCount } from './rateHelper';
+import { calculateRateCurrUser, formatAverageRate, rateCount } from './rateHelper';
 import { getRatingFields } from '../../../../store/wObjectStore/wObjectSelectors';
 import { rateObject } from '../../../../store/wObjectStore/wobjActions';
 
@@ -59,7 +59,7 @@ class RateInfo extends React.PureComponent {
                       defaultValue={
                         haveCurrentUserVote
                           ? calculateRateCurrUser(field.rating_votes, username)
-                          : averageRate(field)
+                          : formatAverageRate(field.average_rating_weight)
                       }
                       className={ratingClassList}
                       onChange={e => this.handleSubmit(e, field)}

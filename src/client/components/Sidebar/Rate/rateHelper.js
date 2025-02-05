@@ -20,6 +20,12 @@ export const averageRate = field => {
   return avrRate;
 };
 
+export const formatAverageRate = rate => {
+  if (rate <= 10 && rate > 0) return rate / 2;
+
+  return 0;
+};
+
 export const calculateRateCurrUser = (votes, user) => {
   if (!votes) return 0;
 
