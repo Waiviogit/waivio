@@ -306,9 +306,16 @@ export default class Transfer extends React.Component {
 
   handleClickMax = () => {
     const currAmount = this.getTokensBalanceList()[this.state.currency];
-    const currentBalance = this.props.isFromSavings
-      ? parseFloat(this.props.user.savings_balance)
-      : currAmount;
+    let currentBalance;
+
+    if (this.props.isFromSavings) {
+      currentBalance =
+        this.state.currency === 'HIVE'
+          ? parseFloat(this.props.user.savings_balance)
+          : parseFloat(this.props.user.savings_hbd_balance);
+    } else {
+      currentBalance = currAmount;
+    }
 
     this.props.form.setFieldsValue({ amount: currentBalance });
     this.setState({
