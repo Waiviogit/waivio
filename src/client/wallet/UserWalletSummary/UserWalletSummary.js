@@ -40,15 +40,18 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
     return 0;
   }
+
   const target = new Date(targetDate);
   const now = new Date();
 
   const diffTime = isDaysFromDate ? now - target : target - now;
 
-  const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const hours = diffTime / (1000 * 60 * 60);
+  const days = Math.ceil(hours / 24);
 
   return days > 0 ? days : 0;
 };
+
 const getFormattedTotalDelegatedSP = (
   user,
   totalVestingShares,
