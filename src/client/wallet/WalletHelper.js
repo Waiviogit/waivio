@@ -641,7 +641,10 @@ export const getSavingsTransactionMessage = (transactionType, transactionDetails
       );
     case 'transfer_from_savings':
       return (
-        <FormattedMessage id="transfer_from_savings_title" defaultMessage="Transfer from savings" />
+        <FormattedMessage
+          id="transfer_from_savings_op_title"
+          defaultMessage="Transfer from savings"
+        />
       );
     default:
       return null;

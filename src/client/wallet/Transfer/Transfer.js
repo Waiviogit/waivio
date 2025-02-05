@@ -551,10 +551,7 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    const currAmount = this.getTokensBalanceList()[this.state.currency];
-    const selectedBalance = this.props.isFromSavings
-      ? parseFloat(this.props.user.savings_balance)
-      : currAmount;
+    const selectedBalance = this.getTokensBalanceList()[this.state.currency];
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
       callback([
@@ -681,7 +678,7 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = isFromSavings ? parseFloat(user.savings_balance) : currAmount;
+    const currentBalance = currAmount;
 
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
@@ -712,7 +709,7 @@ export default class Transfer extends React.Component {
       );
     }
     const currencies = savingsTransactions
-      ? userBalances?.filter(i => i.symbol === this.state.currency)
+      ? userBalances?.filter(i => ['HIVE', 'HBD']?.includes(i.symbol))
       : userBalances;
 
     const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
@@ -857,9 +854,7 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {savingsTransactions
-                          ? `${currentBalance} ${this.state.currency}`
-                          : fixedNumber(token.balance)}
+                        {fixedNumber(token.balance)}
                       </span>
                     </Select.Option>
                   ))}
