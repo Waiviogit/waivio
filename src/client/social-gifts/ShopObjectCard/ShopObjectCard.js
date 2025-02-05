@@ -36,7 +36,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     'ShopObjectCard--rewards': withRewards,
   });
   const query = useQuery();
-  let breadbrumbsFromQuery = query.get('breadcrumbs');
+  let breadbrumbsFromQuery = query?.get('breadcrumbs');
 
   breadbrumbsFromQuery = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : null;
   const breadbrumbs = `?breadcrumbs=${createQueryBreadcrumbs(
