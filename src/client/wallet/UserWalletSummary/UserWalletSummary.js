@@ -627,6 +627,7 @@ const UserWalletSummary = ({
       {showCancelPowerDown && (
         <CancelPowerDownModal
           account={user.name}
+          setPowerDownProgress={setPowerDownProgress}
           showCancelPowerDown={showCancelPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
         />
