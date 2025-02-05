@@ -32,8 +32,7 @@ app.use(cookieParser());
 if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
 } else {
-  process.on('unhandledRejection', restartHandler);
-  process.on('uncaughtException', restartHandler);
+  process.on('uncaughtExceptionMonitor', restartHandler);
   app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);
 }
