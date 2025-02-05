@@ -17,6 +17,7 @@ const SavingsProgressModal = ({
   symbol,
 }) => {
   const marks = {
+    0: '0',
     1: '1',
     2: '2',
     3: '3',
@@ -45,7 +46,7 @@ const SavingsProgressModal = ({
             addSpace={i !== savingsInfo.length - 1}
             key={info._id}
             max={3}
-            min={1}
+            min={0}
             info={info}
             index={i}
             setShowSavingsProgress={setShowSavingsProgress}
