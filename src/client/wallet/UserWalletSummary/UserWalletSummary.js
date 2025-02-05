@@ -492,7 +492,7 @@ const UserWalletSummary = ({
               </p>
               <WalletAction
                 mainKey={'transfer'}
-                options={['convert']}
+                options={['convert', 'transfer_to_saving']}
                 swapCurrencyOptions={['SWAP.HBD']}
                 mainCurrency={'HBD'}
               />
