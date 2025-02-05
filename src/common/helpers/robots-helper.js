@@ -4,6 +4,12 @@ Disallow: /bookmarks/
 Disallow: /drafts/
 Disallow: /edit-profile/
 Disallow: /editor/
+Disallow: /@*/activity
+Disallow: /@*/map
+Disallow: /@*/threads
+Disallow: /@*/comments
+Disallow: /@*/transfers
+Disallow: /@*/mentions
 
 Sitemap: https://${host}/sitemap.xml
 `;
