@@ -551,7 +551,17 @@ export default class Transfer extends React.Component {
       return;
     }
 
-    const selectedBalance = this.getTokensBalanceList()[this.state.currency];
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
+    let selectedBalance;
+
+    if (this.props.isFromSavings) {
+      selectedBalance =
+        this.state.currency === 'HIVE'
+          ? parseFloat(this.props.user.savings_balance)
+          : parseFloat(this.props.user.savings_hbd_balance);
+    } else {
+      selectedBalance = currAmount;
+    }
 
     if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
       callback([
@@ -678,7 +688,17 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = currAmount;
+
+    let currentBalance;
+
+    if (this.props.isFromSavings) {
+      currentBalance =
+        this.state.currency === 'HIVE'
+          ? parseFloat(this.props.user.savings_balance)
+          : parseFloat(this.props.user.savings_hbd_balance);
+    } else {
+      currentBalance = currAmount;
+    }
 
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
@@ -854,7 +874,13 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {fixedNumber(token.balance)}
+                        {isFromSavings
+                          ? `${
+                              token?.symbol === 'HIVE'
+                                ? parseFloat(this.props.user.savings_balance)
+                                : parseFloat(this.props.user.savings_hbd_balance)
+                            } ${this.state.currency}`
+                          : fixedNumber(token.balance)}
                       </span>
                     </Select.Option>
                   ))}
