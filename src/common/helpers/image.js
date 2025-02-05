@@ -10,6 +10,7 @@ const notProxyUrlsList = [
   'sephora.com',
   'waivio.nyc3.digitaloceanspaces',
   'i.imgur.com',
+  '.avif',
 ];
 
 export const MAXIMUM_UPLOAD_SIZE = 31457280;

@@ -16,8 +16,9 @@ const divideString = (input, length) => {
 
 const errorFormatter = (error, origin) => {
   const string = `
-  Caught exception: ${error}
-  Exception origin: ${JSON.stringify(origin)}`;
+  stack: ${error.stack}
+  message: ${error.message}
+  origin: ${origin}`;
 
   return divideString(string, maxLength);
 };
@@ -26,7 +27,7 @@ const restartNotifier = async (messages = []) => {
   if (!messages?.length) return;
   const firstMessage = JSON.stringify({
     method: 'clientError',
-    params: [uuidv4(), `SSR restarted: ${messages[0]}`],
+    params: [uuidv4(), `SSR error: ${messages[0]}`],
   });
 
   await wsSocketClient.sendMessage(firstMessage);

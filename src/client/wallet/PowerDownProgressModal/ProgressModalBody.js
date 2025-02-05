@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 
 const ProgressModalBody = ({
   nextDate,
+  timePeriod = 'weeks',
   isWaivWallet,
-  weeksLeft,
-  maxWeeks,
+  left,
+  max,
   marks,
   addSpace,
   setShowCancelPowerDown,
@@ -16,66 +17,89 @@ const ProgressModalBody = ({
   index,
   isAuth,
   authUserPage,
-}) => (
-  <div>
+  showNextDate = true,
+  title = 'Power down',
+  amount,
+  isSaving,
+  setCurrWithdrawSaving,
+  setShowCancelWithdrawSavings,
+  min = 0,
+}) => {
+  const currAmount = parseFloat(amount);
+
+  return (
     <div>
-      {isWaivWallet && (
-        <>
-          <div className={'flex justify-between'}>
-            <b>Power down #{index + 1}</b>
-            {isAuth && authUserPage && (
-              <Button
-                onClick={() => {
-                  setCurrPowerDown(info);
-                  setShowCancelPowerDown(true);
-                }}
-                className={'UserWalletSummary__button'}
-              >
-                Cancel{' '}
-              </Button>
-            )}
-          </div>
-          <div>
-            Amount: <FormattedNumber value={info.quantityLeft} />
-          </div>
-        </>
-      )}
       <div>
+        {(isWaivWallet || isSaving) && (
+          <>
+            <div className={'flex justify-between'}>
+              <b>
+                {title} #{index + 1}
+              </b>
+              {isAuth && authUserPage && (
+                <Button
+                  onClick={() => {
+                    if (isSaving) {
+                      setCurrWithdrawSaving(info);
+                      setShowCancelWithdrawSavings(true);
+                    } else {
+                      setCurrPowerDown(info);
+                      setShowCancelPowerDown(true);
+                    }
+                  }}
+                  className={'UserWalletSummary__button'}
+                >
+                  Cancel{' '}
+                </Button>
+              )}
+            </div>
+            <div>
+              Amount: <FormattedNumber value={currAmount} />
+            </div>
+          </>
+        )}
+        {showNextDate && (
+          <div>
+            <div>
+              {' '}
+              <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
+              <FormattedDate value={nextDate} /> <FormattedTime value={nextDate} />
+            </div>
+          </div>
+        )}
         <div>
-          {' '}
-          <FormattedMessage id="next_power_down" defaultMessage="Next power down" />:{' '}
-          <FormattedDate value={nextDate} /> <FormattedTime value={nextDate} />
+          Remaining: {left < 0 ? 0 : left} {left === 1 ? timePeriod : `${timePeriod}s`} out of {max}
+          .
         </div>
       </div>
       <div>
-        Remaining: {weeksLeft} {weeksLeft === 1 ? 'week' : 'weeks'} out of {maxWeeks}.
+        {' '}
+        <Slider marks={marks} tipFormatter={null} value={max - left} min={min} max={max} />
       </div>
+      {addSpace && <br />}
     </div>
-    <div>
-      {' '}
-      <Slider
-        marks={marks}
-        tipFormatter={null}
-        value={maxWeeks - weeksLeft}
-        min={0}
-        max={maxWeeks}
-      />
-    </div>
-    {addSpace && <br />}
-  </div>
-);
+  );
+};
 
 ProgressModalBody.propTypes = {
   nextDate: PropTypes.number,
   index: PropTypes.number,
+  left: PropTypes.number,
+  max: PropTypes.number,
+  min: PropTypes.number,
+  amount: PropTypes.number,
   addSpace: PropTypes.bool,
+  showNextDate: PropTypes.bool,
   authUserPage: PropTypes.bool,
   isAuth: PropTypes.bool,
+  isSaving: PropTypes.bool,
   isWaivWallet: PropTypes.bool,
-  maxWeeks: PropTypes.number,
-  weeksLeft: PropTypes.number,
+  timePeriod: PropTypes.string,
+  title: PropTypes.string,
   setShowCancelPowerDown: PropTypes.func,
+  setShowCancelWithdrawSavings: PropTypes.func,
   setCurrPowerDown: PropTypes.func,
+  setCurrWithdrawSaving: PropTypes.func,
   marks: PropTypes.arrayOf(),
   info: PropTypes.shape(),
 };

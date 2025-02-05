@@ -123,13 +123,22 @@ class SearchObjectsAutocomplete extends Component {
     const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
     const link = val.match(linkRegex);
 
-    if (link && link.length > 0 && link[0] !== '') {
-      const permlink = link[0]?.endsWith('/page')
-        ? link[0]?.replace('/page', '').split('/')
-        : link[0].split('/');
+    const wordsToRemove = ['list', 'page', 'newsfeed', 'widget', 'webpage', 'map', 'shop', 'group'];
 
-      val = permlink[permlink.length - 1].replace('@', '');
+    if (link && link.length > 0 && link[0] !== '') {
+      let permlink = link[0];
+
+      wordsToRemove.forEach(word => {
+        const regex = new RegExp(`/${word}(/|$)`, 'g');
+
+        permlink = permlink.replace(regex, '/');
+      });
+
+      permlink = permlink.replace(/([^:]\/)(\/+)/g, '$1');
+
+      val = permlink;
     }
+
     if (val) {
       this.debouncedSearch(val, this.props.objectType, parentPermlink);
     }

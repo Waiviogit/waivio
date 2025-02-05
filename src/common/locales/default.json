@@ -2671,5 +2671,13 @@
   "mobnav_payments": "Reports",
   "mobnav_admin_websites": "Websites",
   "mobnav_admin_whitelist": "Whitelist",
-  "mobnav_admin_new_accounts": "New accounts"
+  "transfer_to_savings_title": "Transfer to savings",
+  "transfer_from_savings_title": "Withdraw from Savings",
+  "mobnav_admin_new_accounts": "New accounts",
+  "transfer_to_saving": "Deposit to Savings",
+  "transfer_from_saving": "Withdraw",
+  "withdraw_hive": "Withdraw HIVE",
+  "withdraw_hbd": "Withdraw HBD",
+  "transfer_from_savings_op_title": "Transfer from savings",
+  "deposit": "Deposit"
 }

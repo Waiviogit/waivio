@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Button } from 'antd';
-import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
+import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
+import { ReactSVG } from 'react-svg';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import formatter from '../../../common/helpers/steemitFormatter';
 import {
-  calculateTotalDelegatedSP,
   calculateEstAccountValue,
   calculatePendingWithdrawalSP,
+  calculateTotalDelegatedSP,
+  dHive,
 } from '../../vendor/steemitHelpers';
 import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
@@ -31,6 +33,24 @@ import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletAct
 import './UserWalletSummary.less';
 import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
 import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
+import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
+import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
+
+const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
+  if (targetDate === '1970-01-01T00:00:00') {
+    return 0;
+  }
+
+  const target = new Date(targetDate);
+  const now = new Date();
+
+  const diffTime = isDaysFromDate ? now - target : target - now;
+
+  const hours = diffTime / (1000 * 60 * 60);
+  const days = Math.ceil(hours / 24);
+
+  return days > 0 ? days : 0;
+};
 
 const getFormattedTotalDelegatedSP = (
   user,
@@ -128,10 +148,22 @@ const UserWalletSummary = ({
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
+  const [savingsInfo, setSavingsInfo] = useState([]);
+  const [savingSymbol, setSavingSymbol] = useState('');
+  const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
+  const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
   const [visible, setVisible] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
+  const [showCancelWithdrawSavings, setShowCancelWithdrawSavings] = useState(false);
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
+  const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+
+  const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
+  // const interest =
+  //   ((savingsHbdBalance * 0.15) / 365) *
+  //   calculateDaysLeftForSavings(user.savings_hbd_last_interest_payment, true);
+
   const authUserPage = user.name === authUserName;
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
@@ -187,6 +219,23 @@ const UserWalletSummary = ({
     if (totalVestingShares && totalVestingFundSteem && !isGuest) setDelegationLists();
   }, [totalVestingShares, totalVestingFundSteem]);
 
+  useEffect(() => {
+    const fetchWithdrawals = async () => {
+      try {
+        if (!user.name) return;
+        const r = await dHive.database.call('get_savings_withdraw_from', [user.name]);
+
+        setSavingsInfo(r);
+        setCurrWithdrawSaving(r?.find(w => w.amount?.includes('HIVE')));
+        setCurrWithdrawHbdSaving(r?.find(w => w.amount?.includes('HBD')));
+      } catch (error) {
+        console.error('Error fetching savings withdrawals:', error);
+      }
+    };
+
+    fetchWithdrawals();
+  }, [user.name]);
+
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const nextPowerDownDate = (
     <>
@@ -195,6 +244,15 @@ const UserWalletSummary = ({
       <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
     </>
   );
+  const getTotalWithdrawSavings = symbol => {
+    if (!Array.isArray(savingsInfo) || savingsInfo.length === 0) return 0;
+
+    return savingsInfo.reduce((acc, val) => {
+      const amount = parseFloat(val.amount);
+
+      return val.amount.includes(symbol) ? acc + amount : acc;
+    }, 0);
+  };
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -223,7 +281,7 @@ const UserWalletSummary = ({
           </p>
           <WalletAction
             mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
-            options={isCurrentGuest ? ['withdraw'] : ['transfer', 'convert']}
+            options={isCurrentGuest ? ['withdraw'] : ['transfer', 'convert', 'transfer_to_saving']}
             mainCurrency={'HIVE'}
             withdrawCurrencyOption={['LTC', 'BTC', 'ETH']}
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
@@ -302,7 +360,7 @@ const UserWalletSummary = ({
               </div>
             )}
             {showDelegation && (
-              <div className="UserWalletSummary__itemWrap--no-border delegation-block">
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
                     <FormattedMessage id="hive_delegations" defaultMessage="HIVE Delegations" />
@@ -327,6 +385,80 @@ const UserWalletSummary = ({
                   <p className="UserWalletSummary__description">Delegations to/from other users</p>
                   {isAuth && (
                     <WalletAction mainKey={'manage'} options={['delegate']} mainCurrency={'HP'} />
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="UserWalletSummary__itemWrap">
+            <div className="UserWalletSummary__item">
+              <ReactSVG
+                wrapper="span"
+                src="/images/transfer-savings-icon.svg"
+                className="UserWalletSummary__icon UserWalletSummary__icon--savings"
+              />
+              <div className="UserWalletSummary__label">
+                <FormattedMessage id="hive_savings" defaultMessage="HIVE Savings" />
+              </div>
+              <div className="UserWalletSummary__value">
+                {user.fetching ? (
+                  <Loading />
+                ) : (
+                  <span>
+                    <FormattedNumber value={parseFloat(user.savings_balance)} />
+                    {' HIVE'}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">3-day unstaking period</p>
+              {
+                <WalletAction
+                  mainKey={
+                    parseFloat(user.savings_balance) > 0 ? 'transfer_from_saving' : 'deposit'
+                  }
+                  mainCurrency={'HIVE'}
+                />
+              }
+            </div>
+            {!isEmpty(savingsInfo) && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+                  </div>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setShowSavingsProgress(true);
+                      setSavingSymbol('HIVE');
+                    }}
+                  >
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={getTotalWithdrawSavings('HIVE')} /> {' HIVE'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    Withdraw will complete in{' '}
+                    {currWithdrawSaving?.complete
+                      ? calculateDaysLeftForSavings(currWithdrawSaving?.complete)
+                      : 3}{' '}
+                    days
+                  </p>
+                  {isAuth && authUserPage && (
+                    <Button
+                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
                   )}
                 </div>
               </div>
@@ -360,32 +492,124 @@ const UserWalletSummary = ({
               </p>
               <WalletAction
                 mainKey={'transfer'}
-                options={['convert']}
+                options={['convert', 'transfer_to_saving']}
                 swapCurrencyOptions={['SWAP.HBD']}
                 mainCurrency={'HBD'}
               />
             </div>
           </div>
-          <div className="UserWalletSummary__itemWrap">
+          <div
+            className={`UserWalletSummary__itemWrap ${
+              getTotalWithdrawSavings('HBD') > 0 ? '' : 'last-block'
+            }`}
+          >
             <div className="UserWalletSummary__item">
-              <i className="iconfont icon-savings UserWalletSummary__icon" />
+              <ReactSVG
+                wrapper="span"
+                src="/images/transfer-savings-icon.svg"
+                className="UserWalletSummary__icon UserWalletSummary__icon--savings-green"
+              />
               <div className="UserWalletSummary__label">
-                <FormattedMessage id="savings" defaultMessage="Savings" />
+                <FormattedMessage id="hbd_savings" defaultMessage="HBD Savings" />
               </div>
-              <div className="UserWalletSummary__value">
-                {user.fetching ? (
+              <div
+                className={powerClassList}
+                // onClick={() => {
+                //   setShowSavingsProgress(true);
+                //   setSavingSymbol('HBD');
+                // }}
+              >
+                {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
                   <span>
-                    <FormattedNumber value={parseFloat(user.savings_balance)} />
-                    {' HIVE, '}
-                    <FormattedNumber value={parseFloat(user.savings_hbd_balance)} />
-                    {' HBD'}
+                    <FormattedNumber value={savingsHbdBalance} /> {' HBD'}
                   </span>
                 )}
               </div>
             </div>
-          </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">Earn 20% APR interest on HBD</p>
+              <WalletAction
+                mainKey={savingsHbdBalance > 0 ? 'transfer_from_saving' : 'deposit'}
+                mainCurrency={'HBD'}
+              />
+            </div>
+            {getTotalWithdrawSavings('HBD') > 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+                  </div>
+                  <div
+                    className={powerClassList}
+                    onClick={() => {
+                      setShowSavingsProgress(true);
+                      setSavingSymbol('HBD');
+                    }}
+                  >
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={getTotalWithdrawSavings('HBD')} /> {' HBD'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    Withdraw will complete in{' '}
+                    {currWithdrawHbdSaving
+                      ? calculateDaysLeftForSavings(currWithdrawHbdSaving.complete)
+                      : 3}{' '}
+                    days
+                  </p>
+                  {isAuth && authUserPage && (
+                    <Button
+                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      className={'UserWalletSummary__button'}
+                    >
+                      Cancel{' '}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}{' '}
+          </div>{' '}
+          {/* {savingsHbdBalance > 0 && interest > 0 && ( */}
+          {/*  <div className="UserWalletSummary__itemWrap--no-border last-block"> */}
+          {/*    <div className="UserWalletSummary__item"> */}
+          {/*      <div className="UserWalletSummary__label power-down"> */}
+          {/*        <FormattedMessage id="interest" defaultMessage="Interest" /> */}
+          {/*      </div> */}
+          {/*      <div */}
+          {/*        className={powerClassList} */}
+          {/*      > */}
+          {/*        {user.fetching || loadingGlobalProperties ? ( */}
+          {/*          <Loading /> */}
+          {/*        ) : ( */}
+          {/*          <span> */}
+          {/*            <FormattedNumber value={interest} /> {' HBD'} */}
+          {/*          </span> */}
+          {/*        )} */}
+          {/*      </div> */}
+          {/*    </div> */}
+          {/*    <div className="UserWalletSummary__actions"> */}
+          {/*      <p className="UserWalletSummary__description"> */}
+          {/*        HBD staking earnings ready to be claimed. */}
+          {/*      </p> */}
+          {/*      /!* {isAuth && authUserPage && ( *!/ */}
+          {/*      /!*  <Button *!/ */}
+          {/*      /!*    onClick={() => {}} *!/ */}
+          {/*      /!*    className={'UserWalletSummary__button'} *!/ */}
+          {/*      /!*  > *!/ */}
+          {/*      /!*    Claim{' '} *!/ */}
+          {/*      /!*  </Button> *!/ */}
+          {/*      /!* )} *!/ */}
+          {/*    </div> */}
+          {/*  </div> */}
+          {/* )} */}
         </React.Fragment>
       )}
       {hasDelegations && (
@@ -401,8 +625,19 @@ const UserWalletSummary = ({
       {showCancelPowerDown && (
         <CancelPowerDownModal
           account={user.name}
+          setPowerDownProgress={setPowerDownProgress}
           showCancelPowerDown={showCancelPowerDown}
           setShowCancelPowerDown={setShowCancelPowerDown}
+        />
+      )}
+      {showCancelWithdrawSavings && (
+        <CancelWithdrawSavings
+          symbol={savingSymbol}
+          currWithdrawSaving={savingSymbol === 'HIVE' ? currWithdrawSaving : currWithdrawHbdSaving}
+          account={authUserName}
+          showCancelWithdrawSavings={showCancelWithdrawSavings}
+          setShowSavingsProgress={setShowSavingsProgress}
+          setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
         />
       )}
       {showPowerDownProgress && (
@@ -412,6 +647,20 @@ const UserWalletSummary = ({
           showModal={showPowerDownProgress}
           setShowModal={setPowerDownProgress}
           user={user}
+        />
+      )}{' '}
+      {showSavingsProgress && (
+        <SavingsProgressModal
+          symbol={savingSymbol}
+          calculateDaysLeftForSavings={calculateDaysLeftForSavings}
+          savingsInfo={savingsInfo}
+          showModal={showSavingsProgress}
+          setShowModal={setShowSavingsProgress}
+          setShowSavingsProgress={setShowSavingsProgress}
+          setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
+          setCurrWithdrawSaving={setCurrWithdrawSaving}
+          authUserPage={authUserPage}
+          isAuth={isAuth}
         />
       )}
     </WalletSummaryInfo>

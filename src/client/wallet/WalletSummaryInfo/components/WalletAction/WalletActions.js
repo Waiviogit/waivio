@@ -44,6 +44,14 @@ const WalletAction = props => {
     manage: () => dispatch(toggleDelegateModal()),
     power_down: () => dispatch(openPowerUpOrDown(true)),
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
+    transfer_to_saving: () =>
+      dispatch(openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, true)),
+    deposit: () =>
+      dispatch(openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, true)),
+    transfer_from_saving: () =>
+      dispatch(
+        openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, false, true),
+      ),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
     withdraw: () => {
       if (props.mainCurrency === 'HIVE') {
@@ -72,7 +80,7 @@ const WalletAction = props => {
           overlay={
             <Menu className={'WalletAction__select-dropdown'}>
               {props.options.map(opt => {
-                if (opt === 'convert') return null;
+                if (opt === 'convert' || opt === 'transfer_to_saving') return null;
 
                 return (
                   <Menu.Item onClick={() => config[opt]()} key={opt}>
@@ -107,6 +115,11 @@ const WalletAction = props => {
                     {props.intl.formatMessage({ id: 'withdraw' })} to {cyrrency}
                   </Menu.Item>
                 ))}
+              {props.options?.includes('transfer_to_saving') && (
+                <Menu.Item onClick={() => config.transfer_to_saving()} key={'transfer_to_saving'}>
+                  {props.intl.formatMessage({ id: 'transfer_to_saving' })}
+                </Menu.Item>
+              )}
             </Menu>
           }
         >

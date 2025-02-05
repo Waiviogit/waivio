@@ -68,6 +68,8 @@ export default function walletReducer(state = initialState, action) {
         app: action.payload.app,
         isTip: action.payload.tip,
         isVipTicket: action.payload.isVipTicket,
+        isToSavings: action.payload.isToSavings,
+        isFromSavings: action.payload.isFromSavings,
       };
     case walletActions.CLOSE_TRANSFER:
       return {
