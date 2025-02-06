@@ -7,6 +7,7 @@ import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { ReactSVG } from 'react-svg';
+import moment from 'moment';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import formatter from '../../../common/helpers/steemitFormatter';
@@ -36,6 +37,7 @@ import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressM
 import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
 import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
 
+const HBD_INTEREST_RATE = 15;
 const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
     return 0;
@@ -134,6 +136,25 @@ const getFormattedPendingWithdrawalSP = (
 
   return null;
 };
+const estimateInterestBalance = hiveAccount => {
+  const { savings_hbd_seconds, savings_hbd_seconds_last_update, savings_hbd_balance } = hiveAccount;
+
+  if (savings_hbd_seconds === 0 && savings_hbd_balance === 0) {
+    return 0;
+  }
+
+  const hdbSeconds = parseFloat(savings_hbd_seconds) / 1000;
+  const hdbSecondsLastUpdate = moment.utc(savings_hbd_seconds_last_update).unix();
+  const nowSeconds = moment.utc().unix();
+  const hbdBalance = parseFloat(savings_hbd_balance);
+  const secondsPerYear = 31536000;
+
+  const interest =
+    ((hdbSeconds + (nowSeconds - hdbSecondsLastUpdate) * hbdBalance) * (HBD_INTEREST_RATE / 100)) /
+    secondsPerYear;
+
+  return interest < 0.001 ? 0 : interest;
+};
 
 const UserWalletSummary = ({
   user,
@@ -160,9 +181,7 @@ const UserWalletSummary = ({
   const isCurrentGuest = useSelector(isGuestUser);
 
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
-  // const interest =
-  //   ((savingsHbdBalance * 0.15) / 365) *
-  //   calculateDaysLeftForSavings(user.savings_hbd_last_interest_payment, true);
+  const interest = estimateInterestBalance(user);
 
   const authUserPage = user.name === authUserName;
   const hasDelegations =
@@ -576,40 +595,38 @@ const UserWalletSummary = ({
                 </div>
               </div>
             )}{' '}
+            {interest > 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="interest" defaultMessage="Interest" />
+                  </div>
+                  <div className={powerClassList}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={interest} /> {' HBD'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    HBD staking earnings ready to be claimed.
+                  </p>
+                  {/* {isAuth && authUserPage && ( */}
+                  {/*  <Button */}
+                  {/*    onClick={() => {}} */}
+                  {/*    className={'UserWalletSummary__button'} */}
+                  {/*  > */}
+                  {/*    Claim{' '} */}
+                  {/*  </Button> */}
+                  {/* )} */}
+                </div>
+              </div>
+            )}
           </div>{' '}
-          {/* {savingsHbdBalance > 0 && interest > 0 && ( */}
-          {/*  <div className="UserWalletSummary__itemWrap--no-border last-block"> */}
-          {/*    <div className="UserWalletSummary__item"> */}
-          {/*      <div className="UserWalletSummary__label power-down"> */}
-          {/*        <FormattedMessage id="interest" defaultMessage="Interest" /> */}
-          {/*      </div> */}
-          {/*      <div */}
-          {/*        className={powerClassList} */}
-          {/*      > */}
-          {/*        {user.fetching || loadingGlobalProperties ? ( */}
-          {/*          <Loading /> */}
-          {/*        ) : ( */}
-          {/*          <span> */}
-          {/*            <FormattedNumber value={interest} /> {' HBD'} */}
-          {/*          </span> */}
-          {/*        )} */}
-          {/*      </div> */}
-          {/*    </div> */}
-          {/*    <div className="UserWalletSummary__actions"> */}
-          {/*      <p className="UserWalletSummary__description"> */}
-          {/*        HBD staking earnings ready to be claimed. */}
-          {/*      </p> */}
-          {/*      /!* {isAuth && authUserPage && ( *!/ */}
-          {/*      /!*  <Button *!/ */}
-          {/*      /!*    onClick={() => {}} *!/ */}
-          {/*      /!*    className={'UserWalletSummary__button'} *!/ */}
-          {/*      /!*  > *!/ */}
-          {/*      /!*    Claim{' '} *!/ */}
-          {/*      /!*  </Button> *!/ */}
-          {/*      /!* )} *!/ */}
-          {/*    </div> */}
-          {/*  </div> */}
-          {/* )} */}
         </React.Fragment>
       )}
       {hasDelegations && (
