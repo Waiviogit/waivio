@@ -36,8 +36,8 @@ import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
 import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
 import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
 import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
+import { getHbdInterestRate } from '../../../store/walletStore/walletSelectors';
 
-const HBD_INTEREST_RATE = 15;
 const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
     return 0;
@@ -136,25 +136,6 @@ const getFormattedPendingWithdrawalSP = (
 
   return null;
 };
-const estimateInterestBalance = hiveAccount => {
-  const { savings_hbd_seconds, savings_hbd_seconds_last_update, savings_hbd_balance } = hiveAccount;
-
-  if (savings_hbd_seconds === 0 && savings_hbd_balance === 0) {
-    return 0;
-  }
-
-  const hdbSeconds = parseFloat(savings_hbd_seconds) / 1000;
-  const hdbSecondsLastUpdate = moment.utc(savings_hbd_seconds_last_update).unix();
-  const nowSeconds = moment.utc().unix();
-  const hbdBalance = parseFloat(savings_hbd_balance);
-  const secondsPerYear = 31536000;
-
-  const interest =
-    ((hdbSeconds + (nowSeconds - hdbSecondsLastUpdate) * hbdBalance) * (HBD_INTEREST_RATE / 100)) /
-    secondsPerYear;
-
-  return interest < 0.001 ? 0 : interest;
-};
 
 const UserWalletSummary = ({
   user,
@@ -179,8 +160,32 @@ const UserWalletSummary = ({
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+  const interestRate = useSelector(getHbdInterestRate);
 
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
+  const estimateInterestBalance = hiveAccount => {
+    const {
+      savings_hbd_seconds,
+      savings_hbd_seconds_last_update,
+      savings_hbd_balance,
+    } = hiveAccount;
+
+    if (savings_hbd_seconds === 0 && savings_hbd_balance === 0) {
+      return 0;
+    }
+
+    const hdbSeconds = parseFloat(savings_hbd_seconds) / 1000;
+    const hdbSecondsLastUpdate = moment.utc(savings_hbd_seconds_last_update).unix();
+    const nowSeconds = moment.utc().unix();
+    const hbdBalance = parseFloat(savings_hbd_balance);
+    const secondsPerYear = 31536000;
+
+    const interest =
+      ((hdbSeconds + (nowSeconds - hdbSecondsLastUpdate) * hbdBalance) * (interestRate / 100)) /
+      secondsPerYear;
+
+    return interest < 0.001 ? 0 : interest;
+  };
   const interest = estimateInterestBalance(user);
 
   const authUserPage = user.name === authUserName;
