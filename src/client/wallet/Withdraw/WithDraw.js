@@ -402,6 +402,18 @@ const Withdraw = ({
               })}
             </p>
           )}
+          <br />
+          <p>
+            <b>Notice:</b> All crypto withdraws are processed by{' '}
+            <a
+              className={'Withdraw__underlined-link'}
+              href={' https://simpleswap.io/'}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              SimpleSwap.io.
+            </a>
+          </p>
         </Form>
       </Modal>
       {isShowScanner && (
