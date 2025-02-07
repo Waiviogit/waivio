@@ -170,7 +170,7 @@ class WalletSidebar extends React.Component {
             )}
           </div>
         )}
-        {!isEmpty(user) && ownProfile && !isGuest && isNotWaivWallet && (
+        {!isEmpty(user) && ownProfile && !isGuest && isHiveWallet && (
           <Action
             big
             className="WalletSidebar__transfer no-margin"

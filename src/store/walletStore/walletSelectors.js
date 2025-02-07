@@ -10,6 +10,7 @@ export const walletState = state => state.wallet;
 // reselect function
 
 export const getIsTransferVisible = createSelector([walletState], state => state.transferVisible);
+export const getHbdInterestRate = createSelector([walletState], state => state.hbdInterestRate);
 
 export const getTransferTo = createSelector([walletState], state => state.transferTo);
 
