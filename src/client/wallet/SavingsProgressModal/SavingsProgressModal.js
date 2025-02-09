@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { isEmpty } from 'lodash';
 import ProgressModalBody from '../PowerDownProgressModal/ProgressModalBody';
 
 const SavingsProgressModal = ({
@@ -22,10 +23,11 @@ const SavingsProgressModal = ({
     2: '2',
     3: '3',
   };
+  const currInfo = savingsInfo?.filter(inf => inf?.amount?.includes(symbol));
 
   return (
     <Modal
-      visible={showModal}
+      visible={showModal && !isEmpty(currInfo)}
       footer={[
         <Button key="Ok" type="primary" onClick={() => setShowModal(false)}>
           <FormattedMessage id="ok" defaultMessage="Ok" />
@@ -34,30 +36,28 @@ const SavingsProgressModal = ({
       title={'Withdraw Savings'}
       onCancel={() => setShowModal(false)}
     >
-      {savingsInfo
-        ?.filter(inf => inf?.amount?.includes(symbol))
-        ?.map((info, i) => (
-          <ProgressModalBody
-            amount={info.amount}
-            isSaving
-            showNextDate={false}
-            title={'Withdraw'}
-            timePeriod={'day'}
-            addSpace={i !== savingsInfo.length - 1}
-            key={info._id}
-            max={3}
-            min={0}
-            info={info}
-            index={i}
-            setShowSavingsProgress={setShowSavingsProgress}
-            setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
-            setCurrWithdrawSaving={setCurrWithdrawSaving}
-            left={calculateDaysLeftForSavings(info.complete)}
-            marks={marks}
-            authUserPage={authUserPage}
-            isAuth={isAuth}
-          />
-        ))}
+      {currInfo?.map((info, i) => (
+        <ProgressModalBody
+          amount={info.amount}
+          isSaving
+          showNextDate={false}
+          title={'Withdraw'}
+          timePeriod={'day'}
+          addSpace={i !== savingsInfo.length - 1}
+          key={info._id}
+          max={3}
+          min={0}
+          info={info}
+          index={i}
+          setShowSavingsProgress={setShowSavingsProgress}
+          setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
+          setCurrWithdrawSaving={setCurrWithdrawSaving}
+          left={calculateDaysLeftForSavings(info.complete)}
+          marks={marks}
+          authUserPage={authUserPage}
+          isAuth={isAuth}
+        />
+      ))}
     </Modal>
   );
 };

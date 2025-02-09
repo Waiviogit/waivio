@@ -66,7 +66,6 @@ class StoryFull extends React.Component {
     pendingBookmark: PropTypes.bool,
     isThread: PropTypes.bool,
     commentCount: PropTypes.number,
-    saving: PropTypes.bool,
     isRecipe: PropTypes.bool,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
@@ -91,7 +90,6 @@ class StoryFull extends React.Component {
     pendingFollow: false,
     pendingBookmark: false,
     commentCount: 0,
-    saving: false,
     ownPost: false,
     sliderMode: false,
     onFollowClick: () => {},
@@ -257,7 +255,6 @@ class StoryFull extends React.Component {
       pendingFollow,
       pendingBookmark,
       commentCount,
-      saving,
       rewardFund,
       ownPost,
       sliderMode,
@@ -469,7 +466,6 @@ class StoryFull extends React.Component {
               pendingFlag={pendingFlag}
               pendingFollow={pendingFollow}
               pendingBookmark={pendingBookmark}
-              saving={saving}
               postState={postState}
               intl={intl}
               post={post}
@@ -622,7 +618,6 @@ class StoryFull extends React.Component {
           ownPost={ownPost}
           singlePostVew
           rewardFund={rewardFund}
-          saving={saving}
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
           onReportClick={this.props.onReportClick}

@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState } from 'react';
-import { isEmpty, size, trimEnd } from 'lodash';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { isEmpty, size, trimEnd, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -147,19 +147,23 @@ const ObjectOfTypePage = props => {
     }
   }, [props.location.hash, props.wobject.author_permlink]);
 
-  const handleChangeContent = editor => {
-    const newContent = editorStateToMarkdownSlate(editor.children);
+  const handleChangeContent = useCallback(
+    debounce(editor => {
+      const newContent = editorStateToMarkdownSlate(editor.children);
 
-    if (trimEnd(content) !== trimEnd(newContent)) {
-      setContent(newContent);
-      if (newContent)
-        saveDraftPage(
-          userName,
-          props.nestedWobject.author_permlink || props.wobject.author_permlink,
-          newContent,
-        );
-    }
-  };
+      if (trimEnd(content) !== trimEnd(newContent)) {
+        setContent(newContent);
+        if (newContent) {
+          saveDraftPage(
+            userName,
+            props.nestedWobject.author_permlink || props.wobject.author_permlink,
+            newContent,
+          );
+        }
+      }
+    }, 500),
+    [content, userName, props.nestedWobject.author_permlink, props.wobject.author_permlink],
+  );
 
   const handleVotePercentChange = percent => setVotePercent(percent);
 

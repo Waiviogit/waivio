@@ -52,7 +52,7 @@ export default {
   AdminNewAccounts: loableComponent(import('../client/settings/AdminPage/AdminNewAccounts')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),
-  Editor: loableComponent(import('../client/post/EditPost')),
+  Editor: loableComponent(import('../client/post/EditPost/EditorContainer')),
   Settings: loableComponent(import('../client/settings/Settings')),
   GuestsSettings: loableComponent(import('../client/settings/GuestsSettings')),
   WebsiteSettings: loableComponent(import('../client/settings/WebsiteSettings')),

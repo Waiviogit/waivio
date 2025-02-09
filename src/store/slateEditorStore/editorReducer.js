@@ -1,15 +1,11 @@
 import { get, isNil, uniqBy } from 'lodash';
 import * as editorActions from './editorActions';
-import * as postActions from '../postsStore/postActions';
-import * as authActions from '../authStore/authActions';
-import { GET_USER_METADATA } from '../usersStore/usersActions';
 
 const defaultState = {
   loading: false,
   error: null,
   success: false,
   saving: false,
-  draftPosts: [],
   pendingDrafts: [],
   editedPosts: [],
   importObject: {},
@@ -27,6 +23,7 @@ const defaultState = {
     editorState: [],
     titleValue: '',
   },
+  linkedObjects: [],
 };
 
 const editor = (state = defaultState, action) => {
@@ -36,46 +33,7 @@ const editor = (state = defaultState, action) => {
         ...state,
         importObject: action.payload,
       };
-    case editorActions.ADD_EDITED_POST:
-      return {
-        ...state,
-        editedPosts: [...state.editedPosts, action.payload],
-      };
-    case postActions.GET_CONTENT.SUCCESS:
-      return {
-        ...state,
-        editedPosts: state.editedPosts.filter(post => post !== action.payload.permlink),
-      };
-    case editorActions.DELETE_EDITED_POST:
-      return {
-        ...state,
-        editedPosts: state.editedPosts.filter(post => post !== action.payload),
-      };
-    case authActions.LOGIN_SUCCESS:
-    case authActions.LOGIN_SERVER.SUCCESS:
-      if (action.meta && action.meta.refresh) return state;
 
-      return {
-        ...state,
-        draftPosts: get(action, ['payload', 'userMetaData', 'drafts'], defaultState.draftPosts),
-      };
-    case GET_USER_METADATA.SUCCESS:
-      if (action.payload && action.payload.drafts) {
-        return {
-          ...state,
-          draftPosts: action.payload.drafts,
-        };
-      }
-
-      return state;
-    case editorActions.NEW_POST:
-      return {
-        ...state,
-        loading: false,
-        error: null,
-        success: false,
-        loadingImg: false,
-      };
     case editorActions.CREATE_POST_START:
       return {
         ...state,
@@ -96,60 +54,6 @@ const editor = (state = defaultState, action) => {
         error: null,
         success: true,
       };
-    case editorActions.SAVE_DRAFT_START:
-      return {
-        ...state,
-        saving: true,
-        editor: {
-          ...state.editor,
-          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
-        },
-      };
-    case editorActions.SAVE_DRAFT_SUCCESS:
-      return {
-        ...state,
-        draftPosts: [
-          ...state.draftPosts.filter(d => d.draftId !== action.meta.postId),
-          action.payload,
-        ],
-        saving: false,
-      };
-    case editorActions.SAVE_DRAFT_ERROR:
-      return {
-        ...state,
-        saving: false,
-      };
-    case editorActions.DELETE_DRAFT_START:
-      return {
-        ...state,
-        pendingDrafts: [...state.pendingDrafts, ...action.meta.ids],
-      };
-    case editorActions.DELETE_DRAFT_SUCCESS: {
-      return {
-        ...state,
-        draftPosts: action.payload,
-        pendingDrafts: state.pendingDrafts.filter(id => !action.meta.ids.includes(id)),
-      };
-    }
-    case editorActions.DELETE_DRAFT_ERROR:
-      return {
-        ...state,
-        pendingDrafts: state.pendingDrafts.filter(id => !action.meta.ids.includes(id)),
-      };
-    case editorActions.DELETE_DRAFT_OBJECT.START:
-      return {
-        ...state,
-      };
-    case editorActions.DELETE_DRAFT_OBJECT.SUCCESS: {
-      return {
-        ...state,
-        draftPosts: action.payload,
-      };
-    }
-    case editorActions.DELETE_DRAFT_OBJECT.ERROR:
-      return {
-        ...state,
-      };
     case editorActions.UPLOAD_IMG_START:
       return {
         ...state,
@@ -168,6 +72,7 @@ const editor = (state = defaultState, action) => {
           ...state.editorExtended,
           isShowEditorSearch: false,
           titleValue: action.payload.draftContent.title,
+          content: action.payload.draftContent.body,
         },
       };
     case editorActions.SET_UPDATED_EDITOR_DATA: {
@@ -181,15 +86,16 @@ const editor = (state = defaultState, action) => {
         },
       };
     }
-    case editorActions.SET_LINKED_OBJ: {
-      return {
-        ...state,
-        editor: {
-          ...state.editor,
-          linkedObjects: uniqBy([...state.editor.linkedObjects, action.payload], '_id'),
-        },
-      };
-    }
+    // case editorActions.SET_LINKED_OBJ: {
+    //   return {
+    //     ...state,
+    //     editor: {
+    //       ...state.editor,
+    //       linkedObjects: [...state.editor.linkedObjects, action.payload],
+    //     },
+    //     linkedObjects: [...state.linkedObjects, action.payload],
+    //   };
+    // }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
       return {
         ...state,
@@ -249,10 +155,7 @@ const editor = (state = defaultState, action) => {
         editorSlate: action.payload.editor,
       };
     case editorActions.LEAVE_EDITOR:
-      return {
-        ...defaultState,
-        draftPosts: state.draftPosts,
-      };
+      return defaultState;
     default:
       return state;
   }

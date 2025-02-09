@@ -5,18 +5,11 @@ import { filter, uniqBy, get } from 'lodash';
 export const editorState = state => state.editor;
 
 // reselect function
-export const getDraftPosts = createSelector([editorState], state => state.draftPosts);
 export const getImportObject = createSelector([editorState], state => state.importObject);
 
 export const getIsEditorLoading = createSelector([editorState], state => state.loading);
 
 export const getIsEditorSaving = createSelector([editorState], state => state.saving);
-
-export const getPendingDrafts = createSelector([editorState], state => state.pendingDrafts);
-
-export const getIsPostEdited = createSelector(editorState, (state, permlink) =>
-  state.editedPosts.includes(permlink),
-);
 
 export const getIsImageUploading = createSelector([editorState], state => state.loadingImg);
 
@@ -30,12 +23,6 @@ export const getEditorDraftBody = createSelector(
   state => state.draftContent?.body || '',
 );
 
-export const getCurrentDraft = (state, { draftId }) => {
-  const draftPosts = getDraftPosts(state);
-
-  return draftPosts.find(d => d.draftId === draftId);
-};
-
 export const getEditorLinkedObjects = createSelector(getEditor, state =>
   get(state, 'linkedObjects', []),
 );
@@ -43,8 +30,6 @@ export const getEditorLinkedObjects = createSelector(getEditor, state =>
 export const getEditorLinkedObjectsCards = createSelector(getEditor, state =>
   get(state, 'hideLinkedObjects', []),
 );
-
-export const getEditorDraftId = createSelector(getEditor, state => get(state, 'draftId', null));
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   uniqBy(
@@ -58,16 +43,6 @@ export const getEditorExtended = createSelector([editorState], state => state.ed
 export const getSearchCoordinates = createSelector(
   [getEditorExtended],
   state => state.searchCoordinates,
-);
-
-export const getEditorExtendedState = createSelector(
-  [getEditorExtended],
-  state => state.editorState,
-);
-
-export const getEditorExtendedSelectionState = createSelector(
-  [getEditorExtended],
-  state => state.searchSelectionState,
 );
 
 export const getEditorExtendedIsShowSearch = createSelector(
