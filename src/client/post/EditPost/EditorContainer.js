@@ -1,7 +1,8 @@
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
-import { useDispatch, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
@@ -10,10 +11,14 @@ import {
   getDraftsList,
   safeDraftAction,
   setCurrentDraft,
+  resetLinkedObjects,
+  setObjPercent,
 } from '../../../store/draftsStore/draftsActions';
 import {
   getDraftPostsSelector,
   getCurrDraftSelector,
+  getLinkedObjects,
+  getObjectPercentageSelector,
 } from '../../../store/draftsStore/draftsSelectors';
 import { getSuitableLanguage } from '../../../store/reducers';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
@@ -34,9 +39,7 @@ import {
   getIsEditorSaving,
   getIsImageUploading,
   getEditor,
-  getFilteredObjectCards,
 } from '../../../store/slateEditorStore/editorSelectors';
-import { getCoordinates } from '../../../store/userStore/userActions';
 import requiresLogin from '../../auth/requiresLogin';
 import Loading from '../../components/Icon/Loading';
 import EditPost from './EditPost';
@@ -44,7 +47,7 @@ import EditPost from './EditPost';
 const EditorContainer = props => {
   const query = new URLSearchParams(props.location.search);
   const [loading, setLoading] = useState(true);
-  const [campaing, setCampaing] = useState(null);
+  const [campaign, setCampaign] = useState(null);
   const [draftIdState, setDraftId] = useState(getCurrentDraftId(query.get('draft')));
 
   useEffect(() => {
@@ -83,13 +86,13 @@ const EditorContainer = props => {
 
     if (newId && draftIdState !== newId) {
       setLoading(true);
-      setCampaing(null);
+      setCampaign(null);
       setDraftId(newId);
 
       if (props.currentDraft?.jsonMetadata?.campaignId) getInfoAboutCampaign(props.currentDraft);
       else setLoading(false);
     }
-  }, [query.get('draft')]);
+  }, [props.currentDraft]);
 
   const getInfoAboutCampaign = currDraft => {
     const campaignId = query.get('campaign') || currDraft?.jsonMetadata?.campaignId;
@@ -102,12 +105,18 @@ const EditorContainer = props => {
       return props
         .getReviewCheckInfo({ campaignId }, props.intl, campaignType, secondaryItem)
         .then(data => {
-          setCampaing(data);
+          setCampaign(data);
           setLoading(false);
 
           return data;
+        })
+        .catch(() => {
+          setLoading(false);
+          setCampaign(null);
         });
     }
+
+    return Promise.resolve();
   };
 
   return (
@@ -118,12 +127,66 @@ const EditorContainer = props => {
         <EditPost
           {...props}
           currDraft={props.currentDraft}
-          campaing={campaing}
+          campaign={campaign}
           draftId={draftIdState}
         />
       )}
     </div>
   );
+};
+
+EditorContainer.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string.isRequired,
+  }).isRequired,
+  draftPosts: PropTypes.arrayOf(
+    PropTypes.shape({
+      draftId: PropTypes.string.isRequired,
+      jsonMetadata: PropTypes.shape({
+        campaignId: PropTypes.string,
+      }),
+      campaignType: PropTypes.string,
+      secondaryItem: PropTypes.string,
+    }),
+  ).isRequired,
+  currentDraft: PropTypes.shape({
+    jsonMetadata: PropTypes.shape({
+      campaignId: PropTypes.string,
+    }),
+    campaignType: PropTypes.string,
+    secondaryItem: PropTypes.string,
+  }),
+  campaignId: PropTypes.string,
+  campaignType: PropTypes.string,
+  secondaryItem: PropTypes.string,
+  locale: PropTypes.string.isRequired,
+  publishing: PropTypes.bool.isRequired,
+  saving: PropTypes.bool.isRequired,
+  imageLoading: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool.isRequired,
+  beneficiaries: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  isWaivio: PropTypes.bool.isRequired,
+  editor: PropTypes.shape().isRequired,
+  filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  objPercentage: PropTypes.shape().isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func.isRequired,
+  }).isRequired,
+  setEditorState: PropTypes.func.isRequired,
+  createPost: PropTypes.func.isRequired,
+  saveDraft: PropTypes.func.isRequired,
+  getReviewCheckInfo: PropTypes.func.isRequired,
+  setUpdatedEditorData: PropTypes.func.isRequired,
+  buildPost: PropTypes.func.isRequired,
+  handleObjectSelect: PropTypes.func.isRequired,
+  leaveEditor: PropTypes.func.isRequired,
+  handlePasteText: PropTypes.func.isRequired,
+  setLinkedObj: PropTypes.func.isRequired,
+  setClearState: PropTypes.func.isRequired,
+  getDraftsListAction: PropTypes.func.isRequired,
+  setCurrentDraft: PropTypes.func.isRequired,
+  resetLinkedObjects: PropTypes.func.isRequired,
+  setObjPercent: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, props) => {
@@ -142,8 +205,9 @@ const mapStateToProps = (state, props) => {
     beneficiaries: getBeneficiariesUsers(state),
     isWaivio: getIsWaivio(state),
     editor: getEditor(state),
-    filteredObjectsCards: getFilteredObjectCards(state),
+    filteredObjectsCards: getLinkedObjects(state),
     currentDraft: getCurrDraftSelector(state),
+    objPercentage: getObjectPercentageSelector(state),
   };
 };
 
@@ -155,19 +219,20 @@ const mapDispatchToProps = (dispatch, props) => {
     setEditorState: editorState => dispatch(setEditorState(editorState)),
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
-    saveDraft: data => dispatch(safeDraftAction(draftId, props.intl, data)),
+    saveDraft: data => dispatch(safeDraftAction(draftId, data)),
     getReviewCheckInfo: (data, intl, campaignType, secondaryItem) =>
       dispatch(getCampaignInfo(data, intl, campaignType, secondaryItem)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object, false, props.intl)),
     leaveEditor: () => dispatch(leaveEditor()),
-    getCoordinates: () => dispatch(getCoordinates()),
     handlePasteText: html => dispatch(handlePasteText(html)),
     setLinkedObj: obj => dispatch(setLinkedObj(obj)),
     setClearState: () => dispatch(setClearState()),
     getDraftsListAction: obj => dispatch(getDraftsList(obj)),
     setCurrentDraft: draft => dispatch(setCurrentDraft(draft)),
+    resetLinkedObjects: () => dispatch(resetLinkedObjects()),
+    setObjPercent: data => dispatch(setObjPercent(data)),
   };
 };
 

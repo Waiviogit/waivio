@@ -23,13 +23,20 @@ import {
 } from 'lodash';
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
-import { safeDraftAction, deleteDraft } from '../draftsStore/draftsActions';
-import { getCurrentDraftSelector } from '../draftsStore/draftsSelectors';
+import {
+  safeDraftAction,
+  deleteDraft,
+  deleteCampaignIdFromDraft,
+} from '../draftsStore/draftsActions';
+import {
+  getCurrentDraftSelector,
+  getLinkedObjects,
+  getObjectPercentageSelector,
+} from '../draftsStore/draftsSelectors';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../searchStore/searchActions';
@@ -109,7 +116,6 @@ export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
-  intl,
 ) => dispatch => {
   const jsonMetadata = jsonParse(json_metadata);
   const draft = {
@@ -127,7 +133,7 @@ export const editPost = (
     title,
   };
 
-  return dispatch(safeDraftAction(id, intl, draft));
+  return dispatch(safeDraftAction(id, draft));
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(
@@ -311,7 +317,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         .then(async result => {
           if (draftId) {
             batch(() => {
-              if (result.ok || result?.result?.id) dispatch(deleteDraft(draftId));
+              if (result.ok || result?.result?.id) dispatch(deleteDraft([draftId]));
               dispatch(addEditedPost(permlink));
             });
           }
@@ -380,9 +386,11 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 
 export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
 export const SET_LINKED_OBJ = '@editor/SET_LINKED_OBJ';
+export const SET_LINKED_OBJS = '@editor/SET_LINKED_OBJS';
 export const SET_UPDATED_EDITOR_EXTENDED_DATA = '@editor/SET_UPDATED_EDITOR_EXTENDED_DATA';
 export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload });
 export const setLinkedObj = payload => ({ type: SET_LINKED_OBJ, payload });
+export const setLinkedObjs = payload => ({ type: SET_LINKED_OBJS, payload });
 export const setUpdatedEditorExtendedData = payload => ({
   type: SET_UPDATED_EDITOR_EXTENDED_DATA,
   payload,
@@ -394,7 +402,18 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
     const authUserName = getAuthenticatedUserName(state);
     const method = campaignType === 'mentions' ? getMentionCampaign : getCampaign;
 
-    return method(authUserName, campaignId, secondaryItem);
+    return method(authUserName, campaignId, secondaryItem)
+      .then(campaign => {
+        const linkedObjects =
+          campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
+            ? [campaign.requiredObject]
+            : [campaign.requiredObject, campaign.secondaryObject];
+
+        dispatch(setLinkedObjs(linkedObjects));
+      })
+      .catch(() => {
+        dispatch(deleteCampaignIdFromDraft());
+      });
   };
 };
 
@@ -406,7 +425,6 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const {
     body,
     originalBody,
-    linkedObjects,
     topics,
     content,
     campaign,
@@ -417,15 +435,10 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     permlink,
     parentPermlink,
     jsonMetadata,
-    objPercentage,
   } = { ...getEditor(state), isUpdating: currDraft?.isUpdating, ...data };
-  const currentObject = get(linkedObjects, '[0]', {});
-  const objName = currentObject.author_permlink;
-  let updatedEditor = { isEditPost };
-
-  if (currentObject.type === 'hashtag' || (currentObject.object_type === 'hashtag' && objName)) {
-    updatedEditor = { ...updatedEditor, topics: uniqWith([...topics, objName], isEqual) };
-  }
+  const updatedEditor = { isEditPost };
+  const linkedObjects = getLinkedObjects(state);
+  const objPercentage = getObjectPercentageSelector(state);
 
   dispatch(setUpdatedEditorData(updatedEditor));
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
@@ -462,13 +475,13 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
 
   const mappedWobjects = linkedObjects
     ? linkedObjects
-        .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
+        .filter(obj => get(objPercentage, `[${obj.author_permlink}].percent`, 0) > 0)
         ?.map(obj => ({
           object_type: obj.object_type,
           name: getObjectName(obj),
           author_permlink: obj.author_permlink,
           defaultShowLink: obj.defaultShowLink,
-          percent: get(objPercentage, [obj._id, 'percent']),
+          percent: get(objPercentage, [obj.author_permlink, 'percent']),
         }))
     : [];
 

@@ -72,6 +72,7 @@ const editor = (state = defaultState, action) => {
           ...state.editorExtended,
           isShowEditorSearch: false,
           titleValue: action.payload.draftContent.title,
+          content: action.payload.draftContent.body,
         },
       };
     case editorActions.SET_UPDATED_EDITOR_DATA: {
@@ -85,16 +86,16 @@ const editor = (state = defaultState, action) => {
         },
       };
     }
-    case editorActions.SET_LINKED_OBJ: {
-      return {
-        ...state,
-        editor: {
-          ...state.editor,
-          linkedObjects: [...state.editor.linkedObjects, action.payload],
-        },
-        linkedObjects: [...state.linkedObjects, action.payload],
-      };
-    }
+    // case editorActions.SET_LINKED_OBJ: {
+    //   return {
+    //     ...state,
+    //     editor: {
+    //       ...state.editor,
+    //       linkedObjects: [...state.editor.linkedObjects, action.payload],
+    //     },
+    //     linkedObjects: [...state.linkedObjects, action.payload],
+    //   };
+    // }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
       return {
         ...state,

@@ -121,6 +121,7 @@ export function createPostMetadata(
   campaignId,
   host,
   reservationPermlink,
+  hideObjectPermlink,
 ) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
@@ -167,8 +168,11 @@ export function createPostMetadata(
   if (wobjects) {
     metaData[WAIVIO_META_FIELD_NAME] = { wobjects };
     metaData.linkedObjects = wobjects;
+    metaData.hideObjectPermlink = hideObjectPermlink;
   }
   if (campaignId) metaData.campaignId = campaignId;
+  else metaData.campaignId = undefined;
+
   if (reservationPermlink) metaData.reservation_permlink = reservationPermlink;
 
   return {
@@ -322,7 +326,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const type = query.get('type');
   let linkedObjects = [];
-  const campaign = props?.campaing;
+  const campaign = props?.campaign;
 
   if (campaign) {
     linkedObjects =
@@ -333,7 +337,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
 
   const title = setTitle(initObjects, props, authors, users);
   let state = {
-    campaign: props.campaignId
+    campaign: props.campaign
       ? {
           ...campaign,
           type,
@@ -370,7 +374,6 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
     linkedObjects = get(draftPost, ['jsonMetadata', 'linkedObjects'], []);
-
     state = {
       campaign,
       draftId: props.draftId,
@@ -379,7 +382,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       },
-      content: '',
+      content: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects,
       hideLinkedObjects: hideObjects,

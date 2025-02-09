@@ -16,7 +16,9 @@ const Draft = ({ draft }) => {
       <Link
         className="LastDrafts__draft__title"
         to={{ pathname: '/editor', search: `?draft=${draft.draftId}` }}
-        onClick={() => dispatch(setCurrentDraft(draft))}
+        onClick={() => {
+          dispatch(setCurrentDraft(draft));
+        }}
       >
         {draft.title ? (
           draft.title

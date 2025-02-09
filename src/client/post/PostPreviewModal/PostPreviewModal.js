@@ -58,6 +58,7 @@ class PostPreviewModal extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    setObjPercent: PropTypes.func,
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
     titleValue: PropTypes.string,
@@ -152,7 +153,7 @@ class PostPreviewModal extends Component {
       [objId]: { percent },
     };
 
-    this.props.setUpdatedEditorData({ objPercentage: nextObjPercentage });
+    this.props.setObjPercent(nextObjPercentage);
   };
 
   handleReviewSubmit = () => {
@@ -165,19 +166,12 @@ class PostPreviewModal extends Component {
   handleSubmit = () => {
     try {
       if (this.props.reviewData && !this.props.isUpdating) {
-        // eslint-disable-next-line no-console
-        console.log(this.props.reviewData?.requirements, 168);
-        // eslint-disable-next-line no-console
-        console.log(this.state.isCheckReviewModalOpen, 170);
         this.setState({ isCheckReviewModalOpen: true });
       } else {
-        // eslint-disable-next-line no-console
-        console.log('onSubmit', 173);
         this.props.onSubmit();
       }
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e, 'error');
+      console.error(e);
     }
   };
 
