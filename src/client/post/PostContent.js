@@ -13,7 +13,6 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
 } from '../../common/helpers/postHelpers';
-import { editPost } from '../../store/editorStore/editorActions';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
@@ -36,7 +35,6 @@ import {
   getWebsiteName,
 } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
-import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes } from '../../store/postsStore/postsSelectors';
 import { getFollowingList } from '../../store/userStore/userSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
@@ -48,7 +46,7 @@ import {
   getSingleComment,
   likeComment,
 } from '../../store/commentsStore/commentsActions';
-import { buildPost } from '../../store/slateEditorStore/editorActions';
+import { buildPost, editPost } from '../../store/slateEditorStore/editorActions';
 import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelectors';
 
 @injectIntl
@@ -63,7 +61,6 @@ import { getCommentsPendingVotes } from '../../store/commentsStore/commentsSelec
     reblogList: getRebloggedList(state),
     pendingReblogs: getPendingReblogs(state),
     followingList: getFollowingList(state),
-    saving: getIsEditorSaving(state),
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
@@ -101,7 +98,6 @@ class PostContent extends React.Component {
     pendingReblogs: PropTypes.arrayOf(PropTypes.string),
     followingList: PropTypes.arrayOf(PropTypes.string),
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string).isRequired,
-    saving: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     appUrl: PropTypes.string.isRequired,
@@ -292,7 +288,6 @@ class PostContent extends React.Component {
       followingList,
       bookmarks,
       pendingBookmarks,
-      saving,
       sliderMode,
       rewardFund,
       defaultVotePercent,
@@ -419,7 +414,6 @@ class PostContent extends React.Component {
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
           pendingBookmark={pendingBookmarks.includes(content.id)}
-          saving={saving}
           rewardFund={rewardFund}
           ownPost={authorName === user.name}
           sliderMode={sliderMode}

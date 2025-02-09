@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 import { withRouter } from 'react-router';
-import { debounce, get, includes, find, uniqWith, isEqual, isEmpty, isNull } from 'lodash';
+import { debounce, get, includes, find, uniqWith, isEqual, isEmpty } from 'lodash';
 import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -12,7 +12,6 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
-import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import Loading from '../../components/Icon/Loading';
@@ -23,23 +22,23 @@ const propTypes = {
   intl: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  objPercentage: PropTypes.arrayOf(PropTypes.shape()),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
   draftId: PropTypes.string,
   campaignId: PropTypes.string,
-  campaignType: PropTypes.string,
-  secondaryItem: PropTypes.string,
   publishing: PropTypes.bool,
   saving: PropTypes.bool,
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
+  setObjPercent: PropTypes.func,
   saveDraft: PropTypes.func,
-  getUserMetadata: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
   leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
-  getReviewCheckInfo: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   setUpdatedEditorData: PropTypes.func.isRequired,
-  firstParseLinkedObjects: PropTypes.func.isRequired,
   isWaivio: PropTypes.bool,
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
@@ -47,10 +46,8 @@ const propTypes = {
   match: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
-  location: PropTypes.shape().isRequired,
   filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handlePasteText: PropTypes.func.isRequired,
-  getCoordinates: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -72,59 +69,33 @@ const EditPost = props => {
       draftContent,
       content,
       topics,
-      isEditPost,
       linkedObjects = [],
       hideLinkedObjects = [],
-      objPercentage,
       settings,
       campaign,
       isUpdating,
       titleValue,
-      draftId: draftIdEditor,
     },
-    intl,
+    draftId,
+    objPercentage,
   } = props;
-  const [currDraft, setCurrDraft] = React.useState();
   const [isNewReview, setIsNewReview] = React.useState(false);
-  const getCampaignInfo = () => {
-    let campaignId = props.campaignId;
-
-    if (props.currDraft) {
-      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
-    }
-    const isReview = !isEmpty(campaignId);
-
-    if (isReview) {
-      const campaignType = props.campaignType || props.currDraft?.campaignType;
-      const secondaryItem = props.secondaryItem || props.currDraft?.secondaryItem;
-
-      props.getReviewCheckInfo({ campaignId }, intl, campaignType, secondaryItem);
-    }
-  };
+  const [init, setInit] = React.useState(Boolean(props.currDraft));
+  const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
+  const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
-    props.history.replace({
-      pathname: props.location.pathname,
-      search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
-    });
-    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
-
-    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
-
-    let campaignId = props.campaignId;
-
-    if (props.currDraft) {
-      campaignId = campaignId || props.currDraft.jsonMetadata.campaignId;
-    }
-
     const isReview = !isEmpty(campaignId);
 
-    props.getCoordinates();
-    props.getUserMetadata();
+    props.setEditorState(
+      getInitialState({ ...props, draftId: props.draftId }, hideLinkedObjectsSession),
+    );
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
-    if (isReview) {
-      getCampaignInfo();
-    }
+
+    props.history.replace({
+      pathname: props.location.pathname,
+      search: `draft=${draftId}`,
+    });
 
     return () => {
       props.leaveEditor();
@@ -133,35 +104,15 @@ const EditPost = props => {
 
   React.useEffect(() => {
     setIsNewReview(!props.draftPosts.some(d => d.draftId === props.draftId));
-    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
 
-    setDraftId(hideLinkedObjectsSession);
+    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
     const editorData = {
       title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
       body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
     };
 
     if (editorData.title || editorData.body) props.setUpdatedEditorData(editorData);
-    props.firstParseLinkedObjects(props.currDraft || props.editor.draftContent);
-    setCurrDraft(props.currDraft);
-    getCampaignInfo();
-  }, [props.draftId, props.campaignId]);
-
-  React.useEffect(() => {
-    if (!currDraft && props.currDraft && isEditPost) {
-      props.firstParseLinkedObjects(props.currDraft);
-      props.setEditorState(getInitialState(props));
-      setCurrDraft(props.currDraft);
-    }
   }, [props.currDraft]);
-
-  const setDraftId = hideObjects => {
-    if (props.draftId && props.draftId !== draftIdEditor) {
-      props.setEditorState(getInitialState(props, hideObjects));
-    } else if (isNull(props.draftId) && draftIdEditor) {
-      props.setEditorState(getInitialState(props, hideObjects));
-    }
-  };
 
   const handleChangeContent = useCallback(
     debounce((editor, title) => {
@@ -170,12 +121,14 @@ const EditPost = props => {
         titleValue: title,
       };
 
-      if (content !== updatedStore.content || titleValue !== updatedStore.titleValue) {
+      if ((content !== updatedStore.content || titleValue !== updatedStore.titleValue) && !init) {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
+      } else {
+        setInit(false);
       }
     }, 500),
-    [content, titleValue, props.draftId, currDraft],
+    [content, titleValue, props.currDraft, init],
   );
 
   const handleSettingsChange = updatedValue =>
@@ -188,6 +141,7 @@ const EditPost = props => {
 
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
+
   const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
     const prohibitedObjectCards = hideLinkedObjects || [];
     const currentObj = find(linkedObjects, { _id: uniqId });
@@ -204,6 +158,7 @@ const EditPost = props => {
 
     prohibitedObjectCards.push(currentObj);
     localStorage.setItem(props.draftId, JSON.stringify(prohibitedObjectCards));
+
     props.setUpdatedEditorData({
       topics,
       linkedObjects: linkedObjects.filter(object => object._id !== uniqId),
@@ -270,6 +225,7 @@ const EditPost = props => {
             onSubmit={handleSubmit}
             isGuest={props.isGuest}
             titleValue={titleValue}
+            setObjPercent={props.setObjPercent}
           />
           <div className="search-object-panel">
             {props.intl.formatMessage({
@@ -288,10 +244,10 @@ const EditPost = props => {
           <CreateObject onCreateObject={handleCreateObject} />
           {props.filteredObjectsCards.map(wObj => (
             <PostObjectCard
-              isLinked={get(objPercentage, [wObj._id, 'percent'], 0) > 0}
+              isLinked={get(objPercentage, [wObj.author_permlink, 'percent'], 0) > 0}
               wObject={wObj}
               onToggle={handleToggleLinkedObject}
-              key={wObj._id}
+              key={wObj.author_permlink}
             />
           ))}
         </div>

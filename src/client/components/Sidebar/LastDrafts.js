@@ -1,28 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
+import { useDispatch } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
+import { setCurrentDraft } from '../../../store/draftsStore/draftsActions';
 import Loading from '../../components/Icon/Loading';
 import './LastDrafts.less';
 import './SidebarContentBlock.less';
 
-const Draft = ({ draft }) => (
-  <div className="LastDrafts__draft">
-    <Link
-      className="LastDrafts__draft__title"
-      to={{ pathname: '/editor', search: `?draft=${draft.draftId}` }}
-    >
-      {draft.title ? (
-        draft.title
-      ) : (
-        <FormattedMessage id="draft_untitled" defaultMessage="Untitled draft" />
-      )}
-    </Link>
-    <div className="LastDrafts__draft__date">
-      <FormattedRelative value={new Date(draft.lastUpdated)} />
+const Draft = ({ draft }) => {
+  const dispatch = useDispatch();
+
+  return (
+    <div className="LastDrafts__draft">
+      <Link
+        className="LastDrafts__draft__title"
+        to={{ pathname: '/editor', search: `?draft=${draft.draftId}` }}
+        onClick={() => {
+          dispatch(setCurrentDraft(draft));
+        }}
+      >
+        {draft.title ? (
+          draft.title
+        ) : (
+          <FormattedMessage id="draft_untitled" defaultMessage="Untitled draft" />
+        )}
+      </Link>
+      <div className="LastDrafts__draft__date">
+        <FormattedRelative value={new Date(draft.lastUpdated)} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 Draft.propTypes = {
   draft: PropTypes.shape({

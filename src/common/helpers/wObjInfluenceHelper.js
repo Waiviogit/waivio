@@ -37,6 +37,43 @@ export const setInitialObjPercents = (linkedObjects, percentage) => {
   return objPercentage;
 };
 
+export const setInitialObjPercentsNew = (linkedObjects, percentage) => {
+  const len = linkedObjects && linkedObjects.length;
+
+  if (!len) {
+    return {};
+  } else if (len === 1) {
+    return { [linkedObjects[0]?.author_permlink]: { percent: 100 } };
+  }
+  if (
+    len === size(percentage) &&
+    linkedObjects.every(obj => Boolean(percentage[obj.author_permlink])) &&
+    Object.values(percentage).reduce((acc, curr) => acc + curr.percent, 0) === 100
+  ) {
+    const objPercentage = {};
+
+    forEach(percentage, (value, key) => {
+      objPercentage[key] = { percent: value.percent };
+    });
+
+    return objPercentage;
+  }
+  const [first, ...rest] = linkedObjects;
+  const averagePercent = Math.floor(100 / len);
+  const firstPercent = 100 - averagePercent * (len - 1);
+  const objPercentage = {
+    [first.author_permlink]: {
+      percent: firstPercent,
+    },
+  };
+
+  rest.forEach(obj => {
+    objPercentage[obj.author_permlink] = { percent: averagePercent };
+  });
+
+  return objPercentage;
+};
+
 export const setObjPercents = (linkedObjects, percentage) => {
   const { linked, zeroWeighted } = transform(
     percentage,

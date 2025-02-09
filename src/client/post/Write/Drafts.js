@@ -1,151 +1,132 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { sortBy, isEqual, size, map } from 'lodash';
 import { Checkbox } from 'antd';
+import { getDraftsList } from '../../../store/draftsStore/draftsActions';
+import {
+  getDraftPostsSelector,
+  getDraftLoadingSelector,
+  getPendingDraftSelector,
+} from '../../../store/draftsStore/draftsSelectors';
 import Loading from '../../components/Icon/Loading';
-import { reload } from '../../../store/authStore/authActions';
 import DraftRow from './DraftRow';
 import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
-import { getIsReloading } from '../../../store/authStore/authSelectors';
-import { getDraftPosts, getPendingDrafts } from '../../../store/editorStore/editorSelectors';
 
 import './Drafts.less';
 
-@requiresLogin
-@injectIntl
-@connect(
-  state => ({
-    reloading: getIsReloading(state),
-    draftPosts: getDraftPosts(state),
-    pendingDrafts: getPendingDrafts(state),
-  }),
-  { reload },
-)
-class Drafts extends React.Component {
-  static propTypes = {
-    reloading: PropTypes.bool,
-    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    pendingDrafts: PropTypes.arrayOf(PropTypes.string),
-    reload: PropTypes.func,
-  };
+const Drafts = ({ loading, draftPosts, pendingDrafts, getDraftsListAct }) => {
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [selectedDrafts, setSelectedDrafts] = useState([]);
 
-  static defaultProps = {
-    reloading: false,
-    pendingDrafts: [],
-    reload: () => {},
-  };
+  useEffect(() => {
+    getDraftsListAct();
+  }, []);
 
-  constructor(props) {
-    super(props);
+  const handleCheckAll = useCallback(
+    e => {
+      const { checked } = e.target;
 
-    this.state = {
-      showModalDelete: false,
-      selectedDrafts: [],
-    };
+      setSelectedDrafts(checked ? map(draftPosts, d => d.draftId) : []);
+    },
+    [draftPosts],
+  );
 
-    this.handleCheckAll = this.handleCheckAll.bind(this);
-    this.handleCheck = this.handleCheck.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
-  }
+  const handleCheck = useCallback((id, checked) => {
+    setSelectedDrafts(prevSelectedDrafts =>
+      checked ? [...prevSelectedDrafts, id] : prevSelectedDrafts.filter(draft => draft !== id),
+    );
+  }, []);
 
-  componentDidMount() {
-    this.props.reload();
-  }
+  const showModal = useCallback(() => {
+    setShowModalDelete(true);
+  }, []);
 
-  handleCheckAll(e) {
-    const { draftPosts } = this.props;
-    const { checked } = e.target;
+  const hideModal = useCallback(() => {
+    setShowModalDelete(false);
+  }, []);
 
-    this.setState({
-      selectedDrafts: checked ? map(draftPosts, d => d.draftId) : [],
-    });
-  }
+  const sortedDraftPosts = sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
+  const noDrafts = !loading && draftPosts?.length === 0;
 
-  handleCheck(id, checked) {
-    const { selectedDrafts } = this.state;
-
-    this.setState({
-      selectedDrafts: checked
-        ? [...selectedDrafts, id]
-        : selectedDrafts.filter(draft => draft !== id),
-    });
-  }
-
-  showModal() {
-    this.setState({ showModalDelete: true });
-  }
-
-  hideModal() {
-    this.setState({ showModalDelete: false });
-  }
-
-  render() {
-    const { reloading, draftPosts, pendingDrafts } = this.props;
-    const { showModalDelete, selectedDrafts } = this.state;
-    const sortedDraftPosts = sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
-    const noDrafts = !reloading && draftPosts.length === 0;
-
-    return (
-      <div className="Drafts">
-        <div>
-          <h1>
-            <FormattedMessage id="drafts" defaultMessage="Drafts" />
-          </h1>
-          <h3>
-            <FormattedMessage
-              id="drafts_description"
-              defaultMessage="These are posts that were never made public. You can publish them or delete them."
-            />
-          </h3>
-        </div>
-        {reloading && <Loading center={false} />}
-        {!reloading && size(draftPosts) !== 0 && (
-          <div className="Drafts__toolbar">
-            <Checkbox
-              checked={isEqual(
-                selectedDrafts,
-                map(draftPosts, d => d.draftId),
-              )}
-              onChange={this.handleCheckAll}
-            />
-            <div>
-              <a role="presentation" className="Drafts__toolbar__delete" onClick={this.showModal}>
-                <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
-                <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
-              </a>
-            </div>
+  return (
+    <div className="Drafts">
+      <div>
+        <h1>
+          <FormattedMessage id="drafts" defaultMessage="Drafts" />
+        </h1>
+        <h3>
+          <FormattedMessage
+            id="drafts_description"
+            defaultMessage="These are posts that were never made public. You can publish them or delete them."
+          />
+        </h3>
+      </div>
+      {loading && <Loading center={false} />}
+      {!loading && size(draftPosts) !== 0 && (
+        <div className="Drafts__toolbar">
+          <Checkbox
+            checked={isEqual(
+              selectedDrafts,
+              map(draftPosts, d => d.draftId),
+            )}
+            onChange={handleCheckAll}
+          />
+          <div>
+            <a role="presentation" className="Drafts__toolbar__delete" onClick={showModal}>
+              <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
+              <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
+            </a>
           </div>
-        )}
-        {noDrafts && (
-          <h3 className="text-center">
-            <FormattedMessage id="drafts_empty" defaultMessage="You don't have any draft saved" />
-          </h3>
-        )}
-        {!reloading &&
-          map(sortedDraftPosts, draft => (
+        </div>
+      )}
+      {noDrafts && (
+        <h3 className="text-center">
+          <FormattedMessage id="drafts_empty" defaultMessage="You don't have any draft saved" />
+        </h3>
+      )}
+      {!loading && (
+        <React.Fragment>
+          {showModalDelete && (
+            <DeleteDraftModal draftIds={selectedDrafts} onCancel={hideModal} onDelete={hideModal} />
+          )}
+          {map(sortedDraftPosts, draft => (
             <DraftRow
               key={draft.draftId}
               draft={draft}
               id={draft.draftId}
               selected={selectedDrafts.includes(draft.draftId)}
               pending={pendingDrafts.includes(draft.draftId)}
-              onCheck={this.handleCheck}
+              onCheck={handleCheck}
             />
           ))}
-        {showModalDelete && (
-          <DeleteDraftModal
-            draftIds={selectedDrafts}
-            onCancel={this.hideModal}
-            onDelete={this.hideModal}
-          />
-        )}
-      </div>
-    );
-  }
-}
+        </React.Fragment>
+      )}
+    </div>
+  );
+};
 
-export default Drafts;
+Drafts.propTypes = {
+  loading: PropTypes.bool,
+  draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  pendingDrafts: PropTypes.arrayOf(PropTypes.string),
+  getDraftsListAct: PropTypes.func,
+};
+
+Drafts.defaultProps = {
+  reloading: false,
+  pendingDrafts: [],
+  reload: () => {},
+};
+
+const mapStateToProps = state => ({
+  loading: getDraftLoadingSelector(state),
+  draftPosts: getDraftPostsSelector(state),
+  pendingDrafts: getPendingDraftSelector(state),
+});
+
+export default requiresLogin(
+  injectIntl(connect(mapStateToProps, { getDraftsListAct: getDraftsList })(Drafts)),
+);

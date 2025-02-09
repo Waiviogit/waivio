@@ -17,7 +17,6 @@ import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
-import { getIsPostEdited } from '../../store/editorStore/editorSelectors';
 import {
   getIsPostFailed,
   getIsPostFetching,
@@ -38,7 +37,6 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
     const post = getContentOfPost(state);
 
     return {
-      edited: getIsPostEdited(state, ownProps.match.params.permlink),
       content: post
         ? {
             ...post,
@@ -72,7 +70,6 @@ export default class Post extends React.Component {
 
   static defaultProps = {
     user: {},
-    edited: false,
     content: null,
     fetching: false,
     loaded: false,

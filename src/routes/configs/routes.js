@@ -526,12 +526,12 @@ const routes = {
           component: Views.CatalogWrap,
         },
         {
-          path: '/page',
+          path: '/(page)',
           exact: true,
           component: Views.ObjectOfTypePage,
         },
         {
-          path: '/map',
+          path: '/(map)',
           exact: true,
           component: Views.ObjectOfTypeMap,
         },
@@ -540,9 +540,9 @@ const routes = {
           exact: true,
           component: GroupObjectType,
         },
-        { path: '/webpage', exact: true, component: Views.ObjectOfTypeWebpage },
+        { path: '/(webpage)', exact: true, component: Views.ObjectOfTypeWebpage },
         {
-          path: '/blog/@:name',
+          path: '/(blog)/@:name',
           exact: true,
           component: Views.UserProfile,
         },
@@ -551,12 +551,12 @@ const routes = {
           component: ObjectFeed,
         },
         {
-          path: '/shop/:department?',
+          path: '/(shop)/:department?',
           exact: true,
           component: ObjectDepartmentsWobjList,
         },
         {
-          path: '/form/:permlink',
+          path: '/(form)/:permlink',
           exact: true,
           component: Views.FormPage,
         },

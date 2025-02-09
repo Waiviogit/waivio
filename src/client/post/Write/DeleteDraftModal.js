@@ -1,79 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Modal } from 'antd';
+import { useDispatch } from 'react-redux';
+import { Modal, message } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { deleteDraft } from '../../../store/editorStore/editorActions';
-import { notify } from '../../app/Notification/notificationActions';
+import { deleteDraft } from '../../../store/draftsStore/draftsActions';
 
-@injectIntl
-@connect(null, {
-  notify,
-  deleteDraft,
-})
-class DeleteDraftModal extends React.Component {
-  static propTypes = {
-    intl: PropTypes.shape().isRequired,
-    draftIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    deleteDraft: PropTypes.func,
-    notify: PropTypes.func,
-    onDelete: PropTypes.func,
-    onCancel: PropTypes.func,
-  };
+const DeleteDraftModal = ({ intl, draftIds, onDelete, onCancel }) => {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  static defaultProps = {
-    deleteDraft: () => {},
-    notify: () => {},
-    onDelete: () => {},
-    onCancel: () => {},
-  };
-
-  state = {
-    loading: false,
-  };
-
-  deleteDraft = () => {
-    const { intl, draftIds, onDelete } = this.props;
-
-    this.setState({ loading: true });
-    this.props.deleteDraft(draftIds).then(() => {
-      this.props.notify(
-        intl.formatMessage({
+  const handleDeleteDraft = () => {
+    setLoading(true);
+    dispatch(deleteDraft(draftIds)).then(() => {
+      message.success({
+        message: intl.formatMessage({
           id: 'draft_delete_success',
           defaultMessage: 'Draft has been deleted',
         }),
-        'success',
-      );
-      this.setState({
-        loading: false,
       });
+      setLoading(false);
       onDelete();
     });
   };
 
-  render() {
-    const { intl, onCancel } = this.props;
+  return (
+    <Modal
+      title={intl.formatMessage({
+        id: 'draft_delete',
+        defaultMessage: 'Delete this draft?',
+      })}
+      visible
+      confirmLoading={loading}
+      okText={intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
+      cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+      onOk={handleDeleteDraft}
+      onCancel={onCancel}
+    >
+      <FormattedMessage
+        id="draft_delete_modal_content"
+        defaultMessage="Are you sure you want to delete this draft permanently?"
+      />
+    </Modal>
+  );
+};
 
-    return (
-      <Modal
-        title={intl.formatMessage({
-          id: 'draft_delete',
-          defaultMessage: 'Delete this draft?',
-        })}
-        visible
-        confirmLoading={this.state.loading}
-        okText={intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
-        cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-        onOk={this.deleteDraft}
-        onCancel={onCancel}
-      >
-        <FormattedMessage
-          id="draft_delete_modal_content"
-          defaultMessage="Are you sure you want to delete this draft permanently?"
-        />
-      </Modal>
-    );
-  }
-}
+DeleteDraftModal.propTypes = {
+  intl: PropTypes.shape().isRequired,
+  draftIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onDelete: PropTypes.func,
+  onCancel: PropTypes.func,
+};
 
-export default DeleteDraftModal;
+DeleteDraftModal.defaultProps = {
+  onDelete: () => {},
+  onCancel: () => {},
+};
+
+export default injectIntl(DeleteDraftModal);

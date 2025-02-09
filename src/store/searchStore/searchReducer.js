@@ -1,7 +1,7 @@
 import { get, isEmpty, remove, findIndex, isEqual, uniqBy } from 'lodash';
+import { CLEAR_EDITOR_SEARCH_OBJECTS } from '../slateEditorStore/editorActions';
 import * as searchActions from './searchActions';
 import { userToggleFollow } from '../../client/search/helpers';
-import { CLEAR_EDITOR_SEARCH_OBJECTS } from '../editorStore/editorActions';
 import { SEARCH_EXPERTS, SEARCH_EXPERTS_LOADING_MORE } from './searchActions';
 
 const initialState = {
