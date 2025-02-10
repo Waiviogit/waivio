@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
@@ -42,7 +42,6 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
     return 0;
   }
-
   const target = new Date(targetDate);
   const now = new Date();
 
@@ -52,6 +51,15 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   const days = Math.ceil(hours / 24);
 
   return days > 0 ? days : 0;
+};
+
+const calculateDaysWithSeconds = timestamp => {
+  const nowSeconds = moment.utc().unix();
+  const targetSeconds = moment.utc(timestamp).unix();
+
+  const totalSeconds = nowSeconds - targetSeconds;
+
+  return Math.ceil(totalSeconds / 86400);
 };
 
 const getFormattedTotalDelegatedSP = (
@@ -187,6 +195,23 @@ const UserWalletSummary = ({
     return interest < 0.001 ? 0 : interest;
   };
   const interest = estimateInterestBalance(user);
+  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_seconds_last_update);
+
+  const canClaimHBDInterest = savingsLastInterestPayment => {
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const UNIX_EPOCH = '1970-01-01T00:00:00';
+
+    const lastInterestDate = new Date(savingsLastInterestPayment);
+    const now = new Date();
+
+    if (savingsLastInterestPayment === UNIX_EPOCH || 0) return true;
+
+    return now - lastInterestDate >= THIRTY_DAYS;
+  };
+
+  const showClaim = canClaimHBDInterest(user.savings_hbd_last_interest_payment);
+
+  const disabledClaim = !showClaim;
 
   const authUserPage = user.name === authUserName;
   const hasDelegations =
@@ -276,6 +301,34 @@ const UserWalletSummary = ({
 
       return val.amount.includes(symbol) ? acc + amount : acc;
     }, 0);
+  };
+
+  const claimHdbInterest = () => {
+    const requestId = Date.now().toString();
+
+    const transferOp = [
+      'transfer_from_savings',
+      {
+        from: authUserName,
+        to: authUserName,
+        amount: '0.001 HBD',
+        memo: 'Claim HBD interest',
+        request_id: requestId,
+      },
+    ];
+
+    const cancelOp = [
+      'cancel_transfer_from_savings',
+      {
+        from: authUserName,
+        request_id: requestId,
+      },
+    ];
+
+    const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
+    const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
+
+    window && window.open(hivesignerURL, '_blank');
   };
 
   return (
@@ -618,16 +671,24 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    HBD staking earnings ready to be claimed.
+                    HBD staking earnings ready to be claimed
                   </p>
-                  {/* {isAuth && authUserPage && ( */}
-                  {/*  <Button */}
-                  {/*    onClick={() => {}} */}
-                  {/*    className={'UserWalletSummary__button'} */}
-                  {/*  > */}
-                  {/*    Claim{' '} */}
-                  {/*  </Button> */}
-                  {/* )} */}
+                  {isAuth && authUserPage && (
+                    <Tooltip
+                      title={
+                        showClaim
+                          ? ''
+                          : `The claim will be available in ${daysToClaimInterest} days.`
+                      }
+                    >
+                      <Button
+                        onClick={claimHdbInterest}
+                        className={`UserWalletSummary__button ${disabledClaim ? 'disabled' : ''}`}
+                      >
+                        Claim{' '}
+                      </Button>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             )}
