@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { parseJSON } from '../../common/helpers/parseJSON';
 
 export const getDraftSelector = state => state.draftsStore;
 
@@ -17,24 +16,10 @@ export const getCurrentDraftSelector = (state, { draftId }) => {
 };
 
 export const getCurrDraftSelector = createSelector([getDraftSelector], state => state.currentDraft);
-export const getLinkedObjectPermlinks = createSelector(
-  [getDraftSelector],
-  state => state.linkedObjectPermlinks,
-);
+
 export const getLinkedObjects = createSelector([getDraftSelector], state => state.linkedObjects);
-export const getHideObjectPermlinks = createSelector(
-  [getDraftSelector],
-  state => state.hideObjectPermlinks,
-);
 
 export const getObjectPercentageSelector = createSelector(
   [getDraftSelector],
   state => state.objectPercent,
 );
-
-export const getLinkedObjFromDraft = (state, { draftId }) => {
-  const draftPosts = getCurrentDraftSelector(state, { draftId });
-
-  // console.log(draftPosts);
-  return parseJSON(draftPosts?.jsonMetadata)?.linkedObjects || [];
-};

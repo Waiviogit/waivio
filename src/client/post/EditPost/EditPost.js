@@ -9,11 +9,9 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
-import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 import Loading from '../../components/Icon/Loading';
 
 import './EditPost.less';
@@ -32,6 +30,7 @@ const propTypes = {
   saving: PropTypes.bool,
   imageLoading: PropTypes.bool,
   createPost: PropTypes.func,
+  toggleLinkedObj: PropTypes.func,
   setObjPercent: PropTypes.func,
   saveDraft: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
@@ -65,32 +64,19 @@ const defaultProps = {
 
 const EditPost = props => {
   const {
-    editor: {
-      draftContent,
-      content,
-      topics,
-      linkedObjects = [],
-      hideLinkedObjects = [],
-      settings,
-      campaign,
-      isUpdating,
-      titleValue,
-    },
+    editor: { draftContent, content, topics, settings, campaign, isUpdating, titleValue },
     draftId,
     objPercentage,
   } = props;
   const [isNewReview, setIsNewReview] = React.useState(false);
   const [init, setInit] = React.useState(Boolean(props.currDraft));
-  const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
   const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
     const isReview = !isEmpty(campaignId);
 
-    props.setEditorState(
-      getInitialState({ ...props, draftId: props.draftId }, hideLinkedObjectsSession),
-    );
-    props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
+    props.setEditorState(getInitialState({ ...props, draftId: props.draftId }));
+    props.setUpdatedEditorData({ isReview });
 
     props.history.replace({
       pathname: props.location.pathname,
@@ -105,7 +91,7 @@ const EditPost = props => {
   React.useEffect(() => {
     setIsNewReview(!props.draftPosts.some(d => d.draftId === props.draftId));
 
-    props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
+    props.setEditorState(getInitialState(props));
     const editorData = {
       title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
       body: get(props.currDraft, 'body', '') || get(props.editor, 'draftContent.body', ''),
@@ -142,28 +128,30 @@ const EditPost = props => {
     props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
   };
 
-  const handleToggleLinkedObject = (objId, isLinked, uniqId) => {
-    const prohibitedObjectCards = hideLinkedObjects || [];
-    const currentObj = find(linkedObjects, { _id: uniqId });
+  const handleToggleLinkedObject = (objId, isLinked) => {
+    const currentObj = find(props.filteredObjectsCards, { author_permlink: objId });
     const switchableObjPermlink = currentObj.author_permlink;
     const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
+    const updPercentage = {
+      ...objPercentage,
+      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+    };
 
     if (!isLinked) {
       topics.splice(indexSwitchableHashtag, 1);
     }
-    const updPercentage = {
-      ...objPercentage,
-      [objId || uniqId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
-    };
 
-    prohibitedObjectCards.push(currentObj);
-    localStorage.setItem(props.draftId, JSON.stringify(prohibitedObjectCards));
+    const newLinkedObj = isLinked
+      ? props.filteredObjectsCards
+      : props.filteredObjectsCards.filter(object => object.author_permlink !== objId);
 
     props.setUpdatedEditorData({
       topics,
-      linkedObjects: linkedObjects.filter(object => object._id !== uniqId),
-      hideLinkedObjects: prohibitedObjectCards,
-      objPercentage: setObjPercents(linkedObjects, updPercentage),
+    });
+
+    props.toggleLinkedObj({
+      linkedObjects: newLinkedObj,
+      objPercentage: updPercentage,
     });
   };
 
@@ -215,7 +203,7 @@ const EditPost = props => {
             content={content}
             isPublishing={props.publishing}
             isUpdating={isUpdating}
-            linkedObjects={linkedObjects}
+            linkedObjects={props.filteredObjectsCards}
             objPercentage={objPercentage}
             onUpdate={props.saveDraft}
             reviewData={campaign}

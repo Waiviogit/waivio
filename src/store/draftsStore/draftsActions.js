@@ -1,6 +1,7 @@
 import { get, kebabCase } from 'lodash';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getDraftsListAsync, deleteDraftFromList, saveDraft } from '../../waivioApi/ApiClient';
 import { getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName, getAuthenticatedUser } from '../authStore/authSelectors';
@@ -9,8 +10,8 @@ import { getEditor } from '../slateEditorStore/editorSelectors';
 import {
   getDraftPostsSelector,
   getCurrDraftSelector,
-  getHideObjectPermlinks,
   getLinkedObjects,
+  getObjectPercentageSelector,
 } from './draftsSelectors';
 
 export const GET_DRAFTS_LIST = createAsyncActionType('@draftsStore/GET_DRAFTS_LIST');
@@ -33,19 +34,22 @@ export const deleteDraft = ids => (dispatch, getState) => {
 
   return dispatch({
     type: DELETE_DRAFT.ACTION,
-    payload: deleteDraftFromList({ author, ids }),
+    payload: deleteDraftFromList({ author, ids: ids.map(id => (!id ? 'null' : id)) }),
     meta: { ids },
   });
 };
 
 export const SAVE_DRAFT = createAsyncActionType('@draftsStore/SAVE_DRAFT');
 
-export const safeDraftAction = (draftId, data, deleteCamp) => (dispatch, getState) => {
+export const safeDraftAction = (draftId, data, { deleteCamp, isEdit } = {}) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
 
-  if (!data.content && !deleteCamp) return Promise.reject();
+  if (!data.content && !deleteCamp && !isEdit) return Promise.reject('tut');
 
-  const draft = dispatch(buildDraft(draftId, data, false, deleteCamp));
+  const draft = dispatch(buildDraft(draftId, data, isEdit, deleteCamp));
   const draftList = getDraftPostsSelector(state);
 
   return dispatch({
@@ -78,8 +82,8 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
   const host = getCurrentHost(state);
   const user = getAuthenticatedUser(state);
   const currDraft = getCurrDraftSelector(state);
-  const linkedObject = getLinkedObjects(state);
-  const hideObjectPermlinks = getHideObjectPermlinks(state);
+  const linkedObject = isEditPost ? data?.jsonMetadata?.linkedObjects : getLinkedObjects(state);
+  const objPercentage = getObjectPercentageSelector(state);
 
   const {
     body,
@@ -133,11 +137,18 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
     content,
     topics,
     oldMetadata,
-    linkedObject,
+    linkedObject.map(obj => ({
+      object_type: obj.object_type,
+      name: getObjectName(obj),
+      author_permlink: obj.author_permlink,
+      defaultShowLink: obj.defaultShowLink,
+      avatar: obj.avatar,
+      description: obj.description,
+      percent: objPercentage[obj.author_permlink]?.percent || obj.percent || 0,
+    })),
     campaignId,
     host,
     reservationPermlink,
-    hideObjectPermlinks,
   );
 
   if (originalBody) {
@@ -157,11 +168,24 @@ export const deleteCampaignIdFromDraft = () => (dispatch, getState) => {
   const state = getState();
   const draft = getCurrDraftSelector(state);
 
-  dispatch(safeDraftAction(draft.draftId, {}, true));
+  dispatch(safeDraftAction(draft.draftId, {}, { deleteCamp: true }));
 };
 
 export const SET_OBJECT_PERCENT = '@draftsStore/SET_OBJECT_PERCENT';
 
-export const setObjPercent = payload => dispatch => {
+export const setObjPercent = (payload, draftId) => (dispatch, getState) => {
+  const currDraft = getEditor(getState());
+
   dispatch({ type: SET_OBJECT_PERCENT, payload });
+  dispatch(safeDraftAction(draftId, { title: currDraft.title, content: currDraft.content }));
+};
+
+export const TOGGLE_LINKED_OBJ = '@draftsStore/TOGGLE_LINKED_OBJ';
+
+export const toggleLinkedObj = (payload, draftId) => (dispatch, getState) => {
+  const state = getState();
+  const currDraft = getEditor(state);
+
+  dispatch({ type: TOGGLE_LINKED_OBJ, payload });
+  dispatch(safeDraftAction(draftId, { title: currDraft.title, content: currDraft.content }));
 };

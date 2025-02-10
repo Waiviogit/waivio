@@ -121,7 +121,6 @@ export function createPostMetadata(
   campaignId,
   host,
   reservationPermlink,
-  hideObjectPermlink,
 ) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
@@ -168,7 +167,6 @@ export function createPostMetadata(
   if (wobjects) {
     metaData[WAIVIO_META_FIELD_NAME] = { wobjects };
     metaData.linkedObjects = wobjects;
-    metaData.hideObjectPermlink = hideObjectPermlink;
   }
   if (campaignId) metaData.campaignId = campaignId;
   else metaData.campaignId = undefined;
@@ -316,14 +314,13 @@ const getObjects = state => {
   return objects;
 };
 
-export function getInitialState(props, hideLinkedObjectsSession = []) {
+export function getInitialState(props) {
   const query = new URLSearchParams(props.location.search);
   const initObjects = props.location.state
     ? getObjects(props.location.state)
     : query.getAll('object').map(obj => obj.replace('*amp*', '&'));
   const users = query.getAll('user');
   const authors = query.getAll('author');
-  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const type = query.get('type');
   let linkedObjects = [];
   const campaign = props?.campaign;
@@ -352,7 +349,6 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     content: '',
     topics: [],
     linkedObjects,
-    hideLinkedObjects: hideObjects,
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -385,7 +381,6 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
       content: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects,
-      hideLinkedObjects: hideObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),

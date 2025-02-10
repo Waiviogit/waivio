@@ -13,6 +13,7 @@ import {
   setCurrentDraft,
   resetLinkedObjects,
   setObjPercent,
+  toggleLinkedObj,
 } from '../../../store/draftsStore/draftsActions';
 import {
   getDraftPostsSelector,
@@ -232,7 +233,8 @@ const mapDispatchToProps = (dispatch, props) => {
     getDraftsListAction: obj => dispatch(getDraftsList(obj)),
     setCurrentDraft: draft => dispatch(setCurrentDraft(draft)),
     resetLinkedObjects: () => dispatch(resetLinkedObjects()),
-    setObjPercent: data => dispatch(setObjPercent(data)),
+    setObjPercent: data => dispatch(setObjPercent(data, draftId)),
+    toggleLinkedObj: data => dispatch(toggleLinkedObj(data, draftId)),
   };
 };
 

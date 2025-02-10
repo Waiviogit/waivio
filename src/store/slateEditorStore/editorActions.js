@@ -133,7 +133,7 @@ export const editPost = (
     title,
   };
 
-  return dispatch(safeDraftAction(id, draft));
+  return dispatch(safeDraftAction(id, draft, { isEdit: true }));
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(
@@ -481,6 +481,8 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
           name: getObjectName(obj),
           author_permlink: obj.author_permlink,
           defaultShowLink: obj.defaultShowLink,
+          avatar: obj.avatar,
+          description: obj.description,
           percent: get(objPercentage, [obj.author_permlink, 'percent']),
         }))
     : [];

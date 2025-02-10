@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Modal, message } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { deleteDraft } from '../../../store/draftsStore/draftsActions';
 
 const DeleteDraftModal = ({ intl, draftIds, onDelete, onCancel }) => {
@@ -36,10 +36,12 @@ const DeleteDraftModal = ({ intl, draftIds, onDelete, onCancel }) => {
       onOk={handleDeleteDraft}
       onCancel={onCancel}
     >
-      <FormattedMessage
-        id="draft_delete_modal_content"
-        defaultMessage="Are you sure you want to delete this draft permanently?"
-      />
+      <div style={{ textAlign: 'center' }}>
+        {intl.formatMessage({
+          id: 'draft_delete_modal_content',
+          defaultMessage: 'Are you sure you want to delete this draft permanently?',
+        })}
+      </div>
     </Modal>
   );
 };
