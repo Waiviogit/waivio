@@ -12,6 +12,12 @@
       border: 1px solid var(--website-hover-color);
       color: var(--website-hover-color);
     }
+    &.disabled {
+      background-color: @white-smoke !important;
+      border-color: @white-gainsboro !important;
+      color: rgba(0, 0, 0, 0.25) !important;
+      cursor: no-drop;
+    }
   }
   &__item {
     display: flex;
