@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash';
 import { setInitialObjPercentsNew } from '../../common/helpers/wObjInfluenceHelper';
 import { SET_LINKED_OBJ, SET_LINKED_OBJS } from '../slateEditorStore/editorActions';
 import {
@@ -7,6 +8,7 @@ import {
   SET_CURRENT_DRAFT,
   RESET_LINKED_OBJECTS,
   SET_OBJECT_PERCENT,
+  TOGGLE_LINKED_OBJ,
 } from './draftsActions';
 
 const initialState = {
@@ -14,8 +16,6 @@ const initialState = {
   drafts: [],
   currentDraft: null,
   linkedObjects: [],
-  linkedObjectPermlinks: [],
-  hideObjectPermlinks: [],
   objectPercent: {},
 };
 
@@ -73,26 +73,28 @@ const draftsReducer = (state = initialState, action) => {
           ...state,
           currentDraft: null,
           linkedObjects: [],
-          linkedObjectPermlinks: [],
           objectPercent: [],
         };
-      const linkedObjects = action.payload.jsonMetadata?.linkedObjects || [];
+      const linkedObjects =
+        uniqBy(action.payload.jsonMetadata?.linkedObjects, 'author_permlink') || [];
 
       return {
         ...state,
         currentDraft: action.payload,
         linkedObjects,
-        linkedObjectPermlinks: linkedObjects.map(obj => obj.author_permlink) || [],
-        objectPercent: setInitialObjPercentsNew(linkedObjects),
+        objectPercent: linkedObjects.reduce((acc, curr) => {
+          acc[curr.author_permlink] = { percent: curr.percent };
+
+          return acc;
+        }, {}),
       };
     }
     case SET_LINKED_OBJ: {
-      const linkedObjects = [...state.linkedObjects, action.payload];
+      const linkedObjects = uniqBy([...state.linkedObjects, action.payload], 'author_permlink');
 
       return {
         ...state,
         linkedObjects,
-        linkedObjectPermlinks: [...state.linkedObjectPermlinks, action.payload?.author_permlink],
         objectPercent: setInitialObjPercentsNew(linkedObjects),
       };
     }
@@ -107,13 +109,12 @@ const draftsReducer = (state = initialState, action) => {
     }
 
     case SET_LINKED_OBJS: {
+      const linkedObjects = uniqBy([...state.linkedObjects, ...action.payload], 'author_permlink');
+
       return {
         ...state,
-        linkedObjects: [...state.linkedObjects, ...action.payload],
-        linkedObjectPermlinks: [
-          ...state.linkedObjectPermlinks,
-          action.payload.map(obj => obj.author_permlink),
-        ],
+        linkedObjects,
+        objectPercent: setInitialObjPercentsNew(linkedObjects),
       };
     }
 
@@ -121,8 +122,15 @@ const draftsReducer = (state = initialState, action) => {
       return {
         ...state,
         linkedObjects: [],
-        linkedObjectPermlinks: [],
-        hideObjectPermlinks: [],
+        objectPercent: [],
+      };
+    }
+
+    case TOGGLE_LINKED_OBJ: {
+      return {
+        ...state,
+        linkedObjects: action.payload.linkedObjects,
+        objectPercent: action.payload.objPercentage,
       };
     }
 
