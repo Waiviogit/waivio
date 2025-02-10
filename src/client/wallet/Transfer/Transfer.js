@@ -403,7 +403,11 @@ export default class Transfer extends React.Component {
         if (hiveAuth) {
           const brodc = () =>
             isHiveCurrency
-              ? api.broadcast([['transfer', { ...transferQuery, from: user.name }]], null, 'active')
+              ? api.broadcast(
+                  [[contractAction, { ...transferQuery, from: user.name }]],
+                  null,
+                  'active',
+                )
               : api.broadcast(
                   [
                     [
