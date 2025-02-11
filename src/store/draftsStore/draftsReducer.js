@@ -14,6 +14,7 @@ import {
   RESET_LINKED_OBJECTS,
   SET_OBJECT_PERCENT,
   TOGGLE_LINKED_OBJ,
+  INITIAL_SET_LINKED_OBJ,
 } from './draftsActions';
 
 const initialState = {
@@ -126,6 +127,16 @@ const draftsReducer = (state = initialState, action) => {
     case SET_LINKED_OBJS:
     case SET_CAMPAIGN_LINKED_OBJS: {
       const linkedObjects = uniqBy([...state.linkedObjects, ...action.payload], 'author_permlink');
+
+      return {
+        ...state,
+        linkedObjects,
+        objectPercent: setInitialObjPercentsNew(linkedObjects),
+      };
+    }
+
+    case INITIAL_SET_LINKED_OBJ: {
+      const linkedObjects = uniqBy([...action.payload], 'author_permlink');
 
       return {
         ...state,

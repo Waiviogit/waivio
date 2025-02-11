@@ -487,12 +487,15 @@ export const handleCreatePost = (wobject, authors, history) => {
 
       redirectUrl += `${encodeURIComponent(
         `[${getObjectName(parentObject)}](/object/${parentObject.author_permlink})`,
-      )}&object=`;
+      )}`;
+      redirectUrl += `&permlink=${parentObject.author_permlink}&object=`;
     }
 
     redirectUrl += encodeURIComponent(
       `[${getObjectName(wobject)}](/object/${wobject.author_permlink})`,
     );
+
+    redirectUrl += `&permlink=${wobject.author_permlink}`;
 
     if (!isEmpty(wobject.authors)) {
       authors.forEach(author => {

@@ -14,6 +14,7 @@ import {
   resetLinkedObjects,
   setObjPercent,
   toggleLinkedObj,
+  setInitialLinkedObj,
 } from '../../../store/draftsStore/draftsActions';
 import {
   getDraftPostsSelector,
@@ -52,27 +53,31 @@ const EditorContainer = props => {
   const [draftIdState, setDraftId] = useState(getCurrentDraftId(query.get('draft')));
 
   useEffect(() => {
+    const objects = query.getAll('permlink');
+
     if (props.draftPosts.length === 0) {
       props.getDraftsListAction().then(data => {
         const currDraft = data?.value?.result.find(d => d.draftId === draftIdState);
+        const isCampaign = query.get('campaign') || currDraft?.jsonMetadata?.campaignId;
 
-        props.setCurrentDraft(currDraft);
-
-        if (query.get('campaign') || currDraft?.jsonMetadata?.campaignId) {
+        if (currDraft) props.setCurrentDraft(currDraft);
+        if (isCampaign) {
           getInfoAboutCampaign(currDraft).then(() => {
             setLoading(false);
           });
         } else {
+          if (objects.length) props.setInitialLinkedObj(objects);
           setLoading(false);
         }
       });
     } else {
       const currDraft = props.draftPosts.find(d => d.draftId === draftIdState);
+      const isCampaign = query.get('campaign') || currDraft?.jsonMetadata?.campaignId;
 
-      props.setCurrentDraft(currDraft);
+      if (currDraft) props.setCurrentDraft(currDraft);
+      if (!currDraft && objects.length && !isCampaign) props.setInitialLinkedObj(objects);
 
-      if (query.get('campaign') || currDraft?.jsonMetadata?.campaignId)
-        getInfoAboutCampaign(currDraft);
+      if (isCampaign) getInfoAboutCampaign(currDraft);
       else setLoading(false);
     }
 
@@ -186,6 +191,7 @@ EditorContainer.propTypes = {
   setClearState: PropTypes.func.isRequired,
   getDraftsListAction: PropTypes.func.isRequired,
   setCurrentDraft: PropTypes.func.isRequired,
+  setInitialLinkedObj: PropTypes.func.isRequired,
   resetLinkedObjects: PropTypes.func.isRequired,
   setObjPercent: PropTypes.func.isRequired,
 };
@@ -232,6 +238,7 @@ const mapDispatchToProps = (dispatch, props) => {
     setClearState: () => dispatch(setClearState()),
     getDraftsListAction: obj => dispatch(getDraftsList(obj)),
     setCurrentDraft: draft => dispatch(setCurrentDraft(draft)),
+    setInitialLinkedObj: permlinks => dispatch(setInitialLinkedObj(permlinks)),
     resetLinkedObjects: () => dispatch(resetLinkedObjects()),
     setObjPercent: data => dispatch(setObjPercent(data, draftId)),
     toggleLinkedObj: data => dispatch(toggleLinkedObj(data, draftId)),
