@@ -18,7 +18,6 @@ import {
   uniqBy,
   uniqWith,
   size,
-  differenceBy,
   isNil,
 } from 'lodash';
 import { Transforms } from 'slate';
@@ -58,7 +57,6 @@ import {
   getObjPercentsHideObject,
   getCurrentDraftContent,
   getFilteredLinkedObjects,
-  updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
 } from '../../common/helpers/editorHelper';
@@ -408,20 +406,25 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
   return (dispatch, getState) => {
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
+    const linkedObjects = getLinkedObjects(state);
     const method = campaignType === 'mentions' ? getMentionCampaign : getCampaign;
 
     return method(authUserName, campaignId, secondaryItem)
       .then(campaign => {
-        const authorPermlinks =
+        const campaignPermlinks =
           campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
             ? [campaign.requiredObject.author_permlink]
             : [campaign.requiredObject.author_permlink, campaign.secondaryObject.author_permlink];
+        const authorPermlinks = campaignPermlinks.filter(
+          obj => !linkedObjects.some(lo => lo.author_permlink === obj),
+        );
 
-        getObjectsByIds({
-          authorPermlinks,
-        }).then(({ wobjects }) => {
-          dispatch(setCampaignLinkedObjs(wobjects));
-        });
+        if (!isEmpty(authorPermlinks))
+          getObjectsByIds({
+            authorPermlinks,
+          }).then(({ wobjects }) => {
+            dispatch(setCampaignLinkedObjs(wobjects));
+          });
         dispatch(setCampaign(campaign));
 
         return campaign;
@@ -709,28 +712,16 @@ export const handlePasteText = html => async (dispatch, getState) => {
   if (objectIds.length) {
     const state = getState();
     const locale = getLocale(state);
-    const linkedObjects = getEditorLinkedObjects(state);
-    const hideLinkedObjects = getEditorLinkedObjectsCards(state);
+    const linkedObjects = getLinkedObjects(state);
     const { wobjects } = await getObjectsByIds({
       locale,
       requiredFields: ['rating'],
       authorPermlinks: objectIds,
     });
 
-    const newLinkedObjects = uniqBy([...linkedObjects, ...wobjects], '_id');
-    const updatedHideLinkedObjects = size(hideLinkedObjects)
-      ? updatedHideObjectsPaste(hideLinkedObjects, wobjects)
-      : hideLinkedObjects;
-    const objectsForPercentage = differenceBy(newLinkedObjects, updatedHideLinkedObjects, '_id');
-    const objPercentage = setObjPercents(objectsForPercentage);
+    const newLinkedObjects = uniqBy([...linkedObjects, ...wobjects], 'author_permlink');
 
-    dispatch(
-      setUpdatedEditorData({
-        objPercentage,
-        linkedObjects: newLinkedObjects,
-        hideLinkedObjects: updatedHideLinkedObjects,
-      }),
-    );
+    dispatch(setLinkedObjs(newLinkedObjects));
   }
 };
 

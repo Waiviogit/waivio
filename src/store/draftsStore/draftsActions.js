@@ -1,4 +1,4 @@
-import { get, kebabCase } from 'lodash';
+import { get, kebabCase, isEmpty } from 'lodash';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
@@ -81,7 +81,7 @@ export const safeDraftAction = (draftId, data, { deleteCamp, isEdit } = {}) => (
 export const SET_CURRENT_DRAFT = '@draftsStore/SET_CURRENT_DRAFT';
 
 export const setCurrentDraft = draft => dispatch => {
-  if (draft?.jsonMetadata?.linkedObjects) {
+  if (!isEmpty(draft?.jsonMetadata?.linkedObjects)) {
     getObjectsByIds({
       authorPermlinks: draft?.jsonMetadata?.linkedObjects.map(obj => obj.author_permlink),
     }).then(({ wobjects }) => {
@@ -90,6 +90,18 @@ export const setCurrentDraft = draft => dispatch => {
   }
 
   return dispatch({ type: SET_CURRENT_DRAFT, payload: draft });
+};
+
+export const INITIAL_SET_LINKED_OBJ = '@draftsStore/INITIAL_SET_LINKED_OBJ';
+
+export const setInitialLinkedObj = authorPermlinks => dispatch => {
+  if (!isEmpty(authorPermlinks)) {
+    getObjectsByIds({
+      authorPermlinks,
+    }).then(({ wobjects }) => {
+      dispatch({ type: INITIAL_SET_LINKED_OBJ, payload: wobjects });
+    });
+  }
 };
 
 export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispatch, getState) => {
