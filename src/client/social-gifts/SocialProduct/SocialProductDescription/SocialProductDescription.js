@@ -3,12 +3,14 @@ import Lightbox from 'react-image-lightbox';
 import PropTypes from 'prop-types';
 import './SocialProductDescription.less';
 
-const SocialProductDescription = ({ description, pictures, authorPermlink }) => {
+const SocialProductDescription = ({ description, pictures, authorPermlink, objectType }) => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [dividedParagraphs, setDividedParagraphs] = useState(description?.split('\n\n'));
   const photosToSort = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
-  const photos = photosToSort?.sort((a, b) => b.weight - a.weight);
+  const isRecipeSingleImage =
+    objectType === 'recipe' && photosToSort?.length === 1 && photosToSort[0]?.name === 'avatar';
+  const photos = isRecipeSingleImage ? [] : photosToSort?.sort((a, b) => b.weight - a.weight);
 
   const onPicClick = (e, pic) => {
     setOpen(true);
@@ -104,7 +106,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
 
   return (
     <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-      {pictures?.length === 1 ? renderOnePictureParagraph() : renderedParagraphs}
+      {photos?.length === 1 ? renderOnePictureParagraph() : renderedParagraphs}
       {/* <div className={'SocialProductDescription__images-container'}>{remainingPictures}</div> */}
       {open && (
         <Lightbox
@@ -127,6 +129,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
 
 SocialProductDescription.propTypes = {
   description: PropTypes.string,
+  objectType: PropTypes.string,
   authorPermlink: PropTypes.string,
   pictures: PropTypes.arrayOf(),
 };
