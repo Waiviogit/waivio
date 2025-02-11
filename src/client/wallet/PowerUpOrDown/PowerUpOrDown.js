@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Modal } from 'antd';
 import { round } from 'lodash';
-import { fixedNumber } from '../../../common/helpers/parser';
 import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
 import formatter from '../../../common/helpers/steemitFormatter';
 import { createQuery } from '../../../common/helpers/apiHelpers';
@@ -120,7 +119,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${fixedNumber(parseFloat(values.amount), 3)} HIVE`,
+              amount: `${parseFloat(values.amount).toFixed(3)} HIVE`,
               to: user.name,
               from: user.name,
             };
