@@ -195,7 +195,7 @@ const UserWalletSummary = ({
     return interest < 0.001 ? 0 : interest;
   };
   const interest = estimateInterestBalance(user);
-  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_seconds_last_update);
+  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_last_interest_payment);
 
   const canClaimHBDInterest = savingsLastInterestPayment => {
     const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
@@ -505,7 +505,7 @@ const UserWalletSummary = ({
                 />
               }
             </div>
-            {!isEmpty(savingsInfo) && (
+            {!isEmpty(currWithdrawSaving) && (
               <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
