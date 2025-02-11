@@ -83,7 +83,7 @@ const SocialInputItem = ({
     <>
       <Form.Item key={profile.id}>
         {getFieldDecorator(profile.id, {
-          initialValue: metadata?.profile[profile.id] || '',
+          initialValue: metadata?.profile?.[profile?.id] || '',
           rules: [
             {
               message: intl.formatMessage({

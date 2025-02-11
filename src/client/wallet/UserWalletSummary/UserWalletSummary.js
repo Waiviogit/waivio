@@ -195,7 +195,7 @@ const UserWalletSummary = ({
     return interest < 0.001 ? 0 : interest;
   };
   const interest = estimateInterestBalance(user);
-  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_seconds_last_update);
+  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_last_interest_payment);
 
   const canClaimHBDInterest = savingsLastInterestPayment => {
     const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
@@ -330,6 +330,12 @@ const UserWalletSummary = ({
 
     window && window.open(hivesignerURL, '_blank');
   };
+
+  const hiveDays = calculateDaysLeftForSavings(currWithdrawSaving?.complete);
+  const hiveDaysLeft = hiveDays === 0 ? 'today' : hiveDays;
+
+  const hbdDays = calculateDaysLeftForSavings(currWithdrawHbdSaving?.complete);
+  const hbdDaysLeft = hbdDays === 0 ? 'today' : hbdDays;
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -499,7 +505,7 @@ const UserWalletSummary = ({
                 />
               }
             </div>
-            {!isEmpty(savingsInfo) && (
+            {!isEmpty(currWithdrawSaving) && (
               <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
@@ -523,11 +529,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawSaving?.complete
-                      ? calculateDaysLeftForSavings(currWithdrawSaving?.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawSaving?.complete ? hiveDaysLeft : 3}{' '}
+                    {hiveDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -636,11 +639,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawHbdSaving
-                      ? calculateDaysLeftForSavings(currWithdrawHbdSaving.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawHbdSaving ? hbdDaysLeft : 3}{' '}
+                    {hbdDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
