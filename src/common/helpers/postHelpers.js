@@ -121,6 +121,7 @@ export function createPostMetadata(
   campaignId,
   host,
   reservationPermlink,
+  isPost,
 ) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
@@ -166,7 +167,7 @@ export function createPostMetadata(
 
   if (wobjects) {
     metaData[WAIVIO_META_FIELD_NAME] = { wobjects };
-    metaData.linkedObjects = wobjects;
+    if (!isPost) metaData.linkedObjects = wobjects;
   }
   if (campaignId) metaData.campaignId = campaignId;
   else metaData.campaignId = undefined;
