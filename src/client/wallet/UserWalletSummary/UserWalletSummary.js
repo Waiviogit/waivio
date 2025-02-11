@@ -331,6 +331,12 @@ const UserWalletSummary = ({
     window && window.open(hivesignerURL, '_blank');
   };
 
+  const hiveDays = calculateDaysLeftForSavings(currWithdrawSaving?.complete);
+  const hiveDaysLeft = hiveDays === 0 ? 'today' : hiveDays;
+
+  const hbdDays = calculateDaysLeftForSavings(currWithdrawHbdSaving?.complete);
+  const hbdDaysLeft = hbdDays === 0 ? 'today' : hbdDays;
+
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
       <div className="UserWalletSummary__itemWrap">
@@ -523,11 +529,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawSaving?.complete
-                      ? calculateDaysLeftForSavings(currWithdrawSaving?.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawSaving?.complete ? hiveDaysLeft : 3}{' '}
+                    {hiveDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -636,11 +639,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawHbdSaving
-                      ? calculateDaysLeftForSavings(currWithdrawHbdSaving.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawHbdSaving ? hbdDaysLeft : 3}{' '}
+                    {hbdDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
