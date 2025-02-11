@@ -1,6 +1,11 @@
 import { uniqBy } from 'lodash';
 import { setInitialObjPercentsNew } from '../../common/helpers/wObjInfluenceHelper';
-import { SET_LINKED_OBJ, SET_LINKED_OBJS } from '../slateEditorStore/editorActions';
+import {
+  SET_LINKED_OBJ,
+  SET_LINKED_OBJS,
+  SET_CAMPAIGN_LINKED_OBJS,
+  SET_CAMPAIGN,
+} from '../slateEditorStore/editorActions';
 import {
   GET_DRAFTS_LIST,
   DELETE_DRAFT,
@@ -17,6 +22,7 @@ const initialState = {
   currentDraft: null,
   linkedObjects: [],
   objectPercent: {},
+  campaign: null,
 };
 
 const draftsReducer = (state = initialState, action) => {
@@ -40,6 +46,13 @@ const draftsReducer = (state = initialState, action) => {
         loading: false,
         drafts: [...action.payload],
       };
+
+    case SET_CAMPAIGN: {
+      return {
+        ...state,
+        campaign: action.payload,
+      };
+    }
 
     case GET_DRAFTS_LIST.ERROR:
       return {
@@ -75,13 +88,14 @@ const draftsReducer = (state = initialState, action) => {
           linkedObjects: [],
           objectPercent: [],
         };
+
       const linkedObjects =
         uniqBy(action.payload.jsonMetadata?.linkedObjects, 'author_permlink') || [];
 
       return {
         ...state,
         currentDraft: action.payload,
-        linkedObjects,
+        campaign: null,
         objectPercent: linkedObjects.reduce((acc, curr) => {
           acc[curr.author_permlink] = { percent: curr.percent };
 
@@ -89,6 +103,7 @@ const draftsReducer = (state = initialState, action) => {
         }, {}),
       };
     }
+
     case SET_LINKED_OBJ: {
       const linkedObjects = uniqBy([...state.linkedObjects, action.payload], 'author_permlink');
 
@@ -108,7 +123,8 @@ const draftsReducer = (state = initialState, action) => {
       };
     }
 
-    case SET_LINKED_OBJS: {
+    case SET_LINKED_OBJS:
+    case SET_CAMPAIGN_LINKED_OBJS: {
       const linkedObjects = uniqBy([...state.linkedObjects, ...action.payload], 'author_permlink');
 
       return {
