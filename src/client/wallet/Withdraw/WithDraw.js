@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { Form, Modal, message, Input } from 'antd';
 import classNames from 'classnames';
+import Cookie from 'js-cookie';
 import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // import store from 'store';
@@ -28,8 +29,8 @@ import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/auth
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
-import { fixedNumber } from '../../../common/helpers/parser';
 import { createQuery } from '../../../common/helpers/apiHelpers';
+import api from '../../steemConnectAPI';
 
 const Withdraw = ({
   intl,
@@ -57,6 +58,7 @@ const Withdraw = ({
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   // const draftTransfer = store.get('withdrawData');
   const isGuest = useSelector(isGuestUser);
+  const hiveAuth = Cookie.get('auth');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
   const estimateValue = ceil(hiveCount * hivePrice, 2) || 0;
   const userBalance = parseFloat(user?.balance);
@@ -222,26 +224,44 @@ const Withdraw = ({
 
     return withdrawHive(Number(hiveAmount), currentCurrency, user.name, walletAddress)
       .then(r => {
+        const transferQuery = {
+          amount: `${parseFloat(r.amount).toFixed(3)} HIVE`,
+          memo: r.memo,
+          to: r.receiver,
+        };
+
         if (r && !r.message) {
-          closeWithdrawModal();
-          const transferQuery = {
-            amount: `${fixedNumber(parseFloat(r.amount), 3)} HIVE`,
-            memo: r.memo,
-            to: r.receiver,
-          };
+          if (hiveAuth) {
+            const brodc = () =>
+              api.broadcast([['transfer', { ...transferQuery, from: user.name }]], null, 'active');
 
-          window &&
-            window.open(
-              `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
-              '_blank',
+            setIsLoading(true);
+
+            brodc().then(() => {
+              setIsLoading(false);
+              closeWithdrawModal();
+              message.success(
+                intl.formatMessage({
+                  id: 'transaction_success',
+                  defaultMessage: 'Your transaction is successful',
+                }),
+              );
+            });
+          } else {
+            closeWithdrawModal();
+
+            window &&
+              window.open(
+                `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
+                '_blank',
+              );
+            message.success(
+              intl.formatMessage({
+                id: 'transaction_success',
+                defaultMessage: 'Your transaction is successful',
+              }),
             );
-
-          message.success(
-            intl.formatMessage({
-              id: 'transaction_success',
-              defaultMessage: 'Your transaction is successful',
-            }),
-          );
+          }
         }
 
         if (r.message) message.error(r.message);

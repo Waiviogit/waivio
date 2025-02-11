@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Button, Tooltip } from 'antd';
-import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
+import { Button, message, Tooltip } from 'antd';
+import Cookie from 'js-cookie';
+import {
+  FormattedDate,
+  FormattedMessage,
+  FormattedNumber,
+  FormattedTime,
+  injectIntl,
+} from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { ReactSVG } from 'react-svg';
@@ -30,13 +37,13 @@ import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
-
-import './UserWalletSummary.less';
+import api from '../../steemConnectAPI';
 import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
 import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
 import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
 import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
 import { getHbdInterestRate } from '../../../store/walletStore/walletSelectors';
+import './UserWalletSummary.less';
 
 const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
@@ -154,6 +161,7 @@ const UserWalletSummary = ({
   steemRate,
   sbdRate,
   authUserName,
+  intl,
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
@@ -169,6 +177,7 @@ const UserWalletSummary = ({
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
   const interestRate = useSelector(getHbdInterestRate);
+  const hiveAuth = Cookie.get('auth');
 
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
   const estimateInterestBalance = hiveAccount => {
@@ -325,10 +334,23 @@ const UserWalletSummary = ({
       },
     ];
 
-    const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
-    const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
+    if (hiveAuth) {
+      const brodc = () => api.broadcast([transferOp, cancelOp], null, 'active');
 
-    window && window.open(hivesignerURL, '_blank');
+      brodc().then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'transaction_success',
+            defaultMessage: 'Your transaction is successful',
+          }),
+        );
+      });
+    } else {
+      const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
+      const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
+
+      window && window.open(hivesignerURL, '_blank');
+    }
   };
 
   const hiveDays = calculateDaysLeftForSavings(currWithdrawSaving?.complete);
@@ -756,6 +778,7 @@ UserWalletSummary.propTypes = {
   user: PropTypes.shape().isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   authUserName: PropTypes.string.isRequired,
+  intl: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
@@ -770,4 +793,4 @@ export default connect((state, ownProps) => ({
   user: getUser(state, ownProps.userName),
   isAuth: getIsAuthenticated(state),
   authUserName: getAuthenticatedUserName(state),
-}))(withRouter(UserWalletSummary));
+}))(withRouter(injectIntl(UserWalletSummary)));
