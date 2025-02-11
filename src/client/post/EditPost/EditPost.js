@@ -42,6 +42,7 @@ const propTypes = {
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
+  campaign: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape().isRequired,
@@ -64,7 +65,7 @@ const defaultProps = {
 
 const EditPost = props => {
   const {
-    editor: { draftContent, content, topics, settings, campaign, isUpdating, titleValue },
+    editor: { draftContent, content, topics, settings, isUpdating, titleValue },
     draftId,
     objPercentage,
   } = props;
@@ -123,9 +124,9 @@ const EditPost = props => {
   const handleSubmit = () => {
     const postData = props.buildPost();
     const isReview =
-      !isEmpty(campaign) || includes(get(props.history, ['location', 'search']), 'review');
+      !isEmpty(props.campaign) || includes(get(props.history, ['location', 'search']), 'review');
 
-    props.createPost(postData, props.beneficiaries, isReview, campaign, props.intl);
+    props.createPost(postData, props.beneficiaries, isReview, props.campaign, props.intl);
   };
 
   const handleToggleLinkedObject = (objId, isLinked) => {
@@ -206,7 +207,7 @@ const EditPost = props => {
             linkedObjects={props.filteredObjectsCards}
             objPercentage={objPercentage}
             onUpdate={props.saveDraft}
-            reviewData={campaign}
+            reviewData={props?.campaign}
             settings={settings}
             topics={topics}
             onSettingsChange={handleSettingsChange}

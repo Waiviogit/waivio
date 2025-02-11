@@ -2,10 +2,15 @@ import { get, kebabCase } from 'lodash';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getDraftsListAsync, deleteDraftFromList, saveDraft } from '../../waivioApi/ApiClient';
+import {
+  getDraftsListAsync,
+  deleteDraftFromList,
+  saveDraft,
+  getObjectsByIds,
+} from '../../waivioApi/ApiClient';
 import { getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName, getAuthenticatedUser } from '../authStore/authSelectors';
-import { setUpdatedEditorData } from '../slateEditorStore/editorActions';
+import { setUpdatedEditorData, setLinkedObjs } from '../slateEditorStore/editorActions';
 import { getEditor } from '../slateEditorStore/editorSelectors';
 import {
   getDraftPostsSelector,
@@ -75,7 +80,17 @@ export const safeDraftAction = (draftId, data, { deleteCamp, isEdit } = {}) => (
 
 export const SET_CURRENT_DRAFT = '@draftsStore/SET_CURRENT_DRAFT';
 
-export const setCurrentDraft = draft => ({ type: SET_CURRENT_DRAFT, payload: draft });
+export const setCurrentDraft = draft => dispatch => {
+  if (draft?.jsonMetadata?.linkedObjects) {
+    getObjectsByIds({
+      authorPermlinks: draft?.jsonMetadata?.linkedObjects.map(obj => obj.author_permlink),
+    }).then(({ wobjects }) => {
+      dispatch(setLinkedObjs(wobjects));
+    });
+  }
+
+  return dispatch({ type: SET_CURRENT_DRAFT, payload: draft });
+};
 
 export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispatch, getState) => {
   const state = getState();

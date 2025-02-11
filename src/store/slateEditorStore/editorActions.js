@@ -36,6 +36,7 @@ import {
   getCurrentDraftSelector,
   getLinkedObjects,
   getObjectPercentageSelector,
+  getCurrentCampaignSelector,
 } from '../draftsStore/draftsSelectors';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
@@ -385,12 +386,19 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 }
 
 export const SET_UPDATED_EDITOR_DATA = '@editor/SET_UPDATED_EDITOR_DATA';
-export const SET_LINKED_OBJ = '@editor/SET_LINKED_OBJ';
-export const SET_LINKED_OBJS = '@editor/SET_LINKED_OBJS';
+export const SET_LINKED_OBJ = '@draftsStore/SET_LINKED_OBJ';
+export const SET_LINKED_OBJS = '@draftsStore/SET_LINKED_OBJS';
+export const SET_CAMPAIGN_LINKED_OBJS = '@draftsStore/SET_CAMPAIGN_LINKED_OBJS';
 export const SET_UPDATED_EDITOR_EXTENDED_DATA = '@editor/SET_UPDATED_EDITOR_EXTENDED_DATA';
 export const setUpdatedEditorData = payload => ({ type: SET_UPDATED_EDITOR_DATA, payload });
 export const setLinkedObj = payload => ({ type: SET_LINKED_OBJ, payload });
 export const setLinkedObjs = payload => ({ type: SET_LINKED_OBJS, payload });
+export const setCampaignLinkedObjs = payload => ({ type: SET_CAMPAIGN_LINKED_OBJS, payload });
+
+export const SET_CAMPAIGN = '@draftsStore/SET_CAMPAIGN';
+
+export const setCampaign = payload => ({ type: SET_CAMPAIGN, payload });
+
 export const setUpdatedEditorExtendedData = payload => ({
   type: SET_UPDATED_EDITOR_EXTENDED_DATA,
   payload,
@@ -404,12 +412,19 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
 
     return method(authUserName, campaignId, secondaryItem)
       .then(campaign => {
-        const linkedObjects =
+        const authorPermlinks =
           campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
-            ? [campaign.requiredObject]
-            : [campaign.requiredObject, campaign.secondaryObject];
+            ? [campaign.requiredObject.author_permlink]
+            : [campaign.requiredObject.author_permlink, campaign.secondaryObject.author_permlink];
 
-        dispatch(setLinkedObjs(linkedObjects));
+        getObjectsByIds({
+          authorPermlinks,
+        }).then(({ wobjects }) => {
+          dispatch(setCampaignLinkedObjs(wobjects));
+        });
+        dispatch(setCampaign(campaign));
+
+        return campaign;
       })
       .catch(() => {
         dispatch(deleteCampaignIdFromDraft());
@@ -422,12 +437,13 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const host = getCurrentHost(state);
   const user = getAuthenticatedUser(state);
   const currDraft = getCurrentDraftSelector(state, { draftId });
+  const campaign = getCurrentCampaignSelector(state);
+
   const {
     body,
     originalBody,
     topics,
     content,
-    campaign,
     isUpdating,
     settings,
     titleValue,
@@ -441,6 +457,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const objPercentage = getObjectPercentageSelector(state);
 
   dispatch(setUpdatedEditorData(updatedEditor));
+
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
   const campaignType =
     get(campaign, 'type', undefined) || get(currDraft, 'campaignType', undefined);

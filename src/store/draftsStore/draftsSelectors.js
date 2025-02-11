@@ -18,6 +18,10 @@ export const getCurrentDraftSelector = (state, { draftId }) => {
 export const getCurrDraftSelector = createSelector([getDraftSelector], state => state.currentDraft);
 
 export const getLinkedObjects = createSelector([getDraftSelector], state => state.linkedObjects);
+export const getCurrentCampaignSelector = createSelector(
+  [getDraftSelector],
+  state => state.campaign,
+);
 
 export const getObjectPercentageSelector = createSelector(
   [getDraftSelector],
