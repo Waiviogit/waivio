@@ -106,6 +106,31 @@ const SocialLinks = ({ profile, isSocial }) => {
                 </a>
               </div>
             );
+          case 'twitch':
+          case 'pinterest':
+          case 'reddit':
+          case 'telegram':
+          case 'whatsapp':
+            return (
+              <div
+                key={socialProfile.id}
+                className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
+              >
+                <img
+                  className="hive-icon"
+                  src={`/images/icons/${socialProfile.id}.png`}
+                  alt={`${socialProfile.id} logo`}
+                />
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://${currHost}/@${profile[socialProfile.id]}`}
+                >
+                  {' '}
+                  {socialProfile.name}
+                </a>
+              </div>
+            );
           case 'twitter':
             return (
               <div
@@ -126,6 +151,7 @@ const SocialLinks = ({ profile, isSocial }) => {
                 </a>
               </div>
             );
+
           default:
             return (
               <div key={socialProfile.id} className={isSocial ? 'mb5px' : ''}>
