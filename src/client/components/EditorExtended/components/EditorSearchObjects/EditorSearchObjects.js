@@ -21,6 +21,7 @@ const EditorSearchObjects = ({
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
+  const searchObjectsResultsRef = React.useRef(searchObjectsResults); // Use ref to persist data across renders
   const [selectedObj, setSelectedObj] = React.useState(false);
   const [currentObjIndex, setCurrentObjIndex] = React.useState(0);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
@@ -40,6 +41,10 @@ const EditorSearchObjects = ({
   }, []);
 
   React.useEffect(() => {
+    searchObjectsResultsRef.current = searchObjectsResults;
+  }, [searchObjectsResults]);
+
+  React.useEffect(() => {
     countCoordinates();
     setPositionWhenBlockExist();
 
@@ -56,8 +61,10 @@ const EditorSearchObjects = ({
 
   const handleKeyEnter = event => {
     if (event.key === 'Enter') {
-      event.preventDefault();
-      setSelectedObj(true);
+      if (searchObjectsResultsRef.current.length) {
+        event.preventDefault();
+        setSelectedObj(true);
+      }
     }
   };
 
@@ -125,6 +132,8 @@ const EditorSearchObjects = ({
   const setPositionWhenBlockExist = () => countCoordinates();
 
   const handleSelectObject = object => {
+    if (!object) return;
+
     if (handleObjectSelect) {
       handleObjectSelect(object);
     } else {
