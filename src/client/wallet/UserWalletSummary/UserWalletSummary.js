@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Button, message, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import Cookie from 'js-cookie';
 import {
   FormattedDate,
@@ -161,7 +161,6 @@ const UserWalletSummary = ({
   steemRate,
   sbdRate,
   authUserName,
-  intl,
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
@@ -313,43 +312,38 @@ const UserWalletSummary = ({
   };
 
   const claimHdbInterest = () => {
-    const requestId = Date.now().toString();
+    if (!disabledClaim) {
+      const requestId = Date.now().toString();
 
-    const transferOp = [
-      'transfer_from_savings',
-      {
-        from: authUserName,
-        to: authUserName,
-        amount: '0.001 HBD',
-        memo: 'Claim HBD interest',
-        request_id: requestId,
-      },
-    ];
+      const transferOp = [
+        'transfer_from_savings',
+        {
+          from: authUserName,
+          to: authUserName,
+          amount: '0.001 HBD',
+          memo: 'Claim HBD interest',
+          request_id: requestId,
+        },
+      ];
 
-    const cancelOp = [
-      'cancel_transfer_from_savings',
-      {
-        from: authUserName,
-        request_id: requestId,
-      },
-    ];
+      const cancelOp = [
+        'cancel_transfer_from_savings',
+        {
+          from: authUserName,
+          request_id: requestId,
+        },
+      ];
 
-    if (hiveAuth) {
-      const brodc = () => api.broadcast([transferOp, cancelOp], null, 'active');
+      if (hiveAuth) {
+        const brodc = () => api.broadcast([transferOp, cancelOp], null, 'active');
 
-      brodc().then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'transaction_success',
-            defaultMessage: 'Your transaction is successful',
-          }),
-        );
-      });
-    } else {
-      const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
-      const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
+        brodc();
+      } else {
+        const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
+        const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
 
-      window && window.open(hivesignerURL, '_blank');
+        window && window.open(hivesignerURL, '_blank');
+      }
     }
   };
 
@@ -778,7 +772,6 @@ UserWalletSummary.propTypes = {
   user: PropTypes.shape().isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   authUserName: PropTypes.string.isRequired,
-  intl: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
