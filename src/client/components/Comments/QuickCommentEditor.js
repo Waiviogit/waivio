@@ -65,6 +65,8 @@ class QuickCommentEditor extends React.Component {
       isLoadingImage: false,
       isShowEditorSearch: false,
     };
+
+    this.abortController = new AbortController();
   }
   componentDidUpdate(prevProps) {
     if (
@@ -79,6 +81,10 @@ class QuickCommentEditor extends React.Component {
         this.handleObjectSelect(obj);
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
   }
 
   setEditor = editor => {
@@ -113,7 +119,13 @@ class QuickCommentEditor extends React.Component {
     }
   };
 
-  debouncedSearch = debounce(searchStr => this.props.searchObjects(searchStr), 150);
+  debouncedSearch = debounce(searchStr => {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+    this.abortController = new AbortController();
+    this.props.searchObjects(searchStr, this.abortController);
+  }, 150);
 
   handleContentChangeSlate = debounce(editor => {
     const searchInfo = checkCursorInSearchSlate(editor);
@@ -141,20 +153,6 @@ class QuickCommentEditor extends React.Component {
 
     this.setState({ commentMsg });
     this.handleContentChangeSlate(body);
-  };
-
-  handleRemoveImage = () => {
-    this.setState({ currentImage: [], imageUploading: false });
-  };
-
-  handleCloseModal = () => this.setState({ isModal: false, currentImage: [] });
-
-  handleToggleModal = () => this.setState({ isModal: !this.state.isModal });
-
-  onLoadingImage = value => this.setState({ isLoading: value });
-
-  getImages = image => {
-    this.setState({ currentImage: image });
   };
 
   handleObjectSelect = selectedObject => {
@@ -231,7 +229,8 @@ QuickCommentEditor.propTypes = {
 
 const mapDispatchToProps = dispatch => ({
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
-  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
+  searchObjects: (value, ac) =>
+    dispatch(searchObjectsAutoCompete(value, '', null, true, undefined, undefined, ac)),
 });
 
 export default injectIntl(connect(null, mapDispatchToProps)(QuickCommentEditor));

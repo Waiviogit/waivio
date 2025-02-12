@@ -88,6 +88,32 @@ export default function createSsrHandler(template) {
     let adsenseSettings = {};
     let parentHost = '';
 
+    const splittedUrl = req.url.split('?');
+    const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
+    const access_token =
+      query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
+    const socialProvider = query ? query.get('socialProvider') : undefined;
+
+    if (req.cookies && !req.url?.includes('sign-in')) {
+      sc2Api.setAccessToken(access_token);
+      // const data = { access_token, socialProvider, ...req?.cookies };
+      try {
+        // await store.dispatch(loginFromServer(data)).then(async res => {
+        //   try {
+        //     const language = res?.value?.userMetaData?.settings?.locale;
+        //     store.dispatch(setLocale(language));
+        //     store.dispatch(setUsedLocale(await loadLanguage(language)));
+        //   } catch (e) {
+        //     console.log(e, 'e');
+        //   }
+        // });
+        console.log('must be login');
+      } catch (e) {
+        console.log(`login error ${e}`);
+      }
+    }
+
+    const promises = [];
     if (!isWaivio) {
       if (listOfWebsiteWithMainPage.some(site => site === hostname))
         store.dispatch(setIsDiningGifts(true));
@@ -103,42 +129,6 @@ export default function createSsrHandler(template) {
       }
     }
 
-    const splittedUrl = req.url.split('?');
-    const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
-    const access_token =
-      query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
-    const socialProvider = query ? query.get('socialProvider') : undefined;
-
-    if (req.cookies && !req.url?.includes('sign-in')) {
-      sc2Api.setAccessToken(access_token);
-      const data = { access_token, socialProvider, ...req?.cookies };
-      try {
-        await store.dispatch(loginFromServer(data)).then(async res => {
-          try {
-            const language = res?.value?.userMetaData?.settings?.locale;
-            store.dispatch(setLocale(language));
-            store.dispatch(setUsedLocale(await loadLanguage(language)));
-          } catch (e) {
-            console.log(e, 'e');
-          }
-        });
-      } catch (e) {
-        console.log(`login error ${e}`);
-      }
-    }
-
-    const promises = [];
-    const loc =
-      query?.get('usedLocale') ||
-      settings?.language ||
-      req.cookies.language ||
-      getRequestLocale(req.get('Accept-Language'));
-    if (!isWaivio && !req.cookies.access_token) {
-      store.dispatch(setLocale(loc));
-      store.dispatch(setUsedLocale(await loadLanguage(loc)));
-    }
-    const routes = switchRoutes(hostname, parentHost);
-    const branch = matchRoutes(routes, splittedUrl[0]);
     if (isUser) {
       return res.send(
         renderSsrPage(
@@ -154,6 +144,20 @@ export default function createSsrHandler(template) {
           get(adsenseSettings, 'code', ''),
         ),
       );
+    }
+
+    const routes = switchRoutes(hostname, parentHost);
+    const branch = matchRoutes(routes, splittedUrl[0]);
+
+    const loc =
+      query?.get('usedLocale') ||
+      settings?.language ||
+      req.cookies.language ||
+      getRequestLocale(req.get('Accept-Language'));
+
+    if (!isWaivio && !req.cookies.access_token) {
+      store.dispatch(setLocale(loc));
+      store.dispatch(setUsedLocale(await loadLanguage(loc)));
     }
 
     try {

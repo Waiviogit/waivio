@@ -87,6 +87,8 @@ export const setCurrentDraft = draft => dispatch => {
     }).then(({ wobjects }) => {
       dispatch(setLinkedObjs(wobjects));
     });
+  } else {
+    dispatch(resetLinkedObjects());
   }
 
   return dispatch({ type: SET_CURRENT_DRAFT, payload: draft });

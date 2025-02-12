@@ -30,12 +30,14 @@ import {
   safeDraftAction,
   deleteDraft,
   deleteCampaignIdFromDraft,
+  getDraftsList,
 } from '../draftsStore/draftsActions';
 import {
   getCurrentDraftSelector,
   getLinkedObjects,
   getObjectPercentageSelector,
   getCurrentCampaignSelector,
+  getDraftPostsSelector,
 } from '../draftsStore/draftsSelectors';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
@@ -115,7 +117,8 @@ export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
   { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
-) => dispatch => {
+) => (dispatch, getState) => {
+  const draftList = getDraftPostsSelector(getState());
   const jsonMetadata = jsonParse(json_metadata);
   const draft = {
     author,
@@ -131,6 +134,12 @@ export const editPost = (
     reward,
     title,
   };
+
+  if (isEmpty(draftList)) {
+    return dispatch(getDraftsList()).then(() => {
+      return dispatch(safeDraftAction(id, draft, { isEdit: true }));
+    });
+  }
 
   return dispatch(safeDraftAction(id, draft, { isEdit: true }));
 };
