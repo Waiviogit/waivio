@@ -240,12 +240,12 @@ const Withdraw = ({
             brodc().then(() => {
               setIsLoading(false);
               closeWithdrawModal();
-              message.success(
-                intl.formatMessage({
-                  id: 'transaction_success',
-                  defaultMessage: 'Your transaction is successful',
-                }),
-              );
+              // message.success(
+              //   intl.formatMessage({
+              //     id: 'transaction_success',
+              //     defaultMessage: 'Your transaction is successful',
+              //   }),
+              // );
             });
           } else {
             closeWithdrawModal();
