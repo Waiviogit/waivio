@@ -91,9 +91,27 @@ export default function createSsrHandler(template) {
     const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
     const access_token =
       query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
+    const socialProvider = query ? query.get('socialProvider') : undefined;
+    const currentUser = req?.cookies?.currentUser
+      ? req?.cookies?.currentUser
+      : query.get('username');
 
     if (req.cookies && !req.url?.includes('sign-in')) {
       sc2Api.setAccessToken(access_token);
+      const data = { access_token, socialProvider, ...req?.cookies, currentUser };
+      try {
+        await store.dispatch(loginFromServer(data)).then(async res => {
+          try {
+            const language = res?.value?.userMetaData?.settings?.locale;
+            store.dispatch(setLocale(language));
+            store.dispatch(setUsedLocale(await loadLanguage(language)));
+          } catch (e) {
+            console.log(e, 'e');
+          }
+        });
+      } catch (e) {
+        console.log(`login error ${e}`);
+      }
     }
 
     const promises = [];
@@ -106,6 +124,7 @@ export default function createSsrHandler(template) {
       try {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
+        parentHost = (await store.dispatch(setParentHost(hostname))).value;
       } catch (e) {
         console.error('fall settings requests str 70');
       }
@@ -126,12 +145,6 @@ export default function createSsrHandler(template) {
           get(adsenseSettings, 'code', ''),
         ),
       );
-    }
-
-    try {
-      parentHost = (await store.dispatch(setParentHost(hostname))).value;
-    } catch (e) {
-      console.error('fall settings requests str 70');
     }
 
     const routes = switchRoutes(hostname, parentHost);
