@@ -358,29 +358,32 @@ export const loginFromServer = cookie => dispatch => {
         }
       });
     } else if (isGuest || cookie.access_token) {
-      promise = new Promise(async resolve => {
+      promise = new Promise(async (resolve, reject) => {
         try {
-          const scUserData = isGuest
-            ? await waivioAPI.getUserAccount(cookie.guestName, true)
-            : { name: cookie.currentUser };
-          const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
-          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-          const privateEmail = await getPrivateEmail(scUserData.name);
-          const rewardsTab = await getRewardTab(scUserData.name);
-          const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+          if (!isGuest && !cookie.currentUser) reject({});
+          else {
+            const scUserData = isGuest
+              ? await waivioAPI.getUserAccount(cookie.guestName, true)
+              : { name: cookie.currentUser };
+            const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
+            const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+            const privateEmail = await getPrivateEmail(scUserData.name);
+            const rewardsTab = await getRewardTab(scUserData.name);
+            const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
-          // dispatch(changeAdminStatus(scUserData.name));
-          // dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+            // dispatch(changeAdminStatus(scUserData.name));
+            // dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
 
-          resolve({
-            ...scUserData,
-            ...rewardsTab,
-            account,
-            userMetaData,
-            privateEmail,
-            waivBalance: WAIV,
-            isGuestUser: isGuest,
-          });
+            resolve({
+              ...scUserData,
+              ...rewardsTab,
+              account,
+              userMetaData,
+              privateEmail,
+              waivBalance: WAIV,
+              isGuestUser: isGuest,
+            });
+          }
         } catch (e) {
           console.warn(e);
         }
