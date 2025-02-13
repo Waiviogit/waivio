@@ -74,8 +74,8 @@ class UserInfo extends React.Component {
     }
 
     const relativeString = intl.formatRelative(lastActive);
-    const lastActivity = 'in 3 hours'?.includes('in')
-      ? `${'in 3 hours'.replace('in', '').trim()} ago`
+    const lastActivity = relativeString?.includes('in')
+      ? `${relativeString?.replace('in', '').trim()} ago`
       : relativeString;
 
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
