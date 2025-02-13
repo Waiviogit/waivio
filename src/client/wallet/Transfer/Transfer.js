@@ -359,7 +359,7 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${fixedNumber(parseFloat(values.amount), 3)} ${values.currency}`,
+          amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
           memo,
         };
 
@@ -384,8 +384,13 @@ export default class Transfer extends React.Component {
         const isHiveCurrency = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
         let contractAction = 'transfer';
 
-        if (isToSavings) contractAction = 'transfer_to_savings';
+        if (isToSavings) {
+          contractAction = 'transfer_to_savings';
+        }
         if (isFromSavings) contractAction = 'transfer_from_savings';
+        if (isFromSavings || (isToSavings && hiveAuth)) {
+          transferQuery.to = user.name;
+        }
         const json = JSON.stringify({
           contractName: 'tokens',
           contractAction,
@@ -403,7 +408,11 @@ export default class Transfer extends React.Component {
         if (hiveAuth) {
           const brodc = () =>
             isHiveCurrency
-              ? api.broadcast([['transfer', { ...transferQuery, from: user.name }]], null, 'active')
+              ? api.broadcast(
+                  [[contractAction, { ...transferQuery, from: user.name }]],
+                  null,
+                  'active',
+                )
               : api.broadcast(
                   [
                     [

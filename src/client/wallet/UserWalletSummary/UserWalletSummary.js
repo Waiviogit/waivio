@@ -2,11 +2,19 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Button } from 'antd';
-import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
+import { Button, Tooltip } from 'antd';
+import Cookie from 'js-cookie';
+import {
+  FormattedDate,
+  FormattedMessage,
+  FormattedNumber,
+  FormattedTime,
+  injectIntl,
+} from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { ReactSVG } from 'react-svg';
+import moment from 'moment';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import formatter from '../../../common/helpers/steemitFormatter';
@@ -29,18 +37,18 @@ import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
-
-import './UserWalletSummary.less';
+import api from '../../steemConnectAPI';
 import CancelPowerDownModal from '../CancelPowerDownModal/CancelPowerDownModal';
 import PowerDownProgressModal from '../PowerDownProgressModal/PowerDownProgressModal';
 import CancelWithdrawSavings from '../CancelWithdrawSavings/CancelWithdrawSavings';
 import SavingsProgressModal from '../SavingsProgressModal/SavingsProgressModal';
+import { getHbdInterestRate } from '../../../store/walletStore/walletSelectors';
+import './UserWalletSummary.less';
 
 const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   if (targetDate === '1970-01-01T00:00:00') {
     return 0;
   }
-
   const target = new Date(targetDate);
   const now = new Date();
 
@@ -50,6 +58,15 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   const days = Math.ceil(hours / 24);
 
   return days > 0 ? days : 0;
+};
+
+const calculateDaysWithSeconds = timestamp => {
+  const nowSeconds = moment.utc().unix();
+  const targetSeconds = moment.utc(timestamp).unix();
+
+  const totalSeconds = nowSeconds - targetSeconds;
+
+  return Math.ceil(totalSeconds / 86400);
 };
 
 const getFormattedTotalDelegatedSP = (
@@ -158,11 +175,51 @@ const UserWalletSummary = ({
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
+  const interestRate = useSelector(getHbdInterestRate);
+  const hiveAuth = Cookie.get('auth');
 
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
-  // const interest =
-  //   ((savingsHbdBalance * 0.15) / 365) *
-  //   calculateDaysLeftForSavings(user.savings_hbd_last_interest_payment, true);
+  const estimateInterestBalance = hiveAccount => {
+    const {
+      savings_hbd_seconds,
+      savings_hbd_seconds_last_update,
+      savings_hbd_balance,
+    } = hiveAccount;
+
+    if (savings_hbd_seconds === 0 && savings_hbd_balance === 0) {
+      return 0;
+    }
+
+    const hdbSeconds = parseFloat(savings_hbd_seconds) / 1000;
+    const hdbSecondsLastUpdate = moment.utc(savings_hbd_seconds_last_update).unix();
+    const nowSeconds = moment.utc().unix();
+    const hbdBalance = parseFloat(savings_hbd_balance);
+    const secondsPerYear = 31536000;
+
+    const interest =
+      ((hdbSeconds + (nowSeconds - hdbSecondsLastUpdate) * hbdBalance) * (interestRate / 100)) /
+      secondsPerYear;
+
+    return interest < 0.001 ? 0 : interest;
+  };
+  const interest = estimateInterestBalance(user);
+  const daysToClaimInterest = 30 - calculateDaysWithSeconds(user.savings_hbd_last_interest_payment);
+
+  const canClaimHBDInterest = savingsLastInterestPayment => {
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const UNIX_EPOCH = '1970-01-01T00:00:00';
+
+    const lastInterestDate = new Date(savingsLastInterestPayment);
+    const now = new Date();
+
+    if (savingsLastInterestPayment === UNIX_EPOCH || 0) return true;
+
+    return now - lastInterestDate >= THIRTY_DAYS;
+  };
+
+  const showClaim = canClaimHBDInterest(user.savings_hbd_last_interest_payment);
+
+  const disabledClaim = !showClaim;
 
   const authUserPage = user.name === authUserName;
   const hasDelegations =
@@ -253,6 +310,48 @@ const UserWalletSummary = ({
       return val.amount.includes(symbol) ? acc + amount : acc;
     }, 0);
   };
+
+  const claimHdbInterest = () => {
+    if (!disabledClaim) {
+      const requestId = Date.now().toString();
+
+      const transferOp = [
+        'transfer_from_savings',
+        {
+          from: authUserName,
+          to: authUserName,
+          amount: '0.001 HBD',
+          memo: 'Claim HBD interest',
+          request_id: requestId,
+        },
+      ];
+
+      const cancelOp = [
+        'cancel_transfer_from_savings',
+        {
+          from: authUserName,
+          request_id: requestId,
+        },
+      ];
+
+      if (hiveAuth) {
+        const brodc = () => api.broadcast([transferOp, cancelOp], null, 'active');
+
+        brodc();
+      } else {
+        const encodedOps = btoa(JSON.stringify([transferOp, cancelOp]));
+        const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
+
+        window && window.open(hivesignerURL, '_blank');
+      }
+    }
+  };
+
+  const hiveDays = calculateDaysLeftForSavings(currWithdrawSaving?.complete);
+  const hiveDaysLeft = hiveDays === 0 ? 'today' : hiveDays;
+
+  const hbdDays = calculateDaysLeftForSavings(currWithdrawHbdSaving?.complete);
+  const hbdDaysLeft = hbdDays === 0 ? 'today' : hbdDays;
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -422,7 +521,7 @@ const UserWalletSummary = ({
                 />
               }
             </div>
-            {!isEmpty(savingsInfo) && (
+            {!isEmpty(currWithdrawSaving) && (
               <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
@@ -446,11 +545,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawSaving?.complete
-                      ? calculateDaysLeftForSavings(currWithdrawSaving?.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawSaving?.complete ? hiveDaysLeft : 3}{' '}
+                    {hiveDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -559,11 +655,8 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in{' '}
-                    {currWithdrawHbdSaving
-                      ? calculateDaysLeftForSavings(currWithdrawHbdSaving.complete)
-                      : 3}{' '}
-                    days
+                    Withdraw will complete in {currWithdrawHbdSaving ? hbdDaysLeft : 3}{' '}
+                    {hbdDays > 0 ? 'days' : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -576,40 +669,46 @@ const UserWalletSummary = ({
                 </div>
               </div>
             )}{' '}
+            {interest > 0 && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="interest" defaultMessage="Interest" />
+                  </div>
+                  <div className={powerClassList}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        <FormattedNumber value={interest} /> {' HBD'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">
+                    HBD staking earnings ready to be claimed
+                  </p>
+                  {isAuth && authUserPage && (
+                    <Tooltip
+                      title={
+                        showClaim
+                          ? ''
+                          : `The claim will be available in ${daysToClaimInterest} days.`
+                      }
+                    >
+                      <Button
+                        onClick={claimHdbInterest}
+                        className={`UserWalletSummary__button ${disabledClaim ? 'disabled' : ''}`}
+                      >
+                        Claim{' '}
+                      </Button>
+                    </Tooltip>
+                  )}
+                </div>
+              </div>
+            )}
           </div>{' '}
-          {/* {savingsHbdBalance > 0 && interest > 0 && ( */}
-          {/*  <div className="UserWalletSummary__itemWrap--no-border last-block"> */}
-          {/*    <div className="UserWalletSummary__item"> */}
-          {/*      <div className="UserWalletSummary__label power-down"> */}
-          {/*        <FormattedMessage id="interest" defaultMessage="Interest" /> */}
-          {/*      </div> */}
-          {/*      <div */}
-          {/*        className={powerClassList} */}
-          {/*      > */}
-          {/*        {user.fetching || loadingGlobalProperties ? ( */}
-          {/*          <Loading /> */}
-          {/*        ) : ( */}
-          {/*          <span> */}
-          {/*            <FormattedNumber value={interest} /> {' HBD'} */}
-          {/*          </span> */}
-          {/*        )} */}
-          {/*      </div> */}
-          {/*    </div> */}
-          {/*    <div className="UserWalletSummary__actions"> */}
-          {/*      <p className="UserWalletSummary__description"> */}
-          {/*        HBD staking earnings ready to be claimed. */}
-          {/*      </p> */}
-          {/*      /!* {isAuth && authUserPage && ( *!/ */}
-          {/*      /!*  <Button *!/ */}
-          {/*      /!*    onClick={() => {}} *!/ */}
-          {/*      /!*    className={'UserWalletSummary__button'} *!/ */}
-          {/*      /!*  > *!/ */}
-          {/*      /!*    Claim{' '} *!/ */}
-          {/*      /!*  </Button> *!/ */}
-          {/*      /!* )} *!/ */}
-          {/*    </div> */}
-          {/*  </div> */}
-          {/* )} */}
         </React.Fragment>
       )}
       {hasDelegations && (
@@ -687,4 +786,4 @@ export default connect((state, ownProps) => ({
   user: getUser(state, ownProps.userName),
   isAuth: getIsAuthenticated(state),
   authUserName: getAuthenticatedUserName(state),
-}))(withRouter(UserWalletSummary));
+}))(withRouter(injectIntl(UserWalletSummary)));

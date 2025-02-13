@@ -14,6 +14,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../../store/authStore/authActions';
+import { getDraftsList } from '../../store/draftsStore/draftsActions';
 import { getObjectPosts, setFirstLoading } from '../../store/feedStore/feedActions';
 import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
 import {
@@ -224,6 +225,7 @@ const SocialWrapper = props => {
           batch(() => {
             props.getNotifications();
             props.busyLogin();
+            props.getDraftsList();
             props.dispatchGetAuthGuestBalance();
           });
           if ((token && provider) || (auth && provider)) {
@@ -286,6 +288,7 @@ SocialWrapper.propTypes = {
   getCoordinates: PropTypes.func,
   setFavoriteObjectTypes: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
+  getDraftsList: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
@@ -535,6 +538,7 @@ export default ErrorBoundary(
         getSwapEnginRates,
         setFavoriteObjectTypes,
         getWebsiteSettings,
+        getDraftsList,
       },
     )(SocialWrapper),
   ),

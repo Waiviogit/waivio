@@ -117,10 +117,11 @@ export function createPostMetadata(
   body,
   tags,
   oldMetadata = {},
-  waivioData,
+  wobjects,
   campaignId,
   host,
   reservationPermlink,
+  isPost,
 ) {
   const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
   let metaData = {
@@ -164,10 +165,13 @@ export function createPostMetadata(
   metaData.links = links.slice(0, 10);
   metaData.image = images;
 
-  if (waivioData) {
-    metaData[WAIVIO_META_FIELD_NAME] = waivioData;
+  if (wobjects) {
+    metaData[WAIVIO_META_FIELD_NAME] = { wobjects };
+    if (!isPost) metaData.linkedObjects = wobjects;
   }
   if (campaignId) metaData.campaignId = campaignId;
+  else metaData.campaignId = undefined;
+
   if (reservationPermlink) metaData.reservation_permlink = reservationPermlink;
 
   return {
@@ -263,22 +267,22 @@ const setBody = (initObjects, props, authors, users) => {
     link?.includes('https')
       ? link
       : `${apiConfig[process.env.NODE_ENV].protocol}${location?.hostname}${link}`;
-  let body =
-    get(props, 'editor.draftContent.body', false) || size(initObjects)
-      ? initObjects.reduce((acc, curr) => {
-          const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
-          if (!isNil(matches) && matches[1] && matches[2]) {
-            if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
+  let body = size(initObjects)
+    ? initObjects.reduce((acc, curr) => {
+        const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
-            return initObjects.length <= 1
-              ? `${acc}[${matches[1]}](${getLink(matches[2])})`
-              : `${acc}[${matches[1]}](${getLink(matches[2])}), `;
-          }
+        if (!isNil(matches) && matches[1] && matches[2]) {
+          if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
 
-          return acc;
-        }, '')
-      : '';
+          return initObjects.length <= 1
+            ? `${acc}[${matches[1]}](${getLink(matches[2])})`
+            : `${acc}[${matches[1]}](${getLink(matches[2])}), `;
+        }
+
+        return acc;
+      }, '')
+    : '';
 
   if (!isEmpty(authors)) {
     authors.forEach((author, i) => {
@@ -311,7 +315,7 @@ const getObjects = state => {
   return objects;
 };
 
-export function getInitialState(props, hideLinkedObjectsSession = []) {
+export function getInitialState(props) {
   const query = new URLSearchParams(props.location.search);
   const initObjects = props.location.state
     ? getObjects(props.location.state)
@@ -319,17 +323,22 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
   const users = query.getAll('user');
   const authors = query.getAll('author');
   const type = query.get('type');
-  const secondaryItem = query.get('secondaryItem');
-  const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
-  const campaignId = props.campaignId ? { id: props.campaignId } : null;
-  const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
+  let linkedObjects = [];
+  const campaign = props?.campaign;
+
+  if (campaign) {
+    linkedObjects =
+      campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
+        ? [campaign.requiredObject.author_permlink]
+        : [campaign.requiredObject.author_permlink, campaign.secondaryObject.author_permlink];
+  }
+
   const title = setTitle(initObjects, props, authors, users);
   let state = {
-    campaign: props.campaignId
+    campaign: props.campaign
       ? {
           ...campaign,
           type,
-          secondaryItem,
         }
       : null,
     draftId: props.draftId || uuidv4(),
@@ -340,8 +349,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     },
     content: '',
     topics: [],
-    linkedObjects: [],
-    hideLinkedObjects: hideObjects,
+    linkedObjects,
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
@@ -362,6 +370,7 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
+    linkedObjects = get(draftPost, ['jsonMetadata', 'linkedObjects'], []);
     state = {
       campaign,
       draftId: props.draftId,
@@ -370,10 +379,9 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       },
-      content: '',
+      content: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       topics: typeof tags === 'string' ? [tags] : tags,
-      linkedObjects: draftPost.linkedObjects || [],
-      hideLinkedObjects: hideObjects,
+      linkedObjects,
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
       ),

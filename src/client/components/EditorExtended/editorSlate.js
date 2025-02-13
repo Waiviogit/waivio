@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
 import { isKeyHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
+import useQuery from '../../../hooks/useQuery';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
@@ -84,7 +85,9 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
+  const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);
+  const [draftInit, setDraftInit] = useState(!!params[0]);
   const editorRef = useRef(null);
   const handlePastedFiles = async event => {
     const html = event.clipboardData.getData('text/html');
@@ -258,8 +261,13 @@ const EditorSlate = props => {
     },
   ]);
 
+  useEffect(() => {
+    setDraftInit(true);
+  }, [query.get('draft')]);
+
   const handleChange = newState => {
-    onChange(editor);
+    if (!draftInit) onChange(editor);
+    setDraftInit(false);
     setValue(newState);
   };
 

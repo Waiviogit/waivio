@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useState, useLayoutEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { debounce, get, isEmpty, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -43,6 +43,8 @@ const CommentForm = props => {
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const importObj = useSelector(getImportObject);
+  const abortControllerRef = useRef(null);
+
   const parent = props.isEdit ? props.currentComment : props.parentPost;
   const getPermlink = () => {
     if (props.isReply) return `${parent?.permlink}-reply`;
@@ -129,8 +131,16 @@ const CommentForm = props => {
 
   const setShowEditorSearch = value => setIsShowEditorSearch(value);
 
-  const debouncedSearch = debounce(searchStr => props.searchObjects(searchStr), 150);
-
+  const debouncedSearch = useCallback(
+    debounce(searchStr => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
+      props.searchObjects(searchStr, abortControllerRef.current);
+    }, 300),
+    [],
+  );
   const debouncedDraftSave = useCallback(
     debounce(markdownBody => {
       if (init) saveCommentDraft(props.username, parent?.author, getPermlink(), markdownBody);
@@ -317,7 +327,8 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
   setImportObject: data => dispatch(setImportObject(data)),
-  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
+  searchObjects: (value, ac) =>
+    dispatch(searchObjectsAutoCompete(value, '', null, true, false, undefined, ac)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CommentForm)));

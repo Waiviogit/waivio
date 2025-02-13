@@ -541,6 +541,7 @@ const SocialProduct = ({
                   {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
                 </div>
                 <SocialProductDescription
+                  objectType={wobject.object_type}
                   description={wobject.description}
                   pictures={photosAlbum.items}
                   authorPermlink={wobject.author_permlink}

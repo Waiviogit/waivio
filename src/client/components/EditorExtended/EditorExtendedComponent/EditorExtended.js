@@ -24,7 +24,7 @@ const Editor = props => {
       titleValue: get(props, 'initialContent.title', ''),
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
-    restoreObjects(fromMarkdown(props.initialContent));
+    // restoreObjects(fromMarkdown(props.initialContent));
   }, []);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
@@ -33,11 +33,11 @@ const Editor = props => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
 
-  const restoreObjects = (rawContent, newObject) => {
-    const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
-
-    props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
-  };
+  // const restoreObjects = (rawContent, newObject) => {
+  //   const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
+  //
+  //   props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
+  // };
 
   const debouncedSearch = useCallback(
     debounce(searchStr => {
@@ -149,14 +149,14 @@ const propTypes = {
   isNewReview: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteText: PropTypes.func,
-  getRestoreObjects: PropTypes.func,
+  // getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   searchObjects: PropTypes.func.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isShowEditorSearch: PropTypes.bool.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
-  setUpdatedEditorData: PropTypes.func.isRequired,
+  // setUpdatedEditorData: PropTypes.func.isRequired,
   setCursorCoordinates: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };

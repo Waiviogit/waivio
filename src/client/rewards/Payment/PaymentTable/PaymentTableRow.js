@@ -34,7 +34,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getObjectName(
+  const primaryObjectName = getObjectName(
     get(sponsor, 'details.main_object', null) || sponsor?.mainObject,
   );
   const reviewObjectName = getObjectName(
@@ -164,7 +164,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">{getOperation()}</div>
-          {prymaryObjectName && (
+          {primaryObjectName && (
             <div className="PaymentTable__action-items">
               <div>
                 {reviewPermlink ? (
@@ -180,7 +180,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                       : `/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`
                   }
                 >
-                  {prymaryObjectName}
+                  {primaryObjectName}
                 </Link>
                 {sponsor?.mainObject?.defaultShowLink !==
                   sponsor?.reviewObject?.defaultShowLink && (

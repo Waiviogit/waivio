@@ -50,7 +50,6 @@ class Story extends React.Component {
     isThread: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
-    saving: PropTypes.bool,
     ownPost: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
@@ -82,7 +81,6 @@ class Story extends React.Component {
     pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
-    saving: false,
     ownPost: false,
     singlePostVew: false,
     sliderMode: false,
@@ -227,7 +225,12 @@ class Story extends React.Component {
     if (post.depth === 0 && !isThread)
       return this.props
         .editPost(post, intl)
-        .then(() => this.props.push(`/editor?draft=${post.id}`));
+        .then(() => {
+          this.props.push(`/editor?draft=${post.id}`);
+        })
+        .catch(e => {
+          console.error(e);
+        });
 
     if (!isThread) return this.props.push(`${post.url}-edit`);
   };
@@ -327,7 +330,6 @@ class Story extends React.Component {
       pendingFlag,
       pendingFollow,
       pendingBookmark,
-      saving,
       rewardFund,
       ownPost,
       singlePostVew,
@@ -503,7 +505,6 @@ class Story extends React.Component {
                 onShareClick={this.handleShareClick}
                 pendingFollow={pendingFollow}
                 pendingBookmark={pendingBookmark}
-                saving={saving}
                 handleFollowClick={this.handleFollowClick}
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}

@@ -43,7 +43,6 @@ class StoryFooter extends React.Component {
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
-    saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onReportClick: PropTypes.func,
@@ -71,7 +70,6 @@ class StoryFooter extends React.Component {
     ownPost: false,
     pendingFollow: false,
     pendingBookmark: false,
-    saving: false,
     singlePostVew: false,
     sliderMode: false,
     onLikeClick: () => {},
@@ -215,7 +213,6 @@ class StoryFooter extends React.Component {
       defaultVotePercent,
       pendingFollow,
       pendingBookmark,
-      saving,
       singlePostVew,
       getSocialInfoPostAction,
       userComments,
@@ -244,7 +241,6 @@ class StoryFooter extends React.Component {
               pendingFlag={pendingFlag}
               pendingFollow={pendingFollow}
               pendingBookmark={pendingBookmark}
-              saving={saving}
               ownPost={ownPost}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}

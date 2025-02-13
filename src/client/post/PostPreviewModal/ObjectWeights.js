@@ -105,11 +105,11 @@ const ObjectWeights = ({
       )}
       {linkedObjects?.map(obj => (
         <ObjectWeight
-          key={obj._id}
-          objId={obj._id}
+          key={obj.author_permlink}
+          objId={obj.author_permlink}
           objName={obj.name}
-          percentValue={objPercentage[obj._id].percent}
-          percentMax={objPercentage[obj._id].percent + weightBuffer}
+          percentValue={objPercentage[obj.author_permlink].percent}
+          percentMax={objPercentage[obj.author_permlink].percent + weightBuffer}
           onPercentChange={onPercentChange}
         />
       ))}

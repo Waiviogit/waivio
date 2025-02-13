@@ -5,6 +5,7 @@ import { connectRouter } from 'connected-react-router';
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
+import draftsReducer from './draftsStore/draftsReducer';
 import dynamicListReducer from './dynamicList/dynamicListReducer';
 import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
@@ -45,6 +46,7 @@ export default history =>
   combineReducers({
     app: appReducer,
     auth: authReducer,
+    draftsStore: draftsReducer,
     comments: commentsReducer,
     editor: editorReducer,
     posts: postsReducer,

@@ -61,7 +61,9 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
             <th className="ReportTableRewards basicWidth">
               {intl.formatMessage({ id: 'shares', defaultMessage: `Shares` })}
             </th>
-            <th className="ReportTableRewards basicWidth">{payoutToken}** Power</th>
+            <th className="ReportTableRewards basicWidth">
+              {payoutToken}** {payoutToken === 'WAIV' ? 'Upvotes' : 'Power'}
+            </th>
             <th className="ReportTableRewards basicWidth">{payoutToken}</th>
             <th className="ReportTableRewards basicWidth">
               {capitalize(

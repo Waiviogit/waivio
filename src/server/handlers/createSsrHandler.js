@@ -82,36 +82,23 @@ export default function createSsrHandler(template) {
     const store = getStore(sc2Api, waivioAPI, req.url);
 
     store.dispatch(setAppHost(hostname));
-    // store.dispatch(setAppAgent(hostname));
 
     let settings = {};
     let adsenseSettings = {};
     let parentHost = '';
-
-    if (!isWaivio) {
-      if (listOfWebsiteWithMainPage.some(site => site === hostname))
-        store.dispatch(setIsDiningGifts(true));
-      if (listOfSocialWebsites.some(site => site === hostname))
-        store.dispatch(setIsSocialGifts(true));
-
-      try {
-        settings = await getSettingsWebsite(hostname);
-        adsenseSettings = await getSettingsAdsense(hostname);
-        parentHost = (await store.dispatch(setParentHost(hostname))).value;
-      } catch (e) {
-        console.error('fall settings requests str 70');
-      }
-    }
 
     const splittedUrl = req.url.split('?');
     const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
     const access_token =
       query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
     const socialProvider = query ? query.get('socialProvider') : undefined;
+    const currentUser = req?.cookies?.currentUser
+      ? req?.cookies?.currentUser
+      : query?.get('username');
 
     if (req.cookies && !req.url?.includes('sign-in')) {
       sc2Api.setAccessToken(access_token);
-      const data = { access_token, socialProvider, ...req?.cookies };
+      const data = { access_token, socialProvider, ...req?.cookies, currentUser };
       try {
         await store.dispatch(loginFromServer(data)).then(async res => {
           try {
@@ -128,17 +115,21 @@ export default function createSsrHandler(template) {
     }
 
     const promises = [];
-    const loc =
-      query?.get('usedLocale') ||
-      settings?.language ||
-      req.cookies.language ||
-      getRequestLocale(req.get('Accept-Language'));
-    if (!isWaivio && !req.cookies.access_token) {
-      store.dispatch(setLocale(loc));
-      store.dispatch(setUsedLocale(await loadLanguage(loc)));
+    if (!isWaivio) {
+      if (listOfWebsiteWithMainPage.some(site => site === hostname))
+        store.dispatch(setIsDiningGifts(true));
+      if (listOfSocialWebsites.some(site => site === hostname))
+        store.dispatch(setIsSocialGifts(true));
+
+      try {
+        settings = await getSettingsWebsite(hostname);
+        adsenseSettings = await getSettingsAdsense(hostname);
+        parentHost = (await store.dispatch(setParentHost(hostname))).value;
+      } catch (e) {
+        console.error('fall settings requests str 70');
+      }
     }
-    const routes = switchRoutes(hostname, parentHost);
-    const branch = matchRoutes(routes, splittedUrl[0]);
+
     if (isUser) {
       return res.send(
         renderSsrPage(
@@ -154,6 +145,20 @@ export default function createSsrHandler(template) {
           get(adsenseSettings, 'code', ''),
         ),
       );
+    }
+
+    const routes = switchRoutes(hostname, parentHost);
+    const branch = matchRoutes(routes, splittedUrl[0]);
+
+    const loc =
+      query?.get('usedLocale') ||
+      settings?.language ||
+      req.cookies.language ||
+      getRequestLocale(req.get('Accept-Language'));
+
+    if (!isWaivio && !req.cookies.access_token) {
+      store.dispatch(setLocale(loc));
+      store.dispatch(setUsedLocale(await loadLanguage(loc)));
     }
 
     try {

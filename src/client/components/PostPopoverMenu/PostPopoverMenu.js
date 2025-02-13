@@ -34,7 +34,6 @@ import './PostPopoverMenu.less';
 const PostPopoverMenu = ({
   pendingFlag,
   pendingBookmark,
-  saving,
   postState,
   intl,
   post,
@@ -254,7 +253,7 @@ const PostPopoverMenu = ({
     popoverMenu = [
       ...popoverMenu,
       <PopoverMenuItem key="edit">
-        {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
+        <i className="iconfont icon-write" />
         <FormattedMessage
           id={isThread ? 'edit_thread' : 'edit_post'}
           defaultMessage={isThread ? 'Edit thread' : 'Edit post'}
@@ -492,7 +491,6 @@ PostPopoverMenu.propTypes = {
   pendingFlag: PropTypes.bool,
   isSocial: PropTypes.bool,
   pendingBookmark: PropTypes.bool,
-  saving: PropTypes.bool,
   postState: PropTypes.shape({
     isReported: PropTypes.bool,
     userFollowed: PropTypes.bool,
@@ -550,7 +548,6 @@ PostPopoverMenu.propTypes = {
 PostPopoverMenu.defaultProps = {
   pendingFlag: false,
   pendingBookmark: false,
-  saving: false,
   ownPost: false,
   handlePostPopoverMenuClick: () => {},
   getSocialInfoPost: () => {},

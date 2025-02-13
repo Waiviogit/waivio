@@ -48,30 +48,6 @@ export const getNewLinkedObjectsCards = (
   return prohibitObjects;
 };
 
-export const getNewLinkedObjectsCardsSlate = (
-  prohibitObjects,
-  objectIds,
-  rowContent,
-  prevRowContent = [],
-) => {
-  const lastContentAdd = head(differenceWith(rowContent, prevRowContent, isEqual));
-
-  if (
-    lastContentAdd &&
-    (lastContentAdd.type === Entity.OBJECT || lastContentAdd.type === Entity.LINK)
-  ) {
-    const addedObjectId = last(objectIds);
-
-    if (find(prohibitObjects, object => object.author_permlink === addedObjectId)) {
-      return prohibitObjects.filter(object => object.author_permlink !== addedObjectId);
-    }
-
-    return prohibitObjects;
-  }
-
-  return prohibitObjects;
-};
-
 export const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
     entity =>

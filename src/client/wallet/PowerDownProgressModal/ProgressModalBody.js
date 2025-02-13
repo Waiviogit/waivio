@@ -26,6 +26,7 @@ const ProgressModalBody = ({
   min = 0,
 }) => {
   const currAmount = parseFloat(amount);
+  const unitsLeft = left > max ? max : left;
 
   return (
     <div>
@@ -68,8 +69,8 @@ const ProgressModalBody = ({
           </div>
         )}
         <div>
-          Remaining: {left < 0 ? 0 : left} {left === 1 ? timePeriod : `${timePeriod}s`} out of {max}
-          .
+          Remaining: {left < 0 ? 0 : unitsLeft} {left === 1 ? timePeriod : `${timePeriod}s`} out of{' '}
+          {max}.
         </div>
       </div>
       <div>

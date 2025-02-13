@@ -49,6 +49,7 @@ const initialState = {
   showRewards: false,
   delegationModalType: delegationModalTypes.MANAGE,
   withdrawCurrency: 'eth',
+  hbdInterestRate: 0,
   hiveEngineDelayInfo: {
     status: 'OK',
     delay: 0,
@@ -96,6 +97,7 @@ export default function walletReducer(state = initialState, action) {
     case walletActions.GET_GLOBAL_PROPERTIES.SUCCESS: {
       return {
         ...state,
+        hbdInterestRate: action.payload.hbd_interest_rate / 100,
         totalVestingFundSteem: action.payload.total_vesting_fund_hive,
         totalVestingShares: action.payload.total_vesting_shares,
         loadingGlobalProperties: false,

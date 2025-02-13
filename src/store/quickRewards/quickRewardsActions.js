@@ -4,9 +4,9 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthorsChildWobjects, searchObjects } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
-import { createPost } from '../editorStore/editorActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
+import { createPost } from '../slateEditorStore/editorActions';
 import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
@@ -202,7 +202,5 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   );
   await dispatch({ type: CREATE_QUICK_POST });
 };
-
-export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');
 
 export default null;

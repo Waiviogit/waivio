@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 import { throttle } from 'lodash';
+import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
@@ -13,7 +14,6 @@ import { isContentValid } from '../../../common/helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../../store/searchStore/searchActions';
-import { setUpdatedEditorData } from '../../../store/editorStore/editorActions';
 import { getConfigurationValues } from '../../../store/appStore/appSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
@@ -58,6 +58,7 @@ class PostPreviewModal extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    setObjPercent: PropTypes.func,
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
     titleValue: PropTypes.string,
@@ -152,7 +153,7 @@ class PostPreviewModal extends Component {
       [objId]: { percent },
     };
 
-    this.props.setUpdatedEditorData({ objPercentage: nextObjPercentage });
+    this.props.setObjPercent(nextObjPercentage);
   };
 
   handleReviewSubmit = () => {
@@ -165,19 +166,12 @@ class PostPreviewModal extends Component {
   handleSubmit = () => {
     try {
       if (this.props.reviewData && !this.props.isUpdating) {
-        // eslint-disable-next-line no-console
-        console.log(this.props.reviewData?.requirements, 168);
-        // eslint-disable-next-line no-console
-        console.log(this.state.isCheckReviewModalOpen, 170);
         this.setState({ isCheckReviewModalOpen: true });
       } else {
-        // eslint-disable-next-line no-console
-        console.log('onSubmit', 173);
         this.props.onSubmit();
       }
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e, 'error');
+      console.error(e);
     }
   };
 
