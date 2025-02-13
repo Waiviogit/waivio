@@ -3510,6 +3510,18 @@ class AppendForm extends Component {
                               alt={'hive-logo'}
                             />
                           );
+                        case 'twitch':
+                        case 'pinterest':
+                        case 'reddit':
+                        case 'telegram':
+                        case 'whatsapp':
+                          return (
+                            <img
+                              className="snapchat-icon"
+                              src={`/images/icons/${profile.id}.png`}
+                              alt={`${profile.id} logo`}
+                            />
+                          );
                         default:
                           return (
                             <i
@@ -4295,6 +4307,12 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
           isEmpty(getFieldValue('linkTikTok')) &&
+          isEmpty(getFieldValue('linkReddit')) &&
+          isEmpty(getFieldValue('linkLinkedIn')) &&
+          isEmpty(getFieldValue('linkTelegram')) &&
+          isEmpty(getFieldValue('linkWhatsApp')) &&
+          isEmpty(getFieldValue('linkPinterest')) &&
+          isEmpty(getFieldValue('linkTwitch')) &&
           isEmpty(getFieldValue('linkSnapchat')) &&
           isEmpty(getFieldValue('linkGitHub'))
         );

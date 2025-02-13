@@ -44,6 +44,22 @@ const SocialInputItem = ({
         </div>
       );
       break;
+    case 'twitch':
+    case 'pinterest':
+    case 'reddit':
+    case 'telegram':
+    case 'whatsapp':
+      icons = (
+        <img
+          style={{
+            width: '14px',
+            height: '14px',
+          }}
+          src={`/images/icons/${profile.icon}.png`}
+          alt="Twitch icon"
+        />
+      );
+      break;
 
     default:
       icons = (

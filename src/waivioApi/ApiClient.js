@@ -36,7 +36,7 @@ const REQUEST_TIMEOUT = 3000;
 const HIVE_ENGINE_NODES = [
   'https://herpc.dtools.dev',
   'https://api.hive-engine.com/rpc',
-  'https://ha.herpc.dtools.dev',
+  'https://enginerpx.com',
   'https://herpc.kanibot.com',
   'https://he.sourov.dev',
 ];
