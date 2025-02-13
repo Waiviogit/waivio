@@ -94,7 +94,7 @@ export default function createSsrHandler(template) {
     const socialProvider = query ? query.get('socialProvider') : undefined;
     const currentUser = req?.cookies?.currentUser
       ? req?.cookies?.currentUser
-      : query.get('username');
+      : query?.get('username');
 
     if (req.cookies && !req.url?.includes('sign-in')) {
       sc2Api.setAccessToken(access_token);
