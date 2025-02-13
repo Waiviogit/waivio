@@ -90,18 +90,12 @@ const draftsReducer = (state = initialState, action) => {
           objectPercent: [],
         };
 
-      const linkedObjects =
-        uniqBy(action.payload.jsonMetadata?.linkedObjects, 'author_permlink') || [];
-
       return {
         ...state,
         currentDraft: action.payload,
         campaign: null,
-        objectPercent: linkedObjects.reduce((acc, curr) => {
-          acc[curr.author_permlink] = { percent: curr.percent };
-
-          return acc;
-        }, {}),
+        linkedObjects: [],
+        objectPercent: [],
       };
     }
 
