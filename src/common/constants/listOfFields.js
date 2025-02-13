@@ -211,7 +211,12 @@ export const linkFields = {
   linkYouTube: 'linkYouTube',
   linkInstagram: 'linkInstagram',
   linkTikTok: 'linkTikTok',
-  linkSnapchat: 'linkSnapchat',
+  linkReddit: 'linkReddit',
+  linkLinkedIn: 'linkLinkedIn',
+  linkTelegram: 'linkTelegram',
+  linkWhatsApp: 'linkWhatsApp',
+  linkPinterest: 'linkPinterest',
+  linkTwitch: 'linkTwitch',
   linkHive: 'linkHive',
   linkGitHub: 'linkGitHub',
 };
@@ -296,6 +301,12 @@ export const socialObjectFields = [
   { id: 'snapchat', icon: 'snapchat', color: 'yellow', name: 'Snapchat' },
   { id: 'hive', icon: 'hive', color: 'red', name: 'Hive' },
   { id: 'github', icon: 'github', color: 'black', name: 'GitHub' },
+  { id: 'reddit', icon: 'reddit', color: 'black', name: 'Reddit' },
+  { id: 'telegram', icon: 'telegram', color: 'black', name: 'Telegram' },
+  { id: 'whatsapp', icon: 'whatsapp', color: 'black', name: 'WhatsApp' },
+  { id: 'pinterest', icon: 'pinterest', color: 'black', name: 'Pinterest' },
+  { id: 'twitch', icon: 'twitch', color: 'black', name: 'Twitch' },
+  { id: 'linkedin', icon: 'linkedin', color: '#007bb6', name: 'LinkedIn' },
 ];
 
 export const cryptocurrenciesList = [

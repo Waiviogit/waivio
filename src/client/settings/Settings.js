@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
+import Cookie from 'js-cookie';
 import { getCurrencyForSettings, saveSettings } from '../../store/settingsStore/settingsActions';
 import { getCurrentCurrencyRate } from '../../store/appStore/appActions';
 import { reload } from '../../store/authStore/authActions';
@@ -247,7 +248,10 @@ export default class Settings extends React.Component {
   handleHideLinkedObjects = event => this.setState({ hideLinkedObjects: event.target.checked });
   handleHideFavoriteObjects = event => this.setState({ hideFavoriteObjects: event.target.checked });
   handleHideRecipeObjects = event => this.setState({ hideRecipeObjects: event.target.checked });
-  handleNightmode = event => this.setState({ nightmode: event.target.checked });
+  handleNightmode = event => {
+    Cookie.set('nightmode', event.target.checked);
+    this.setState({ nightmode: event.target.checked });
+  };
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
   handleUpvoteSettingChange = event => this.setState({ upvoteSetting: event.target.checked });
