@@ -5,6 +5,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+import Cookie from 'js-cookie';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
 import ukUA from 'antd/es/locale/uk_UA';
@@ -32,7 +33,7 @@ import Loading from './components/Icon/Loading';
 import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
-import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
 import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
@@ -52,7 +53,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
-    nightmode: getNightmode(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
@@ -89,7 +89,6 @@ class WebsiteWrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getCurrentAppSettings: PropTypes.func,
-    nightmode: PropTypes.bool,
     isOpenModal: PropTypes.bool,
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
@@ -124,7 +123,6 @@ class WebsiteWrapper extends React.PureComponent {
     getNotifications: () => {},
     setUsedLocale: () => {},
     busyLogin: () => {},
-    nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
     isDiningGifts: false,
@@ -160,6 +158,12 @@ class WebsiteWrapper extends React.PureComponent {
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
     const locale = query.get('usedLocale');
+    const nightmode = Cookie.get('nightmode');
+
+    if (typeof document !== 'undefined') {
+      if (nightmode === 'true') document.body.classList.add('nightmode');
+      else document.body.classList.remove('nightmode');
+    }
 
     this.props.getRate();
     this.props.getRewardFund();
@@ -203,8 +207,10 @@ class WebsiteWrapper extends React.PureComponent {
   }
 
   componentDidUpdate() {
+    const nightmode = Cookie.get('nightmode');
+
     if (typeof document !== 'undefined') {
-      if (this.props.nightmode) document.body.classList.add('nightmode');
+      if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
     }
   }

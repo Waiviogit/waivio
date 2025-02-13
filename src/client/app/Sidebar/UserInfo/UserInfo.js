@@ -4,13 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { get, truncate } from 'lodash';
-import {
-  FormattedDate,
-  FormattedMessage,
-  FormattedRelative,
-  FormattedTime,
-  injectIntl,
-} from 'react-intl';
+import { FormattedDate, FormattedMessage, FormattedTime, injectIntl } from 'react-intl';
 import urlParse from 'url-parse';
 import { calcReputation, calculateDownVote } from '../../../vendor/steemitHelpers';
 import SocialLinks from '../../../components/SocialLinks';
@@ -78,6 +72,11 @@ class UserInfo extends React.Component {
       about = metadata && get(profile, 'about');
       email = metadata && get(profile, 'email');
     }
+
+    const relativeString = intl.formatRelative(lastActive);
+    const lastActivity = relativeString?.includes('in')
+      ? `${relativeString?.replace('in', '').trim()} ago`
+      : relativeString;
 
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
       website = `http://${website}`;
@@ -161,9 +160,7 @@ class UserInfo extends React.Component {
                           </span>
                         }
                       >
-                        <span>
-                          <FormattedRelative value={lastActive} />
-                        </span>
+                        <span>{lastActivity}</span>
                       </BTooltip>
                     </div>
                     <div>
