@@ -50,7 +50,7 @@ import {
 } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
-import { getLocale, getNightmode } from '../../store/settingsStore/settingsSelectors';
+import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import QuickRewardsModal from './../rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../../store/quickRewards/quickRewardsSelectors';
 import { getTokenRates, getGlobalProperties } from '../../store/walletStore/walletActions';
@@ -91,6 +91,7 @@ const SocialWrapper = props => {
   const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
+  const nightmode = Cookie.get('nightmode');
   const signInPage = props?.location.pathname?.includes('sign-in');
   const createWebsiteMenu = configuration => {
     if (!isEmpty(configuration?.shopSettings)) {
@@ -243,10 +244,10 @@ const SocialWrapper = props => {
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      if (props.nightmode) document.body.classList.add('nightmode');
+      if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
     }
-  }, [props.nightmode]);
+  }, [nightmode]);
 
   return (
     <IntlProvider
@@ -289,7 +290,6 @@ SocialWrapper.propTypes = {
   setFavoriteObjectTypes: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   getDraftsList: PropTypes.func,
-  nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setUsedLocale: PropTypes.func,
@@ -321,7 +321,6 @@ SocialWrapper.defaultProps = {
   getCurrentAppSettings: () => {},
   getNotifications: () => {},
   busyLogin: () => {},
-  nightmode: false,
   dispatchGetAuthGuestBalance: () => {},
   isOpenWalletTable: false,
   isOpenModal: false,
@@ -512,7 +511,6 @@ export default ErrorBoundary(
         usedLocale: getUsedLocale(state),
         translations: getTranslations(state),
         locale: getLocale(state),
-        nightmode: getNightmode(state),
         isOpenWalletTable: getIsOpenWalletTable(state),
         loadingFetching: getIsAuthFetching(state),
         isOpenModal: getIsOpenModal(state),
