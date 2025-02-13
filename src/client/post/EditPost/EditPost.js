@@ -70,7 +70,6 @@ const EditPost = props => {
     objPercentage,
   } = props;
   const [isNewReview, setIsNewReview] = React.useState(false);
-  const [init, setInit] = React.useState(Boolean(props.currDraft));
   const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
@@ -108,14 +107,12 @@ const EditPost = props => {
         titleValue: title,
       };
 
-      if ((content !== updatedStore.content || titleValue !== updatedStore.titleValue) && !init) {
+      if (content !== updatedStore.content || titleValue !== updatedStore.titleValue) {
         props.saveDraft(updatedStore);
         props.setUpdatedEditorData(updatedStore);
-      } else {
-        setInit(false);
       }
     }, 500),
-    [content, titleValue, props.currDraft, init],
+    [content, titleValue, props.currDraft],
   );
 
   const handleSettingsChange = updatedValue =>
