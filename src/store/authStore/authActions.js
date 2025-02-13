@@ -209,7 +209,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
     Cookie.set('nightmode', userMetaData.settings?.nightmode);
     Cookie.set('appAdmins', appAdmins);
-    // Cookie.set('currentUser', authenticatedUserName);
+    Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
     promise = Promise.resolve({ account });
   } else if (accessToken && socialNetwork) {
@@ -222,7 +222,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = await getGuestWaivBalance(userData.name);
         const appAdmins = await getAppAdmins();
 
-        // Cookie.set('currentUser', userData.name);
+        Cookie.set('currentUser', userData.name);
         Cookie.set('appAdmins', appAdmins);
         Cookie.set('nightmode', userMetaData.settings?.nightmode);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
@@ -265,7 +265,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         Cookie.set('appAdmins', appAdmins);
         Cookie.set('nightmode', userMetaData.settings?.nightmode);
-        // Cookie.set('currentUser', scUserData.name);
+        Cookie.set('currentUser', scUserData.name);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
@@ -324,8 +324,8 @@ export const loginFromServer = cookie => dispatch => {
           const privateEmail = await getPrivateEmail(hiveAuthData.username);
           const rewardsTab = await getRewardTab(hiveAuthData.username);
 
-          dispatch(changeAdminStatus(hiveAuthData.username));
-          dispatch(setSignature(userMetaData?.profile?.signature || ''));
+          // dispatch(changeAdminStatus(hiveAuthData.username));
+          // dispatch(setSignature(userMetaData?.profile?.signature || ''));
 
           resolve({
             account,
@@ -343,9 +343,9 @@ export const loginFromServer = cookie => dispatch => {
           const privateEmail = await getPrivateEmail(userData.name);
           const rewardsTab = await getRewardTab(userData.name);
           const { WAIV } = await getGuestWaivBalance(userData.name);
-
-          dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          dispatch(changeAdminStatus(userData.name));
+          //
+          // dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
+          // dispatch(changeAdminStatus(userData.name));
 
           resolve({
             account: userData,
@@ -362,29 +362,32 @@ export const loginFromServer = cookie => dispatch => {
         }
       });
     } else if (isGuest || cookie.access_token) {
-      promise = new Promise(async resolve => {
+      promise = new Promise(async (resolve, reject) => {
         try {
-          const scUserData = isGuest
-            ? await waivioAPI.getUserAccount(cookie.guestName, true)
-            : { name: cookie.currentUser };
-          const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
-          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-          const privateEmail = await getPrivateEmail(scUserData.name);
-          const rewardsTab = await getRewardTab(scUserData.name);
-          const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+          if (!isGuest && !cookie.currentUser) reject({});
+          else {
+            const scUserData = isGuest
+              ? await waivioAPI.getUserAccount(cookie.guestName, true)
+              : { name: cookie.currentUser };
+            const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
+            const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+            const privateEmail = await getPrivateEmail(scUserData.name);
+            const rewardsTab = await getRewardTab(scUserData.name);
+            const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
-          dispatch(changeAdminStatus(scUserData.name));
-          dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+            // dispatch(changeAdminStatus(scUserData.name));
+            // dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
 
-          resolve({
-            ...scUserData,
-            ...rewardsTab,
-            account,
-            userMetaData,
-            privateEmail,
-            waivBalance: WAIV,
-            isGuestUser: isGuest,
-          });
+            resolve({
+              ...scUserData,
+              ...rewardsTab,
+              account,
+              userMetaData,
+              privateEmail,
+              waivBalance: WAIV,
+              isGuestUser: isGuest,
+            });
+          }
         } catch (e) {
           console.warn(e);
         }
