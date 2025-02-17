@@ -9,6 +9,7 @@ const initialState = {
   bdPair: '',
   from: { symbol: 'WAIV' },
   to: {},
+  visibleConvert: false,
 };
 
 export default function swapReducer(state = initialState, action) {
@@ -62,6 +63,14 @@ export default function swapReducer(state = initialState, action) {
         from: action.payload.symbol ? { symbol: action.payload.symbol } : state.from,
         to: action.payload.to ? { symbol: action.payload.to } : state.to,
         bdPair: '',
+      };
+    }
+    case swapActions.SHOW_CONVERT_HBD_MODAL: {
+      return {
+        ...state,
+        visibleConvert: action.payload.isOpen,
+        from: action.payload.symbol ? { symbol: action.payload.symbol } : state.from,
+        to: action.payload.to ? { symbol: action.payload.to } : state.to,
       };
     }
 
