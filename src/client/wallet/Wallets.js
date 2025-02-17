@@ -27,7 +27,7 @@ import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
-import { getVisibleModal } from '../../store/swapStore/swapSelectors';
+import { getVisibleConvertModal, getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';
 import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
@@ -36,6 +36,7 @@ import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
 
 import './Wallets.less';
+import ConvertHbdModal from './ConvertHbdModal';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -103,6 +104,7 @@ const Wallets = props => {
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
+      {props.visibleConvert && <ConvertHbdModal />}
       {props.visibleDeposit && <Deposit />}
       {props.visibleWithdraw && <WithdrawModal />}
       {props.visibleDelegate && <ManageDelegate />}
@@ -120,6 +122,7 @@ Wallets.propTypes = {
   visibleSwap: PropTypes.bool.isRequired,
   visibleWithdraw: PropTypes.bool.isRequired,
   visibleDelegate: PropTypes.bool.isRequired,
+  visibleConvert: PropTypes.bool.isRequired,
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
@@ -144,6 +147,7 @@ export default connect(
     visible: getIsTransferVisible(state),
     visiblePower: getIsPowerUpOrDownVisible(state),
     visibleSwap: getVisibleModal(state),
+    visibleConvert: getVisibleConvertModal(state),
     visibleDeposit: getDepositVisible(state),
     visibleWithdraw: getIsOpenWithdraw(state),
     visibleDelegate: getDelegationModalVisible(state),

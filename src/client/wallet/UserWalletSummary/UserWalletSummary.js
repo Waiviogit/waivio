@@ -177,7 +177,6 @@ const UserWalletSummary = ({
   const isCurrentGuest = useSelector(isGuestUser);
   const interestRate = useSelector(getHbdInterestRate);
   const hiveAuth = Cookie.get('auth');
-
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
   const estimateInterestBalance = hiveAccount => {
     const {
@@ -380,7 +379,11 @@ const UserWalletSummary = ({
           </p>
           <WalletAction
             mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
-            options={isCurrentGuest ? ['withdraw'] : ['transfer', 'convert', 'transfer_to_saving']}
+            options={
+              isCurrentGuest
+                ? ['withdraw']
+                : ['transfer', 'convert', 'transfer_to_saving', 'collateralized_convert']
+            }
             mainCurrency={'HIVE'}
             withdrawCurrencyOption={['LTC', 'BTC', 'ETH']}
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
