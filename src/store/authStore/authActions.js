@@ -211,7 +211,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     Cookie.set('appAdmins', appAdmins);
     Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve({ account });
+    promise = Promise.resolve({ account, userMetaData });
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
