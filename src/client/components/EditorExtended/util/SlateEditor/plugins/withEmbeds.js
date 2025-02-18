@@ -85,7 +85,7 @@ const withEmbeds = cb => editor => {
           return {
             type: 'object',
             url: i.url,
-            children: [{ text: '' }],
+            children: [{ text: ' ' }],
             hashtag: i.children[0]?.text,
           };
         }

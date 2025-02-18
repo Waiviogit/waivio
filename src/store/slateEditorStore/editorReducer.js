@@ -101,6 +101,7 @@ const editor = (state = defaultState, action) => {
           isShowEditorSearch: action.payload,
         },
       };
+
     case editorActions.SET_SEARCH_COORDINATES:
       return {
         ...state,

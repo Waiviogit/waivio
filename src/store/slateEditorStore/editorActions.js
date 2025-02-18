@@ -556,7 +556,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
     }),
   );
 
-  const { beforeRange } = checkCursorInSearchSlate(editor);
+  const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
   const url = getObjectLink(object, match);
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
@@ -682,7 +682,7 @@ export const handlePasteText = html => async (dispatch, getState) => {
 
 export const selectObjectFromSearch = (selectedObject, editor, match) => dispatch => {
   if (selectedObject) {
-    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;

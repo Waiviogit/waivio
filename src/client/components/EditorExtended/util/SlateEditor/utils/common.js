@@ -24,7 +24,7 @@ export const isAllBlockSelected = editor => {
 export const createSlateEditor = () =>
   withHistory(withEmbeds(withTables(withLinks(withReact(createEditor())))));
 
-export const insertObject = (editor, url, text, withFocus) => {
+export const insertObject = (editor, url, text) => {
   Transforms.insertNodes(editor, [createObjectNode(url, text), { text: ' ' }]);
-  if (withFocus) ReactEditor.focus(editor);
+  ReactEditor.focus(editor);
 };

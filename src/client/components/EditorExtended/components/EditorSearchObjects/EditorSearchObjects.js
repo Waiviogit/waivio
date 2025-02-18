@@ -3,6 +3,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { ReactEditor } from 'slate-react';
+import Loading from '../../../Icon/Loading';
 
 import SearchItemObject from './SearchItemObject';
 
@@ -17,11 +18,13 @@ const EditorSearchObjects = ({
   handleObjectSelect,
   editor,
   isComment,
+  isLoading,
 }) => {
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
   const searchObjectsResultsRef = React.useRef(searchObjectsResults); // Use ref to persist data across renders
+  const isLoadingRef = React.useRef(isLoading); // Use ref to persist data across renders
   const [selectedObj, setSelectedObj] = React.useState(false);
   const [currentObjIndex, setCurrentObjIndex] = React.useState(0);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
@@ -42,7 +45,8 @@ const EditorSearchObjects = ({
 
   React.useEffect(() => {
     searchObjectsResultsRef.current = searchObjectsResults;
-  }, [searchObjectsResults]);
+    isLoadingRef.current = isLoading;
+  }, [searchObjectsResults, isLoading]);
 
   React.useEffect(() => {
     countCoordinates();
@@ -69,7 +73,12 @@ const EditorSearchObjects = ({
         searchObjectsResultsRef.current = [];
       }
     }
-    if (!searchObjectsResultsRef.current.length && event.code === 'Space') {
+
+    if (
+      !searchObjectsResultsRef.current.length &&
+      !isLoadingRef.current &&
+      event.code === 'Space'
+    ) {
       clearEditorSearchObjects();
     }
   };
@@ -152,22 +161,29 @@ const EditorSearchObjects = ({
       <div
         ref={inputWrapper}
         className={classNames('editor-search-objects', {
-          'editor-search-objects__empty': !searchObjectsResults.length,
+          'editor-search-objects__empty': !searchObjectsResults.length && !isLoading,
           'editor-search-objects__not-scroll': searchObjectsResults.length <= 4,
         })}
         style={{ top: coordinates.top, left: isComment ? 0 : coordinates.left }}
       >
-        {searchObjectsResults.map((obj, index) => (
-          <SearchItemObject
-            obj={obj}
-            key={obj.id}
-            objectIndex={index}
-            searchBlockItem={searchBlockItem}
-            objectSelect={handleSelectObject}
-            currentObjIndex={currentObjIndex}
-            setCurrentObjIndex={setCurrentObjIndex}
-          />
-        ))}
+        {isLoading ? (
+          <Loading />
+        ) : (
+          searchObjectsResults.map((obj, index) => (
+            <SearchItemObject
+              obj={obj}
+              key={obj.id}
+              objectIndex={index}
+              searchBlockItem={searchBlockItem}
+              objectSelect={() => {
+                setSelectedObj(true);
+                setCurrentObjIndex(index);
+              }}
+              currentObjIndex={currentObjIndex}
+              setCurrentObjIndex={setCurrentObjIndex}
+            />
+          ))
+        )}
       </div>
       <div ref={fakeLeftPositionBlock} className="fake-position-left" />
     </React.Fragment>
@@ -177,6 +193,7 @@ const EditorSearchObjects = ({
 EditorSearchObjects.propTypes = {
   wordForCountWidth: PropTypes.string,
   isComment: PropTypes.bool,
+  isLoading: PropTypes.bool,
   searchObjectsResults: PropTypes.shape(),
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
