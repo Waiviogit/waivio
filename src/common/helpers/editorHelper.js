@@ -386,7 +386,7 @@ export const checkCursorInSearch = editorState => {
   };
 };
 
-const findHashtag = (editor, start, word) => {
+const findHashtag = (editor, start, word, showSearch) => {
   const wordBefore = Editor.before(editor, start, { unit: 'word' });
   const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
   const range = wordBefore && Editor.range(editor, wordBeforeWithCharacter, start);
@@ -396,7 +396,7 @@ const findHashtag = (editor, start, word) => {
 
   if (searchString && searchString[0] === '#') {
     return {
-      searchString,
+      searchString: showSearch ? searchString : searchString.split(' ')[0],
       range,
     };
   } else if (searchString && /^s{2}/.test(searchString)) {
@@ -406,23 +406,31 @@ const findHashtag = (editor, start, word) => {
   return findHashtag(editor, range, searchString + word);
 };
 
-export const checkCursorInSearchSlate = editor => {
+export const checkCursorInSearchSlate = (editor, showSearch) => {
   const { selection } = editor;
-  const blockText = editor.children[selection?.anchor?.path[0]]?.children[0]?.text;
+  const blockText = editor.children[selection?.anchor?.path[0]]?.children.reduce(
+    (acc, curr) => (curr.text ? `${acc}${curr.text}` : acc),
+    '',
+  );
 
   if (!selection || !Range.isCollapsed(selection)) {
     return {
       isNeedOpenSearch: false,
     };
   }
+
   try {
     const [start] = Range.edges(selection);
     const wordBefore = Editor.before(editor, start, { unit: 'word' });
     const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
     const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
-    const { searchString, range } = findHashtag(editor, start, '') ?? {};
+    const { searchString, range } = findHashtag(editor, start, '', showSearch) ?? {};
 
-    if (searchString) {
+    if (
+      searchString &&
+      blockText.includes(searchString) &&
+      startPositionOfWord + searchString.length === start.offset
+    ) {
       const beforeRange = range && Editor.range(editor, range, start);
 
       return {

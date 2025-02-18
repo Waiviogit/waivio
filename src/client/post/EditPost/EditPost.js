@@ -203,7 +203,6 @@ const EditPost = props => {
             isUpdating={isUpdating}
             linkedObjects={props.filteredObjectsCards}
             objPercentage={objPercentage}
-            onUpdate={props.saveDraft}
             reviewData={props?.campaign}
             settings={settings}
             topics={topics}

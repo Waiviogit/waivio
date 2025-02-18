@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
-import { throttle } from 'lodash';
 import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
@@ -57,7 +56,6 @@ class PostPreviewModal extends Component {
     setUpdatedEditorData: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    onUpdate: PropTypes.func.isRequired,
     setObjPercent: PropTypes.func,
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
@@ -103,24 +101,6 @@ class PostPreviewModal extends Component {
       nextProps.titleValue
     );
   }
-
-  onUpdate = () => {
-    throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
-  };
-
-  throttledUpdate = () => {
-    const { body } = this.state;
-    const { topics, settings, titleValue, linkedObjects } = this.props;
-    const postData = {
-      body,
-      titleValue,
-      topics,
-      linkedObjects,
-      ...settings,
-    };
-
-    this.props.onUpdate(postData);
-  };
 
   showModal = () => {
     this.setState({

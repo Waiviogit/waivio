@@ -211,7 +211,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     Cookie.set('appAdmins', appAdmins);
     Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve({ account });
+    promise = Promise.resolve({ account, userMetaData });
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
@@ -343,9 +343,6 @@ export const loginFromServer = cookie => dispatch => {
           const privateEmail = await getPrivateEmail(userData.name);
           const rewardsTab = await getRewardTab(userData.name);
           const { WAIV } = await getGuestWaivBalance(userData.name);
-          //
-          // dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          // dispatch(changeAdminStatus(userData.name));
 
           resolve({
             account: userData,
