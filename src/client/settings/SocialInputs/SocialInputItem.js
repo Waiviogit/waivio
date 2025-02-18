@@ -52,8 +52,8 @@ const SocialInputItem = ({
       icons = (
         <img
           style={{
-            width: '14px',
-            height: '14px',
+            width: profile.icon === 'whatsapp' ? '18px' : '14px',
+            height: profile.icon === 'whatsapp' ? '18px' : '14px',
           }}
           src={`/images/icons/${profile.icon}.png`}
           alt="Twitch icon"

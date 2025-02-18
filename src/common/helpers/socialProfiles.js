@@ -62,7 +62,6 @@ export const getTwitterShareURL = (text, url, hashtag) =>
 export default [
   { id: 'facebook', icon: 'facebook', color: '#3b5998', name: 'Facebook' },
   { id: 'twitter', icon: 'twitter', color: '#00aced', name: 'Twitter' },
-  { id: 'linkedin', icon: 'linkedin', color: '#007bb6', name: 'LinkedIn' },
   { id: 'youtube', icon: 'youtube', color: '#ff0202', name: 'YouTube' },
   { id: 'instagram', icon: 'instagram', color: '#8a3ab9', name: 'Instagram' },
   { id: 'tiktok', icon: 'tiktok', color: 'black', name: 'TikTok' },
@@ -74,6 +73,7 @@ export default [
   { id: 'whatsapp', icon: 'whatsapp', color: 'black', name: 'WhatsApp' },
   { id: 'pinterest', icon: 'pinterest', color: 'black', name: 'Pinterest' },
   { id: 'twitch', icon: 'twitch', color: 'black', name: 'Twitch' },
+  { id: 'linkedin', icon: 'linkedin', color: '#007bb6', name: 'LinkedIn' },
   // { id: 'bitcoin', icon: 'bitcoin', color: '#ff9900', name: 'Bitcoin', shortName: 'BTC' },
   // { id: 'ethereum', icon: 'ethereum', color: '#3c3c3d', name: 'Ethereum', shortName: 'ETH' },
 ];
