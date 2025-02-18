@@ -12,10 +12,12 @@ import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
 import { isKeyHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
+import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
+import { getSelection, getSelectionRect } from './util';
 import withEmbeds from './util/SlateEditor/plugins/withEmbeds';
 import withTables from './util/SlateEditor/plugins/withTable';
 import withLinks from './util/SlateEditor/plugins/withLinks';
@@ -39,6 +41,8 @@ import {
   handlePasteText,
   setClearState,
   setEditor,
+  setShowEditorSearch,
+  setCursorCoordinates,
 } from '../../../store/slateEditorStore/editorActions';
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
@@ -219,11 +223,29 @@ const EditorSlate = props => {
         return true;
       }
     }
+
     if (event.keyCode === 32) {
       removeAllInlineFormats(editor);
 
       return false;
     }
+
+    if (event.keyCode === 51) {
+      const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
+      const nativeSelection = getSelection(window);
+      const selectionBoundary = getSelectionRect(nativeSelection);
+
+      props.setCursorCoordinates({
+        selectionBoundary,
+        selectionState: editor.selection,
+        searchString: searchInfo.searchString,
+      });
+
+      props.setShowEditorSearch(true);
+
+      return true;
+    }
+
     if (selection && Range.isCollapsed(selection)) {
       const { nativeEvent } = event;
 
@@ -365,6 +387,8 @@ EditorSlate.propTypes = {
   editorEnabled: PropTypes.bool,
   isShowEditorSearch: PropTypes.bool,
   isVimeo: PropTypes.bool,
+  setCursorCoordinates: PropTypes.func,
+  setShowEditorSearch: PropTypes.func,
   body: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   parentPost: PropTypes.shape(),
@@ -402,7 +426,6 @@ EditorSlate.defaultProps = {
   minHeight: '',
   initialPosTopBtn: '',
   setEditorCb: null,
-  clearEditor: () => {},
   ADD_BTN_DIF: 14,
 };
 
@@ -412,6 +435,8 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   handlePasteText: html => dispatch(handlePasteText(html)),
+  setShowEditorSearch: isShowEditorSearch => dispatch(setShowEditorSearch(isShowEditorSearch)),
+  setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
   setEditor: editor => dispatch(setEditor({ editor })),
   clearEditor: () => dispatch(setClearState()),
 });

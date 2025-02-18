@@ -64,7 +64,13 @@ const EditorSearchObjects = ({
       if (searchObjectsResultsRef.current.length) {
         event.preventDefault();
         setSelectedObj(true);
+      } else {
+        clearEditorSearchObjects();
+        searchObjectsResultsRef.current = [];
       }
+    }
+    if (!searchObjectsResultsRef.current.length && event.code === 'Space') {
+      clearEditorSearchObjects();
     }
   };
 

@@ -51,8 +51,6 @@ class AdvanceSettings extends Component {
 
   handleRewardChange = reward => this.props.onSettingsChange({ reward });
 
-  handleBeneficiaryChange = e => this.props.onSettingsChange({ beneficiary: e.target.checked });
-
   handleUpvoteChange = e => this.props.onSettingsChange({ upvote: e.target.checked });
 
   handlePercentChange = (objId, percent) => {

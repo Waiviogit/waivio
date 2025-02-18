@@ -39,6 +39,7 @@ const CommentForm = props => {
   const [body, setBody] = useState('');
   const [bodyHTML, setHTML] = useState('');
   const [isShowEditorSearch, setIsShowEditorSearch] = useState(false);
+  const [prevSearch, setPrevSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
@@ -141,6 +142,7 @@ const CommentForm = props => {
     }, 300),
     [],
   );
+
   const debouncedDraftSave = useCallback(
     debounce(markdownBody => {
       if (init) saveCommentDraft(props.username, parent?.author, getPermlink(), markdownBody);
@@ -149,10 +151,12 @@ const CommentForm = props => {
   );
 
   const handleContentChangeSlate = debounce(editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+    const searchInfo = checkCursorInSearchSlate(editor, isShowEditorSearch);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (!isShowEditorSearch && window !== 'undefined') {
+    if (isShowEditorSearch && !searchInfo.searchString) setShowEditorSearch(false);
+
+    if (searchInfo.isNeedOpenSearch && !isShowEditorSearch) {
+      if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -163,9 +167,14 @@ const CommentForm = props => {
         });
         setShowEditorSearch(true);
       }
-      debouncedSearch(searchInfo.searchString);
-    } else if (isShowEditorSearch) {
-      setShowEditorSearch(false);
+    }
+
+    if (isShowEditorSearch) {
+      setPrevSearch(searchInfo.searchString);
+
+      if (prevSearch !== searchInfo.searchString) {
+        debouncedSearch(searchInfo.searchString);
+      }
     }
   }, 350);
 

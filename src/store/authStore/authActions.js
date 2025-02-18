@@ -343,9 +343,6 @@ export const loginFromServer = cookie => dispatch => {
           const privateEmail = await getPrivateEmail(userData.name);
           const rewardsTab = await getRewardTab(userData.name);
           const { WAIV } = await getGuestWaivBalance(userData.name);
-          //
-          // dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          // dispatch(changeAdminStatus(userData.name));
 
           resolve({
             account: userData,

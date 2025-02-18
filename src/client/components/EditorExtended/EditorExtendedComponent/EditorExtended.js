@@ -24,7 +24,6 @@ const Editor = props => {
       titleValue: get(props, 'initialContent.title', ''),
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
-    // restoreObjects(fromMarkdown(props.initialContent));
   }, []);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
@@ -32,12 +31,6 @@ const Editor = props => {
   const setFocusAfterMount = () => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
-
-  // const restoreObjects = (rawContent, newObject) => {
-  //   const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
-  //
-  //   props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
-  // };
 
   const debouncedSearch = useCallback(
     debounce(searchStr => {
@@ -53,10 +46,12 @@ const Editor = props => {
   );
 
   const handleContentChangeSlate = editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+    const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
+    if (props.isShowEditorSearch && !searchInfo.searchString) props.setShowEditorSearch(false);
+
+    if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
+      if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -64,21 +59,23 @@ const Editor = props => {
           selectionBoundary,
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
-          isShowEditorSearch: true,
         });
+
+        props.setShowEditorSearch(true);
       }
+    }
+
+    if (props.isShowEditorSearch && searchInfo.searchString !== prevSearchValue) {
       setPrevSearch(searchInfo.searchString);
       if (prevSearchValue !== searchInfo.searchString) {
         debouncedSearch(searchInfo.searchString);
       }
-    } else if (props.isShowEditorSearch) {
-      props.setShowEditorSearch(false);
     }
 
     props.onChange(editor, props.editorExtended.titleValue);
   };
 
-  const validateLength = event => {
+  const onTitleChange = event => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
@@ -103,7 +100,7 @@ const Editor = props => {
           value={titleValue}
           maxLength={MAX_LENGTH}
           className="md-RichEditor-title"
-          onChange={validateLength}
+          onChange={onTitleChange}
           placeholder={props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
         />
       )}
@@ -149,14 +146,12 @@ const propTypes = {
   isNewReview: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteText: PropTypes.func,
-  // getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   searchObjects: PropTypes.func.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isShowEditorSearch: PropTypes.bool.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
-  // setUpdatedEditorData: PropTypes.func.isRequired,
   setCursorCoordinates: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
@@ -172,7 +167,6 @@ const defaultProps = {
   draftId: '',
   linkedObjects: [],
   searchObjectsResults: [],
-  getRestoreObjects: () => {},
   isStartSearchObject: false,
   initialContent: {
     body: '',
