@@ -45,7 +45,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               type: 'object',
               hashtag: node.children[0]?.value,
               url: node.url,
-              children: [{ text: '' }],
+              children: [{ text: ' ' }],
             };
           }
           if (SteemEmbed.get(node.url)) {

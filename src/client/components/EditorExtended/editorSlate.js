@@ -358,7 +358,7 @@ const EditorSlate = props => {
               if (props.onFocus) props.onFocus();
             }}
             onBlur={() => {
-              editor.lastSelection = editor.selection;
+              // editor.lastSelection = editor.selection;
             }}
             spellCheck={false}
             onPaste={handlePastedFiles}

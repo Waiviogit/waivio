@@ -352,40 +352,6 @@ export const addTextToCursor = (editorState, text) => {
   return EditorState.push(editorState, content, 'insert-characters');
 };
 
-export const checkCursorInSearch = editorState => {
-  const selectionState = editorState.getSelection();
-  const anchorKey = selectionState.getAnchorKey();
-  const currentContent = editorState.getCurrentContent();
-  const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-  const start = selectionState.getStartOffset();
-  const blockText = currentContentBlock.getText();
-
-  const startPositionOfWord = blockText.lastIndexOf('#', start);
-  let endPositionOfWord = blockText.indexOf(' ', start);
-
-  if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
-
-  const searchString = blockText.substring(startPositionOfWord + 1, endPositionOfWord);
-  const searchStringTrim = blockText.substring(startPositionOfWord + 1, endPositionOfWord).trim();
-  const spaceCount = searchString.split(' ').length - 1;
-  const spaceCondition = searchString.match(/(\s{2,})|^\s/g) || spaceCount >= 2;
-
-  if (!(spaceCondition || startPositionOfWord === -1) && blockText[start] !== '#') {
-    const wordForCountWidth = blockText.substring(startPositionOfWord + 1, start).trim();
-
-    return {
-      wordForCountWidth,
-      startPositionOfWord,
-      isNeedOpenSearch: true,
-      searchString: searchStringTrim,
-    };
-  }
-
-  return {
-    isNeedOpenSearch: false,
-  };
-};
-
 const findHashtag = (editor, start, word, showSearch) => {
   const wordBefore = Editor.before(editor, start, { unit: 'word' });
   const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
@@ -403,36 +369,37 @@ const findHashtag = (editor, start, word, showSearch) => {
     return false;
   }
 
-  return findHashtag(editor, range, searchString + word);
+  return findHashtag(editor, range, searchString + word, showSearch);
 };
 
-export const checkCursorInSearchSlate = (editor, showSearch) => {
+export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
   const { selection } = editor;
-  const blockText = editor.children[selection?.anchor?.path[0]]?.children.reduce(
-    (acc, curr) => (curr.text ? `${acc}${curr.text}` : acc),
-    '',
-  );
-
-  if (!selection || !Range.isCollapsed(selection)) {
-    return {
-      isNeedOpenSearch: false,
-    };
-  }
 
   try {
     const [start] = Range.edges(selection);
+    const currItem = editor.children[selection?.anchor?.path[0]]?.children.find(
+      child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
+    );
+
+    const blockText = currItem?.text;
     const wordBefore = Editor.before(editor, start, { unit: 'word' });
     const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
     const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
     const { searchString, range } = findHashtag(editor, start, '', showSearch) ?? {};
+
+    if (searchString && onlyRange) {
+      const beforeRange = range && Editor.range(editor, range, start);
+
+      return {
+        beforeRange,
+      };
+    }
 
     if (
       searchString &&
       blockText.includes(searchString) &&
       startPositionOfWord + searchString.length === start.offset
     ) {
-      const beforeRange = range && Editor.range(editor, range, start);
-
       return {
         searchString: searchString.slice(1),
         selection: {
@@ -441,7 +408,6 @@ export const checkCursorInSearchSlate = (editor, showSearch) => {
         },
         startPositionOfWord,
         isNeedOpenSearch: true,
-        beforeRange,
         afterRange: range,
       };
     }

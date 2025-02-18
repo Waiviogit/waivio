@@ -16,7 +16,11 @@ const SearchItemObject = ({
   searchBlockItem,
 }) => {
   const hoverObjCard = currentObjIndex === objectIndex;
-  const handleSelectObject = () => objectSelect(obj);
+  const handleSelectObject = e => {
+    e.preventDefault();
+    objectSelect(obj);
+  };
+
   const handleMouseOver = () => setCurrentObjIndex(objectIndex);
 
   return (
