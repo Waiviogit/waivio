@@ -55,7 +55,8 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   const diffTime = isDaysFromDate ? now - target : target - now;
 
   const hours = diffTime / (1000 * 60 * 60);
-  const days = Math.ceil(hours / 24);
+
+  const days = hours > 24 ? Math.ceil(hours / 24) : 0;
 
   return days > 0 ? days : 0;
 };
@@ -177,7 +178,6 @@ const UserWalletSummary = ({
   const isCurrentGuest = useSelector(isGuestUser);
   const interestRate = useSelector(getHbdInterestRate);
   const hiveAuth = Cookie.get('auth');
-
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
   const estimateInterestBalance = hiveAccount => {
     const {
@@ -352,6 +352,7 @@ const UserWalletSummary = ({
 
   const hbdDays = calculateDaysLeftForSavings(currWithdrawHbdSaving?.complete);
   const hbdDaysLeft = hbdDays === 0 ? 'today' : hbdDays;
+  const getDaysLayout = days => (days === 1 ? 'day' : 'days');
 
   return (
     <WalletSummaryInfo estAccValue={estAccValue}>
@@ -380,7 +381,11 @@ const UserWalletSummary = ({
           </p>
           <WalletAction
             mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
-            options={isCurrentGuest ? ['withdraw'] : ['transfer', 'convert', 'transfer_to_saving']}
+            options={
+              isCurrentGuest
+                ? ['withdraw']
+                : ['transfer', 'convert', 'transfer_to_saving', 'collateralized_convert']
+            }
             mainCurrency={'HIVE'}
             withdrawCurrencyOption={['LTC', 'BTC', 'ETH']}
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
@@ -545,8 +550,9 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in {currWithdrawSaving?.complete ? hiveDaysLeft : 3}{' '}
-                    {hiveDays > 0 ? 'days' : ''}
+                    Withdraw will complete {hiveDays > 0 ? 'in' : ''}{' '}
+                    {currWithdrawSaving?.complete ? hiveDaysLeft : 3}{' '}
+                    {hiveDays > 0 ? getDaysLayout(hiveDays) : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button
@@ -655,8 +661,9 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">
-                    Withdraw will complete in {currWithdrawHbdSaving ? hbdDaysLeft : 3}{' '}
-                    {hbdDays > 0 ? 'days' : ''}
+                    Withdraw will complete {hbdDays > 0 ? 'in' : ''}{' '}
+                    {currWithdrawHbdSaving ? hbdDaysLeft : 3}{' '}
+                    {hbdDays > 0 ? getDaysLayout(hbdDays) : ''}
                   </p>
                   {isAuth && authUserPage && (
                     <Button

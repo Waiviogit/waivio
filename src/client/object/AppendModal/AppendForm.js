@@ -3514,9 +3514,12 @@ class AppendForm extends Component {
                         case 'pinterest':
                         case 'reddit':
                         case 'telegram':
-                        case 'whatsapp':
                           return (
                             <img
+                              style={{
+                                width: profile.icon === 'whatsapp' ? '18px' : '14px',
+                                height: profile.icon === 'whatsapp' ? '18px' : '14px',
+                              }}
                               className="snapchat-icon"
                               src={`/images/icons/${profile.id}.png`}
                               alt={`${profile.id} logo`}

@@ -1006,13 +1006,13 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.groupFollowers,
           !isEmpty(groupFollowers) && (
-            <GroupUsersLayout title={'followers'} list={groupFollowers} />
+            <GroupUsersLayout title={'followers_of'} list={groupFollowers} />
           ),
         )}
         {this.listItem(
           objectFields.groupFollowing,
           !isEmpty(groupFollowing) && (
-            <GroupUsersLayout title={'following'} list={groupFollowing} />
+            <GroupUsersLayout title={'followed_by'} list={groupFollowing} />
           ),
         )}
         {this.listItem(

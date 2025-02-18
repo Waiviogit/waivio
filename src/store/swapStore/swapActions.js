@@ -106,9 +106,14 @@ export const setFromToken = token => async (dispatch, getState) => {
 };
 
 export const SHOW_MODAL = '@swap/SHOW_MODAL';
+export const SHOW_CONVERT_HBD_MODAL = '@swap/SHOW_CONVERT_HBD_MODAL';
 
 export const toggleModal = (isOpen, symbol, to) => ({
   type: SHOW_MODAL,
+  payload: { isOpen, symbol, to },
+});
+export const toggleConvertHbdModal = (isOpen, symbol, to) => ({
+  type: SHOW_CONVERT_HBD_MODAL,
   payload: { isOpen, symbol, to },
 });
 

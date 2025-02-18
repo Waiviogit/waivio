@@ -20,7 +20,7 @@ import {
 } from '../../../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 import delegationModalTypes from '../../../../../common/constants/delegationModalTypes';
-import { toggleModal } from '../../../../../store/swapStore/swapActions';
+import { toggleConvertHbdModal, toggleModal } from '../../../../../store/swapStore/swapActions';
 
 import './WalletActions.less';
 
@@ -53,6 +53,7 @@ const WalletAction = props => {
         openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, false, true),
       ),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
+    collateralized_convert: () => dispatch(toggleConvertHbdModal(true, props.mainCurrency, 'HBD')),
     withdraw: () => {
       if (props.mainCurrency === 'HIVE') {
         dispatch(openWithdraw());

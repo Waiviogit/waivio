@@ -117,6 +117,10 @@ const SocialLinks = ({ profile, isSocial }) => {
                 className={`${isSocial ? 'mb5px' : ''} tiktok-icon-container`}
               >
                 <img
+                  style={{
+                    width: socialProfile.icon === 'whatsapp' ? '18px' : '16px',
+                    height: socialProfile.icon === 'whatsapp' ? '18px' : '16px',
+                  }}
                   className="hive-icon"
                   src={`/images/icons/${socialProfile.id}.png`}
                   alt={`${socialProfile.id} logo`}
@@ -124,7 +128,7 @@ const SocialLinks = ({ profile, isSocial }) => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://${currHost}/@${profile[socialProfile.id]}`}
+                  href={transform(socialProfile.id, profile[socialProfile.id])}
                 >
                   {' '}
                   {socialProfile.name}
