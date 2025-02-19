@@ -56,11 +56,12 @@ const TokensSelect = props => {
           disabled={isEmpty(props.list) || props.disabled || props.disabledSelect}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >
-          {props.list.map(swap => (
+          {props.list.map((swap, index) => (
             <Select.Option
               className="TokenSelect__selector-option"
               onClick={() => props.setToken(swap)}
-              key={swap.title || swap.symbol}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${swap.symbol}-${index}`} // Ensure uniqueness
             >
               <span>{swap.title || swap.symbol}</span>
               <span className="TokenSelect__selector-balance">
