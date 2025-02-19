@@ -561,7 +561,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
   Transforms.select(editor, beforeRange);
-  insertObject(editor, url, textReplace, withFocus);
+  insertObject(editor, url, textReplace, true);
 
   dispatch(setLinkedObj(object));
 
