@@ -87,6 +87,7 @@ const EditorSlate = props => {
     isNewReview,
     parentPost,
     startToSearching,
+    isLoading,
   } = props;
 
   const params = useParams();
@@ -347,6 +348,7 @@ const EditorSlate = props => {
               editor={editor}
               isComment={isComment}
               startToSearching={startToSearching}
+              isLoading={isLoading}
             />
           )}
           <Toolbar editorNode={editorRef.current} intl={intl} />
@@ -391,6 +393,7 @@ EditorSlate.propTypes = {
   startToSearching: PropTypes.bool,
   isShowEditorSearch: PropTypes.bool,
   isVimeo: PropTypes.bool,
+  isLoading: PropTypes.bool,
   setCursorCoordinates: PropTypes.func,
   setShowEditorSearch: PropTypes.func,
   body: PropTypes.string.isRequired,

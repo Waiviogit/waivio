@@ -11,17 +11,13 @@ import {
   clearEditorSearchObjects,
   selectObjectFromSearch,
 } from '../../../../../store/slateEditorStore/editorActions';
-import {
-  getSearchObjectsResults,
-  getIsStartSearchObject,
-} from '../../../../../store/searchStore/searchSelectors';
+import { getSearchObjectsResults } from '../../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
   wordForCountWidth: getWordForCountWidth(state),
   searchStringValue: getSearchString(state),
   searchObjectsResults: getSearchObjectsResults(state),
   searchCoordinates: getSearchCoordinates(state),
-  isLoading: getIsStartSearchObject(state),
 });
 
 const mapDispatchToProps = dispatch => {

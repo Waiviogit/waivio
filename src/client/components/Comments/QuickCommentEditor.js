@@ -156,7 +156,7 @@ class QuickCommentEditor extends React.Component {
   };
 
   handleObjectSelect = selectedObject => {
-    const { beforeRange } = checkCursorInSearchSlate(this.editor);
+    const { beforeRange } = checkCursorInSearchSlate(this.editor, false, true);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
