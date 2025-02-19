@@ -19,12 +19,13 @@ const EditorSearchObjects = ({
   editor,
   isComment,
   isLoading,
+  startToSearching,
 }) => {
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
   const fakeLeftPositionBlock = React.useRef(null);
   const searchObjectsResultsRef = React.useRef(searchObjectsResults); // Use ref to persist data across renders
-  const isLoadingRef = React.useRef(isLoading); // Use ref to persist data across renders
+  const isLoadingRef = React.useRef(startToSearching); // Use ref to persist data across renders
   const [selectedObj, setSelectedObj] = React.useState(false);
   const [currentObjIndex, setCurrentObjIndex] = React.useState(0);
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
@@ -45,8 +46,8 @@ const EditorSearchObjects = ({
 
   React.useEffect(() => {
     searchObjectsResultsRef.current = searchObjectsResults;
-    isLoadingRef.current = isLoading;
-  }, [searchObjectsResults, isLoading]);
+    isLoadingRef.current = startToSearching;
+  }, [searchObjectsResults, startToSearching]);
 
   React.useEffect(() => {
     countCoordinates();
@@ -162,7 +163,8 @@ const EditorSearchObjects = ({
         ref={inputWrapper}
         className={classNames('editor-search-objects', {
           'editor-search-objects__empty': !searchObjectsResults.length && !isLoading,
-          'editor-search-objects__not-scroll': searchObjectsResults.length <= 4,
+          'editor-search-objects__not-scroll': searchObjectsResults.length <= 4 || isLoading,
+          'editor-search-objects--loading': isLoading,
         })}
         style={{ top: coordinates.top, left: isComment ? 0 : coordinates.left }}
       >
@@ -193,6 +195,7 @@ const EditorSearchObjects = ({
 EditorSearchObjects.propTypes = {
   wordForCountWidth: PropTypes.string,
   isComment: PropTypes.bool,
+  startToSearching: PropTypes.bool,
   isLoading: PropTypes.bool,
   searchObjectsResults: PropTypes.shape(),
   searchCoordinates: PropTypes.shape().isRequired,

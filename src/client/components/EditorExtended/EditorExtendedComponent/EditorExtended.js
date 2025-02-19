@@ -16,6 +16,7 @@ const Editor = props => {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
   const [prevSearchValue, setPrevSearch] = React.useState('');
+  const [startToSearching, setStartToSearching] = React.useState(false);
   const abortController = useRef(null);
 
   React.useEffect(() => {
@@ -37,11 +38,15 @@ const Editor = props => {
       if (abortController.current) {
         abortController.current.abort();
       }
-
+      setStartToSearching(true);
       abortController.current = new AbortController();
 
-      props.searchObjects(searchStr, abortController.current);
-    }, 300),
+      props.searchObjects(searchStr, abortController.current).then(res => {
+        if (res.action.result.message) {
+          setStartToSearching(false);
+        }
+      });
+    }, 500),
     [props.searchObjects],
   );
 
@@ -67,7 +72,7 @@ const Editor = props => {
 
     if (props.isShowEditorSearch && searchInfo.searchString !== prevSearchValue) {
       setPrevSearch(searchInfo.searchString);
-      if (prevSearchValue !== searchInfo.searchString) {
+      if (searchInfo.searchString && prevSearchValue !== searchInfo.searchString) {
         debouncedSearch(searchInfo.searchString);
       }
     }
@@ -127,6 +132,7 @@ const Editor = props => {
               defaultMessage: 'Write your story...',
             })}
             handlePasteText={props.handlePasteText}
+            startToSearching={startToSearching}
           />
         )}
       </div>

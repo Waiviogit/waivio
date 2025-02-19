@@ -86,6 +86,7 @@ const EditorSlate = props => {
     ADD_BTN_DIF,
     isNewReview,
     parentPost,
+    startToSearching,
   } = props;
 
   const params = useParams();
@@ -329,6 +330,7 @@ const EditorSlate = props => {
       if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
+
       Transforms.deselect(editor);
       if (!isComment && !isNewReview) focusEditorToEnd(editor);
       if (isNewReview) focusEditorToStart(editor);
@@ -344,6 +346,7 @@ const EditorSlate = props => {
               handleObjectSelect={isComment || isMainEditor ? handleObjectSelect : null}
               editor={editor}
               isComment={isComment}
+              startToSearching={startToSearching}
             />
           )}
           <Toolbar editorNode={editorRef.current} intl={intl} />
@@ -385,6 +388,7 @@ const EditorSlate = props => {
 
 EditorSlate.propTypes = {
   editorEnabled: PropTypes.bool,
+  startToSearching: PropTypes.bool,
   isShowEditorSearch: PropTypes.bool,
   isVimeo: PropTypes.bool,
   setCursorCoordinates: PropTypes.func,
