@@ -28,6 +28,7 @@ const SocialInputItem = ({
   const validText = 'Address is valid';
   const addressValue = getFieldValue(profile.id);
   let icons;
+  const isWhatsapp = profile.icon === 'whatsapp';
 
   switch (profile.icon) {
     case 'tiktok':
@@ -52,8 +53,9 @@ const SocialInputItem = ({
       icons = (
         <img
           style={{
-            width: profile.icon === 'whatsapp' ? '18px' : '14px',
-            height: profile.icon === 'whatsapp' ? '18px' : '14px',
+            width: isWhatsapp ? '18px' : '14px',
+            height: isWhatsapp ? '18px' : '14px',
+            marginLeft: isWhatsapp ? '-2px' : '0',
           }}
           src={`/images/icons/${profile.icon}.png`}
           alt="Twitch icon"

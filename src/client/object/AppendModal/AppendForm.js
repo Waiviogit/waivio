@@ -3477,6 +3477,8 @@ class AppendForm extends Component {
                     })}
                     size="large"
                     prefix={(() => {
+                      const isWhatsapp = profile.icon === 'whatsapp';
+
                       switch (profile.id) {
                         case 'twitter':
                           return (
@@ -3514,11 +3516,13 @@ class AppendForm extends Component {
                         case 'pinterest':
                         case 'reddit':
                         case 'telegram':
+                        case 'whatsapp':
                           return (
                             <img
                               style={{
-                                width: profile.icon === 'whatsapp' ? '18px' : '14px',
-                                height: profile.icon === 'whatsapp' ? '18px' : '14px',
+                                width: isWhatsapp ? '18px' : '14px',
+                                height: isWhatsapp ? '18px' : '14px',
+                                marginLeft: isWhatsapp ? '-2px' : '0',
                               }}
                               className="snapchat-icon"
                               src={`/images/icons/${profile.id}.png`}
