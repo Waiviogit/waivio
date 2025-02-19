@@ -3478,6 +3478,7 @@ class AppendForm extends Component {
                     size="large"
                     prefix={(() => {
                       const isWhatsapp = profile.icon === 'whatsapp';
+
                       switch (profile.id) {
                         case 'twitter':
                           return (

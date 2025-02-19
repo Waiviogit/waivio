@@ -92,7 +92,8 @@ const ConvertHbdModal = props => {
     balance: isFromHive ? balanceHbd : balanceHive || 0,
     symbol: isFromHive ? 'HBD' : 'HIVE',
   };
-  const immediatelyPaidVal = ((fromAmount / 2) * rates[symbol] * rate).toFixed(2);
+
+  const immediatelyPaidVal = ((fromAmount / 2) * rate - (fromAmount / 2) * rate * 0.05).toFixed(2);
   const hiveEstimated = (fromAmount / rates[toSymbol]).toFixed(2);
   const tokensList = [tokenFrom, tokenTo];
 

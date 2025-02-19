@@ -29,6 +29,7 @@ const SocialInputItem = ({
   const addressValue = getFieldValue(profile.id);
   let icons;
   const isWhatsapp = profile.icon === 'whatsapp';
+
   switch (profile.icon) {
     case 'tiktok':
       icons = (
