@@ -15,7 +15,6 @@ const Editor = props => {
   const {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
-  const [prevSearchValue, setPrevSearch] = React.useState('');
   const [startToSearching, setStartToSearching] = React.useState(false);
   const [resultLoading, setResultLoading] = React.useState(false);
   const abortController = useRef(null);
@@ -39,19 +38,22 @@ const Editor = props => {
       if (abortController.current) {
         abortController.current.abort();
       }
-      setStartToSearching(true);
-      setResultLoading(true);
-      abortController.current = new AbortController();
 
-      props.searchObjects(searchStr, abortController.current).then(res => {
-        if (res.value.result.wobjects) setResultLoading(false);
-        if (res.value.result.message) {
-          setStartToSearching(false);
-          setResultLoading(false);
-        }
-      });
-    }, 500),
-    [props.searchObjects],
+      if (searchStr) {
+        setStartToSearching(true);
+        setResultLoading(true);
+        abortController.current = new AbortController();
+
+        props.searchObjects(searchStr, abortController.current).then(res => {
+          if (res.value.result.wobjects) setResultLoading(false);
+          if (res.value.result.message) {
+            setStartToSearching(false);
+            setResultLoading(false);
+          }
+        });
+      }
+    }, 1000),
+    [props.searchObjects, abortController.current, setStartToSearching, setResultLoading],
   );
 
   const handleContentChangeSlate = editor => {
@@ -59,10 +61,7 @@ const Editor = props => {
 
     if (props.isShowEditorSearch && !searchInfo.searchString) {
       props.setShowEditorSearch(false);
-      if (abortController.current) {
-        abortController.current.abort();
-        abortController.current = null;
-      }
+      setStartToSearching(false);
     }
 
     if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
@@ -76,16 +75,12 @@ const Editor = props => {
           searchString: searchInfo.searchString,
         });
 
+        setStartToSearching(true);
         props.setShowEditorSearch(true);
       }
     }
 
-    if (props.isShowEditorSearch && searchInfo.searchString !== prevSearchValue) {
-      setPrevSearch(searchInfo.searchString);
-      if (searchInfo.searchString && prevSearchValue !== searchInfo.searchString) {
-        debouncedSearch(searchInfo.searchString);
-      }
-    }
+    if (props.isShowEditorSearch) debouncedSearch(searchInfo.searchString);
 
     props.onChange(editor, props.editorExtended.titleValue);
   };

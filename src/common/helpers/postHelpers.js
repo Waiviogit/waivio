@@ -273,7 +273,7 @@ const setBody = (initObjects, props, authors, users) => {
         const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
         if (!isNil(matches) && matches[1] && matches[2]) {
-          if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n`;
+          if (isEmpty(authors)) return `${acc}[${matches[1]}](${getLink(matches[2])})\n\n`;
 
           return initObjects.length <= 1
             ? `${acc}[${matches[1]}](${getLink(matches[2])})`
