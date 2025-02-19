@@ -39,7 +39,7 @@ import './ConvertHbdModal.less';
 const ConvertHbdModal = props => {
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
-  const [symbol, setSymbol] = useState('HIVE');
+  const [symbol, setSymbol] = useState(props.from?.symbol || props.from);
   const isFromHive = symbol === 'HIVE';
   const toSymbol = isFromHive ? 'HBD' : 'HIVE';
   const rates = useSelector(getRatesList);
@@ -55,7 +55,8 @@ const ConvertHbdModal = props => {
       requestid: Date.now(),
       amount: `${Number(fromAmount)?.toFixed(3)} ${symbol}`,
     };
-    const swapOp = ['collateralized_convert', query];
+    const op = isFromHive ? 'collateralized_convert' : 'convert';
+    const swapOp = [op, query];
 
     if (hiveAuth) {
       const brodc = () => api.broadcast([swapOp], null, 'active');
@@ -183,6 +184,7 @@ const ConvertHbdModal = props => {
 ConvertHbdModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   user: PropTypes.shape().isRequired,
+  from: PropTypes.shape(),
   toggleConvertHbdModal: PropTypes.func.isRequired,
   setFromToken: PropTypes.func.isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
