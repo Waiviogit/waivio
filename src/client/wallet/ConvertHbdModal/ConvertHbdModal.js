@@ -5,19 +5,19 @@ import { get } from 'lodash';
 import Cookie from 'js-cookie';
 import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import TokensSelect from './SwapTokens/components/TokensSelect';
-import USDDisplay from '../components/Utils/USDDisplay';
+import TokensSelect from '../SwapTokens/components/TokensSelect';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
-import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import {
   getTokenFrom,
   getTokenTo,
   getVisibleConvertModal,
-} from '../../store/swapStore/swapSelectors';
+} from '../../../store/swapStore/swapSelectors';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-} from '../../store/authStore/authSelectors';
+} from '../../../store/authStore/authSelectors';
 
 import {
   changetTokens,
@@ -27,26 +27,33 @@ import {
   setFromToken,
   setToToken,
   toggleConvertHbdModal,
-} from '../../store/swapStore/swapActions';
+} from '../../../store/swapStore/swapActions';
 
-import { getRatesList } from '../../store/ratesStore/ratesSelector';
-import '../wallet/SwapTokens/SwapTokens.less';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+import '../SwapTokens/SwapTokens.less';
 
-import api from '../steemConnectAPI';
-import { createQuery } from '../../common/helpers/apiHelpers';
+import api from '../../steemConnectAPI';
+import { createQuery } from '../../../common/helpers/apiHelpers';
+import './ConvertHbdModal.less';
 
 const ConvertHbdModal = props => {
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
+  const [symbol, setSymbol] = useState('HIVE');
+  const isFromHive = symbol === 'HIVE';
+  const toSymbol = isFromHive ? 'HBD' : 'HIVE';
   const rates = useSelector(getRatesList);
   const hiveAuth = Cookie.get('auth');
+
+  const rate = isFromHive ? props.hiveRateInUsd : props.hbdRateInUsd;
   const insufficientFunds = amount => parseFloat(+props.user?.balance) < +amount;
 
   const handleSwap = () => {
+    props.toggleConvertHbdModal(false);
     const query = {
       owner: props.user.name,
       requestid: Date.now(),
-      amount: `${Number(fromAmount)?.toFixed(3)} HIVE`,
+      amount: `${Number(fromAmount)?.toFixed(3)} ${symbol}`,
     };
     const swapOp = ['collateralized_convert', query];
 
@@ -70,14 +77,24 @@ const ConvertHbdModal = props => {
   const handleChangeFromValue = value => {
     setFromAmount(value);
 
-    setToAmount(((value * props.hiveRateInUsd) / rates.HBD).toFixed(2));
+    setToAmount(((value * rate) / rates[toSymbol]).toFixed(2));
   };
 
-  const estimateValue = fromAmount * props.hiveRateInUsd;
+  const estimateValue = fromAmount * rate;
   const handleClickBalanceFrom = value => handleChangeFromValue(value);
-
-  const tokenFrom = { balance: parseFloat(props.user.balance) || 0, symbol: props.from.symbol };
-  const tokenTo = { balance: parseFloat(props.user.hbd_balance) || 0, symbol: props.to.symbol };
+  const balanceHive = parseFloat(props.user.balance);
+  const balanceHbd = parseFloat(props.user.hbd_balance);
+  const tokenFrom = {
+    balance: isFromHive ? balanceHive : balanceHbd || 0,
+    symbol: isFromHive ? 'HIVE' : 'HBD',
+  };
+  const tokenTo = {
+    balance: isFromHive ? balanceHbd : balanceHive || 0,
+    symbol: isFromHive ? 'HBD' : 'HIVE',
+  };
+  const immediatelyPaidVal = ((fromAmount / 2) * rates[symbol] * rate).toFixed(2);
+  const hiveEstimated = (fromAmount / rates[toSymbol]).toFixed(2);
+  const tokensList = [tokenFrom, tokenTo];
 
   return (
     <Modal
@@ -95,28 +112,30 @@ const ConvertHbdModal = props => {
       okText={props.intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
       wrapClassName="SwapTokens__wrapper"
     >
-      <Form className="SwapTokens">
+      <Form className="SwapTokens ConvertHbdModal">
         <p>
-          The conversion system works as follows: HIVE is provided as collateral, granting an
-          upfront issuance of HBD equivalent to half of the collateral amount, minus a 5% fee. The
-          final transaction is completed in 3.5 days, at which time the remaining HIVE is returned.
+          The conversion works like this: Each HBD is exchanged for $1 USD worth of HIVE, based on
+          the 3.5-day median price from Hive witnesses. After 3.5 days, the newly created HIVE is
+          delivered. Since this isn&apos;t a market trade, there are no limits on volume or price
+          impact on HIVE or HBD.
         </p>
         <br />
         <h3 className="SwapTokens__title">
           <FormattedMessage id="from" defaultMessage="From" />:
         </h3>
         <TokensSelect
-          list={props.swapListFrom}
-          // setToken={token => {
-          //   props.setFromToken(token);
-          //   setToAmount(0);
-          // }}
+          list={tokensList}
+          setToken={token => {
+            setSymbol(token.symbol);
+            props.setFromToken(token.symbol, tokensList);
+          }}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
           token={tokenFrom}
           handleClickBalance={handleClickBalanceFrom}
           isError={insufficientFunds(fromAmount)}
           // isLoading={isLoading}
+          disabled={false}
         />
         <br />
         <h3 className="SwapTokens__title">
@@ -124,7 +143,6 @@ const ConvertHbdModal = props => {
         </h3>
         <TokensSelect
           list={props.swapListTo}
-          // setToken={handleSetToToken}
           disabled
           amount={toAmount}
           token={tokenTo}
@@ -139,8 +157,20 @@ const ConvertHbdModal = props => {
             />
             : <USDDisplay value={estimateValue} />
           </p>
+        </div>{' '}
+        <div className="SwapTokens__estimatedWrap">
+          <p>
+            {isFromHive ? (
+              <>
+                HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
+              </>
+            ) : (
+              <>
+                Estimated HIVE amount: {hiveEstimated} {toSymbol}{' '}
+              </>
+            )}
+          </p>
         </div>
-
         <p className="SwapTokens__hiveEngineInfo">
           Click the button below to be redirected to HiveSigner to complete your transaction.
         </p>
@@ -152,13 +182,12 @@ const ConvertHbdModal = props => {
 ConvertHbdModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   user: PropTypes.shape().isRequired,
-
   toggleConvertHbdModal: PropTypes.func.isRequired,
-  swapListFrom: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  setFromToken: PropTypes.func.isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  from: PropTypes.shape().isRequired,
-  to: PropTypes.shape().isRequired,
+
   hiveRateInUsd: PropTypes.number.isRequired,
+  hbdRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
 };
 
@@ -175,6 +204,8 @@ export default connect(
       to: getTokenTo(state),
       from: getTokenFrom(state),
       hiveRateInUsd: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
+      hbdRateInUsd: get(cryptosPriceHistory, 'hive_dollar.usdPriceHistory.usd', null),
+
       authUser: getAuthenticatedUserName(state),
       visible: getVisibleConvertModal(state),
     };

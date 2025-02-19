@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { uniq } from 'lodash';
+import { isNil, uniq } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getHiveEngineSwap } from '../../waivioApi/ApiClient';
 import { compareTokensList } from './helper';
@@ -90,17 +90,18 @@ export const setBothTokens = (tokenFrom, tokenTo) => ({
 
 export const SET_FROM_TOKEN = '@swap/SET_FROM_TOKEN';
 
-export const setFromToken = token => async (dispatch, getState) => {
+export const setFromToken = (token, initList = null) => async (dispatch, getState) => {
   const state = getState();
   const swapList = getSwapListFromStore(state);
   const name = getAuthenticatedUserName(state);
-  const list = token.symbol ? await compareTokensList(name, swapList[token.symbol]) : null;
+  const list =
+    token.symbol && isNil(initList) ? await compareTokensList(name, swapList[token.symbol]) : null;
 
   return dispatch({
     type: SET_FROM_TOKEN,
     payload: {
       token,
-      list,
+      list: !isNil(initList) ? initList : list,
     },
   });
 };
