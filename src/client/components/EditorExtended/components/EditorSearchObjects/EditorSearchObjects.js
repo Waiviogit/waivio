@@ -46,8 +46,11 @@ const EditorSearchObjects = ({
 
   React.useEffect(() => {
     searchObjectsResultsRef.current = searchObjectsResults;
+  }, [searchObjectsResults]);
+
+  React.useEffect(() => {
     isLoadingRef.current = startToSearching;
-  }, [searchObjectsResults, startToSearching]);
+  }, [startToSearching]);
 
   React.useEffect(() => {
     countCoordinates();

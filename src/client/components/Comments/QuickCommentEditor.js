@@ -128,7 +128,7 @@ class QuickCommentEditor extends React.Component {
   }, 150);
 
   handleContentChangeSlate = debounce(editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+    const searchInfo = checkCursorInSearchSlate(editor, this.state.isShowEditorSearch);
 
     if (searchInfo.isNeedOpenSearch) {
       if (typeof window !== 'undefined' && !this.state.isShowEditorSearch) {
@@ -142,6 +142,7 @@ class QuickCommentEditor extends React.Component {
         });
         this.setShowEditorSearch(true);
       }
+
       this.debouncedSearch(searchInfo.searchString);
     } else if (this.state.isShowEditorSearch) {
       this.setShowEditorSearch(false);
