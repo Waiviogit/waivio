@@ -101,7 +101,7 @@ const ThreadsEditor = ({
   };
 
   const handleObjectSelect = selectedObject => {
-    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace =
