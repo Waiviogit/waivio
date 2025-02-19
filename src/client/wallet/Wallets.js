@@ -36,7 +36,7 @@ import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
 
 import './Wallets.less';
-import ConvertHbdModal from './ConvertHbdModal';
+import ConvertHbdModal from './ConvertHbdModal/ConvertHbdModal';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
