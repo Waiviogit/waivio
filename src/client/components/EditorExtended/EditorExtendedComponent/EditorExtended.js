@@ -17,6 +17,7 @@ const Editor = props => {
   } = props;
   const [prevSearchValue, setPrevSearch] = React.useState('');
   const [startToSearching, setStartToSearching] = React.useState(false);
+  const [resultLoading, setResultLoading] = React.useState(false);
   const abortController = useRef(null);
 
   React.useEffect(() => {
@@ -39,11 +40,14 @@ const Editor = props => {
         abortController.current.abort();
       }
       setStartToSearching(true);
+      setResultLoading(true);
       abortController.current = new AbortController();
 
       props.searchObjects(searchStr, abortController.current).then(res => {
-        if (res.action.result.message) {
+        if (res.value.result.wobjects) setResultLoading(false);
+        if (res.value.result.message) {
           setStartToSearching(false);
+          setResultLoading(false);
         }
       });
     }, 500),
@@ -53,7 +57,13 @@ const Editor = props => {
   const handleContentChangeSlate = editor => {
     const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
 
-    if (props.isShowEditorSearch && !searchInfo.searchString) props.setShowEditorSearch(false);
+    if (props.isShowEditorSearch && !searchInfo.searchString) {
+      props.setShowEditorSearch(false);
+      if (abortController.current) {
+        abortController.current.abort();
+        abortController.current = null;
+      }
+    }
 
     if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
       if (typeof window !== 'undefined') {
@@ -133,6 +143,7 @@ const Editor = props => {
             })}
             handlePasteText={props.handlePasteText}
             startToSearching={startToSearching}
+            isLoading={resultLoading}
           />
         )}
       </div>

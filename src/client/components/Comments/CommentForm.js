@@ -206,7 +206,7 @@ const CommentForm = props => {
 
   const handleObjectSelect = selectedObject => {
     const { editor } = props;
-    const { beforeRange } = checkCursorInSearchSlate(editor) || {};
+    const { beforeRange } = checkCursorInSearchSlate(editor, false, true) || {};
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
