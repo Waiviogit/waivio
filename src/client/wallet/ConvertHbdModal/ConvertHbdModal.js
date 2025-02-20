@@ -141,6 +141,7 @@ const ConvertHbdModal = props => {
         <TokensSelect
           list={tokensList}
           setToken={token => {
+            setFromAmount(0);
             setSymbol(token.symbol);
             props.setFromToken(token.symbol, tokensList);
           }}
