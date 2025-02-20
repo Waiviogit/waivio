@@ -20,6 +20,7 @@ import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'dra
 import { Editor, Range } from 'slate';
 
 import { Block, createEditorState, Entity } from '../../client/components/EditorExtended';
+import { list_types } from '../../client/components/EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { getObjectName } from './wObjectHelper';
 
 const mockPhoto = '📷';
@@ -377,9 +378,21 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
 
   try {
     const [start] = Range.edges(selection);
-    const currItem = editor.children[selection?.anchor?.path[0]]?.children.find(
-      child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
-    );
+    let currItem = editor.children[selection?.anchor?.path[0]];
+
+    if (list_types.includes(currItem?.type)) {
+      currItem = currItem.children.reduce((acc, curr) => {
+        const s = curr.children.find(
+          child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
+        );
+
+        return s || acc;
+      }, null);
+    } else {
+      currItem = currItem.children.find(
+        child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
+      );
+    }
 
     const blockText = currItem?.text;
     const wordBefore = Editor.before(editor, start, { unit: 'word' });
