@@ -38,7 +38,7 @@ const RatingsWrap = React.memo(
       const haveCurrentUserVote = ratingVotesList.some(vote => vote.voter === username);
       const defaultValue = haveCurrentUserVote
         ? calculateRateCurrUser(currRate.rating_votes, username)
-        : averageRate(currRate);
+        : currRate.average_rating_weight;
 
       const onChange = e => {
         handleSubmit(e, currRate);
