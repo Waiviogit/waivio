@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
@@ -34,10 +34,12 @@ import '../SwapTokens/SwapTokens.less';
 import api from '../../steemConnectAPI';
 import { createQuery } from '../../../common/helpers/apiHelpers';
 import './ConvertHbdModal.less';
+import { getHiveFeedHistory } from '../../../waivioApi/ApiClient';
 
 const ConvertHbdModal = props => {
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
+  const [hiveRates, setHiveRates] = useState({});
   const [symbol, setSymbol] = useState(props.from?.symbol || props.from);
   const isFromHive = symbol === 'HIVE';
   const toSymbol = isFromHive ? 'HBD' : 'HIVE';
@@ -90,9 +92,17 @@ const ConvertHbdModal = props => {
     symbol: isFromHive ? 'HBD' : 'HIVE',
   };
 
-  const immediatelyPaidVal = ((fromAmount / 2) * rate - (fromAmount / 2) * rate * 0.05).toFixed(2);
+  const immediatelyPaidVal = (
+    (fromAmount / 2) *
+    0.95 *
+    parseFloat(hiveRates?.current_min_history?.base)
+  ).toFixed(2);
   const hiveEstimated = (fromAmount / rates[toSymbol]).toFixed(2);
   const tokensList = [tokenFrom, tokenTo];
+
+  useEffect(() => {
+    getHiveFeedHistory().then(r => setHiveRates(r));
+  }, []);
 
   return (
     <Modal
@@ -191,7 +201,6 @@ ConvertHbdModal.propTypes = {
   toggleConvertHbdModal: PropTypes.func.isRequired,
   setFromToken: PropTypes.func.isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-
   hiveRateInUsd: PropTypes.number.isRequired,
   hbdRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
