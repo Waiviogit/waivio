@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { fromMarkdown, createEditorState } from '../index';
-import MediumDraftEditor from '../editorSlate';
+import EditorSlate from '../editorSlate';
 import { SIDE_BUTTONS } from '../model/content';
 import { checkCursorInSearchSlate } from '../../../../common/helpers/editorHelper';
 import { getSelection, getSelectionRect } from '../util';
@@ -17,6 +17,7 @@ const Editor = props => {
   } = props;
   const [startToSearching, setStartToSearching] = React.useState(false);
   const [resultLoading, setResultLoading] = React.useState(false);
+  const [prevSearchValue, setPrevSearch] = React.useState('');
   const abortController = useRef(null);
 
   React.useEffect(() => {
@@ -49,10 +50,11 @@ const Editor = props => {
           if (res.value.result.message) {
             setStartToSearching(false);
             setResultLoading(false);
+            props.setShowEditorSearch(false);
           }
         });
       }
-    }, 1000),
+    }, 200),
     [props.searchObjects, abortController.current, setStartToSearching, setResultLoading],
   );
 
@@ -80,7 +82,10 @@ const Editor = props => {
       }
     }
 
-    if (props.isShowEditorSearch) debouncedSearch(searchInfo.searchString);
+    setPrevSearch(searchInfo.searchString);
+
+    if (props.isShowEditorSearch && prevSearchValue !== searchInfo.searchString)
+      debouncedSearch(searchInfo.searchString);
 
     props.onChange(editor, props.editorExtended.titleValue);
   };
@@ -116,7 +121,7 @@ const Editor = props => {
       )}
       <div className="waiv-editor">
         {isMounted && (
-          <MediumDraftEditor
+          <EditorSlate
             initialPosTopBtn="11.5px"
             isNewReview={props.isNewReview}
             intl={props.intl}

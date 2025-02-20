@@ -45,7 +45,8 @@ const CommentForm = props => {
   const [draft, setDraft] = useState('');
   const importObj = useSelector(getImportObject);
   const abortControllerRef = useRef(null);
-
+  const [startToSearching, setStartToSearching] = React.useState(false);
+  const [resultLoading, setResultLoading] = React.useState(false);
   const parent = props.isEdit ? props.currentComment : props.parentPost;
   const getPermlink = () => {
     if (props.isReply) return `${parent?.permlink}-reply`;
@@ -137,8 +138,21 @@ const CommentForm = props => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
-      abortControllerRef.current = new AbortController();
-      props.searchObjects(searchStr, abortControllerRef.current);
+
+      if (searchStr) {
+        setStartToSearching(true);
+        setResultLoading(true);
+        abortControllerRef.current = new AbortController();
+
+        props.searchObjects(searchStr, abortControllerRef.current).then(res => {
+          if (res.value.result.wobjects) setResultLoading(false);
+          if (res.value.result.message) {
+            setStartToSearching(false);
+            setResultLoading(false);
+            setShowEditorSearch(false);
+          }
+        });
+      }
     }, 300),
     [],
   );
@@ -153,7 +167,10 @@ const CommentForm = props => {
   const handleContentChangeSlate = debounce(editor => {
     const searchInfo = checkCursorInSearchSlate(editor, isShowEditorSearch);
 
-    if (isShowEditorSearch && !searchInfo.searchString) setShowEditorSearch(false);
+    if (isShowEditorSearch && !searchInfo.searchString) {
+      setShowEditorSearch(false);
+      setStartToSearching(false);
+    }
 
     if (searchInfo.isNeedOpenSearch && !isShowEditorSearch) {
       if (typeof window !== 'undefined') {
@@ -165,6 +182,7 @@ const CommentForm = props => {
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
         });
+        setStartToSearching(true);
         setShowEditorSearch(true);
       }
     }
@@ -267,6 +285,8 @@ const CommentForm = props => {
                 setShowEditorSearch={setShowEditorSearch}
                 initialBody={draft || props.inputValue}
                 small={props.isEdit}
+                startToSearching={startToSearching}
+                isLoading={resultLoading}
               />
             )}
           </div>

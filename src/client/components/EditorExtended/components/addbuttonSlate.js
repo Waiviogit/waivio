@@ -134,16 +134,25 @@ AddButtonSlate.propTypes = {
   setEditorState: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
-  parentPost: PropTypes.shape(),
+  parentPost: PropTypes.shape({
+    id: PropTypes.string,
+  }),
   focus: PropTypes.func,
-  sideButtons: PropTypes.arrayOf(PropTypes.shape()),
-  handleHashtag: PropTypes.func.isRequired,
+  sideButtons: PropTypes.arrayOf(
+    PropTypes.shape({
+      component: PropTypes.elementType.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  ),
+  handleHashtag: PropTypes.func,
   isClearSearchObjects: PropTypes.bool,
-  intl: PropTypes.shape().isRequired,
-  editorNode: PropTypes.node.isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func.isRequired,
+  }).isRequired,
+  editorNode: PropTypes.instanceOf().isRequired,
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
-  initialPosTop: PropTypes.string,
+  initialPosTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   size: PropTypes.number,
   ADD_BTN_DIF: PropTypes.number,
 };
@@ -158,6 +167,7 @@ AddButtonSlate.defaultProps = {
   initialPosTop: 0,
   ADD_BTN_DIF: 14,
   size: 30,
+  parentPost: null,
 };
 
 export default injectIntl(AddButtonSlate);
