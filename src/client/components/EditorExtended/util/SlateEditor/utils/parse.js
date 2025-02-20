@@ -45,7 +45,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               type: 'object',
               hashtag: node.children[0]?.value,
               url: node.url,
-              children: [{ text: '' }],
+              children: [{ text: ' ' }],
             };
           }
           if (SteemEmbed.get(node.url)) {
@@ -95,7 +95,18 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             if (node.children[i]) children.push(node.children[i]);
           }
 
-          return { type: 'paragraph', children: next(children) };
+          return {
+            type: 'paragraph',
+            children: ['link', 'object'].includes(children[children?.length - 1]?.type)
+              ? next([
+                  ...children,
+                  {
+                    type: 'text',
+                    value: ' ',
+                  },
+                ])
+              : next(children),
+          };
         },
         underline: (node, next) => ({
           text: node.value,

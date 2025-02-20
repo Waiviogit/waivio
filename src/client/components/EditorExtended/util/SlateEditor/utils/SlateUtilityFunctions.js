@@ -6,7 +6,8 @@ import defaultToolbarGroups from '../toolbar/toolbarGroups';
 const inlineButtons = defaultToolbarGroups.filter(i => ['inline', 'link'].includes(i.type));
 
 const alignment = ['alignLeft', 'alignRight', 'alignCenter'];
-const list_types = ['orderedList', 'unorderedList'];
+
+export const list_types = ['orderedList', 'unorderedList'];
 
 export const sizeMap = {
   small: '0.75em',

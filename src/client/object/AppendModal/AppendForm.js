@@ -3477,6 +3477,8 @@ class AppendForm extends Component {
                     })}
                     size="large"
                     prefix={(() => {
+                      const isWhatsapp = profile.icon === 'whatsapp';
+
                       switch (profile.id) {
                         case 'twitter':
                           return (
@@ -3505,9 +3507,28 @@ class AppendForm extends Component {
                         case 'hive':
                           return (
                             <img
+                              style={{ marginBottom: '-1px' }}
                               className="snapchat-icon"
                               src="/images/icons/cryptocurrencies/hive.png"
                               alt={'hive-logo'}
+                            />
+                          );
+                        case 'twitch':
+                        case 'pinterest':
+                        case 'reddit':
+                        case 'telegram':
+                        case 'whatsapp':
+                          return (
+                            <img
+                              style={{
+                                marginBottom: '-1px',
+                                width: isWhatsapp ? '18px' : '14px',
+                                height: isWhatsapp ? '18px' : '14px',
+                                marginLeft: isWhatsapp ? '-2px' : '0',
+                              }}
+                              className="snapchat-icon"
+                              src={`/images/icons/${profile.id}.png`}
+                              alt={`${profile.id} logo`}
                             />
                           );
                         default:
@@ -4295,6 +4316,12 @@ class AppendForm extends Component {
           isEmpty(getFieldValue('linkYouTube')) &&
           isEmpty(getFieldValue('linkInstagram')) &&
           isEmpty(getFieldValue('linkTikTok')) &&
+          isEmpty(getFieldValue('linkReddit')) &&
+          isEmpty(getFieldValue('linkLinkedIn')) &&
+          isEmpty(getFieldValue('linkTelegram')) &&
+          isEmpty(getFieldValue('linkWhatsApp')) &&
+          isEmpty(getFieldValue('linkPinterest')) &&
+          isEmpty(getFieldValue('linkTwitch')) &&
           isEmpty(getFieldValue('linkSnapchat')) &&
           isEmpty(getFieldValue('linkGitHub'))
         );

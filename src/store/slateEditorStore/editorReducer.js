@@ -1,4 +1,3 @@
-import { get, isNil, uniqBy } from 'lodash';
 import * as editorActions from './editorActions';
 
 const defaultState = {
@@ -23,7 +22,6 @@ const defaultState = {
     editorState: [],
     titleValue: '',
   },
-  linkedObjects: [],
 };
 
 const editor = (state = defaultState, action) => {
@@ -82,19 +80,10 @@ const editor = (state = defaultState, action) => {
         ...updatedState,
         editor: {
           ...updatedState.editor,
-          linkedObjects: uniqBy(get(updatedState, 'editor.linkedObjects', []), '_id'),
         },
       };
     }
-    // case editorActions.SET_LINKED_OBJ: {
-    //   return {
-    //     ...state,
-    //     editor: {
-    //       ...state.editor,
-    //       linkedObjects: [...state.editor.linkedObjects, action.payload],
-    //     },
-    //     linkedObjects: [...state.linkedObjects, action.payload],
-    //   };
+
     // }
     case editorActions.SET_UPDATED_EDITOR_EXTENDED_DATA:
       return {
@@ -102,7 +91,6 @@ const editor = (state = defaultState, action) => {
         editorExtended: { ...state.editorExtended, ...action.payload },
         editor: {
           ...state.editor,
-          linkedObjects: uniqBy(get(state, 'editor.linkedObjects', []), '_id'),
         },
       };
     case editorActions.SET_IS_SHOW_EDITOR_SEARCH:
@@ -113,6 +101,7 @@ const editor = (state = defaultState, action) => {
           isShowEditorSearch: action.payload,
         },
       };
+
     case editorActions.SET_SEARCH_COORDINATES:
       return {
         ...state,
@@ -122,9 +111,9 @@ const editor = (state = defaultState, action) => {
           searchCoordinates: action.payload.selectionBoundary,
           searchSelectionState: action.payload.selectionState,
           wordForCountWidth: action.payload.wordForCountWidth,
-          isShowEditorSearch: isNil(action.payload.isShowEditorSearch)
-            ? state.editorExtended.isShowEditorSearch
-            : action.payload.isShowEditorSearch,
+          // isShowEditorSearch: isNil(action.payload.isShowEditorSearch)
+          //   ? state.editorExtended.isShowEditorSearch
+          //   : action.payload.isShowEditorSearch,
         },
       };
     case editorActions.SET_EDITOR_EXTENDED_STATE:

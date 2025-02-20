@@ -20,7 +20,7 @@ import {
 } from '../../../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 import delegationModalTypes from '../../../../../common/constants/delegationModalTypes';
-import { toggleModal } from '../../../../../store/swapStore/swapActions';
+import { toggleConvertHbdModal, toggleModal } from '../../../../../store/swapStore/swapActions';
 
 import './WalletActions.less';
 
@@ -53,6 +53,14 @@ const WalletAction = props => {
         openTransfer(authUserName, 0, props.mainCurrency, '', '', false, false, false, true),
       ),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
+    collateralized_convert: () =>
+      dispatch(
+        toggleConvertHbdModal(
+          true,
+          props.mainCurrency,
+          props.mainCurrency === 'HIVE' ? 'HBD' : 'HIVE',
+        ),
+      ),
     withdraw: () => {
       if (props.mainCurrency === 'HIVE') {
         dispatch(openWithdraw());
@@ -81,6 +89,14 @@ const WalletAction = props => {
             <Menu className={'WalletAction__select-dropdown'}>
               {props.options.map(opt => {
                 if (opt === 'convert' || opt === 'transfer_to_saving') return null;
+                if (opt === 'collateralized_convert') {
+                  return (
+                    <Menu.Item onClick={() => config[opt]()} key={opt}>
+                      {props.intl.formatMessage({ id: opt })}{' '}
+                      {props.mainCurrency === 'HIVE' ? 'HBD' : 'HIVE'}
+                    </Menu.Item>
+                  );
+                }
 
                 return (
                   <Menu.Item onClick={() => config[opt]()} key={opt}>

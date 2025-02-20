@@ -672,6 +672,12 @@ class ObjectInfo extends React.Component {
           twitter: linkField[linkFields.linkTwitter] || '',
           youtube: linkField[linkFields.linkYouTube] || '',
           tiktok: linkField[linkFields.linkTikTok] || '',
+          reddit: linkField[linkFields.linkReddit] || '',
+          linkedin: linkField[linkFields.linkLinkedIn] || '',
+          telegram: linkField[linkFields.linkTelegram] || '',
+          whatsapp: linkField[linkFields.linkWhatsApp] || '',
+          pinterest: linkField[linkFields.linkPinterest] || '',
+          twitch: linkField[linkFields.linkTwitch] || '',
           snapchat: linkField[linkFields.linkSnapchat] || '',
           hive: linkField[linkFields.linkHive] || '',
           instagram: linkField[linkFields.linkInstagram] || '',
@@ -1000,13 +1006,13 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.groupFollowers,
           !isEmpty(groupFollowers) && (
-            <GroupUsersLayout title={'followers'} list={groupFollowers} />
+            <GroupUsersLayout title={'followers_of'} list={groupFollowers} />
           ),
         )}
         {this.listItem(
           objectFields.groupFollowing,
           !isEmpty(groupFollowing) && (
-            <GroupUsersLayout title={'following'} list={groupFollowing} />
+            <GroupUsersLayout title={'followed_by'} list={groupFollowing} />
           ),
         )}
         {this.listItem(

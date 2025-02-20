@@ -110,7 +110,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const hiveAuth = Cookie.get('auth');
   const language = getWebsiteLanguage(state);
 
-  // Cookie.remove('shownMaps');
+  Cookie.set('nightmode', 'false');
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
     clearGuestAuthData();
@@ -178,6 +178,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
         Cookie.set('appAdmins', appAdmins);
+        Cookie.set('nightmode', userMetaData.settings?.nightmode);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -206,10 +207,11 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
     const appAdmins = await getAppAdmins();
 
+    Cookie.set('nightmode', userMetaData.settings?.nightmode);
     Cookie.set('appAdmins', appAdmins);
     Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve({ account });
+    promise = Promise.resolve({ account, userMetaData });
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
@@ -222,6 +224,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         Cookie.set('currentUser', userData.name);
         Cookie.set('appAdmins', appAdmins);
+        Cookie.set('nightmode', userMetaData.settings?.nightmode);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -261,6 +264,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const appAdmins = await getAppAdmins();
 
         Cookie.set('appAdmins', appAdmins);
+        Cookie.set('nightmode', userMetaData.settings?.nightmode);
         Cookie.set('currentUser', scUserData.name);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
@@ -339,9 +343,6 @@ export const loginFromServer = cookie => dispatch => {
           const privateEmail = await getPrivateEmail(userData.name);
           const rewardsTab = await getRewardTab(userData.name);
           const { WAIV } = await getGuestWaivBalance(userData.name);
-          //
-          // dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-          // dispatch(changeAdminStatus(userData.name));
 
           resolve({
             account: userData,

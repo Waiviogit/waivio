@@ -2681,5 +2681,8 @@
   "withdraw_hive": "Withdraw HIVE",
   "withdraw_hbd": "Withdraw HBD",
   "transfer_from_savings_op_title": "Transfer from savings",
-  "deposit": "Deposit"
+  "deposit": "Deposit",
+  "collateralized_convert": "Convert to",
+  "followers_of": "Followers of",
+  "followed_by": "Followed by"
 }

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { fromMarkdown, createEditorState } from '../index';
-import MediumDraftEditor from '../editorSlate';
+import EditorSlate from '../editorSlate';
 import { SIDE_BUTTONS } from '../model/content';
 import { checkCursorInSearchSlate } from '../../../../common/helpers/editorHelper';
 import { getSelection, getSelectionRect } from '../util';
@@ -15,6 +15,8 @@ const Editor = props => {
   const {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
+  const [startToSearching, setStartToSearching] = React.useState(false);
+  const [resultLoading, setResultLoading] = React.useState(false);
   const [prevSearchValue, setPrevSearch] = React.useState('');
   const abortController = useRef(null);
 
@@ -24,7 +26,6 @@ const Editor = props => {
       titleValue: get(props, 'initialContent.title', ''),
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
-    // restoreObjects(fromMarkdown(props.initialContent));
   }, []);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
@@ -33,30 +34,40 @@ const Editor = props => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
   };
 
-  // const restoreObjects = (rawContent, newObject) => {
-  //   const newLinkedObjectsCards = props.getRestoreObjects(rawContent, newObject, props.draftId);
-  //
-  //   props.setUpdatedEditorData({ hideLinkedObjects: newLinkedObjectsCards });
-  // };
-
   const debouncedSearch = useCallback(
     debounce(searchStr => {
       if (abortController.current) {
         abortController.current.abort();
       }
 
-      abortController.current = new AbortController();
+      if (searchStr) {
+        setStartToSearching(true);
+        setResultLoading(true);
+        abortController.current = new AbortController();
 
-      props.searchObjects(searchStr, abortController.current);
-    }, 300),
-    [props.searchObjects],
+        props.searchObjects(searchStr, abortController.current).then(res => {
+          if (res.value.result.wobjects) setResultLoading(false);
+          if (res.value.result.message) {
+            setStartToSearching(false);
+            setResultLoading(false);
+            props.setShowEditorSearch(false);
+          }
+        });
+      }
+    }, 200),
+    [props.searchObjects, abortController.current, setStartToSearching, setResultLoading],
   );
 
   const handleContentChangeSlate = editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+    const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
+    if (props.isShowEditorSearch && !searchInfo.searchString) {
+      props.setShowEditorSearch(false);
+      setStartToSearching(false);
+    }
+
+    if (searchInfo.isNeedOpenSearch && !props.isShowEditorSearch) {
+      if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -64,21 +75,22 @@ const Editor = props => {
           selectionBoundary,
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
-          isShowEditorSearch: true,
         });
+
+        setStartToSearching(true);
+        props.setShowEditorSearch(true);
       }
-      setPrevSearch(searchInfo.searchString);
-      if (prevSearchValue !== searchInfo.searchString) {
-        debouncedSearch(searchInfo.searchString);
-      }
-    } else if (props.isShowEditorSearch) {
-      props.setShowEditorSearch(false);
     }
+
+    setPrevSearch(searchInfo.searchString);
+
+    if (props.isShowEditorSearch && prevSearchValue !== searchInfo.searchString)
+      debouncedSearch(searchInfo.searchString);
 
     props.onChange(editor, props.editorExtended.titleValue);
   };
 
-  const validateLength = event => {
+  const onTitleChange = event => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
@@ -103,13 +115,13 @@ const Editor = props => {
           value={titleValue}
           maxLength={MAX_LENGTH}
           className="md-RichEditor-title"
-          onChange={validateLength}
+          onChange={onTitleChange}
           placeholder={props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
         />
       )}
       <div className="waiv-editor">
         {isMounted && (
-          <MediumDraftEditor
+          <EditorSlate
             initialPosTopBtn="11.5px"
             isNewReview={props.isNewReview}
             intl={props.intl}
@@ -130,6 +142,8 @@ const Editor = props => {
               defaultMessage: 'Write your story...',
             })}
             handlePasteText={props.handlePasteText}
+            startToSearching={startToSearching}
+            isLoading={resultLoading}
           />
         )}
       </div>
@@ -149,14 +163,12 @@ const propTypes = {
   isNewReview: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteText: PropTypes.func,
-  // getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   searchObjects: PropTypes.func.isRequired,
   editorExtended: PropTypes.shape().isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   isShowEditorSearch: PropTypes.bool.isRequired,
   setShowEditorSearch: PropTypes.func.isRequired,
-  // setUpdatedEditorData: PropTypes.func.isRequired,
   setCursorCoordinates: PropTypes.func.isRequired,
   setUpdatedEditorExtendedData: PropTypes.func.isRequired,
 };
@@ -172,7 +184,6 @@ const defaultProps = {
   draftId: '',
   linkedObjects: [],
   searchObjectsResults: [],
-  getRestoreObjects: () => {},
   isStartSearchObject: false,
   initialContent: {
     body: '',

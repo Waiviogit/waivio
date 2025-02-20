@@ -34,7 +34,7 @@ const DepatmentsSearch = () => {
   const host = useSelector(getAppHost);
   const history = useHistory();
   const query = useQuery();
-  const isRecipe = query.get('isRecipe') === 'true' || false;
+  const isRecipe = query?.get('isRecipe') === 'true' || false;
   const schema = isRecipe ? 'recipe' : undefined;
   const [loading, setLoading] = useState(false);
   const desc = 'All objects are located here. Discover new objects!';
@@ -126,7 +126,7 @@ const DepatmentsSearch = () => {
 DepatmentsSearch.fetchData = ({ match, store, query }) => {
   const state = store.getState();
   const department = match.params.department;
-  const schema = query.get('isRecipe') === 'true' ? 'recipe' : undefined;
+  const schema = query?.get('isRecipe') === 'true' ? 'recipe' : undefined;
   const userName = getAuthenticatedUserName(state);
 
   return Promise.allSettled([

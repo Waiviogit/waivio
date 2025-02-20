@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
@@ -48,7 +49,7 @@ import {
   isGuestUser,
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
-import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
+import { getLocale } from '../store/settingsStore/settingsSelectors';
 import { getTokenRates, getGlobalProperties } from '../store/walletStore/walletActions';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { initialColors } from './websites/constants/colors';
@@ -64,7 +65,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
-    nightmode: getNightmode(state),
     isNewUser: state.settings.newUser,
     isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
@@ -106,7 +106,6 @@ class Wrapper extends React.PureComponent {
     getCryptoPriceHistory: PropTypes.func,
     getGlobalProperties: PropTypes.func,
     getCoordinates: PropTypes.func,
-    nightmode: PropTypes.bool,
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
@@ -128,7 +127,6 @@ class Wrapper extends React.PureComponent {
     getNotifications: () => {},
     setUsedLocale: () => {},
     busyLogin: () => {},
-    nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isGuest: false,
     isNewUser: false,
@@ -175,7 +173,12 @@ class Wrapper extends React.PureComponent {
     const ref = querySelectorSearchParams.get('ref');
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
+    const nightmode = Cookie.get('nightmode');
 
+    if (typeof document !== 'undefined') {
+      if (nightmode === 'true') document.body.classList.add('nightmode');
+      else document.body.classList.remove('nightmode');
+    }
     this.props.getRate();
     this.props.getRewardFund();
     this.props.getCoordinates();
@@ -242,9 +245,10 @@ class Wrapper extends React.PureComponent {
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
     const refName = getSessionData('refUser');
+    const nightmode = Cookie.get('nightmode');
 
     if (typeof document !== 'undefined') {
-      if (this.props.nightmode) document.body.classList.add('nightmode');
+      if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
     }
 

@@ -8,7 +8,6 @@ import { convertToRaw } from 'draft-js';
 import {
   forEach,
   get,
-  has,
   includes,
   isEmpty,
   isEqual,
@@ -56,10 +55,6 @@ import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
-  getObjPercentsHideObject,
-  getCurrentDraftContent,
-  getFilteredLinkedObjects,
-  getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
 } from '../../common/helpers/editorHelper';
 import {
@@ -71,8 +66,7 @@ import {
 } from './editorSelectors';
 import { getAppendData, getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
-import { Entity, fromMarkdown } from '../../client/components/EditorExtended';
-import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
+import { Entity } from '../../client/components/EditorExtended';
 import { extractLinks } from '../../common/helpers/parser';
 import objectTypes from '../../client/object/const/objectTypes';
 import { insertObject } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
@@ -538,16 +532,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
   getState,
 ) => {
   const state = getState();
-  const {
-    content,
-    titleValue,
-    topics = [],
-    linkedObjects,
-    hideLinkedObjects,
-    objPercentage,
-    currentRawContent,
-    // draftId,
-  } = getEditor(state);
+  const { content, titleValue, topics = [] } = getEditor(state);
   const editor = getEditorSlate(state);
   const objName = getObjectName(object);
   const objType = getObjectType(object);
@@ -558,45 +543,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
     title: titleValue,
     body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object, match)})&nbsp;\n`,
   };
-  const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
-  const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
-  const parsedLinkedObjects = uniqBy(getLinkedObjectsHelper(rawContentUpdated), '_id');
-  let newLinkedObject = parsedLinkedObjects.find(item => item._id === object._id);
-
-  newLinkedObject = newLinkedObject || object;
-  const updatedLinkedObjects = uniqBy(
-    uniqBy([...linkedObjects, newLinkedObject], '_id'),
-    'author_permlink',
-  ).filter(item => has(item, '_id'));
-
-  let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = Array.isArray(hideLinkedObjects)
-    ? hideLinkedObjects?.find(item => item?.author_permlink === newLinkedObject?.author_permlink)
-    : false;
-
-  if (isHideObject) {
-    const filteredObjectCards = hideLinkedObjects?.filter(
-      item => item.author_permlink !== newLinkedObject?.author_permlink,
-    );
-
-    updatedStore.hideLinkedObjects = filteredObjectCards;
-    sessionStorage.setItem('hideLinkedObjects', JSON.stringify(filteredObjectCards));
-    updatedObjPercentage = getObjPercentsHideObject(
-      updatedLinkedObjects,
-      isHideObject,
-      updatedObjPercentage,
-    );
-  }
-  updatedStore.linkedObjects = getFilteredLinkedObjects(
-    updatedLinkedObjects,
-    updatedStore.hideLinkedObjects,
-  );
-  updatedStore.objPercentage = updatedObjPercentage;
-  const newData = {
-    ...updatedStore,
-    ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
-  };
   const updateTopics = uniqWith(
     object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
     isEqual,
@@ -604,18 +551,17 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
 
   dispatch(
     setUpdatedEditorData({
-      ...newData,
       draftContent,
       topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
 
-  const { beforeRange } = checkCursorInSearchSlate(editor);
+  const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
   const url = getObjectLink(object, match);
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
   Transforms.select(editor, beforeRange);
-  insertObject(editor, url, textReplace, withFocus);
+  insertObject(editor, url, textReplace, true);
 
   dispatch(setLinkedObj(object));
 
@@ -736,7 +682,7 @@ export const handlePasteText = html => async (dispatch, getState) => {
 
 export const selectObjectFromSearch = (selectedObject, editor, match) => dispatch => {
   if (selectedObject) {
-    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;

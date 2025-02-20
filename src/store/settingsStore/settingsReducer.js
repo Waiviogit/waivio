@@ -27,7 +27,7 @@ const initialState = {
 const settings = (state = initialState, action) => {
   switch (action.type) {
     case authTypes.LOGIN_SUCCESS:
-      if (action.meta && action.meta.refresh) return state;
+      // if (action.meta && action.meta.refresh) return state;
       if (action.payload.userMetaData && action.payload.userMetaData.settings) {
         return {
           ...state,

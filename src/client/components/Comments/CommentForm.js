@@ -39,12 +39,14 @@ const CommentForm = props => {
   const [body, setBody] = useState('');
   const [bodyHTML, setHTML] = useState('');
   const [isShowEditorSearch, setIsShowEditorSearch] = useState(false);
+  const [prevSearch, setPrevSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const importObj = useSelector(getImportObject);
   const abortControllerRef = useRef(null);
-
+  const [startToSearching, setStartToSearching] = React.useState(false);
+  const [resultLoading, setResultLoading] = React.useState(false);
   const parent = props.isEdit ? props.currentComment : props.parentPost;
   const getPermlink = () => {
     if (props.isReply) return `${parent?.permlink}-reply`;
@@ -136,11 +138,25 @@ const CommentForm = props => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
-      abortControllerRef.current = new AbortController();
-      props.searchObjects(searchStr, abortControllerRef.current);
+
+      if (searchStr) {
+        setStartToSearching(true);
+        setResultLoading(true);
+        abortControllerRef.current = new AbortController();
+
+        props.searchObjects(searchStr, abortControllerRef.current).then(res => {
+          if (res.value.result.wobjects) setResultLoading(false);
+          if (res.value.result.message) {
+            setStartToSearching(false);
+            setResultLoading(false);
+            setShowEditorSearch(false);
+          }
+        });
+      }
     }, 300),
     [],
   );
+
   const debouncedDraftSave = useCallback(
     debounce(markdownBody => {
       if (init) saveCommentDraft(props.username, parent?.author, getPermlink(), markdownBody);
@@ -149,10 +165,15 @@ const CommentForm = props => {
   );
 
   const handleContentChangeSlate = debounce(editor => {
-    const searchInfo = checkCursorInSearchSlate(editor);
+    const searchInfo = checkCursorInSearchSlate(editor, isShowEditorSearch);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (!isShowEditorSearch && window !== 'undefined') {
+    if (isShowEditorSearch && !searchInfo.searchString) {
+      setShowEditorSearch(false);
+      setStartToSearching(false);
+    }
+
+    if (searchInfo.isNeedOpenSearch && !isShowEditorSearch) {
+      if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -161,11 +182,17 @@ const CommentForm = props => {
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
         });
+        setStartToSearching(true);
         setShowEditorSearch(true);
       }
-      debouncedSearch(searchInfo.searchString);
-    } else if (isShowEditorSearch) {
-      setShowEditorSearch(false);
+    }
+
+    if (isShowEditorSearch) {
+      setPrevSearch(searchInfo.searchString);
+
+      if (prevSearch !== searchInfo.searchString) {
+        debouncedSearch(searchInfo.searchString);
+      }
     }
   }, 350);
 
@@ -197,7 +224,7 @@ const CommentForm = props => {
 
   const handleObjectSelect = selectedObject => {
     const { editor } = props;
-    const { beforeRange } = checkCursorInSearchSlate(editor) || {};
+    const { beforeRange } = checkCursorInSearchSlate(editor, false, true) || {};
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
@@ -258,6 +285,8 @@ const CommentForm = props => {
                 setShowEditorSearch={setShowEditorSearch}
                 initialBody={draft || props.inputValue}
                 small={props.isEdit}
+                startToSearching={startToSearching}
+                isLoading={resultLoading}
               />
             )}
           </div>

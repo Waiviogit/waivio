@@ -126,7 +126,7 @@ export const searchObjectsAutoCompete = (
 
   if (addHashtag) body.addHashtag = true;
 
-  dispatch({
+  return dispatch({
     type: SEARCH_OBJECTS.ACTION,
     payload: useExtendedSearch
       ? ApiClient.extendedSearchObjects(

@@ -20,5 +20,8 @@ export const getTokenFrom = createSelector([swapState], state => get(state, 'fro
 export const getBdPair = createSelector([swapState], state => get(state, 'bdPair', ''));
 
 export const getVisibleModal = createSelector([swapState], state => get(state, 'visible', false));
+export const getVisibleConvertModal = createSelector([swapState], state =>
+  get(state, 'visibleConvert', false),
+);
 
 export const getIsChanging = createSelector([swapState], state => get(state, 'isChanging', false));
