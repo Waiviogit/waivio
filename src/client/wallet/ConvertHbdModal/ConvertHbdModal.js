@@ -7,7 +7,6 @@ import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import USDDisplay from '../../components/Utils/USDDisplay';
-
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import {
   getTokenFrom,
@@ -44,9 +43,11 @@ const ConvertHbdModal = props => {
   const toSymbol = isFromHive ? 'HBD' : 'HIVE';
   const rates = useSelector(getRatesList);
   const hiveAuth = Cookie.get('auth');
+  const balanceHive = parseFloat(props.user.balance);
+  const balanceHbd = parseFloat(props.user.hbd_balance);
 
   const rate = isFromHive ? props.hiveRateInUsd : props.hbdRateInUsd;
-  const insufficientFunds = amount => parseFloat(+props.user?.balance) < +amount;
+  const insufficientFunds = amount => (isFromHive ? balanceHive < +amount : balanceHbd < +amount);
 
   const handleSwap = () => {
     props.toggleConvertHbdModal(false);
@@ -63,11 +64,7 @@ const ConvertHbdModal = props => {
 
       brodc();
     } else {
-      window &&
-        window.open(
-          `https://hivesigner.com/sign/collateralized_convert?${createQuery(query)}`,
-          '_blank',
-        );
+      window && window.open(`https://hivesigner.com/sign/${op}?${createQuery(query)}`, '_blank');
     }
   };
 
@@ -83,8 +80,7 @@ const ConvertHbdModal = props => {
 
   const estimateValue = fromAmount * rate;
   const handleClickBalanceFrom = value => handleChangeFromValue(value);
-  const balanceHive = parseFloat(props.user.balance);
-  const balanceHbd = parseFloat(props.user.hbd_balance);
+
   const tokenFrom = {
     balance: isFromHive ? balanceHive : balanceHbd || 0,
     symbol: isFromHive ? 'HIVE' : 'HBD',
@@ -100,10 +96,17 @@ const ConvertHbdModal = props => {
 
   return (
     <Modal
-      title={props.intl.formatMessage({
-        id: 'convert_hive_to_hbd',
-        defaultMessage: 'Convert HIVE to HBD',
-      })}
+      title={
+        isFromHive
+          ? props.intl.formatMessage({
+              id: 'convert_hive_to_hbd',
+              defaultMessage: 'Convert HIVE to HBD',
+            })
+          : props.intl.formatMessage({
+              id: 'convert_hbd_to_hive',
+              defaultMessage: 'Convert HBD to HIVE',
+            })
+      }
       visible={props.visible}
       onOk={handleSwap}
       onCancel={handleCloseModal}
@@ -164,7 +167,7 @@ const ConvertHbdModal = props => {
           <p>
             {isFromHive ? (
               <>
-                HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
+                Estimated HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
               </>
             ) : (
               <>
