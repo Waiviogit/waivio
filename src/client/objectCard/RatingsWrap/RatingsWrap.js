@@ -5,7 +5,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
-import { averageRate, calculateRateCurrUser } from '../../components/Sidebar/Rate/rateHelper';
+import {
+  averageRate,
+  calculateRateCurrUser,
+  formatAverageRate,
+} from '../../components/Sidebar/Rate/rateHelper';
 import steemConnectAPI from '../../steemConnectAPI';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
@@ -38,7 +42,7 @@ const RatingsWrap = React.memo(
       const haveCurrentUserVote = ratingVotesList.some(vote => vote.voter === username);
       const defaultValue = haveCurrentUserVote
         ? calculateRateCurrUser(currRate.rating_votes, username)
-        : averageRate(currRate);
+        : formatAverageRate(currRate.average_rating_weight);
 
       const onChange = e => {
         handleSubmit(e, currRate);

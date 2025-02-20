@@ -3507,6 +3507,7 @@ class AppendForm extends Component {
                         case 'hive':
                           return (
                             <img
+                              style={{ marginBottom: '-1px' }}
                               className="snapchat-icon"
                               src="/images/icons/cryptocurrencies/hive.png"
                               alt={'hive-logo'}
@@ -3520,6 +3521,7 @@ class AppendForm extends Component {
                           return (
                             <img
                               style={{
+                                marginBottom: '-1px',
                                 width: isWhatsapp ? '18px' : '14px',
                                 height: isWhatsapp ? '18px' : '14px',
                                 marginLeft: isWhatsapp ? '-2px' : '0',

@@ -11,13 +11,13 @@
 
     &:first-child {
       width: 55%;
-      display: none;
+      display: flex;
       border-left: none;
       margin-left: 0;
       padding-left: 0;
 
       @media @large {
-        display: flex;
+        //display: flex;
         //border-right: @base-border;
         margin-right: 15px;
         //padding-right: 15px;
@@ -26,8 +26,10 @@
 
     &:last-child {
       width: 100%;
+      display: none;
 
       @media @large {
+        display: flex;
         width: 45%;
       }
     }
