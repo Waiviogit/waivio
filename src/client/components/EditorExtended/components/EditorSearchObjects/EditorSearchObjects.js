@@ -20,6 +20,7 @@ const EditorSearchObjects = ({
   isComment,
   isLoading,
   startToSearching,
+  setShowEditorQuickSearch,
 }) => {
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
@@ -58,6 +59,8 @@ const EditorSearchObjects = ({
 
     return () => {
       clearEditorSearchObjects(null, editor);
+
+      if (setShowEditorQuickSearch) setShowEditorQuickSearch(false);
     };
   }, []);
 
@@ -74,6 +77,7 @@ const EditorSearchObjects = ({
         setSelectedObj(true);
       } else {
         clearEditorSearchObjects();
+        if (setShowEditorQuickSearch) setShowEditorQuickSearch(false);
         searchObjectsResultsRef.current = [];
       }
     }
@@ -83,6 +87,7 @@ const EditorSearchObjects = ({
       !isLoadingRef.current &&
       event.code === 'Space'
     ) {
+      if (setShowEditorQuickSearch) setShowEditorQuickSearch(false);
       clearEditorSearchObjects();
     }
   };
@@ -205,6 +210,7 @@ EditorSearchObjects.propTypes = {
   selectObjectFromSearch: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func,
   clearEditorSearchObjects: PropTypes.func.isRequired,
+  setShowEditorQuickSearch: PropTypes.func,
   editor: PropTypes.shape().isRequired,
 };
 
@@ -212,6 +218,7 @@ EditorSearchObjects.defaultProps = {
   wordForCountWidth: '',
   searchObjectsResults: [],
   handleObjectSelect: null,
+  setShowEditorQuickSearch: null,
   isComment: false,
 };
 

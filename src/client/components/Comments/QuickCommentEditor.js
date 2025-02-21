@@ -73,6 +73,20 @@ const QuickCommentEditor = props => {
     }
   };
 
+  const openSearchAfterClick = useCallback(() => {
+    const searchInfo = checkCursorInSearchSlate(editorRef.current, true);
+    const nativeSelection = getSelection(window);
+    const selectionBoundary = getSelectionRect(nativeSelection);
+
+    props.setCursorCoordinates({
+      selectionBoundary,
+      selectionState: editorRef.current.selection,
+      searchString: searchInfo.searchString,
+    });
+
+    setIsShowEditorSearch(true);
+  }, [editorRef.current, isShowEditorSearch, props.setCursorCoordinates]);
+
   const debouncedSearch = useCallback(
     debounce(searchStr => {
       if (abortController.current) {
@@ -93,41 +107,38 @@ const QuickCommentEditor = props => {
           }
         });
       }
-    }, 150),
+    }, 300),
     [props.searchObjects],
   );
 
-  const handleContentChangeSlate = useCallback(
-    debounce(editor => {
-      const searchInfo = checkCursorInSearchSlate(editor, isShowEditorSearch);
+  const handleContentChangeSlate = editor => {
+    const searchInfo = checkCursorInSearchSlate(editor, isShowEditorSearch);
 
-      if (isShowEditorSearch && !searchInfo.searchString) {
-        setIsShowEditorSearch(false);
-        setStartToSearching(false);
+    if (isShowEditorSearch && !searchInfo.searchString) {
+      setIsShowEditorSearch(false);
+      setStartToSearching(false);
+    }
+
+    if (searchInfo.isNeedOpenSearch) {
+      if (typeof window !== 'undefined' && !isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
+
+        setStartToSearching(true);
+        setIsShowEditorSearch(true);
       }
+    }
 
-      if (searchInfo.isNeedOpenSearch) {
-        if (typeof window !== 'undefined' && !isShowEditorSearch) {
-          const nativeSelection = getSelection(window);
-          const selectionBoundary = getSelectionRect(nativeSelection);
-
-          props.setCursorCoordinates({
-            selectionBoundary,
-            selectionState: editor.selection,
-            searchString: searchInfo.searchString,
-          });
-
-          setStartToSearching(true);
-          setIsShowEditorSearch(true);
-        }
-      }
-
-      if (isShowEditorSearch) {
-        debouncedSearch(searchInfo.searchString);
-      }
-    }, 350),
-    [isShowEditorSearch, debouncedSearch, props.setCursorCoordinates],
-  );
+    if (isShowEditorSearch) {
+      debouncedSearch(searchInfo.searchString);
+    }
+  };
 
   const handleMsgChange = body => {
     const newCommentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
@@ -149,6 +160,10 @@ const QuickCommentEditor = props => {
     insertObject(editorRef.current, url, textReplace, true);
     handleMsgChange(editorRef.current);
     props.setImportObject({});
+  };
+
+  const setShowEditorQuickSearch = value => {
+    setIsShowEditorSearch(value);
   };
 
   const { isLoading, isAuth, intl, inputValue } = props;
@@ -175,7 +190,8 @@ const QuickCommentEditor = props => {
             ADD_BTN_DIF={24}
             initialBody={inputValue}
             isShowEditorSearch={isShowEditorSearch}
-            setShowEditorSearch={setIsShowEditorSearch}
+            setShowEditorQuickSearch={setShowEditorQuickSearch}
+            openSearchAfterClick={openSearchAfterClick}
             startToSearching={startToSearching}
             isLoading={resultLoading}
           />
