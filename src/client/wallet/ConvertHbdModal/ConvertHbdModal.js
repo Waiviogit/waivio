@@ -97,7 +97,7 @@ const ConvertHbdModal = props => {
     0.95 *
     parseFloat(hiveRates?.current_min_history?.base)
   ).toFixed(2);
-  const hiveEstimated = (fromAmount / rates[toSymbol]).toFixed(2);
+
   const tokensList = [tokenFrom, tokenTo];
 
   useEffect(() => {
@@ -176,13 +176,9 @@ const ConvertHbdModal = props => {
         </div>{' '}
         <div className="SwapTokens__estimatedWrap">
           <p>
-            {isFromHive ? (
+            {isFromHive && (
               <>
                 Estimated HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
-              </>
-            ) : (
-              <>
-                Estimated HIVE amount: {hiveEstimated} {toSymbol}{' '}
               </>
             )}
           </p>
