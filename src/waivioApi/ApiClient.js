@@ -2500,6 +2500,36 @@ export const getHiveFeedHistory = () =>
     .then(r => r.result)
     .catch(e => e);
 
+export const getHiveConversion = user =>
+  fetch('https://api.hive.blog/', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 2,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_collateralized_conversion_requests',
+      params: [user],
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
+
+export const getHbdConversion = user =>
+  fetch('https://api.hive.blog/', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 2,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_conversion_requests',
+      params: [user],
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
+
 const hiveEngineContract = async params => {
   return engineProxy(params).then(response => {
     if (response.error) {

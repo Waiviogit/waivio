@@ -24,6 +24,7 @@ const ProgressModalBody = ({
   setCurrWithdrawSaving,
   setShowCancelWithdrawSavings,
   min = 0,
+  showCancelBtn,
 }) => {
   const currAmount = parseFloat(amount);
   const unitsLeft = left > max ? max : left;
@@ -37,7 +38,7 @@ const ProgressModalBody = ({
               <b>
                 {title} #{index + 1}
               </b>
-              {isAuth && authUserPage && (
+              {isAuth && authUserPage && showCancelBtn && (
                 <Button
                   onClick={() => {
                     if (isSaving) {
@@ -95,6 +96,7 @@ ProgressModalBody.propTypes = {
   isAuth: PropTypes.bool,
   isSaving: PropTypes.bool,
   isWaivWallet: PropTypes.bool,
+  showCancelBtn: PropTypes.bool,
   timePeriod: PropTypes.string,
   title: PropTypes.string,
   setShowCancelPowerDown: PropTypes.func,
@@ -104,4 +106,5 @@ ProgressModalBody.propTypes = {
   marks: PropTypes.arrayOf(),
   info: PropTypes.shape(),
 };
+ProgressModalBody.defaultProps = { showCancelBtn: true };
 export default ProgressModalBody;
