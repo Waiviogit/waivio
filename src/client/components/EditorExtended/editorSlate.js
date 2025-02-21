@@ -94,6 +94,8 @@ const EditorSlate = props => {
   const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);
   const [draftInit, setDraftInit] = useState(!!params[0]);
+  const editor = useEditor(props);
+
   const editorRef = useRef(null);
   const handlePastedFiles = async event => {
     const html = event.clipboardData.getData('text/html');
@@ -277,7 +279,6 @@ const EditorSlate = props => {
     'md-RichEditor-root-small': props.small,
   });
 
-  const editor = useEditor(props);
   const [value, setValue] = useState([
     {
       type: 'paragraph',
@@ -315,7 +316,9 @@ const EditorSlate = props => {
     if (isNewReview) {
       focusEditorToStart(editor);
     }
-    setTimeout(() => setInitiallized(false), 1500);
+    const id = setTimeout(() => setInitiallized(false), 1500);
+
+    return () => clearTimeout(id);
   }, [params]);
 
   useEffect(() => {

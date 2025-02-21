@@ -64,12 +64,6 @@ export const ATOMIC_TYPES = {
   CODE: 'code-block',
 };
 
-export default {
-  Block,
-  Inline,
-  Entity,
-};
-
 export const ELEMENT_TAGS = {
   A: el => ({ type: 'link', url: el.getAttribute('href') }),
   BLOCKQUOTE: () => ({ type: 'blockquote' }),
