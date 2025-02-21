@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import ProgressModalBody from '../PowerDownProgressModal/ProgressModalBody';
 
 const SavingsProgressModal = ({
+  isConversion,
   showModal,
   savingsInfo,
   setShowModal,
@@ -23,25 +24,34 @@ const SavingsProgressModal = ({
     2: '2',
     3: '3',
   };
-  const currInfo = savingsInfo?.filter(inf => inf?.amount?.includes(symbol));
+  const currInfo = isConversion
+    ? savingsInfo
+    : savingsInfo?.filter(inf => inf?.amount?.includes(symbol));
 
   return (
     <Modal
       visible={showModal && !isEmpty(currInfo)}
       footer={[
-        <Button key="Ok" type="primary" onClick={() => setShowModal(false)}>
+        <Button
+          key="Ok"
+          type="primary"
+          onClick={() => {
+            isConversion ? setShowModal({ hive: false, hbd: false }) : setShowModal(false);
+          }}
+        >
           <FormattedMessage id="ok" defaultMessage="Ok" />
         </Button>,
       ]}
-      title={'Withdraw Savings'}
+      title={isConversion ? 'Conversions' : 'Withdraw Savings'}
       onCancel={() => setShowModal(false)}
     >
       {currInfo?.map((info, i) => (
         <ProgressModalBody
-          amount={info.amount}
+          showCancelBtn={!isConversion}
+          amount={info?.amount || info?.collateral_amount}
           isSaving
           showNextDate={false}
-          title={'Withdraw'}
+          title={isConversion ? 'Conversion' : 'Withdraw'}
           timePeriod={'day'}
           addSpace={i !== savingsInfo.length - 1}
           key={info._id}
@@ -52,7 +62,7 @@ const SavingsProgressModal = ({
           setShowSavingsProgress={setShowSavingsProgress}
           setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
           setCurrWithdrawSaving={setCurrWithdrawSaving}
-          left={calculateDaysLeftForSavings(info.complete)}
+          left={calculateDaysLeftForSavings(isConversion ? info.conversion_date : info.complete)}
           marks={marks}
           authUserPage={authUserPage}
           isAuth={isAuth}
@@ -67,6 +77,7 @@ SavingsProgressModal.propTypes = {
   symbol: PropTypes.string,
   isAuth: PropTypes.bool,
   authUserPage: PropTypes.bool,
+  isConversion: PropTypes.bool,
   showModal: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
   setShowCancelWithdrawSavings: PropTypes.func.isRequired,
