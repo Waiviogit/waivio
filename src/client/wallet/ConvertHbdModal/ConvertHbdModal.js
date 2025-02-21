@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
@@ -7,7 +7,6 @@ import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import USDDisplay from '../../components/Utils/USDDisplay';
-
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import {
   getTokenFrom,
@@ -35,18 +34,22 @@ import '../SwapTokens/SwapTokens.less';
 import api from '../../steemConnectAPI';
 import { createQuery } from '../../../common/helpers/apiHelpers';
 import './ConvertHbdModal.less';
+import { getHiveFeedHistory } from '../../../waivioApi/ApiClient';
 
 const ConvertHbdModal = props => {
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
+  const [hiveRates, setHiveRates] = useState({});
   const [symbol, setSymbol] = useState(props.from?.symbol || props.from);
   const isFromHive = symbol === 'HIVE';
   const toSymbol = isFromHive ? 'HBD' : 'HIVE';
   const rates = useSelector(getRatesList);
   const hiveAuth = Cookie.get('auth');
+  const balanceHive = parseFloat(props.user.balance);
+  const balanceHbd = parseFloat(props.user.hbd_balance);
 
   const rate = isFromHive ? props.hiveRateInUsd : props.hbdRateInUsd;
-  const insufficientFunds = amount => parseFloat(+props.user?.balance) < +amount;
+  const insufficientFunds = amount => (isFromHive ? balanceHive < +amount : balanceHbd < +amount);
 
   const handleSwap = () => {
     props.toggleConvertHbdModal(false);
@@ -63,11 +66,7 @@ const ConvertHbdModal = props => {
 
       brodc();
     } else {
-      window &&
-        window.open(
-          `https://hivesigner.com/sign/collateralized_convert?${createQuery(query)}`,
-          '_blank',
-        );
+      window && window.open(`https://hivesigner.com/sign/${op}?${createQuery(query)}`, '_blank');
     }
   };
 
@@ -83,8 +82,7 @@ const ConvertHbdModal = props => {
 
   const estimateValue = fromAmount * rate;
   const handleClickBalanceFrom = value => handleChangeFromValue(value);
-  const balanceHive = parseFloat(props.user.balance);
-  const balanceHbd = parseFloat(props.user.hbd_balance);
+
   const tokenFrom = {
     balance: isFromHive ? balanceHive : balanceHbd || 0,
     symbol: isFromHive ? 'HIVE' : 'HBD',
@@ -94,16 +92,31 @@ const ConvertHbdModal = props => {
     symbol: isFromHive ? 'HBD' : 'HIVE',
   };
 
-  const immediatelyPaidVal = ((fromAmount / 2) * rate - (fromAmount / 2) * rate * 0.05).toFixed(2);
+  const immediatelyPaidVal = (
+    (fromAmount / 2) *
+    0.95 *
+    parseFloat(hiveRates?.current_min_history?.base)
+  ).toFixed(2);
   const hiveEstimated = (fromAmount / rates[toSymbol]).toFixed(2);
   const tokensList = [tokenFrom, tokenTo];
 
+  useEffect(() => {
+    getHiveFeedHistory().then(r => setHiveRates(r));
+  }, []);
+
   return (
     <Modal
-      title={props.intl.formatMessage({
-        id: 'convert_hive_to_hbd',
-        defaultMessage: 'Convert HIVE to HBD',
-      })}
+      title={
+        isFromHive
+          ? props.intl.formatMessage({
+              id: 'convert_hive_to_hbd',
+              defaultMessage: 'Convert HIVE to HBD',
+            })
+          : props.intl.formatMessage({
+              id: 'convert_hbd_to_hive',
+              defaultMessage: 'Convert HBD to HIVE',
+            })
+      }
       visible={props.visible}
       onOk={handleSwap}
       onCancel={handleCloseModal}
@@ -128,6 +141,7 @@ const ConvertHbdModal = props => {
         <TokensSelect
           list={tokensList}
           setToken={token => {
+            setFromAmount(0);
             setSymbol(token.symbol);
             props.setFromToken(token.symbol, tokensList);
           }}
@@ -164,7 +178,7 @@ const ConvertHbdModal = props => {
           <p>
             {isFromHive ? (
               <>
-                HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
+                Estimated HBD to be paid immediately: {immediatelyPaidVal} {toSymbol}
               </>
             ) : (
               <>
@@ -188,7 +202,6 @@ ConvertHbdModal.propTypes = {
   toggleConvertHbdModal: PropTypes.func.isRequired,
   setFromToken: PropTypes.func.isRequired,
   swapListTo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-
   hiveRateInUsd: PropTypes.number.isRequired,
   hbdRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
