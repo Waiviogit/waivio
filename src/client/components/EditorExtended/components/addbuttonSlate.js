@@ -34,7 +34,7 @@ const AddButtonSlate = props => {
         const range = nativeSelection.getRangeAt(0);
         const bound = range.getBoundingClientRect();
         const parentBoundary = editorNode.getBoundingClientRect();
-        const nodeStyle = nodeRef.current?.style;
+        const nodeStyle = nodeRef.current?.style || {};
 
         if (!firstRender.current && initialPosTop) {
           firstRender.current = true;

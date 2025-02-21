@@ -16,53 +16,6 @@ import Loading from '../../components/Icon/Loading';
 
 import './EditPost.less';
 
-const propTypes = {
-  intl: PropTypes.shape().isRequired,
-  locale: PropTypes.string.isRequired,
-  draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  objPercentage: PropTypes.arrayOf(PropTypes.shape()),
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-  }).isRequired,
-  draftId: PropTypes.string,
-  campaignId: PropTypes.string,
-  publishing: PropTypes.bool,
-  saving: PropTypes.bool,
-  imageLoading: PropTypes.bool,
-  createPost: PropTypes.func,
-  toggleLinkedObj: PropTypes.func,
-  setObjPercent: PropTypes.func,
-  saveDraft: PropTypes.func,
-  buildPost: PropTypes.func.isRequired,
-  leaveEditor: PropTypes.func.isRequired,
-  setEditorState: PropTypes.func.isRequired,
-  handleObjectSelect: PropTypes.func.isRequired,
-  setUpdatedEditorData: PropTypes.func.isRequired,
-  isWaivio: PropTypes.bool,
-  isGuest: PropTypes.bool,
-  beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
-  history: PropTypes.shape().isRequired,
-  campaign: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
-  editor: PropTypes.shape().isRequired,
-  currDraft: PropTypes.shape().isRequired,
-  filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  handlePasteText: PropTypes.func.isRequired,
-};
-
-const defaultProps = {
-  draftId: '',
-  campaignId: '',
-  publishing: false,
-  saving: false,
-  isWaivio: true,
-  imageLoading: false,
-  createPost: () => {},
-  saveDraft: () => {},
-  isGuest: false,
-  beneficiaries: [],
-};
-
 const EditPost = props => {
   const {
     editor: { draftContent, content, topics, settings, isUpdating, titleValue },
@@ -249,7 +202,50 @@ const EditPost = props => {
   );
 };
 
-EditPost.propTypes = propTypes;
-EditPost.defaultProps = defaultProps;
+EditPost.propTypes = {
+  intl: PropTypes.shape().isRequired,
+  locale: PropTypes.string.isRequired,
+  draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  objPercentage: PropTypes.arrayOf(PropTypes.shape()),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
+  draftId: PropTypes.string,
+  campaignId: PropTypes.string,
+  publishing: PropTypes.bool,
+  saving: PropTypes.bool,
+  imageLoading: PropTypes.bool,
+  createPost: PropTypes.func,
+  toggleLinkedObj: PropTypes.func,
+  setObjPercent: PropTypes.func,
+  saveDraft: PropTypes.func,
+  buildPost: PropTypes.func.isRequired,
+  leaveEditor: PropTypes.func.isRequired,
+  setEditorState: PropTypes.func.isRequired,
+  handleObjectSelect: PropTypes.func.isRequired,
+  setUpdatedEditorData: PropTypes.func.isRequired,
+  isWaivio: PropTypes.bool,
+  isGuest: PropTypes.bool,
+  beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
+  history: PropTypes.shape().isRequired,
+  campaign: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
+  editor: PropTypes.shape().isRequired,
+  currDraft: PropTypes.shape(),
+  filteredObjectsCards: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  handlePasteText: PropTypes.func.isRequired,
+};
+EditPost.defaultProps = {
+  draftId: '',
+  campaignId: '',
+  publishing: false,
+  saving: false,
+  isWaivio: true,
+  imageLoading: false,
+  createPost: () => {},
+  saveDraft: () => {},
+  isGuest: false,
+  beneficiaries: [],
+};
 
 export default withRouter(EditPost);

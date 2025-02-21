@@ -1,6 +1,4 @@
 import { connect } from 'react-redux';
-import { useRouteMatch } from 'react-router';
-
 import EditorSearchObjects from './EditorSearchObjects';
 import {
   getSearchCoordinates,
@@ -20,14 +18,10 @@ const mapStateToProps = state => ({
   searchCoordinates: getSearchCoordinates(state),
 });
 
-const mapDispatchToProps = dispatch => {
-  const match = useRouteMatch();
-
-  return {
-    selectObjectFromSearch: (object, editor) =>
-      dispatch(selectObjectFromSearch(object, editor, match)),
-    clearEditorSearchObjects: () => dispatch(clearEditorSearchObjects()),
-  };
-};
+const mapDispatchToProps = (dispatch, props) => ({
+  selectObjectFromSearch: (object, editor) =>
+    dispatch(selectObjectFromSearch(object, editor, props.match)),
+  clearEditorSearchObjects: () => dispatch(clearEditorSearchObjects()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);

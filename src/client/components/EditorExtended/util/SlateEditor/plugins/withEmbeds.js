@@ -105,7 +105,7 @@ const withEmbeds = cb => editor => {
           : nodesNormalized,
       );
       cb(html);
-      Transforms.move(editor, { unit: 'offset' });
+      if (isWrapped) Transforms.move(editor, { unit: 'offset' });
 
       return;
     }
