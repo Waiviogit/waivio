@@ -2485,6 +2485,20 @@ export const engineProxy = async (params, attempts = 5, hostUrl = sample(HIVE_EN
 
   return response;
 };
+export const getHiveFeedHistory = () =>
+  fetch('https://api.hive.blog/', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 1,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_feed_history',
+      params: [],
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
 
 const hiveEngineContract = async params => {
   return engineProxy(params).then(response => {

@@ -166,7 +166,7 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
     content,
     topics,
     oldMetadata,
-    linkedObject.map(obj => ({
+    linkedObject?.map(obj => ({
       object_type: obj.object_type,
       name: getObjectName(obj),
       author_permlink: obj.author_permlink,

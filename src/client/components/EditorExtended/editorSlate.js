@@ -9,7 +9,7 @@ import { createEditor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router';
+import { useParams, withRouter } from 'react-router';
 import { isKeyHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
@@ -94,6 +94,8 @@ const EditorSlate = props => {
   const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);
   const [draftInit, setDraftInit] = useState(!!params[0]);
+  const editor = useEditor(props);
+
   const editorRef = useRef(null);
   const handlePastedFiles = async event => {
     const html = event.clipboardData.getData('text/html');
@@ -233,17 +235,20 @@ const EditorSlate = props => {
     }
 
     if (event.keyCode === 51) {
-      const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
-      const nativeSelection = getSelection(window);
-      const selectionBoundary = getSelectionRect(nativeSelection);
+      if (props.openSearchAfterClick) props.openSearchAfterClick();
+      else {
+        const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
 
-      props.setCursorCoordinates({
-        selectionBoundary,
-        selectionState: editor.selection,
-        searchString: searchInfo.searchString,
-      });
+        props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
 
-      props.setShowEditorSearch(true);
+        props.setShowEditorSearch(true);
+      }
 
       return true;
     }
@@ -277,7 +282,6 @@ const EditorSlate = props => {
     'md-RichEditor-root-small': props.small,
   });
 
-  const editor = useEditor(props);
   const [value, setValue] = useState([
     {
       type: 'paragraph',
@@ -315,7 +319,9 @@ const EditorSlate = props => {
     if (isNewReview) {
       focusEditorToStart(editor);
     }
-    setTimeout(() => setInitiallized(false), 1500);
+    const id = setTimeout(() => setInitiallized(false), 1500);
+
+    return () => clearTimeout(id);
   }, [params]);
 
   useEffect(() => {
@@ -349,6 +355,8 @@ const EditorSlate = props => {
               isComment={isComment}
               startToSearching={startToSearching}
               isLoading={isLoading}
+              setShowEditorQuickSearch={props.setShowEditorQuickSearch}
+              match={props.match}
             />
           )}
           <Toolbar editorNode={editorRef.current} intl={intl} />
@@ -392,13 +400,16 @@ EditorSlate.propTypes = {
   editorEnabled: PropTypes.bool,
   startToSearching: PropTypes.bool,
   isShowEditorSearch: PropTypes.bool,
+  openSearchAfterClick: PropTypes.func,
   isVimeo: PropTypes.bool,
   isLoading: PropTypes.bool,
   setCursorCoordinates: PropTypes.func,
   setShowEditorSearch: PropTypes.func,
+  setShowEditorQuickSearch: PropTypes.func,
   body: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   parentPost: PropTypes.shape(),
+  match: PropTypes.shape(),
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -433,6 +444,7 @@ EditorSlate.defaultProps = {
   minHeight: '',
   initialPosTopBtn: '',
   setEditorCb: null,
+  openSearchAfterClick: null,
   ADD_BTN_DIF: 14,
 };
 
@@ -448,4 +460,4 @@ const mapDispatchToProps = dispatch => ({
   clearEditor: () => dispatch(setClearState()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditorSlate));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(withRouter(EditorSlate)));
