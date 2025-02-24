@@ -47,6 +47,7 @@ const SavingsProgressModal = ({
     >
       {currInfo?.map((info, i) => (
         <ProgressModalBody
+          symbol={isConversion ? symbol : ''}
           showCancelBtn={!isConversion}
           amount={info?.amount || info?.collateral_amount}
           isSaving

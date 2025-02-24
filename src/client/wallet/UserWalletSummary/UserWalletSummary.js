@@ -827,7 +827,7 @@ const UserWalletSummary = ({
           isAuth={isAuth}
         />
       )}
-      {(showConversionModal?.hive === true || showConversionModal?.hbd === true) && (
+      {(showConversionModal?.hive || showConversionModal?.hbd) && (
         <SavingsProgressModal
           isConversion
           symbol={showConversionModal?.hive ? 'HIVE' : 'HBD'}
