@@ -639,6 +639,22 @@ export const getSavingsTransactionMessage = (transactionType, transactionDetails
       return <FormattedMessage id="deposit_to_savings" defaultMessage="Deposit to savings" />;
     case 'transfer_from_savings':
       return <FormattedMessage id="withdraw_from_savings" defaultMessage="Withdraw from savings" />;
+    case 'interest':
+      return <FormattedMessage id="claim_interest" defaultMessage="Claim interest" />;
+    case 'fill_transfer_from_savings':
+      return (
+        <FormattedMessage
+          id="fill_transfer_from_savings"
+          defaultMessage="Fill transfer from savings"
+        />
+      );
+    case 'transfer_to_vesting_completed':
+      return (
+        <FormattedMessage
+          id="transfer_to_vesting_completed"
+          defaultMessage="Transfer to vesting completed"
+        />
+      );
     default:
       return null;
   }

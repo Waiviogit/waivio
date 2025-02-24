@@ -161,12 +161,23 @@ const WalletTransaction = ({
       );
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
     case accountHistoryConstants.TRANSFER_FROM_SAVINGS:
+    case accountHistoryConstants.FILL_TRANSFER_FROM_SAVINGS:
+    case accountHistoryConstants.TRANSFER_TO_VESTING_COMPLETED:
     case accountHistoryConstants.CANCEL_TRANSFER_FROM_SAVINGS:
       return (
         <SavingsTransaction
           transactionDetails={transactionDetails}
           transactionType={transactionType}
           amount={getTransactionCurrency(transactionDetails.amount)}
+          timestamp={transaction.timestamp}
+        />
+      );
+    case accountHistoryConstants.INTEREST:
+      return (
+        <SavingsTransaction
+          transactionDetails={transactionDetails}
+          transactionType={transactionType}
+          amount={transactionDetails.interest}
           timestamp={transaction.timestamp}
         />
       );
