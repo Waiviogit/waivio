@@ -103,6 +103,10 @@ const ConvertHbdModal = props => {
   useEffect(() => {
     getHiveFeedHistory().then(r => setHiveRates(r));
   }, []);
+  useEffect(() => {
+    setFromAmount(0);
+    setToAmount(0);
+  }, [symbol]);
 
   return (
     <Modal

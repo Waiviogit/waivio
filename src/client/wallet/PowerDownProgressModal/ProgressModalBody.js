@@ -15,6 +15,7 @@ const ProgressModalBody = ({
   setCurrPowerDown,
   info,
   index,
+  symbol,
   isAuth,
   authUserPage,
   showNextDate = true,
@@ -56,7 +57,7 @@ const ProgressModalBody = ({
               )}
             </div>
             <div>
-              Amount: <FormattedNumber value={currAmount} />
+              Amount: <FormattedNumber value={currAmount} /> {symbol}
             </div>
           </>
         )}
@@ -98,6 +99,7 @@ ProgressModalBody.propTypes = {
   isWaivWallet: PropTypes.bool,
   showCancelBtn: PropTypes.bool,
   timePeriod: PropTypes.string,
+  symbol: PropTypes.string,
   title: PropTypes.string,
   setShowCancelPowerDown: PropTypes.func,
   setShowCancelWithdrawSavings: PropTypes.func,
