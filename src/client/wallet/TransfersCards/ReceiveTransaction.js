@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Avatar from '../../components/Avatar';
 import { getTransactionDescription, validateGuestTransferTitle } from '../WalletHelper';
 import CardsTimeStamp from './CardsTimeStamp';
+import { getHtml } from '../../components/Story/Body';
 
 const ReceiveTransaction = ({
   from,
@@ -39,7 +40,7 @@ const ReceiveTransaction = ({
           </div>
         </div>
         <CardsTimeStamp timestamp={isGuestPage ? `${timestamp}Z` : timestamp} />
-        <span className="UserWalletTransactions__memo">{memo}</span>
+        <span className="UserWalletTransactions__memo">{getHtml(memo, {}, 'Object')}</span>
       </div>
     </div>
   );
