@@ -10,6 +10,14 @@ import * as accountHistoryConstants from '../../../common/constants/accountHisto
 const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, amount }) => {
   const isInterest = transactionType === accountHistoryConstants.INTEREST;
 
+  let transactionAmount = amount;
+
+  if (isInterest) transactionAmount = `+ ${amount}`;
+  if (transactionType === accountHistoryConstants.TRANSFER_TO_VESTING_COMPLETED)
+    transactionAmount = `${parseFloat(transactionDetails?.hive_vested)} ${
+      transactionDetails?.hive_vested?.split(' ')[1]
+    }`;
+
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__avatar">
@@ -25,7 +33,7 @@ const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, am
         <div className="UserWalletTransactions__content-recipient">
           {getSavingsTransactionMessage(transactionType, transactionDetails)}
           <div className={`UserWalletTransactions__marginLeft${isInterest ? '--green' : ''}`}>
-            {isInterest ? `+ ${amount}` : amount}
+            {transactionAmount}
           </div>
         </div>
         <span className="UserWalletTransactions__timestamp">

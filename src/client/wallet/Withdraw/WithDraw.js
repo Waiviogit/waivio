@@ -122,7 +122,7 @@ const Withdraw = ({
     if (hiveAmount >= minAmount) {
       debounceAmountHive(hiveAmount);
     }
-  }, [hiveAmount]);
+  }, [hiveAmount, currentCurrency]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);

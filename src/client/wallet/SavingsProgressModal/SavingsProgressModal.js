@@ -15,7 +15,7 @@ const SavingsProgressModal = ({
   calculateDaysLeftForSavings,
   setCurrWithdrawSaving,
   setShowCancelWithdrawSavings,
-  setShowSavingsProgress,
+
   symbol,
 }) => {
   const marks = {
@@ -60,7 +60,6 @@ const SavingsProgressModal = ({
           min={0}
           info={info}
           index={i}
-          setShowSavingsProgress={setShowSavingsProgress}
           setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
           setCurrWithdrawSaving={setCurrWithdrawSaving}
           left={calculateDaysLeftForSavings(isConversion ? info.conversion_date : info.complete)}
@@ -83,7 +82,6 @@ SavingsProgressModal.propTypes = {
   setShowModal: PropTypes.func.isRequired,
   setShowCancelWithdrawSavings: PropTypes.func.isRequired,
   setCurrWithdrawSaving: PropTypes.func.isRequired,
-  setShowSavingsProgress: PropTypes.func.isRequired,
   calculateDaysLeftForSavings: PropTypes.func.isRequired,
 };
 
