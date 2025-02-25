@@ -27,10 +27,9 @@ import { getUserPrivateEmail } from '../../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
+import api from '../../steemConnectAPI';
 
 import './Withdraw.less';
-import { createQuery } from '../../../common/helpers/apiHelpers';
-import api from '../../steemConnectAPI';
 
 const Withdraw = ({
   intl,
@@ -229,11 +228,25 @@ const Withdraw = ({
           memo: r.memo,
           to: r.receiver,
         };
+        const transferSelfQuery = {
+          amount: `0.001 HIVE`,
+          memo: `Withdrawal transaction ID for the HIVE-${currentCurrency.toUpperCase()} pair via SimpleSwap.io: https://simpleswap.io/exchange?id=${
+            r.exchangeId
+          }`,
+          to: user.name,
+        };
 
         if (r && !r.message) {
           if (hiveAuth) {
             const brodc = () =>
-              api.broadcast([['transfer', { ...transferQuery, from: user.name }]], null, 'active');
+              api.broadcast(
+                [
+                  ['transfer', { ...transferQuery, from: user.name }],
+                  ['transfer', { ...transferSelfQuery, from: user.name }],
+                ],
+                null,
+                'active',
+              );
 
             setIsLoading(true);
 
@@ -249,12 +262,15 @@ const Withdraw = ({
             });
           } else {
             closeWithdrawModal();
+            const encodedOps = btoa(
+              JSON.stringify([
+                ['transfer', transferQuery],
+                ['transfer', transferSelfQuery],
+              ]),
+            );
+            const hivesignerURL = `https://hivesigner.com/sign/ops/${encodedOps}`;
 
-            window &&
-              window.open(
-                `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
-                '_blank',
-              );
+            window && window.open(hivesignerURL, '_blank');
             message.success(
               intl.formatMessage({
                 id: 'transaction_success',
