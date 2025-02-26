@@ -102,10 +102,6 @@ const Withdraw = ({
   // }, []);
 
   useEffect(() => {
-    if (hiveAmount >= minAmount) {
-      debounceAmountHive(hiveAmount);
-    }
-
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
