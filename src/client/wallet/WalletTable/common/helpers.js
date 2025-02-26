@@ -181,6 +181,23 @@ const compareTransferBody = (
         fieldMemo: transaction.memo,
       };
     }
+    case accountHistoryConstants.INTEREST: {
+      return {
+        ...data,
+        fieldHBD: parseFloat(transaction.interest),
+        fieldDescription: getSavingsTransactionMessage(
+          transaction.type,
+          transaction,
+          transaction.amount,
+        ),
+        fieldDescriptionForTable: getTableSavingsTransactionMessage(
+          transaction.type,
+          transaction,
+          transaction.amount,
+        ),
+        fieldMemo: transaction.memo,
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const currentPaysAmount = getTransactionTableCurrency(
         transaction.current_pays,

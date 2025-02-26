@@ -32,9 +32,9 @@ const SavingsTransaction = ({ timestamp, transactionType, transactionDetails, am
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           {getSavingsTransactionMessage(transactionType, transactionDetails)}
-          <div className={`UserWalletTransactions__marginLeft${isInterest ? '--green' : ''}`}>
+          <span className={`UserWalletTransactions__marginLeft${isInterest ? '--green' : ''}`}>
             {transactionAmount}
-          </div>
+          </span>
         </div>
         <span className="UserWalletTransactions__timestamp">
           <BTooltip

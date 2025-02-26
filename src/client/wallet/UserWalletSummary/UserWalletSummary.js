@@ -298,16 +298,20 @@ const UserWalletSummary = ({
     getHbdConversion(user.name).then(r => setConversionHbdInfo(r));
   }, [user.name]);
 
-  const totalHiveConversions = conversionHiveInfo?.reduce((acc, val) => {
-    const amount = parseFloat(val.collateral_amount);
+  const totalHiveConversions = !isEmpty(conversionHiveInfo)
+    ? conversionHiveInfo?.reduce((acc, val) => {
+        const amount = parseFloat(val.collateral_amount);
 
-    return acc + amount;
-  }, 0);
-  const totalHbdConversions = conversionHbdInfo?.reduce((acc, val) => {
-    const amount = parseFloat(val.amount);
+        return acc + amount;
+      }, 0)
+    : 0;
+  const totalHbdConversions = !isEmpty(conversionHbdInfo)
+    ? conversionHbdInfo?.reduce((acc, val) => {
+        const amount = parseFloat(val.amount);
 
-    return acc + amount;
-  }, 0);
+        return acc + amount;
+      }, 0)
+    : 0;
 
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const nextPowerDownDate = (
