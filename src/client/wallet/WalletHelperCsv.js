@@ -153,6 +153,8 @@ export const getTableSavingsTransactionMessage = (transactionType, transactionDe
       return `Cancel transfer from savings (request ${transactionDetails.request_id})`;
     case 'transfer_to_savings':
       return `Transfer to savings from ${transactionDetails.to}`;
+    case 'interest':
+      return `Claim HBD interest`;
     case 'transfer_from_savings':
       return `Transfer from savings to ${transactionDetails.from}`;
     default:
