@@ -59,6 +59,7 @@ const ProgressModalBody = ({
             <div>
               Amount: <FormattedNumber value={currAmount} /> {symbol}
             </div>
+            {info?.converted_amount && <div>Converted: {info?.converted_amount}</div>}
           </>
         )}
         {showNextDate && (

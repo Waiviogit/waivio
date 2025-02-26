@@ -34,7 +34,7 @@ const ReceiveTransaction = ({
               ? validateGuestTransferTitle(details, username, isMobile, transactionType)
               : description.receivedFrom}
           </div>
-          <div className="UserWalletTransactions__received">
+          <div className={`UserWalletTransactions__received${to === from ? '-self' : ''}`}>
             {from !== to && '+ '}
             {amount}
           </div>

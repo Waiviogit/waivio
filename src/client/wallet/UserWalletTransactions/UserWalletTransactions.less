@@ -147,7 +147,12 @@
     }
 
     span:first-child {
+      max-width: 230px;
       white-space: break-spaces;
+      @media @small {
+        max-width: 85%;
+        width: auto;
+      }
     }
   }
 

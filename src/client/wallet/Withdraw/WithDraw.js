@@ -102,10 +102,6 @@ const Withdraw = ({
   // }, []);
 
   useEffect(() => {
-    if (hiveAmount >= minAmount) {
-      debounceAmountHive(hiveAmount);
-    }
-
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
@@ -122,7 +118,7 @@ const Withdraw = ({
     if (hiveAmount >= minAmount) {
       debounceAmountHive(hiveAmount);
     }
-  }, [hiveAmount]);
+  }, [hiveAmount, currentCurrency]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
