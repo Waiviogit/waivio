@@ -52,11 +52,16 @@
     }
   }
   &__item {
-    max-width: 300px;
-    margin-bottom: 20px;
+    max-width: 400px;
+    margin: 20px auto;
     position: relative;
     box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
+
+    @media @small {
+      max-width: 300px;
+      margin: 0 0 20px;
+    }
   }
 
   &__emptyFeed {
@@ -223,20 +228,32 @@
     }
 
     &--tiktok {
-      .PostFeedEmbed__preview,
+      img.PostFeedEmbed__preview,
       .PostFeedEmbed,
       .PostFeedEmbed__container {
-        height: 460px;
+        height: 575px;
         padding-bottom: 0;
         min-height: 460px;
         object-fit: cover;
+        max-height: 575px;
+
+        @media @small {
+          height: 460px;
+          max-height: inherit;
+        }
       }
 
       .PostFeedEmbed__preview,
       .PostFeedEmbed,
       .PostFeedEmbed__container iframe {
-        height: 460px;
+        height: 575px;
         min-height: 460px;
+        max-height: 575px;
+
+        @media @small {
+          height: 460px;
+          max-height: inherit;
+        }
       }
     }
 
@@ -319,7 +336,11 @@
 .my-masonry-grid_column {
   padding-right: 5px;
   background-clip: padding-box;
-  max-width: 300px;
+  max-width: 500px;
+
+  @media @small {
+    max-width: 300px;
+  }
 
   &:last-child {
     padding-right: 0;
