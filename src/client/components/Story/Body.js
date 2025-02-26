@@ -103,8 +103,8 @@ export function getHtml(
   }
 
   parsedBody = improve(parsedBody);
+  // parsedBody = parsedBody.replace(/\n\n(?!\*\*\*)(?=\n\n)/g, '<br />');
   parsedBody = remarkable.render(parsedBody);
-
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
 
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };

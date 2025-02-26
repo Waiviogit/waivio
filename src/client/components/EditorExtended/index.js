@@ -1,5 +1,3 @@
-import Editor from './editor';
-
 import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import RenderMap from './util/rendermap';
 import Link, { findLinkEntities } from './components/entities/link';
@@ -35,7 +33,6 @@ export {
 // export const _version = __VERSION__;
 
 export {
-  Editor,
   createEditorState,
   StringToTypeMap,
   RenderMap,
@@ -55,5 +52,3 @@ export {
   ImageSideButton,
   BreakSideButton,
 };
-
-export default Editor;
