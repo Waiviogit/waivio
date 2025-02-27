@@ -111,6 +111,9 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const language = getWebsiteLanguage(state);
 
   Cookie.set('nightmode', 'false');
+  Cookie.remove('access_token');
+  Cookie.remove('currentUser');
+
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
     clearGuestAuthData();
