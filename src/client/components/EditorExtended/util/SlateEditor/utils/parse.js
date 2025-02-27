@@ -3,7 +3,6 @@ import markdown from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import { remarkToSlate } from 'remark-slate-transformer';
 import SteemEmbed from '../../../../../vendor/embedMedia';
-import { addSpaces } from '../../../../../../common/helpers/editorHelper';
 
 export const defaultNodeTypes = {
   paragraph: 'paragraph',
@@ -114,8 +113,14 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
       },
     });
   let postParsed = [];
+  const _body = body
+    .split('\n\n')
+    .map(i => {
+      if (i.includes('\n')) return i.split('\n').join('\n\n');
 
-  const _body = addSpaces(body.replace(/\n(?!\n)/g, '\n\n'));
+      return i;
+    })
+    .join('\n\n');
 
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;
