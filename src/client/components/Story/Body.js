@@ -103,7 +103,12 @@ export function getHtml(
   }
 
   parsedBody = improve(parsedBody);
-  // parsedBody = parsedBody.replace(/\n\n(?!\*\*\*)(?=\n\n)/g, '<br />');
+  parsedBody = parsedBody.split('\n\n').reduce((acc, item, i, arr) => {
+    if (!item && !arr[i + 1]) return `${acc}<br />`;
+
+    return `${acc + item}\n\n`;
+  }, '');
+
   parsedBody = remarkable.render(parsedBody);
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
 

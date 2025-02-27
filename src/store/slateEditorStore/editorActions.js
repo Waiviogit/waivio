@@ -228,7 +228,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
   return (dispatch, getState, { steemConnectAPI }) => {
     if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
-      postData.body += `\n***\nThis review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})`;
+      postData.body += `\n***\n<center>This review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})</center>\n\n`;
     }
     const url = getCurrentHost(getState());
     const regex = /^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/;
