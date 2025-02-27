@@ -1,6 +1,5 @@
 import uuidv4 from 'uuid/v4';
 import {
-  fromPairs,
   get,
   attempt,
   isError,
@@ -27,7 +26,7 @@ import {
 } from '../constants/waivio';
 import { rewardsValues } from '../constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
-import { getObjectName, getObjectUrlForLink } from './wObjectHelper';
+import { getObjectUrlForLink } from './wObjectHelper';
 import { parseJSON } from './parseJSON';
 import { objectFields } from '../constants/listOfFields';
 import steemEmbed from '../../client/vendor/embedMedia';
@@ -323,15 +322,7 @@ export function getInitialState(props) {
   const users = query.getAll('user');
   const authors = query.getAll('author');
   const type = query.get('type');
-  let linkedObjects = [];
   const campaign = props?.campaign;
-
-  if (campaign) {
-    linkedObjects =
-      campaign.requiredObject.author_permlink === campaign.secondaryObject.author_permlink
-        ? [campaign.requiredObject.author_permlink]
-        : [campaign.requiredObject.author_permlink, campaign.secondaryObject.author_permlink];
-  }
 
   const title = setTitle(initObjects, props, authors, users);
   let state = {
@@ -349,8 +340,6 @@ export function getInitialState(props) {
     },
     content: '',
     topics: [],
-    linkedObjects,
-    objPercentage: {},
     settings: {
       reward: rewardsValues.half,
       beneficiary: true,
@@ -360,17 +349,14 @@ export function getInitialState(props) {
     permlink: null,
     originalBody: null,
     titleValue: title,
-    currentRawContent: {},
     isEditPost: get(props, 'editor.isEditPost', false),
   };
   const { draftId } = props;
   const draftPost = props.currDraft;
 
   if (draftId && draftPost) {
-    const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
 
-    linkedObjects = get(draftPost, ['jsonMetadata', 'linkedObjects'], []);
     state = {
       campaign,
       draftId: props.draftId,
@@ -381,10 +367,6 @@ export function getInitialState(props) {
       },
       content: get(draftPost, 'body', '') || get(draftPost, 'originalBody', ''),
       topics: typeof tags === 'string' ? [tags] : tags,
-      linkedObjects,
-      objPercentage: fromPairs(
-        draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
-      ),
       settings: {
         reward: draftPost.reward,
         beneficiary: draftPost.beneficiary,
@@ -405,14 +387,6 @@ export function isContentValid(markdownContent) {
   const { postBody } = markdownContent ? splitPostContent(markdownContent) : { postBody: '' };
 
   return Boolean(postBody.trim());
-}
-
-export function getPostHashtags(items) {
-  if (!size(items)) return [];
-  const sortedItems = items.sort((a, b) => b.weight - a.weight);
-  const postItems = sortedItems.slice(0, 3);
-
-  return postItems?.map(item => getObjectName(item));
 }
 
 export const getAuthorName = post =>

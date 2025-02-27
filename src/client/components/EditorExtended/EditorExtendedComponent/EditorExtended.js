@@ -3,7 +3,6 @@ import { debounce, get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { fromMarkdown, createEditorState } from '../index';
 import EditorSlate from '../editorSlate';
 import { SIDE_BUTTONS } from '../model/content';
 import { checkCursorInSearchSlate } from '../../../../common/helpers/editorHelper';
@@ -13,7 +12,7 @@ const MAX_LENGTH = 255;
 
 const Editor = props => {
   const {
-    editorExtended: { editorState, isMounted, editorEnabled, titleValue },
+    editorExtended: { isMounted, editorEnabled, titleValue },
   } = props;
   const [startToSearching, setStartToSearching] = React.useState(false);
   const [resultLoading, setResultLoading] = React.useState(false);
@@ -24,7 +23,6 @@ const Editor = props => {
     props.setUpdatedEditorExtendedData({
       isMounted: true,
       titleValue: get(props, 'initialContent.title', ''),
-      editorState: createEditorState(fromMarkdown(props.initialContent)),
     });
   }, []);
 
@@ -127,7 +125,6 @@ const Editor = props => {
             intl={props.intl}
             isVimeo={isVimeo}
             isMainEditor
-            editorState={editorState}
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChangeSlate}
             handleHashtag={props.handleHashtag}

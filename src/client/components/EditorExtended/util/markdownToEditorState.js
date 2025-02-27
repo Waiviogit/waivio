@@ -279,7 +279,6 @@ function mdToDraftjs({ body } = { body: '' }, extraStyles) {
 
   if (body) {
     const paragraphs = splitMdBlocks(normalizeMd(body));
-
     // eslint-disable-next-line
     paragraphs.forEach(paragraph => {
       const result = parseMdLine(paragraph, entityMap, extraStyles);

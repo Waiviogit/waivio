@@ -89,6 +89,7 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
   state.links = new Set();
   try {
     const doc = DOMParser.parseFromString(html, 'text/html');
+
     traverse(doc, state);
     if (mutate) proxifyImages(doc);
     if (!mutate) return state;

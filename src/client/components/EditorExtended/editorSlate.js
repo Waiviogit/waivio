@@ -95,8 +95,22 @@ const EditorSlate = props => {
   const [initiallized, setInitiallized] = useState(false);
   const [draftInit, setDraftInit] = useState(!!params[0]);
   const editor = useEditor(props);
-
   const editorRef = useRef(null);
+  const editorClass = `md-RichEditor-editor Body Body--full public-DraftEditor-content${
+    !editorEnabled ? ' md-RichEditor-readonly' : ''
+  }`;
+  const RichEditorRootClassNamesList = classNames('md-RichEditor-root', {
+    'md-RichEditor-root-vimeo': isVimeo,
+    'md-RichEditor-root-small': props.small,
+  });
+
+  const [value, setValue] = useState([
+    {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    },
+  ]);
+
   const handlePastedFiles = async event => {
     const html = event.clipboardData.getData('text/html');
 
@@ -273,21 +287,6 @@ const EditorSlate = props => {
 
     return false;
   };
-
-  const editorClass = `md-RichEditor-editor Body Body--full public-DraftEditor-content${
-    !editorEnabled ? ' md-RichEditor-readonly' : ''
-  }`;
-  const RichEditorRootClassNamesList = classNames('md-RichEditor-root', {
-    'md-RichEditor-root-vimeo': isVimeo,
-    'md-RichEditor-root-small': props.small,
-  });
-
-  const [value, setValue] = useState([
-    {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    },
-  ]);
 
   useEffect(() => {
     setDraftInit(true);

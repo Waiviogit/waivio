@@ -33,7 +33,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
-import { getHiveDelegate } from '../../../waivioApi/ApiClient';
+import { getHbdConversion, getHiveConversion, getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
@@ -167,6 +167,8 @@ const UserWalletSummary = ({
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [savingsInfo, setSavingsInfo] = useState([]);
+  const [conversionHiveInfo, setConversionHiveInfo] = useState([]);
+  const [conversionHbdInfo, setConversionHbdInfo] = useState([]);
   const [savingSymbol, setSavingSymbol] = useState('');
   const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
   const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
@@ -174,6 +176,7 @@ const UserWalletSummary = ({
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const [showCancelWithdrawSavings, setShowCancelWithdrawSavings] = useState(false);
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
+  const [showConversionModal, setConversionModal] = useState({ hive: false, hbd: false });
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
   const interestRate = useSelector(getHbdInterestRate);
@@ -291,7 +294,24 @@ const UserWalletSummary = ({
     };
 
     fetchWithdrawals();
+    getHiveConversion(user.name).then(r => setConversionHiveInfo(r));
+    getHbdConversion(user.name).then(r => setConversionHbdInfo(r));
   }, [user.name]);
+
+  const totalHiveConversions = !isEmpty(conversionHiveInfo)
+    ? conversionHiveInfo?.reduce((acc, val) => {
+        const amount = parseFloat(val.collateral_amount);
+
+        return acc + amount;
+      }, 0)
+    : 0;
+  const totalHbdConversions = !isEmpty(conversionHbdInfo)
+    ? conversionHbdInfo?.reduce((acc, val) => {
+        const amount = parseFloat(val.amount);
+
+        return acc + amount;
+      }, 0)
+    : 0;
 
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const nextPowerDownDate = (
@@ -391,6 +411,27 @@ const UserWalletSummary = ({
             swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
           />
         </div>
+        {!isEmpty(conversionHiveInfo) && (
+          <div className="UserWalletSummary__itemWrap--no-border last-block">
+            <div className="UserWalletSummary__item">
+              <div className="UserWalletSummary__label power-down">
+                <FormattedMessage id="conversions" defaultMessage="Conversions" />
+              </div>
+              <div
+                className={powerClassList}
+                onClick={() =>
+                  setConversionModal({ ...showConversionModal, hive: true, hbd: false })
+                }
+              >
+                {totalHiveConversions}
+                {' HIVE'}
+              </div>
+            </div>
+            <div className="UserWalletSummary__actions">
+              <p className="UserWalletSummary__description">Pending requests to HBD</p>
+            </div>
+          </div>
+        )}
       </div>
       {!isGuest && (
         <React.Fragment>
@@ -556,7 +597,10 @@ const UserWalletSummary = ({
                   </p>
                   {isAuth && authUserPage && (
                     <Button
-                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      onClick={() => {
+                        setSavingSymbol('HIVE');
+                        setShowCancelWithdrawSavings(true);
+                      }}
                       className={'UserWalletSummary__button'}
                     >
                       Cancel{' '}
@@ -599,6 +643,27 @@ const UserWalletSummary = ({
                 mainCurrency={'HBD'}
               />
             </div>
+            {!isEmpty(conversionHbdInfo) && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="conversions" defaultMessage="Conversions" />
+                  </div>
+                  <div
+                    className={powerClassList}
+                    onClick={() =>
+                      setConversionModal({ ...showConversionModal, hbd: true, hive: false })
+                    }
+                  >
+                    {totalHbdConversions}
+                    {' HBD'}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">Pending requests to HIVE</p>
+                </div>
+              </div>
+            )}
           </div>
           <div
             className={`UserWalletSummary__itemWrap ${
@@ -614,13 +679,7 @@ const UserWalletSummary = ({
               <div className="UserWalletSummary__label">
                 <FormattedMessage id="hbd_savings" defaultMessage="HBD Savings" />
               </div>
-              <div
-                className={powerClassList}
-                // onClick={() => {
-                //   setShowSavingsProgress(true);
-                //   setSavingSymbol('HBD');
-                // }}
-              >
+              <div className={powerClassList}>
                 {user.fetching || loadingGlobalProperties ? (
                   <Loading />
                 ) : (
@@ -631,7 +690,9 @@ const UserWalletSummary = ({
               </div>
             </div>
             <div className="UserWalletSummary__actions">
-              <p className="UserWalletSummary__description">Earn 20% APR interest on HBD</p>
+              <p className="UserWalletSummary__description">
+                Earn {interestRate}% APR interest on HBD
+              </p>
               <WalletAction
                 mainKey={savingsHbdBalance > 0 ? 'transfer_from_saving' : 'deposit'}
                 mainCurrency={'HBD'}
@@ -646,8 +707,8 @@ const UserWalletSummary = ({
                   <div
                     className={powerClassList}
                     onClick={() => {
-                      setShowSavingsProgress(true);
                       setSavingSymbol('HBD');
+                      setTimeout(() => setShowSavingsProgress(true), 200);
                     }}
                   >
                     {user.fetching || loadingGlobalProperties ? (
@@ -667,7 +728,10 @@ const UserWalletSummary = ({
                   </p>
                   {isAuth && authUserPage && (
                     <Button
-                      onClick={() => setShowCancelWithdrawSavings(true)}
+                      onClick={() => {
+                        setSavingSymbol('HBD');
+                        setShowCancelWithdrawSavings(true);
+                      }}
                       className={'UserWalletSummary__button'}
                     >
                       Cancel{' '}
@@ -762,9 +826,20 @@ const UserWalletSummary = ({
           savingsInfo={savingsInfo}
           showModal={showSavingsProgress}
           setShowModal={setShowSavingsProgress}
-          setShowSavingsProgress={setShowSavingsProgress}
           setShowCancelWithdrawSavings={setShowCancelWithdrawSavings}
           setCurrWithdrawSaving={setCurrWithdrawSaving}
+          authUserPage={authUserPage}
+          isAuth={isAuth}
+        />
+      )}
+      {(showConversionModal?.hive || showConversionModal?.hbd) && (
+        <SavingsProgressModal
+          isConversion
+          symbol={showConversionModal?.hive ? 'HIVE' : 'HBD'}
+          calculateDaysLeftForSavings={calculateDaysLeftForSavings}
+          savingsInfo={showConversionModal?.hive ? conversionHiveInfo : conversionHbdInfo}
+          showModal={showConversionModal?.hive || showConversionModal?.hbd}
+          setShowModal={setConversionModal}
           authUserPage={authUserPage}
           isAuth={isAuth}
         />

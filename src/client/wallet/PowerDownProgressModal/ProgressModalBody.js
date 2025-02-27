@@ -15,6 +15,7 @@ const ProgressModalBody = ({
   setCurrPowerDown,
   info,
   index,
+  symbol,
   isAuth,
   authUserPage,
   showNextDate = true,
@@ -24,6 +25,7 @@ const ProgressModalBody = ({
   setCurrWithdrawSaving,
   setShowCancelWithdrawSavings,
   min = 0,
+  showCancelBtn,
 }) => {
   const currAmount = parseFloat(amount);
   const unitsLeft = left > max ? max : left;
@@ -37,7 +39,7 @@ const ProgressModalBody = ({
               <b>
                 {title} #{index + 1}
               </b>
-              {isAuth && authUserPage && (
+              {isAuth && authUserPage && showCancelBtn && (
                 <Button
                   onClick={() => {
                     if (isSaving) {
@@ -55,8 +57,9 @@ const ProgressModalBody = ({
               )}
             </div>
             <div>
-              Amount: <FormattedNumber value={currAmount} />
+              Amount: <FormattedNumber value={currAmount} /> {symbol}
             </div>
+            {info?.converted_amount && <div>Converted: {info?.converted_amount}</div>}
           </>
         )}
         {showNextDate && (
@@ -95,7 +98,9 @@ ProgressModalBody.propTypes = {
   isAuth: PropTypes.bool,
   isSaving: PropTypes.bool,
   isWaivWallet: PropTypes.bool,
+  showCancelBtn: PropTypes.bool,
   timePeriod: PropTypes.string,
+  symbol: PropTypes.string,
   title: PropTypes.string,
   setShowCancelPowerDown: PropTypes.func,
   setShowCancelWithdrawSavings: PropTypes.func,
@@ -104,4 +109,5 @@ ProgressModalBody.propTypes = {
   marks: PropTypes.arrayOf(),
   info: PropTypes.shape(),
 };
+ProgressModalBody.defaultProps = { showCancelBtn: true };
 export default ProgressModalBody;
