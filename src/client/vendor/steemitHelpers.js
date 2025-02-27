@@ -292,14 +292,17 @@ export const calculateEstAccountValue = (
   sbdRate,
 ) => {
   const steemPower = formatter.vestToSteem(
-    user.vesting_shares,
+    parseFloat(user.vesting_shares) || 0,
     totalVestingShares,
     totalVestingFundSteem,
   );
-  return (
-    parseFloat(steemRate) * (parseFloat(user.balance) + parseFloat(steemPower)) +
-    parseFloat(user.hbd_balance) * parseFloat(sbdRate)
-  );
+  const finalSteemPower = isNaN(steemPower) ? 0 : steemPower;
+  const balance = parseFloat(user.balance) || 0;
+  const hbdBalance = parseFloat(user.hbd_balance) || 0;
+  const validSteemRate = parseFloat(steemRate) || 0;
+  const validSbdRate = parseFloat(sbdRate) || 0;
+
+  return validSteemRate * (balance + finalSteemPower) + hbdBalance * validSbdRate;
 };
 
 export const roundNumberToThousands = number => {
