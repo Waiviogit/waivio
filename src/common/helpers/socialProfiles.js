@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 
 const socialTransformers = {
-  facebook: id => `https://www.facebook.com/profile.php?id=${id}`,
+  facebook: id => `https://www.facebook.com/${id}`,
   twitter: id => `https://x.com/${id}`,
   tiktok: id => `https://www.tiktok.com/@${id}`,
   snapchat: id => `https://www.snapchat.com/add/${id}`,

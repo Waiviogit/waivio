@@ -690,7 +690,9 @@ const UserWalletSummary = ({
               </div>
             </div>
             <div className="UserWalletSummary__actions">
-              <p className="UserWalletSummary__description">Earn 20% APR interest on HBD</p>
+              <p className="UserWalletSummary__description">
+                Earn {interestRate}% APR interest on HBD
+              </p>
               <WalletAction
                 mainKey={savingsHbdBalance > 0 ? 'transfer_from_saving' : 'deposit'}
                 mainCurrency={'HBD'}
