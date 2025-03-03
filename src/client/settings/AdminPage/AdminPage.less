@@ -3,6 +3,14 @@
 
 .AdminPage {
   width: fit-content;
+
+  &__credits {
+    font-size: 11px;
+    text-decoration: underline;
+    color: var(--website-color);
+    cursor: pointer;
+  }
+
   &__wrapper {
     width: auto;
     overflow-x: scroll;
@@ -68,5 +76,15 @@
 
   li::marker {
     color: @blue-botticelli;
+  }
+}
+.CreditsModal {
+  .ant-modal-body {
+    p {
+      margin-bottom: 20px;
+    }
+    .UserCard-wrap {
+      border: 1px solid @base-border;
+    }
   }
 }
