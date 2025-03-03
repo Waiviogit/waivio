@@ -41,6 +41,7 @@ const AdminWebsites = ({ intl }) => {
   const appAdmins = Cookie.get('appAdmins');
   const iaAppAdmin = appAdmins?.includes(authUserName);
   const history = useHistory();
+  const disabled = Number(amount) <= 0 || Number(amount) > 10000;
 
   useEffect(() => {
     if (isAuth && iaAppAdmin) {
@@ -197,6 +198,8 @@ const AdminWebsites = ({ intl }) => {
           setAmount(0);
           setShowCredits(false);
         }}
+        okButtonProps={{ disabled }}
+        okText={'Confirm'}
         onOk={() => {
           addCreditsByAdmin(authUserName, creditsUser, Number(amount));
           message.success(
