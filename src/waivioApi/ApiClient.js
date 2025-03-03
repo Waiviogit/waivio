@@ -4703,6 +4703,23 @@ export const addUserToAdminWhitelist = (userName, name) =>
     .then(res => res)
     .catch(error => error);
 
+export const addCreditsByAdmin = (admin, userName, amount) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.credits}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      amount,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export const deleteUserFromAdminWhitelist = (userName, name) =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
     headers: {
