@@ -2684,5 +2684,7 @@
   "deposit": "Deposit",
   "collateralized_convert": "Convert to",
   "followers_of": "Followers of",
-  "followed_by": "Followed by"
+  "followed_by": "Followed by",
+  "exclude_owner_from_site_authorities": "Exclude owner from site authorities",
+  "exclude_owner_from_site_authorities_info": "Exclude yourself as the site owner from the site's authorities. Your votes will be ignored."
 }
