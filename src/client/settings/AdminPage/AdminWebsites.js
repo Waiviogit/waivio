@@ -192,13 +192,16 @@ const AdminWebsites = ({ intl }) => {
         </div>
       </div>
       <Modal
-        className={'CreditsModaL'}
+        wrapClassName={'CreditsModal'}
         onCancel={() => {
           setAmount(0);
           setShowCredits(false);
         }}
         onOk={() => {
           addCreditsByAdmin(authUserName, creditsUser, Number(amount));
+          message.success(
+            'Credits were successfully added. Changes will be visible after a page reload.',
+          );
           setShowCredits(false);
         }}
         title={intl.formatMessage({
