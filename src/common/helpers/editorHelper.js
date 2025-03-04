@@ -125,6 +125,22 @@ const findHashtag = (editor, start, word, showSearch) => {
   return findHashtag(editor, range, searchString + word, showSearch);
 };
 
+const findHashtagInChildren = (children, startOffset) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const child of children) {
+    if (child.text && child.text.lastIndexOf('#', startOffset) !== -1) {
+      return child;
+    }
+    if (child.children) {
+      const result = findHashtagInChildren(child.children, startOffset);
+
+      if (result) return result;
+    }
+  }
+
+  return null;
+};
+
 export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
   const { selection } = editor;
 
@@ -133,13 +149,7 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
     let currItem = editor.children[selection?.anchor?.path[0]];
 
     if (list_types.includes(currItem?.type)) {
-      currItem = currItem.children.reduce((acc, curr) => {
-        const s = curr.children.find(
-          child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
-        );
-
-        return s || acc;
-      }, null);
+      currItem = findHashtagInChildren(currItem.children, start.offset);
     } else {
       currItem = currItem.children.find(
         child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
