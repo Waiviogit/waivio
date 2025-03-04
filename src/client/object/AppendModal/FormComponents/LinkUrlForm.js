@@ -33,10 +33,6 @@ const LinkUrlForm = ({ getFieldDecorator, loading, intl, getFieldValue }) => {
           <span className={' mt2 append-combined-value__validation-msg'}>Invalid url</span>
         )}
       </Form.Item>
-      <p className={'mt1'}>
-        Enter a full URL for exact matching, or use * at the end to include URLs starting with the
-        specified path.
-      </p>
     </>
   );
 };

@@ -28,16 +28,16 @@ import {
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
 
-const getFormattedTotalDelegated = delegate => {
-  if (delegate !== 0 && !isNil(delegate) && !isNaN(delegate)) {
+const getFormattedTotalDelegated = (delegate, pendingUndelegations) => {
+  if (!isNil(delegate) && !isNaN(delegate)) {
     return (
       <BTooltip
         title={'Balance of WAIV Power delegations to/from other users'}
         {...(isMobile() ? { visible: false } : {})}
       >
         <span>
-          {delegate > 0 ? ' +' : ' '}
-          <FormattedNumber value={delegate} />
+          {delegate - pendingUndelegations > 0 ? ' +' : ' '}
+          <FormattedNumber value={delegate - pendingUndelegations} />
         </span>
       </BTooltip>
     );
@@ -76,6 +76,7 @@ const WAIVWalletSummaryInfo = props => {
   const unstake = Number(get(props.currencyInfo, 'pendingUnstake', null));
   const delegationsIn = Number(get(props.currencyInfo, 'delegationsIn', null));
   const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
+  const pendingUndelegations = Number(get(props.currencyInfo, 'pendingUndelegations', null));
   const delegation = delegationsIn - delegationsOut;
   const showPowerDown = unstake !== 0 && !isNil(unstake) && !isNaN(unstake);
   const estAccValue =
@@ -153,7 +154,7 @@ const WAIVWalletSummaryInfo = props => {
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
               <div className={'WalletSummaryInfo__value'}>
-                {formattedNumber(stake + delegationsOut)}
+                {formattedNumber(stake)}
                 {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
                 {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
                 {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
@@ -199,7 +200,11 @@ const WAIVWalletSummaryInfo = props => {
               </div>
             )}
 
-            {!isNil(delegation) && !isNaN(delegation) && delegation !== 0 && (
+            {((!isNil(delegation) &&
+              !isNaN(delegation) &&
+              delegation !== 0 &&
+              pendingUndelegations !== 0) ||
+              pendingUndelegations !== 0) && (
               <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">WAIV delegations</div>
@@ -211,7 +216,7 @@ const WAIVWalletSummaryInfo = props => {
                       }
                     }}
                   >
-                    {getFormattedTotalDelegated(delegation)}{' '}
+                    {getFormattedTotalDelegated(delegation, pendingUndelegations)}{' '}
                     {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
                   </div>
                 </div>

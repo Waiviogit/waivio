@@ -49,6 +49,7 @@ const WebsitesSettings = ({
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [objectControl, setObjectControl] = useState(false);
+  const [disableOwnerAuthority, setDisableOwnerAuthority] = useState(false);
   const [googleGSCState, setGoogleGSCState] = useState('');
   const [googleEventSnippetState, setGoogleEventSnippetState] = useState('');
   const [googleAdsConfigState, setGoogleAdsConfigState] = useState('');
@@ -67,6 +68,7 @@ const WebsitesSettings = ({
         const referral = get(res, ['value', 'referralCommissionAcc']);
         const objControl = get(res, ['value', 'objectControl']);
         const mapImportTag = get(res, ['value', 'mapImportTag']);
+        const disableOwnerAuth = get(res, ['value', 'disableOwnerAuthority']);
 
         const importTag = !isEmpty(mapImportTag)
           ? (await getObjectInfo([mapImportTag]))?.wobjects[0]
@@ -78,6 +80,7 @@ const WebsitesSettings = ({
         setGoogleEventSnippetState(googleEventSnippet);
         setGoogleAdsConfigState(googleAdsConfig);
         setObjectControl(objControl);
+        setDisableOwnerAuthority(disableOwnerAuth);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
         setSettingsLoading(false);
@@ -134,6 +137,7 @@ const WebsitesSettings = ({
           values.currency,
           values.language,
           objectControl,
+          disableOwnerAuthority,
         ).then(res => {
           referralUserForWeb(referralAccount, host).then(() => {
             setButtonLoading(false);
@@ -185,6 +189,21 @@ const WebsitesSettings = ({
               {intl.formatMessage({ id: 'object_editing_by_users_info' })}
             </p>
           </div>
+        </Form.Item>{' '}
+        <Form.Item>
+          <h3>{intl.formatMessage({ id: 'exclude_owner_from_site_authorities' })}:</h3>
+          <div className={'WebsitesSettings__obj-editing'}>
+            <Checkbox
+              onClick={() => setDisableOwnerAuthority(!disableOwnerAuthority)}
+              checked={disableOwnerAuthority}
+            />
+            <div>
+              <p className={'WebsitesSettings__obj-editing-info '}>
+                {intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info' })}
+              </p>
+            </div>
+          </div>
+          <p>{intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info_2' })}</p>
         </Form.Item>
         <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>

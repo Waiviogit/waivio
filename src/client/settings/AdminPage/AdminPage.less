@@ -3,6 +3,14 @@
 
 .AdminPage {
   width: fit-content;
+
+  &__credits {
+    font-size: 11px;
+    text-decoration: underline;
+    color: var(--website-color);
+    cursor: pointer;
+  }
+
   &__wrapper {
     width: auto;
     overflow-x: scroll;
@@ -68,5 +76,12 @@
 
   li::marker {
     color: @blue-botticelli;
+  }
+}
+.CreditsModal {
+  .TokenSelect__inputWrap {
+    .TokenSelect__input {
+      padding-left: 10px;
+    }
   }
 }
