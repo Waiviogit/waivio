@@ -2552,16 +2552,8 @@ export const getTokenBalance = (userName, symbol) =>
     contract: 'tokens',
     table: 'balances',
     query: {
-      symbol,
       account: userName,
-      $or: [
-        {
-          balance: { $gt: '0.001' },
-        },
-        {
-          stake: { $gt: '0.001' },
-        },
-      ],
+      symbol,
     },
     limit: 1000,
     offset: 0,
