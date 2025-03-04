@@ -2552,6 +2552,7 @@ export const getTokenBalance = (userName, symbol) =>
     contract: 'tokens',
     table: 'balances',
     query: {
+      symbol,
       account: userName,
       $or: [
         {
