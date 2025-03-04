@@ -197,10 +197,13 @@ const WebsitesSettings = ({
               onClick={() => setDisableOwnerAuthority(!disableOwnerAuthority)}
               checked={disableOwnerAuthority}
             />
-            <p className={'WebsitesSettings__obj-editing-info '}>
-              {intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info' })}
-            </p>
+            <div>
+              <p className={'WebsitesSettings__obj-editing-info '}>
+                {intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info' })}
+              </p>
+            </div>
           </div>
+          <p>{intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info_2' })}</p>
         </Form.Item>
         <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
