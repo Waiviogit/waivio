@@ -14,48 +14,53 @@ const HiveEngineCurrencyItem = ({ token, rates }) => {
   const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(token.symbol)
     ? (Number(token.balance) + Number(stake)) * rates[token.symbol]
     : (Number(token.balance) + Number(stake)) * rates[token.symbol] * rates.HIVE;
-
+  const isSwapSymbol = token.symbol?.includes('SWAP');
+  const minAmount = 0.001;
+  const showItem =
+    isSwapSymbol || (!isSwapSymbol && (token.balance >= minAmount || token.stake >= minAmount));
   const avatar = token.avatar ? getProxyImageURL(token.avatar) : token.avatar;
 
   return (
-    <div key={token.symbol} className="HiveEngineCurrencyItem">
-      <img src={avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
-      <div className="HiveEngineCurrencyItem__info">
-        <div className="HiveEngineCurrencyItem__row HiveEngineCurrencyItem__row--paddingBottom">
-          <span>
-            {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
-          </span>
-          <span>
-            {token.stakingEnabled && (
-              <span className="HiveEngineCurrencyItem__shadow">liquid: </span>
-            )}
-            <span className="HiveEngineCurrencyItem__bold">
-              <FormattedNumber value={toFixed(token.balance, 1000)} maximumFractionDigits={3} />
-            </span>{' '}
-            {token.symbol}
-          </span>
-        </div>
-        <div className="HiveEngineCurrencyItem__row">
-          <span className="HiveEngineCurrencyItem__shadow">{token.name}</span>
-          {token.stakingEnabled && (
+    showItem && (
+      <div key={token.symbol} className="HiveEngineCurrencyItem">
+        <img src={avatar} alt="" className="HiveEngineCurrencyItem__avatar" />
+        <div className="HiveEngineCurrencyItem__info">
+          <div className="HiveEngineCurrencyItem__row HiveEngineCurrencyItem__row--paddingBottom">
             <span>
-              <span className="HiveEngineCurrencyItem__shadow">staked: </span>
+              {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
+            </span>
+            <span>
+              {token.stakingEnabled && (
+                <span className="HiveEngineCurrencyItem__shadow">liquid: </span>
+              )}
               <span className="HiveEngineCurrencyItem__bold">
-                <FormattedNumber value={toFixed(token.stake, 1000)} maximumFractionDigits={3} />
+                <FormattedNumber value={toFixed(token.balance, 1000)} maximumFractionDigits={3} />
               </span>{' '}
               {token.symbol}
             </span>
-          )}
-          {token.orderKey && Boolean(+token.balance) && (
-            <WalletActionEngine
-              withdrawCurrencyOption={[token.symbol.replace('SWAP.', '')]}
-              mainCurrency={token.symbol}
-              options={['swap']}
-            />
-          )}
+          </div>
+          <div className="HiveEngineCurrencyItem__row">
+            <span className="HiveEngineCurrencyItem__shadow">{token.name}</span>
+            {token.stakingEnabled && (
+              <span>
+                <span className="HiveEngineCurrencyItem__shadow">staked: </span>
+                <span className="HiveEngineCurrencyItem__bold">
+                  <FormattedNumber value={toFixed(token.stake, 1000)} maximumFractionDigits={3} />
+                </span>{' '}
+                {token.symbol}
+              </span>
+            )}
+            {token.orderKey && Boolean(+token.balance) && (
+              <WalletActionEngine
+                withdrawCurrencyOption={[token.symbol.replace('SWAP.', '')]}
+                mainCurrency={token.symbol}
+                options={['swap']}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 };
 
