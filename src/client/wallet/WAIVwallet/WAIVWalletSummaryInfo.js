@@ -200,7 +200,11 @@ const WAIVWalletSummaryInfo = props => {
               </div>
             )}
 
-            {((!isNil(delegation) && !isNaN(delegation)) || pendingUndelegations !== 0) && (
+            {((!isNil(delegation) &&
+              !isNaN(delegation) &&
+              delegation !== 0 &&
+              pendingUndelegations !== 0) ||
+              pendingUndelegations !== 0) && (
               <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">WAIV delegations</div>
