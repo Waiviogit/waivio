@@ -64,7 +64,7 @@ export const calculatePayout = (post, rates, isUpdates) => {
     'payout',
     0,
   );
-  const waivPayout = isPostCashout(post)
+  const waivPayout = post?.total_rewards_WAIV
     ? get(post, 'total_rewards_WAIV', 0) * rates
     : get(post, 'total_payout_WAIV', 0) * rates;
   const waivPayoutHalf = waivPayout / 2;
