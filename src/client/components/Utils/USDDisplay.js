@@ -8,22 +8,27 @@ import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
 const USDDisplay = React.memo(({ value, currencyDisplay, precision }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
-  const absValue = Math.abs(value) || 0;
+  const validValue = typeof value === 'number' && !isNaN(value) ? value : 0;
+  const absValue = validValue === 0 ? validValue : Math.abs(validValue);
   // eslint-disable-next-line no-nested-ternary
-  const percisionValue =
+  const precisionValue =
     // eslint-disable-next-line no-nested-ternary
     typeof precision === 'number'
       ? precision
       : absValue > 0.01 || absValue === 0 || absValue < 0.001
       ? 2
       : 3;
-  const sum = absValue * currencyInfo.rate;
+  const currencyRate =
+    currencyInfo && typeof currencyInfo.rate === 'number' && !isNaN(currencyInfo.rate)
+      ? currencyInfo.rate
+      : 1;
+  const sum = absValue * currencyRate;
   const formatted = num => (
     <FormattedNumber
       value={num}
       locale={'en-IN'}
-      minimumFractionDigits={percisionValue}
-      maximumFractionDigits={percisionValue}
+      minimumFractionDigits={precisionValue}
+      maximumFractionDigits={precisionValue}
     />
   );
 
