@@ -450,6 +450,10 @@ const Withdraw = ({
       </Modal>
       {isShowScanner && (
         <QrModal
+          setScanAmount={amount => {
+            setCurrencyAmount(amount);
+            debounceAmountCurrency(amount);
+          }}
           visible={isShowScanner}
           setDataScan={setWalletAddressForScanner}
           handleClose={setShowScanner}
