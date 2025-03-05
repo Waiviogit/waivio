@@ -22,17 +22,6 @@ const AddButtonSlate = props => {
   const sideControl = useRef(null);
   const initialPosOfBtn = useRef(null);
   const firstRender = useRef(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('click', e => {
-        if (ref.current && !ref.current.contains(e.target)) {
-          setOpen(false);
-        }
-      });
-    }
-  }, []);
 
   useEffect(() => {
     if (!editorNode) return;
@@ -88,7 +77,7 @@ const AddButtonSlate = props => {
 
   return (
     <div className="md-side-toolbar" style={{ top: initialPosTop }} ref={nodeRef}>
-      <button ref={ref} onClick={handleOpenToolbar} className={buttonClassList} type="button">
+      <button onClick={handleOpenToolbar} className={buttonClassList} type="button">
         <Icon
           type="plus-circle"
           style={{ fontSize: props.size, background: 'white', borderRadius: '50%' }}
