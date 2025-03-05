@@ -79,6 +79,8 @@ export const toggleBlock = (editor, format) => {
       children: [],
     });
   }
+
+  ReactEditor.focus(editor);
 };
 export const addMarkData = (editor, data) => {
   Editor.addMark(editor, data.format, data.value);

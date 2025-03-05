@@ -231,9 +231,9 @@
       img.PostFeedEmbed__preview,
       .PostFeedEmbed,
       .PostFeedEmbed__container {
-        height: 575px;
+        height: 305px;
         padding-bottom: 0;
-        min-height: 460px;
+        min-height: 305px;
         object-fit: cover;
         max-height: 575px;
 
@@ -246,14 +246,22 @@
       .PostFeedEmbed__preview,
       .PostFeedEmbed,
       .PostFeedEmbed__container iframe {
-        height: 575px;
-        min-height: 460px;
+        height: 305px;
+        min-height: 305px;
         max-height: 575px;
 
         @media @small {
           height: 460px;
           max-height: inherit;
         }
+      }
+    }
+
+    .PostFeedEmbed img.PostFeedEmbed__preview--thinFeedMas {
+      height: 320px;
+
+      @media @small {
+        height: 585px;
       }
     }
 

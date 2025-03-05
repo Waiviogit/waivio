@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
@@ -70,7 +70,10 @@ const ThreadsEditor = ({
     }
   };
 
-  const debouncedSearch = debounce(searchStr => searchObjects(searchStr), 150);
+  const debouncedSearch = useCallback(
+    debounce(searchStr => searchObjects(searchStr), 300),
+    [],
+  );
 
   const handleContentChangeSlate = ed => {
     const searchInfo = checkCursorInSearchSlate(ed);

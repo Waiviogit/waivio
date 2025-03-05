@@ -42,6 +42,7 @@ const Feed = ({
       loadingMore={isFetching}
       hasMore={hasMore}
       elementIsScrollable={false}
+      containerHeight={'100vh'}
     >
       {content.map(id => (
         <StoryContainer

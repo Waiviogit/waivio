@@ -167,7 +167,11 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
+    Transforms.insertNodes(editor, [
+      createParagraph(''),
+      wrapWithParagraph([imageBlock]),
+      createParagraph(''),
+    ]);
   };
 
   // Drug and drop method
@@ -321,7 +325,7 @@ const EditorSlate = props => {
     const id = setTimeout(() => setInitiallized(false), 1500);
 
     return () => clearTimeout(id);
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     if ((body || initialBody) && initiallized) {

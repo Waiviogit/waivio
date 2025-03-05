@@ -88,6 +88,7 @@ const Toolbar = props => {
     wrapLink(editor, urlInputValue);
     setShowLinkInput(false);
     setUrlInputValue('');
+    ReactEditor.focus(editor);
   };
 
   const handleClickPrevPage = () => setCurrentPage(prev => prev - 1);

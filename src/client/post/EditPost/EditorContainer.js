@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -51,6 +51,7 @@ const EditorContainer = props => {
   const [loading, setLoading] = useState(true);
   const [campaign, setCampaign] = useState(null);
   const [draftIdState, setDraftId] = useState(getCurrentDraftId(query.get('draft')));
+  const timeoutID = useRef();
 
   useEffect(() => {
     const objects = query.getAll('permlink');
@@ -82,6 +83,7 @@ const EditorContainer = props => {
     }
 
     return () => {
+      if (timeoutID.current) clearTimeout(timeoutID.current);
       props.setClearState();
       props.setCurrentDraft(null);
     };
@@ -96,7 +98,7 @@ const EditorContainer = props => {
       setDraftId(newId);
 
       if (props.currentDraft?.jsonMetadata?.campaignId) getInfoAboutCampaign(props.currentDraft);
-      else setLoading(false);
+      else timeoutID.current = setTimeout(() => setLoading(false), 300);
     }
   }, [props.currentDraft]);
 
