@@ -97,12 +97,12 @@ const withEmbeds = cb => editor => {
         nodesNormalized = [
           {
             type: 'paragraph',
-            children: [{ text: ' ' }],
+            children: [{ text: '' }],
           },
           ...nodesNormalized,
           {
             type: 'paragraph',
-            children: [{ text: ' ' }],
+            children: [{ text: '' }],
           },
         ];
       }
