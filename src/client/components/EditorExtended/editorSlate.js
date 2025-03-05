@@ -5,7 +5,7 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Transforms, Node, Range } from 'slate';
+import { createEditor, Transforms, Node, Range, Editor } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -241,6 +241,20 @@ const EditorSlate = props => {
       } else if (isSoftNewlineEvent(event)) {
         event.preventDefault();
         editor.insertText('\n');
+
+        return true;
+      }
+    }
+
+    if (event.key === 'Backspace') {
+      const { path } = selection.anchor;
+      const key = path[0] ? path[0] - 1 : path[0];
+      const node = editor.children[key];
+
+      if (node.type === 'image' && key !== path[0]) {
+        event.preventDefault();
+
+        Transforms.select(editor, Editor.range(editor, [key, 0]));
 
         return true;
       }
