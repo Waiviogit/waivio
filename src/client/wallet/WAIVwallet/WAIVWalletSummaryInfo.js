@@ -78,6 +78,9 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const pendingUndelegations = Number(get(props.currencyInfo, 'pendingUndelegations', null));
   const delegation = delegationsIn - delegationsOut;
+  const isZeroDelegation = delegation === 0;
+  const isDelegationValid = !isNil(delegation) && !isNaN(delegation) && !isZeroDelegation;
+  const isNonZeroPendingUndelegations = pendingUndelegations !== 0;
   const showPowerDown = unstake !== 0 && !isNil(unstake) && !isNaN(unstake);
   const estAccValue =
     props?.rates?.WAIV *
@@ -200,11 +203,9 @@ const WAIVWalletSummaryInfo = props => {
               </div>
             )}
 
-            {((!isNil(delegation) &&
-              !isNaN(delegation) &&
-              delegation !== 0 &&
-              pendingUndelegations !== 0) ||
-              pendingUndelegations !== 0) && (
+            {(isDelegationValid ||
+              (!isZeroDelegation && isNonZeroPendingUndelegations) ||
+              isNonZeroPendingUndelegations) && (
               <div className="WalletSummaryInfo__itemWrap--no-border delegation-block">
                 <div className="WalletSummaryInfo__item">
                   <div className="WalletSummaryInfo__label power-down">WAIV delegations</div>
