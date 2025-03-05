@@ -206,7 +206,7 @@ export const setSocialFlag = () => ({
 
 export const GET_CURRENCY_RATE = createAsyncActionType('@app/GET_CURRENCY_RATE');
 
-export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
+export const getCurrentCurrencyRate = (currency = 'USD') => (dispatch, getState) => {
   const currentCurrency = getCurrentCurrency(getState());
 
   if (currentCurrency.type === currency) return null;
