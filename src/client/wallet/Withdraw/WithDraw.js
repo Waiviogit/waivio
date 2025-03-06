@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Form, Modal, message, Input } from 'antd';
+import { Form, Modal, message, Input, Alert } from 'antd';
 import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
@@ -46,6 +46,7 @@ const Withdraw = ({
   // const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
+  const [error, setError] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const [hiveAmount, setHiveAmount] = useState('');
   const [currencyAmount, setCurrencyAmount] = useState('');
@@ -109,6 +110,9 @@ const Withdraw = ({
 
   useEffect(() => {
     getMinMaxHiveAmount(currentCurrency).then(res => {
+      if (res.message) {
+        setError(true);
+      }
       setMinAmount(parseFloat(res.min));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
@@ -312,6 +316,13 @@ const Withdraw = ({
         }}
       >
         <Form className="Withdraw" hideRequiredMark>
+          {error && (
+            <Alert
+              message=""
+              description="Withdraw HIVE is currently unavailable. Please try again later."
+              type="warning"
+            />
+          )}
           <Form.Item
             className="Withdraw__title"
             label={<FormattedMessage id="send" defaultMessage="Send" />}
