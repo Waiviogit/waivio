@@ -35,7 +35,8 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
         ? `Payment to ${payment.transferTo}`
         : `${payment.host} hosting fee`;
 
-    if (payment.description) message = `${payment.host} ${payment.description}`;
+    if (payment.description)
+      message = payment.host ? `${payment.host} ${payment.description}` : payment.description;
 
     return {
       ...payment,

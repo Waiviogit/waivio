@@ -472,6 +472,7 @@ export const saveWebsiteSettings = (
   currency,
   language,
   objectControl,
+  disableOwnerAuthority,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -494,6 +495,7 @@ export const saveWebsiteSettings = (
         currency,
         language,
         objectControl,
+        disableOwnerAuthority,
       ),
     },
   });

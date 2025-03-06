@@ -158,7 +158,7 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   if (isReview) {
     const guideName = dish?.guideName || dish?.propositions?.[0]?.guideName;
 
-    body += `\n***\nThis review was sponsored in part by ${guideName} ([@${guideName}](/@${guideName}))`;
+    body += `\n***\n<center>This review was sponsored in part by ${guideName} ([@${guideName}](/@${guideName}))</center>`;
   }
 
   const postData = {

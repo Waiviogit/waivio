@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
@@ -44,6 +44,10 @@ const ThreadsEditor = ({
   const [commentMsg, setCommentMsg] = useState(inputValue || '');
   const [focused, setFocused] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [startToSearching, setStartToSearching] = React.useState(false);
+  const [resultLoading, setResultLoading] = React.useState(false);
+  const [prevSearchValue, setPrevSearch] = React.useState('');
+  const abortController = useRef(null);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -70,27 +74,58 @@ const ThreadsEditor = ({
     }
   };
 
-  const debouncedSearch = debounce(searchStr => searchObjects(searchStr), 150);
+  const debouncedSearch = useCallback(
+    debounce(searchStr => {
+      if (abortController.current) {
+        abortController.current.abort();
+      }
+
+      if (searchStr) {
+        setStartToSearching(true);
+        setResultLoading(true);
+        abortController.current = new AbortController();
+
+        searchObjects(searchStr, abortController.current).then(res => {
+          if (res.value.result.wobjects) setResultLoading(false);
+          if (res.value.result.message) {
+            setStartToSearching(false);
+            setResultLoading(false);
+            setShowEditorSearch(false);
+          }
+        });
+      }
+    }, 500),
+    [],
+  );
 
   const handleContentChangeSlate = ed => {
-    const searchInfo = checkCursorInSearchSlate(ed);
+    const searchInfo = checkCursorInSearchSlate(ed, isShowEditorSearch);
 
-    if (searchInfo.isNeedOpenSearch) {
-      if (typeof window !== 'undefined' && !isShowEditorSearch) {
+    if (isShowEditorSearch && !searchInfo.searchString) {
+      setShowEditorSearch(false);
+      setStartToSearching(false);
+    }
+
+    if (searchInfo.isNeedOpenSearch && !isShowEditorSearch) {
+      if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
         setCursorCoordin({
           selectionBoundary,
-          selectionState: ed.selection,
+          selectionState: editor.selection,
           searchString: searchInfo.searchString,
         });
+
+        setStartToSearching(true);
         setShowEditorSearch(true);
       }
-      debouncedSearch(searchInfo.searchString);
-    } else if (isShowEditorSearch) {
-      setShowEditorSearch(false);
     }
+
+    setPrevSearch(searchInfo.searchString);
+
+    if (isShowEditorSearch && prevSearchValue !== searchInfo.searchString)
+      debouncedSearch(searchInfo.searchString);
   };
 
   const handleMsgChange = body => {
@@ -137,6 +172,8 @@ const ThreadsEditor = ({
                 onFocus={() => setFocused(true)}
                 isShowEditorSearch={isShowEditorSearch}
                 setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
+                startToSearching={startToSearching}
+                isLoading={resultLoading}
               />
               {isLoading || loading ? (
                 <Icon
@@ -199,7 +236,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setCursorCoordin: data => dispatch(setCursorCoordinates(data)),
-  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
+  searchObjects: (value, ac) =>
+    dispatch(searchObjectsAutoCompete(value, '', null, true, undefined, undefined, ac)),
 });
 
 export default injectIntl(

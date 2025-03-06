@@ -127,6 +127,10 @@ export const configMessageBotTable = [
             >
               {item.groupPermlink}
             </a>
+            ,{' '}
+            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.pagePermlink}/page`}>
+              {item.pagePermlink}
+            </a>
           </li>
         </ol>
       ),
@@ -301,6 +305,10 @@ export const configMessageBotHistoryTable = [
               href={`/object/${item.groupPermlink}/group`}
             >
               {item.groupPermlink}
+            </a>
+            ,{' '}
+            <a rel="noopener noreferrer" target="_blank" href={`/object/${item.pagePermlink}/page`}>
+              {item.pagePermlink}
             </a>
           </li>
         </ol>

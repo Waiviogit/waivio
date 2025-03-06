@@ -36,7 +36,7 @@ const REQUEST_TIMEOUT = 3000;
 const HIVE_ENGINE_NODES = [
   'https://herpc.dtools.dev',
   'https://api.hive-engine.com/rpc',
-  'https://enginerpx.com',
+  'https://enginerpc.com',
   'https://herpc.kanibot.com',
   'https://he.sourov.dev',
 ];
@@ -4697,6 +4697,23 @@ export const addUserToAdminWhitelist = (userName, name) =>
     method: 'PUT',
     body: JSON.stringify({
       name,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const addCreditsByAdmin = (admin, userName, amount) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.credits}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      amount,
     }),
   })
     .then(res => res.json())

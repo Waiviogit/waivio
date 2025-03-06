@@ -5,7 +5,7 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Transforms, Node, Range } from 'slate';
+import { createEditor, Transforms, Node, Range, Editor } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -167,7 +167,11 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
+    Transforms.insertNodes(editor, [
+      createParagraph(''),
+      wrapWithParagraph([imageBlock]),
+      createParagraph(''),
+    ]);
   };
 
   // Drug and drop method
@@ -237,6 +241,26 @@ const EditorSlate = props => {
       } else if (isSoftNewlineEvent(event)) {
         event.preventDefault();
         editor.insertText('\n');
+
+        return true;
+      }
+    }
+
+    if (event.key === 'Backspace') {
+      const { path, offset } = selection.anchor;
+      const key = path[0] ? path[0] - 1 : path[0];
+      const node = editor.children[key];
+
+      if (
+        node.type === 'image' &&
+        key !== path[0] &&
+        !path[1] &&
+        !offset &&
+        Range.isCollapsed(selection)
+      ) {
+        event.preventDefault();
+
+        Transforms.select(editor, Editor.range(editor, [key, 0]));
 
         return true;
       }
@@ -321,7 +345,7 @@ const EditorSlate = props => {
     const id = setTimeout(() => setInitiallized(false), 1500);
 
     return () => clearTimeout(id);
-  }, [params]);
+  }, []);
 
   useEffect(() => {
     if ((body || initialBody) && initiallized) {

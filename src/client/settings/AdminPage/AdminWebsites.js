@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { message, Modal } from 'antd';
+import { Input, message, Modal, Select } from 'antd';
 import Cookie from 'js-cookie';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
@@ -12,7 +12,11 @@ import { Link } from 'react-router-dom';
 import Affix from '../../components/Utils/Affix';
 import LeftSidebar from '../../app/Sidebar/LeftSidebar';
 import { websiteStatisticsConfig } from '../../newRewards/constants/adminPageConfigs';
-import { deleteSite, getWebsitesInfoForAdmins } from '../../../waivioApi/ApiClient';
+import {
+  addCreditsByAdmin,
+  deleteSite,
+  getWebsitesInfoForAdmins,
+} from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -21,11 +25,15 @@ import Loading from '../../components/Icon/Loading';
 import './AdminPage.less';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import MobileNavigation from '../../components/Navigation/MobileNavigation/MobileNavigation';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
 const AdminWebsites = ({ intl }) => {
   const [modalState, setModalState] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showCredits, setShowCredits] = useState(false);
+  const [creditsUser, setCreditsUser] = useState(false);
   const [websitesInfo, setWebsitesInfo] = useState([]);
+  const [amount, setAmount] = useState('');
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
   const currency = useSelector(getCurrentCurrency);
@@ -33,6 +41,7 @@ const AdminWebsites = ({ intl }) => {
   const appAdmins = Cookie.get('appAdmins');
   const iaAppAdmin = appAdmins?.includes(authUserName);
   const history = useHistory();
+  const disabled = Number(amount) <= 0 || Number(amount) > 10000;
 
   useEffect(() => {
     if (isAuth && iaAppAdmin) {
@@ -103,6 +112,15 @@ const AdminWebsites = ({ intl }) => {
                                   <>
                                     <td rowSpan={rowSpan}>
                                       <Link to={`/@${row.userName}`}>{row.userName}</Link>
+                                      <div
+                                        className={'AdminPage__credits'}
+                                        onClick={() => {
+                                          setCreditsUser(row.userName);
+                                          setShowCredits(true);
+                                        }}
+                                      >
+                                        add credits
+                                      </div>
                                     </td>
                                     <td rowSpan={rowSpan}>
                                       {round(row.accountBalance.paid * currency.rate, 2)}
@@ -174,6 +192,52 @@ const AdminWebsites = ({ intl }) => {
           )}
         </div>
       </div>
+      <Modal
+        wrapClassName={'CreditsModal'}
+        onCancel={() => {
+          setAmount(0);
+          setShowCredits(false);
+        }}
+        okButtonProps={{ disabled }}
+        okText={'Confirm'}
+        onOk={() => {
+          addCreditsByAdmin(authUserName, creditsUser, Number(amount));
+          message.success(
+            'Credits were successfully added. Changes will be visible after a page reload.',
+          );
+          setShowCredits(false);
+        }}
+        title={intl.formatMessage({
+          id: 'credits',
+          defaultMessage: 'Credits',
+        })}
+        visible={showCredits}
+      >
+        <div className={'mb2'}>
+          <b>To :</b>
+        </div>
+
+        <SelectUserForAutocomplete account={creditsUser} />
+        <br />
+        <div className={'mb2'}>
+          <b className={'mb1'}>Amount :</b>
+        </div>
+
+        <div className={'TokenSelect__inputWrap'}>
+          <Input
+            value={amount}
+            placeholder={'0'}
+            onChange={e => setAmount(e.currentTarget.value)}
+            type="number"
+            className="TokenSelect__input"
+          />
+          <Select className={'TokenSelect__selector'} showSearch value={'USD'} disabled />
+        </div>
+        <p>
+          This amount will be added to the user&apos;s sites balance. No transaction will be
+          recorded, as it constitutes credits.
+        </p>
+      </Modal>
       <Modal
         visible={modalState.visible}
         title={intl.formatMessage(

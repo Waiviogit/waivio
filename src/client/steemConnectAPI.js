@@ -655,6 +655,7 @@ function sc2Extended() {
         currency,
         language,
         objectControl,
+        disableOwnerAuthority,
         cb,
       ) {
         const params = isGuestUser
@@ -671,6 +672,7 @@ function sc2Extended() {
                 currency,
                 language,
                 objectControl,
+                disableOwnerAuthority,
               },
             }
           : {
@@ -688,6 +690,7 @@ function sc2Extended() {
                 currency,
                 language,
                 objectControl,
+                disableOwnerAuthority,
               }),
             };
 

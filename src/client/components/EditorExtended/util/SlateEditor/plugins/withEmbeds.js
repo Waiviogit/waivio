@@ -77,7 +77,7 @@ const withEmbeds = cb => editor => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
       const isWrapped = selectedElement.type.includes(CODE_BLOCK);
 
-      const nodesNormalized = nodes.map(i => {
+      let nodesNormalized = nodes.map(i => {
         if (i.type === 'link' && i.children[0]?.type === 'image') {
           return i.children[0];
         }
@@ -92,6 +92,20 @@ const withEmbeds = cb => editor => {
 
         return i;
       });
+
+      if (nodesNormalized.length === 1 && nodesNormalized[0].type === 'image') {
+        nodesNormalized = [
+          {
+            type: 'paragraph',
+            children: [{ text: '' }],
+          },
+          ...nodesNormalized,
+          {
+            type: 'paragraph',
+            children: [{ text: '' }],
+          },
+        ];
+      }
 
       Transforms.insertFragment(
         editor,

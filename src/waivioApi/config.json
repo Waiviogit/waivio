@@ -260,5 +260,6 @@
   "postImport": "/post-import",
   "host": "/host",
   "admins": "/admins",
-  "whitelist": "/whitelist"
+  "whitelist": "/whitelist",
+  "credits": "/credits"
 }
