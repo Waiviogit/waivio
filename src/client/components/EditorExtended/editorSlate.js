@@ -247,11 +247,17 @@ const EditorSlate = props => {
     }
 
     if (event.key === 'Backspace') {
-      const { path } = selection.anchor;
+      const { path, offset } = selection.anchor;
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
-      if (node.type === 'image' && key !== path[0]) {
+      if (
+        node.type === 'image' &&
+        key !== path[0] &&
+        !path[1] &&
+        !offset &&
+        Range.isCollapsed(selection)
+      ) {
         event.preventDefault();
 
         Transforms.select(editor, Editor.range(editor, [key, 0]));
