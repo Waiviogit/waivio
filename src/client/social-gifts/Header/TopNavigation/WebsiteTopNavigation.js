@@ -17,6 +17,7 @@ import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 import { setEditMode } from '../../../../store/wObjectStore/wobjActions';
 
 import './WebsiteTopNavigation.less';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -49,6 +50,7 @@ const userNav = (user, intl) => [
 
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
+  const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
   const dispatch = useDispatch();
   const tabsSorting =
@@ -157,7 +159,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
-        {!isUserShop && (
+        {!isUserShop && isAuth && (
           <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
           </span>
