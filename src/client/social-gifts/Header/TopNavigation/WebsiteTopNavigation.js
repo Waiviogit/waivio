@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { has, isEmpty, take, takeRight } from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
 import { injectIntl } from 'react-intl';
@@ -11,11 +11,12 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getNavigItems, getWebsiteConfiguration } from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
-
-import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
+import { setEditMode } from '../../../../store/wObjectStore/wobjActions';
+
+import './WebsiteTopNavigation.less';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -49,6 +50,7 @@ const userNav = (user, intl) => [
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const config = useSelector(getWebsiteConfiguration);
+  const dispatch = useDispatch();
   const tabsSorting =
     has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
       ? config?.tabsSorting
@@ -62,8 +64,8 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
       return orderA - orderB;
     });
-
-  const linkList = shopSettings?.type === 'user' ? filteredUserTab : listItem;
+  const isUserShop = shopSettings?.type === 'user';
+  const linkList = isUserShop ? filteredUserTab : listItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 
@@ -87,6 +89,11 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
   const listLength = isMobile() ? 2 : 5;
 
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+
+    history.push(`/object/${shopSettings?.value}`);
+  };
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   // if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
@@ -145,6 +152,11 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                   title={intl.formatMessage({ id: 'more', defaultMessage: 'More' }).toUpperCase()}
                   items={lastItems}
                 />
+              )}
+              {!isUserShop && (
+                <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
+                  {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
+                </span>
               )}
             </>
           ) : (

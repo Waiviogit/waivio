@@ -318,6 +318,7 @@ const Withdraw = ({
         <Form className="Withdraw" hideRequiredMark>
           {error && (
             <Alert
+              className={'tc'}
               message=""
               description="Withdraw HIVE is currently unavailable. Please try again later."
               type="warning"

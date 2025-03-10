@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import QRCode from 'qrcode.react';
 import { Input, InputNumber, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isNumber, debounce, isEmpty, size, round } from 'lodash';
@@ -30,6 +31,7 @@ import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { getIsTransferVisible } from '../../../store/walletStore/walletSelectors';
 import './VipTicketsSetting.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const VipTicketsSetting = props => {
   const [countTickets, setCountTickets] = useState(null);
@@ -38,6 +40,7 @@ const VipTicketsSetting = props => {
   const [note, setNote] = useState(null);
   const [showMoreLoading, setShowMoreLoading] = useState({});
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
+  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https%3A%2F%2Fwww.waivio.com`;
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
@@ -233,9 +236,7 @@ const VipTicketsSetting = props => {
                 defaultMessage: 'VIP ticket link:',
               })}
             </h3>
-            <CopyButton
-              text={`https://hiveonboard.com/create-account?ticket=${activeTicketInfo.ticket}&redirect_url=https%3A%2F%2Fwww.waivio.com`}
-            />
+            <CopyButton text={ticketAddress} />
           </div>
           <div className="VipTicketsSetting__modal-section">
             <h3>
@@ -253,6 +254,16 @@ const VipTicketsSetting = props => {
               })}
               onChange={e => handleNoteChange(e.target.value)}
             />
+          </div>
+
+          <div className="WalletAddressItem__qr-code-container">
+            {isMobile() ? (
+              <a href={ticketAddress}>
+                <QRCode size={200} className="Deposit__qr-code" value={ticketAddress} />
+              </a>
+            ) : (
+              <QRCode size={200} className="Deposit__qr-code" value={ticketAddress} />
+            )}
           </div>
         </Modal>
       )}
