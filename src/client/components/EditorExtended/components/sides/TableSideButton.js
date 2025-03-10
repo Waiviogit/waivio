@@ -2,16 +2,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { ReactSVG } from 'react-svg';
+import { Editor, Node } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { insertTable } from '../../util/SlateEditor/utils/table';
+import { insertTable, insertNestedTable } from '../../util/SlateEditor/utils/table';
 import { createEmptyNode } from '../../util/SlateEditor/utils/embed';
 
+const isNestedTable = editor => {
+  const { selection } = editor;
+
+  if (selection) {
+    const [, path] = Editor.node(editor, selection);
+
+    // Traverse up the node hierarchy to check for nested tables
+    for (let i = path.length - 1; i >= 0; i--) {
+      const ancestorPath = path.slice(0, i);
+      const ancestorNode = Node.get(editor, ancestorPath);
+
+      if (ancestorNode.type === 'table') {
+        return true; // Found a nested table
+      }
+    }
+  }
+
+  return false; // No nested table found
+};
 const TableSideButton = props => {
   const editor = useSlate();
 
   const onClick = () => {
-    createEmptyNode(editor);
-    insertTable(editor);
+    const nestedTable = isNestedTable(editor);
+
+    if (nestedTable) {
+      insertNestedTable(editor);
+    } else {
+      insertTable(editor);
+    }
     createEmptyNode(editor);
     ReactEditor.focus(editor);
     props.close();
