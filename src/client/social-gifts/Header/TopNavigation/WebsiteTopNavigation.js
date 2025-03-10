@@ -153,15 +153,15 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                   items={lastItems}
                 />
               )}
-              {!isUserShop && (
-                <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
-                  {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
-                </span>
-              )}
             </>
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
+        {!isUserShop && (
+          <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
+            {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
+          </span>
+        )}
       </div>
     </div>
   );
