@@ -67,7 +67,12 @@ const UserExpertise = () => {
           }
           key="expertise-objects"
         >
-          <ObjectDynamicList limit={UserExpertise.limit} fetcher={fetcher} expertize />
+          <ObjectDynamicList
+            limit={UserExpertise.limit}
+            fetcher={fetcher}
+            expertize
+            isOnlyHashtags={false}
+          />
         </TabPane>
       </Tabs>
     </div>
