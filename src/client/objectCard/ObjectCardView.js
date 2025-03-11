@@ -24,6 +24,7 @@ import HeartButton from '../widgets/HeartButton';
 
 import './ObjectCardView.less';
 import { getTagName } from '../../common/helpers/tagsNamesList';
+import { getIsSocial, getWebsiteConfiguration } from '../../store/appStore/appSelectors';
 
 const ObjectCardView = ({
   intl,
@@ -46,6 +47,7 @@ const ObjectCardView = ({
   socialMap,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const config = useSelector(getWebsiteConfiguration);
   const [tags, setTags] = useState([]);
   const [rejected, setRejected] = useState(isRejected);
   const [rejectedLoading, setRejectedLoading] = useState(isRejected);
@@ -54,12 +56,16 @@ const ObjectCardView = ({
   const parentLink = get(parent, 'defaultShowLink');
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
+  const isSocial = useSelector(getIsSocial);
   const prise = withRewards ? null : wObject.price;
   const isUser = wObject.object_type === 'user';
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
-  let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+  let pathName =
+    isSocial && config?.shopSettings?.value === wObject.author_permlink
+      ? '/'
+      : wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
 
