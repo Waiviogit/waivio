@@ -52,7 +52,9 @@ const FilterPosts = ({ setProfileFilters, name }) => {
       : [...filters, tag.author_permlink];
 
     setFilters(newFilters);
-    history?.push(`@${name}?tags=${newFilters?.join('/')}`);
+    const url = isEmpty(newFilters) ? `@${name}` : `@${name}?tags=${newFilters?.join('/')}`;
+
+    history?.push(url);
   };
 
   return (
