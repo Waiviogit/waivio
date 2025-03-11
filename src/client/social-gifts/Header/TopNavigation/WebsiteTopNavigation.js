@@ -8,7 +8,11 @@ import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getNavigItems, getWebsiteConfiguration } from '../../../../store/appStore/appSelectors';
+import {
+  getNavigItems,
+  getUserAdministrator,
+  getWebsiteConfiguration,
+} from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
@@ -17,7 +21,16 @@ import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 import { setEditMode } from '../../../../store/wObjectStore/wobjActions';
 
 import './WebsiteTopNavigation.less';
-import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../../store/authStore/authSelectors';
+import {
+  accessTypesArr,
+  hasDelegation,
+  haveAccess,
+} from '../../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -52,6 +65,9 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
+  const currObj = useSelector(getObject);
+  const username = useSelector(getAuthenticatedUserName);
+  const isAdministrator = useSelector(getUserAdministrator);
   const dispatch = useDispatch();
   const tabsSorting =
     has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
@@ -70,6 +86,9 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const linkList = isUserShop ? filteredUserTab : listItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
+  const accessExtend =
+    (haveAccess(currObj, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(currObj, username);
 
   useEffect(() => {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -159,7 +178,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
-        {!isUserShop && isAuth && (
+        {!isUserShop && isAuth && accessExtend && !isEmpty(linkList) && (
           <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
           </span>
