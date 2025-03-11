@@ -271,6 +271,7 @@ class StoryFull extends React.Component {
       closeEditThread,
       newBody,
     } = this.props;
+
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -562,7 +563,7 @@ class StoryFull extends React.Component {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
 
-                  return <Campaing campain={{ minReward, maxReward, object: obj }} />;
+                  return <Campaing isLinkedObj campain={{ minReward, maxReward, object: obj }} />;
                 }
 
                 if (!isEmpty(obj.propositions)) {
