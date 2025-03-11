@@ -1,18 +1,21 @@
 import { Transforms } from 'slate';
 
-export const insertTable = editor => {
+export const insertTable = (editor, at) => {
   const rows = 2;
   const columns = 2;
-
   const cellText = Array.from({ length: rows }, () => Array.from({ length: columns }, () => ''));
   const newTable = createTableNode(cellText);
 
-  Transforms.insertNodes(editor, newTable);
-  Transforms.insertNodes(
-    editor,
-    { type: 'paragraph', children: [{ text: '' }] },
-    { mode: 'highest' },
-  );
+  if (at) {
+    Transforms.insertNodes(editor, newTable);
+  } else {
+    Transforms.insertNodes(editor, newTable);
+    Transforms.insertNodes(
+      editor,
+      { type: 'paragraph', children: [{ text: '' }] },
+      { mode: 'highest' },
+    );
+  }
 };
 
 const createRow = (cellText, action) => {
@@ -36,23 +39,42 @@ const createTableNode = cellText => {
 };
 
 export const insertCells = (editor, tableNode, path, action) => {
-  let existingText = Array.from(tableNode.children, rows =>
-    Array.from(rows.children, arr => arr.children[0].text),
-  );
-  const columns = existingText[0].length;
+  const table = { ...tableNode };
 
   if (action === 'row') {
-    existingText.push(Array(columns).fill(''));
+    table.children = [
+      ...table.children,
+      {
+        type: 'tableRow',
+        children: Array.from({ length: table.children[0].children.length }, () =>
+          createTableCell(''),
+        ),
+      },
+    ];
   } else {
-    existingText = Array.from(existingText, item => {
-      item.push('');
+    table.children = table.children.reduce((acc, row) => {
+      const newRow = [...row.children, createTableCell('')];
 
-      return item;
-    });
+      acc.push({ type: 'tableRow', children: newRow });
+
+      return acc;
+    }, []);
   }
-  const newTable = createTableNode(existingText, action);
 
-  Transforms.insertNodes(editor, newTable, {
+  Transforms.insertNodes(editor, table, {
     at: path,
   });
+};
+
+export const insertNestedTable = editor => {
+  const { selection } = editor;
+
+  if (selection) {
+    const { path } = selection.anchor;
+    const node = editor.children[path[0]]?.children[path[1]].children[path[2]];
+
+    if (node.type === 'tableCell') {
+      insertTable(editor, path);
+    }
+  }
 };
