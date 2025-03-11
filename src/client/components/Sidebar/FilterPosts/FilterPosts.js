@@ -4,14 +4,21 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { useHistory } from 'react-router';
 import { getProfileTags } from '../../../../store/feedStore/feedSelectors';
 import { getUserProfileBlogTags } from '../../../../waivioApi/ApiClient';
 import { setProfileTags } from '../../../../store/feedStore/feedActions';
 import './FilterPosts.less';
+import useQuery from '../../../../hooks/useQuery';
 
 const FilterPosts = ({ setProfileFilters, name }) => {
   const [hasMore, setHasMore] = useState(false);
+  const query = useQuery();
+  const queryTags = query.get('tags');
+  const [filters, setFilters] = useState(queryTags?.split('/') || []);
   const tags = useSelector(getProfileTags);
+
+  const history = useHistory();
 
   const dispatch = useDispatch();
   let skip = 0;
@@ -36,6 +43,18 @@ const FilterPosts = ({ setProfileFilters, name }) => {
     }
   };
 
+  const handleTagSelect = (e, tag) => {
+    setProfileFilters(tag.author_permlink);
+    const isHas = filters.includes(tag.author_permlink);
+
+    const newFilters = isHas
+      ? filters?.filter(t => t !== tag.author_permlink)
+      : [...filters, tag.author_permlink];
+
+    setFilters(newFilters);
+    history?.push(`@${name}?tags=${newFilters?.join('/')}`);
+  };
+
   return (
     <>
       {!isEmpty(tags) ? (
@@ -47,7 +66,10 @@ const FilterPosts = ({ setProfileFilters, name }) => {
           <div className="FilterPosts__tags-list">
             {tags?.map(tag => (
               <div key={tag.author_permlink} className="FilterPosts__tag">
-                <Checkbox onChange={() => setProfileFilters(tag.author_permlink)}>
+                <Checkbox
+                  checked={filters?.includes(tag.author_permlink)}
+                  onChange={e => handleTagSelect(e, tag)}
+                >
                   {tag.name}
                 </Checkbox>{' '}
                 ({tag.counter})
