@@ -49,6 +49,7 @@ const UserBlog = props => {
   const hasMore = getFeedHasMoreFromState('blog', name, props.feed);
   const metadata = getMetadata(user);
   const query = useQuery();
+  const queryTags = query?.get('tags')?.split(',');
   const profile = get(metadata, 'profile', {});
   const description =
     (metadata && get(profile, 'about')) ||
@@ -56,7 +57,7 @@ const UserBlog = props => {
 
   useEffect(() => {
     if (isEmpty(content))
-      props.getUserProfileBlogPosts(name, { limit, initialLoad: true }, query).then(res => {
+      props.getUserProfileBlogPosts(name, { limit, initialLoad: true }, queryTags).then(res => {
         props.getTiktokPreviewAction(res.value.posts);
       });
   }, [props?.tagsCondition?.length, name]);
@@ -71,7 +72,7 @@ const UserBlog = props => {
   }, [name]);
 
   const loadMoreContentAction = () =>
-    props.getUserProfileBlogPosts(name, { limit, initialLoad: false }, query).then(res => {
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: false }, queryTags).then(res => {
       props.getTiktokPreviewAction(res.value.posts);
     });
 

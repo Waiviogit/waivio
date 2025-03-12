@@ -111,15 +111,15 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }, query) => (
-  dispatch,
-  getState,
-) => {
+export const getUserProfileBlogPosts = (
+  userName,
+  { limit = 10, initialLoad = true },
+  queryTags,
+) => (dispatch, getState) => {
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
-  const queryTags = query?.get('tags')?.split('/');
 
   const tagsCondition = queryTags || getBlogFilters(state);
 
