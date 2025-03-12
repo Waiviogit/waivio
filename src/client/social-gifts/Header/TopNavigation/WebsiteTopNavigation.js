@@ -120,6 +120,17 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   // if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
+  const editButton = className =>
+    !isUserShop &&
+    isAuth &&
+    accessExtend &&
+    !isEmpty(linkList) && (
+      <span className={className} onClick={editObjectClick}>
+        {isMobile()
+          ? intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' }).toUpperCase()
+          : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
+      </span>
+    );
 
   return (
     <div id={'WebsiteTopNavigationContainer'}>
@@ -172,17 +183,15 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                   openButtonIcon={<Icon type="caret-down" />}
                   title={intl.formatMessage({ id: 'more', defaultMessage: 'More' }).toUpperCase()}
                   items={lastItems}
+                  editButton={editButton}
+                  shopSettings={shopSettings}
                 />
               )}
             </>
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
-        {!isUserShop && isAuth && accessExtend && !isEmpty(linkList) && (
-          <span className={'WebsiteTopNavigation__link'} onClick={editObjectClick}>
-            {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
-          </span>
-        )}
+        {!isMobile() && editButton('WebsiteTopNavigation__link')}
       </div>
     </div>
   );

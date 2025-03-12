@@ -53,7 +53,6 @@ const ObjectCardView = ({
   const [rejectedLoading, setRejectedLoading] = useState(isRejected);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
-  const parentLink = get(parent, 'defaultShowLink');
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const isSocial = useSelector(getIsSocial);
@@ -63,10 +62,13 @@ const ObjectCardView = ({
     'ObjectCardView--hovered': hovered,
   });
   const baseObjPermlink = config?.shopSettings?.value;
+  const parentLink =
+    isSocial && wObject?.parent?.author_permlink === baseObjPermlink
+      ? '/'
+      : get(parent, 'defaultShowLink');
 
   let pathName =
-    isSocial &&
-    [wObject.author_permlink, wObject?.parent?.author_permlink]?.includes(baseObjPermlink)
+    isSocial && wObject.author_permlink === baseObjPermlink
       ? '/'
       : wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
