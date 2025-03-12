@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'antd';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, uniqBy } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
@@ -15,8 +15,8 @@ const FilterPosts = ({ setProfileFilters, name }) => {
   const [hasMore, setHasMore] = useState(false);
   const query = useQuery();
   const queryTags = query.get('tags');
-  const [filters, setFilters] = useState(queryTags?.split('/') || []);
-  const tags = useSelector(getProfileTags);
+  const [filters, setFilters] = useState(queryTags?.split(',') || []);
+  const tags = uniqBy(useSelector(getProfileTags), 'author_permlink');
 
   const history = useHistory();
 
@@ -25,7 +25,7 @@ const FilterPosts = ({ setProfileFilters, name }) => {
   const limit = 10;
 
   useEffect(() => {
-    getUserProfileBlogTags(name, { limit, skip }).then(res => {
+    getUserProfileBlogTags(name, { limit, skip }, filters).then(res => {
       setHasMore(res.hasMore);
       dispatch(setProfileTags(res.tags));
     });
@@ -36,7 +36,7 @@ const FilterPosts = ({ setProfileFilters, name }) => {
       if (tags.length >= limit) {
         skip += tags.length;
       }
-      getUserProfileBlogTags(name, { limit, skip }).then(res => {
+      getUserProfileBlogTags(name, { limit, skip }, filters).then(res => {
         setHasMore(res.hasMore);
         dispatch(setProfileTags([...tags, ...res.tags]));
       });
@@ -52,7 +52,7 @@ const FilterPosts = ({ setProfileFilters, name }) => {
       : [...filters, tag.author_permlink];
 
     setFilters(newFilters);
-    const url = isEmpty(newFilters) ? `@${name}` : `@${name}?tags=${newFilters?.join('/')}`;
+    const url = isEmpty(newFilters) ? `@${name}` : `@${name}?tags=${newFilters?.join(',')}`;
 
     history?.push(url);
   };
