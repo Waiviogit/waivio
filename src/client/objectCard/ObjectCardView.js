@@ -62,8 +62,11 @@ const ObjectCardView = ({
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
+  const baseObjPermlink = config?.shopSettings?.value;
+
   let pathName =
-    isSocial && config?.shopSettings?.value === wObject.author_permlink
+    isSocial &&
+    [wObject.author_permlink, wObject?.parent?.author_permlink]?.includes(baseObjPermlink)
       ? '/'
       : wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
