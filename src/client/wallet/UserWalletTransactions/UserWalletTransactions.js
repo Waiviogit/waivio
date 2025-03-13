@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import WalletTransaction from '../WalletTransaction';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
-import { getTransferDetails } from '../../../waivioApi/ApiClient';
 import { handleLoadMoreTransactions } from '../WalletHelper';
 import BlocktraidsTransactionModal from '../BlocktraidsTransactionModal';
 import './UserWalletTransactions.less';
@@ -53,16 +51,16 @@ class UserWalletTransactions extends React.Component {
     transferDetails: null,
   };
 
-  getWithDrawDetails = key => {
-    getTransferDetails(key)
-      .then(data => {
-        this.setState(() => ({
-          transferDetails: data,
-          isOpenDetailsModal: true,
-        }));
-      })
-      .catch(e => message.error(e.message));
-  };
+  // getWithDrawDetails = key => {
+  //   getTransferDetails(key)
+  //     .then(data => {
+  //       this.setState(() => ({
+  //         transferDetails: data,
+  //         isOpenDetailsModal: true,
+  //       }));
+  //     })
+  //     .catch(e => message.error(e.message));
+  // };
 
   isGuestPage = () => guestUserRegex.test(this.props.user);
 
@@ -145,7 +143,7 @@ class UserWalletTransactions extends React.Component {
                     currentUsername={user}
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
-                    handleDetailsClick={this.getWithDrawDetails}
+                    // handleDetailsClick={this.getWithDrawDetails}
                     isMobile={isMobile}
                   />
                 ))
@@ -156,7 +154,7 @@ class UserWalletTransactions extends React.Component {
                     currentUsername={user}
                     totalVestingShares={totalVestingShares}
                     totalVestingFundSteem={totalVestingFundSteem}
-                    handleDetailsClick={this.getWithDrawDetails}
+                    // handleDetailsClick={this.getWithDrawDetails}
                     isMobile={isMobile}
                   />
                 ))}

@@ -34,7 +34,6 @@ const WalletTransaction = ({
   totalVestingShares,
   totalVestingFundSteem,
   isGuestPage,
-  handleDetailsClick,
   isMobile,
 }) => {
   const transactionType = isGuestPage ? transaction.op[0] : transaction.type;
@@ -93,8 +92,6 @@ const WalletTransaction = ({
           memo={transactionDetails.memo}
           amount={getTransactionCurrency(transactionDetails.amount)}
           timestamp={transaction.timestamp}
-          withdraw={transaction.withdraw}
-          getDetails={handleDetailsClick}
           transactionType={transactionType}
         />
       );
@@ -292,13 +289,11 @@ WalletTransaction.propTypes = {
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   isGuestPage: PropTypes.bool,
-  handleDetailsClick: PropTypes.func,
   isMobile: PropTypes.bool,
 };
 
 WalletTransaction.defaultProps = {
   isGuestPage: false,
-  handleDetailsClick: () => {},
   isMobile: false,
 };
 

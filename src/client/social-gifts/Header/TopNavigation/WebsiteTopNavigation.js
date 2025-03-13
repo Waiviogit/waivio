@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { has, isEmpty, take, takeRight } from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
 import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getNavigItems, getWebsiteConfiguration } from '../../../../store/appStore/appSelectors';
+import {
+  getNavigItems,
+  getUserAdministrator,
+  getWebsiteConfiguration,
+} from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
-
-import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/socialProductHelper';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
+import { setEditMode } from '../../../../store/wObjectStore/wobjActions';
+
+import './WebsiteTopNavigation.less';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../../store/authStore/authSelectors';
+import {
+  accessTypesArr,
+  hasDelegation,
+  haveAccess,
+} from '../../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -48,7 +63,12 @@ const userNav = (user, intl) => [
 
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
+  const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
+  const currObj = useSelector(getObject);
+  const username = useSelector(getAuthenticatedUserName);
+  const isAdministrator = useSelector(getUserAdministrator);
+  const dispatch = useDispatch();
   const tabsSorting =
     has(config, 'tabsSorting') && !isEmpty(config?.tabsSorting)
       ? config?.tabsSorting
@@ -62,10 +82,13 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
       return orderA - orderB;
     });
-
-  const linkList = shopSettings?.type === 'user' ? filteredUserTab : listItem;
+  const isUserShop = shopSettings?.type === 'user';
+  const linkList = isUserShop ? filteredUserTab : listItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
+  const accessExtend =
+    (haveAccess(currObj, username, accessTypesArr[0]) && isAdministrator) ||
+    hasDelegation(currObj, username);
 
   useEffect(() => {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -87,11 +110,27 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
   const listLength = isMobile() ? 2 : 5;
 
+  const editObjectClick = () => {
+    dispatch(setEditMode(true));
+
+    history.push(`/object/${shopSettings?.value}`);
+  };
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   // if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
+  const editButton = className =>
+    !isUserShop &&
+    isAuth &&
+    accessExtend &&
+    !isEmpty(linkList) && (
+      <span className={className} onClick={editObjectClick}>
+        {isMobile()
+          ? intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' }).toUpperCase()
+          : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}{' '}
+      </span>
+    );
 
   return (
     <div id={'WebsiteTopNavigationContainer'}>
@@ -144,12 +183,15 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                   openButtonIcon={<Icon type="caret-down" />}
                   title={intl.formatMessage({ id: 'more', defaultMessage: 'More' }).toUpperCase()}
                   items={lastItems}
+                  editButton={editButton}
+                  shopSettings={shopSettings}
                 />
               )}
             </>
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
+        {!isMobile() && editButton('WebsiteTopNavigation__link')}
       </div>
     </div>
   );

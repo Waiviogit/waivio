@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
-import { Form, Modal, message, Input } from 'antd';
+import { Form, Modal, message, Input, Alert } from 'antd';
 import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
@@ -46,6 +46,7 @@ const Withdraw = ({
   // const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
+  const [error, setError] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const [hiveAmount, setHiveAmount] = useState('');
   const [currencyAmount, setCurrencyAmount] = useState('');
@@ -109,13 +110,16 @@ const Withdraw = ({
 
   useEffect(() => {
     getMinMaxHiveAmount(currentCurrency).then(res => {
+      if (res.message) {
+        setError(true);
+      }
       setMinAmount(parseFloat(res.min));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
   }, [currentCurrency]);
 
   useEffect(() => {
-    if (hiveAmount >= minAmount) {
+    if (hiveAmount >= minAmount && hiveAmount <= maxAmount) {
       debounceAmountHive(hiveAmount);
     }
   }, [hiveAmount, currentCurrency]);
@@ -226,7 +230,7 @@ const Withdraw = ({
         };
         const transferSelfQuery = {
           amount: `0.001 HIVE`,
-          memo: `Withdrawal transaction ID for the HIVE-${currentCurrency.toUpperCase()} pair via SimpleSwap.io: https://simpleswap.io/exchange?id=${
+          memo: `Withdrawal transaction ID for the HIVE-${currentCurrency.toUpperCase()} pair via Changelly: https://changelly.com/track/${
             r.exchangeId
           }`,
           to: user.name,
@@ -299,8 +303,8 @@ const Withdraw = ({
         visible={visible}
         className="Withdraw__modal"
         title={intl.formatMessage({
-          id: 'withdraw_modal_title',
-          defaultMessage: 'SimpleSwap.io exchange',
+          id: 'withdraw_modal_changelly_title',
+          defaultMessage: 'Changelly exchange',
         })}
         okText={intl.formatMessage({ id: 'withdraw', defaultMessage: 'Withdraw' })}
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
@@ -312,6 +316,14 @@ const Withdraw = ({
         }}
       >
         <Form className="Withdraw" hideRequiredMark>
+          {error && (
+            <Alert
+              className={'tc'}
+              message=""
+              description="Withdraw HIVE is currently unavailable. Please try again later."
+              type="warning"
+            />
+          )}
           <Form.Item
             className="Withdraw__title"
             label={<FormattedMessage id="send" defaultMessage="Send" />}
@@ -439,11 +451,11 @@ const Withdraw = ({
             <b>Notice:</b> All crypto withdraws are processed by{' '}
             <a
               className={'Withdraw__underlined-link'}
-              href={' https://simpleswap.io/'}
+              href={'https://changelly.com/'}
               target="_blank"
               rel="noopener noreferrer"
             >
-              SimpleSwap.io.
+              Changelly.
             </a>
           </p>
         </Form>

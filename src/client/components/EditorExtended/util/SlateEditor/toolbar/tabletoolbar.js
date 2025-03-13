@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
-import { Editor, Transforms, Range, Element } from 'slate';
+import { Editor, Transforms, Range } from 'slate';
+import { ReactEditor } from 'slate-react';
 import { insertCells } from '../utils/table';
 import { getSelection } from '../../index';
 
@@ -28,40 +29,48 @@ const TableToolbar = props => {
     }
   }, [editor, selection]);
 
-  const handleRemoveTable = () => {
+  const handleRemoveTable = e => {
+    const [, path] = getParentTable(selection.anchor.path);
+
     Transforms.removeNodes(editor, {
-      match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
+      at: path,
       mode: 'highest',
     });
+
+    if (e) ReactEditor.focus(editor);
   };
 
   const handleInsertRow = () => {
     if (!!selection && Range.isCollapsed(selection)) {
-      const [tableNode] = Editor.nodes(editor, {
-        match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
-      });
+      const [oldTable, path] = getParentTable(selection.anchor.path);
 
-      if (tableNode) {
-        const [oldTable, path] = tableNode;
+      handleRemoveTable();
+      insertCells(editor, oldTable, path, 'row');
 
-        handleRemoveTable();
-        insertCells(editor, oldTable, path, 'row');
-      }
+      Transforms.select(editor, selection.anchor.path);
+      ReactEditor.focus(editor);
     }
+  };
+
+  const getParentTable = path => {
+    const parent = Editor.parent(editor, path);
+
+    if (parent[0].type === 'table') {
+      return parent;
+    }
+
+    return getParentTable(parent[1]);
   };
 
   const handleInsertColumn = () => {
     if (!!selection && Range.isCollapsed(selection)) {
-      const [tableNode] = Editor.nodes(editor, {
-        match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
-      });
+      const [table, path] = getParentTable(selection.anchor.path);
 
-      if (tableNode) {
-        const [oldTable, path] = tableNode;
+      handleRemoveTable(); // Assuming this function removes the table structure
+      insertCells(editor, table, path, 'columns');
 
-        handleRemoveTable();
-        insertCells(editor, oldTable, path, 'columns');
-      }
+      Transforms.select(editor, selection.anchor.path);
+      ReactEditor.focus(editor);
     }
   };
 
