@@ -148,7 +148,7 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
     const [start] = Range.edges(selection);
     let currItem = editor.children[selection?.anchor?.path[0]];
 
-    if (list_types.includes(currItem?.type)) {
+    if (list_types.includes(currItem?.type) || currItem?.type === 'table') {
       currItem = findHashtagInChildren(currItem.children, start.offset);
     } else {
       currItem = currItem.children.find(
