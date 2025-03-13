@@ -118,6 +118,9 @@ const Withdraw = ({
       setRate(parseFloat(res.rate));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
+    if (walletAddress) {
+      walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
+    }
   }, [currentCurrency]);
 
   useEffect(() => {
@@ -296,9 +299,9 @@ const Withdraw = ({
   };
   const onAmountChange = e => {
     setHiveAmount(e.currentTarget.value);
-    if (e.currentTarget.value >= minAmount) {
-      debounceAmountHive(e.currentTarget.value);
-    }
+    // if (e.currentTarget.value >= minAmount) {
+    //   debounceAmountHive(e.currentTarget.value);
+    // }
   };
 
   return (
