@@ -272,7 +272,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
-        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings?.locale)));
 
         resolve({
           ...scUserData,
@@ -284,6 +284,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           isGuestUser: isGuest,
         });
       } catch (e) {
+        console.error('Login error:', e);
         if (e) message.error('Authorization was not successful. Please try again later.');
         clearGuestAuthData();
         Cookie.remove('auth');

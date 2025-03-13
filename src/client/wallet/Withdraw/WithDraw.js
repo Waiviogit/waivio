@@ -119,7 +119,7 @@ const Withdraw = ({
   }, [currentCurrency]);
 
   useEffect(() => {
-    if (hiveAmount >= minAmount) {
+    if (hiveAmount >= minAmount && hiveAmount <= maxAmount) {
       debounceAmountHive(hiveAmount);
     }
   }, [hiveAmount, currentCurrency]);
@@ -230,7 +230,7 @@ const Withdraw = ({
         };
         const transferSelfQuery = {
           amount: `0.001 HIVE`,
-          memo: `Withdrawal transaction ID for the HIVE-${currentCurrency.toUpperCase()} pair via SimpleSwap.io: https://simpleswap.io/exchange?id=${
+          memo: `Withdrawal transaction ID for the HIVE-${currentCurrency.toUpperCase()} pair via Changelly: https://changelly.com/track/${
             r.exchangeId
           }`,
           to: user.name,
@@ -303,8 +303,8 @@ const Withdraw = ({
         visible={visible}
         className="Withdraw__modal"
         title={intl.formatMessage({
-          id: 'withdraw_modal_title',
-          defaultMessage: 'SimpleSwap.io exchange',
+          id: 'withdraw_modal_changelly_title',
+          defaultMessage: 'Changelly exchange',
         })}
         okText={intl.formatMessage({ id: 'withdraw', defaultMessage: 'Withdraw' })}
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
@@ -318,6 +318,7 @@ const Withdraw = ({
         <Form className="Withdraw" hideRequiredMark>
           {error && (
             <Alert
+              className={'tc'}
               message=""
               description="Withdraw HIVE is currently unavailable. Please try again later."
               type="warning"
@@ -450,11 +451,11 @@ const Withdraw = ({
             <b>Notice:</b> All crypto withdraws are processed by{' '}
             <a
               className={'Withdraw__underlined-link'}
-              href={' https://simpleswap.io/'}
+              href={'https://changelly.com/'}
               target="_blank"
               rel="noopener noreferrer"
             >
-              SimpleSwap.io.
+              Changelly.
             </a>
           </p>
         </Form>

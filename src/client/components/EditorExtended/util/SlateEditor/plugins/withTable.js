@@ -1,7 +1,7 @@
 import { Editor, Range, Point, Element } from 'slate';
 
 const withTable = editor => {
-  const { deleteForward, insertBreak } = editor;
+  const { deleteForward } = editor;
 
   /* eslint-disable no-param-reassign */
   editor.deleteForward = unit => {
@@ -32,22 +32,6 @@ const withTable = editor => {
     }
 
     deleteForward(unit);
-  };
-
-  editor.insertBreak = () => {
-    const { selection } = editor;
-
-    if (selection) {
-      const [table] = Editor.nodes(editor, {
-        match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
-      });
-
-      if (table) {
-        return;
-      }
-    }
-
-    insertBreak();
   };
 
   return editor;
