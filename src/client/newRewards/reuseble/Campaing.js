@@ -23,6 +23,7 @@ const Campaing = ({
   hovered,
   intl,
   handleReportClick,
+  isLinkedObj,
 }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
@@ -80,6 +81,7 @@ const Campaing = ({
   return (
     <div className="Campaing">
       <ObjectCardView
+        isLinkedObj={isLinkedObj}
         socialMap={socialMap}
         wObject={mainItem}
         withRewards
@@ -119,11 +121,13 @@ Campaing.propTypes = {
   hovered: PropTypes.bool,
   socialMap: PropTypes.bool,
   isRejected: PropTypes.bool,
+  isLinkedObj: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
 
 Campaing.defaultProps = {
   hovered: false,
+  isLinkedObj: false,
   isRejected: false,
   socialMap: false,
   handleReportClick: null,

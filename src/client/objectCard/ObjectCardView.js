@@ -24,6 +24,7 @@ import HeartButton from '../widgets/HeartButton';
 
 import './ObjectCardView.less';
 import { getTagName } from '../../common/helpers/tagsNamesList';
+import { getIsSocial, getWebsiteConfiguration } from '../../store/appStore/appSelectors';
 
 const ObjectCardView = ({
   intl,
@@ -46,20 +47,30 @@ const ObjectCardView = ({
   socialMap,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const config = useSelector(getWebsiteConfiguration);
   const [tags, setTags] = useState([]);
   const [rejected, setRejected] = useState(isRejected);
   const [rejectedLoading, setRejectedLoading] = useState(isRejected);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
-  const parentLink = get(parent, 'defaultShowLink');
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
+  const isSocial = useSelector(getIsSocial);
   const prise = withRewards ? null : wObject.price;
   const isUser = wObject.object_type === 'user';
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
-  let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
+  const baseObjPermlink = config?.shopSettings?.value;
+  const parentLink =
+    isSocial && wObject?.parent?.author_permlink === baseObjPermlink
+      ? '/'
+      : get(parent, 'defaultShowLink');
+
+  let pathName =
+    isSocial && wObject.author_permlink === baseObjPermlink
+      ? '/'
+      : wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
 

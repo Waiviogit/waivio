@@ -3669,13 +3669,14 @@ export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) =>
     .then(response => response)
     .catch(e => e);
 
-export const getUserProfileBlogTags = (userName, { limit = 10, skip }) =>
+export const getUserProfileBlogTags = (userName, { limit = 10, skip }, checkedTags) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       skip,
       limit,
+      checkedTags,
     }),
   })
     .then(res => res.json())
