@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { FormattedMessage, FormattedNumber } from 'react-intl';
@@ -24,6 +24,8 @@ const UserExpertise = () => {
   const dispatch = useDispatch();
   const { wobjectsExpCount, hashtagsExpCount } = useSelector(getExpCounters);
   const { name, 0: tab } = useParams();
+  const history = useHistory();
+  const isHashtag = history?.location?.pathname?.includes('expertise-hashtags');
 
   useEffect(() => {
     dispatch(getUrerExpertiseCounters(name));
@@ -51,12 +53,14 @@ const UserExpertise = () => {
           }
           key="expertise-hashtags"
         >
-          <ObjectDynamicList
-            isOnlyHashtags
-            limit={UserExpertise.limit}
-            fetcher={fetcher}
-            expertize
-          />
+          {isHashtag && (
+            <ObjectDynamicList
+              isOnlyHashtags
+              limit={UserExpertise.limit}
+              fetcher={fetcher}
+              expertize
+            />
+          )}
         </TabPane>
         <TabPane
           tab={
@@ -67,7 +71,14 @@ const UserExpertise = () => {
           }
           key="expertise-objects"
         >
-          <ObjectDynamicList limit={UserExpertise.limit} fetcher={fetcher} expertize />
+          {!isHashtag && (
+            <ObjectDynamicList
+              limit={UserExpertise.limit}
+              fetcher={fetcher}
+              expertize
+              isOnlyHashtags={false}
+            />
+          )}
         </TabPane>
       </Tabs>
     </div>

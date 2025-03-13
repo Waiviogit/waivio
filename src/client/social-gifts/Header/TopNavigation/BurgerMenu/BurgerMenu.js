@@ -4,13 +4,23 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Drawer } from 'antd';
+import { useDispatch } from 'react-redux';
 import { getMenuLinkTitle } from '../../../../../common/helpers/headerHelpers';
-
+import { setEditMode } from '../../../../../store/wObjectStore/wobjActions';
 import './BurgerMenu.less';
 
-const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
+const BurgerMenu = ({
+  items,
+  title,
+  openButtonText,
+  openButtonIcon,
+  intl,
+  editButton,
+  shopSettings,
+}) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   return (
     <div className={'BurgerMenu'}>
@@ -53,6 +63,19 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
               </Link>
             ),
           )}
+          {
+            <div
+              className={'BurgerMenu__item--no-padding'}
+              onClick={() => {
+                dispatch(setEditMode(true));
+
+                history.push(`/object/${shopSettings?.value}`);
+                setOpen(false);
+              }}
+            >
+              {editButton('')}
+            </div>
+          }
         </Drawer>
       }
     </div>
@@ -62,9 +85,11 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
 BurgerMenu.propTypes = {
   items: PropTypes.arrayOf(),
   intl: PropTypes.shape(),
+  shopSettings: PropTypes.shape(),
   title: PropTypes.string,
   openButtonText: PropTypes.string,
   openButtonIcon: PropTypes.node,
+  editButton: PropTypes.node,
 };
 
 export default injectIntl(BurgerMenu);

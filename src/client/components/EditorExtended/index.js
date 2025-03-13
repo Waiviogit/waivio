@@ -4,7 +4,6 @@ import Link, { findLinkEntities } from './components/entities/link';
 import keyBindingFn from './util/keybinding';
 import rendererFn from './components/customrenderer';
 import customStyleMap from './util/customstylemap';
-import toMarkdown from './util/editorStateToMarkdown';
 import fromMarkdown from './util/markdownToEditorState';
 import createEditorState from './model/content';
 
@@ -39,7 +38,6 @@ export {
   Link,
   findLinkEntities,
   beforeInput,
-  toMarkdown,
   fromMarkdown,
   customStyleMap,
   keyBindingFn,
