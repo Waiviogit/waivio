@@ -28,7 +28,7 @@ import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 import api from '../../steemConnectAPI';
-
+import { truncateNumber } from '../../../common/helpers/parser';
 import './Withdraw.less';
 
 const Withdraw = ({
@@ -50,6 +50,7 @@ const Withdraw = ({
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const [hiveAmount, setHiveAmount] = useState('');
   const [currencyAmount, setCurrencyAmount] = useState('');
+  const [rate, setRate] = useState(0);
   const [minAmount, setMinAmount] = useState(0);
   const [maxAmount, setMaxAmount] = useState(0);
   const hiveInput = useRef();
@@ -114,6 +115,7 @@ const Withdraw = ({
         setError(true);
       }
       setMinAmount(parseFloat(res.min));
+      setRate(parseFloat(res.rate));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
   }, [currentCurrency]);
@@ -188,7 +190,9 @@ const Withdraw = ({
       currencyAmount &&
       validationAddressState.valid &&
       isUserCanMakeTransfer
-    ) || estimateValue > 100;
+    ) ||
+    estimateValue > 100 ||
+    hiveAmount < minAmount;
 
   const handleSubmitTransaction = () => {
     setIsLoading(true);
@@ -384,7 +388,7 @@ const Withdraw = ({
               ref={currencyInput}
               onChange={e => {
                 setCurrencyAmount(e.currentTarget.value);
-                debounceAmountCurrency(e.currentTarget.value);
+                debounceAmountCurrency(e.currentTarget.value / rate);
               }}
               placeholder={0}
               disabled
@@ -464,7 +468,14 @@ const Withdraw = ({
         <QrModal
           setScanAmount={amount => {
             setCurrencyAmount(amount);
-            debounceAmountCurrency(amount);
+
+            if (rate > 0) {
+              const val = amount / rate;
+
+              setHiveAmount(truncateNumber(val, 3));
+            }
+
+            // debounceAmountCurrency(amount);
           }}
           visible={isShowScanner}
           setDataScan={setWalletAddressForScanner}
