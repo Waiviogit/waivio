@@ -474,6 +474,7 @@ const Withdraw = ({
             if (rate > 0) {
               const val = amount / rate;
               // setHiveAmount(truncateNumber(val, 3));
+
               setHiveAmount(ceil(val, 1));
             }
 
