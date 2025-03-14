@@ -21,7 +21,7 @@ const ChromeExtension = ({ intl }) => {
         {intl.formatMessage({
           id: 'chrome_extension_description',
           defaultMessage:
-            "The Waivio Chrome Extension is a browser tool designed to efficiently scrape Amazon, Sephora, and Walmart pages to extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file.",
+            "The Waivio Chrome Extension is a browser tool designed to efficiently scrape Amazon, Sephora, Walmart and AliExpress pages to extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file.",
         })}
       </p>
 
@@ -241,6 +241,15 @@ const ChromeExtension = ({ intl }) => {
               defaultMessage: 'tool can create a post based on a YouTube video using ChatGPT',
             })}
             .
+          </li>
+          <li className="ChromeExtension__list-ordered-item">
+            <span className="ChromeExtension__list-item-underline">Create recipe draft</span>: tool
+            can generate a recipe post based on a YouTube video using ChatGPT.
+          </li>
+          <li className="ChromeExtension__list-ordered-item">
+            <span className="ChromeExtension__list-item-underline">Re-post</span>: tool can create a
+            post draft using video content without rewriting it, allowing the user to publish it
+            directly on Waivio.
           </li>
         </ul>
       </p>
