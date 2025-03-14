@@ -28,7 +28,6 @@ import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 import api from '../../steemConnectAPI';
-import { truncateNumber } from '../../../common/helpers/parser';
 import './Withdraw.less';
 
 const Withdraw = ({
@@ -397,7 +396,7 @@ const Withdraw = ({
               disabled
               className="Withdraw__input-text"
               step="any"
-              value={currencyAmount}
+              value={Number(currencyAmount)}
             />
             <div className="Withdraw__switcher-wrapper">
               {CRYPTO_LIST_FOR_WALLET.map(crypto => (
@@ -474,8 +473,8 @@ const Withdraw = ({
 
             if (rate > 0) {
               const val = amount / rate;
-
-              setHiveAmount(truncateNumber(val, 3));
+              // setHiveAmount(truncateNumber(val, 3));
+              setHiveAmount(ceil(val, 1));
             }
 
             // debounceAmountCurrency(amount);
