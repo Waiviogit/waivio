@@ -31,10 +31,11 @@ export const checkAppStatus = async host => {
   const statusInfo = await getSiteStatusInfo(host);
 
   if (!statusInfo.status) {
-    return { redirect: true, redirectPath: notFoundRedirectPath(host) };
+    return { redirect: true, status: 301, redirectPath: notFoundRedirectPath(host) };
   }
+
   if (statusInfo.status !== 'active') {
-    return { redirect: true, redirectPath: `https://${statusInfo.parentHost}` };
+    return { redirect: true, status: 307, redirectPath: `https://${statusInfo.parentHost}` };
   }
 
   return { redirect: false };
