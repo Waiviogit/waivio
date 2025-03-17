@@ -300,6 +300,12 @@ export function editorStateToMarkdownSlate(value) {
               };
             }
 
+            if (!child.text) {
+              return {
+                text: '',
+              };
+            }
+
             return child;
           });
 
