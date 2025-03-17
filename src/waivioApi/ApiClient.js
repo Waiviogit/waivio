@@ -3936,7 +3936,6 @@ export const getMoreTagsForWobjectShopFilters = (
 
 export const getDepartmentsFeed = (
   userName,
-  schema,
   follower,
   department,
   filter,
@@ -3959,7 +3958,7 @@ export const getDepartmentsFeed = (
       skip,
       limit,
       path,
-      schema,
+      // schema,
     }),
   })
     .then(res => res.json())
