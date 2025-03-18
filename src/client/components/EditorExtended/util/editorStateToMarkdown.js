@@ -300,7 +300,7 @@ export function editorStateToMarkdownSlate(value) {
               };
             }
 
-            if (!child.text) {
+            if (!child.text && !child.type) {
               return {
                 text: '',
               };

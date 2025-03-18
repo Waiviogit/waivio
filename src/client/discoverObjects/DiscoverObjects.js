@@ -96,8 +96,8 @@ const DiscoverObjects = ({ intl, history, match }) => {
 };
 
 DiscoverObjects.fetchData = ({ match, store, query }) => {
-  const activeTagsFilter = parseTagsFilters(query.toString());
-  const search = query.get('search');
+  const activeTagsFilter = query ? parseTagsFilters(query.toString()) : {};
+  const search = query ? query.get('search') : '';
   const searchFilters = {};
 
   if (search) searchFilters.searchString = trimEnd(search);
