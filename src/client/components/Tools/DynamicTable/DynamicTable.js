@@ -15,6 +15,7 @@ import { getWebsiteConfiguration } from '../../../../store/appStore/appSelectors
 import { initialColors } from '../../../websites/constants/colors';
 
 import './DynamicTable.less';
+import PayPalSubscription from '../../../websites/WebsiteTools/PayPal/PayPalSubscription';
 
 export const DynamicTable = ({
   header,
@@ -31,6 +32,8 @@ export const DynamicTable = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(null);
+  const [host, setHost] = useState(undefined);
+  const [isSubscribe, setIsSubscribe] = useState(true);
   const configuration = useSelector(getWebsiteConfiguration);
   const mainColor = configuration.colors?.mapMarkerBody || initialColors.marker;
   const match = useRouteMatch();
@@ -64,6 +67,22 @@ export const DynamicTable = ({
         return (
           <a role="presentation" className="DynamicTable__delete" onClick={() => deleteItem(item)}>
             {head.name || intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' })}
+          </a>
+        );
+      case 'paypal':
+        const sybscribeType = item?.billingType === 'crypto';
+
+        return (
+          <a
+            role="presentation"
+            className="DynamicTable__delete"
+            onClick={() => {
+              setHost(item.host);
+
+              setIsSubscribe(sybscribeType);
+            }}
+          >
+            {sybscribeType ? 'Subscribe' : 'Manage'}
           </a>
         );
 
@@ -201,6 +220,7 @@ export const DynamicTable = ({
             );
           })
         )}
+        {host && <PayPalSubscription host={host} setHost={setHost} isSubscribe={isSubscribe} />}
         {showMore && (
           <tr
             onClick={() => {

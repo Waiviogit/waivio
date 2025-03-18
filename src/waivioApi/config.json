@@ -261,5 +261,8 @@
   "host": "/host",
   "admins": "/admins",
   "whitelist": "/whitelist",
-  "credits": "/credits"
+  "paypal": "/paypal",
+  "subscription": "/subscription",
+  "paypalActivation": "/activation",
+  "basic": "/basic"
 }
