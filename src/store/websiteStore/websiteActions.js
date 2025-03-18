@@ -85,6 +85,12 @@ export const RESET_AVAILABLE_STATUS = '@website/RESET_AVAILABLE_STATUS';
 export const resetAvailableStatus = () => ({
   type: RESET_AVAILABLE_STATUS,
 });
+export const SET_SHOW_PAYPAL = '@website/SET_SHOW_PAYPAL';
+
+export const setShowPayPal = showPayPal => ({
+  type: SET_SHOW_PAYPAL,
+  payload: showPayPal,
+});
 
 export const RESET_SOCIAL_SEARCH_RESULT = '@website/RESET_SOCIAL_SEARCH_RESULT';
 

@@ -19,6 +19,7 @@ const initialState = {
   settings: {},
   areas: [],
   isLoadingAreas: false,
+  showPayPal: false,
   restrictions: null,
   muteLoading: false,
   unmuteUsers: [],
@@ -76,6 +77,12 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         domainAvailableStatus: '',
+      };
+    }
+    case websiteAction.SET_SHOW_PAYPAL: {
+      return {
+        ...state,
+        showPayPal: action.payload,
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
