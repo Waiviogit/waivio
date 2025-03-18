@@ -4768,4 +4768,40 @@ export const saveDraft = body =>
     .then(res => res)
     .catch(error => error);
 
+export const getPayPalSubscriptionBasic = (host, userName) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.basic}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify({ host, userName }),
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
+export const sendPayPalSubscriptionId = (host, userName, subscriptionId) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.paypalActivation}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName, subscriptionId }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
+export const getPayPalSubscriptionDetails = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.details}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
 export default null;

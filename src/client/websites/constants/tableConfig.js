@@ -83,6 +83,14 @@ export const configUsersWebsitesTableHeader = [
     },
   },
   {
+    id: 'paypal',
+    type: 'paypal',
+    intl: {
+      id: 'payPal',
+      defaultMessage: 'PayPal',
+    },
+  },
+  {
     id: 'delete',
     intl: {
       id: 'actions',

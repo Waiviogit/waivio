@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const ProgressModalBody = ({
   nextDate,
-  timePeriod = 'weeks',
+  timePeriod = 'week',
   isWaivWallet,
   left,
   max,
