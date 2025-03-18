@@ -133,7 +133,7 @@ DepatmentsSearch.fetchData = ({ match, store, query }) => {
     store.dispatch(
       getObjectsByDepartment(
         userName,
-        [department.replace('%20', ' ')],
+        [department.replaceAll('%20', ' ')],
         schema,
         getAppHost(state),
         0,

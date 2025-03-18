@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { useParams, useLocation } from 'react-router';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import {
@@ -48,6 +48,7 @@ const Wobj = ({
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(typeof window !== 'undefined');
   const params = useParams();
+  const location = useLocation();
   const appendAlbum = () => {
     const formData = {
       galleryAlbum: 'Photos',
@@ -80,7 +81,9 @@ const Wobj = ({
 
   const getWobjView = useCallback(() => {
     const title = getTitleForLink(wobject);
-    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
+    const { canonicalUrl, descriptionSite } = `${useSeoInfoWithAppUrl(wobject.canonical)}${
+      location.search
+    }`;
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
