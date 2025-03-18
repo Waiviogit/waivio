@@ -29,6 +29,7 @@ import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/auth
 import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 import api from '../../steemConnectAPI';
 import './Withdraw.less';
+import { truncateNumber } from '../../../common/helpers/parser';
 
 const Withdraw = ({
   intl,
@@ -473,9 +474,8 @@ const Withdraw = ({
 
             if (rate > 0) {
               const val = amount / rate;
-              // setHiveAmount(truncateNumber(val, 3));
 
-              setHiveAmount(ceil(val, 1));
+              setHiveAmount(truncateNumber(val + val * 0.03, 3));
             }
 
             // debounceAmountCurrency(amount);
