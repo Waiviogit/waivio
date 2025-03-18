@@ -12,7 +12,7 @@ import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
-import { createCommentPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
+import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
 import { SET_PENDING_UPDATE } from '../userStore/userActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
@@ -517,8 +517,7 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(userName, proposition?.reservationPermlink);
-  const newBody =
-    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const newBody = body;
 
   let detail = {};
 
@@ -683,8 +682,7 @@ export const sendCommentForMentions = (proposition, body, isUpdating = false, or
     ? originalComment.permlink
     : createCommentPermlink(userName, proposition?.reservationPermlink);
 
-  const newBody =
-    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const newBody = body;
 
   const [parent_author, parent_permlink] = proposition.messagesPermlink.split('/');
 
