@@ -4,15 +4,28 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Loading from '../../../components/Icon/Loading';
 
+const add30Days = createDate => {
+  if (!createDate || typeof createDate !== 'string') {
+    return null;
+  }
+
+  const newDate = new Date(createDate);
+
+  if (isNaN(newDate.getTime())) {
+    return null;
+  }
+
+  newDate.setUTCDate(newDate.getUTCDate() + 30);
+
+  return newDate.toISOString();
+};
+
 const PayPalSubscriptionDetails = ({ info, loading }) => {
-  const add30Days = createDate => {
-    const newDate = new Date(createDate);
+  const isActive = info?.status === 'ACTIVE';
 
-    newDate.setUTCDate(newDate.getUTCDate() + 30);
-
-    return newDate.toISOString();
-  };
-  const nextDate = info?.billing_info?.next_billing_time || add30Days(info?.create_time);
+  const nextDate = isActive
+    ? info?.billing_info?.next_billing_time
+    : add30Days(info?.create_time) || null;
 
   return loading ? (
     <Loading />
