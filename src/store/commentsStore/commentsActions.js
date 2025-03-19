@@ -1,9 +1,5 @@
 import { get } from 'lodash';
-import {
-  createCommentPermlink,
-  getBodyPatchIfSmaller,
-  getLastBlockNum,
-} from '../../client/vendor/steemitHelpers';
+import { createCommentPermlink, getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { jsonParse } from '../../common/helpers/formatter';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
@@ -354,8 +350,7 @@ export const sendCommentMessages = (
     isUpdating && jsonParse(originalComment.json_metadata),
   );
 
-  const newBody =
-    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const newBody = body;
 
   let rootPostId = null;
 

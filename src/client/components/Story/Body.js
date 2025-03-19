@@ -103,11 +103,8 @@ export function getHtml(
   }
 
   parsedBody = improve(parsedBody);
-
-  parsedBody = parsedBody.split('\n\n').reduce((acc, item, i, arr) => {
-    if (!item && arr[i + 1] === '***') return `${acc}\n`;
-    if (!item && arr[i + 1]?.includes('|')) return `${acc}\n`;
-    if (!item) return `${acc}<br />`;
+  parsedBody = parsedBody.split('\n\n').reduce((acc, item) => {
+    if (!item) return `${acc}<br />\n\n`;
 
     return `${acc + item}\n\n`;
   }, '');

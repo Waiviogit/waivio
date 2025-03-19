@@ -24,7 +24,7 @@ import { createAction } from 'redux-actions';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
-import { createPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
+import { createPermlink } from '../../client/vendor/steemitHelpers';
 import {
   safeDraftAction,
   deleteDraft,
@@ -79,8 +79,6 @@ import { importData, prepareObjects } from '../../client/websites/MapObjectImpor
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
 export const CREATE_POST_SUCCESS = '@editor/CREATE_POST_SUCCESS';
 export const CREATE_POST_ERROR = '@editor/CREATE_POST_ERROR';
-
-export const NEW_POST = '@editor/NEW_POST';
 
 export const ADD_EDITED_POST = '@editor/ADD_EDITED_POST';
 export const addEditedPost = createAction(ADD_EDITED_POST);
@@ -256,10 +254,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     const locale = getLocale(state);
     const follower = getAuthenticatedUserName(state);
     // const isWaivio = getIsWaivio(state);
-    const newBody =
-      isUpdating && !isGuest && !isReview
-        ? getBodyPatchIfSmaller(postData.originalBody, body)
-        : body;
+    const newBody = body;
 
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)

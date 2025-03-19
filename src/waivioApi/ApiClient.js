@@ -392,7 +392,7 @@ export const searchObjects = (
   skip,
   onlyObjectTypes,
 ) => {
-  const requestBody = { search_string: searchString, limit, skip, ...body };
+  const requestBody = { search_string: searchString.toLowerCase(), limit, skip, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
@@ -3936,7 +3936,6 @@ export const getMoreTagsForWobjectShopFilters = (
 
 export const getDepartmentsFeed = (
   userName,
-  schema,
   follower,
   department,
   filter,
@@ -3959,7 +3958,7 @@ export const getDepartmentsFeed = (
       skip,
       limit,
       path,
-      schema,
+      // schema,
     }),
   })
     .then(res => res.json())
@@ -4768,5 +4767,41 @@ export const saveDraft = body =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => error);
+
+export const getPayPalSubscriptionBasic = (host, userName) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.basic}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify({ host, userName }),
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
+export const sendPayPalSubscriptionId = (host, userName, subscriptionId) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.paypalActivation}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName, subscriptionId }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
+export const getPayPalSubscriptionDetails = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.details}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
 
 export default null;

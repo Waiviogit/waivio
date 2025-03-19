@@ -227,6 +227,8 @@ const EditorSlate = props => {
     if (event.key === 'Enter') {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
+      removeAllInlineFormats(editor);
+
       if (
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
@@ -264,12 +266,6 @@ const EditorSlate = props => {
 
         return true;
       }
-    }
-
-    if (event.keyCode === 32) {
-      removeAllInlineFormats(editor);
-
-      return false;
     }
 
     if (event.keyCode === 51) {
