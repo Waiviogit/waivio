@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams, useRouteMatch } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
-import { uniqBy } from 'lodash';
 
 import { getHelmetIcon } from '../../../store/appStore/appSelectors';
+import {
+  getObjectsTypeByTypesName,
+  getObjectsTypeByTypesNameMore,
+  resetObjects,
+} from '../../../store/objectTypeStore/objectTypeActions';
+import {
+  getWobjectsList,
+  getWobjectsHasMore,
+} from '../../../store/objectTypeStore/objectTypeSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
-import { getObjectType, searchUsers } from '../../../waivioApi/ApiClient';
-import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { searchUsers } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import UserDynamicList from '../../user/UserDynamicList';
@@ -23,14 +30,14 @@ const limit = 30;
 const NewDiscover = () => {
   const { type, user } = useParams();
   const favicon = useSelector(getHelmetIcon);
-  const locale = useSelector(getLocale);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const history = useHistory();
   const query = useQuery();
-  const [objects, setObjects] = useState([]);
-  const [hasMoreObjects, setHasMoreObjects] = useState();
+  const dispatch = useDispatch();
+  const objects = useSelector(getWobjectsList);
+  const hasMoreObjects = useSelector(getWobjectsHasMore);
   const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
   const tag = query.get('tag')?.replaceAll('%26%', '&');
@@ -48,33 +55,21 @@ const NewDiscover = () => {
     const ac = new AbortController();
 
     if (!discoverUsers) {
-      const requestData = {
-        locale,
-        userName,
-        wobjects_count,
-      };
-
       setLoading(true);
 
-      if (search)
-        requestData.filter = {
-          searchString: search,
-        };
+      const filter = {};
 
+      if (search) filter.searchString = search;
       if (tag && category) {
-        requestData.filter = {
-          tagCategory: [
-            {
-              categoryName: category,
-              tags: [tag],
-            },
-          ],
-        };
+        filter.tagCategory = [
+          {
+            categoryName: category,
+            tags: [tag],
+          },
+        ];
       }
 
-      getObjectType(type, requestData, ac).then(res => {
-        setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
-        setHasMoreObjects(res?.hasMoreWobjects);
+      dispatch(getObjectsTypeByTypesName(type, filter, wobjects_count, ac)).then(() => {
         setLoading(false);
       });
     }
@@ -83,32 +78,20 @@ const NewDiscover = () => {
   }, [search, type, user, tag, category]);
 
   const loadMore = () => {
-    const requestData = {
-      locale,
-      wobjects_skip: objects?.length,
-      wobjects_count,
-    };
+    const filter = {};
 
-    if (search)
-      requestData.filter = {
-        searchString: search,
-      };
+    if (search) filter.searchString = search;
 
     if (tag && category) {
-      requestData.filter = {
-        tagCategory: [
-          {
-            categoryName: category,
-            tags: [tag],
-          },
-        ],
-      };
+      filter.tagCategory = [
+        {
+          categoryName: category,
+          tags: [tag],
+        },
+      ];
     }
 
-    getObjectType(type, requestData).then(res => {
-      setObjects([...objects, ...res?.related_wobjects]);
-      setHasMoreObjects(res?.hasMoreWobjects);
-    });
+    dispatch(getObjectsTypeByTypesNameMore(type, filter, 0, wobjects_count, filter.tagCategory));
   };
 
   const handleDeleteTag = () => {
@@ -117,8 +100,7 @@ const NewDiscover = () => {
       // setLoading(true);
     } else {
       history.push(`/discover-objects/${type}`);
-      setObjects([]);
-      setHasMoreObjects(false);
+      dispatch(resetObjects());
       setLoading(true);
     }
   };
@@ -182,6 +164,30 @@ const NewDiscover = () => {
       )}
     </div>
   );
+};
+
+NewDiscover.fetchData = ({ match, store, query }) => {
+  const { type } = match.params;
+  const search = query?.get('search')?.replaceAll('%26%', '&');
+  const tag = query?.get('tag')?.replaceAll('%26%', '&');
+  const category = query?.get('category')?.replaceAll('%26%', '&');
+
+  const filter = {};
+
+  if (search) filter.searchString = search;
+
+  if (tag && category) {
+    filter.tagCategory = [
+      {
+        categoryName: category,
+        tags: [tag],
+      },
+    ];
+  }
+
+  return Promise.allSettled([
+    store.dispatch(getObjectsTypeByTypesName(type, filter, 20, wobjects_count, filter.tagCategory)),
+  ]);
 };
 
 export default NewDiscover;

@@ -36,3 +36,9 @@ export const getActiveFiltersTags = createSelector(
   [objectTypeState],
   state => state.activeTagsFilters,
 );
+
+export const getWobjectsList = createSelector([objectTypeState], state => state.relatedObjects);
+export const getWobjectsHasMore = createSelector(
+  [objectTypeState],
+  state => state.relatedObjectsHasMore,
+);
