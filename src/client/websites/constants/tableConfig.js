@@ -87,7 +87,7 @@ export const configUsersWebsitesTableHeader = [
     type: 'paypal',
     intl: {
       id: 'payPal',
-      defaultMessage: 'PayPal',
+      defaultMessage: 'PayPal (BETA)',
     },
   },
   {
