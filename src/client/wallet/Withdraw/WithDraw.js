@@ -475,7 +475,7 @@ const Withdraw = ({
             if (rate > 0) {
               const val = amount / rate;
 
-              setHiveAmount(truncateNumber(val + val * 0.01, 3));
+              setHiveAmount(truncateNumber(val + val * 0.02, 3));
             }
 
             // debounceAmountCurrency(amount);
