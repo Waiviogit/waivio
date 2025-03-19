@@ -22,6 +22,10 @@ const PayPalSubscriptionDetails = ({ info, loading }) =>
             <FormattedDate value={info?.billing_info?.next_billing_time} />{' '}
             <FormattedTime value={info?.billing_info?.next_billing_time} />
           </div>
+          <div>
+            {' '}
+            <b>Email:</b> {info?.subscriber?.email_address}
+          </div>
         </div>
       )}
     </>
