@@ -1,4 +1,4 @@
-import { get, isEmpty, omit, reduce, filter, uniq } from 'lodash';
+import { get, isEmpty, omit, reduce, filter, uniq, uniqBy } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { parseWobjectField } from '../../common/helpers/wObjectHelper';
 
@@ -130,6 +130,33 @@ const objectType = (state = initialState, action) => {
         ...state,
         sort: action.payload,
       };
+
+    case wobjTypeActions.GET_OBJECT_TYPE_BY_NAME.SUCCESS: {
+      return {
+        ...state,
+        relatedObjects: uniqBy(action.payload?.related_wobjects, 'author_permlink'),
+        hasMoreRelatedObjects: action.payload?.hasMoreWobjects,
+      };
+    }
+
+    case wobjTypeActions.GET_OBJECT_TYPE_BY_NAME_MORE.SUCCESS: {
+      return {
+        ...state,
+        relatedObjects: uniqBy(
+          [...state.relatedObjects, ...action.payload?.related_wobjects],
+          'author_permlink',
+        ),
+        hasMoreRelatedObjects: action.payload?.hasMoreWobjects,
+      };
+    }
+
+    case wobjTypeActions.RESET_OBJECTS: {
+      return {
+        ...state,
+        relatedObjects: [],
+        hasMoreRelatedObjects: false,
+      };
+    }
 
     default:
       return state;
