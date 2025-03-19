@@ -80,8 +80,6 @@ export const CREATE_POST_START = '@editor/CREATE_POST_START';
 export const CREATE_POST_SUCCESS = '@editor/CREATE_POST_SUCCESS';
 export const CREATE_POST_ERROR = '@editor/CREATE_POST_ERROR';
 
-export const NEW_POST = '@editor/NEW_POST';
-
 export const ADD_EDITED_POST = '@editor/ADD_EDITED_POST';
 export const addEditedPost = createAction(ADD_EDITED_POST);
 
