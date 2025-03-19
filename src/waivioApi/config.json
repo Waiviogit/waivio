@@ -264,5 +264,6 @@
   "paypal": "/paypal",
   "subscription": "/subscription",
   "paypalActivation": "/activation",
-  "basic": "/basic"
+  "basic": "/basic",
+  "credits": "/credits"
 }
