@@ -7,9 +7,17 @@ import { sendPayPalSubscriptionId } from '../../../../waivioApi/ApiClient';
 import { setShowPayPal } from '../../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
 
-const PayPalSubscriptionButtons = ({ clientId, planId, host, userName, dispatch, setHost }) => (
+const PayPalSubscriptionButtons = ({
+  clientId,
+  planId,
+  host,
+  userName,
+  dispatch,
+  setHost,
+  loading,
+}) => (
   <div>
-    {clientId && planId ? (
+    {!loading ? (
       <PayPalScriptProvider
         deferLoading={false}
         options={{
@@ -20,11 +28,21 @@ const PayPalSubscriptionButtons = ({ clientId, planId, host, userName, dispatch,
         }}
       >
         <div className="paypal-container" style={{ zIndex: '1100' }}>
-          <div className={'mt3 flex justify-center mb2'}>Pay for website hosting using PayPal!</div>
+          <div className={'PayPalModal__title'}>Pay for website hosting using PayPal</div>
+          <p className={'PayPalModal__description'}>
+            {' '}
+            Ensure continuous website operation with the PayPal subscription option. For just $30
+            per month, uninterrupted hosting services can be maintained without the need for manual
+            payments. PayPal provides a secure, globally recognized payment solution, ensuring fast
+            and reliable transactions. Subscribe today to maintain seamless website performance with
+            ease and convenience.
+          </p>
+          <div className={'PayPalModal__payment'}>
+            Monthly USD Subscription: <span className={'PayPalModal__amount'}>$ 30.00</span>
+          </div>
           <PayPalButtons
             style={{
               layout: 'vertical',
-              label: 'subscribe',
             }}
             forceReRender={[planId, clientId]}
             createSubscription={(data, actions) =>
@@ -67,5 +85,6 @@ PayPalSubscriptionButtons.propTypes = {
   userName: PropTypes.string,
   dispatch: PropTypes.func,
   setHost: PropTypes.func,
+  loading: PropTypes.bool,
 };
 export default PayPalSubscriptionButtons;
