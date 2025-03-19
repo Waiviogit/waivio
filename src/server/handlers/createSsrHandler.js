@@ -66,8 +66,8 @@ export default function createSsrHandler(template) {
     const inheritedHost = isInheritedHost(hostname);
 
     if (inheritedHost) {
-      const { redirect, redirectPath } = await checkAppStatus(hostname);
-      if (redirect) return res.redirect(301, redirectPath);
+      const { redirect, redirectPath, status } = await checkAppStatus(hostname);
+      if (redirect) return res.redirect(status, redirectPath);
     }
 
     if (req.url.includes('/checklist/'))

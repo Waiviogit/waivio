@@ -1,0 +1,37 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.PayPalModal {
+  &__title {
+    font-weight: 600;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  &__description {
+    margin-bottom: 15px;
+  }
+  &__payment {
+    text-align: end;
+    color: @black;
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  &__amount {
+    font-weight: bolder;
+
+    color: var(--website-color);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  li::marker {
+    color: @blue-botticelli;
+  }
+  .ant-modal-body {
+    padding: 24px 35px;
+  }
+}
