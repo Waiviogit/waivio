@@ -45,8 +45,8 @@ const PayPalSubscriptionDetails = ({ info, loading, cancelSubscription }) => {
             {info?.billing_info?.last_payment?.amount?.currency_code}
           </div>
           <div>
-            <b>Next payment date:</b> <FormattedDate value={nextDate} />{' '}
-            <FormattedTime value={nextDate} />
+            <b>{isActive ? 'Next payment date' : 'Active until'}:</b>{' '}
+            <FormattedDate value={nextDate} /> <FormattedTime value={nextDate} />
           </div>
           <div>
             {' '}
