@@ -23,7 +23,7 @@ const add30Days = createDate => {
 
 const PayPalSubscriptionDetails = ({ info, loading, cancelSubscription }) => {
   const isActive = info?.status === 'ACTIVE';
-
+  const status = isActive ? 'Active' : 'Canceled';
   const nextDate = isActive
     ? info?.billing_info?.next_billing_time
     : add30Days(info?.create_time) || null;
@@ -36,7 +36,7 @@ const PayPalSubscriptionDetails = ({ info, loading, cancelSubscription }) => {
         <div>
           <div>
             {' '}
-            <b>Status:</b> {info?.status}
+            <b>Status:</b> {status}
           </div>
           <div>
             {' '}
