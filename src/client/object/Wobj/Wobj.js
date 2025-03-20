@@ -81,9 +81,8 @@ const Wobj = ({
 
   const getWobjView = useCallback(() => {
     const title = getTitleForLink(wobject);
-    const { canonicalUrl, descriptionSite } = `${useSeoInfoWithAppUrl(wobject.canonical)}${
-      location.search
-    }`;
+    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
+    const canonical = `${canonicalUrl}${location.search}`;
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
@@ -93,7 +92,7 @@ const Wobj = ({
           <Helmet>
             <title>{title}</title>
             <meta property="og:title" content={title} />
-            <link rel="canonical" href={canonicalUrl} />
+            <link rel="canonical" href={canonical} />
             <meta name="description" content={desc} />
             <meta name="twitter:card" content={'summary_large_image'} />
             <meta name="twitter:site" content={'@waivio'} />
@@ -102,7 +101,7 @@ const Wobj = ({
             <meta name="twitter:image" content={image} />
             <meta property="og:title" content={title} />
             <meta property="og:type" content="article" />
-            <meta property="og:url" content={canonicalUrl} />
+            <meta property="og:url" content={canonical} />
             <meta property="og:image" content={image} />
             <meta property="og:image:width" content="600" />
             <meta property="og:image:height" content="600" />
@@ -184,7 +183,7 @@ const Wobj = ({
             <Helmet>
               <title>{title}</title>
               <meta property="og:title" content={title} />
-              <link rel="canonical" href={canonicalUrl} />
+              <link rel="canonical" href={canonical} />
               <meta name="description" content={desc} />
               <meta name="twitter:card" content={'summary_large_image'} />
               <meta name="twitter:site" content={'@waivio'} />
@@ -193,7 +192,7 @@ const Wobj = ({
               <meta name="twitter:image" content={image} />
               <meta property="og:title" content={title} />
               <meta property="og:type" content="article" />
-              <meta property="og:url" content={canonicalUrl} />
+              <meta property="og:url" content={canonical} />
               <meta property="og:image" content={image} />
               <meta property="og:image:width" content="600" />
               <meta property="og:image:height" content="600" />
