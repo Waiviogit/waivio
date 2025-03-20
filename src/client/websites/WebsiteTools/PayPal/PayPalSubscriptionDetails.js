@@ -2,6 +2,7 @@ import React from 'react';
 import { FormattedDate, FormattedNumber, FormattedTime } from 'react-intl';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { Button } from 'antd';
 import Loading from '../../../components/Icon/Loading';
 
 const add30Days = createDate => {
@@ -20,7 +21,7 @@ const add30Days = createDate => {
   return newDate.toISOString();
 };
 
-const PayPalSubscriptionDetails = ({ info, loading }) => {
+const PayPalSubscriptionDetails = ({ info, loading, cancelSubscription }) => {
   const isActive = info?.status === 'ACTIVE';
 
   const nextDate = isActive
@@ -51,6 +52,17 @@ const PayPalSubscriptionDetails = ({ info, loading }) => {
             {' '}
             <b>Email:</b> {info?.subscriber?.email_address}
           </div>
+          {isActive && (
+            <div className={'PayPalModal__cancel-container'}>
+              <Button
+                type={'danger'}
+                className="EditDelegationModal__undelegate"
+                onClick={cancelSubscription}
+              >
+                Cancel subscription
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </>
@@ -60,6 +72,7 @@ const PayPalSubscriptionDetails = ({ info, loading }) => {
 PayPalSubscriptionDetails.propTypes = {
   info: PropTypes.shape(),
   loading: PropTypes.bool,
+  cancelSubscription: PropTypes.func,
 };
 
 export default PayPalSubscriptionDetails;
