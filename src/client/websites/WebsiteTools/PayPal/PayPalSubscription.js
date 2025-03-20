@@ -15,10 +15,11 @@ import PayPalSubscriptionDetails from './PayPalSubscriptionDetails';
 import PayPalSubscriptionButtons from './PayPalSubscriptionButtons';
 import './PayPal.less';
 
-const PayPalSubscription = ({ host, setHost, isSubscribe, intl }) => {
+const PayPalSubscription = ({ host, setHost, isSubscribe }) => {
   const [planId, setPlanId] = useState(undefined);
   const [subscriptionInfo, setSubscriptionInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const clientId = process.env.PAYPAL_CLIENT_ID;
   const userName = useSelector(getAuthenticatedUserName);
 
@@ -28,22 +29,17 @@ const PayPalSubscription = ({ host, setHost, isSubscribe, intl }) => {
   };
 
   const cancelSubscription = () => {
-    cancelModal();
-    Modal.confirm({
-      title: 'Cancel subscription',
-      content:
-        'Are you sure you want to cancel your subscription? You will not be charged again, but you will retain access until the end of your current billing period.',
-      onOk: () => {
-        cancelPayPalSubscription(host, userName).then(r => {
-          if (r.message) {
-            return message.error(r.message);
-          }
+    setShowCancelModal(true);
+  };
 
-          return message.success('Subscription was successfully canceled!');
-        });
-      },
-      okText: intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' }),
-      cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
+  const handleCancelSubscription = () => {
+    cancelModal();
+    cancelPayPalSubscription(host, userName).then(r => {
+      if (r.message) {
+        return message.error(r.message);
+      }
+
+      return message.success('Subscription was successfully canceled!');
     });
   };
 
@@ -66,36 +62,50 @@ const PayPalSubscription = ({ host, setHost, isSubscribe, intl }) => {
   const dispatch = useDispatch();
 
   return (
-    <Modal
-      zIndex={100}
-      title={isSubscribe ? 'Subscribe' : 'Manage subscription'}
-      wrapClassName={'PayPalModal'}
-      visible={showPayPal}
-      footer={[
-        <Button key="ok" type="primary" onClick={cancelModal}>
-          <FormattedMessage id="ok" defaultMessage="Ok" />
-        </Button>,
-      ]}
-      onCancel={cancelModal}
-    >
-      {isSubscribe ? (
-        <PayPalSubscriptionButtons
-          loading={loading}
-          host={host}
-          clientId={clientId}
-          planId={planId}
-          userName={userName}
-          setHost={setHost}
-          dispatch={dispatch}
-        />
-      ) : (
-        <PayPalSubscriptionDetails
-          info={subscriptionInfo}
-          loading={loading}
-          cancelSubscription={cancelSubscription}
-        />
-      )}
-    </Modal>
+    <>
+      <Modal
+        zIndex={100}
+        title={isSubscribe ? 'Subscribe' : 'Manage subscription'}
+        wrapClassName={'PayPalModal'}
+        visible={showPayPal}
+        footer={[
+          <Button key="ok" type="primary" onClick={cancelModal}>
+            <FormattedMessage id="ok" defaultMessage="Ok" />
+          </Button>,
+        ]}
+        onCancel={cancelModal}
+      >
+        {isSubscribe ? (
+          <PayPalSubscriptionButtons
+            loading={loading}
+            host={host}
+            clientId={clientId}
+            planId={planId}
+            userName={userName}
+            setHost={setHost}
+            dispatch={dispatch}
+          />
+        ) : (
+          <PayPalSubscriptionDetails
+            info={subscriptionInfo}
+            loading={loading}
+            cancelSubscription={cancelSubscription}
+          />
+        )}
+      </Modal>
+      <Modal
+        visible={showCancelModal}
+        okText={'Confirm'}
+        title={'Cancel subscription'}
+        onCancel={() => setShowCancelModal(false)}
+        onOk={handleCancelSubscription}
+      >
+        <p className={'flex justify-center'}>
+          Are you sure you want to cancel your subscription? You will not be charged again, but you
+          will retain access until the end of your current billing period.
+        </p>
+      </Modal>
+    </>
   );
 };
 
@@ -103,6 +113,5 @@ PayPalSubscription.propTypes = {
   host: PropTypes.string,
   setHost: PropTypes.func,
   isSubscribe: PropTypes.bool,
-  intl: PropTypes.shape(),
 };
 export default injectIntl(PayPalSubscription);
