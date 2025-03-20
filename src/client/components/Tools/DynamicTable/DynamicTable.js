@@ -70,20 +70,22 @@ export const DynamicTable = ({
           </a>
         );
       case 'paypal':
-        const sybscribeType = item?.billingType === 'crypto';
+        const subscribeType = item?.billingType === 'crypto';
 
-        return (
+        return item.status === 'active' ? (
           <a
             role="presentation"
             className="DynamicTable__delete"
             onClick={() => {
               setHost(item.host);
 
-              setIsSubscribe(sybscribeType);
+              setIsSubscribe(subscribeType);
             }}
           >
-            {sybscribeType ? 'Subscribe' : 'Manage'}
+            {subscribeType ? 'Subscribe' : 'Manage'}
           </a>
+        ) : (
+          '-'
         );
 
       case 'link':
