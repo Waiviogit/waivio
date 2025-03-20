@@ -4804,4 +4804,17 @@ export const getPayPalSubscriptionDetails = (host, userName) =>
     .then(res => res.result)
     .catch(e => e);
 
+export const cancelPayPalSubscription = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.cancel}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName, reason: 'User requested cancellation' }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export default null;

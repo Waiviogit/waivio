@@ -2,6 +2,12 @@
 @import (reference) '../../../styles/custom.less';
 
 .PayPalModal {
+  .EditDelegationModal__undelegate {
+    margin-top: 20px;
+    &:hover {
+      color: @white !important;
+    }
+  }
   &__title {
     font-weight: 600;
     font-size: 18px;
@@ -27,7 +33,10 @@
   a:hover {
     text-decoration: underline;
   }
-
+  &__cancel-container {
+    display: flex;
+    justify-content: center;
+  }
   li::marker {
     color: @blue-botticelli;
   }

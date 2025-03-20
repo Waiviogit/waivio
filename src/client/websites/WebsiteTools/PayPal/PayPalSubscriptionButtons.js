@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import { sendPayPalSubscriptionId } from '../../../../waivioApi/ApiClient';
 
-import { setShowPayPal } from '../../../../store/websiteStore/websiteActions';
+import { getManageInfo, setShowPayPal } from '../../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
 
 const PayPalSubscriptionButtons = ({
@@ -60,9 +60,13 @@ const PayPalSubscriptionButtons = ({
               const subscriptionId = data.subscriptionID;
 
               sendPayPalSubscriptionId(host, userName, subscriptionId)
-                .then(() => message.success('Subscription successful!'))
+                .then(() => {
+                  message.success('Subscription successful!');
+                  setTimeout(() => dispatch(getManageInfo(userName)), 2000);
+                })
                 .catch(error => console.error('PayPal subscription error', error));
               dispatch(setShowPayPal(false));
+
               setHost(undefined);
             }}
             onCancel={() => {}}
