@@ -3,33 +3,21 @@ import { useLocation, useParams } from 'react-router';
 import { isNil } from 'lodash';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
-import useQuery from './useQuery';
 
 const originalWaivioHost = 'www.waivio.com';
 
 const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
-  const params = useParams();
   const { name } = useParams();
-  const query = useQuery();
   const isWaivio = appUrl.includes('waivio');
   let url = `${appUrl}${location?.pathname}`;
 
   if (!isWaivio) {
-    const path = location?.pathname
-      .split('/')
-      .filter(i => i !== params[0])
-      .join('/');
-
-    url = `${appUrl}${path}`;
+    url = `${appUrl}/object/${name}`;
   }
 
   if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
     url = `${appUrl}/object/${name}/${objectType}`;
-  }
-
-  if (query.get('currObj')) {
-    url = `${appUrl}/object/${query.get('currObj')}`;
   }
 
   return url;

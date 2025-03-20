@@ -5,6 +5,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from '../../client/websites/helper';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAppHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
@@ -554,23 +555,30 @@ export const saveTagsCategoryForSite = (host, objectsFilter) => (dispatch, getSt
 export const GET_COORDINATES_FOG_MAP = createAsyncActionType('@website/GET_COORDINATES_FOG_MAP');
 
 export const getCoordinatesForMap = (coordinates, radius) => (dispatch, getState) => {
-  const userName = getAuthenticatedUserName(getState());
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const appHost = getAppHost(state);
 
   return dispatch({
     type: GET_COORDINATES_FOG_MAP.ACTION,
     payload: {
-      promise: ApiClient.getObjectType('restaurant', {
-        simplified: true,
-        userName,
-        wobjects_count: 50,
-        wobjects_skip: 0,
-        filter: {
-          map: {
-            coordinates,
-            radius,
+      promise: ApiClient.getObjectType(
+        'restaurant',
+        {
+          simplified: true,
+          userName,
+          wobjects_count: 50,
+          wobjects_skip: 0,
+          filter: {
+            map: {
+              coordinates,
+              radius,
+            },
           },
         },
-      }),
+        null,
+        appHost,
+      ),
     },
   });
 };

@@ -724,11 +724,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .then(result => result)
     .catch(error => error);
 
-export const getObjectType = (typeName, requestData, abortController) => {
+export const getObjectType = (typeName, requestData, abortController, host) => {
   const { locale = 'en-US', userName } = requestData;
 
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-    headers: { ...headers, follower: userName, app: config.appName, locale },
+    headers: { ...headers, follower: userName, app: config.appName, locale, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify(requestData),
     ...(abortController && { signal: abortController.signal }),

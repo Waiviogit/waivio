@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getAppHost } from '../appStore/appSelectors';
 import { getQueryString } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createFilterBody } from '../../client/discoverObjects/helper';
@@ -49,6 +50,7 @@ export const getObjectType = (
   const username = getAuthenticatedUserName(state);
   const sort = getObjectTypeSorting(state);
   const locale = getLocale(state);
+  const appHost = getAppHost(state);
 
   const changeFilters = omit(filters, ['map.zoom']);
   const preparedData = {
@@ -67,7 +69,7 @@ export const getObjectType = (
 
   return dispatch({
     type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData, ac),
+    payload: ApiClient.getObjectType(objectTypeName, preparedData, ac, appHost),
     meta: {
       locale,
     },

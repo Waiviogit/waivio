@@ -7,6 +7,7 @@ import { get, isEmpty, isNil } from 'lodash';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
+import useQuery from '../../hooks/useQuery';
 import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
 
 import {
@@ -98,6 +99,7 @@ const User = props => {
     siteName,
   } = props;
   const { 0: tab, name } = useParams();
+  const query = useQuery();
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
   const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
 
@@ -151,6 +153,7 @@ const User = props => {
   const hasCover = !!coverImage;
   const image = getAvatarURL(name) || DEFAULTS.AVATAR;
   const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
+  const canonical = `${canonicalUrl}?${query.toString()}`;
   const title = `${displayedUsername} ${getTitle(tab)}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';
@@ -164,7 +167,7 @@ const User = props => {
     <div className="main-panel">
       <Helmet>
         <title>{title}</title>
-        <link rel="canonical" href={canonicalUrl} />
+        <link rel="canonical" href={canonical} />
         <meta name="description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
@@ -179,7 +182,7 @@ const User = props => {
         />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:url" content={canonical} />
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />

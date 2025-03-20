@@ -83,7 +83,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const rating = getRatingForSocial(wObject.rating);
   const locale = useSelector(getUsedLocale);
   const isEnLocale = locale === 'en-US';
-  const objLink = wObject.defaultShowLink;
+  const objLink = `/object/${wObject.author_permlink}`;
 
   return (
     <div onClick={() => history.push(link)} className={shopObjectCardClassList}>
