@@ -12,7 +12,7 @@ const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const isWaivio = appUrl.includes('waivio');
   let url = `${appUrl}${location?.pathname}`;
 
-  if (!isWaivio) {
+  if (!isWaivio && location?.pathname.includes('/object/')) {
     url = `${appUrl}/object/${name}`;
   }
 
