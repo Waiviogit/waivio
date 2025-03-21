@@ -183,9 +183,9 @@ const routes = {
       component: WaivPage,
     },
     {
-      path: '/admin-websites',
+      path: '/(admin-websites|admin-credits|admin-subscriptions)',
       exact: true,
-      component: Views.AdminWebsites,
+      component: Views.WebsitesWrapper,
     },
     {
       path: '/admin-whitelist',

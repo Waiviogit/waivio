@@ -4817,4 +4817,16 @@ export const cancelPayPalSubscription = (host, userName) =>
     .then(res => res)
     .catch(e => e);
 
+export const getCreditsByAdminList = (admin, skip, limit = 50) =>
+  fetch(
+    `${config.apiPrefix}${config.admins}${config.sites}${config.credits}?skip=${skip}&limit=${limit}`,
+    {
+      headers: { ...headers, admin, ...getAuthHeaders() },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export default null;
