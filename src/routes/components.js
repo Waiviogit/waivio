@@ -45,7 +45,9 @@ export default {
     import('../client/newRewards/ManageCampaingsTab/ManageCampaingsTab'),
   ),
   Drafts: loableComponent(import('../client/post/Write/Drafts')),
-  AdminWebsites: loableComponent(import('../client/settings/AdminPage/AdminWebsites')),
+  WebsitesWrapper: loableComponent(
+    import('../client/settings/AdminPage/AdminWebsites/WebsitesWrapper'),
+  ),
   AdminWhitelist: loableComponent(
     import('../client/settings/AdminPage/AdminWhitelist/AdminWhitelist'),
   ),

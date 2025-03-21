@@ -56,6 +56,8 @@ const LINKS = {
   FEED: '/feed',
   BLACKLIST: '/blacklist',
   ADMIN_WEBSITES: '/admin-websites',
+  ADMIN_CREDITS: '/admin-credits',
+  ADMIN_SUBSCRIPTIONS: '/admin-subscriptions',
   ADMIN_WHITELIST: '/admin-whitelist',
   ADMIN_NEW_ACCOUNTS: '/admin-new-accounts',
 };
