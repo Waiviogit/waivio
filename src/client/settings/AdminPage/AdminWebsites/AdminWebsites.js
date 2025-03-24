@@ -33,14 +33,16 @@ const AdminWebsites = ({ intl }) => {
   const appAdmins = Cookie.get('appAdmins');
   const iaAppAdmin = appAdmins?.includes(authUserName);
   const history = useHistory();
+  const getData = () =>
+    getWebsitesInfoForAdmins(authUserName).then(info => {
+      setWebsitesInfo(info);
+      setLoading(false);
+    });
 
   useEffect(() => {
     if (isAuth && iaAppAdmin) {
       setLoading(true);
-      getWebsitesInfoForAdmins(authUserName).then(info => {
-        setWebsitesInfo(info);
-        setLoading(false);
-      });
+      getData();
     } else {
       history.push('/');
     }
@@ -172,6 +174,7 @@ const AdminWebsites = ({ intl }) => {
         </div>
       )}
       <CreditsModal
+        updateTable={getData}
         amount={amount}
         creditsUser={creditsUser}
         setAmount={setAmount}

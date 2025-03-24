@@ -14,12 +14,14 @@ const AdminCredits = () => {
   const [amount, setAmount] = useState('');
   const [creditsList, setCreditsList] = useState([]);
   const authUserName = useSelector(getAuthenticatedUserName);
-
-  useEffect(() => {
+  const getData = () =>
     getCreditsByAdminList(authUserName, 0).then(res => {
       setCreditsList(res.result);
       setHasMore(res.hasMore);
     });
+
+  useEffect(() => {
+    getData();
   }, []);
 
   const loadMoreCredits = () => {
@@ -33,6 +35,7 @@ const AdminCredits = () => {
     <div>
       <CreditsForm setCreditsUser={setCreditsUser} setShowCredits={setShowCredits} />
       <CreditsModal
+        updateTable={getData}
         creditsUser={creditsUser}
         setCreditsUser={setCreditsUser}
         setShowCredits={setShowCredits}

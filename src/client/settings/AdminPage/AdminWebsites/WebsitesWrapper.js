@@ -37,7 +37,7 @@ const WebsitesWrapper = () => {
         </Affix>
         <div className={classNames('center')}>
           <MobileNavigation />
-          <Tabs className="Wallets" activeKey={getActiveTab()}>
+          <Tabs className="Wallets" activeKey={getActiveTab()} animated={false}>
             <Tabs.TabPane tab={<Link to="/admin-websites">Websites</Link>} key={tabs.websites}>
               <AdminWebsites />
             </Tabs.TabPane>

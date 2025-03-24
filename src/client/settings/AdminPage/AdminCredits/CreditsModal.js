@@ -7,7 +7,15 @@ import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplet
 import { addCreditsByAdmin } from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
-const CreditsModal = ({ setAmount, setShowCredits, creditsUser, amount, intl, showCredits }) => {
+const CreditsModal = ({
+  setAmount,
+  setShowCredits,
+  creditsUser,
+  amount,
+  intl,
+  showCredits,
+  updateTable,
+}) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const disabled = Number(amount) <= 0 || Number(amount) > 10000;
 
@@ -26,6 +34,8 @@ const CreditsModal = ({ setAmount, setShowCredits, creditsUser, amount, intl, sh
           'Credits were successfully added. Changes will be visible after a page reload.',
         );
         setShowCredits(false);
+        setAmount(0);
+        setTimeout(() => updateTable(), 2000);
       }}
       title={intl.formatMessage({
         id: 'credits',
@@ -65,6 +75,7 @@ CreditsModal.propTypes = {
   setAmount: PropTypes.func.isRequired,
   amount: PropTypes.number.isRequired,
   showCredits: PropTypes.func.isRequired,
+  updateTable: PropTypes.func.isRequired,
   setShowCredits: PropTypes.func.isRequired,
   creditsUser: PropTypes.string.isRequired,
   intl: PropTypes.shape(),
