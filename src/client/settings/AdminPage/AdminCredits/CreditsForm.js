@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import SearchUsersAutocomplete from '../../../../components/EditorUser/SearchUsersAutocomplete';
+import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 
 const CreditsForm = ({ setCreditsUser, setShowCredits, intl }) => (
   <>

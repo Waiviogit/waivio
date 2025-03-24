@@ -3,9 +3,9 @@ import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Input, message, Modal, Select } from 'antd';
-import SelectUserForAutocomplete from '../../../../widgets/SelectUserForAutocomplete';
-import { addCreditsByAdmin } from '../../../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
+import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import { addCreditsByAdmin } from '../../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 const CreditsModal = ({ setAmount, setShowCredits, creditsUser, amount, intl, showCredits }) => {
   const authUserName = useSelector(getAuthenticatedUserName);

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import CreditsForm from './CreditsForm';
 import CreditsModal from './CreditsModal';
-import { getCreditsByAdminList } from '../../../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
-import DynamicTbl from '../../../../components/Tools/DynamicTable/DynamicTable';
-import { creditsAdminConfig } from '../adminConfig';
+import { getCreditsByAdminList } from '../../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
+import { creditsAdminConfig } from '../AdminWebsites/adminConfig';
 
 const AdminCredits = () => {
   const [showCredits, setShowCredits] = useState(false);
