@@ -15,8 +15,8 @@ import {
 } from '../../../../store/authStore/authSelectors';
 import Loading from '../../../components/Icon/Loading';
 import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
-import CreditsModal from './AdminCredits/CreditsModal';
-import CreditsForm from './AdminCredits/CreditsForm';
+import CreditsModal from '../AdminCredits/CreditsModal';
+import CreditsForm from '../AdminCredits/CreditsForm';
 import '../AdminPage.less';
 
 const AdminWebsites = ({ intl }) => {

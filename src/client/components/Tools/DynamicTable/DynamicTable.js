@@ -87,6 +87,20 @@ export const DynamicTable = ({
         ) : (
           '-'
         );
+      case 'subscriptionDetails':
+        return (
+          <a
+            role="presentation"
+            className="DynamicTable__delete"
+            onClick={() => {
+              setHost(item.host);
+
+              setIsSubscribe(false);
+            }}
+          >
+            details
+          </a>
+        );
 
       case 'link':
         if (head.hideLink && head.hideLink(item)) return '-';

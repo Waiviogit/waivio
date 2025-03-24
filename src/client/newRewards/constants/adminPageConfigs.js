@@ -83,6 +83,40 @@ export const websiteStatisticsConfig = [
     },
   ],
 ];
+export const subscriptionsConfig = [
+  {
+    id: 'userName',
+    intl: {
+      id: 'owner',
+      defaultMessage: 'Owner',
+    },
+    type: 'link',
+    to: item => `/@${item.userName}`,
+    getName: item => item.userName,
+  },
+  {
+    id: 'host',
+    intl: {
+      id: 'website',
+      defaultMessage: 'Website',
+    },
+  },
+  {
+    id: 'status',
+    intl: {
+      id: 'subscription',
+      defaultMessage: 'Subscription',
+    },
+  },
+  {
+    id: 'subscriptionDetails',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'subscriptionDetails',
+  },
+];
 export const websiteNewAccountsConfig = [
   [
     {

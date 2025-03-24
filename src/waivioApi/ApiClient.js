@@ -4829,4 +4829,13 @@ export const getCreditsByAdminList = (admin, skip, limit = 50) =>
     .then(res => res)
     .catch(error => error);
 
+export const getSubscriptionsByAdminList = admin =>
+  fetch(`${config.apiPrefix}${config.admins}${config.sites}${config.subscriptions}`, {
+    headers: { ...headers, admin, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export default null;
