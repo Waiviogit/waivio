@@ -66,6 +66,7 @@ export const adminSettings = {
       to: '/admin-websites',
       id: 'admin_websites',
       defaultMessage: 'Websites',
+      paths: ['/admin-websites', '/admin-credits', '/admin-subscriptions'],
     },
     {
       to: '/admin-whitelist',

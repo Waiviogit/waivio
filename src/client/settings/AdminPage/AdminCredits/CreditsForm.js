@@ -19,11 +19,10 @@ const CreditsForm = ({ setCreditsUser, setShowCredits, intl }) => (
           defaultMessage: 'Find user',
         })}
         style={{ width: '100%' }}
-        autoFocus={false}
+        autoFocus
       />
     </p>
     <br />
-    <p className={'AdminPage__info'}>Find users without websites to add credits.</p>
     <br />
   </>
 );
