@@ -55,6 +55,7 @@ const CreditsModal = ({
 
       <div className={'TokenSelect__inputWrap'}>
         <Input
+          autoFocus
           value={amount}
           placeholder={'0'}
           onChange={e => setAmount(e.currentTarget.value)}
