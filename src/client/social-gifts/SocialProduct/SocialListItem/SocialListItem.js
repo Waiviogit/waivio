@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../socialProductHelper';
-import { objectFields, recipeFields } from '../../../../common/constants/listOfFields';
+import { objectFields } from '../../../../common/constants/listOfFields';
 import { getBrandName, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getLink } from '../../../object/wObjectHelper';
 
@@ -39,12 +39,6 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
             {field.length} x {field.width} x {field.depth} {field.unit}
           </span>
         );
-      case objectFields.ageRange:
-      case objectFields.language:
-      case objectFields.publicationDate:
-      case recipeFields.calories:
-      case recipeFields.cookingTime:
-        return <span>{field}</span>;
       case objectFields.website:
         return (
           <span>
@@ -89,7 +83,7 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
           <Link to={`/discover-objects/book?search=${field.name}`}>{field.name}</Link>
         );
       default:
-        return null;
+        return <span>{field}</span>;
     }
   };
 

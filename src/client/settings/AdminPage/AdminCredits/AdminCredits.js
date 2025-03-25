@@ -6,11 +6,13 @@ import { getCreditsByAdminList } from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import { creditsAdminConfig } from '../AdminWebsites/adminConfig';
+import Loading from '../../../components/Icon/Loading';
 
 const AdminCredits = () => {
   const [showCredits, setShowCredits] = useState(false);
   const [creditsUser, setCreditsUser] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState('');
   const [creditsList, setCreditsList] = useState([]);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -18,6 +20,7 @@ const AdminCredits = () => {
     getCreditsByAdminList(authUserName, 0).then(res => {
       setCreditsList(res.result);
       setHasMore(res.hasMore);
+      setLoading(false);
     });
 
   useEffect(() => {
@@ -46,12 +49,16 @@ const AdminCredits = () => {
       <div className={'AdminPage__title-wrap'}>
         <div className={'AdminPage__title'}>Credits History</div>
       </div>
-      <DynamicTbl
-        handleShowMore={loadMoreCredits}
-        showMore={hasMore}
-        header={creditsAdminConfig}
-        bodyConfig={creditsList}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <DynamicTbl
+          handleShowMore={loadMoreCredits}
+          showMore={hasMore}
+          header={creditsAdminConfig}
+          bodyConfig={creditsList}
+        />
+      )}
       <br />
     </div>
   );

@@ -1060,18 +1060,20 @@ class ObjectInfo extends React.Component {
         )}
         {!isEditMode
           ? calories && (
-              <div className="field-info">
+              <div className="field-info ">
                 <div className="CompanyId__title">
                   <FormattedMessage id="object_field_calories" defaultMessage="Calories" />:
                 </div>
                 <span className="field-website__title">
-                  <span className="CompanyId__wordbreak-word">{calories}</span>
+                  <span className="CompanyId__wordbreak-word description-field">{calories}</span>
                 </span>
               </div>
             )
           : this.listItem(
               recipeFields.calories,
-              calories && <span className="CompanyId__wordbreak-word">{calories}</span>,
+              calories && (
+                <span className="CompanyId__wordbreak-word description-field">{calories}</span>
+              ),
             )}
         {!isEditMode
           ? nutrition && (
@@ -1080,13 +1082,15 @@ class ObjectInfo extends React.Component {
                   <FormattedMessage id="object_field_nutrition" defaultMessage="Macros" />:
                 </div>
                 <span className="field-website__title">
-                  <span className="CompanyId__wordbreak-word">{nutrition}</span>
+                  <span className="CompanyId__wordbreak-word description-field">{nutrition}</span>
                 </span>
               </div>
             )
           : this.listItem(
               recipeFields.nutrition,
-              nutrition && <span className="CompanyId__wordbreak-word">{nutrition}</span>,
+              nutrition && (
+                <span className="CompanyId__wordbreak-word description-field">{nutrition}</span>
+              ),
             )}
         {!isEditMode
           ? budget && (

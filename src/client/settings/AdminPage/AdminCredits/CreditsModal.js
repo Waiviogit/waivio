@@ -24,7 +24,7 @@ const CreditsModal = ({
       destroyOnClose
       wrapClassName={'CreditsModal'}
       onCancel={() => {
-        setAmount(0);
+        setAmount('');
         setShowCredits(false);
       }}
       okButtonProps={{ disabled }}
@@ -35,7 +35,7 @@ const CreditsModal = ({
           'Credits were successfully added. Changes will be visible after a page reload.',
         );
         setShowCredits(false);
-        setAmount(0);
+        setAmount('');
         setTimeout(() => updateTable(), 2000);
       }}
       title={intl.formatMessage({
