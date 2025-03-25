@@ -38,6 +38,7 @@ const ManufacturerForm = ({
         rules: getFieldRules(manufacturerFields.manufacturer),
       })(
         <SearchObjectsAutocomplete
+          useExtendedSearch
           objectType="business"
           placeholder={intl.formatMessage({
             id: 'objects_auto_complete_manufacturer_placeholder',

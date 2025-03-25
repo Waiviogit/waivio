@@ -39,6 +39,7 @@ const PublisherForm = ({
         rules: getFieldRules(publisherFields.publisher),
       })(
         <SearchObjectsAutocomplete
+          useExtendedSearch
           objectType="business"
           placeholder={intl.formatMessage({
             id: 'objects_auto_complete_publisher_placeholder',

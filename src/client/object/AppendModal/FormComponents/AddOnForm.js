@@ -26,6 +26,7 @@ const AddOnForm = ({
           rules: getFieldRules(objectFields.addOn),
         })(
           <SearchObjectsAutocomplete
+            useExtendedSearch
             itemsIdsToOmit={addOnPermlinks}
             placeholder={intl.formatMessage({
               id: 'objects_auto_complete_placeholder',

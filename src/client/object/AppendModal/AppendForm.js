@@ -2217,7 +2217,12 @@ class AppendForm extends Component {
           <Form.Item>
             {getFieldDecorator(objectFields.parent, {
               rules: this.getFieldRules(objectFields.parent),
-            })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                useExtendedSearch
+              />,
+            )}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );

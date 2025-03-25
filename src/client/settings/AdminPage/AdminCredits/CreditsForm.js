@@ -19,6 +19,7 @@ const CreditsForm = ({ setCreditsUser, setShowCredits, intl }) => (
           defaultMessage: 'Find user',
         })}
         style={{ width: '100%' }}
+        autoFocus={false}
       />
     </p>
     <br />
