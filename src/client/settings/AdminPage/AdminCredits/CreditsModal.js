@@ -21,6 +21,7 @@ const CreditsModal = ({
 
   return (
     <Modal
+      destroyOnClose
       wrapClassName={'CreditsModal'}
       onCancel={() => {
         setAmount(0);
