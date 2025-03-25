@@ -26,6 +26,7 @@ const RelatedForm = ({
           rules: getFieldRules(objectFields.related),
         })(
           <SearchObjectsAutocomplete
+            useExtendedSearch
             itemsIdsToOmit={relatedPermlinks}
             placeholder={intl.formatMessage({
               id: 'objects_auto_complete_placeholder',

@@ -39,6 +39,7 @@ const BrandForm = ({
         rules: getFieldRules(brandFields.brand),
       })(
         <SearchObjectsAutocomplete
+          useExtendedSearch
           objectType="business"
           placeholder={intl.formatMessage({
             id: 'objects_auto_complete_brand_placeholder',

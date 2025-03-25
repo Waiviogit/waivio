@@ -39,6 +39,7 @@ const MerchantForm = ({
         rules: getFieldRules(merchantFields.merchant),
       })(
         <SearchObjectsAutocomplete
+          useExtendedSearch
           objectType="business"
           placeholder={intl.formatMessage({
             id: 'objects_auto_complete_merchant_placeholder',
