@@ -89,6 +89,7 @@ export const objectFields = {
   groupExclude: 'groupExclude',
   groupLastActivity: 'groupLastActivity',
   promotion: 'promotion',
+  nutrition: 'nutrition',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -100,6 +101,7 @@ export const recipeFields = {
   budget: 'budget',
   cookingTime: 'cookingTime',
   recipeIngredients: 'recipeIngredients',
+  nutrition: 'nutrition',
 };
 export const mapObjectTypeFields = {
   mapObjectsList: 'mapObjectsList',

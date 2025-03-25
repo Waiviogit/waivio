@@ -559,6 +559,7 @@ class ObjectInfo extends React.Component {
     const language = wobject.language;
     const cookingTime = wobject.cookingTime;
     const calories = wobject.calories;
+    const nutrition = wobject.nutrition;
     const budget = wobject.budget;
     const groupId = wobject.groupId;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
@@ -1071,6 +1072,21 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               recipeFields.calories,
               calories && <span className="CompanyId__wordbreak-word">{calories}</span>,
+            )}
+        {!isEditMode
+          ? nutrition && (
+              <div className="field-info">
+                <div className="CompanyId__title">
+                  <FormattedMessage id="object_field_nutrition" defaultMessage="Macros" />:
+                </div>
+                <span className="field-website__title">
+                  <span className="CompanyId__wordbreak-word">{nutrition}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              recipeFields.nutrition,
+              nutrition && <span className="CompanyId__wordbreak-word">{nutrition}</span>,
             )}
         {!isEditMode
           ? budget && (

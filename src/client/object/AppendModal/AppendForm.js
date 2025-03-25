@@ -465,6 +465,7 @@ class AppendForm extends Component {
       case objectFields.affiliateGeoArea:
       case objectFields.background:
       case objectFields.price:
+      case objectFields.nutrition:
       case objectFields.categoryItem:
       case objectFields.parent:
       case mapObjectTypeFields.mapObjectsList:
@@ -2869,6 +2870,28 @@ class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'price_field',
                   defaultMessage: 'Price',
+                })}
+                autoSize={{ minRows: 4, maxRows: 100 }}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.nutrition: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.nutrition, {
+              rules: this.getFieldRules(objectFields.nutrition),
+            })(
+              <Input.TextArea
+                autoFocus
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'nutrition_field',
+                  defaultMessage: 'Macros',
                 })}
                 autoSize={{ minRows: 4, maxRows: 100 }}
               />,
