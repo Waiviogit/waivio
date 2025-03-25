@@ -126,6 +126,7 @@ const SocialProduct = ({
   const price = hoveredOption.price || defaultPrice;
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
+  const nutrition = wobject.nutrition;
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
@@ -164,6 +165,7 @@ const SocialProduct = ({
     : [];
   const showRecipeFields =
     calories ||
+    nutrition ||
     cookingTime ||
     recipeIngredients ||
     !isEmpty(productIdBody) ||
@@ -497,6 +499,7 @@ const SocialProduct = ({
                   productIdBody={productIdBody}
                   isEditMode={isEditMode}
                   calories={calories}
+                  nutrition={nutrition}
                   cookingTime={cookingTime}
                   recipeIngredients={recipeIngredients}
                 />

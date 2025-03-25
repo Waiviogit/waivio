@@ -601,7 +601,7 @@ class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.nutrition:
-          return `@${author} added macros (${langReadable}):\n ![${currentField}](${appendValue})`;
+          return `@${author} added macros (${langReadable}): ${appendValue}`;
         case objectFields.url:
           return `@${author} added ${currentField} (${langReadable}): ${
             formValues[objectFields.url]
