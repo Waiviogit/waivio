@@ -18,17 +18,15 @@ import ObjectCardView from '../../../objectCard/ObjectCardView';
 import apiConfig from '../../../../waivioApi/config.json';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getFollowingObjectsList } from '../../../../store/userStore/userSelectors';
+import { getUpdatesList } from '../../../../waivioApi/ApiClient';
 
 import './AddItemModal.less';
-import { getUpdatesList } from '../../../../waivioApi/ApiClient';
-import { getVotePercent } from '../../../../store/settingsStore/settingsSelectors';
 
 @connect(
   state => ({
     currentUserName: getAuthenticatedUserName(state),
     locale: getSuitableLanguage(state),
     followingList: getFollowingObjectsList(state),
-    userUpVotePower: getVotePercent(state),
   }),
   {
     appendObject,
@@ -55,7 +53,6 @@ class AddItemModal extends Component {
     wobject: PropTypes.shape().isRequired,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     onAddItem: PropTypes.func,
-    userUpVotePower: PropTypes.number,
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
@@ -84,7 +81,7 @@ class AddItemModal extends Component {
 
   handleSubmit = async createdObjectValues => {
     const { votePercent, selectedItem, isModalOpen } = this.state;
-    const { currentUserName, wobject, intl, form, userUpVotePower } = this.props;
+    const { currentUserName, wobject, intl, form } = this.props;
     const listItemsUpdates = await getUpdatesList(wobject.author_permlink, 0, { type: 'listItem' });
 
     const dup = listItemsUpdates?.fields.find(
@@ -107,6 +104,7 @@ class AddItemModal extends Component {
           body: selectedItem.author_permlink,
           locale: objectValues.locale,
         };
+        const userUpVotePower = 100;
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
         const appendAction = () =>
           dup
