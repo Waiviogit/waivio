@@ -342,6 +342,18 @@ export function editorStateToMarkdownSlate(value) {
           alt: node.alt || '',
           title: node.title || '',
         }),
+        table: (node, next) => ({
+          type: 'table',
+          children: next(node.children),
+        }),
+        tableRow: (node, next) => ({
+          type: 'tableRow',
+          children: next(node.children),
+        }),
+        tableCell: (node, next) => ({
+          type: 'tableCell',
+          children: next(node.children),
+        }),
       },
     })
     .use(remarkGfm)

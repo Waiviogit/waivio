@@ -1,5 +1,5 @@
 import unified from 'unified';
-import markdown from 'remark-parse';
+import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import { remarkToSlate } from 'remark-slate-transformer';
 import SteemEmbed from '../../../../../vendor/embedMedia';
@@ -32,7 +32,7 @@ export const defaultNodeTypes = {
 
 export const deserializeToSlate = (body, isThread, isNewReview) => {
   const processor = unified()
-    .use(markdown)
+    .use(remarkParse)
     .use(remarkGfm)
     .use(remarkToSlate, {
       overrides: {
@@ -112,38 +112,34 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
         }),
       },
     });
-  let postParsed = [];
   const _body = body
     .split('\n\n')
     .map(i => {
-      if (i.includes('\n')) return i.split('\n').join('\n\n');
+      if (i.includes('\n') && !i.includes('|\n|')) return i.split('\n').join('\n\n');
 
       return i;
     })
     .join('\n\n');
 
-  _body.split('\n\n\n').forEach(i => {
-    const blocks = processor.processSync(i).result;
+  let postParsed = processor.processSync(_body).result;
 
-    if (isThread) {
-      postParsed = [...postParsed, ...blocks, { text: ' ' }];
-    } else if (isNewReview) {
-      postParsed = [
-        { type: 'paragraph', children: [{ text: '' }] },
-        ...postParsed,
-        ...blocks,
-        { type: 'paragraph', children: [{ text: '' }] },
-      ];
-    } else {
-      postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
-    }
+  if (isThread) {
+    postParsed = [...postParsed, { text: ' ' }];
+  } else if (isNewReview) {
+    postParsed = [
+      { type: 'paragraph', children: [{ text: '' }] },
+      ...postParsed,
+      { type: 'paragraph', children: [{ text: '' }] },
+    ];
+  } else {
+    postParsed = [...postParsed, { type: 'paragraph', children: [{ text: '' }] }];
+  }
 
-    const isItemList = blocks[blocks.length - 1]?.type !== 'itemList';
+  const isItemList = postParsed[postParsed.length - 1]?.type !== 'itemList';
 
-    if (!isItemList) {
-      postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
-    }
-  });
+  if (!isItemList) {
+    postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
+  }
 
   return postParsed;
 };
