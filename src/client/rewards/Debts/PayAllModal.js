@@ -22,7 +22,7 @@ const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, aut
   const balance = useSelector(state => getUserCurrencyBalance(state, 'WAIV')?.balance);
   const filteredData = take(
     renderData?.filter(item => item.payable && item.payable > 0),
-    40,
+    20,
   );
 
   useEffect(() => {
