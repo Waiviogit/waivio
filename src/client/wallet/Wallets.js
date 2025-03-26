@@ -43,19 +43,22 @@ const Wallets = props => {
   const walletsType = query.get('type');
   const isGuestUser = guestUserRegex.test(props.match.params.name);
   const isCurrUser = props.match.params.name === props.authUserName;
+  const isWaiv = walletsType === 'WAIV';
+  const isHive = walletsType === 'HIVE';
+  const isHiveEngine = walletsType === 'ENGINE';
 
   useEffect(() => {
     props.setWalletType(walletsType);
     props.getGlobalProperties();
-    props.getTokenBalance('WAIV', props.match.params.name);
+    // props.getTokenBalance('WAIV', props.match.params.name);
 
-    if (!guestUserRegex.test(props.authUserName))
-      props.getUserTokensBalanceList(props.authUserName);
+    // if (!guestUserRegex.test(props.authUserName))
+    //   props.getUserTokensBalanceList(props.authUserName);
 
-    if (!isGuestUser) {
-      props.getCurrUserTokensBalanceSwap(props.match.params.name);
-      props.getCurrUserTokensBalanceList(props.match.params.name);
-    }
+    // if (!isGuestUser) {
+    // props.getCurrUserTokensBalanceSwap(props.match.params.name); //e
+    // props.getCurrUserTokensBalanceList(props.match.params.name); //e
+    // }
 
     return () => props.resetHiveEngineTokenBalance();
   }, [props.authUserName]);
@@ -69,20 +72,20 @@ const Wallets = props => {
           tab={<Link to={`/@${props.match.params.name}/transfers?type=WAIV`}>WAIV</Link>}
           key="WAIV"
         >
-          {walletsType === 'WAIV' && <WAIVwallet />}
+          {isWaiv && <WAIVwallet />}
         </Tabs.TabPane>
         <Tabs.TabPane
           tab={<Link to={`/@${props.match.params.name}/transfers?type=HIVE`}>HIVE</Link>}
           key="HIVE"
         >
-          {walletsType === 'HIVE' && <Wallet />}
+          {isHive && <Wallet />}
         </Tabs.TabPane>
         {!isGuestUser && (
           <Tabs.TabPane
             tab={<Link to={`/@${props.match.params.name}/transfers?type=ENGINE`}>Hive Engine</Link>}
             key="ENGINE"
           >
-            {walletsType === 'ENGINE' && <HiveEngineWallet />}
+            {isHiveEngine && <HiveEngineWallet />}
           </Tabs.TabPane>
         )}
         {!isGuestUser && isCurrUser && (
@@ -115,7 +118,7 @@ const Wallets = props => {
 Wallets.propTypes = {
   intl: PropTypes.shape().isRequired,
   setWalletType: PropTypes.func.isRequired,
-  getTokenBalance: PropTypes.func.isRequired,
+
   getGlobalProperties: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
@@ -123,10 +126,7 @@ Wallets.propTypes = {
   visibleWithdraw: PropTypes.bool.isRequired,
   visibleDelegate: PropTypes.bool.isRequired,
   visibleConvert: PropTypes.bool.isRequired,
-  getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
-  getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
-  getUserTokensBalanceList: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
   authUserName: PropTypes.string.isRequired,
   history: PropTypes.shape({

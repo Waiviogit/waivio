@@ -4,8 +4,14 @@ import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import { useRouteMatch } from 'react-router';
 
-import { getHiveEngineStatus } from '../../../store/walletStore/walletActions';
+import {
+  getCurrUserTokensBalanceList,
+  getCurrUserTokensBalanceSwap,
+  getHiveEngineStatus,
+  getUserTokensBalanceList,
+} from '../../../store/walletStore/walletActions';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import Loading from '../../components/Icon/Loading';
 import {
@@ -16,13 +22,26 @@ import {
 import HiveEngineCurrencyItem from './HiveEngineCurrencyItem/HiveEngineCurrencyItem';
 import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../common/constants/swapList';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './HiveEngineSummaryInfo.less';
 
 const HiveEngineSummaryInfo = props => {
+  const match = useRouteMatch();
+  const isGuestUser = guestUserRegex.test(match.params.name);
+
   useEffect(() => {
     props.getHiveEngineStatus();
+    if (!guestUserRegex.test(props.authUserName))
+      props.getUserTokensBalanceList(props.authUserName);
+
+    if (!isGuestUser) {
+      props.getCurrUserTokensBalanceSwap(match.params.name);
+    }
+    props.getCurrUserTokensBalanceList(match.params.name);
   }, []);
+
   const status = get(props.hiveEngineDelayInfo, 'status', 'OK');
   const hiveEngineStatusClassList = classNames(
     'HiveEngineSummaryInfo__hive-engine-blockchain-status',
@@ -81,6 +100,7 @@ const HiveEngineSummaryInfo = props => {
 
 HiveEngineSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
+  authUserName: PropTypes.string.isRequired,
   rates: PropTypes.shape({
     HIVE: PropTypes.number,
   }).isRequired,
@@ -91,6 +111,9 @@ HiveEngineSummaryInfo.propTypes = {
   tokensList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   swapList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   getHiveEngineStatus: PropTypes.func.isRequired,
+  getCurrUserTokensBalanceList: PropTypes.func.isRequired,
+  getUserTokensBalanceList: PropTypes.func.isRequired,
+  getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -99,6 +122,12 @@ export default connect(
     swapList: getSwapTokensBalanceList(state),
     rates: getRatesList(state),
     hiveEngineDelayInfo: getHiveEngineDelayInfo(state),
+    authUserName: getAuthenticatedUserName(state),
   }),
-  { getHiveEngineStatus },
+  {
+    getHiveEngineStatus,
+    getCurrUserTokensBalanceList,
+    getCurrUserTokensBalanceSwap,
+    getUserTokensBalanceList,
+  },
 )(HiveEngineSummaryInfo);
