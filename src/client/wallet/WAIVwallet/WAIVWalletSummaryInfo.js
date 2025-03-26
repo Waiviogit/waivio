@@ -15,7 +15,6 @@ import {
   getDelegateList,
   getPendingUndelegationsToken,
   getPendingUnstakesToken,
-  getTokenBalance,
 } from '../../../waivioApi/ApiClient';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
@@ -28,6 +27,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
+import { getTokenBalance } from '../../../store/walletStore/walletActions';
 
 const getFormattedTotalDelegated = (delegate, pendingUndelegations) => {
   if (!isNil(delegate) && !isNaN(delegate)) {
