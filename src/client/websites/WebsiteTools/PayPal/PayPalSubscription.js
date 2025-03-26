@@ -101,8 +101,8 @@ const PayPalSubscription = ({ host, setHost, isSubscribe }) => {
         onOk={handleCancelSubscription}
       >
         <p className={'flex justify-center'}>
-          Are you sure you want to cancel your subscription? You will not be charged again, but you
-          will retain access until the end of your current billing period.
+          Are you sure you want to cancel this subscription? Billing will stop, but access will
+          remain available until the end of the current billing period.
         </p>
       </Modal>
     </>

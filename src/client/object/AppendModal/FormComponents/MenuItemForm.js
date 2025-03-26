@@ -115,6 +115,7 @@ const MenuItemForm = ({
               {},
             )(
               <SearchObjectsAutocomplete
+                useExtendedSearch
                 autoFocus
                 placeholder={intl.formatMessage({
                   id: 'objects_auto_complete_placeholder',

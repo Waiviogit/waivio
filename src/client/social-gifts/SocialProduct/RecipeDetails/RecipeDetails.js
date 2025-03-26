@@ -9,6 +9,7 @@ import Department from '../../../object/Department/Department';
 
 const RecipeDetails = ({
   calories,
+  nutrition,
   cookingTime,
   recipeIngredients,
   isEditMode,
@@ -19,6 +20,7 @@ const RecipeDetails = ({
 }) => (
   <div>
     {calories && <SocialListItem fieldName={recipeFields.calories} field={calories} />}
+    {nutrition && <SocialListItem fieldName={recipeFields.nutrition} field={nutrition} />}
     {cookingTime && <SocialListItem fieldName={recipeFields.cookingTime} field={cookingTime} />}
     {!isEmpty(recipeIngredients) && (
       <RecipeIngredients isSocial ingredients={recipeIngredients} isEditMode={isEditMode} />
@@ -47,13 +49,14 @@ const RecipeDetails = ({
 );
 
 RecipeDetails.propTypes = {
-  calories: PropTypes.string.isRequired,
-  cookingTime: PropTypes.string.isRequired,
-  recipeIngredients: PropTypes.shape().isRequired,
+  calories: PropTypes.string,
+  nutrition: PropTypes.string,
+  cookingTime: PropTypes.string,
+  recipeIngredients: PropTypes.shape(),
   wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
-  productIdBody: PropTypes.arrayOf().isRequired,
-  departments: PropTypes.arrayOf().isRequired,
+  productIdBody: PropTypes.arrayOf(),
+  departments: PropTypes.arrayOf(),
   isEditMode: PropTypes.bool.isRequired,
 };
 export default RecipeDetails;

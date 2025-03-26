@@ -201,6 +201,14 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'admin';
       filterName = 'admin_websites';
       break;
+    case '/admin-credits':
+      pageName = 'admin';
+      filterName = 'admin_credits';
+      break;
+    case '/admin-subscriptions':
+      pageName = 'admin';
+      filterName = 'admin_subscriptions';
+      break;
     case '/admin-whitelist':
       pageName = 'admin';
       filterName = 'admin_whitelist';

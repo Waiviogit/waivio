@@ -465,6 +465,7 @@ class AppendForm extends Component {
       case objectFields.affiliateGeoArea:
       case objectFields.background:
       case objectFields.price:
+      case objectFields.nutrition:
       case objectFields.categoryItem:
       case objectFields.parent:
       case mapObjectTypeFields.mapObjectsList:
@@ -599,6 +600,8 @@ class AppendForm extends Component {
         case objectFields.affiliateButton:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.nutrition:
+          return `@${author} added macros (${langReadable}): ${appendValue}`;
         case objectFields.url:
           return `@${author} added ${currentField} (${langReadable}): ${
             formValues[objectFields.url]
@@ -2217,7 +2220,12 @@ class AppendForm extends Component {
           <Form.Item>
             {getFieldDecorator(objectFields.parent, {
               rules: this.getFieldRules(objectFields.parent),
-            })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                useExtendedSearch
+              />,
+            )}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );
@@ -2864,6 +2872,28 @@ class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'price_field',
                   defaultMessage: 'Price',
+                })}
+                autoSize={{ minRows: 4, maxRows: 100 }}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.nutrition: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.nutrition, {
+              rules: this.getFieldRules(objectFields.nutrition),
+            })(
+              <Input.TextArea
+                autoFocus
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'nutrition_field',
+                  defaultMessage: 'Macros',
                 })}
                 autoSize={{ minRows: 4, maxRows: 100 }}
               />,
