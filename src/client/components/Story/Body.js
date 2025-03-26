@@ -110,7 +110,6 @@ export function getHtml(
   }, '');
   parsedBody = remarkable.render(parsedBody);
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
-
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;

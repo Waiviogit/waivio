@@ -113,7 +113,7 @@ const routes = () => ({
       component: NewDiscover,
     },
     {
-      path: '/discover-departments/:name/:department',
+      path: '/discover-departments/:name/:department?',
       exact: true,
       component: DepatmentsSearch,
     },
