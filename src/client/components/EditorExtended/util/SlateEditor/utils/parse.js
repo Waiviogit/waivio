@@ -120,26 +120,30 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
       return i;
     })
     .join('\n\n');
+  let postParsed = [];
 
-  let postParsed = processor.processSync(_body).result;
+  _body.split('\n\n\n').forEach(i => {
+    const blocks = processor.processSync(i).result;
 
-  if (isThread) {
-    postParsed = [...postParsed, { text: ' ' }];
-  } else if (isNewReview) {
-    postParsed = [
-      { type: 'paragraph', children: [{ text: '' }] },
-      ...postParsed,
-      { type: 'paragraph', children: [{ text: '' }] },
-    ];
-  } else {
-    postParsed = [...postParsed, { type: 'paragraph', children: [{ text: '' }] }];
-  }
+    if (isThread) {
+      postParsed = [...postParsed, ...blocks, { text: ' ' }];
+    } else if (isNewReview) {
+      postParsed = [
+        { type: 'paragraph', children: [{ text: '' }] },
+        ...postParsed,
+        ...blocks,
+        { type: 'paragraph', children: [{ text: '' }] },
+      ];
+    } else {
+      postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
+    }
 
-  const isItemList = postParsed[postParsed.length - 1]?.type !== 'itemList';
+    const isItemList = blocks[blocks.length - 1]?.type !== 'itemList';
 
-  if (!isItemList) {
-    postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
-  }
+    if (!isItemList) {
+      postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
+    }
+  });
 
   return postParsed;
 };
