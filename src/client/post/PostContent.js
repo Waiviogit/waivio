@@ -353,7 +353,7 @@ class PostContent extends React.Component {
     const canonicalHost = getCanonicalHostForPost(postMetaData?.host);
     const baseUrl = content?.title
       ? dropCategory(content.url)
-      : `/${authorName}/${content?.permlink}`;
+      : `/@${authorName}/${content?.permlink}`;
     const canonicalUrl = `https://${canonicalHost}${replaceBotWithGuestName(baseUrl, guestInfo)}`;
     const url = `${appUrl}${replaceBotWithGuestName(baseUrl, guestInfo)}`;
     const metaTitle = `${title} - ${siteName}`;

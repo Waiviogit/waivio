@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { ReactSVG } from 'react-svg';
 import { Editor, Node } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { insertTable, insertNestedTable } from '../../util/SlateEditor/utils/table';
+import { insertTable } from '../../util/SlateEditor/utils/table';
 import { createEmptyNode } from '../../util/SlateEditor/utils/embed';
 
 const isNestedTable = editor => {
@@ -30,13 +30,7 @@ const TableSideButton = props => {
   const editor = useSlate();
 
   const onClick = () => {
-    const nestedTable = isNestedTable(editor);
-
-    if (nestedTable) {
-      insertNestedTable(editor);
-    } else {
-      insertTable(editor);
-    }
+    insertTable(editor);
     createEmptyNode(editor);
     ReactEditor.focus(editor);
     props.close();
@@ -50,6 +44,7 @@ const TableSideButton = props => {
         id: 'table',
         defaultMessage: 'Insert table',
       })}
+      disabled={isNestedTable(editor)}
     >
       <ReactSVG src={'/images/icons/table.svg'} wrapper={'span'} />
       <span className="action-btn__caption">

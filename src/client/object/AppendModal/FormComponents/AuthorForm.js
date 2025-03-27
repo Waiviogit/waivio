@@ -45,6 +45,7 @@ const AuthorForm = ({
           rules: getFieldRules(authorsFields.author),
         })(
           <SearchObjectsAutocomplete
+            useExtendedSearch
             itemsIdsToOmit={authorsPermlinks}
             objectType="person"
             placeholder={intl.formatMessage({

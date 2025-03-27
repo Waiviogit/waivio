@@ -724,11 +724,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .then(result => result)
     .catch(error => error);
 
-export const getObjectType = (typeName, requestData, abortController) => {
+export const getObjectType = (typeName, requestData, abortController, host) => {
   const { locale = 'en-US', userName } = requestData;
 
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-    headers: { ...headers, follower: userName, app: config.appName, locale },
+    headers: { ...headers, follower: userName, app: config.appName, locale, ...addAppHost(host) },
     method: 'POST',
     body: JSON.stringify(requestData),
     ...(abortController && { signal: abortController.signal }),
@@ -4803,5 +4803,39 @@ export const getPayPalSubscriptionDetails = (host, userName) =>
     .then(res => res.json())
     .then(res => res.result)
     .catch(e => e);
+
+export const cancelPayPalSubscription = (host, userName) =>
+  fetch(
+    `${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.cancel}`,
+    {
+      headers: { ...headers, ...getAuthHeaders() },
+      method: 'POST',
+      body: JSON.stringify({ host, userName, reason: 'User requested cancellation' }),
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getCreditsByAdminList = (admin, skip, limit = 50) =>
+  fetch(
+    `${config.apiPrefix}${config.admins}${config.sites}${config.credits}?skip=${skip}&limit=${limit}`,
+    {
+      headers: { ...headers, admin, ...getAuthHeaders() },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getSubscriptionsByAdminList = admin =>
+  fetch(`${config.apiPrefix}${config.admins}${config.sites}${config.subscriptions}`, {
+    headers: { ...headers, admin, ...getAuthHeaders() },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
 
 export default null;

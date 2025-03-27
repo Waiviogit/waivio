@@ -39,6 +39,8 @@ export const DynamicTable = ({
   const match = useRouteMatch();
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
+    const subscribeType = item?.billingType === 'crypto';
+
     switch (head.type) {
       case 'checkbox':
         const getChecked = head.getChecked
@@ -70,8 +72,22 @@ export const DynamicTable = ({
           </a>
         );
       case 'paypal':
-        const sybscribeType = item?.billingType === 'crypto';
+        return item.status === 'active' || (item.status !== 'active' && !subscribeType) ? (
+          <a
+            role="presentation"
+            className="DynamicTable__delete"
+            onClick={() => {
+              setHost(item.host);
 
+              setIsSubscribe(subscribeType);
+            }}
+          >
+            {subscribeType ? 'Subscribe' : 'Manage'}
+          </a>
+        ) : (
+          '-'
+        );
+      case 'subscriptionDetails':
         return (
           <a
             role="presentation"
@@ -79,10 +95,10 @@ export const DynamicTable = ({
             onClick={() => {
               setHost(item.host);
 
-              setIsSubscribe(sybscribeType);
+              setIsSubscribe(false);
             }}
           >
-            {sybscribeType ? 'Subscribe' : 'Manage'}
+            details
           </a>
         );
 

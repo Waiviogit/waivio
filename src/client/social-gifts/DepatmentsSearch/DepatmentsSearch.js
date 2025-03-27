@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
 import Helmet from 'react-helmet';
+import { compareQuery } from '../../../common/helpers/seoHelpes';
 import {
   getMoreObjectsByDepartment,
   resetObjectsByDepartment,
@@ -40,10 +41,17 @@ const DepatmentsSearch = () => {
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
-  const canonicalUrl = `https://${host}/discover-departments/${department || ''}${
-    history.location.search
-  }`;
+
+  if (query.get('isRecipe') === 'false') query.delete('isRecipe');
+
+  const canonicalUrl = `https://${host}/discover-departments/${name}/${department ||
+    ''}${compareQuery(query.toString())}`;
+
   const title = `Discover - ${siteName || host}`;
+
+  useLayoutEffect(() => {
+    if (!department) history.push(`/object/${name}`);
+  }, []);
 
   useEffect(() => {
     const ac = new AbortController();

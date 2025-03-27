@@ -263,7 +263,10 @@
   "whitelist": "/whitelist",
   "paypal": "/paypal",
   "subscription": "/subscription",
+  "subscriptions": "/subscriptions",
   "paypalActivation": "/activation",
   "basic": "/basic",
-  "credits": "/credits"
+  "credits": "/credits",
+  "cancel": "/cancel",
+  "id": "/id"
 }

@@ -26,6 +26,7 @@ const SimilarForm = ({
           rules: getFieldRules(objectFields.similar),
         })(
           <SearchObjectsAutocomplete
+            useExtendedSearch
             itemsIdsToOmit={similarPermlinks}
             placeholder={intl.formatMessage({
               id: 'objects_auto_complete_placeholder',

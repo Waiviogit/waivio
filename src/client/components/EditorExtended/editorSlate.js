@@ -89,7 +89,6 @@ const EditorSlate = props => {
     startToSearching,
     isLoading,
   } = props;
-
   const params = useParams();
   const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);

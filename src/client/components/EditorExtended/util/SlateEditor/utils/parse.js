@@ -1,5 +1,5 @@
 import unified from 'unified';
-import markdown from 'remark-parse';
+import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import { remarkToSlate } from 'remark-slate-transformer';
 import SteemEmbed from '../../../../../vendor/embedMedia';
@@ -32,7 +32,7 @@ export const defaultNodeTypes = {
 
 export const deserializeToSlate = (body, isThread, isNewReview) => {
   const processor = unified()
-    .use(markdown)
+    .use(remarkParse)
     .use(remarkGfm)
     .use(remarkToSlate, {
       overrides: {
@@ -112,15 +112,15 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
         }),
       },
     });
-  let postParsed = [];
   const _body = body
     .split('\n\n')
     .map(i => {
-      if (i.includes('\n')) return i.split('\n').join('\n\n');
+      if (i.includes('\n') && !i.includes('|\n|')) return i.split('\n').join('\n\n');
 
       return i;
     })
     .join('\n\n');
+  let postParsed = [];
 
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;

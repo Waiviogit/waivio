@@ -7,7 +7,7 @@ import { filter, isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { getAppendData, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getSuitableLanguage } from '../../../../store/reducers';
-import { appendObject } from '../../../../store/appendStore/appendActions';
+import { appendObject, voteAppends } from '../../../../store/appendStore/appendActions';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
@@ -18,6 +18,7 @@ import ObjectCardView from '../../../objectCard/ObjectCardView';
 import apiConfig from '../../../../waivioApi/config.json';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getFollowingObjectsList } from '../../../../store/userStore/userSelectors';
+import { getUpdatesList } from '../../../../waivioApi/ApiClient';
 
 import './AddItemModal.less';
 
@@ -29,6 +30,7 @@ import './AddItemModal.less';
   }),
   {
     appendObject,
+    voteAppends,
   },
 )
 @injectIntl
@@ -56,6 +58,7 @@ class AddItemModal extends Component {
     followingList: PropTypes.arrayOf(PropTypes.string),
     addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
+    voteAppends: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -76,9 +79,14 @@ class AddItemModal extends Component {
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
-  handleSubmit = createdObjectValues => {
+  handleSubmit = async createdObjectValues => {
     const { votePercent, selectedItem, isModalOpen } = this.state;
     const { currentUserName, wobject, intl, form } = this.props;
+    const listItemsUpdates = await getUpdatesList(wobject.author_permlink, 0, { type: 'listItem' });
+
+    const dup = listItemsUpdates?.fields.find(
+      field => field.body === selectedItem?.author_permlink,
+    );
 
     form.validateFields((err, values) => {
       const isManualSelected = isModalOpen && !isEmpty(values);
@@ -96,20 +104,24 @@ class AddItemModal extends Component {
           body: selectedItem.author_permlink,
           locale: objectValues.locale,
         };
+        const userUpVotePower = 100;
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
+        const appendAction = () =>
+          dup
+            ? this.props.voteAppends(dup.author, dup.permlink, userUpVotePower, currentUserName)
+            : this.props.appendObject(appendData, {
+                votePercent: isManualSelected
+                  ? Number(
+                      BigNumber(votePercent)
+                        .multipliedBy(100)
+                        .toFixed(0),
+                    )
+                  : createdObjectValues?.votePercent,
+                follow: objectValues.follow,
+                isLike: true,
+              });
 
-        this.props
-          .appendObject(appendData, {
-            votePercent: isManualSelected
-              ? Number(
-                  BigNumber(votePercent)
-                    .multipliedBy(100)
-                    .toFixed(0),
-                )
-              : createdObjectValues?.votePercent,
-            follow: objectValues.follow,
-            isLike: true,
-          })
+        appendAction()
           .then(() => {
             this.setState({ isLoading: false });
             message.success(

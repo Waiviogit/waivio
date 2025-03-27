@@ -34,6 +34,7 @@ import { affiliateCodeVoteAppend } from '../../../../store/appendStore/appendAct
 export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
   const [modalState, setModalState] = useState({});
+  const hasSubscription = modalState?.hostInfo?.billingType === 'paypal_subscription';
 
   useEffect(() => {
     props.getManageInfo(props.userName);
@@ -250,28 +251,62 @@ export const ManageWebsite = props => {
             host: get(modalState, ['hostInfo', 'host'], ''),
           },
         )}
-        onCancel={() => setModalState({})}
-        onOk={() => {
-          rejectAffiliateCodes();
-          props.deleteWebsite(modalState.hostInfo).then(res => {
-            if (res.message)
-              message.error(
-                props.intl.formatMessage({
-                  id: 'insufficient_balance',
-                  defaultMessage: 'Insufficient funds on the balance sheet.',
-                }),
-              );
-          });
-          setModalState({
-            visible: false,
-          });
-        }}
+        onCancel={!hasSubscription ? () => setModalState({}) : undefined}
+        // onOk={() => {
+        //   rejectAffiliateCodes();
+        //   props.deleteWebsite(modalState.hostInfo).then(res => {
+        //     if (res.message)
+        //       message.error(
+        //         props.intl.formatMessage({
+        //           id: 'insufficient_balance',
+        //           defaultMessage: 'Insufficient funds on the balance sheet.',
+        //         }),
+        //       );
+        //   });
+        //   setModalState({
+        //     visible: false,
+        //   });
+        // }}
+        footer={[
+          !hasSubscription && (
+            <Button key="cancel" onClick={() => setModalState({})}>
+              Cancel
+            </Button>
+          ),
+          <Button
+            key="ok"
+            type="primary"
+            // eslint-disable-next-line consistent-return
+            onClick={() => {
+              if (hasSubscription) {
+                return setModalState({});
+              }
+              rejectAffiliateCodes();
+              props.deleteWebsite(modalState.hostInfo).then(res => {
+                if (res.message)
+                  message.error(
+                    props.intl.formatMessage({
+                      id: 'insufficient_balance',
+                      defaultMessage: 'Insufficient funds on the balance sheet.',
+                    }),
+                  );
+              });
+              setModalState({
+                visible: false,
+              });
+            }}
+          >
+            OK
+          </Button>,
+        ].filter(Boolean)}
       >
-        {props.intl.formatMessage({
-          id: 'delete_website_modal_body',
-          defaultMessage:
-            'Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.',
-        })}
+        {hasSubscription
+          ? 'We regret to inform you that your site cannot be deleted due to an active subscription. To proceed with the deletion, please cancel your subscription first and wait until the current billing period has ended.'
+          : props.intl.formatMessage({
+              id: 'delete_website_modal_body',
+              defaultMessage:
+                'Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.',
+            })}
       </Modal>
     </div>
   );

@@ -167,7 +167,13 @@ export default {
     ].join('|'),
   },
   ADMIN: {
-    tabs: ['admin-websites', 'admin-whitelist', 'admin-new-accounts'].join('|'),
+    tabs: [
+      'admin-websites',
+      'admin-whitelist',
+      'admin-new-accounts',
+      'admin-credits',
+      'admin-subscriptions',
+    ].join('|'),
   },
   REFERRAL: {
     tabs: ['referral-details', 'referral-instructions', 'referral-status'].join('|'),

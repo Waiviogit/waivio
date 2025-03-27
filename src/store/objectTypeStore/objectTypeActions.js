@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getAppHost } from '../appStore/appSelectors';
 import { getQueryString } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createFilterBody } from '../../client/discoverObjects/helper';
@@ -49,6 +50,7 @@ export const getObjectType = (
   const username = getAuthenticatedUserName(state);
   const sort = getObjectTypeSorting(state);
   const locale = getLocale(state);
+  const appHost = getAppHost(state);
 
   const changeFilters = omit(filters, ['map.zoom']);
   const preparedData = {
@@ -67,12 +69,45 @@ export const getObjectType = (
 
   return dispatch({
     type: actionType,
-    payload: ApiClient.getObjectType(objectTypeName, preparedData, ac),
+    payload: ApiClient.getObjectType(objectTypeName, preparedData, ac, appHost),
     meta: {
       locale,
     },
   });
 };
+
+export const GET_OBJECT_TYPE_BY_NAME = createAsyncActionType('@objectType/GET_OBJECT_TYPE_BY_NAME');
+
+export const getObjectsTypeByTypesName = (objectTypeName, filters, limit, ac) => dispatch => {
+  const actionType = GET_OBJECT_TYPE_BY_NAME.ACTION;
+
+  return dispatch(
+    getObjectType(objectTypeName, actionType, filters, { limit }, filters.tagCategory, ac),
+  );
+};
+
+export const GET_OBJECT_TYPE_BY_NAME_MORE = createAsyncActionType(
+  '@objectType/GET_OBJECT_TYPE_BY_NAME_MORE',
+);
+
+export const getObjectsTypeByTypesNameMore = (
+  objectTypeName,
+  filters,
+  limit,
+  skip,
+  filter,
+  ac,
+) => dispatch => {
+  const actionType = GET_OBJECT_TYPE_BY_NAME_MORE.ACTION;
+
+  return dispatch(
+    getObjectType(objectTypeName, actionType, filters, { limit, skip }, filters.tagCategory, ac),
+  );
+};
+
+export const RESET_OBJECTS = createAsyncActionType('@objectType/RESET_OBJECTS');
+
+export const resetObjects = () => ({ type: RESET_OBJECTS.ACTION });
 
 export const getObjectTypeMap = ({ radius, coordinates } = {}, isFullscreenMode) => (
   dispatch,

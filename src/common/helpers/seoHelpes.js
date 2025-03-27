@@ -8,4 +8,10 @@ export const compareObjectTitle = (isWaivio, objectName, address, siteName) => {
   return titleText;
 };
 
+export const compareQuery = query => {
+  if (!query) return '';
+
+  return `?${query}`;
+};
+
 export default null;

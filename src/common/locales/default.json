@@ -2687,5 +2687,8 @@
   "followed_by": "Followed by",
   "exclude_owner_from_site_authorities": "Exclude owner from site authorities",
   "exclude_owner_from_site_authorities_info": "Exclude yourself as the site owner from the site's authorities.",
-  "exclude_owner_from_site_authorities_info_2": "Ensure that other users were added as authorities on the site."
+  "exclude_owner_from_site_authorities_info_2": "Ensure that other users were added as authorities on the site.",
+  "mobnav_admin_credits": "Credits",
+  "mobnav_admin_subscriptions": "Subscriptions",
+  "object_field_nutrition": "Macros"
 }

@@ -11,24 +11,26 @@ export default function BBackTop({ className, isModal }) {
   };
 
   return (
-    <>
-      <div className="BBackTop">
-        <div
-          className={classNames(className, 'BBackTop__container', {
-            'BBackTop__container--shifted': isModal,
-          })}
-        >
-          <div className="BBackTop_button-ai" onClick={toggleChat}>
-            AI
+    typeof window !== 'undefined' && (
+      <>
+        <div className="BBackTop">
+          <div
+            className={classNames(className, 'BBackTop__container', {
+              'BBackTop__container--shifted': isModal,
+            })}
+          >
+            <div className="BBackTop_button-ai" onClick={toggleChat}>
+              AI
+            </div>
           </div>
         </div>
-      </div>
-      <ChatWindow
-        className={isOpen ? 'open' : 'closed'}
-        open={isOpen}
-        hideChat={() => setIsOpen(false)}
-      />
-    </>
+        <ChatWindow
+          className={isOpen ? 'open' : 'closed'}
+          open={isOpen}
+          hideChat={() => setIsOpen(false)}
+        />
+      </>
+    )
   );
 }
 
