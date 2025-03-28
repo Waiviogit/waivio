@@ -555,6 +555,8 @@ class ObjectInfo extends React.Component {
     const productIdBody = wobject.productId
       ? wobject?.productId?.map(el => parseWobjectField(el, 'body', []))
       : [];
+    const googleObject = companyIdBody?.find(i => i.companyIdType === 'googleMaps');
+    const placeId = googleObject?.companyId;
     const ageRange = wobject.ageRange;
     const language = wobject.language;
     const cookingTime = wobject.cookingTime;
@@ -1319,7 +1321,11 @@ class ObjectInfo extends React.Component {
                 )}
                 {isRenderMap && (
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+                    href={
+                      googleObject
+                        ? `https://www.google.com/maps/place/?q=place_id:${placeId}`
+                        : `https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="address-link"
