@@ -27,6 +27,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
+import { getTokenBalance } from '../../../store/walletStore/walletActions';
 
 const getFormattedTotalDelegated = (delegate, pendingUndelegations) => {
   if (!isNil(delegate) && !isNaN(delegate)) {
@@ -115,6 +116,7 @@ const WAIVWalletSummaryInfo = props => {
   };
 
   useEffect(() => {
+    props.getTokenBalance('WAIV', props.match.params.name);
     if (!props.isGuest) setDelegationLists();
   }, []);
 
@@ -274,6 +276,7 @@ WAIVWalletSummaryInfo.propTypes = {
   rates: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   authUserName: PropTypes.string.isRequired,
+  getTokenBalance: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
   isAuth: PropTypes.bool,
 };
@@ -282,9 +285,12 @@ WAIVWalletSummaryInfo.defaultProps = {
   isGuest: false,
 };
 
-export default connect(state => ({
-  currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
-  rates: getRatesList(state),
-  isAuth: getIsAuthenticated(state),
-  authUserName: getAuthenticatedUserName(state),
-}))(withRouter(WAIVWalletSummaryInfo));
+export default connect(
+  state => ({
+    currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
+    rates: getRatesList(state),
+    isAuth: getIsAuthenticated(state),
+    authUserName: getAuthenticatedUserName(state),
+  }),
+  { getTokenBalance },
+)(withRouter(WAIVWalletSummaryInfo));

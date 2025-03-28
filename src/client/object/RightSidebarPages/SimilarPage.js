@@ -13,6 +13,7 @@ const limit = 10;
 const SimilarPage = () => {
   const [similarObjects, setSimilarObjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
   const wobject = useSelector(getObject);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
@@ -20,6 +21,7 @@ const SimilarPage = () => {
   useEffect(() => {
     getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
       res => {
+        setLoading(false);
         setSimilarObjects(res.wobjects);
         setHasMore(res.hasMore);
       },
@@ -39,7 +41,9 @@ const SimilarPage = () => {
     });
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
       <InfiniteScroll
         className="Feed"
