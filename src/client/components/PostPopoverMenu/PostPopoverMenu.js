@@ -448,7 +448,7 @@ const PostPopoverMenu = ({
           loading: loadingTras,
         }}
       >
-        Would you like permanently delete your post?
+        <p className={'tc'}>Would you like permanently delete your post?</p>
       </Modal>
       {!isEmpty(post?.campaigns) && (
         <RemoveObjFomPost
