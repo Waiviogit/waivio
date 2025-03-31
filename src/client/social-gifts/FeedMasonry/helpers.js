@@ -4,7 +4,7 @@ import { getVideoPostsPriview } from '../../../waivioApi/ApiClient';
 
 export const breakpointColumnsObj = length => ({
   default: length < 5 ? length : 5,
-  1100: length < 4 ? length : 4,
+  1240: length < 4 ? length : 4,
   999: length < 3 ? length : 3,
   650: length < 2 ? length : 2,
 });

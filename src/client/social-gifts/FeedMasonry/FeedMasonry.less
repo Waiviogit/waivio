@@ -7,6 +7,9 @@
   margin-top: 20px;
 }
 .FeedMasonry {
+  display: flex;
+  justify-content: center;
+
   &__item-with-pin {
     margin-top: -40px;
     position: relative;
@@ -261,10 +264,13 @@
       height: 320px;
 
       @media @small {
-        height: 585px;
+        height: 440px;
       }
     }
 
+    .PostFeedEmbed__container--shotsSocial {
+      height: 440px;
+    }
     .PostFeedEmbed__container.PostFeedEmbed__container_instagram {
       height: 330px;
     }
