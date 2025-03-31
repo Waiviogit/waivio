@@ -39,6 +39,7 @@ const HIVE_ENGINE_NODES = [
   'https://enginerpc.com',
   'https://herpc.kanibot.com',
   'https://he.sourov.dev',
+  'https://engine.waivio.com',
 ];
 
 export function handleErrors(response) {
@@ -2472,7 +2473,7 @@ export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) 
     .then(response => response.result)
     .catch(error => ({ error }));
 
-export const engineProxy = async (params, attempts = 5, hostUrl = sample(HIVE_ENGINE_NODES)) => {
+export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NODES[0]) => {
   const response = await engineQuery({
     params,
     hostUrl,
