@@ -90,6 +90,12 @@ const withEmbeds = cb => editor => {
           };
         }
 
+        if (i.text === '\n') {
+          return {
+            text: '',
+          };
+        }
+
         return i;
       });
 
