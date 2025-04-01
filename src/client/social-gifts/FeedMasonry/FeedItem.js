@@ -77,7 +77,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
 
   useEffect(() => {
     if (isTiktok && !previewLoading) {
-      if (!preview) {
+      if (!preview || !thumbnail) {
         fetch(
           `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
             /\?.*/,
