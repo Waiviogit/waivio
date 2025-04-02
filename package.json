@@ -152,7 +152,7 @@
     "remarkable": "1.7.1",
     "reselect": "^4.0.0",
     "resize-observer-polyfill": "^1.4.2",
-    "sanitize-html": "1.15.0",
+    "sanitize-html": "2.12.1",
     "secure-random": "^1.1.1",
     "slate": "^0.78.0",
     "slate-history": "^0.66.0",
