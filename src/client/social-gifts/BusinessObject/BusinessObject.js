@@ -411,6 +411,7 @@ const BusinessObject = ({
                 map={map}
                 workTime={workTime}
                 wobject={wobject}
+                companyId={companyIdBody}
               />
             )}
             {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}

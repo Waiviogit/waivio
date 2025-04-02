@@ -13,10 +13,8 @@ import sanitizeConfig from '../../vendor/SanitizeConfig';
 import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../../common/helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../../common/helpers/improve';
-import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
-import AsyncVideo from '../../vendor/asyncVideo';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 
@@ -141,74 +139,21 @@ export function getHtml(
     return parsedBody;
   }
 
-  const sections = [];
-  const splittedBody = parsedBody.split('~~~ embed:');
+  parsedBody = parsedBody.replace(/~~~ embed:(\S+) (\S+) (\S+) ~~~/g, (a, embedId, c, url) => {
+    const embed = getEmbed(url);
 
-  for (let i = 0; i < splittedBody.length; i += 1) {
-    let section = splittedBody[i];
-    const extractedLinks = extractLinks(section);
-    const match = section.match(/^([A-Za-z0-9./_@:,?=&;-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
-
-    if (match && match.length >= 4) {
-      const id = match[1];
-      const type = match[2];
-      const link = match[3] && match[3].replace('&amp;', '&');
-      const embed = getEmbed(link);
-
-      if (link.includes('odysee.com')) {
-        sections.push({
-          component: <AsyncVideo url={link} />,
-        });
-      } else {
-        sections.push(
-          ReactDOMServer.renderToString(
-            <PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />,
-          ),
-        );
-      }
-      section = section.substring(`${id} ${type} ${link} ~~~`.length);
-    }
-
-    if (!isEmpty(extractedLinks)) {
-      const uniqueLinks = extractedLinks.reduce(
-        (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
-        [],
-      );
-
-      uniqueLinks.forEach(item => {
-        let link = item;
-
-        if (link.includes('3speak.tv/watch/')) {
-          const type = 'video';
-          const embed = getEmbed(link);
-
-          link = link.substring(` ${type} ${link}`.length);
-
-          sections.push(
-            ReactDOMServer.renderToString(
-              <PostFeedEmbed key={`embed-a-${item}`} inPost embed={embed} />,
-            ),
-          );
-        }
-      });
-    }
-
-    if (section !== '') {
-      sections.push(section);
-    }
-  }
-
-  return sections.map(content => {
-    if (content.component) return content.component;
-
-    return (
-      <div
-        key={(Math.random() + 1).toString(36).substring(7)}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+    return ReactDOMServer.renderToString(
+      <PostFeedEmbed key={`embed-a-${embedId}`} inPost embed={embed} />,
     );
   });
+
+  return (
+    <div
+      key={(Math.random() + 1).toString(36).substring(7)}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: parsedBody }}
+    />
+  );
 }
 
 const Body = props => {

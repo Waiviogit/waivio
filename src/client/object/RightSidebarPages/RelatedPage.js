@@ -14,6 +14,7 @@ const limit = 10;
 const RelatedPage = () => {
   const [relatedObjects, setRelatedObjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
   const objects = useSelector(getRelatedObjectsArray);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
@@ -25,6 +26,7 @@ const RelatedPage = () => {
     if (!isEmpty(wobject.author_permlink)) {
       getRelatedObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
         res => {
+          setLoading(false);
           setRelatedObjects(res.wobjects);
           setHasMore(res.hasMore);
         },
@@ -45,7 +47,9 @@ const RelatedPage = () => {
     });
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
       <InfiniteScroll
         className="Feed"

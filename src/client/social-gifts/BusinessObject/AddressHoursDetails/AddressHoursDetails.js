@@ -15,8 +15,12 @@ const AddressHoursDetails = ({
   intl,
   mapObjPermlink,
   selectedObjPermlink,
+  companyId,
 }) => {
   const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
+
+  const googleObject = companyId?.find(i => i.companyIdType === 'googleMaps');
+  const placeId = googleObject?.companyId;
 
   return (
     <div className={'AddressHoursDetails'}>
@@ -33,10 +37,14 @@ const AddressHoursDetails = ({
           </div>
           {isRenderMap ? (
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+              href={
+                googleObject
+                  ? `https://www.google.com/maps/place/?q=place_id:${placeId}`
+                  : `https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`
+              }
               target="_blank"
               rel="noopener noreferrer"
-              className="address-link "
+              className="address-link"
             >
               {intl.formatMessage({ id: 'directions', defaultMessage: 'Directions' })}
             </a>
@@ -92,6 +100,7 @@ const AddressHoursDetails = ({
 AddressHoursDetails.propTypes = {
   address: PropTypes.string,
   map: PropTypes.shape(),
+  companyId: PropTypes.arrayOf(),
   wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   workTime: PropTypes.string,

@@ -103,7 +103,7 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
       ).then(res => {
-        dispatch(getTiktokPreviewAction(res.value)).then(() => dispatch(setFirstLoading(false)));
+        dispatch(getTiktokPreviewAction(res.payload)).then(() => dispatch(setFirstLoading(false)));
       });
     } else {
       dispatch(getObject(objName)).then(res => {
@@ -114,8 +114,8 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
             limit,
             newsPermlink: res?.value?.newsFeed?.permlink,
           }),
-        ).then(() => {
-          dispatch(getTiktokPreviewAction(res.value)).then(() => dispatch(setFirstLoading(false)));
+        ).then(p => {
+          dispatch(getTiktokPreviewAction(p.value)).then(() => dispatch(setFirstLoading(false)));
         });
         setNewsPermlink(res?.value?.newsFeed?.permlink);
         setCurrObj(res);

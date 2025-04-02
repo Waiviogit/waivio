@@ -1,21 +1,19 @@
 import { Transforms } from 'slate';
 
-export const insertTable = (editor, at) => {
+export const insertTable = editor => {
   const rows = 2;
   const columns = 2;
   const cellText = Array.from({ length: rows }, () => Array.from({ length: columns }, () => ''));
   const newTable = createTableNode(cellText);
 
-  if (at) {
-    Transforms.insertNodes(editor, newTable);
-  } else {
-    Transforms.insertNodes(editor, newTable);
-    Transforms.insertNodes(
-      editor,
-      { type: 'paragraph', children: [{ text: '' }] },
-      { mode: 'highest' },
-    );
-  }
+  Transforms.insertNodes(editor, newTable, {
+    at: editor.selection.anchor.path,
+  });
+  Transforms.insertNodes(
+    editor,
+    { type: 'paragraph', children: [{ text: '' }] },
+    { mode: 'highest' },
+  );
 };
 
 const createRow = (cellText, action) => {

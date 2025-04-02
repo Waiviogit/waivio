@@ -13,6 +13,7 @@ const limit = 10;
 const AddOnPage = () => {
   const [addOnObjects, setAddOnObjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
+  const [loading, setLoading] = useState(true);
   const wobject = useSelector(getObject);
   const locale = useSelector(getUsedLocale);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -20,6 +21,7 @@ const AddOnPage = () => {
   useEffect(() => {
     getAddOnObjectsFromDepartments(wobject.author_permlink, authUserName, locale, 0, limit).then(
       res => {
+        setLoading(false);
         setAddOnObjects(res.wobjects);
         setHasMore(res.hasMore);
       },
@@ -40,7 +42,9 @@ const AddOnPage = () => {
       });
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
       <InfiniteScroll
         className="Feed"

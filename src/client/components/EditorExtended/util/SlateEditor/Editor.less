@@ -7,23 +7,29 @@
     table-layout: fixed;
   }
 
+  .Story table,
+  .Body.Body--full tr,
+  .Story tr,
+  .Body.Body--full td,
+  .Story {
+    td {
+      border: 1px solid @black;
+    }
+
+    tr {
+      width: 100%;
+      max-width: 550px;
+    }
+
+    td {
+      height: 50px;
+      padding: 0 5px;
+      width: 100%;
+    }
+  }
+
   table,
   th,
-  td {
-    border: 1px solid @black;
-  }
-
-  tr {
-    width: 100%;
-    max-width: 550px;
-  }
-
-  td {
-    height: 50px;
-    padding: 0 5px;
-    width: 100%;
-  }
-
   .block-heading {
     padding-top: 0;
   }

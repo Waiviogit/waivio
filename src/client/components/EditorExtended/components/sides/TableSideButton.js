@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { ReactSVG } from 'react-svg';
-import { Editor, Node } from 'slate';
+import { Editor, Node, Transforms } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { insertTable } from '../../util/SlateEditor/utils/table';
 import { createEmptyNode } from '../../util/SlateEditor/utils/embed';
+import { insertTable } from '../../util/SlateEditor/utils/table';
 
 const isNestedTable = editor => {
   const { selection } = editor;
@@ -26,14 +26,21 @@ const isNestedTable = editor => {
 
   return false; // No nested table found
 };
+
 const TableSideButton = props => {
   const editor = useSlate();
+  const [anchorPath, setAnchor] = useState(editor.selection.anchor.path[0]);
 
   const onClick = () => {
     insertTable(editor);
     createEmptyNode(editor);
-    ReactEditor.focus(editor);
-    props.close();
+
+    setAnchor(editor.selection.anchor.path[0] ? editor.selection.anchor.path[0] - 1 : 0);
+    setTimeout(() => {
+      Transforms.select(editor, [anchorPath, 0, 0, 0]);
+      ReactEditor.focus(editor);
+      props.close();
+    }, 0);
   };
 
   return (

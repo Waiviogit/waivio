@@ -246,7 +246,7 @@ div[data-dir='rtl'] .Body {
   direction: ltr;
 }
 
-.Body,
+.Body.Body--full,
 .Story {
   table,
   tr,
@@ -254,6 +254,17 @@ div[data-dir='rtl'] .Body {
     border: 1px inset transparent;
     border-collapse: collapse;
     border-spacing: 0;
+
+    .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container {
+      height: 485px;
+    }
+
+    .PostFeedEmbed__container_instagram.PostFeedEmbed__container,
+    .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container,
+    .PostFeedEmbed__container.PostFeedEmbed__container--shotsPost,
+    .PostFeedEmbed__container_high {
+      width: 100% !important;
+    }
   }
 
   table {
