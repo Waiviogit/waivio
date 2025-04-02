@@ -34,12 +34,12 @@ const addAppHost = host => (typeof window === 'undefined' ? { 'app-host': host }
 const WAIVIdPool = 13;
 const REQUEST_TIMEOUT = 3000;
 const HIVE_ENGINE_NODES = [
+  'https://engine.waivio.com',
   'https://herpc.dtools.dev',
   'https://api.hive-engine.com/rpc',
   'https://enginerpc.com',
   'https://herpc.kanibot.com',
   'https://he.sourov.dev',
-  'https://engine.waivio.com',
 ];
 
 export function handleErrors(response) {
