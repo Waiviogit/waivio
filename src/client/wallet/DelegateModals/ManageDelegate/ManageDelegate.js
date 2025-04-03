@@ -99,7 +99,7 @@ const ManageDelegate = ({ intl }) => {
     setRequiredToken(token);
   };
   const stakinTokensList = () =>
-    tokensList.reduce((acc, curr) => {
+    tokensList?.reduce((acc, curr) => {
       if (curr.stakingEnabled) {
         const availableVotingPower = curr.stake;
 
