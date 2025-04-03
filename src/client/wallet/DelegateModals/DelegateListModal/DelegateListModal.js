@@ -40,6 +40,7 @@ const DelegateListModal = props => {
                     name={recive.from}
                     quantity={recive.quantity}
                     symbol={props.symbol}
+                    symbolOnly={props.isRc}
                   />
                 ))}
             </div>
@@ -63,6 +64,7 @@ const DelegateListModal = props => {
                     name={deligate.to}
                     quantity={deligate.quantity}
                     symbol={props.symbol}
+                    symbolOnly={props.isRc}
                   />
                 ))}
               {!isEmpty(props.undeligatedList) &&
@@ -74,6 +76,7 @@ const DelegateListModal = props => {
                       quantity={undeligate.quantity}
                       symbol={props.symbol}
                       pending
+                      symbolOnly={props.isRc}
                     />
                   ))}
             </div>
@@ -86,6 +89,7 @@ const DelegateListModal = props => {
 
 DelegateListModal.propTypes = {
   visible: PropsType.bool.isRequired,
+  isRc: PropsType.bool,
   toggleModal: PropsType.func.isRequired,
   recivedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
   symbol: PropsType.string.isRequired,

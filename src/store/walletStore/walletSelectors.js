@@ -96,6 +96,15 @@ export const getDelegationModalVisible = createSelector(
   [walletState],
   state => state.delegateVisible,
 );
+export const getDelegateRcModalVisible = createSelector(
+  [walletState],
+  state => state.delegateRcVisible,
+);
+export const getManageRcModalVisible = createSelector(
+  [walletState],
+  state => state.manageRcVisible,
+);
+export const getManageRcInfo = createSelector([walletState], state => state.delegatedRc);
 
 export const getUsersTransactions = createSelector([walletState], state => state.usersTransactions);
 
@@ -131,6 +140,7 @@ export const getLoadingEstAccountValue = createSelector(
   [walletState],
   state => state.loadingEstAccountValue,
 );
+export const getEditRcInfo = createSelector([walletState], state => state.editRcInfo);
 
 export const getLoadingGlobalProperties = createSelector(
   [walletState],
