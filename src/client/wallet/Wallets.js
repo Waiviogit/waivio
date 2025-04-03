@@ -52,8 +52,8 @@ const Wallets = props => {
     props.getGlobalProperties();
     // props.getTokenBalance('WAIV', props.match.params.name);
 
-    // if (!guestUserRegex.test(props.authUserName))
-    //   props.getUserTokensBalanceList(props.authUserName);
+    if (!guestUserRegex.test(props.authUserName))
+      props.getUserTokensBalanceList(props.authUserName);
 
     // if (!isGuestUser) {
     // props.getCurrUserTokensBalanceSwap(props.match.params.name); //e
@@ -118,7 +118,7 @@ const Wallets = props => {
 Wallets.propTypes = {
   intl: PropTypes.shape().isRequired,
   setWalletType: PropTypes.func.isRequired,
-
+  getUserTokensBalanceList: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
