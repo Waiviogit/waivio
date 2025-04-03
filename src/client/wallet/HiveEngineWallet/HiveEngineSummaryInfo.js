@@ -33,8 +33,6 @@ const HiveEngineSummaryInfo = props => {
 
   useEffect(() => {
     props.getHiveEngineStatus();
-    if (!guestUserRegex.test(props.authUserName))
-      props.getUserTokensBalanceList(props.authUserName);
 
     if (!isGuestUser) {
       props.getCurrUserTokensBalanceSwap(match.params.name);
@@ -100,7 +98,6 @@ const HiveEngineSummaryInfo = props => {
 
 HiveEngineSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
-  authUserName: PropTypes.string.isRequired,
   rates: PropTypes.shape({
     HIVE: PropTypes.number,
   }).isRequired,
@@ -112,7 +109,6 @@ HiveEngineSummaryInfo.propTypes = {
   swapList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   getHiveEngineStatus: PropTypes.func.isRequired,
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
-  getUserTokensBalanceList: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
 };
 
