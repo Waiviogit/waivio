@@ -25,7 +25,7 @@ const DelegateUserCard = props => (
           maximumFractionDigits={3}
           minimumFractionDigits={2}
         />{' '}
-        {props.symbol[0]}P
+        {props.symbolOnly ? props.symbol : `${props.symbol[0]}P`}
       </span>
     </div>
     {props.withEdit && (
@@ -46,6 +46,7 @@ DelegateUserCard.propTypes = {
   name: PropsType.string,
   quantityClassList: PropsType.string,
   pending: PropsType.bool,
+  symbolOnly: PropsType.bool,
 };
 
 DelegateUserCard.defaultProps = {
@@ -53,6 +54,7 @@ DelegateUserCard.defaultProps = {
   quantityClassList: '',
   pending: false,
   withEdit: false,
+  symbolOnly: false,
 };
 
 export default DelegateUserCard;

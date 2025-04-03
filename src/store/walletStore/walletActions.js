@@ -705,6 +705,22 @@ export const toggleDelegateModal = (modalType = delegationModalTypes.MANAGE, tok
     token,
   },
 });
+export const TOGGLE_DELEGATE_RC_MODAL = '@wallet/TOGGLE_DELEGATE_RC_MODAL';
+export const RESET_DELEGATE_RC_MODAL = '@wallet/RESET_DELEGATE_RC_MODAL';
+export const TOGGLE_MANAGE_RC_MODAL = '@wallet/TOGGLE_MANAGE_RC_MODAL';
+
+export const toggleDelegateRcModal = (isEdit, info) => ({
+  type: TOGGLE_DELEGATE_RC_MODAL,
+  payload: { isEdit, info },
+});
+
+export const resetDelegateRcModal = () => ({
+  type: RESET_DELEGATE_RC_MODAL,
+});
+export const toggleManageRcModal = (delegatedRc, rcBalance) => ({
+  type: TOGGLE_MANAGE_RC_MODAL,
+  payload: { delegatedRc, rcBalance },
+});
 
 export const SET_SHOW_REWARDS = '@wallet/SET_SHOW_REWARDS';
 

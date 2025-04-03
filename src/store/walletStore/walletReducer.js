@@ -7,6 +7,8 @@ const initialState = {
   transferVisible: false,
   transferTo: '',
   powerUpOrDownVisible: false,
+  editRcInfo: {},
+  delegatedRc: [],
   powerDown: false,
   totalVestingShares: '',
   totalVestingFundSteem: '',
@@ -46,6 +48,8 @@ const initialState = {
   tokensBalanceListForTransfer: [],
   depositVisible: false,
   delegateVisible: false,
+  delegateRcVisible: false,
+  manageRcVisible: false,
   showRewards: false,
   delegationModalType: delegationModalTypes.MANAGE,
   withdrawCurrency: 'eth',
@@ -530,6 +534,23 @@ export default function walletReducer(state = initialState, action) {
         delegateVisible: !state.delegateVisible,
         delegationModalType: action.payload.modalType,
         delegationToken: action.payload.token,
+      };
+    case walletActions.TOGGLE_DELEGATE_RC_MODAL:
+      return {
+        ...state,
+        editRcInfo: action.payload,
+        delegateRcVisible: !state.delegateRcVisible,
+      };
+    case walletActions.RESET_DELEGATE_RC_MODAL:
+      return {
+        ...state,
+        editRcInfo: {},
+      };
+    case walletActions.TOGGLE_MANAGE_RC_MODAL:
+      return {
+        ...state,
+        delegatedRc: action.payload,
+        manageRcVisible: !state.manageRcVisible,
       };
 
     default:

@@ -12,7 +12,9 @@ import {
   openTransfer,
   openWithdraw,
   toggleDelegateModal,
+  toggleDelegateRcModal,
   toggleDepositModal,
+  toggleManageRcModal,
 } from '../../../../../store/walletStore/walletActions';
 import {
   setDepositeSymbol,
@@ -70,6 +72,8 @@ const WalletAction = props => {
     },
     delegate: () =>
       dispatch(toggleDelegateModal(delegationModalTypes.DELEGATION, props.mainCurrency)),
+    delegate_rc: () => dispatch(toggleDelegateRcModal(false)),
+    manage_rc: () => dispatch(toggleManageRcModal(props.delegatedRc, props.rcBalance)),
     details: () => props.openDetailsModal(),
   };
 
@@ -156,6 +160,8 @@ WalletAction.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   mainKey: PropTypes.string.isRequired,
+  delegatedRc: PropTypes.shape(),
+  rcBalance: PropTypes.number,
   mainCurrency: PropTypes.string.isRequired,
   openDetailsModal: PropTypes.func.isRequired,
   swapCurrencyOptions: PropTypes.arrayOf(PropTypes.string),
