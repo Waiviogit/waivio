@@ -128,6 +128,8 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
     parentPermlink,
     jsonMetadata,
   } = { ...getEditor(state), isUpdating: currDraft?.isUpdating, ...data };
+  const tags = isEditPost ? data?.jsonMetadata?.tags : topics;
+
   const updatedEditor = { isEditPost };
 
   dispatch(setUpdatedEditorData(updatedEditor));
@@ -164,7 +166,7 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
 
   postData.jsonMetadata = createPostMetadata(
     content,
-    topics,
+    tags,
     oldMetadata,
     linkedObject?.map(obj => ({
       object_type: obj.object_type,
