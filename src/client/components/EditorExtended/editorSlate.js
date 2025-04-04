@@ -47,6 +47,7 @@ import {
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
+import { getParentTable, isSingleEmptyCellTable } from './util/SlateEditor/utils/table';
 
 const useEditor = props => {
   const editor = useMemo(
@@ -252,6 +253,19 @@ const EditorSlate = props => {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
+      if (node.type === 'table') {
+        const [tbl, at] = getParentTable(selection.anchor.path, editor);
+
+        if (isSingleEmptyCellTable(editor, tbl)) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+        }
+
+        return true;
+      }
       if (
         node.type === 'image' &&
         key !== path[0] &&
