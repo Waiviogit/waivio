@@ -33,7 +33,14 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
-import { getHbdConversion, getHiveConversion, getHiveDelegate } from '../../../waivioApi/ApiClient';
+import {
+  getDelegatedRc,
+  getHbdConversion,
+  getHiveConversion,
+  getHiveDelegate,
+  getIncomingRcDelegations,
+  getRcByAccount,
+} from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
@@ -59,6 +66,12 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
   const days = hours > 24 ? Math.ceil(hours / 24) : 0;
 
   return days > 0 ? days : 0;
+};
+const calculateTotalRc = (delegated, received, total) => {
+  const d = delegated?.reduce((acc, val) => acc - val.delegated_rc, 0);
+  const r = received?.reduce((acc, val) => acc - val.rc, 0);
+
+  return total - d + r;
 };
 
 const calculateDaysWithSeconds = timestamp => {
@@ -165,14 +178,18 @@ const UserWalletSummary = ({
 }) => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
+  const [delegatedRc, setDelegatedRc] = useState([]);
+  const [inDelegatedRc, setInDelegatedRc] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [savingsInfo, setSavingsInfo] = useState([]);
   const [conversionHiveInfo, setConversionHiveInfo] = useState([]);
   const [conversionHbdInfo, setConversionHbdInfo] = useState([]);
   const [savingSymbol, setSavingSymbol] = useState('');
   const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
+  const [rcInfo, setRcInfo] = useState({});
   const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
   const [visible, setVisible] = useState(false);
+  const [visibleRcDetails, setVisibleRcDetails] = useState(false);
   const [showCancelPowerDown, setShowCancelPowerDown] = useState(false);
   const [showCancelWithdrawSavings, setShowCancelWithdrawSavings] = useState(false);
   const [showPowerDownProgress, setPowerDownProgress] = useState(false);
@@ -182,6 +199,8 @@ const UserWalletSummary = ({
   const interestRate = useSelector(getHbdInterestRate);
   const hiveAuth = Cookie.get('auth');
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
+  const billion = 1000000000;
+  const rcBalance = calculateTotalRc(delegatedRc, inDelegatedRc, rcInfo?.max_rc) / billion;
   const estimateInterestBalance = hiveAccount => {
     const {
       savings_hbd_seconds,
@@ -294,6 +313,9 @@ const UserWalletSummary = ({
     };
 
     fetchWithdrawals();
+    getDelegatedRc(user.name).then(r => setDelegatedRc(r?.rc_direct_delegations));
+    getRcByAccount(user.name).then(r => setRcInfo(r?.rc_accounts[0]));
+    getIncomingRcDelegations(user.name).then(r => setInDelegatedRc(r));
     getHiveConversion(user.name).then(r => setConversionHiveInfo(r));
     getHbdConversion(user.name).then(r => setConversionHbdInfo(r));
   }, [user.name]);
@@ -464,7 +486,11 @@ const UserWalletSummary = ({
               <p className="UserWalletSummary__description">
                 <FormattedMessage id="staked_hive_tokens" defaultMessage="Staked HIVE tokens" />
               </p>
-              <WalletAction mainCurrency={'HP'} mainKey={'delegate'} options={['power_down']} />
+              <WalletAction
+                mainCurrency={'HP'}
+                mainKey={'delegate'}
+                options={['power_down', 'delegate_rc']}
+              />
             </div>
             {user.to_withdraw !== 0 && (
               <div className="UserWalletSummary__itemWrap--no-border">
@@ -530,6 +556,37 @@ const UserWalletSummary = ({
                   <p className="UserWalletSummary__description">Delegations to/from other users</p>
                   {isAuth && (
                     <WalletAction mainKey={'manage'} options={['delegate']} mainCurrency={'HP'} />
+                  )}
+                </div>
+              </div>
+            )}
+            {!isEmpty(delegatedRc) && (
+              <div className="UserWalletSummary__itemWrap--no-border last-block">
+                <div className="UserWalletSummary__item">
+                  <div className="UserWalletSummary__label power-down">
+                    <FormattedMessage id="rc_delegations" defaultMessage="RC Delegations" />
+                  </div>
+                  <div className={powerClassList} onClick={() => setVisibleRcDetails(true)}>
+                    {user.fetching || loadingGlobalProperties ? (
+                      <Loading />
+                    ) : (
+                      <span>
+                        {rcBalance.toFixed(2)}
+                        {'b RC'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="UserWalletSummary__actions">
+                  <p className="UserWalletSummary__description">Resource credit delegations</p>
+                  {isAuth && !isEmpty(delegatedRc) && (
+                    <WalletAction
+                      mainKey={'manage_rc'}
+                      delegatedRc={delegatedRc}
+                      rcBalance={rcBalance}
+                      withoutOptions
+                      mainCurrency={'HP'}
+                    />
                   )}
                 </div>
               </div>
@@ -792,6 +849,18 @@ const UserWalletSummary = ({
           symbol={'HP'}
         />
       )}
+      <DelegateListModal
+        visible={visibleRcDetails}
+        toggleModal={setVisibleRcDetails}
+        deligateList={delegatedRc?.map(i => ({ ...i, quantity: i.delegated_rc / billion }))}
+        recivedList={inDelegatedRc?.map(i => ({
+          ...i,
+          from: i.delegator,
+          quantity: i.rc / billion,
+        }))}
+        symbol={'b Rc'}
+        isRc
+      />
       {showCancelPowerDown && (
         <CancelPowerDownModal
           account={user.name}
