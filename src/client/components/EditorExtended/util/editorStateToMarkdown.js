@@ -354,6 +354,10 @@ export function editorStateToMarkdownSlate(value) {
           type: 'tableCell',
           children: next(node.children),
         }),
+        // thematicBreak: (node, next) => ({
+        //   type: 'thematicBreak',
+        //   children: next(node.children),
+        // }),
       },
     })
     .use(remarkGfm)
