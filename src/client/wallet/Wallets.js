@@ -37,7 +37,7 @@ import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
 import ConvertHbdModal from './ConvertHbdModal/ConvertHbdModal';
-import DelegateRcModal from './DelegateModals/ManageDelegateRc/DelegateRcModal';
+import DelegateRcModal from './DelegateModals/DelegateRc/DelegateRcModal';
 import ManageRcDelegations from './DelegateModals/ManageRcDelegations/ManageRcDelegations';
 import './Wallets.less';
 

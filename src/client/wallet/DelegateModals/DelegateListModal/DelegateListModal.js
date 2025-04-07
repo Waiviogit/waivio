@@ -14,10 +14,10 @@ const DelegateListModal = props => {
       {type}:{' '}
       <FormattedNumber
         value={list.reduce((acc, curr) => acc + +curr.quantity, 0)}
-        minimumFractionDigits={2}
+        minimumFractionDigits={props.isRc ? 0 : 2}
         maximumFractionDigits={2}
-      />{' '}
-      {props.symbol}
+      />
+      {props.isRc ? props.symbol : ` ${props.symbol}`}
     </React.Fragment>
   );
 
@@ -36,6 +36,7 @@ const DelegateListModal = props => {
                 .sort((a, b) => b.quantity - a.quantity)
                 .map(recive => (
                   <DelegateUserCard
+                    minimumFractionDigits={props.isRc ? 0 : 2}
                     key={recive._id}
                     name={recive.from}
                     quantity={recive.quantity}
@@ -60,6 +61,7 @@ const DelegateListModal = props => {
                 .sort((a, b) => b.quantity - a.quantity)
                 .map(deligate => (
                   <DelegateUserCard
+                    minimumFractionDigits={props.isRc ? 0 : 2}
                     key={deligate._id}
                     name={deligate.to}
                     quantity={deligate.quantity}
@@ -72,6 +74,7 @@ const DelegateListModal = props => {
                   .sort((a, b) => b.quantity - a.quantity)
                   .map(undeligate => (
                     <DelegateUserCard
+                      minimumFractionDigits={props.isRc ? 0 : 2}
                       key={undeligate._id}
                       quantity={undeligate.quantity}
                       symbol={props.symbol}
