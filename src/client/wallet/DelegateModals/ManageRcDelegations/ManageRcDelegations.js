@@ -35,7 +35,7 @@ const ManageRcDelegations = () => {
           onClick={cancelModal}
           className="EditDelegationModal__cancel-button"
         >
-          Cancel
+          Close
         </Button>,
       ]}
     >

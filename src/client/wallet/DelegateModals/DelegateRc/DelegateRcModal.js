@@ -93,10 +93,13 @@ const DelegateRcModal = () => {
             <b>Target account:</b>
           </div>
           {!_.isEmpty(user) ? (
-            <SelectUserForAutocomplete
-              resetUser={!modalInfo?.isEdit ? setUser('') : undefined}
-              account={user}
-            />
+            <>
+              {modalInfo?.isEdit ? (
+                <SelectUserForAutocomplete account={user} />
+              ) : (
+                <SelectUserForAutocomplete resetUser={() => setUser('')} account={user} />
+              )}
+            </>
           ) : (
             <SearchUsersAutocomplete
               handleSelect={u => setUser(u.account)}
@@ -146,7 +149,7 @@ const DelegateRcModal = () => {
           </Button>
           <Button
             type={'primary'}
-            disabled={modalInfo?.isEdit && _.isEmpty(amount)}
+            disabled={modalInfo?.isEdit && !amount}
             onClick={() => {
               delegateRC();
               dispatch(resetDelegateRcModal());
