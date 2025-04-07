@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { FormattedNumber } from 'react-intl';
 import {
   getManageRcInfo,
   getManageRcModalVisible,
@@ -18,20 +19,34 @@ const ManageRcDelegations = () => {
   const dispatch = useDispatch();
   const billion = 1000000000;
 
+  const cancelModal = () => {
+    dispatch(toggleManageRcModal());
+  };
+
   return (
     <Modal
       visible={visible}
-      onCancel={() => dispatch(toggleManageRcModal())}
-      footer={null}
+      onCancel={cancelModal}
       title={'Manage RC delegations'}
       wrapClassName={'ManageRcDelegations'}
+      footer={[
+        <Button
+          key={'close-btn'}
+          onClick={cancelModal}
+          className="EditDelegationModal__cancel-button"
+        >
+          Cancel
+        </Button>,
+      ]}
     >
       <div>
         <p>
           <b>Resource Credits (RC)</b>
         </p>
 
-        <p>Available for delegations: {info.rcBalance}b RC</p>
+        <p>
+          Available for delegations: <FormattedNumber value={info.rcBalance.toFixed(2)} />b RC
+        </p>
         <div className="TokenManage__list">
           {info?.delegatedRc?.map(item => (
             <DelegateUserCard
@@ -45,6 +60,8 @@ const ManageRcDelegations = () => {
                 dispatch(toggleDelegateRcModal(true, item));
               }}
               withEdit
+              symbolOnly
+              minimumFractionDigits={0}
             />
           ))}
         </div>

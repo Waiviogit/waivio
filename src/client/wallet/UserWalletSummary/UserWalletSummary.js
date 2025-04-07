@@ -571,7 +571,7 @@ const UserWalletSummary = ({
                       <Loading />
                     ) : (
                       <span>
-                        {rcBalance.toFixed(2)}
+                        <FormattedNumber value={rcBalance.toFixed(2)} />
                         {'b RC'}
                       </span>
                     )}
@@ -584,7 +584,7 @@ const UserWalletSummary = ({
                       mainKey={'manage_rc'}
                       delegatedRc={delegatedRc}
                       rcBalance={rcBalance}
-                      withoutOptions
+                      options={['delegate_rc']}
                       mainCurrency={'HP'}
                     />
                   )}
@@ -858,7 +858,7 @@ const UserWalletSummary = ({
           from: i.delegator,
           quantity: i.rc / billion,
         }))}
-        symbol={'b Rc'}
+        symbol={'b RC'}
         isRc
       />
       {showCancelPowerDown && (
