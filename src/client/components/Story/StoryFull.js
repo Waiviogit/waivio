@@ -41,6 +41,7 @@ import Campaing from '../../newRewards/reuseble/Campaing';
 import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import CommentForm from '../Comments/CommentForm';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+import InstacartWidget from '../../widgets/InstacartWidget';
 import './StoryFull.less';
 
 @injectIntl
@@ -486,18 +487,7 @@ class StoryFull extends React.Component {
                 </span>
               ))}
             </div>
-            <div
-              id={'shop-with-instacart-v1'}
-              className={'shop-with-instacart-v1'}
-              data-affiliate_id={instacardAff?.affiliateCode}
-              data-source_origin="affiliate_hub"
-              data-affiliate_platform="recipe_widget"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: '10px',
-              }}
-            />
+            <InstacartWidget className={'shop-with-instacart-v1'} instacartAff={instacardAff} />
           </React.Fragment>
         )}
 

@@ -79,6 +79,7 @@ import { getFeedFromState } from '../../../common/helpers/stateHelpers';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
+import InstacartWidget from '../../widgets/InstacartWidget';
 
 const limit = 30;
 
@@ -480,15 +481,10 @@ const SocialProduct = ({
                 {price}
               </div>
               {!showPostModal && isRecipe && instacardAff && (
-                <div
+                <InstacartWidget
+                  isProduct
                   className={'SocialProduct__instacard'}
-                  id={'shop-with-instacart-v1'}
-                  data-affiliate_id={instacardAff?.affiliateCode}
-                  data-source_origin="affiliate_hub"
-                  data-affiliate_platform="recipe_widget"
-                  style={{
-                    marginBottom: '15px',
-                  }}
+                  instacartAff={instacardAff}
                 />
               )}
               {showRecipeFields && isRecipe && (

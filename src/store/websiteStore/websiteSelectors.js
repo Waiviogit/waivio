@@ -22,6 +22,7 @@ export const getCreateWebsiteLoading = createSelector([websiteState], state =>
 export const getManage = createSelector([websiteState], state => get(state, 'manage'));
 
 export const getReports = createSelector([websiteState], state => get(state, 'reports'));
+export const getActions = createSelector([websiteState], state => get(state, 'actions'));
 export const getShowPaypal = createSelector([websiteState], state => get(state, 'showPayPal'));
 
 export const getOwnWebsites = createSelector([websiteState], state =>
