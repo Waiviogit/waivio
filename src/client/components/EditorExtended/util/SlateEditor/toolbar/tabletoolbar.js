@@ -30,7 +30,7 @@ const TableToolbar = props => {
   }, [editor, selection]);
 
   const handleRemoveTable = e => {
-    const [, path] = getParentTable(selection.anchor.path);
+    const [, path] = getParentTable(selection.anchor.path, editor);
 
     Transforms.removeNodes(editor, {
       at: path,
@@ -42,7 +42,7 @@ const TableToolbar = props => {
 
   const handleInsertRow = () => {
     if (!!selection && Range.isCollapsed(selection)) {
-      const [oldTable, path] = getParentTable(selection.anchor.path);
+      const [oldTable, path] = getParentTable(selection.anchor.path, editor);
 
       handleRemoveTable();
       insertCells(editor, oldTable, path, 'row');

@@ -35,6 +35,7 @@ import {
   focusEditorToStart,
   removeAllInlineFormats,
   resetEditorState,
+  toggleBlock,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import {
@@ -47,7 +48,11 @@ import {
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
-import { getParentTable, isSingleEmptyCellTable } from './util/SlateEditor/utils/table';
+import {
+  getParentTable,
+  isSingleEmptyCellTable,
+  getParentList,
+} from './util/SlateEditor/utils/table';
 
 const useEditor = props => {
   const editor = useMemo(
@@ -229,6 +234,13 @@ const EditorSlate = props => {
 
       removeAllInlineFormats(editor);
 
+      if (selectedElement.type === 'listItem' && selectedElement.children[0].text === '') {
+        const [list] = getParentList(selection.anchor.path, editor);
+
+        event.preventDefault();
+        toggleBlock(editor, list.type);
+      }
+
       if (
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
@@ -253,6 +265,20 @@ const EditorSlate = props => {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
+      if (['unorderedList', 'orderedList'].includes(node.type)) {
+        const [, at] = getParentList(selection.anchor.path, editor);
+
+        if (node.children.length === 1 && node.children[0].children.length === 1) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+        }
+
+        return true;
+      }
+
       if (node.type === 'table') {
         const [tbl, at] = getParentTable(selection.anchor.path, editor);
 
@@ -266,6 +292,7 @@ const EditorSlate = props => {
 
         return true;
       }
+
       if (
         node.type === 'image' &&
         key !== path[0] &&
