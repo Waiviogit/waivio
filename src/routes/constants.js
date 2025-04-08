@@ -139,6 +139,7 @@ export default {
       'create',
       'manage',
       'payments',
+      'actions',
       'new-accounts',
       'data-import',
       'message-bot',

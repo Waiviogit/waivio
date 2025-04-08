@@ -25,9 +25,9 @@ import {
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import HeartButton from '../widgets/HeartButton';
-
-import '../components/ObjectHeader.less';
 import OBJECT_TYPE from './const/objectTypes';
+import InstacartWidget from '../widgets/InstacartWidget';
+import '../components/ObjectHeader.less';
 
 const WobjHeader = ({
   isEditMode,
@@ -156,18 +156,7 @@ const WobjHeader = ({
         </div>
       </div>
       {!showPostModal && isRecipe && instacardAff && (
-        <div
-          id={'shop-with-instacart-v1'}
-          className={'shop-with-instacart-v1'}
-          data-affiliate_id={instacardAff?.affiliateCode}
-          data-source_origin="affiliate_hub"
-          data-affiliate_platform="recipe_widget"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: '10px',
-          }}
-        />
+        <InstacartWidget className={'shop-with-instacart-v1'} instacartAff={instacardAff} />
       )}
     </div>
   );
