@@ -110,6 +110,26 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.underline && { underline: true }),
           ...(node.children && { children: next(node.children) }),
         }),
+        tableCell: (node, next) => {
+          const children = node.children.reduce((acc, child) => {
+            if (child.type === 'html' && child.value === '<br />') {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: [{ type: 'text', value: '' }],
+                },
+              ];
+            }
+
+            return [...acc, child];
+          }, []);
+
+          return {
+            type: node.type,
+            children: next(children),
+          };
+        },
       },
     });
   const _body = body

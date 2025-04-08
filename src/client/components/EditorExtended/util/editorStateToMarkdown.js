@@ -350,10 +350,30 @@ export function editorStateToMarkdownSlate(value) {
           type: 'tableRow',
           children: next(node.children),
         }),
-        tableCell: (node, next) => ({
-          type: 'tableCell',
-          children: next(node.children),
-        }),
+        tableCell: (node, next) => {
+          const children = node.children.reduce((acc, child) => {
+            if (
+              child.children &&
+              !child.children[0].text &&
+              node.children.some(c => c.children.some(c1 => c1.text))
+            ) {
+              return [
+                ...acc,
+                {
+                  ...child,
+                  children: [{ type: 'html', children: [{ text: `<br />` }] }],
+                },
+              ];
+            }
+
+            return [...acc, child];
+          }, []);
+
+          return {
+            type: 'tableCell',
+            children: next(children),
+          };
+        },
         // thematicBreak: (node, next) => ({
         //   type: 'thematicBreak',
         //   children: next(node.children),
