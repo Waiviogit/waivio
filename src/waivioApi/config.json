@@ -270,5 +270,6 @@
   "cancel": "/cancel",
   "id": "/id",
   "rcDelegations": "/rc-delegations",
-  "incoming": "/incoming"
+  "incoming": "/incoming",
+  "buyActions": "/buy-actions"
 }
