@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Transforms, Editor } from 'slate';
 
 export const insertTable = editor => {
@@ -72,6 +73,18 @@ export const getParentTable = (path, editor) => {
   }
 
   return getParentTable(parent[1], editor);
+};
+
+export const getParentList = (path, editor, listType) => {
+  if (isEmpty(path)) return null;
+
+  const parent = Editor.parent(editor, path);
+
+  if (parent[0].type === listType) {
+    return parent;
+  }
+
+  return getParentList(parent[1], editor, listType);
 };
 
 export const isSingleEmptyCellTable = (editor, node) => {
