@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedNumber } from 'react-intl';
@@ -12,12 +12,22 @@ import {
   toggleManageRcModal,
 } from '../../../../store/walletStore/walletActions';
 import './ManageRcDelegations.less';
+import { getRcByAccount } from '../../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 const ManageRcDelegations = () => {
   const visible = useSelector(getManageRcModalVisible);
   const info = useSelector(getManageRcInfo);
+  const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const billion = 1000000000;
+  const [rcInfo, setRcInfo] = React.useState({ max_rc: 0 });
+
+  const billionRc = rcInfo ? rcInfo?.max_rc / billion : 0;
+
+  useEffect(() => {
+    getRcByAccount(authUserName).then(r => setRcInfo(r?.rc_accounts[0]));
+  }, []);
 
   const cancelModal = () => {
     dispatch(toggleManageRcModal());
@@ -45,7 +55,7 @@ const ManageRcDelegations = () => {
         </p>
 
         <p>
-          Available for delegations: <FormattedNumber value={info.rcBalance.toFixed(2)} />b RC
+          Available for delegations: <FormattedNumber value={billionRc.toFixed(2)} />b RC
         </p>
         <div className="TokenManage__list">
           {info?.delegatedRc?.map(item => (
