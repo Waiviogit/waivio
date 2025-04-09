@@ -122,6 +122,16 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               ];
             }
 
+            if (child.type === 'text') {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: [{ type: 'text', value: child.value }],
+                },
+              ];
+            }
+
             return [...acc, child];
           }, []);
 

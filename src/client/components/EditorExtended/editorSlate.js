@@ -241,6 +241,11 @@ const EditorSlate = props => {
         toggleBlock(editor, list.type);
       }
 
+      if (selectedElement.type === 'image') {
+        event.preventDefault();
+        Transforms.insertNodes(editor, createParagraph(''), { at: [0] });
+      }
+
       if (
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
