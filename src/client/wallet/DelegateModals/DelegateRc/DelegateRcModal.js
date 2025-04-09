@@ -149,7 +149,7 @@ const DelegateRcModal = () => {
           </Button>
           <Button
             type={'primary'}
-            disabled={modalInfo?.isEdit && !amount}
+            disabled={modalInfo?.isEdit && !amount && _.isEmpty(amount)}
             onClick={() => {
               delegateRC();
               dispatch(resetDelegateRcModal());
