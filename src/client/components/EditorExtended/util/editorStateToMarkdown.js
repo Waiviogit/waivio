@@ -354,11 +354,31 @@ export function editorStateToMarkdownSlate(value) {
           const children = node.children.reduce((acc, child, i) => {
             if (node.children.length - 1 === i) return [...acc, child];
 
+            if (
+              child.children &&
+              !child.children[0].text &&
+              node.children.some(c => c.children.some(c1 => c1.text))
+            ) {
+              return [
+                ...acc,
+                {
+                  ...child,
+                  children: [{ type: 'html', children: [{ text: `<p>&nbsp;</p>` }] }],
+                },
+              ];
+            }
+
             return [
               ...acc,
               {
                 ...child,
-                children: [...child.children, { type: 'html', children: [{ text: `<br />` }] }],
+                children: [
+                  ...child.children,
+                  {
+                    ...child,
+                    children: [{ type: 'html', children: [{ text: `<br />` }] }],
+                  },
+                ],
               },
             ];
           }, []);
