@@ -351,22 +351,16 @@ export function editorStateToMarkdownSlate(value) {
           children: next(node.children),
         }),
         tableCell: (node, next) => {
-          const children = node.children.reduce((acc, child) => {
-            if (
-              child.children &&
-              !child.children[0].text &&
-              node.children.some(c => c.children.some(c1 => c1.text))
-            ) {
-              return [
-                ...acc,
-                {
-                  ...child,
-                  children: [{ type: 'html', children: [{ text: `<br />` }] }],
-                },
-              ];
-            }
+          const children = node.children.reduce((acc, child, i) => {
+            if (node.children.length - 1 === i) return [...acc, child];
 
-            return [...acc, child];
+            return [
+              ...acc,
+              {
+                ...child,
+                children: [...child.children, { type: 'html', children: [{ text: `<br />` }] }],
+              },
+            ];
           }, []);
 
           return {
