@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, debounce } from 'lodash';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -20,15 +20,8 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import { getWebsites } from '../../../../waivioApi/ApiClient';
 
 const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userName }) => {
-  const [searchString, setSearchString] = useState('');
   const [sites, setSites] = useState([]);
-  const handleSearchHost = useCallback(
-    debounce(value => setSearchString(value), 300),
-    [],
-  );
-  const showingParentList = searchString
-    ? sites.filter(host => host.includes(searchString))
-    : sites;
+
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
 
@@ -75,20 +68,20 @@ const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userN
               <h3>
                 <span className="ant-form-item-required">
                   {intl.formatMessage({
-                    id: 'select_website_template',
+                    id: 'select_website',
                     defaultMessage: 'Select the website:',
                   })}
                 </span>
               </h3>
               {getFieldDecorator('host')(
-                <AutoComplete onChange={handleSearchHost}>
+                <AutoComplete>
                   <AutoComplete.Option key={'all'}>
                     {intl.formatMessage({
                       id: 'all',
                       defaultMessage: 'All',
                     })}
                   </AutoComplete.Option>
-                  {showingParentList?.map(domain => (
+                  {sites?.map(domain => (
                     <AutoComplete.Option key={domain} value={domain}>
                       {domain}
                     </AutoComplete.Option>

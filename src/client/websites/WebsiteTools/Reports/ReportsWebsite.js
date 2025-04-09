@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, map, ceil, debounce } from 'lodash';
+import { isEmpty, map, ceil } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -19,14 +19,6 @@ import './ReportsWebsite.less';
 import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currency }) => {
-  const [searchString, setSearchString] = useState('');
-  const handleSearchHost = useCallback(
-    debounce(value => setSearchString(value), 300),
-    [],
-  );
-  const showingParentList = searchString
-    ? reportsInfo.ownerAppNames.filter(host => host.includes(searchString))
-    : reportsInfo.ownerAppNames;
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
   const mappedPayments = map(reportsInfo.payments, payment => {
@@ -93,20 +85,20 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
               <h3>
                 <span className="ant-form-item-required">
                   {intl.formatMessage({
-                    id: 'select_website_template',
+                    id: 'select_website',
                     defaultMessage: 'Select the website:',
                   })}
                 </span>
               </h3>
               {getFieldDecorator('host')(
-                <AutoComplete onChange={handleSearchHost}>
+                <AutoComplete>
                   <AutoComplete.Option key={'all'}>
                     {intl.formatMessage({
                       id: 'all',
                       defaultMessage: 'All',
                     })}
                   </AutoComplete.Option>
-                  {showingParentList.map(domain => (
+                  {reportsInfo.ownerAppNames.map(domain => (
                     <AutoComplete.Option key={domain} value={domain}>
                       {domain}
                     </AutoComplete.Option>
