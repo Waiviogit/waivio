@@ -112,7 +112,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
         }),
         tableCell: (node, next) => {
           const children = node.children.reduce((acc, child) => {
-            if (child.type === 'html' && child.value === '<br />') {
+            if (child.type === 'html' && child.value === '<p />') {
               return [
                 ...acc,
                 {
@@ -120,6 +120,10 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
                   children: [{ type: 'text', value: '' }],
                 },
               ];
+            }
+
+            if (child.type === 'html' && child.value === '<br />') {
+              return acc;
             }
 
             if (child.type === 'text') {
@@ -153,7 +157,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
   let postParsed = [];
 
   _body.split('\n\n\n').forEach(i => {
-    const blocks = processor.processSync(i.replaceAll(`&#xA;`, '<br />')).result;
+    const blocks = processor.processSync(i.replaceAll('<p>&nbsp;</p>', '<p />')).result;
 
     if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];
