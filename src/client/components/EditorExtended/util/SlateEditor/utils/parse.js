@@ -153,7 +153,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
   let postParsed = [];
 
   _body.split('\n\n\n').forEach(i => {
-    const blocks = processor.processSync(i).result;
+    const blocks = processor.processSync(i.replaceAll(`&#xA;`, '<br />')).result;
 
     if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];
