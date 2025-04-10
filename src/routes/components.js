@@ -107,7 +107,7 @@ export default {
   ConfirmationModal: loableComponent(import('../client/widgets/ConfirmationModal')),
   CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreatePage')),
   ManageWebsite: loableComponent(import('../client/websites/WebsiteTools/Manage/ManageWebsite')),
-  ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/ReportsWebsite')),
+  ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/Reports')),
   SwitchConfigPage: loableComponent(
     import('../client/websites/WebsiteTools/Configuration/SwitchConfigPage'),
   ),

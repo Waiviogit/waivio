@@ -1,4 +1,5 @@
-import { Transforms } from 'slate';
+import { isEmpty } from 'lodash';
+import { Transforms, Editor } from 'slate';
 
 export const insertTable = editor => {
   const rows = 2;
@@ -64,15 +65,37 @@ export const insertCells = (editor, tableNode, path, action) => {
   });
 };
 
-export const insertNestedTable = editor => {
-  const { selection } = editor;
+export const getParentTable = (path, editor) => {
+  const parent = Editor.parent(editor, path);
 
-  if (selection) {
-    const { path } = selection.anchor;
-    const node = editor.children[path[0]]?.children[path[1]].children[path[2]];
-
-    if (node.type === 'tableCell') {
-      insertTable(editor, path);
-    }
+  if (parent[0].type === 'table') {
+    return parent;
   }
+
+  return getParentTable(parent[1], editor);
+};
+
+export const getParentList = (path, editor, listType) => {
+  if (isEmpty(path)) return null;
+
+  const parent = Editor.parent(editor, path);
+
+  if (parent[0].type === listType) {
+    return parent;
+  }
+
+  return getParentList(parent[1], editor, listType);
+};
+
+export const isSingleEmptyCellTable = (editor, node) => {
+  if (node.type !== 'table') return false;
+
+  const [row] = node.children;
+
+  if (row.children.length !== 1) return false;
+
+  const [cell] = row.children;
+  const [paragraph] = cell.children;
+
+  return cell.children.length === 1 && (paragraph.text === '' || paragraph.children[0].text === '');
 };

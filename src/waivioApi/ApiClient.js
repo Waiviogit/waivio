@@ -2501,6 +2501,52 @@ export const getHiveFeedHistory = () =>
     .then(r => r.result)
     .catch(e => e);
 
+export const getDelegatedRc = user =>
+  fetch('https://api.hive.blog/', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 10,
+      jsonrpc: '2.0',
+      method: 'rc_api.list_rc_direct_delegations',
+      params: {
+        start: [user, ''],
+        limit: 1000,
+      },
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
+
+export const getRcByAccount = user =>
+  fetch('https://api.hive.blog/', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 8,
+      jsonrpc: '2.0',
+      method: 'rc_api.find_rc_accounts',
+      params: { accounts: [user, ''] },
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
+
+export const getIncomingRcDelegations = delegatee =>
+  fetch(
+    `${config.apiPrefix}${config.users}${config.rcDelegations}${config.incoming}?delegatee=${delegatee}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getHiveConversion = user =>
   fetch('https://api.hive.blog/', {
     method: 'POST',
@@ -4816,6 +4862,26 @@ export const cancelPayPalSubscription = (host, userName) =>
   )
     .then(res => res.json())
     .then(res => res)
+    .catch(e => e);
+
+export const websiteStatisticsAction = () =>
+  fetch(`${config.apiPrefix}${config.sites}${config.statistics}${config.buyActions}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify({}),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const websiteStatisticsReport = formData =>
+  fetch(`${config.apiPrefix}${config.sites}${config.statistics}${config.report}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify(formData),
+  })
+    .then(res => res.json())
+    .then(res => res.result)
     .catch(e => e);
 
 export const getCreditsByAdminList = (admin, skip, limit = 50) =>

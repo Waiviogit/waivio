@@ -1,47 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, map, ceil } from 'lodash';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import Loading from '../../../components/Icon/Loading';
 import { selectFormatDate } from '../../../wallet/WalletHelper';
-import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
-import { getReportsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
+import { configActionsWebsitesTableHeader } from '../../constants/tableConfig';
+import { getActionsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
-import { getReports } from '../../../../store/websiteStore/websiteSelectors';
+import { getActions } from '../../../../store/websiteStore/websiteSelectors';
 
 import './ReportsWebsite.less';
-import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getWebsites } from '../../../../waivioApi/ApiClient';
 
-const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currency }) => {
+const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userName }) => {
+  const [sites, setSites] = useState([]);
+
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
-  const mappedPayments = map(reportsInfo.payments, payment => {
-    let message =
-      payment.type === 'transfer'
-        ? `Payment to ${payment.transferTo}`
-        : `${payment.host} hosting fee`;
-
-    if (payment.description)
-      message = payment.host ? `${payment.host} ${payment.description}` : payment.description;
-
-    return {
-      ...payment,
-      balance: ceil(payment.balance * payment.currencyRate, 3),
-      amount: ceil(payment.amount * payment.currencyRate, 3),
-      message,
-    };
-  });
 
   useEffect(() => {
-    if (!isEmpty(currency.type)) getReportsInfo({ currency: currency.type });
-  }, [currency]);
-
+    getActionsInfo();
+    getWebsites(userName).then(list => setSites(list.map(i => i.host)));
+  }, []);
   const disabledDate = current => current > moment().endOf('day');
 
   const handleSubmit = e => {
@@ -58,10 +45,9 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
               }
             : {}),
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
-          currency: currency.type,
         };
 
-        getReportsInfo(formData);
+        getActionsInfo(formData);
       }
     });
   };
@@ -75,10 +61,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
       ) : (
         <React.Fragment>
           <h1>
-            <FormattedMessage
-              id="payments_reports_websites"
-              defaultMessage="Reports for websites:"
-            />
+            <FormattedMessage id="payments_actions_website" defaultMessage="Actions on website" />:
           </h1>
           <Form onSubmit={handleSubmit}>
             <Form.Item>
@@ -98,7 +81,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
                       defaultMessage: 'All',
                     })}
                   </AutoComplete.Option>
-                  {reportsInfo.ownerAppNames.map(domain => (
+                  {sites?.map(domain => (
                     <AutoComplete.Option key={domain} value={domain}>
                       {domain}
                     </AutoComplete.Option>
@@ -158,8 +141,8 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
             </Form.Item>
           </Form>
           <DynamicTbl
-            header={configReportsWebsitesTableHeader(currency.type)}
-            bodyConfig={mappedPayments}
+            header={configActionsWebsitesTableHeader}
+            bodyConfig={reportsInfo?.payments}
           />
         </React.Fragment>
       )}
@@ -167,29 +150,29 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
   );
 };
 
-ReportsWebsite.propTypes = {
+ActionsWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
-  currency: PropTypes.string,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     validateFields: PropTypes.func,
     isFieldsTouched: PropTypes.func,
   }).isRequired,
-  getReportsInfo: PropTypes.func.isRequired,
+  getActionsInfo: PropTypes.func.isRequired,
   reportsInfo: PropTypes.shape({
     ownerAppNames: PropTypes.arrayOf(PropTypes.string),
     payments: PropTypes.arrayOf({}),
   }).isRequired,
   locale: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default connect(
   state => ({
-    reportsInfo: getReports(state),
+    reportsInfo: getActions(state),
     locale: getLocale(state),
-    currency: getCurrentCurrency(state),
+    userName: getAuthenticatedUserName(state),
   }),
   {
-    getReportsInfo: getReportsWebsiteInfo,
+    getActionsInfo: getActionsWebsiteInfo,
   },
-)(Form.create()(injectIntl(ReportsWebsite)));
+)(Form.create()(injectIntl(ActionsWebsite)));

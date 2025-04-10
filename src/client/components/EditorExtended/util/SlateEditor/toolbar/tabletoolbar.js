@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
-import { Editor, Transforms, Range } from 'slate';
+import { Transforms, Range } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { insertCells } from '../utils/table';
+import { insertCells, getParentTable } from '../utils/table';
 import { getSelection } from '../../index';
 
 const TableToolbar = props => {
@@ -30,7 +30,7 @@ const TableToolbar = props => {
   }, [editor, selection]);
 
   const handleRemoveTable = e => {
-    const [, path] = getParentTable(selection.anchor.path);
+    const [, path] = getParentTable(selection.anchor.path, editor);
 
     Transforms.removeNodes(editor, {
       at: path,
@@ -42,7 +42,7 @@ const TableToolbar = props => {
 
   const handleInsertRow = () => {
     if (!!selection && Range.isCollapsed(selection)) {
-      const [oldTable, path] = getParentTable(selection.anchor.path);
+      const [oldTable, path] = getParentTable(selection.anchor.path, editor);
 
       handleRemoveTable();
       insertCells(editor, oldTable, path, 'row');
@@ -52,19 +52,9 @@ const TableToolbar = props => {
     }
   };
 
-  const getParentTable = path => {
-    const parent = Editor.parent(editor, path);
-
-    if (parent[0].type === 'table') {
-      return parent;
-    }
-
-    return getParentTable(parent[1]);
-  };
-
   const handleInsertColumn = () => {
     if (!!selection && Range.isCollapsed(selection)) {
-      const [table, path] = getParentTable(selection.anchor.path);
+      const [table, path] = getParentTable(selection.anchor.path, editor);
 
       handleRemoveTable(); // Assuming this function removes the table structure
       insertCells(editor, table, path, 'columns');

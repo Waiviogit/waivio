@@ -70,11 +70,83 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 class WobjectContainer extends React.PureComponent {
-  state = {
-    instacardAff: null,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      clickCount: 0,
+      instacardAff: null,
+    };
+    this.iframeRef = React.createRef();
+    this.lastVisibilityTime = React.createRef();
+  }
+
   componentDidMount() {
     this.getWobjInfo();
+    this.lastVisibilityTime.current = Date.now();
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        const timeSinceLastVisibility = Date.now() - this.lastVisibilityTime.current;
+
+        if (timeSinceLastVisibility > 100) {
+          // websiteStatisticsAction();
+          this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
+        }
+      } else {
+        this.lastVisibilityTime.current = Date.now();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const handleMessage = event => {
+      if (event.origin.includes('instacart.com')) {
+        if (
+          event.data &&
+          typeof event.data === 'string' &&
+          (event.data.includes('navigate') ||
+            event.data.includes('redirect') ||
+            event.data.includes('open'))
+        ) {
+          this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    const widgetContainer = document.getElementById('shop-with-instacart-v1');
+
+    if (widgetContainer) {
+      const observer = new MutationObserver(ms => {
+        ms.forEach(mutation => {
+          if (mutation.addedNodes.length) {
+            const iframe = widgetContainer.querySelector('iframe');
+
+            if (iframe) {
+              this.iframeRef.current = iframe;
+
+              const iframeObserver = new MutationObserver(m => {
+                m.forEach(i => {
+                  if (i.type === 'attributes' && i.attributeName === 'src') {
+                    this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
+                  }
+                });
+              });
+
+              iframeObserver.observe(iframe, {
+                attributes: true,
+                attributeFilter: ['src'],
+              });
+            }
+          }
+        });
+      });
+
+      observer.observe(widgetContainer, {
+        childList: true,
+        subtree: true,
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -115,6 +187,13 @@ class WobjectContainer extends React.PureComponent {
     const element = document.getElementById('standard-instacart-widget-v1');
 
     if (element) element.remove();
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('message', this.handleMessage);
+
+    // const widgetContainer = document.getElementById('shop-with-instacart-v1');
+    const observer = new MutationObserver(() => {});
+
+    observer.disconnect();
   }
 
   setInstacardScript = async instacardAff => {
@@ -130,6 +209,20 @@ class WobjectContainer extends React.PureComponent {
       js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
       js.async = true;
       js.dataset.source_origin = 'affiliate_hub';
+
+      js.onload = () => {
+        if (window.InstacartWidget) {
+          window.InstacartWidget.init();
+
+          try {
+            window.InstacartWidget.on('click', () => {
+              this.setState({ clickCount: this.state.clickCount + 1 });
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      };
 
       await fjs.parentNode.insertBefore(js, fjs);
     }

@@ -23,9 +23,9 @@ const DelegateUserCard = props => (
         <FormattedNumber
           value={props.quantity}
           maximumFractionDigits={3}
-          minimumFractionDigits={2}
-        />{' '}
-        {props.symbol[0]}P
+          minimumFractionDigits={props.minimumFractionDigits}
+        />
+        {props.symbolOnly ? props.symbol : ` ${props.symbol[0]}P`}
       </span>
     </div>
     {props.withEdit && (
@@ -40,12 +40,14 @@ const DelegateUserCard = props => (
 
 DelegateUserCard.propTypes = {
   quantity: PropsType.number.isRequired,
+  minimumFractionDigits: PropsType.number,
   symbol: PropsType.string.isRequired,
   onEdit: PropsType.func.isRequired,
   withEdit: PropsType.bool,
   name: PropsType.string,
   quantityClassList: PropsType.string,
   pending: PropsType.bool,
+  symbolOnly: PropsType.bool,
 };
 
 DelegateUserCard.defaultProps = {
@@ -53,6 +55,8 @@ DelegateUserCard.defaultProps = {
   quantityClassList: '',
   pending: false,
   withEdit: false,
+  symbolOnly: false,
+  minimumFractionDigits: 2,
 };
 
 export default DelegateUserCard;

@@ -150,5 +150,49 @@ export const configReportsWebsitesTableHeader = currency => [
     value: { currency },
   },
 ];
+export const configActionsWebsitesTableHeader = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'payments_table_name_data',
+      defaultMessage: 'Date',
+    },
+  },
+  {
+    id: 'host',
+    style: {
+      textAlign: 'left',
+      padding: '0 0 0 5px',
+      overflow: 'hidden',
+      maxWidth: '150px',
+      textOverflow: 'ellipsis',
+    },
+    intl: {
+      id: 'website',
+      defaultMessage: 'Website',
+    },
+  },
+  {
+    id: 'visits',
+    intl: {
+      id: 'visits',
+      defaultMessage: 'Visits',
+    },
+  },
+  {
+    id: 'buyAction',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+  },
+  {
+    id: 'conversion',
+    intl: {
+      id: 'conversion_percent',
+      defaultMessage: 'Conversion (%)',
+    },
+  },
+];
 
 export default null;

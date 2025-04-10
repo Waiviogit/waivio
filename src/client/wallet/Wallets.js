@@ -18,10 +18,12 @@ import {
   setWalletType,
 } from '../../store/walletStore/walletActions';
 import {
+  getDelegateRcModalVisible,
   getDelegationModalVisible,
   getDepositVisible,
   getIsPowerUpOrDownVisible,
   getIsTransferVisible,
+  getManageRcModalVisible,
 } from '../../store/walletStore/walletSelectors';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
@@ -34,9 +36,10 @@ import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWith
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
-
-import './Wallets.less';
 import ConvertHbdModal from './ConvertHbdModal/ConvertHbdModal';
+import DelegateRcModal from './DelegateModals/DelegateRc/DelegateRcModal';
+import ManageRcDelegations from './DelegateModals/ManageRcDelegations/ManageRcDelegations';
+import './Wallets.less';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -111,6 +114,8 @@ const Wallets = props => {
       {props.visibleDeposit && <Deposit />}
       {props.visibleWithdraw && <WithdrawModal />}
       {props.visibleDelegate && <ManageDelegate />}
+      {props.visibleDelegateRc && <DelegateRcModal />}
+      {props.visibleManageRc && <ManageRcDelegations />}
     </React.Fragment>
   );
 };
@@ -125,6 +130,8 @@ Wallets.propTypes = {
   visibleSwap: PropTypes.bool.isRequired,
   visibleWithdraw: PropTypes.bool.isRequired,
   visibleDelegate: PropTypes.bool.isRequired,
+  visibleDelegateRc: PropTypes.bool.isRequired,
+  visibleManageRc: PropTypes.bool.isRequired,
   visibleConvert: PropTypes.bool.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
@@ -151,6 +158,8 @@ export default connect(
     visibleDeposit: getDepositVisible(state),
     visibleWithdraw: getIsOpenWithdraw(state),
     visibleDelegate: getDelegationModalVisible(state),
+    visibleDelegateRc: getDelegateRcModalVisible(state),
+    visibleManageRc: getManageRcModalVisible(state),
     authUserName: getAuthenticatedUserName(state),
   }),
   {

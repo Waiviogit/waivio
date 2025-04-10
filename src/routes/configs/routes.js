@@ -274,7 +274,7 @@ const routes = {
           component: Views.ManageWebsite,
         },
         {
-          path: '/payments',
+          path: '/(payments|actions)',
           exact: true,
           component: Views.ReportsWebsite,
         },

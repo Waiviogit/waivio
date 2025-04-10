@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import unified from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
@@ -110,6 +111,39 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.underline && { underline: true }),
           ...(node.children && { children: next(node.children) }),
         }),
+        tableCell: (node, next) => {
+          const emptyParagraph = {
+            type: 'paragraph',
+            children: [{ type: 'text', value: '' }],
+          };
+
+          const children = node.children.reduce((acc, child) => {
+            if (child.type === 'html' && child.value === '<p />') {
+              return [...acc, emptyParagraph];
+            }
+
+            if (child.type === 'html' && child.value === '<br />') {
+              return acc;
+            }
+
+            if (child.type === 'text') {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: [{ type: 'text', value: child.value }],
+                },
+              ];
+            }
+
+            return [...acc, child];
+          }, []);
+
+          return {
+            type: node.type,
+            children: isEmpty(node.children) ? next([emptyParagraph]) : next(children),
+          };
+        },
       },
     });
   const _body = body
@@ -123,7 +157,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
   let postParsed = [];
 
   _body.split('\n\n\n').forEach(i => {
-    const blocks = processor.processSync(i).result;
+    const blocks = processor.processSync(i.replaceAll('<p>&nbsp;</p>', '<p />')).result;
 
     if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];

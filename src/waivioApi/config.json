@@ -268,5 +268,8 @@
   "basic": "/basic",
   "credits": "/credits",
   "cancel": "/cancel",
-  "id": "/id"
+  "id": "/id",
+  "rcDelegations": "/rc-delegations",
+  "incoming": "/incoming",
+  "buyActions": "/buy-actions"
 }

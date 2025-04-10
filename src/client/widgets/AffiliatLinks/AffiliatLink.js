@@ -26,7 +26,9 @@ const AffiliatLink = ({ link, disabled }) => {
     paddingRight: isSafari() ? '2px' : '0',
   };
 
-  const onClick = () => {
+  const onClick = e => {
+    e.stopPropagation();
+    // websiteStatisticsAction();
     if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
       if (!isEmpty(settings.googleEventSnippet) && !isNil(link.link)) {

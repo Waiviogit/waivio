@@ -8,6 +8,7 @@ const initialState = {
   domainAvailableStatus: '',
   manage: {},
   reports: {},
+  actions: {},
   ownWebsites: [],
   configurationWebsite: {},
   administrators: [],
@@ -165,6 +166,18 @@ export default function websiteReducer(state = initialState, action) {
         reports: {
           ...action.payload,
           payments: action.payload.payments?.map(payment => ({
+            ...payment,
+            createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
+          })),
+        },
+      };
+    }
+    case websiteAction.GET_ACTIONS_PAGE.SUCCESS: {
+      return {
+        ...state,
+        actions: {
+          ...action.payload,
+          payments: action.payload?.map(payment => ({
             ...payment,
             createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
           })),

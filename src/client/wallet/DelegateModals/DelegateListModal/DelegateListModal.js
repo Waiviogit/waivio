@@ -14,10 +14,10 @@ const DelegateListModal = props => {
       {type}:{' '}
       <FormattedNumber
         value={list.reduce((acc, curr) => acc + +curr.quantity, 0)}
-        minimumFractionDigits={2}
+        minimumFractionDigits={props.isRc ? 0 : 2}
         maximumFractionDigits={2}
-      />{' '}
-      {props.symbol}
+      />
+      {props.isRc ? props.symbol : ` ${props.symbol}`}
     </React.Fragment>
   );
 
@@ -36,10 +36,12 @@ const DelegateListModal = props => {
                 .sort((a, b) => b.quantity - a.quantity)
                 .map(recive => (
                   <DelegateUserCard
+                    minimumFractionDigits={props.isRc ? 0 : 2}
                     key={recive._id}
                     name={recive.from}
                     quantity={recive.quantity}
                     symbol={props.symbol}
+                    symbolOnly={props.isRc}
                   />
                 ))}
             </div>
@@ -59,10 +61,12 @@ const DelegateListModal = props => {
                 .sort((a, b) => b.quantity - a.quantity)
                 .map(deligate => (
                   <DelegateUserCard
+                    minimumFractionDigits={props.isRc ? 0 : 2}
                     key={deligate._id}
                     name={deligate.to}
                     quantity={deligate.quantity}
                     symbol={props.symbol}
+                    symbolOnly={props.isRc}
                   />
                 ))}
               {!isEmpty(props.undeligatedList) &&
@@ -70,10 +74,12 @@ const DelegateListModal = props => {
                   .sort((a, b) => b.quantity - a.quantity)
                   .map(undeligate => (
                     <DelegateUserCard
+                      minimumFractionDigits={props.isRc ? 0 : 2}
                       key={undeligate._id}
                       quantity={undeligate.quantity}
                       symbol={props.symbol}
                       pending
+                      symbolOnly={props.isRc}
                     />
                   ))}
             </div>
@@ -86,6 +92,7 @@ const DelegateListModal = props => {
 
 DelegateListModal.propTypes = {
   visible: PropsType.bool.isRequired,
+  isRc: PropsType.bool,
   toggleModal: PropsType.func.isRequired,
   recivedList: PropsType.arrayOf(PropsType.shape({})).isRequired,
   symbol: PropsType.string.isRequired,
