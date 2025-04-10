@@ -74,6 +74,10 @@ const DelegateRcModal = () => {
     dispatch(toggleDelegateRcModal());
   };
 
+  const setBalance = () => {
+    setAmount(billionRc - billionRc * 0.05);
+  };
+
   return (
     <Modal
       footer={null}
@@ -122,7 +126,7 @@ const DelegateRcModal = () => {
               type="number"
               className="TokenSelect__input"
               suffix={
-                <span className={'TokenSelect__max-button'} onClick={() => setAmount(billionRc)}>
+                <span className={'TokenSelect__max-button'} onClick={setBalance}>
                   <FormattedMessage id="max" defaultMessage="max" />
                 </span>
               }
@@ -132,10 +136,7 @@ const DelegateRcModal = () => {
         </div>
         <p>
           Your balance:
-          <span
-            className="PowerSwitcher__current-currency-balance"
-            onClick={() => setAmount(billionRc)}
-          >
+          <span className="PowerSwitcher__current-currency-balance" onClick={setBalance}>
             {' '}
             <FormattedNumber value={billionRc} />
           </span>
@@ -149,7 +150,9 @@ const DelegateRcModal = () => {
           </Button>
           <Button
             type={'primary'}
-            disabled={modalInfo?.isEdit && !amount && _.isEmpty(amount)}
+            disabled={
+              (modalInfo?.isEdit && !amount && _.isEmpty(amount)) || (_.isEmpty(amount) && !amount)
+            }
             onClick={() => {
               delegateRC();
               dispatch(resetDelegateRcModal());

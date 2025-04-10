@@ -67,12 +67,6 @@ const calculateDaysLeftForSavings = (targetDate, isDaysFromDate = false) => {
 
   return days > 0 ? days : 0;
 };
-const calculateTotalRc = (delegated, received, total) => {
-  const d = delegated?.reduce((acc, val) => acc - val.delegated_rc, 0);
-  const r = received?.reduce((acc, val) => acc - val.rc, 0);
-
-  return total - d + r;
-};
 
 const calculateDaysWithSeconds = timestamp => {
   const nowSeconds = moment.utc().unix();
@@ -186,7 +180,7 @@ const UserWalletSummary = ({
   const [conversionHbdInfo, setConversionHbdInfo] = useState([]);
   const [savingSymbol, setSavingSymbol] = useState('');
   const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
-  const [rcInfo, setRcInfo] = useState({});
+  const [rcInfo, setRcInfo] = React.useState({ max_rc: 0 });
   const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
   const [visible, setVisible] = useState(false);
   const [visibleRcDetails, setVisibleRcDetails] = useState(false);
@@ -197,10 +191,11 @@ const UserWalletSummary = ({
   const [showSavingsProgress, setShowSavingsProgress] = useState(false);
   const isCurrentGuest = useSelector(isGuestUser);
   const interestRate = useSelector(getHbdInterestRate);
-  const hiveAuth = Cookie.get('auth');
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
+  const hiveAuth = Cookie.get('auth');
   const billion = 1000000000;
-  const rcBalance = calculateTotalRc(delegatedRc, inDelegatedRc, rcInfo?.max_rc) / billion;
+  const rcBalance = rcInfo ? rcInfo?.max_rc / billion : 0;
+
   const estimateInterestBalance = hiveAccount => {
     const {
       savings_hbd_seconds,
@@ -560,7 +555,7 @@ const UserWalletSummary = ({
                 </div>
               </div>
             )}
-            {!isEmpty(delegatedRc) && (
+            {
               <div className="UserWalletSummary__itemWrap--no-border last-block">
                 <div className="UserWalletSummary__item">
                   <div className="UserWalletSummary__label power-down">
@@ -590,7 +585,7 @@ const UserWalletSummary = ({
                   )}
                 </div>
               </div>
-            )}
+            }
           </div>
           <div className="UserWalletSummary__itemWrap">
             <div className="UserWalletSummary__item">
