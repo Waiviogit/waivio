@@ -21,9 +21,9 @@ const ManageRcDelegations = () => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const billion = 1000000000;
-  const [rcInfo, setRcInfo] = React.useState({ max_rc: 0 });
+  const [rcInfo, setRcInfo] = React.useState({ rc_manabar: { current_mana: 0 } });
 
-  const billionRc = rcInfo ? rcInfo?.max_rc / billion : 0;
+  const billionRc = rcInfo ? rcInfo?.rc_manabar?.current_mana / billion : 0;
 
   useEffect(() => {
     getRcByAccount(authUserName).then(r => setRcInfo(r?.rc_accounts[0]));

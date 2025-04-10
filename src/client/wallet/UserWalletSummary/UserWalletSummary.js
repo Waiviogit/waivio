@@ -180,7 +180,7 @@ const UserWalletSummary = ({
   const [conversionHbdInfo, setConversionHbdInfo] = useState([]);
   const [savingSymbol, setSavingSymbol] = useState('');
   const [currWithdrawSaving, setCurrWithdrawSaving] = useState({});
-  const [rcInfo, setRcInfo] = React.useState({ max_rc: 0 });
+  const [rcInfo, setRcInfo] = React.useState({ rc_manabar: { current_mana: 0 } });
   const [currWithdrawHbdSaving, setCurrWithdrawHbdSaving] = useState({});
   const [visible, setVisible] = useState(false);
   const [visibleRcDetails, setVisibleRcDetails] = useState(false);
@@ -194,7 +194,7 @@ const UserWalletSummary = ({
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
   const hiveAuth = Cookie.get('auth');
   const billion = 1000000000;
-  const rcBalance = rcInfo ? rcInfo?.max_rc / billion : 0;
+  const rcBalance = rcInfo ? rcInfo?.rc_manabar?.current_mana / billion : 0;
 
   const estimateInterestBalance = hiveAccount => {
     const {
@@ -574,7 +574,7 @@ const UserWalletSummary = ({
                 </div>
                 <div className="UserWalletSummary__actions">
                   <p className="UserWalletSummary__description">Resource credit delegations</p>
-                  {isAuth && !isEmpty(delegatedRc) && (
+                  {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
                     <WalletAction
                       mainKey={'manage_rc'}
                       delegatedRc={delegatedRc}
@@ -844,18 +844,20 @@ const UserWalletSummary = ({
           symbol={'HP'}
         />
       )}
-      <DelegateListModal
-        visible={visibleRcDetails}
-        toggleModal={setVisibleRcDetails}
-        deligateList={delegatedRc?.map(i => ({ ...i, quantity: i.delegated_rc / billion }))}
-        recivedList={inDelegatedRc?.map(i => ({
-          ...i,
-          from: i.delegator,
-          quantity: i.rc / billion,
-        }))}
-        symbol={'b RC'}
-        isRc
-      />
+      {(!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
+        <DelegateListModal
+          visible={visibleRcDetails}
+          toggleModal={setVisibleRcDetails}
+          deligateList={delegatedRc?.map(i => ({ ...i, quantity: i.delegated_rc / billion }))}
+          recivedList={inDelegatedRc?.map(i => ({
+            ...i,
+            from: i.delegator,
+            quantity: i.rc / billion,
+          }))}
+          symbol={'b RC'}
+          isRc
+        />
+      )}
       {showCancelPowerDown && (
         <CancelPowerDownModal
           account={user.name}

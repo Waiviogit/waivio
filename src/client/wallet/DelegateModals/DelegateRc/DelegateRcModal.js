@@ -24,7 +24,7 @@ const DelegateRcModal = () => {
   const visible = useSelector(getDelegateRcModalVisible);
   const [amount, setAmount] = React.useState('');
   const [user, setUser] = React.useState(modalInfo?.isEdit ? modalInfo?.info?.to : '');
-  const [rcInfo, setRcInfo] = React.useState({ max_rc: 0 });
+  const [rcInfo, setRcInfo] = React.useState({ rc_manabar: { current_mana: 0 } });
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const DelegateRcModal = () => {
   }, []);
 
   const billion = 1000000000;
-  const billionRc = rcInfo ? rcInfo?.max_rc / billion : 0;
+  const billionRc = rcInfo ? rcInfo?.rc_manabar?.current_mana / billion : 0;
 
   const delegateRC = (isEdit = false) => {
     const jsonData = JSON.stringify([

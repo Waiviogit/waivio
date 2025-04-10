@@ -10,7 +10,7 @@ import {
   setFirstLoading,
 } from '../../../store/feedStore/feedActions';
 import { getCoordinates } from '../../../store/userStore/userActions';
-import { getObjectInfo, websiteStatisticsAction } from '../../../waivioApi/ApiClient';
+import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
@@ -89,7 +89,7 @@ class WobjectContainer extends React.PureComponent {
         const timeSinceLastVisibility = Date.now() - this.lastVisibilityTime.current;
 
         if (timeSinceLastVisibility > 100) {
-          websiteStatisticsAction();
+          // websiteStatisticsAction();
           this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
         }
       } else {
