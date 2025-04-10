@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import unified from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
@@ -111,15 +112,14 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.children && { children: next(node.children) }),
         }),
         tableCell: (node, next) => {
+          const emptyParagraph = {
+            type: 'paragraph',
+            children: [{ type: 'text', value: '' }],
+          };
+
           const children = node.children.reduce((acc, child) => {
             if (child.type === 'html' && child.value === '<p />') {
-              return [
-                ...acc,
-                {
-                  type: 'paragraph',
-                  children: [{ type: 'text', value: '' }],
-                },
-              ];
+              return [...acc, emptyParagraph];
             }
 
             if (child.type === 'html' && child.value === '<br />') {
@@ -141,7 +141,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
 
           return {
             type: node.type,
-            children: next(children),
+            children: isEmpty(node.children) ? next([emptyParagraph]) : next(children),
           };
         },
       },
