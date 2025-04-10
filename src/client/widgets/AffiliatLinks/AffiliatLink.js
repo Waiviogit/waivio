@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import './AffiliatLink.less';
 import { isSafari } from '../../../common/helpers/apiHelpers';
-import { websiteStatisticsAction } from '../../../waivioApi/ApiClient';
 
 const images = {
   walmart: '/images/walmart-logo.svg',
@@ -29,7 +28,7 @@ const AffiliatLink = ({ link, disabled }) => {
 
   const onClick = e => {
     e.stopPropagation();
-    websiteStatisticsAction();
+    // websiteStatisticsAction();
     if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
       if (!isEmpty(settings.googleEventSnippet) && !isNil(link.link)) {
