@@ -192,6 +192,8 @@ export const configActionsWebsitesTableHeader = [
       id: 'conversion_percent',
       defaultMessage: 'Conversion (%)',
     },
+    type: 'round',
+    precision: 2,
   },
 ];
 

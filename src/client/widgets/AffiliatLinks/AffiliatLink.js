@@ -3,9 +3,10 @@ import { isEmpty, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
 import { useSelector } from 'react-redux';
+import { isSafari } from '../../../common/helpers/apiHelpers';
+import { websiteStatisticsAction } from '../../../waivioApi/ApiClient';
 import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import './AffiliatLink.less';
-import { isSafari } from '../../../common/helpers/apiHelpers';
 
 const images = {
   walmart: '/images/walmart-logo.svg',
@@ -28,7 +29,7 @@ const AffiliatLink = ({ link, disabled }) => {
 
   const onClick = e => {
     e.stopPropagation();
-    // websiteStatisticsAction();
+    websiteStatisticsAction();
     if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
       if (!isEmpty(settings.googleEventSnippet) && !isNil(link.link)) {
