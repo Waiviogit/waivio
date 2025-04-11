@@ -31,6 +31,32 @@ export const defaultNodeTypes = {
   object: 'object',
 };
 
+function htmlArrayToSlateList(htmlArray) {
+  const slateList = [];
+  let currentList = null;
+
+  htmlArray.forEach(node => {
+    if (node.type === 'html' && node.value === '<ol>') {
+      currentList = { type: 'orderedList', children: [] };
+    } else if (node.type === 'html' && node.value === '</ol>') {
+      if (currentList) {
+        slateList.push(currentList);
+        currentList = null;
+      }
+    } else if (node.type === 'html' && node.value === '<li>') {
+      currentList.children.push({ type: 'listItem', children: [] });
+    } else if (node.type === 'text' && currentList) {
+      const lastItem = currentList.children[currentList.children.length - 1];
+
+      if (lastItem) {
+        lastItem.children.push({ type: 'text', value: node.value });
+      }
+    }
+  });
+
+  return slateList;
+}
+
 export const deserializeToSlate = (body, isThread, isNewReview) => {
   const processor = unified()
     .use(remarkParse)
@@ -120,6 +146,19 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           const children = node.children.reduce((acc, child) => {
             if (child.type === 'html' && child.value === '<p />') {
               return [...acc, emptyParagraph];
+            }
+
+            if (child.type === 'html' && ['<ol>', '<ul>'].includes(child.value)) {
+              const u = htmlArrayToSlateList(node.children);
+
+              return [...acc, ...u];
+            }
+
+            if (
+              child.type === 'html' &&
+              ['<li>', '</li>', '</ol>', '</ul>'].includes(child.value)
+            ) {
+              return acc;
             }
 
             if (child.type === 'html' && child.value === '<br />') {
