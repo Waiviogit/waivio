@@ -139,7 +139,7 @@ class Buttons extends React.Component {
 
     const userVote = find(comment.active_votes, { voter: user.name });
 
-    const userUpVoted = userVote && userVote.percent > 0;
+    const userUpVoted = userVote && (userVote.percent > 0 || userVote.rshares > 0);
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
 
