@@ -1,6 +1,14 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
 .DelegateRcModal {
   .TokenSelect__input.ant-input-affix-wrapper .ant-input:not(:last-child) {
     padding-left: 10px;
     left: -4px;
+  }
+  .ant-btn.EditDelegationModal__undelegate.ant-btn-danger {
+    &:hover {
+      color: @white-smoke !important;
+    }
   }
 }
