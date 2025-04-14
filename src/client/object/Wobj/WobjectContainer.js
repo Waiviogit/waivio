@@ -85,7 +85,6 @@ class WobjectContainer extends React.PureComponent {
     this.lastVisibilityTime.current = Date.now();
 
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    window.addEventListener('message', this.handleMessage);
     const widgetContainer = document.getElementById('shop-with-instacart-v1');
 
     if (widgetContainer) {
@@ -156,16 +155,6 @@ class WobjectContainer extends React.PureComponent {
     this.props.resetGallery();
     this.props.resetWobjectExpertise();
     this.props.setEditMode(false);
-    const element = document.getElementById('standard-instacart-widget-v1');
-
-    if (element) element.remove();
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    window.removeEventListener('message', this.handleMessage);
-
-    // const widgetContainer = document.getElementById('shop-with-instacart-v1');
-    const observer = new MutationObserver(() => {});
-
-    observer.disconnect();
   }
 
   handleVisibilityChange = () => {
@@ -178,19 +167,6 @@ class WobjectContainer extends React.PureComponent {
       }
     } else {
       this.lastVisibilityTime.current = Date.now();
-    }
-  };
-  handleMessage = event => {
-    if (event.origin.includes('instacart.com')) {
-      if (
-        event.data &&
-        typeof event.data === 'string' &&
-        (event.data.includes('navigate') ||
-          event.data.includes('redirect') ||
-          event.data.includes('open'))
-      ) {
-        this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
-      }
     }
   };
 

@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const InstacartWidget = ({ instacartAff, className, isProduct = false }) => (
-  <div
+const InstacartWidget = ({ instacartAff, className, isProduct = false }) => {
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        console.log("Пользователь, возможно, перешёл по ссылке из виджета");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  return (<div
     className={className}
     id="shop-with-instacart-v1"
     data-affiliate_id={instacartAff?.affiliateCode}
@@ -13,8 +27,8 @@ const InstacartWidget = ({ instacartAff, className, isProduct = false }) => (
         ? { marginBottom: '15px' }
         : { display: 'flex', justifyContent: 'center', marginBottom: '10px' }
     }
-  />
-);
+  />)
+};
 
 InstacartWidget.propTypes = {
   instacartAff: PropTypes.shape({
