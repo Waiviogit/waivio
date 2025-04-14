@@ -26,7 +26,7 @@ const LinkItem = ({ link, index, intl }) => {
       className="WebsiteTopNavigation__link"
       isActive={() =>
         (index === 0 && history.location.pathname === '/') ||
-        history.location.pathname.includes(link?.link)
+        history.location.pathname.includes(linkTo)
       }
       activeClassName={'WebsiteTopNavigation__link--active'}
       key={link.link}

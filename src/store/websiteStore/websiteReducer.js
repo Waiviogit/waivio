@@ -176,11 +176,26 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         actions: {
-          ...action.payload,
-          payments: action.payload?.map(payment => ({
+          hasMore: action.payload.hasMore,
+          payments: action.payload.result?.map(payment => ({
             ...payment,
             createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
           })),
+        },
+      };
+    }
+    case websiteAction.GET_MORE_ACTIONS_PAGE.SUCCESS: {
+      return {
+        ...state,
+        actions: {
+          hasMore: action.payload.hasMore,
+          payments: [
+            ...state.actions.payments,
+            ...action.payload.result?.map(payment => ({
+              ...payment,
+              createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
+            })),
+          ],
         },
       };
     }

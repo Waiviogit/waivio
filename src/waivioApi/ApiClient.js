@@ -4882,7 +4882,7 @@ export const websiteStatisticsReport = formData =>
     body: JSON.stringify(formData),
   })
     .then(res => res.json())
-    .then(res => res.result)
+    .then(res => res)
     .catch(e => e);
 
 export const adminWebsiteStatisticsReport = (admin, formData) =>
@@ -4892,7 +4892,7 @@ export const adminWebsiteStatisticsReport = (admin, formData) =>
     body: JSON.stringify(formData),
   })
     .then(res => res.json())
-    .then(res => res.result)
+    .then(res => res)
     .catch(e => e);
 
 export const getCreditsByAdminList = (admin, skip, limit = 50) =>
