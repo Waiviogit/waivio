@@ -245,10 +245,10 @@ class Buttons extends React.Component {
         )}
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
-          upVotes={upVotes}
           ratio={ratio}
           downVotes={downVotes}
           onClose={this.handleCloseReactions}
+          comment={this.props.comment}
         />
       </div>
     );

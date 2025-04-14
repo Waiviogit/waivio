@@ -98,9 +98,7 @@ const BusinessObject = ({
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
-  const pictures = albums
-    ?.flatMap(alb => alb?.items)
-    ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
+  const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i.name !== 'avatar');
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
   const phones = get(wobject, 'phone', []);
