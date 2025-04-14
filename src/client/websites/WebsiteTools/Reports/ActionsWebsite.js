@@ -19,14 +19,22 @@ import './ReportsWebsite.less';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getWebsites } from '../../../../waivioApi/ApiClient';
 
-const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userName }) => {
+const ActionsWebsite = ({
+  isAdmin = false,
+  intl,
+  form,
+  reportsInfo,
+  getActionsInfo,
+  locale,
+  userName,
+}) => {
   const [sites, setSites] = useState([]);
 
   const { getFieldDecorator } = form;
   const formatDate = selectFormatDate(locale);
 
   useEffect(() => {
-    getActionsInfo();
+    getActionsInfo(isAdmin);
     getWebsites(userName).then(list => setSites(list.map(i => i.host)));
   }, []);
   const disabledDate = current => current > moment().endOf('day');
@@ -47,7 +55,7 @@ const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userN
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
         };
 
-        getActionsInfo(formData);
+        getActionsInfo(isAdmin, formData);
       }
     });
   };
@@ -164,6 +172,7 @@ ActionsWebsite.propTypes = {
   }).isRequired,
   locale: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
+  isAdmin: PropTypes.bool,
 };
 
 export default connect(
