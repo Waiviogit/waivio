@@ -218,13 +218,15 @@ export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => 
 };
 export const GET_ACTIONS_PAGE = createAsyncActionType('@website/GET_ACTIONS_PAGE');
 
-export const getActionsWebsiteInfo = (formData = {}) => (dispatch, getState) => {
+export const getActionsWebsiteInfo = (isAdmin, formData = {}) => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
   dispatch({
     type: GET_ACTIONS_PAGE.ACTION,
     payload: {
-      promise: ApiClient.websiteStatisticsReport({ userName, ...formData }),
+      promise: isAdmin
+        ? ApiClient.adminWebsiteStatisticsReport(userName, formData)
+        : ApiClient.websiteStatisticsReport({ userName, ...formData }),
     },
   });
 };

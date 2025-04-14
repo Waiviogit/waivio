@@ -173,6 +173,7 @@ export default {
       'admin-whitelist',
       'admin-new-accounts',
       'admin-credits',
+      'admin-actions',
       'admin-subscriptions',
     ].join('|'),
   },

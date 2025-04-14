@@ -4885,6 +4885,16 @@ export const websiteStatisticsReport = formData =>
     .then(res => res.result)
     .catch(e => e);
 
+export const adminWebsiteStatisticsReport = (admin, formData) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.statistics}${config.report}`, {
+    headers: { ...headers, ...getAuthHeaders(), admin },
+    method: 'POST',
+    body: JSON.stringify(formData),
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
 export const getCreditsByAdminList = (admin, skip, limit = 50) =>
   fetch(
     `${config.apiPrefix}${config.admins}${config.sites}${config.credits}?skip=${skip}&limit=${limit}`,

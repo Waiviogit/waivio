@@ -183,7 +183,7 @@ const routes = {
       component: WaivPage,
     },
     {
-      path: '/(admin-websites|admin-credits|admin-subscriptions)',
+      path: '/(admin-websites|admin-credits|admin-subscriptions|admin-actions)',
       exact: true,
       component: Views.WebsitesWrapper,
     },

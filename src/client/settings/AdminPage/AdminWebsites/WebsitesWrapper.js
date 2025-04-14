@@ -10,18 +10,23 @@ import MobileNavigation from '../../../components/Navigation/MobileNavigation/Mo
 import AdminWebsites from './AdminWebsites';
 import AdminCredits from '../AdminCredits/AdminCredits';
 import AdminSubscriptions from '../AdminSubscriptions/AdminSubscriptions';
+import ActionsWebsite from '../../../websites/WebsiteTools/Reports/ActionsWebsite';
 
-const tabs = { websites: 'websites', credits: 'credits', subscriptions: 'subscriptions' };
+const tabs = {
+  websites: 'websites',
+  credits: 'credits',
+  subscriptions: 'subscriptions',
+  actions: 'actions',
+};
 
 const WebsitesWrapper = () => {
   const title = `Website statistics`;
   const location = useLocation();
 
   const getActiveTab = () => {
-    if (location.pathname.includes(tabs.credits)) return tabs.credits;
-    if (location.pathname.includes(tabs.subscriptions)) return tabs.subscriptions;
+    const active = Object.entries(tabs).find(([, value]) => location.pathname.includes(value));
 
-    return tabs.websites;
+    return active ? active[1] : tabs.websites;
   };
 
   return (
@@ -49,6 +54,9 @@ const WebsitesWrapper = () => {
               key={tabs.subscriptions}
             >
               <AdminSubscriptions />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab={<Link to="/admin-actions">Actions</Link>} key={tabs.actions}>
+              <ActionsWebsite isAdmin />
             </Tabs.TabPane>
           </Tabs>
         </div>
