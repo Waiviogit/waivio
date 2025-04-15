@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { FormattedNumber } from 'react-intl';
 import { Tabs, Modal } from 'antd';
 import ReactionsList from './ReactionsList';
 import ApprovingCard from '../../object/AppendCard/ApprovingCard';
 import { getCommentReactions } from '../../../waivioApi/ApiClient';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 const { TabPane } = Tabs;
 
@@ -22,11 +24,25 @@ const ReactionsModal = ({
 }) => {
   const [tabKey, setTabKey] = useState('1');
   const [upVotes, setUpVotes] = useState(initialUpVotes || []);
+  const rewardFund = useSelector(getRewardFund);
+  const rate = useSelector(getRate);
+  const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
 
   useEffect(() => {
     if (comment && visible && !initialUpVotes)
       getCommentReactions(comment.author, comment.permlink).then(r => setUpVotes(r));
   }, [visible, comment?.url]);
+
+  const upVotesWithPayout = initialUpVotes
+    ? upVotes
+    : upVotes.map(v => ({
+        ...v,
+        payout: isFullParams
+          ? (v.weight / rewardFund.recent_claims) *
+            rewardFund.reward_balance.replace(' HIVE', '') *
+            rate
+          : 0,
+      }));
 
   const handleModalClose = () => {
     setTabKey('1');
@@ -54,7 +70,7 @@ const ReactionsModal = ({
             }
             key="1"
           >
-            <ReactionsList votes={upVotes} name={user} />
+            <ReactionsList votes={upVotesWithPayout} name={user} />
           </TabPane>
         )}
         {downVotes.length > 0 && (
