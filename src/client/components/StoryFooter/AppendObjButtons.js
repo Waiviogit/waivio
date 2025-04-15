@@ -221,7 +221,7 @@ const AppendObjButtons = ({
           </span>
           <ReactionsModal
             visible={reactionsModalVisible}
-            upVotes={upVotes}
+            initialUpVotes={upVotes}
             ratio={ratio}
             downVotes={downVotes}
             onClose={handleCloseReactions}
