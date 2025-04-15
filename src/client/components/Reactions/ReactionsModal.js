@@ -10,7 +10,7 @@ const { TabPane } = Tabs;
 
 const ReactionsModal = ({
   visible = false,
-
+  initialUpVotes,
   downVotes = [],
   tab = '1',
   onClose = () => {},
@@ -21,11 +21,10 @@ const ReactionsModal = ({
   comment,
 }) => {
   const [tabKey, setTabKey] = useState('1');
-  const [upVotes, setUpVotes] = useState([]);
+  const [upVotes, setUpVotes] = useState(initialUpVotes || []);
 
   useEffect(() => {
-    comment &&
-      visible &&
+    if (comment && visible && !initialUpVotes)
       getCommentReactions(comment.author, comment.permlink).then(r => setUpVotes(r));
   }, [visible, comment?.url]);
 
@@ -82,6 +81,7 @@ ReactionsModal.propTypes = {
   visible: PropTypes.bool,
   comment: PropTypes.shape(),
   downVotes: PropTypes.arrayOf(PropTypes.shape({})),
+  initialUpVotes: PropTypes.arrayOf(PropTypes.shape({})),
   tab: PropTypes.string,
   onClose: PropTypes.func,
   append: PropTypes.bool,
