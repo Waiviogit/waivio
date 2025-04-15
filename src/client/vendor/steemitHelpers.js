@@ -323,28 +323,18 @@ export const roundNumberToThousands = number => {
   }
   return number;
 };
-const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
+// const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
 const PRODUCTION_REQUEST_NODES = [
   'https://api.hive.blog',
   'https://api.deathwing.me',
-  'https://api.openhive.network',
-  'https://rpc.ecency.com',
-  // 'https://anyx.io',
-];
-
-const STAGING_REQUEST_NODES = [
-  'https://api.openhive.network',
-  'https://api.pharesim.me',
-  'https://rpc.esteem.app',
   'https://hive-api.arcange.eu',
-  'https://hive.roelandp.nl',
-  'https://rpc.ausbit.dev',
+  'https://api.openhive.network',
+  'https://techcoderx.com',
+  'https://api.c0ff33a.uk',
 ];
 
-const currentNodesList = isDev ? STAGING_REQUEST_NODES : PRODUCTION_REQUEST_NODES;
-
-export const dHive = new Client(currentNodesList, {
+export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,
   failoverThreshold: 0,
 });

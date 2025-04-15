@@ -64,6 +64,23 @@ const applyWrappingBlockStyle = (currentStyle, content, nextBlock, prevBlock) =>
   return content;
 };
 
+const slateListToHtml = node => {
+  if (node.type === 'orderedList') {
+    return `<ol>${node.children.map(slateListToHtml).join('')}</ol>`;
+  }
+  if (node.type === 'unorderedList') {
+    return `<ul>${node.children.map(slateListToHtml).join('')}</ul>`;
+  }
+  if (node.type === 'listItem') {
+    return `<li>${node.children.map(slateListToHtml).join('')}</li>`;
+  }
+  if (node.text) {
+    return node.text;
+  }
+
+  return '';
+};
+
 const applyAtomicStyle = (block, entityMap, content) => {
   if (block.type.indexOf('atomic') === -1) return content;
   // strip the test that was added in the media block
@@ -352,6 +369,10 @@ export function editorStateToMarkdownSlate(value) {
         }),
         tableCell: (node, next) => {
           const children = node.children.reduce((acc, child, i) => {
+            if (['unorderedList', 'orderedList'].includes(child.type)) {
+              return [...acc, { type: 'html', children: [{ text: slateListToHtml(child) }] }];
+            }
+
             if (node.children.length - 1 === i) return [...acc, child];
 
             if (

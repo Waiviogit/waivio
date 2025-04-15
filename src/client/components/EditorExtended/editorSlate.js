@@ -241,7 +241,7 @@ const EditorSlate = props => {
         toggleBlock(editor, list.type);
       }
 
-      if (selectedElement.type === 'image') {
+      if (['image', 'video'].includes(selectedElement.type)) {
         event.preventDefault();
         Transforms.insertNodes(editor, createParagraph(''), { at: [0] });
       }
@@ -299,7 +299,7 @@ const EditorSlate = props => {
       }
 
       if (
-        node.type === 'image' &&
+        ['image', 'video'].includes(node.type) &&
         key !== path[0] &&
         !path[1] &&
         !offset &&

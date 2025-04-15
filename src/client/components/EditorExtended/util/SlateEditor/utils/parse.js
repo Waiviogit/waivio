@@ -31,6 +31,39 @@ export const defaultNodeTypes = {
   object: 'object',
 };
 
+function htmlArrayToSlateList(htmlArray) {
+  const slateList = [];
+  let currentList = null;
+
+  htmlArray.forEach(node => {
+    if (node.type === 'html' && node.value === '<ol>') {
+      currentList = { type: 'orderedList', children: [] };
+    } else if (node.type === 'html' && node.value === '<ul>') {
+      currentList = { type: 'unorderedList', children: [] };
+    } else if (node.type === 'html' && ['</ol>', '</ul>'].includes(node.value)) {
+      if (currentList) {
+        slateList.push(currentList);
+        currentList = null;
+      }
+    } else if (node.type === 'html' && node.value === '<li>') {
+      if (currentList && Array.isArray(currentList.children)) {
+        currentList.children.push({
+          type: 'listItem',
+          children: [],
+        });
+      }
+    } else if (node.type === 'text' && currentList && Array.isArray(currentList.children)) {
+      const lastItem = currentList.children[currentList.children.length - 1];
+
+      if (lastItem && Array.isArray(lastItem.children)) {
+        lastItem.children.push({ text: node.value });
+      }
+    }
+  });
+
+  return slateList;
+}
+
 export const deserializeToSlate = (body, isThread, isNewReview) => {
   const processor = unified()
     .use(remarkParse)
@@ -111,19 +144,31 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.underline && { underline: true }),
           ...(node.children && { children: next(node.children) }),
         }),
-        tableCell: (node, next) => {
+        tableCell: node => {
           const emptyParagraph = {
             type: 'paragraph',
-            children: [{ type: 'text', value: '' }],
+            children: [{ text: '' }],
           };
 
-          const children = node.children.reduce((acc, child) => {
+          const children = node.children.reduce((acc, child, i) => {
+            if (
+              (child.type === 'html' &&
+                ['<li>', '</li>', '</ol>', '</ul>', '<br />'].includes(child.value)) ||
+              (node.children?.[i - 1]?.type === 'html' &&
+                child.type === 'text' &&
+                node.children?.[i + 1]?.type === 'html')
+            ) {
+              return acc;
+            }
+
             if (child.type === 'html' && child.value === '<p />') {
               return [...acc, emptyParagraph];
             }
 
-            if (child.type === 'html' && child.value === '<br />') {
-              return acc;
+            if (child.type === 'html' && ['<ol>', '<ul>'].includes(child.value)) {
+              const list = htmlArrayToSlateList(node.children);
+
+              return [...acc, ...list];
             }
 
             if (child.type === 'text') {
@@ -131,7 +176,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
                 ...acc,
                 {
                   type: 'paragraph',
-                  children: [{ type: 'text', value: child.value }],
+                  children: [{ text: child.value }],
                 },
               ];
             }
@@ -141,7 +186,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
 
           return {
             type: node.type,
-            children: isEmpty(node.children) ? next([emptyParagraph]) : next(children),
+            children: isEmpty(children) ? [emptyParagraph] : children,
           };
         },
       },
