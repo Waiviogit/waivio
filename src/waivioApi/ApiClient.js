@@ -4930,4 +4930,14 @@ export const getCommentReactions = (author, permlink) =>
     .then(res => res.json())
     .then(r => r.result)
     .catch(e => e);
+
+export const getAllActiveSites = () => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.active}${config.list}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;
