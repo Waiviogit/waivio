@@ -83,8 +83,6 @@ class WobjectContainer extends React.PureComponent {
   componentDidMount() {
     this.getWobjInfo();
     this.lastVisibilityTime.current = Date.now();
-
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
     const widgetContainer = document.getElementById('shop-with-instacart-v1');
 
     if (widgetContainer) {
@@ -156,19 +154,6 @@ class WobjectContainer extends React.PureComponent {
     this.props.resetWobjectExpertise();
     this.props.setEditMode(false);
   }
-
-  handleVisibilityChange = () => {
-    if (document.hidden) {
-      const timeSinceLastVisibility = Date.now() - this.lastVisibilityTime.current;
-
-      if (timeSinceLastVisibility > 100) {
-        // websiteStatisticsAction();
-        this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
-      }
-    } else {
-      this.lastVisibilityTime.current = Date.now();
-    }
-  };
 
   setInstacardScript = async instacardAff => {
     const element = document.getElementById('standard-instacart-widget-v1');

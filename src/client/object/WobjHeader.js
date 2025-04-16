@@ -156,9 +156,7 @@ const WobjHeader = ({
         </div>
       </div>
       {!showPostModal && isRecipe && instacardAff && (
-        <div onClick={() => console.log('click')}>
         <InstacartWidget className={'shop-with-instacart-v1'} instacartAff={instacardAff} />
-        </div>
       )}
     </div>
   );
