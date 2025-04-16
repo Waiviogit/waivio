@@ -5,6 +5,7 @@ import { Icon } from 'antd';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
 import { createEmptyNode, createLine } from '../../util/SlateEditor/utils/embed';
+import { isNestedTable } from './TableSideButton';
 
 const SeparatorSideButton = ({ close, intl }) => {
   const editor = useSlate();
@@ -24,6 +25,7 @@ const SeparatorSideButton = ({ close, intl }) => {
         id: 'add_separator',
         defaultMessage: 'Add a separator',
       })}
+      disabled={isNestedTable(editor)}
     >
       <Icon type="minus" className="btn-icon" color="#8798a4" />
       <span className="action-btn__caption">
