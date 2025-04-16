@@ -19,7 +19,7 @@ import {
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import { getActions } from '../../../../store/websiteStore/websiteSelectors';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import { getWebsites } from '../../../../waivioApi/ApiClient';
+import { getAllActiveSites, getWebsites } from '../../../../waivioApi/ApiClient';
 import './ReportsWebsite.less';
 
 const ActionsWebsite = ({
@@ -42,7 +42,9 @@ const ActionsWebsite = ({
   useEffect(() => {
     resetFields();
     getActionsInfo(isAdmin, { skip: 0, limit });
-    getWebsites(userName).then(list => setSites(list.map(i => i.host)));
+    isAdmin
+      ? getAllActiveSites().then(list => setSites(list.map(i => i.host)))
+      : getWebsites(userName).then(list => setSites(list.map(i => i.host)));
   }, [history.location.pathname]);
 
   const loadMore = async () => {

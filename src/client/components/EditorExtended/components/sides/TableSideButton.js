@@ -7,7 +7,7 @@ import { ReactEditor, useSlate } from 'slate-react';
 import { createEmptyNode } from '../../util/SlateEditor/utils/embed';
 import { insertTable } from '../../util/SlateEditor/utils/table';
 
-const isNestedTable = editor => {
+export const isNestedTable = editor => {
   const { selection } = editor;
 
   if (selection) {

@@ -76,6 +76,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal, isUpdates }) => {
     WAIVPayout,
     HIVEPayout,
   } = calculatePayout(post, rates, isUpdates);
+
   const beneficaries = getBeneficaries(post, authorPayouts, isModal);
   const beneficariesClassList = classNames('PayoutDetail__benefisItem', {
     'PayoutDetail__benefisItem--modal': isModal,
@@ -176,7 +177,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal, isUpdates }) => {
               <FormattedMessage
                 id="payout_will_release_in_time"
                 defaultMessage="Will release {time}"
-                values={{ time: intl.formatRelative(post.cashout_time) }}
+                values={{ time: intl.formatRelative(post.cashout_time || post.payout_at) }}
               />
             </span>
           </div>
