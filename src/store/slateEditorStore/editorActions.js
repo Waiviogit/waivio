@@ -662,7 +662,7 @@ export const handlePasteText = html => async (dispatch, getState) => {
   if (objectIds.length) {
     const state = getState();
     const locale = getLocale(state);
-    const linkedObjects = getLinkedObjects(state);
+    const linkedObjects = getLinkedObjects(state) || [];
     const { wobjects } = await getObjectsByIds({
       locale,
       requiredFields: ['rating'],
