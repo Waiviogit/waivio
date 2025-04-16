@@ -167,6 +167,8 @@ const Body = props => {
         imgNode.onerror = () => {
           // eslint-disable-next-line no-param-reassign
           imgNode.src = imgNode.alt;
+          // eslint-disable-next-line no-param-reassign
+          imgNode.alt = '/images/icons/no-image.png';
         };
       });
     }
