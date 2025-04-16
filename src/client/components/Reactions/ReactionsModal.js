@@ -13,7 +13,7 @@ const { TabPane } = Tabs;
 const ReactionsModal = ({
   visible = false,
   initialUpVotes,
-  downVotes = [],
+  initialDownVotes = [],
   tab = '1',
   onClose = () => {},
   append = false,
@@ -24,13 +24,28 @@ const ReactionsModal = ({
 }) => {
   const [tabKey, setTabKey] = useState('1');
   const [upVotes, setUpVotes] = useState(initialUpVotes || []);
+  const [downVotes, setDownVotes] = useState(initialDownVotes || []);
   const rewardFund = useSelector(getRewardFund);
   const rate = useSelector(getRate);
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
 
   useEffect(() => {
     if (comment && visible && !initialUpVotes)
-      getCommentReactions(comment.author, comment.permlink).then(r => setUpVotes(r));
+      getCommentReactions(comment.author, comment.permlink).then(r => {
+        const ups = [];
+        const downs = [];
+
+        r.forEach(vote => {
+          if (vote.percent && vote.percent < 0) {
+            downs.push(vote);
+          } else {
+            ups.push(vote);
+          }
+        });
+
+        setUpVotes(ups);
+        setDownVotes(downs);
+      });
   }, [visible, comment?.url]);
 
   const upVotesWithPayout = initialUpVotes
@@ -96,7 +111,7 @@ const ReactionsModal = ({
 ReactionsModal.propTypes = {
   visible: PropTypes.bool,
   comment: PropTypes.shape(),
-  downVotes: PropTypes.arrayOf(PropTypes.shape({})),
+  initialDownVotes: PropTypes.arrayOf(PropTypes.shape({})),
   initialUpVotes: PropTypes.arrayOf(PropTypes.shape({})),
   tab: PropTypes.string,
   onClose: PropTypes.func,

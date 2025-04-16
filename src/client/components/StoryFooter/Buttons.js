@@ -310,7 +310,7 @@ export default class Buttons extends React.Component {
           visible={this.state.reactionsModalVisible}
           initialUpVotes={upVotes}
           // comment={this.props.post}
-          downVotes={downVotes}
+          initialDownVotes={downVotes}
           onClose={this.handleCloseReactions}
           user={username}
         />

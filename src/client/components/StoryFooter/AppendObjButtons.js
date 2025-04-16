@@ -223,7 +223,7 @@ const AppendObjButtons = ({
             visible={reactionsModalVisible}
             initialUpVotes={upVotes}
             ratio={ratio}
-            downVotes={downVotes}
+            initialDownVotes={downVotes}
             onClose={handleCloseReactions}
             tab={key}
             append
