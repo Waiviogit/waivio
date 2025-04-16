@@ -58,7 +58,6 @@ export function parsePayoutAmount(amount) {
 export const calculatePayout = (post, rates, isUpdates) => {
   if (!post) return {};
   const payoutDetails = {};
-  const { cashout_time } = post;
   const sponsorLikePayout = get(
     post.active_votes?.find(vote => vote.sponsor),
     'payout',
@@ -91,7 +90,7 @@ export const calculatePayout = (post, rates, isUpdates) => {
   payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
 
   if (!isPostCashout(post)) {
-    payoutDetails.cashoutInTime = cashout_time + '.000Z';
+    payoutDetails.cashoutInTime = (post.cashout_time || post.payout_at) + '.000Z';
   } else {
     payoutDetails.pastPayouts = payout;
     payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
@@ -111,7 +110,10 @@ export const calculatePayout = (post, rates, isUpdates) => {
   return payoutDetails;
 };
 
-export const isPostCashout = post => Date.parse(get(post, 'cashout_time')) < Date.now();
+export const isPostCashout = post =>
+  post?.cashout_time
+    ? Date.parse(get(post, 'cashout_time'))
+    : Date.parse(get(post, 'payout_at')) < Date.now();
 export const isFlaggedPost = (votes, name) =>
   getDownvotes(votes).some(({ voter }) => voter === name);
 
