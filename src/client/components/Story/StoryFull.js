@@ -478,7 +478,7 @@ class StoryFull extends React.Component {
             </PostPopoverMenu>
           </div>
         )}
-        {instacardAff && (
+        {instacardAff && !isRecipe && (
           <React.Fragment>
             <div style={{ display: 'none' }}>
               {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
