@@ -205,7 +205,7 @@ export default class CommentFooter extends React.Component {
                 type={sliderType}
               />
             )}
-            {(!sliderVisible || isLiked) && (
+            {!sliderVisible && (
               <Buttons
                 editable={editable}
                 editing={editing}

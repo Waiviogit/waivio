@@ -19,11 +19,7 @@ export const VIDEO_MATCH_URL = {
   PEERTUBE: /^(?:https?:\/\/)?(?:www.)?media.zat.im\/(?:w|videos\/embed)\/(.*)/,
 };
 
-export const imageRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|jpg|gif|png|svg|ico|webp)|ipfs\/[a-z\d]{40,})))/gi;
-
-export const dtubeImageRegex = /<a href="https:\/\/d.tube.#!\/v\/[^/"]+\/[^/"]+"><img src="[^"]+"\/><\/a>/g;
-
-export const usernameURLRegex = /@([^/]+)/;
+export const imageRegex = /https?:\/\/(?:[-a-zA-Z0-9._]+)(?::\d{2,5})?(?:\/[^\s"'<>\][().,]*\.(?:tiff?|jpe?g|jpg|gif|png|svg|ico|webp)(?=$|[?#]))/gi;
 
 export const categoryRegex = /\/([^/]+)/;
 
