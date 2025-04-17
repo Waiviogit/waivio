@@ -72,7 +72,9 @@ export const calculatePayout = (post, rates, isUpdates) => {
   const promoted = parsePayoutAmount(post.promoted);
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
-  let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  // let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  let payout =
+    post.payout || pending_payout + total_author_payout + total_curator_payout + waivPayout;
   const hivePayout = total_author_payout + total_curator_payout + pending_payout;
   const hivePayoutHalf = (hivePayout - sponsorLikePayout) / 2;
   const hbdPercent = post.percent_hbd ? 0.25 : 0;
