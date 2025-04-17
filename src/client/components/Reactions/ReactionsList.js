@@ -44,7 +44,7 @@ export default class UserList extends React.Component {
         <span>
           {vote.payout >= 0.001 && (
             <React.Fragment>
-              <USDDisplay value={vote.payout} />
+              <USDDisplay value={vote.payout} precision={3} />
               <span className="ReactionsList__bullet" />
             </React.Fragment>
           )}
