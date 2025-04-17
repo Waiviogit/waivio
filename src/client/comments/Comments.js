@@ -52,7 +52,7 @@ const Comments = props => {
     const { commentsList, user, defaultVotePercent } = props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
-    if (!Number(userVote.percent)) {
+    if ((userVote.percent && !Number(userVote.percent)) || userVote.rshares <= 0) {
       const likeWeight = weight > 0 ? weight : defaultVotePercent;
 
       props.voteComment(id, likeWeight, 'like');

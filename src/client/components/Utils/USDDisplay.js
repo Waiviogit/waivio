@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
-const USDDisplay = React.memo(({ value, currencyDisplay, precision }) => {
+const USDDisplay = React.memo(({ value, currencyDisplay, precision, minimumFractionDigits }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const validValue = typeof value === 'number' && !isNaN(value) ? value : 0;
   const absValue = validValue === 0 ? validValue : Math.abs(validValue);
@@ -27,7 +27,7 @@ const USDDisplay = React.memo(({ value, currencyDisplay, precision }) => {
     <FormattedNumber
       value={num}
       locale={'en-IN'}
-      minimumFractionDigits={precisionValue}
+      minimumFractionDigits={minimumFractionDigits || precisionValue}
       maximumFractionDigits={precisionValue}
     />
   );
@@ -63,6 +63,7 @@ const USDDisplay = React.memo(({ value, currencyDisplay, precision }) => {
 USDDisplay.propTypes = {
   value: PropTypes.number,
   precision: PropTypes.number,
+  minimumFractionDigits: PropTypes.number,
   currencyDisplay: PropTypes.string,
   style: PropTypes.shape({}),
 };
