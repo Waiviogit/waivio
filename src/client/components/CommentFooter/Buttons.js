@@ -108,9 +108,9 @@ class Buttons extends React.Component {
     const payout = calculatePayout(comment, waivRates);
     const ownPost = comment.author === user.name;
     const upVotes = getUpvotes(comment.active_votes).sort(sortVotes);
-    const downVotes = getDownvotes(comment.active_votes)
-      .sort(sortVotes)
-      .reverse();
+    // const downVotes = getDownvotes(comment.active_votes)
+    //   .sort(sortVotes)
+    //   .reverse();
     const isFlagged = getDownvotes(comment.active_votes).some(({ voter }) => voter === user.name);
     const totalPayout =
       parseFloat(comment.pending_payout_value) +
@@ -139,7 +139,7 @@ class Buttons extends React.Component {
 
     const userVote = find(comment.active_votes, { voter: user.name });
 
-    const userUpVoted = userVote && userVote.percent > 0;
+    const userUpVoted = userVote && (userVote.percent > 0 || userVote.rshares > 0);
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
 
@@ -193,7 +193,7 @@ class Buttons extends React.Component {
             </BTooltip>
           </span>
         )}
-        {payoutValue >= 0.005 && (
+        {payoutValue >= 0.001 && (
           <React.Fragment>
             <span className="CommentFooter__bullet" />
             <span className="CommentFooter__payout">
@@ -245,10 +245,9 @@ class Buttons extends React.Component {
         )}
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
-          upVotes={upVotes}
           ratio={ratio}
-          downVotes={downVotes}
           onClose={this.handleCloseReactions}
+          comment={this.props.comment}
         />
       </div>
     );

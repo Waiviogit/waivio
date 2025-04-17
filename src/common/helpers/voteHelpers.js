@@ -1,6 +1,7 @@
 import { includes, filter } from 'lodash';
 
-export const getUpvotes = activeVotes => filter(activeVotes, vote => vote.percent > 0) || [];
+export const getUpvotes = activeVotes =>
+  filter(activeVotes, vote => vote.percent > 0 || vote.rshares > 0) || [];
 
 export const getUpvotesQuontity = activeVotes => getUpvotes(activeVotes)?.length;
 

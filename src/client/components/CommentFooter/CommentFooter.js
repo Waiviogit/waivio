@@ -95,7 +95,7 @@ export default class CommentFooter extends React.Component {
     if (user) {
       const userVote = find(comment.active_votes, { voter: user.name }) || {};
 
-      if (userVote.percent && userVote.percent > 0) {
+      if (userVote.percent && (userVote.percent > 0 || userVote.rshares > 0)) {
         this.setState({
           sliderValue: userVote.percent / 100,
           isLiked: true,

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelected, useFocused } from 'slate-react';
 import getSource, { getIframeContainerClass, isOdysee } from '../../util/videoHelper';
 import AsyncVideo from '../../../../vendor/asyncVideo';
 
@@ -10,10 +11,15 @@ const Video = ({ url }) => {
     return <AsyncVideo url={url} />;
   }
   const src = getSource({ src: url });
+  const selected = useSelected();
+  const focused = useFocused();
 
   if (src) {
     return (
-      <div className={getIframeContainerClass({ url }, true)}>
+      <div
+        style={{ boxShadow: selected && focused && '0 0 3px 3px lightgray', textAlign: 'center' }}
+        className={getIframeContainerClass({ url }, true)}
+      >
         <iframe
           title={src}
           width="100%"

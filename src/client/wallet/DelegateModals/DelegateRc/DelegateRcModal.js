@@ -151,7 +151,9 @@ const DelegateRcModal = () => {
           <Button
             type={'primary'}
             disabled={
-              (modalInfo?.isEdit && !amount && _.isEmpty(amount)) || (_.isEmpty(amount) && !amount)
+              _.isEmpty(user) ||
+              (modalInfo?.isEdit && !amount && _.isEmpty(amount)) ||
+              (_.isEmpty(amount) && !amount)
             }
             onClick={() => {
               delegateRC();

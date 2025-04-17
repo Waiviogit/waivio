@@ -58,7 +58,6 @@ export function parsePayoutAmount(amount) {
 export const calculatePayout = (post, rates, isUpdates) => {
   if (!post) return {};
   const payoutDetails = {};
-  const { cashout_time } = post;
   const sponsorLikePayout = get(
     post.active_votes?.find(vote => vote.sponsor),
     'payout',
@@ -73,7 +72,9 @@ export const calculatePayout = (post, rates, isUpdates) => {
   const promoted = parsePayoutAmount(post.promoted);
   const total_author_payout = parsePayoutAmount(post.total_payout_value);
   const total_curator_payout = parsePayoutAmount(post.curator_payout_value);
-  let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  // let payout = pending_payout + total_author_payout + total_curator_payout + waivPayout;
+  let payout =
+    post.payout || pending_payout + total_author_payout + total_curator_payout + waivPayout;
   const hivePayout = total_author_payout + total_curator_payout + pending_payout;
   const hivePayoutHalf = (hivePayout - sponsorLikePayout) / 2;
   const hbdPercent = post.percent_hbd ? 0.25 : 0;
@@ -91,7 +92,7 @@ export const calculatePayout = (post, rates, isUpdates) => {
   payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
 
   if (!isPostCashout(post)) {
-    payoutDetails.cashoutInTime = cashout_time + '.000Z';
+    payoutDetails.cashoutInTime = (post.cashout_time || post.payout_at) + '.000Z';
   } else {
     payoutDetails.pastPayouts = payout;
     payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
@@ -111,7 +112,10 @@ export const calculatePayout = (post, rates, isUpdates) => {
   return payoutDetails;
 };
 
-export const isPostCashout = post => Date.parse(get(post, 'cashout_time')) < Date.now();
+export const isPostCashout = post =>
+  post?.cashout_time
+    ? Date.parse(get(post, 'cashout_time'))
+    : Date.parse(get(post, 'payout_at')) < Date.now();
 export const isFlaggedPost = (votes, name) =>
   getDownvotes(votes).some(({ voter }) => voter === name);
 
@@ -323,28 +327,18 @@ export const roundNumberToThousands = number => {
   }
   return number;
 };
-const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
+// const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
 const PRODUCTION_REQUEST_NODES = [
   'https://api.hive.blog',
   'https://api.deathwing.me',
-  'https://api.openhive.network',
-  'https://rpc.ecency.com',
-  // 'https://anyx.io',
-];
-
-const STAGING_REQUEST_NODES = [
-  'https://api.openhive.network',
-  'https://api.pharesim.me',
-  'https://rpc.esteem.app',
   'https://hive-api.arcange.eu',
-  'https://hive.roelandp.nl',
-  'https://rpc.ausbit.dev',
+  'https://api.openhive.network',
+  'https://techcoderx.com',
+  'https://api.c0ff33a.uk',
 ];
 
-const currentNodesList = isDev ? STAGING_REQUEST_NODES : PRODUCTION_REQUEST_NODES;
-
-export const dHive = new Client(currentNodesList, {
+export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,
   failoverThreshold: 0,
 });

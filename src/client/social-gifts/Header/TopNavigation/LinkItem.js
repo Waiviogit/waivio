@@ -7,6 +7,9 @@ import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 const LinkItem = ({ link, index, intl }) => {
   const history = useHistory();
+  const directObjTypes = ['person'];
+
+  const linkTo = directObjTypes.includes(link.object_type) ? `/object/${link.permlink}` : link.link;
 
   return link.type === 'blank' ? (
     <a
@@ -23,11 +26,11 @@ const LinkItem = ({ link, index, intl }) => {
       className="WebsiteTopNavigation__link"
       isActive={() =>
         (index === 0 && history.location.pathname === '/') ||
-        history.location.pathname.includes(link?.link)
+        history.location.pathname.includes(linkTo)
       }
       activeClassName={'WebsiteTopNavigation__link--active'}
       key={link.link}
-      to={link.link}
+      to={linkTo}
     >
       {' '}
       {getMenuLinkTitle(link, intl, 24)}
@@ -41,6 +44,8 @@ LinkItem.propTypes = {
     link: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
+    object_type: PropTypes.string,
+    permlink: PropTypes.string,
   }),
   index: PropTypes.number,
 };

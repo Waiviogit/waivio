@@ -42,6 +42,49 @@ const HIVE_ENGINE_NODES = [
   'https://engine.waivio.com',
 ];
 
+const getNewNodeUrl = hostUrl => {
+  const index = hostUrl ? HIVE_ENGINE_NODES.indexOf(hostUrl) : 0;
+
+  return index === HIVE_ENGINE_NODES.length - 1
+    ? HIVE_ENGINE_NODES[0]
+    : HIVE_ENGINE_NODES[index + 1];
+};
+
+export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) =>
+  fetch(
+    `${hostUrl}${endpoint}`,
+    {
+      headers,
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 'ssc-mainnet-hive',
+        method: 'find',
+        params,
+      }),
+      method: 'POST',
+    },
+    {
+      timeout: REQUEST_TIMEOUT,
+    },
+  )
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(error => ({ error }));
+
+export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NODES[0]) => {
+  const response = await engineQuery({
+    params,
+    hostUrl,
+  });
+  if (has(response, 'error')) {
+    if (attempts <= 0) return response;
+    const newUrl = getNewNodeUrl(hostUrl);
+    return engineProxy(params, attempts - 1, newUrl);
+  }
+
+  return response;
+};
+
 export function handleErrors(response) {
   if (!response.ok) {
     Promise.reject();
@@ -2444,48 +2487,6 @@ export const getPostsForMap = params =>
     .then(res => res.json())
     .catch(e => e);
 
-const getNewNodeUrl = hostUrl => {
-  const index = hostUrl ? HIVE_ENGINE_NODES.indexOf(hostUrl) : 0;
-
-  return index === HIVE_ENGINE_NODES.length - 1
-    ? HIVE_ENGINE_NODES[0]
-    : HIVE_ENGINE_NODES[index + 1];
-};
-
-export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) =>
-  fetch(
-    `${hostUrl}${endpoint}`,
-    {
-      headers,
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'ssc-mainnet-hive',
-        method: 'find',
-        params,
-      }),
-      method: 'POST',
-    },
-    {
-      timeout: REQUEST_TIMEOUT,
-    },
-  )
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(error => ({ error }));
-
-export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NODES[0]) => {
-  const response = await engineQuery({
-    params,
-    hostUrl,
-  });
-  if (has(response, 'error')) {
-    if (attempts <= 0) return response;
-    const newUrl = getNewNodeUrl(hostUrl);
-    return engineProxy(params, attempts - 1, newUrl);
-  }
-
-  return response;
-};
 export const getHiveFeedHistory = () =>
   fetch('https://api.hive.blog/', {
     method: 'POST',
@@ -4881,7 +4882,17 @@ export const websiteStatisticsReport = formData =>
     body: JSON.stringify(formData),
   })
     .then(res => res.json())
-    .then(res => res.result)
+    .then(res => res)
+    .catch(e => e);
+
+export const adminWebsiteStatisticsReport = (admin, formData) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.statistics}${config.report}`, {
+    headers: { ...headers, ...getAuthHeaders(), admin },
+    method: 'POST',
+    body: JSON.stringify(formData),
+  })
+    .then(res => res.json())
+    .then(res => res)
     .catch(e => e);
 
 export const getCreditsByAdminList = (admin, skip, limit = 50) =>
@@ -4904,5 +4915,29 @@ export const getSubscriptionsByAdminList = admin =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => error);
+
+export const getCommentReactions = (author, permlink) =>
+  fetch('https://api.deathwing.me', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      id: 16,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_active_votes',
+      params: [author, permlink],
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r.result)
+    .catch(e => e);
+
+export const getAllActiveSites = () => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.active}${config.list}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
 
 export default null;

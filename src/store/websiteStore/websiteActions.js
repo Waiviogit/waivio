@@ -218,16 +218,33 @@ export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => 
 };
 export const GET_ACTIONS_PAGE = createAsyncActionType('@website/GET_ACTIONS_PAGE');
 
-export const getActionsWebsiteInfo = (formData = {}) => (dispatch, getState) => {
+export const getActionsWebsiteInfo = (isAdmin, formData = {}) => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
 
-  dispatch({
+  return dispatch({
     type: GET_ACTIONS_PAGE.ACTION,
     payload: {
-      promise: ApiClient.websiteStatisticsReport({ userName, ...formData }),
+      promise: isAdmin
+        ? ApiClient.adminWebsiteStatisticsReport(userName, formData)
+        : ApiClient.websiteStatisticsReport({ userName, ...formData }),
     },
   });
 };
+export const GET_MORE_ACTIONS_PAGE = createAsyncActionType('@website/GET_MORE_ACTIONS_PAGE');
+
+export const getMoreActionsWebsiteInfo = (isAdmin, formData = {}) => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  return dispatch({
+    type: GET_MORE_ACTIONS_PAGE.ACTION,
+    payload: {
+      promise: isAdmin
+        ? ApiClient.adminWebsiteStatisticsReport(userName, formData)
+        : ApiClient.websiteStatisticsReport({ userName, ...formData }),
+    },
+  });
+};
+
 export const GET_WEBSITE_CONFIGURATIONS = createAsyncActionType(
   '@website/GET_WEBSITE_CONFIGURATIONS',
 );

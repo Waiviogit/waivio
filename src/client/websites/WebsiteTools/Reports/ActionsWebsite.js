@@ -6,29 +6,58 @@ import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
+import { useHistory } from 'react-router';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
 import Loading from '../../../components/Icon/Loading';
 import { selectFormatDate } from '../../../wallet/WalletHelper';
 import { configActionsWebsitesTableHeader } from '../../constants/tableConfig';
-import { getActionsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
+import {
+  getActionsWebsiteInfo,
+  getMoreActionsWebsiteInfo,
+} from '../../../../store/websiteStore/websiteActions';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import { getActions } from '../../../../store/websiteStore/websiteSelectors';
-
-import './ReportsWebsite.less';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import { getWebsites } from '../../../../waivioApi/ApiClient';
+import { getAllActiveSites, getWebsites } from '../../../../waivioApi/ApiClient';
+import './ReportsWebsite.less';
 
-const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userName }) => {
+const ActionsWebsite = ({
+  isAdmin = false,
+  intl,
+  form,
+  reportsInfo,
+  getActionsInfo,
+  locale,
+  userName,
+  getMoreActionsInfo,
+}) => {
+  const limit = 20;
   const [sites, setSites] = useState([]);
-
-  const { getFieldDecorator } = form;
+  const [loadingMore, setLoadingMore] = useState(false);
+  const { getFieldDecorator, resetFields } = form;
   const formatDate = selectFormatDate(locale);
+  const history = useHistory();
 
   useEffect(() => {
-    getActionsInfo();
-    getWebsites(userName).then(list => setSites(list.map(i => i.host)));
-  }, []);
+    resetFields();
+    getActionsInfo(isAdmin, { skip: 0, limit });
+    isAdmin
+      ? getAllActiveSites().then(list => setSites(list.map(i => i.host)))
+      : getWebsites(userName).then(list => setSites(list.map(i => i.host)));
+  }, [history.location.pathname]);
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    try {
+      await getMoreActionsInfo(isAdmin, {
+        skip: reportsInfo.payments.length,
+        limit,
+      });
+    } finally {
+      setLoadingMore(false);
+    }
+  };
   const disabledDate = current => current > moment().endOf('day');
 
   const handleSubmit = e => {
@@ -36,6 +65,8 @@ const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userN
     form.validateFields((err, values) => {
       if (!err) {
         const formData = {
+          skip: 0,
+          limit,
           ...(values.host && values.host !== 'all' ? { host: values.host } : {}),
           ...(values.startDate
             ? {
@@ -47,7 +78,7 @@ const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userN
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
         };
 
-        getActionsInfo(formData);
+        getActionsInfo(isAdmin, formData);
       }
     });
   };
@@ -141,9 +172,13 @@ const ActionsWebsite = ({ intl, form, reportsInfo, getActionsInfo, locale, userN
             </Form.Item>
           </Form>
           <DynamicTbl
+            loading={loadingMore}
+            handleShowMore={loadMore}
+            showMore={reportsInfo.hasMore}
             header={configActionsWebsitesTableHeader}
             bodyConfig={reportsInfo?.payments}
           />
+          <br />
         </React.Fragment>
       )}
     </React.Fragment>
@@ -156,14 +191,18 @@ ActionsWebsite.propTypes = {
     getFieldDecorator: PropTypes.func,
     validateFields: PropTypes.func,
     isFieldsTouched: PropTypes.func,
+    resetFields: PropTypes.func,
   }).isRequired,
   getActionsInfo: PropTypes.func.isRequired,
+  getMoreActionsInfo: PropTypes.func.isRequired,
   reportsInfo: PropTypes.shape({
     ownerAppNames: PropTypes.arrayOf(PropTypes.string),
     payments: PropTypes.arrayOf({}),
+    hasMore: PropTypes.bool,
   }).isRequired,
   locale: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
+  isAdmin: PropTypes.bool,
 };
 
 export default connect(
@@ -174,5 +213,6 @@ export default connect(
   }),
   {
     getActionsInfo: getActionsWebsiteInfo,
+    getMoreActionsInfo: getMoreActionsWebsiteInfo,
   },
 )(Form.create()(injectIntl(ActionsWebsite)));
