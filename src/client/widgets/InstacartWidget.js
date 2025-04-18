@@ -5,8 +5,8 @@ import { websiteStatisticsAction } from '../../waivioApi/ApiClient';
 const InstacartWidget = ({ instacartAff, className, isProduct = false }) => {
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'hidden') {
-      websiteStatisticsAction().then(() => {
-        if (typeof window !== 'undefined' && window?.gtag) {
+      websiteStatisticsAction().then(res => {
+        if (res.result && typeof window !== 'undefined' && window?.gtag) {
           window.gtag('event', 'buy_now', { debug_mode: true });
         }
       });
