@@ -2692,5 +2692,6 @@
   "mobnav_admin_subscriptions": "Subscriptions",
   "object_field_nutrition": "Macros",
   "delegate_rc": "Delegate RC",
-  "manage_rc": "Manage"
+  "manage_rc": "Manage",
+  "object_field_featured": "Featured"
 }

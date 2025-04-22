@@ -4212,6 +4212,19 @@ export const getAddOnObjectsFromDepartments = (
     .then(r => r)
     .catch(error => error);
 
+export const getFeaturedObjects = (authorPermlink, userName, locale, skip = 0, limit = 30, host) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.featured}`, {
+    headers: { ...headers, follower: userName, locale, ...addAppHost(host) },
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
 export const getSimilarObjectsFromDepartments = (
   authorPermlink,
   userName,

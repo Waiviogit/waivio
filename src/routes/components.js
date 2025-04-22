@@ -154,6 +154,7 @@ export default {
   DescriptionPage: loableComponent(import('../client/object/Description/DescriptionPage')),
   RelatedPage: loableComponent(import('../client/object/RightSidebarPages/RelatedPage')),
   AddOnPage: loableComponent(import('../client/object/RightSidebarPages/AddOnPage')),
+  FeaturedPage: loableComponent(import('../client/object/RightSidebarPages/FeaturedPage')),
   SimilarPage: loableComponent(import('../client/object/RightSidebarPages/SimilarPage')),
   WobjProductsPage: loableComponent(import('../client/object/RightSidebarPages/WobjReferencePage')),
   OptionsPage: loableComponent(import('../client/object/Options/OptionsPage')),

@@ -272,5 +272,6 @@
   "rcDelegations": "/rc-delegations",
   "incoming": "/incoming",
   "buyActions": "/buy-actions",
-  "active": "/active"
+  "active": "/active",
+  "featured": "/featured"
 }
