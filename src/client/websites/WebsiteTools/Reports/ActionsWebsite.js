@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, AutoComplete, DatePicker, Button } from 'antd';
+import { Form, DatePicker, Button, Select } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
@@ -105,19 +105,19 @@ const ActionsWebsite = ({
                 </span>
               </h3>
               {getFieldDecorator('host')(
-                <AutoComplete>
-                  <AutoComplete.Option key={'all'}>
+                <Select showSearch>
+                  <Select.Option key={'all'}>
                     {intl.formatMessage({
                       id: 'all',
                       defaultMessage: 'All',
                     })}
-                  </AutoComplete.Option>
+                  </Select.Option>
                   {sites?.map(domain => (
-                    <AutoComplete.Option key={domain} value={domain}>
+                    <Select.Option key={domain} value={domain}>
                       {domain}
-                    </AutoComplete.Option>
+                    </Select.Option>
                   ))}
-                </AutoComplete>,
+                </Select>,
               )}
             </Form.Item>
             <h3>
