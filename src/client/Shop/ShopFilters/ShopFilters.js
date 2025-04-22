@@ -103,31 +103,35 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) =>
           </div>
         ))}
       </div>
-      {filters?.tagCategoryFilters?.map(category => (
-        <div key={category.tagCategory} className="ShopFilters__block">
-          <span className="ShopFilters__subtitle">{category.tagCategory}:</span>
-          {category?.tags?.map(tag => (
-            <div key={tag}>
-              <Checkbox
-                checked={activeFilter[category.tagCategory]?.includes(tag)}
-                onChange={() => setActiveFilters(category.tagCategory, tag)}
+      {filters?.tagCategoryFilters?.map(category => {
+        if (isEmpty(category.tags)) return null;
+
+        return (
+          <div key={category.tagCategory} className="ShopFilters__block">
+            <span className="ShopFilters__subtitle">{category.tagCategory}:</span>
+            {category?.tags?.map(tag => (
+              <div key={tag}>
+                <Checkbox
+                  checked={activeFilter[category.tagCategory]?.includes(tag)}
+                  onChange={() => setActiveFilters(category.tagCategory, tag)}
+                >
+                  {' '}
+                  {tag}
+                </Checkbox>
+              </div>
+            ))}
+            {category.hasMore && (
+              <span
+                className="ShopFilters__show-more"
+                role="presentation"
+                onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
               >
-                {' '}
-                {tag}
-              </Checkbox>
-            </div>
-          ))}
-          {category.hasMore && (
-            <span
-              className="ShopFilters__show-more"
-              role="presentation"
-              onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
-            >
-              {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-            </span>
-          )}
-        </div>
-      ))}
+                {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+              </span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
