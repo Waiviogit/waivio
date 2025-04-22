@@ -89,6 +89,7 @@ export const objectFields = {
   groupExclude: 'groupExclude',
   groupLastActivity: 'groupLastActivity',
   promotion: 'promotion',
+  featured: 'featured',
   nutrition: 'nutrition',
 };
 export const walletAddressFields = {

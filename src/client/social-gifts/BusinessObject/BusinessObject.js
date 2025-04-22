@@ -52,6 +52,7 @@ import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import DEFAULTS from '../../object/const/defaultValues';
 import {
+  getFeaturedObjects,
   getMapPermlinkByObject,
   getObjectsRewards,
   getReferenceObjectsList,
@@ -90,6 +91,7 @@ const BusinessObject = ({
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
+  const [featured, setFeatured] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [mapObjPermlink, setMapObjPermlink] = useState('');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
@@ -174,12 +176,16 @@ const BusinessObject = ({
         setMapObjPermlink(r.result),
       );
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
-      referenceWobjType &&
+      if (referenceWobjType)
         getReferenceObjectsList({
           authorPermlink: wobject.author_permlink,
           userName,
           locale,
         }).then(res => setReferences(Object.entries(res)));
+      if (wobject.featured)
+        getFeaturedObjects(wobject.author_permlink, userName, locale).then(res =>
+          setFeatured(res.wobjects),
+        );
     }
     setIsLoading(false);
 
@@ -424,6 +430,13 @@ const BusinessObject = ({
                   authorPermlink={wobject.author_permlink}
                 />
               </div>
+            )}
+            {!isEmpty(featured) && (
+              <ObjectsSlider
+                objects={featured}
+                title={intl.formatMessage({ id: 'featured', defaultMessage: 'featured' })}
+                name={'featured'}
+              />
             )}
             {!isEmpty(references) &&
               references?.map(ref => (

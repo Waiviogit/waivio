@@ -586,6 +586,11 @@ const routes = {
           component: Views.AddOnPage,
         },
         {
+          path: '/featured',
+          exact: true,
+          component: Views.FeaturedPage,
+        },
+        {
           path: '/similar',
           exact: true,
           component: Views.SimilarPage,
