@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import { useParams } from 'react-router';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import './DescriptionPage.less';
 import LightboxWithAppendForm from '../../widgets/LightboxTools/LightboxWithAppendForm';
+import { getHtml } from '../../components/Story/Body';
+import { getAppUrl } from '../../../store/appStore/appSelectors';
 
 const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const { name } = useParams();
+  const appUrl = useSelector(getAppUrl);
   const description = wobject?.description;
   const allPhotos = albums
     ?.flatMap(alb => alb?.items)
@@ -48,7 +51,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
 
   const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     <React.Fragment key={paragraph}>
-      <p>{paragraph}</p>
+      <p>{getHtml(paragraph, {}, 'Object', { appUrl })}</p>
       {pictures && index < pictures.length && (
         <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
           <img className="DescriptionPage__image" src={pictures[index]?.body} alt=" " />
