@@ -10,6 +10,7 @@ import ObjectsSimilar from '../../../components/Sidebar/ObjectsSimilar/ObjectsSi
 import ObjectReference from '../../../components/Sidebar/ObjectReference/ObjectReference';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import './ObjectInfoExperts.less';
+import ObjectsFeatured from '../../../components/Sidebar/ObjectsFeatured/ObjectsFeatured';
 
 const ObjectInfoExperts = ({ wobject }) => {
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
@@ -17,6 +18,9 @@ const ObjectInfoExperts = ({ wobject }) => {
 
   return (
     <div className="objectInfo">
+      <div className="objectInfo__related">
+        {showContent && <ObjectsFeatured wobject={wobject} isCenterContent />}
+      </div>{' '}
       <div className="objectInfo__related">
         {showContent && <ObjectsAddOn wobject={wobject} isCenterContent />}
       </div>

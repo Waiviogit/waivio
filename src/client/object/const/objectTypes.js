@@ -17,3 +17,4 @@ export default {
 };
 
 export const addOnsRelatedSimilarTypes = ['product', 'book', 'service', 'recipe'];
+export const featuredObjectTypes = ['person', 'business'];
