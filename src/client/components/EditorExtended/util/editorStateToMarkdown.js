@@ -409,10 +409,6 @@ export function editorStateToMarkdownSlate(value) {
             children: next(children),
           };
         },
-        // thematicBreak: (node, next) => ({
-        //   type: 'thematicBreak',
-        //   children: next(node.children),
-        // }),
       },
     })
     .use(remarkGfm)
