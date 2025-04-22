@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { find, size } from 'lodash';
+import { find, size, isEmpty } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -52,7 +52,11 @@ const Comments = props => {
     const { commentsList, user, defaultVotePercent } = props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
-    if ((userVote.percent && !Number(userVote.percent)) || userVote.rshares <= 0) {
+    if (
+      (userVote.percent && !Number(userVote.percent)) ||
+      isEmpty(userVote) ||
+      userVote.rshares <= 0
+    ) {
       const likeWeight = weight > 0 ? weight : defaultVotePercent;
 
       props.voteComment(id, likeWeight, 'like');
