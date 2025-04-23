@@ -95,7 +95,7 @@ export default class CommentFooter extends React.Component {
     if (user) {
       const userVote = find(comment.active_votes, { voter: user.name }) || {};
 
-      if (userVote.percent && (userVote.percent > 0 || userVote.rshares > 0)) {
+      if ((userVote.percent && userVote.percent > 0) || userVote.rshares > 0) {
         this.setState({
           sliderValue: userVote.percent / 100,
           isLiked: true,
@@ -113,7 +113,7 @@ export default class CommentFooter extends React.Component {
     const { sliderMode, comment } = this.props;
     const { isLiked } = this.state;
 
-    if (sliderMode || (isPostCashout(this.props.comment) && !isLiked)) {
+    if (sliderMode || (isPostCashout(comment) && !isLiked)) {
       if (!this.state.sliderVisible) {
         this.setState({
           sliderVisible: true,
