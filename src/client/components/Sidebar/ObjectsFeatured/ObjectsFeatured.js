@@ -20,7 +20,7 @@ const ObjectsFeatured = ({ wobject, isCenterContent }) => {
     <a>
       <ReactSVG
         src={'/images/icons/bookmark.svg'}
-        alt="add on icon"
+        alt="bookmark icon"
         className="SidebarContentBlock__bookmark-icon"
       />
     </a>
@@ -32,7 +32,7 @@ const ObjectsFeatured = ({ wobject, isCenterContent }) => {
         setFeaturedObjects(res.wobjects),
       );
     }
-  }, [wobject.addOn]);
+  }, [wobject.featured]);
 
   return (
     <div>
