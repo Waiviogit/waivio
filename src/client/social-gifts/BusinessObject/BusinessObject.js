@@ -44,7 +44,6 @@ import SocialProductActions from '../SocialProduct/SocialProductActions/SocialPr
 import PicturesSlider from '../SocialProduct/PicturesSlider/PicturesSlider';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import SocialProductDescription from '../SocialProduct/SocialProductDescription/SocialProductDescription';
-import BusinessMenuItemsList from './BusinessMenuItems/BusinessMenuItemsList';
 import ObjectsSlider from '../SocialProduct/ObjectsSlider/ObjectsSlider';
 import SocialTagCategories from '../SocialProduct/SocialTagCategories/SocialTagCategories';
 import SocialProductReviews from '../SocialProduct/SocialProductReviews/SocialProductReviews';
@@ -52,6 +51,7 @@ import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import DEFAULTS from '../../object/const/defaultValues';
 import {
+  getFeaturedObjects,
   getMapPermlinkByObject,
   getObjectsRewards,
   getReferenceObjectsList,
@@ -62,6 +62,7 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
 import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
+import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
 
 const BusinessObject = ({
   userName,
@@ -90,6 +91,7 @@ const BusinessObject = ({
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
+  const [featured, setFeatured] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [mapObjPermlink, setMapObjPermlink] = useState('');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
@@ -174,12 +176,16 @@ const BusinessObject = ({
         setMapObjPermlink(r.result),
       );
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
-      referenceWobjType &&
+      if (referenceWobjType)
         getReferenceObjectsList({
           authorPermlink: wobject.author_permlink,
           userName,
           locale,
         }).then(res => setReferences(Object.entries(res)));
+      if (wobject.featured)
+        getFeaturedObjects(wobject.author_permlink, userName, locale).then(res =>
+          setFeatured(res.wobjects),
+        );
     }
     setIsLoading(false);
 
@@ -412,7 +418,7 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}
+            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} isOpen={false} />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
@@ -424,6 +430,13 @@ const BusinessObject = ({
                   authorPermlink={wobject.author_permlink}
                 />
               </div>
+            )}
+            {!isEmpty(featured) && (
+              <ObjectsSlider
+                objects={featured}
+                title={intl.formatMessage({ id: 'featured', defaultMessage: 'featured' })}
+                name={'featured'}
+              />
             )}
             {!isEmpty(references) &&
               references?.map(ref => (

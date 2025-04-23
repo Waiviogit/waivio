@@ -12,6 +12,13 @@ const defaultMarkdownDict = {
   // UNDERLINE: '++',
 };
 
+const headingTags = {
+  headingOne: 'h1',
+  headingTwo: 'h2',
+  headingThree: 'h3',
+  headingFour: 'h4',
+};
+
 const blockStyleDict = {
   'unordered-list-item': '- ',
   'header-one': '# ',
@@ -373,6 +380,28 @@ export function editorStateToMarkdownSlate(value) {
               return [...acc, { type: 'html', children: [{ text: slateListToHtml(child) }] }];
             }
 
+            if (headingTags[child.type]) {
+              const tag = headingTags[child.type];
+
+              return [
+                ...acc,
+                {
+                  type: 'html',
+                  children: [{ text: `<${tag}>${child.children[0].text}</${tag}>` }],
+                },
+              ];
+            }
+
+            if (child.type === 'blockquote') {
+              return [
+                ...acc,
+                {
+                  type: 'html',
+                  children: [{ text: `<blockquote>${child.children[0].text}</blockquote>` }],
+                },
+              ];
+            }
+
             if (node.children.length - 1 === i) return [...acc, child];
 
             if (
@@ -409,10 +438,6 @@ export function editorStateToMarkdownSlate(value) {
             children: next(children),
           };
         },
-        // thematicBreak: (node, next) => ({
-        //   type: 'thematicBreak',
-        //   children: next(node.children),
-        // }),
       },
     })
     .use(remarkGfm)

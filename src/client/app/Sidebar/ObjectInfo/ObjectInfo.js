@@ -1651,7 +1651,8 @@ ${obj.productId}`}
         {this.listItem(
           objectFields.promotion,
           !isEmpty(promotion) && <PromotionInfo promotion={promotion} />,
-        )}
+        )}{' '}
+        {this.listItem(objectFields.featured, null)}
       </React.Fragment>
     );
 

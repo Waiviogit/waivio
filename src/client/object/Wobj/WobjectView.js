@@ -38,6 +38,7 @@ import {
 } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import useQuery from '../../../hooks/useQuery';
+import ObjectsFeatured from '../../components/Sidebar/ObjectsFeatured/ObjectsFeatured';
 
 const WobjectView = ({
   authenticatedUserName,
@@ -181,6 +182,7 @@ const WobjectView = ({
                 !isMobile() && <WobjectShopFilter />
               ) : (
                 <React.Fragment>
+                  {!isMobile() && <ObjectsFeatured wobject={wobject} />}
                   {!isMobile() && <ObjectsAddOn wobject={wobject} />}
                   {!isMobile() && <ObjectsRelated />}
                   {!isMobile() && <ObjectsSimilar wobject={wobject} />}

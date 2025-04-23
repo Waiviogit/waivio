@@ -486,6 +486,7 @@ class AppendForm extends Component {
       case objectFields.shopFilter:
       case objectFields.manufacturer:
       case objectFields.brand:
+      case objectFields.featured:
       case objectFields.merchant:
       case objectFields.productWeight:
       case objectFields.authors:
@@ -729,6 +730,9 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
             brandFields.brandName
           ] || this.state.selectedObject.name}${linkInfo}`;
+        }
+        case objectFields.featured: {
+          return `@${author} added ${currentField} (${langReadable}): ${this.state.selectedObject.author_permlink}`;
         }
         case objectFields.merchant: {
           const linkInfo = this.state.selectedObject
@@ -1207,6 +1211,12 @@ class AppendForm extends Component {
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
+        };
+      }
+      if (currentField === objectFields.featured) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject?.author_permlink,
         };
       }
       if (currentField === objectFields.merchant) {
@@ -2224,6 +2234,22 @@ class AppendForm extends Component {
               <SearchObjectsAutocomplete
                 handleSelect={this.handleSelectObject}
                 useExtendedSearch
+              />,
+            )}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
+      case objectFields.featured: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.featured, {
+              rules: this.getFieldRules(objectFields.featured),
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                useExtendedSearch
+                itemsIdsToOmit={this.props.wObject.featured?.map(i => i.body)}
               />,
             )}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
@@ -4228,6 +4254,7 @@ class AppendForm extends Component {
       case objectFields.related:
       case objectFields.similar:
       case objectFields.addOn:
+      case objectFields.featured:
         return isEmpty(this.state.selectedObject);
       case objectFields.manufacturer:
         return (
