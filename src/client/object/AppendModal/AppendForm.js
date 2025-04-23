@@ -2253,6 +2253,19 @@ class AppendForm extends Component {
               />,
             )}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+            <br />
+            <div className="add-create-btns">
+              <CreateObject
+                withOpenModalBtn={!selectedObject}
+                openModalBtnText={intl.formatMessage({
+                  id: 'create_new_object',
+                  defaultMessage: 'Create new object',
+                })}
+                currentField={objectFields.featured}
+                onCreateObject={this.handleCreateObject}
+                parentObject={{}}
+              />
+            </div>
           </Form.Item>
         );
       }

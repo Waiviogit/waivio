@@ -3057,9 +3057,10 @@ export const getReservedRewardList = (userName, skip = 0) =>
     .then(response => response)
     .catch(e => e);
 
-export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) =>
-  fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}&reach=${reach}&${query}`,
+export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) => {
+  const user = userName ? `&userName=${userName}` : '';
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?&limit=10&skip=${skip}&sort=${sort}&reach=${reach}&${query}${user}`,
     {
       headers,
       method: 'GET',
@@ -3069,6 +3070,7 @@ export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
 export const getPropositionByCampaingObjectPermlink = (
   parentPermlink,
