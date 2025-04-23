@@ -43,11 +43,15 @@ const TableToolbar = props => {
   const handleInsertRow = () => {
     if (!!selection && Range.isCollapsed(selection)) {
       const [oldTable, path] = getParentTable(selection.anchor.path, editor);
+      const [start] = Range.edges(selection);
 
       handleRemoveTable();
       insertCells(editor, oldTable, path, 'row');
 
-      Transforms.select(editor, selection.anchor.path);
+      Transforms.select(editor, {
+        anchor: { path: selection.anchor.path, offset: start.offset },
+        focus: { path: selection.anchor.path, offset: start.offset },
+      });
       ReactEditor.focus(editor);
     }
   };
@@ -55,11 +59,15 @@ const TableToolbar = props => {
   const handleInsertColumn = () => {
     if (!!selection && Range.isCollapsed(selection)) {
       const [table, path] = getParentTable(selection.anchor.path, editor);
+      const [start] = Range.edges(selection);
 
       handleRemoveTable(); // Assuming this function removes the table structure
       insertCells(editor, table, path, 'columns');
 
-      Transforms.select(editor, selection.anchor.path);
+      Transforms.select(editor, {
+        anchor: { path: selection.anchor.path, offset: start.offset },
+        focus: { path: selection.anchor.path, offset: start.offset },
+      });
       ReactEditor.focus(editor);
     }
   };
