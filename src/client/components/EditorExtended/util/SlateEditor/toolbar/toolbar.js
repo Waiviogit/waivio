@@ -101,7 +101,13 @@ const Toolbar = props => {
     className += ' md-editor-toolbar--linkinput';
 
     return (
-      <div className={className}>
+      <div
+        className={className}
+        style={{
+          top: `${refToolbar.current?.style.top}`,
+          left: `${refToolbar.current?.style.left}`,
+        }}
+      >
         <div
           className="md-RichEditor-controls md-RichEditor-show-link-input"
           style={{ display: 'flex' }}
