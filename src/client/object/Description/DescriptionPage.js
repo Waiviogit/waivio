@@ -47,11 +47,15 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     setPhotoIndex(pics.indexOf(pic));
   };
 
-  const paragraphs = description && description.split('\n\n');
+  const cleanHtmlCommentsAndLines = text =>
+    text?.replace(/<!--[\s\S]*?-->/g, '')?.replace(/\\n/g, '');
+
+  const cleanedDescription = cleanHtmlCommentsAndLines(description);
+  const paragraphs = cleanedDescription?.split('\n\n');
 
   const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     <React.Fragment key={paragraph}>
-      <p>{getHtml(paragraph, {}, 'Object', { appUrl })}</p>
+      <p>{getHtml(paragraph, {}, 'Object', { appUrl, isChatBotLink: true })}</p>
       {pictures && index < pictures.length && (
         <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
           <img className="DescriptionPage__image" src={pictures[index]?.body} alt=" " />
