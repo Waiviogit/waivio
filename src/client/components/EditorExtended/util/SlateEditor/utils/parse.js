@@ -31,6 +31,45 @@ export const defaultNodeTypes = {
   object: 'object',
 };
 
+const emptyParagraph = {
+  type: 'paragraph',
+  children: [{ text: '' }],
+};
+
+const isIgnoredHtmlTag = value =>
+  [
+    '<li>',
+    '</li>',
+    '</ol>',
+    '</ul>',
+    '<br />',
+    '</h1>',
+    '</h2>',
+    '</h3>',
+    '</h4>',
+    '</blockquote>',
+  ].includes(value);
+
+const createHeaderNode = (value, children, index) => {
+  const headerLevel = parseInt(value.match(/<h(\d)>/)[1], 10);
+  const headerTypes = {
+    1: 'headingOne',
+    2: 'headingTwo',
+    3: 'headingThree',
+    4: 'headingFour',
+  };
+
+  return {
+    type: headerTypes[headerLevel],
+    children: [{ text: children[index + 1]?.value || '' }],
+  };
+};
+
+const createBlockquoteNode = (children, index) => ({
+  type: 'blockquote',
+  children: [{ text: children[index + 1]?.value || '' }],
+});
+
 function htmlArrayToSlateList(htmlArray) {
   const slateList = [];
   let currentList = null;
@@ -145,15 +184,9 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.children && { children: next(node.children) }),
         }),
         tableCell: node => {
-          const emptyParagraph = {
-            type: 'paragraph',
-            children: [{ text: '' }],
-          };
-
           const children = node.children.reduce((acc, child, i) => {
             if (
-              (child.type === 'html' &&
-                ['<li>', '</li>', '</ol>', '</ul>', '<br />'].includes(child.value)) ||
+              (child.type === 'html' && isIgnoredHtmlTag(child.value)) ||
               (node.children?.[i - 1]?.type === 'html' &&
                 child.type === 'text' &&
                 node.children?.[i + 1]?.type === 'html')
@@ -169,6 +202,14 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               const list = htmlArrayToSlateList(node.children);
 
               return [...acc, ...list];
+            }
+
+            if (child.type === 'html' && ['<h1>', '<h2>', '<h3>', '<h4>'].includes(child.value)) {
+              return [...acc, createHeaderNode(child.value, node.children, i)];
+            }
+
+            if (child.type === 'html' && child.value === '<blockquote>') {
+              return [...acc, createBlockquoteNode(node.children, i)];
             }
 
             if (child.type === 'text') {
