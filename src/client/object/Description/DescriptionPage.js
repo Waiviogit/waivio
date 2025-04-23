@@ -6,10 +6,13 @@ import { connect, useSelector } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
-import './DescriptionPage.less';
 import LightboxWithAppendForm from '../../widgets/LightboxTools/LightboxWithAppendForm';
 import { getHtml } from '../../components/Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
+import './DescriptionPage.less';
+
+export const cleanHtmlCommentsAndLines = text =>
+  text?.replace(/<!--[\s\S]*?-->/g, '')?.replace(/\\n/g, '');
 
 const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
@@ -46,9 +49,6 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     setIsOpen(true);
     setPhotoIndex(pics.indexOf(pic));
   };
-
-  const cleanHtmlCommentsAndLines = text =>
-    text?.replace(/<!--[\s\S]*?-->/g, '')?.replace(/\\n/g, '');
 
   const cleanedDescription = cleanHtmlCommentsAndLines(description);
   const paragraphs = cleanedDescription?.split('\n\n');
