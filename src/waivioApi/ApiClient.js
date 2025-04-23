@@ -3305,9 +3305,10 @@ export const getFiltersForAllRewards = reach =>
     .then(response => response)
     .catch(e => e);
 
-export const getFiltersForEligibleRewards = (userName, reach) =>
-  fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?userName=${userName}&reach=${reach}`,
+export const getFiltersForEligibleRewards = (userName, reach) => {
+  const user = userName ? `&userName=${userName}` : '';
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?reach=${reach}${user}`,
     {
       headers,
       method: 'GET',
@@ -3317,7 +3318,7 @@ export const getFiltersForEligibleRewards = (userName, reach) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-
+};
 export const getFiltersForMessages = () =>
   fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.filters}`, {
     headers,

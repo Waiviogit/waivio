@@ -2249,6 +2249,7 @@ class AppendForm extends Component {
               <SearchObjectsAutocomplete
                 handleSelect={this.handleSelectObject}
                 useExtendedSearch
+                itemsIdsToOmit={this.props.wObject.featured?.map(i => i.body)}
               />,
             )}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}

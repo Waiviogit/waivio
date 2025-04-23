@@ -44,7 +44,6 @@ import SocialProductActions from '../SocialProduct/SocialProductActions/SocialPr
 import PicturesSlider from '../SocialProduct/PicturesSlider/PicturesSlider';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import SocialProductDescription from '../SocialProduct/SocialProductDescription/SocialProductDescription';
-import BusinessMenuItemsList from './BusinessMenuItems/BusinessMenuItemsList';
 import ObjectsSlider from '../SocialProduct/ObjectsSlider/ObjectsSlider';
 import SocialTagCategories from '../SocialProduct/SocialTagCategories/SocialTagCategories';
 import SocialProductReviews from '../SocialProduct/SocialProductReviews/SocialProductReviews';
@@ -63,6 +62,7 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
 import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
+import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
 
 const BusinessObject = ({
   userName,
@@ -418,7 +418,7 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}
+            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} isOpen={false} />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
