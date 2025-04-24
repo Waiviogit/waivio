@@ -307,6 +307,7 @@ class AppendForm extends Component {
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
+
         checkedItemInList: !(
           !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
         ),
@@ -3678,10 +3679,12 @@ class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
-        const { itemsInSortingList, menuItem } = this.state;
+        const { itemsInSortingList } = this.state;
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+        const menuItem = get(wObject, 'menuItem', []);
+        const sortCustom = get(wObject, 'sortCustom', []);
         const blogs = getBlogItems(wObject);
         const forms = getFormItems(wObject);
         const wobjType = getObjectType(wObject);
@@ -3722,6 +3725,7 @@ class AppendForm extends Component {
               id: item.permlink,
               name: JSON.parse(item.body).title,
               type: '',
+              expand: sortCustom?.expand?.includes(item.permlink) || false,
             });
           });
         }
@@ -3767,11 +3771,12 @@ class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
                 initialValue: {
-                  exclude: [],
+                  expanded: [],
                   include: listItems.map(item => item.id),
                 },
               })(
                 <SortingList
+                  sortCustom={sortCustom}
                   listItems={listItems}
                   accentColor={PRIMARY_COLOR}
                   onChange={this.handleChangeSorting}
