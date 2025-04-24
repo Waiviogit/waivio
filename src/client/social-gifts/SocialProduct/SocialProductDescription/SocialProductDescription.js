@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import Lightbox from 'react-image-lightbox';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getHtml } from '../../../components/Story/Body';
+import { cleanHtmlCommentsAndLines } from '../../../object/Description/DescriptionPage';
+import { getAppUrl } from '../../../../store/appStore/appSelectors';
 import './SocialProductDescription.less';
 
 const SocialProductDescription = ({ description, pictures, authorPermlink, objectType }) => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [dividedParagraphs, setDividedParagraphs] = useState(description?.split('\n\n'));
+  const [dividedParagraphs, setDividedParagraphs] = useState(
+    cleanHtmlCommentsAndLines(description)?.split('\n\n'),
+  );
+  const appUrl = useSelector(getAppUrl);
   const photosToSort = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
   const isRecipeSingleImage =
     objectType === 'recipe' && photosToSort?.length === 1 && photosToSort[0]?.name === 'avatar';
@@ -59,7 +66,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, objec
               : 'SocialProductDescription__paragraph'
           }
         >
-          {paragraph}
+          {getHtml(paragraph, {}, 'Object', { appUrl, isChatBotLink: true })}
         </p>
         {photos && index < photos.length && (
           <div key={photos[index].body}>
@@ -88,7 +95,10 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, objec
             />
           </div>
         )}
-        {description}
+        {getHtml(cleanHtmlCommentsAndLines(description), {}, 'Object', {
+          appUrl,
+          isChatBotLink: true,
+        })}
       </section>
     </div>
   );
