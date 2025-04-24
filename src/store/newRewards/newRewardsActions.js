@@ -751,7 +751,7 @@ export const getRewardsList = (showAll, query, sort, type) => (dispatch, getStat
     type: GET_REWARDS_LIST.ACTION,
     payload: showAll
       ? getAllRewardList(0, query, sort, type)
-      : getEligibleRewardList(getAuthenticatedUserName(getState()) || '', 0, query, sort, type),
+      : getEligibleRewardList(getAuthenticatedUserName(getState()), 0, query, sort, type),
   });
 
 export const GET_MORE_REWARDS_LIST = createAsyncActionType('GET_MORE_REWARDS_LIST');

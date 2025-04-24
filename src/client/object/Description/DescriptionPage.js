@@ -6,10 +6,13 @@ import { connect, useSelector } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
-import './DescriptionPage.less';
 import LightboxWithAppendForm from '../../widgets/LightboxTools/LightboxWithAppendForm';
 import { getHtml } from '../../components/Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
+import './DescriptionPage.less';
+
+export const cleanHtmlCommentsAndLines = text =>
+  text?.replace(/<!--[\s\S]*?-->/g, '')?.replace(/\\n/g, '');
 
 const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
@@ -47,11 +50,12 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     setPhotoIndex(pics.indexOf(pic));
   };
 
-  const paragraphs = description && description.split('\n\n');
+  const cleanedDescription = cleanHtmlCommentsAndLines(description);
+  const paragraphs = cleanedDescription?.split('\n\n');
 
   const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     <React.Fragment key={paragraph}>
-      <p>{getHtml(paragraph, {}, 'Object', { appUrl })}</p>
+      <p>{getHtml(paragraph, {}, 'Object', { appUrl, isChatBotLink: true })}</p>
       {pictures && index < pictures.length && (
         <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
           <img className="DescriptionPage__image" src={pictures[index]?.body} alt=" " />
