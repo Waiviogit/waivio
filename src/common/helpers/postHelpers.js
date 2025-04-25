@@ -107,10 +107,9 @@ export const isBannedPost = post => {
 export function getContentImages(content, parsed = false) {
   const parsedBody = parsed ? content : getHtml(content, {}, 'text');
 
-  // Извлекаем только теги <img> с корректным атрибутом src
-  return extractImageTags(parsedBody)
-    .filter(tag => tag.src && tag.src.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) // Проверяем, что src указывает на изображение
-    .map(tag => unescape(tag.src.replace('https://images.hive.blog/0x0/', '')));
+  return extractImageTags(parsedBody).map(tag =>
+    unescape(tag.src.replace('https://images.hive.blog/0x0/', '')),
+  );
 }
 
 export function createPostMetadata(

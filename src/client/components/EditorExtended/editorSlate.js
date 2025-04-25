@@ -5,7 +5,15 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
-import { createEditor, Transforms, Node, Range, Editor } from 'slate';
+import {
+  createEditor,
+  Transforms,
+  Node,
+  Range,
+  Editor,
+  Path,
+  Element as ElementSlate,
+} from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -22,6 +30,7 @@ import withEmbeds from './util/SlateEditor/plugins/withEmbeds';
 import withTables from './util/SlateEditor/plugins/withTable';
 import withLinks from './util/SlateEditor/plugins/withLinks';
 import { Leaf, Element } from './util/SlateEditor/Editor';
+
 import Toolbar from './util/SlateEditor/toolbar/toolbar';
 import AddButtonSlate from './components/addbuttonSlate';
 import withObjects from './util/SlateEditor/plugins/withObjects';
@@ -223,14 +232,23 @@ const EditorSlate = props => {
 
   const handleKeyCommand = event => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
-    const { selection } = editor;
-    const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
+    const { path, offset } = editor.selection.anchor;
+    const selectedElementPath = path.slice(0, -1);
+
+    const selectedElement = Node.descendant(editor, selectedElementPath);
+    const prevPath =
+      selectedElementPath[selectedElementPath.length - 1] && selectedElementPath.length !== 1
+        ? Path.previous(selectedElementPath)
+        : [0];
+    const nextPath = Path.next(selectedElementPath);
+    const [prevNode] = Editor.node(editor, prevPath);
+    const [nextNode] = editor.children.length > 1 ? Editor.node(editor, nextPath) : {};
 
     if (event.key === 'Enter') {
       removeAllInlineFormats(editor);
 
       if (selectedElement.type === 'listItem' && selectedElement.children[0].text === '') {
-        const [list] = getParentList(selection.anchor.path, editor);
+        const [list] = getParentList(path, editor);
 
         event.preventDefault();
         toggleBlock(editor, list.type);
@@ -238,16 +256,18 @@ const EditorSlate = props => {
 
       if (['image', 'video'].includes(selectedElement.type)) {
         event.preventDefault();
-        Transforms.insertNodes(editor, createParagraph(''), { at: [0] });
+        Transforms.insertNodes(editor, createParagraph(''), {
+          at: selectedElementPath,
+        });
       }
 
       if (
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
-        const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
+        const selectedLeaf = Node.descendant(editor, path);
 
-        if (selectedLeaf.text.length === editor.selection.anchor.offset) {
+        if (selectedLeaf.text.length === offset) {
           setTimeout(() => {
             Transforms.setNodes(editor, { type: 'paragraph' });
           }, 0);
@@ -260,16 +280,24 @@ const EditorSlate = props => {
       }
     }
 
-    if (event.key === 'Backspace') {
-      const { path, offset } = selection.anchor;
+    if (event.key === 'Backspace' || event.key === 'Delete') {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
+      if (ElementSlate.isElement(prevNode) && ['image', 'video'].includes(prevNode.type)) {
+        if (!offset && Range.isCollapsed(editor.selection)) {
+          event.preventDefault();
+
+          Transforms.select(editor, Editor.range(editor, prevPath));
+
+          return true;
+        }
+      }
+
       if (
-        !path[0] && // Check if it's the first node
-        node.type === 'paragraph' &&
-        node.children?.[0]?.text === '' &&
-        editor.children[1]?.type === 'image' // Check if the next node is an image
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === '' &&
+        nextNode?.type === 'image' // Check if the next node is an image
       ) {
         Transforms.insertNodes(
           editor,
@@ -278,17 +306,17 @@ const EditorSlate = props => {
             url: editor.children[1].url,
             children: [{ text: '' }], // Image nodes must have children in Slate
           },
-          { at: [0] },
+          { at: selectedElementPath },
         );
-        Transforms.removeNodes(editor, { at: [1] });
-        Transforms.select(editor, Editor.range(editor, [0]));
+        Transforms.removeNodes(editor, { at: nextPath });
+        Transforms.select(editor, Editor.range(editor, selectedElementPath));
         ReactEditor.focus(editor);
 
         return true;
       }
 
       if (['unorderedList', 'orderedList'].includes(node.type)) {
-        const [, at] = getParentList(selection.anchor.path, editor);
+        const [, at] = getParentList(path, editor);
 
         if (node.children.length === 1 && node.children[0].children.length === 1) {
           Transforms.removeNodes(editor, {
@@ -302,7 +330,7 @@ const EditorSlate = props => {
       }
 
       if (node.type === 'table') {
-        const [tbl, at] = getParentTable(selection.anchor.path, editor);
+        const [tbl, at] = getParentTable(path, editor);
 
         if (isSingleEmptyCellTable(editor, tbl)) {
           Transforms.removeNodes(editor, {
@@ -313,20 +341,6 @@ const EditorSlate = props => {
 
           return true;
         }
-      }
-
-      if (
-        ['image', 'video'].includes(node.type) &&
-        key !== path[0] &&
-        !path[1] &&
-        !offset &&
-        Range.isCollapsed(selection)
-      ) {
-        event.preventDefault();
-
-        Transforms.select(editor, Editor.range(editor, [key, 0]));
-
-        return true;
       }
     }
 
@@ -349,7 +363,7 @@ const EditorSlate = props => {
       return true;
     }
 
-    if (selection && Range.isCollapsed(selection)) {
+    if (editor.selection && Range.isCollapsed(editor.selection)) {
       const { nativeEvent } = event;
 
       if (isKeyHotkey('left', nativeEvent)) {
@@ -357,7 +371,7 @@ const EditorSlate = props => {
         Transforms.move(editor, { unit: 'offset', reverse: true });
 
         if (selectedElement.type === 'image') {
-          Transforms.select(editor, Editor.before(editor, selection.anchor));
+          Transforms.select(editor, Editor.before(editor, editor.selection.anchor));
 
           // Focus the editor
           ReactEditor.focus(editor);
