@@ -891,6 +891,13 @@ class AppendForm extends Component {
             this.state.selectedCategory.body
           } category`;
         }
+        case objectFields.sorting:
+          const val = getFieldValue(objectFields.sorting);
+
+          const expandInfo = isEmpty(val?.expand) ? '' : `expand: ${val.expand.join(', ')}`;
+          const includeInfo = isEmpty(val?.include) ? '' : `include: ${val.include.join(', ')}`;
+
+          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}`;
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           let rulesAllow = '';
