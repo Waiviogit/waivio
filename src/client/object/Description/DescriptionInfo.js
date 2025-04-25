@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { shortenDescription } from '../wObjectHelper';
+import { cleanHtmlCommentsAndLines } from './DescriptionPage';
 
 const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn, isDescriptionPage }) => {
   const showBtn = (description.length < 300 && showDescriptionBtn) || description.length > 300;
   const { firstDescrPart } = shortenDescription(description, 300);
+  const paragraph = cleanHtmlCommentsAndLines(firstDescrPart);
 
   return (
     <div className="description-field">
-      {firstDescrPart}
+      {paragraph}
       {showBtn && (
         <div className="object-sidebar__menu-item">
           <LinkButton
