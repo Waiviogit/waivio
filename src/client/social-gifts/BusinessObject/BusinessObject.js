@@ -103,6 +103,7 @@ const BusinessObject = ({
   const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i.name !== 'avatar');
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
+  const customVisibility = get(wobject, 'sortCustom.expand', []);
   const phones = get(wobject, 'phone', []);
   const email = get(wobject, 'email');
   const menuItem = isEmpty(customSort)
@@ -418,7 +419,9 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} isOpen={false} />}
+            {!isEmpty(menuItem) && (
+              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} isBusiness />
+            )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
