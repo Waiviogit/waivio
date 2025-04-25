@@ -265,5 +265,5 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
     }
   });
 
-  return postParsed;
+  return postParsed.filter(i => i.children);
 };
