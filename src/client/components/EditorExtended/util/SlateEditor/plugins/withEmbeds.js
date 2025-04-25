@@ -101,10 +101,6 @@ const withEmbeds = cb => editor => {
 
       if (nodesNormalized.length === 1 && nodesNormalized[0].type === 'image') {
         nodesNormalized = [
-          {
-            type: 'paragraph',
-            children: [{ text: '' }],
-          },
           ...nodesNormalized,
           {
             type: 'paragraph',

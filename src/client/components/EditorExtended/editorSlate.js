@@ -4,7 +4,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact } from 'slate-react';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { createEditor, Transforms, Node, Range, Editor } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
@@ -28,7 +28,7 @@ import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-import createParagraph, { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import createParagraph from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
 import {
   focusEditorToEnd,
@@ -172,11 +172,7 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [
-      createParagraph(''),
-      wrapWithParagraph([imageBlock]),
-      createParagraph(''),
-    ]);
+    Transforms.insertNodes(editor, imageBlock, { at: [0] });
   };
 
   // Drug and drop method
@@ -228,10 +224,9 @@ const EditorSlate = props => {
   const handleKeyCommand = event => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { selection } = editor;
+    const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
     if (event.key === 'Enter') {
-      const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
-
       removeAllInlineFormats(editor);
 
       if (selectedElement.type === 'listItem' && selectedElement.children[0].text === '') {
@@ -270,6 +265,28 @@ const EditorSlate = props => {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
+      if (
+        !path[0] && // Check if it's the first node
+        node.type === 'paragraph' &&
+        node.children?.[0]?.text === '' &&
+        editor.children[1]?.type === 'image' // Check if the next node is an image
+      ) {
+        Transforms.insertNodes(
+          editor,
+          {
+            type: 'image',
+            url: editor.children[1].url,
+            children: [{ text: '' }], // Image nodes must have children in Slate
+          },
+          { at: [0] },
+        );
+        Transforms.removeNodes(editor, { at: [1] });
+        Transforms.select(editor, Editor.range(editor, [0]));
+        ReactEditor.focus(editor);
+
+        return true;
+      }
+
       if (['unorderedList', 'orderedList'].includes(node.type)) {
         const [, at] = getParentList(selection.anchor.path, editor);
 
@@ -293,9 +310,9 @@ const EditorSlate = props => {
             mode: 'highest',
           });
           Transforms.insertNodes(editor, createEmptyNode());
-        }
 
-        return true;
+          return true;
+        }
       }
 
       if (
@@ -338,6 +355,13 @@ const EditorSlate = props => {
       if (isKeyHotkey('left', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset', reverse: true });
+
+        if (selectedElement.type === 'image') {
+          Transforms.select(editor, Editor.before(editor, selection.anchor));
+
+          // Focus the editor
+          ReactEditor.focus(editor);
+        }
 
         return true;
       }
