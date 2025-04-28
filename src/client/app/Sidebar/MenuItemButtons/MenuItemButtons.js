@@ -6,7 +6,11 @@ import './MenuItemButtons.less';
 const MenuItemButtons = ({ menuItem, customSort }) =>
   !isEmpty(menuItem) &&
   menuItem?.map(item => (
-    <MenuItemButton key={item.permlink} item={item} show={customSort?.includes(item.permlink)} />
+    <MenuItemButton
+      key={item.permlink}
+      item={item}
+      show={isEmpty(customSort) ? true : customSort?.includes(item.permlink)}
+    />
   ));
 
 export default MenuItemButtons;

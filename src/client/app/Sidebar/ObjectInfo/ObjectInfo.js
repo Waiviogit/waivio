@@ -443,7 +443,12 @@ class ObjectInfo extends React.Component {
 
     switch (item.id) {
       case objectFields.menuItem:
-        menuItem = <MenuItemButton item={item} show={customSort?.includes(item.permlink)} />;
+        menuItem = (
+          <MenuItemButton
+            item={item}
+            show={isEmpty(customSort) ? true : customSort?.includes(item.permlink)}
+          />
+        );
         break;
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
