@@ -28,7 +28,7 @@ export const prepareMenuItems = menuItem => {
   return menuItemList;
 };
 
-const SocialMenuItems = ({ menuItem, isOpen = true, customVisibility, isBusiness = false }) => {
+const SocialMenuItems = ({ menuItem, customVisibility }) => {
   const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const SocialMenuItems = ({ menuItem, isOpen = true, customVisibility, isBusiness
           <SocialMenuItem
             key={item._id}
             item={item}
-            isOpen={isBusiness ? customVisibility?.includes(item.permlink) : isOpen}
+            isOpen={customVisibility?.includes(item.permlink)}
           />
         ))}
       </div>
@@ -58,8 +58,6 @@ const SocialMenuItems = ({ menuItem, isOpen = true, customVisibility, isBusiness
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
   customVisibility: PropTypes.arrayOf(),
-  isBusiness: PropTypes.bool,
-  isOpen: PropTypes.bool,
 };
 
 export default SocialMenuItems;

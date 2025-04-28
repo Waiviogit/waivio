@@ -106,21 +106,6 @@ const DnDList = ({
     [items],
   );
 
-  const toggleItemInSortingList = useCallback(
-    e => {
-      const updated = items.map(item => ({
-        ...item,
-        checkedItemInList: item.id === e.target.id ? e.target.checked : item.checkedItemInList,
-      }));
-
-      setItems(updated);
-      onChange({
-        include: updated.filter(i => i.checkedItemInList).map(item => item.id),
-      });
-    },
-    [items, onChange],
-  );
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="droppable">
@@ -147,7 +132,6 @@ const DnDList = ({
                       expandedIds={expand}
                       setOpen={setOpen}
                       item={item}
-                      toggleItemInSortingList={toggleItemInSortingList}
                     />
                   </div>
                 )}
