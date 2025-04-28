@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import OBJECT_TYPE from '../../object/const/objectTypes';
+import OBJECT_TYPE, { featuredObjectTypes } from '../../object/const/objectTypes';
 import DnDListItem from './DnDListItem';
 import './DnDList.less';
 
@@ -28,11 +29,20 @@ const DnDList = ({
   sortCustom,
 }) => {
   const [items, setItems] = useState(listItems);
-  const [expand, setExpand] = useState(sortCustom.expand || []);
-  const [include, setInclude] = useState(sortCustom.include || listItems.map(item => item.id));
+  const [expand, setExpand] = useState([]);
+  const [include, setInclude] = useState();
 
   const filterItems = useCallback(i => i.filter(item => item.checkedItemInList), []);
 
+  useEffect(() => {
+    const productExpand = !isEmpty(sortCustom?.expand)
+      ? sortCustom.expand
+      : listItems.map(item => item.id);
+
+    setItems(listItems);
+    setExpand(featuredObjectTypes.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
+    setInclude(!isEmpty(sortCustom.include) ? sortCustom.include : listItems.map(item => item.id));
+  }, [listItems.length]);
   const onCheckboxClick = id => {
     let updatedInclude;
 
@@ -96,21 +106,6 @@ const DnDList = ({
     [items],
   );
 
-  const toggleItemInSortingList = useCallback(
-    e => {
-      const updated = items.map(item => ({
-        ...item,
-        checkedItemInList: item.id === e.target.id ? e.target.checked : item.checkedItemInList,
-      }));
-
-      setItems(updated);
-      onChange({
-        include: updated.filter(i => i.checkedItemInList).map(item => item.id),
-      });
-    },
-    [items, onChange],
-  );
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="droppable">
@@ -137,7 +132,6 @@ const DnDList = ({
                       expandedIds={expand}
                       setOpen={setOpen}
                       item={item}
-                      toggleItemInSortingList={toggleItemInSortingList}
                     />
                   </div>
                 )}

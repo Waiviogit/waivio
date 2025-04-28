@@ -1,18 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { shortenDescription } from '../wObjectHelper';
 import { cleanHtmlCommentsAndLines } from './DescriptionPage';
+import { getHtml } from '../../components/Story/Body';
+import { getAppUrl } from '../../../store/appStore/appSelectors';
 
 const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn, isDescriptionPage }) => {
   const showBtn = (description.length < 300 && showDescriptionBtn) || description.length > 300;
-  const { firstDescrPart } = shortenDescription(description, 300);
-  const paragraph = cleanHtmlCommentsAndLines(firstDescrPart);
+  const descr = cleanHtmlCommentsAndLines(description);
+  const { firstDescrPart } = shortenDescription(descr, 300);
+
+  const appUrl = useSelector(getAppUrl);
 
   return (
     <div className="description-field">
-      {paragraph}
+      {getHtml(firstDescrPart, {}, 'Object', { appUrl })}
       {showBtn && (
         <div className="object-sidebar__menu-item">
           <LinkButton

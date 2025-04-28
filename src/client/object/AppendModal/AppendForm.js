@@ -3686,11 +3686,11 @@ class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
-        const { itemsInSortingList } = this.state;
+        const { itemsInSortingList, menuItem } = this.state;
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
-        const menuItem = get(wObject, 'menuItem', []);
+        // const menuItem = get(wObject, 'menuItem', []);
         const sortCustom = get(wObject, 'sortCustom', []);
         const blogs = getBlogItems(wObject);
         const forms = getFormItems(wObject);
@@ -3731,7 +3731,7 @@ class AppendForm extends Component {
             listItems.push({
               id: item.permlink,
               name: JSON.parse(item.body).title,
-              type: '',
+              type: JSON.parse(item.body).objectType,
               expand: sortCustom?.expand?.includes(item.permlink) || false,
             });
           });
@@ -3791,6 +3791,10 @@ class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
+            <p className={'mt2'}>
+              Menu items can be collapsed/expanded (eye button), sorted, or hidden (checkbox).
+            </p>
+            <p> Collapse/expand is only applicable to social sites.</p>
           </React.Fragment>
         );
       }
