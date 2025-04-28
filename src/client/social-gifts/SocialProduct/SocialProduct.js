@@ -157,6 +157,7 @@ const SocialProduct = ({
   const groupId = wobject.groupId;
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
+  const customVisibility = get(wobject, 'sortCustom.expand', []);
 
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -553,7 +554,9 @@ const SocialProduct = ({
                 <br />
               </div>
             )}
-            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
+            {!isEmpty(menuItem) && (
+              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} />
+            )}
             {showProductDetails && (
               <ProductDetails
                 website={website}

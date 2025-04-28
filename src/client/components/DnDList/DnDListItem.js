@@ -3,35 +3,33 @@ import PropTypes from 'prop-types';
 import { Checkbox, Icon } from 'antd';
 import './DnDListItem.less';
 
-const DnDListItem = ({
-  item,
-  toggleItemInSortingList,
-  include,
-  setOpen,
-  expandedIds,
-  onCheckboxClick,
-}) => (
-  <div className="dnd-list-item">
-    <Checkbox
-      onClick={() => onCheckboxClick(item.id)}
-      defaultChecked
-      id={item.id}
-      onChange={toggleItemInSortingList}
-      checked={include?.includes(item.id)}
-    />
+const DnDListItem = ({ item, include, setOpen, expandedIds, onCheckboxClick }) => {
+  const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(item.type);
 
-    <div className="dnd-list-content">
-      <div className="dnd-list-content__name">{item.name}</div>
-      <div className="dnd-list-content__type" onClick={e => setOpen(e, item.id)}>
-        <Icon
-          style={{ cursor: 'pointer' }}
-          size={19}
-          type={expandedIds?.includes(item.id) ? 'eye' : 'eye-invisible'}
-        />
+  return (
+    <div className="dnd-list-item">
+      <Checkbox
+        onClick={() => onCheckboxClick(item.id)}
+        defaultChecked
+        id={item.id}
+        checked={include?.includes(item.id)}
+      />
+
+      <div className="dnd-list-content">
+        <div className="dnd-list-content__name">{item.name}</div>
+        {isNestedObjType && (
+          <div className="dnd-list-content__type" onClick={e => setOpen(e, item.id)}>
+            <Icon
+              style={{ cursor: 'pointer' }}
+              size={19}
+              type={expandedIds?.includes(item.id) ? 'eye' : 'eye-invisible'}
+            />
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 DnDListItem.propTypes = {
   item: PropTypes.shape({
@@ -41,7 +39,6 @@ DnDListItem.propTypes = {
     id: PropTypes.string.isRequired,
     checkedItemInList: PropTypes.bool.isRequired,
   }),
-  toggleItemInSortingList: PropTypes.shape().isRequired,
   include: PropTypes.arrayOf(),
   expandedIds: PropTypes.arrayOf(),
   onCheckboxClick: PropTypes.func,
