@@ -185,11 +185,16 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
         }),
         tableCell: node => {
           const children = node.children.reduce((acc, child, i) => {
+            const prevEl = node.children[i - 1];
+            const nextEl = node.children[i + 1];
+
             if (
               (child.type === 'html' && isIgnoredHtmlTag(child.value)) ||
-              (node.children?.[i - 1]?.type === 'html' &&
+              (prevEl?.type === 'html' &&
+                prevEl?.value !== '<br />' &&
                 child.type === 'text' &&
-                node.children?.[i + 1]?.type === 'html')
+                nextEl?.type === 'html' &&
+                prevEl?.value !== '<br />')
             ) {
               return acc;
             }
@@ -218,6 +223,30 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
                 {
                   type: 'paragraph',
                   children: [{ text: child.value }],
+                },
+              ];
+            }
+
+            if (child.type === 'link') {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: [
+                    emptyParagraph,
+                    {
+                      type: 'link',
+                      url: child.url,
+                      children: child.children.map(cld => {
+                        if (cld.type === 'text') {
+                          return { text: cld.value };
+                        }
+
+                        return cld;
+                      }),
+                    },
+                    emptyParagraph,
+                  ],
                 },
               ];
             }
@@ -265,5 +294,5 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
     }
   });
 
-  return postParsed.filter(i => i.children);
+  return postParsed;
 };
