@@ -12,7 +12,10 @@ import { getAppUrl } from '../../../store/appStore/appSelectors';
 import './DescriptionPage.less';
 
 export const cleanHtmlCommentsAndLines = text =>
-  text?.replace(/<!--[\s\S]*?-->/g, '')?.replace(/\\n/g, '');
+  text
+    ?.replace(/<!--[\s\S]*?-->/g, '')
+    ?.replace(/\\n/g, '')
+    ?.replace(/<img[^>]*>/gi, '');
 
 const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
@@ -55,7 +58,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
 
   const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     <React.Fragment key={paragraph}>
-      <p>{getHtml(paragraph, {}, 'Object', { appUrl, isChatBotLink: true })}</p>
+      <p>{getHtml(paragraph, {}, 'Object', { appUrl })}</p>
       {pictures && index < pictures.length && (
         <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
           <img className="DescriptionPage__image" src={pictures[index]?.body} alt=" " />
