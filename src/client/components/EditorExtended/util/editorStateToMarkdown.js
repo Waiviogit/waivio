@@ -403,10 +403,10 @@ export function editorStateToMarkdownSlate(value) {
             }
 
             if (node.children.length - 1 === i) return [...acc, child];
-
             if (
               child.children &&
               !child.children[0].text &&
+              child.children.length === 1 &&
               node.children.some(c => c.children.some(c1 => c1.text))
             ) {
               return [

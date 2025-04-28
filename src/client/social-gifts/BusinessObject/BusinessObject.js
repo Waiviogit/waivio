@@ -420,7 +420,7 @@ const BusinessObject = ({
               />
             )}
             {!isEmpty(menuItem) && (
-              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} isBusiness />
+              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} />
             )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
