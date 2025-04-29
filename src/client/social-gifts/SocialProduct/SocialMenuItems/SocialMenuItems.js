@@ -28,8 +28,11 @@ export const prepareMenuItems = menuItem => {
   return menuItemList;
 };
 
-const SocialMenuItems = ({ menuItem, customVisibility }) => {
+const SocialMenuItems = ({ menuItem, customVisibility, isProduct = false }) => {
   const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
+
+  const showProduct = item =>
+    isEmpty(customVisibility) ? true : customVisibility?.includes(item.permlink);
 
   useEffect(() => {
     setMenuItems(prepareMenuItems(menuItem));
@@ -47,7 +50,7 @@ const SocialMenuItems = ({ menuItem, customVisibility }) => {
           <SocialMenuItem
             key={item._id}
             item={item}
-            isOpen={customVisibility?.includes(item.permlink)}
+            isOpen={isProduct ? showProduct(item) : customVisibility?.includes(item.permlink)}
           />
         ))}
       </div>
@@ -58,6 +61,7 @@ const SocialMenuItems = ({ menuItem, customVisibility }) => {
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
   customVisibility: PropTypes.arrayOf(),
+  isProduct: PropTypes.bool,
 };
 
 export default SocialMenuItems;

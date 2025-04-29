@@ -3,13 +3,13 @@ import { isEmpty } from 'lodash';
 import MenuItemButton from './MenuItemButton';
 import './MenuItemButtons.less';
 
-const MenuItemButtons = ({ menuItem, customSort }) =>
+const MenuItemButtons = ({ menuItem, customSortExclude }) =>
   !isEmpty(menuItem) &&
   menuItem?.map(item => (
     <MenuItemButton
       key={item.permlink}
       item={item}
-      show={isEmpty(customSort) ? true : customSort?.includes(item.permlink)}
+      show={!customSortExclude?.includes(item.permlink)}
     />
   ));
 

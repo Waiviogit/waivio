@@ -30,7 +30,8 @@ const DnDList = ({
 }) => {
   const [items, setItems] = useState(listItems);
   const [expand, setExpand] = useState([]);
-  const [include, setInclude] = useState();
+  const [include, setInclude] = useState([]);
+  const [exclude, setExclude] = useState([]);
 
   const filterItems = useCallback(i => i.filter(item => item.checkedItemInList), []);
 
@@ -41,29 +42,29 @@ const DnDList = ({
 
     setItems(listItems);
     setExpand(featuredObjectTypes.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
-    setInclude(!isEmpty(sortCustom.include) ? sortCustom.include : listItems.map(item => item.id));
+    setInclude(isEmpty(sortCustom) ? listItems.map(item => item.id) : sortCustom.include);
+    setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
   }, [listItems.length]);
+
   const onCheckboxClick = id => {
     let updatedInclude;
+    let updatedExclude;
 
     if (include.includes(id)) {
       updatedInclude = include.filter(itemId => itemId !== id);
+      updatedExclude = [...exclude, id];
     } else {
+      updatedExclude = exclude.filter(itemId => itemId !== id);
       updatedInclude = [...include, id];
     }
 
     setInclude(updatedInclude);
-
-    // Optional: update checked state in the items list as well
-    const updatedItems = items.map(item =>
-      item.id === id ? { ...item, checkedItemInList: !include.includes(id) } : item,
-    );
-
-    setItems(updatedItems);
+    setExclude(updatedExclude);
 
     // Send to parent or external change handler
     onChange({
       include: updatedInclude,
+      exclude: updatedExclude,
       expand,
     });
   };
@@ -82,6 +83,7 @@ const DnDList = ({
     onChange({
       expand: newExpanded,
       include,
+      exclude,
     });
   };
 
@@ -101,6 +103,7 @@ const DnDList = ({
       onChange({
         include: updatedList.map(item => item.id),
         expand,
+        exclude,
       });
     },
     [items],
@@ -127,7 +130,7 @@ const DnDList = ({
                     )}
                   >
                     <DnDListItem
-                      include={include}
+                      exclude={exclude}
                       onCheckboxClick={onCheckboxClick}
                       expandedIds={expand}
                       setOpen={setOpen}

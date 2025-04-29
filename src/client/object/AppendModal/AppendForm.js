@@ -3778,7 +3778,8 @@ class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
                 initialValue: {
-                  expanded: [],
+                  expand: [],
+                  exclude: [],
                   include: listItems.map(item => item.id),
                 },
               })(

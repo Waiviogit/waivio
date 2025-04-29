@@ -555,7 +555,7 @@ const SocialProduct = ({
               </div>
             )}
             {!isEmpty(menuItem) && (
-              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} />
+              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} isProduct />
             )}
             {showProductDetails && (
               <ProductDetails
