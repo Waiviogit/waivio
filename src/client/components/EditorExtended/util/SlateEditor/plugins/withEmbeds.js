@@ -1,6 +1,7 @@
 import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
+import { deserializeToSlate } from '../utils/parse';
 
 const withEmbeds = cb => editor => {
   const { isVoid, insertData, normalizeNode, selection } = editor;
@@ -122,6 +123,18 @@ const withEmbeds = cb => editor => {
       );
       cb(html);
       if (isWrapped) Transforms.move(editor, { unit: 'offset' });
+
+      return;
+    }
+
+    const text = data.getData('text/plain');
+    const isMarkdown = /[*_#>`-]/.test(text) || text.includes('\n');
+
+    if (isMarkdown) {
+      const tree = deserializeToSlate(text);
+
+      Transforms.insertFragment(editor, tree);
+      Transforms.move(editor, { unit: 'offset' });
 
       return;
     }
