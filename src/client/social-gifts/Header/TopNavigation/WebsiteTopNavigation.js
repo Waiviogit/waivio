@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { has, isEmpty, take, takeRight } from 'lodash';
+import { get, has, isEmpty, take, takeRight } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -66,6 +66,30 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
   const currObj = useSelector(getObject);
+  const customSort = get(currObj, 'sortCustom.include', []);
+
+  const menuItem = isEmpty(customSort)
+    ? listItem
+    : customSort.reduce((acc, curr) => {
+        const currentLink = currObj.menuItem.find(
+          btn =>
+            btn.body === curr ||
+            btn.author_permlink === curr ||
+            btn.permlink === curr ||
+            btn.id === curr,
+        );
+
+        if (currentLink && currentLink.groupField) {
+          const matchedItems = listItem.filter(item =>
+            currentLink.groupField.includes(item.permlink),
+          );
+
+          return [...acc, ...matchedItems];
+        }
+
+        return acc;
+      }, []);
+
   const username = useSelector(getAuthenticatedUserName);
   const isAdministrator = useSelector(getUserAdministrator);
   const dispatch = useDispatch();
@@ -83,7 +107,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
       return orderA - orderB;
     });
   const isUserShop = shopSettings?.type === 'user';
-  const linkList = isUserShop ? filteredUserTab : listItem;
+  const linkList = isUserShop ? filteredUserTab : menuItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const accessExtend =

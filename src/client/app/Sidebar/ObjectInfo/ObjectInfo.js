@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy, isEqual } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
@@ -175,6 +175,7 @@ class ObjectInfo extends React.Component {
       menuItem,
       mapObjectsList,
       mapObjectTags,
+      sortCustom,
     } = this.props.wobject;
 
     if (
@@ -185,6 +186,7 @@ class ObjectInfo extends React.Component {
       brand !== prevProps.wobject.brand ||
       merchant !== prevProps.wobject.merchant ||
       menuItem !== prevProps.wobject.menuItem ||
+      !isEqual(sortCustom, prevProps.wobject.sortCustom) ||
       mapObjectsList !== prevProps.wobject.mapObjectsList ||
       mapObjectTags !== prevProps.wobject.mapObjectTags
     ) {
