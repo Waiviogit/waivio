@@ -237,13 +237,17 @@ const EditorSlate = props => {
     const selectedElement = Node.descendant(editor, selectedElementPath);
     const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
     const nextPath = Path.next(selectedElementPath);
-    const [prevNode] = editor.children.length > 1 ? Editor.node(editor, prevPath) : {};
+    const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
 
     if (event.key === 'Backspace' || event.key === 'Delete') {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
-      if (ElementSlate.isElement(prevNode) && ['image', 'video'].includes(prevNode.type)) {
+      if (
+        ElementSlate.isElement(prevNode) &&
+        ['image', 'video'].includes(prevNode.type) &&
+        !['image', 'video'].includes(selectedElement.type)
+      ) {
         if (!offset && Range.isCollapsed(editor.selection)) {
           event.preventDefault();
 
@@ -281,12 +285,12 @@ const EditorSlate = props => {
         }
       }
 
-      const [nextNode] = editor.children.length > nextPath[0] ? Editor.node(editor, nextPath) : {};
+      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
       if (
         selectedElement.type === 'paragraph' &&
         selectedElement.children?.[0]?.text === '' &&
-        nextNode?.type === 'image' // Check if the next node is an image
+        ['image', 'video'].includes(nextNode?.type) // Check if the next node is an image
       ) {
         Transforms.insertNodes(
           editor,
