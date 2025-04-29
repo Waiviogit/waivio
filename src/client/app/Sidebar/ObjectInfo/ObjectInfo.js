@@ -417,7 +417,7 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
-    const customSort = get(wobject, 'sortCustom.include', []);
+    const customSortExclude = get(wobject, 'sortCustom.exclude', []);
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
@@ -444,10 +444,7 @@ class ObjectInfo extends React.Component {
     switch (item.id) {
       case objectFields.menuItem:
         menuItem = (
-          <MenuItemButton
-            item={item}
-            show={isEmpty(customSort) ? true : customSort?.includes(item.permlink)}
-          />
+          <MenuItemButton item={item} show={!customSortExclude?.includes(item.permlink)} />
         );
         break;
       case TYPES_OF_MENU_ITEM.BUTTON:
@@ -553,7 +550,8 @@ class ObjectInfo extends React.Component {
     const groupLastActivity = get(wobject, 'groupLastActivity', []);
     const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
-    const customSort = get(wobject, 'sortCustom.include', []);
+    const customSortInclude = get(wobject, 'sortCustom.include', []);
+    const customSortExclude = get(wobject, 'sortCustom.exclude', []);
     const promotion = get(wobject, 'promotion', []);
     const companyIdBody = wobject.companyId
       ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
@@ -844,9 +842,9 @@ class ObjectInfo extends React.Component {
         ...newsFilters,
       ];
 
-      const sortButtons = isEmpty(customSort)
+      const sortButtons = isEmpty(customSortInclude)
         ? buttonArray
-        : customSort?.reduce((acc, curr) => {
+        : customSortInclude?.reduce((acc, curr) => {
             const currentLink = buttonArray?.find(
               btn =>
                 btn.body === curr ||
@@ -859,7 +857,7 @@ class ObjectInfo extends React.Component {
           }, []);
       const allMenuItems = uniq([...sortButtons, ...buttonArray]);
 
-      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
+      if (!isEditMode && !isEmpty(customSortInclude) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         return allMenuItems.map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
@@ -887,7 +885,7 @@ class ObjectInfo extends React.Component {
               {this.listItem(
                 objectFields.menuItem,
                 !isEmpty(menuItem) && (
-                  <MenuItemButtons menuItem={allMenuItems} customSort={customSort} />
+                  <MenuItemButtons menuItem={allMenuItems} customSortExclude={customSortExclude} />
                 ),
               )}
               {this.listItem(objectFields.sorting, null)}

@@ -43,8 +43,6 @@ const MenuItemButton = ({ item, show }) => {
   }, []);
 
   const renderItem = () => {
-    if (!show) return null;
-
     switch (itemBody.style) {
       case 'icon':
         return webLink ? (
@@ -105,7 +103,7 @@ const MenuItemButton = ({ item, show }) => {
 
   if (!itemBody) return null;
 
-  return <div className="mb2">{renderItem()}</div>;
+  return show && <div className="mb2">{renderItem()}</div>;
 };
 
 MenuItemButton.propTypes = {
