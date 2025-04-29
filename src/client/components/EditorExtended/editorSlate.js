@@ -234,15 +234,76 @@ const EditorSlate = props => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { path, offset } = editor.selection.anchor;
     const selectedElementPath = path.slice(0, -1);
-
     const selectedElement = Node.descendant(editor, selectedElementPath);
-    const prevPath =
-      selectedElementPath[selectedElementPath.length - 1] && selectedElementPath.length !== 1
-        ? Path.previous(selectedElementPath)
-        : [0];
+    const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
     const nextPath = Path.next(selectedElementPath);
-    const [prevNode] = Editor.node(editor, prevPath);
-    const [nextNode] = editor.children.length > 1 ? Editor.node(editor, nextPath) : {};
+    const [prevNode] = editor.children.length > 1 ? Editor.node(editor, prevPath) : {};
+
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+      const key = path[0] ? path[0] - 1 : path[0];
+      const node = editor.children[key];
+
+      if (ElementSlate.isElement(prevNode) && ['image', 'video'].includes(prevNode.type)) {
+        if (!offset && Range.isCollapsed(editor.selection)) {
+          event.preventDefault();
+
+          Transforms.select(editor, Editor.range(editor, prevPath));
+
+          return true;
+        }
+      }
+
+      if (['unorderedList', 'orderedList'].includes(node.type)) {
+        const [, at] = getParentList(path, editor);
+
+        if (node.children.length === 1 && node.children[0].children.length === 1) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+        }
+
+        return true;
+      }
+
+      if (node.type === 'table') {
+        const [tbl, at] = getParentTable(path, editor);
+
+        if (isSingleEmptyCellTable(editor, tbl)) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+
+          return true;
+        }
+      }
+
+      const [nextNode] = editor.children.length > nextPath[0] ? Editor.node(editor, nextPath) : {};
+
+      if (
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === '' &&
+        nextNode?.type === 'image' // Check if the next node is an image
+      ) {
+        Transforms.insertNodes(
+          editor,
+          {
+            type: 'image',
+            url: editor.children[1].url,
+            children: [{ text: '' }], // Image nodes must have children in Slate
+          },
+          { at: selectedElementPath },
+        );
+        Transforms.removeNodes(editor, { at: nextPath });
+        Transforms.select(editor, Editor.range(editor, selectedElementPath));
+        ReactEditor.focus(editor);
+
+        return true;
+      }
+    }
 
     if (event.key === 'Enter') {
       removeAllInlineFormats(editor);
@@ -277,70 +338,6 @@ const EditorSlate = props => {
         editor.insertText('\n');
 
         return true;
-      }
-    }
-
-    if (event.key === 'Backspace' || event.key === 'Delete') {
-      const key = path[0] ? path[0] - 1 : path[0];
-      const node = editor.children[key];
-
-      if (ElementSlate.isElement(prevNode) && ['image', 'video'].includes(prevNode.type)) {
-        if (!offset && Range.isCollapsed(editor.selection)) {
-          event.preventDefault();
-
-          Transforms.select(editor, Editor.range(editor, prevPath));
-
-          return true;
-        }
-      }
-
-      if (
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
-        nextNode?.type === 'image' // Check if the next node is an image
-      ) {
-        Transforms.insertNodes(
-          editor,
-          {
-            type: 'image',
-            url: editor.children[1].url,
-            children: [{ text: '' }], // Image nodes must have children in Slate
-          },
-          { at: selectedElementPath },
-        );
-        Transforms.removeNodes(editor, { at: nextPath });
-        Transforms.select(editor, Editor.range(editor, selectedElementPath));
-        ReactEditor.focus(editor);
-
-        return true;
-      }
-
-      if (['unorderedList', 'orderedList'].includes(node.type)) {
-        const [, at] = getParentList(path, editor);
-
-        if (node.children.length === 1 && node.children[0].children.length === 1) {
-          Transforms.removeNodes(editor, {
-            at,
-            mode: 'highest',
-          });
-          Transforms.insertNodes(editor, createEmptyNode());
-        }
-
-        return true;
-      }
-
-      if (node.type === 'table') {
-        const [tbl, at] = getParentTable(path, editor);
-
-        if (isSingleEmptyCellTable(editor, tbl)) {
-          Transforms.removeNodes(editor, {
-            at,
-            mode: 'highest',
-          });
-          Transforms.insertNodes(editor, createEmptyNode());
-
-          return true;
-        }
       }
     }
 
