@@ -41,6 +41,7 @@ export const CONVERT_HBD_COMPLETED = 'fill_convert_request';
 export const CONVERT_HIVE_REQUEST = 'collateralized_convert';
 export const CONVERT_HIVE_COMPLETED = 'fill_collateralized_convert_request';
 export const INTEREST = 'interest';
+export const COMMENT_REWARDS = 'comment_rewards';
 export const FILL_TRANSFER_FROM_SAVINGS = 'fill_transfer_from_savings';
 export const TRANSFER_TO_VESTING_COMPLETED = 'transfer_to_vesting_completed';
 

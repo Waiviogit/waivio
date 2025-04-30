@@ -114,6 +114,11 @@ export const getTableDescription = (type, options) => {
         authorRewards: `Author rewards (post)`,
       };
     }
+    case accountHistoryConstants.COMMENT_REWARDS: {
+      return {
+        commentRewards: `Author and curator rewards`,
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       return {
         limitOrder: 'Limit order',
