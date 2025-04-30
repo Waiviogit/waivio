@@ -71,7 +71,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const menuItem = isEmpty(customSort)
     ? listItem
     : customSort.reduce((acc, curr) => {
-        const currentLink = currObj.menuItem.find(
+        const currentLink = currObj?.menuItem?.find(
           btn =>
             btn.body === curr ||
             btn.author_permlink === curr ||
@@ -107,6 +107,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
       return orderA - orderB;
     });
   const isUserShop = shopSettings?.type === 'user';
+
   const linkList = isUserShop ? filteredUserTab : menuItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
