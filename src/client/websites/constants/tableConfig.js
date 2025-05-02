@@ -180,14 +180,14 @@ export const configActionsWebsitesTableHeader = [
     },
   },
   {
-    id: 'buyAction',
+    id: 'buyActionUniq',
     intl: {
       id: 'actions',
       defaultMessage: 'Actions',
     },
   },
   {
-    id: 'conversion',
+    id: 'conversionUniq',
     intl: {
       id: 'conversion_percent',
       defaultMessage: 'Conversion (%)',

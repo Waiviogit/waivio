@@ -309,6 +309,15 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
+    case accountHistoryConstants.COMMENT_REWARDS: {
+      return {
+        commentRewards: (
+          <div>
+            <FormattedMessage id="comment_rewards" defaultMessage="Author and curator rewards" />{' '}
+          </div>
+        ),
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const openPays = get(options, 'openPays', null);
       const currentPays = get(options, 'currentPays', null);

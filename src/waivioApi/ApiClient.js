@@ -2196,7 +2196,7 @@ export const getAdvancedReports = (body, user = '') => {
 
   return fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
     headers: actualHeaders,
-    body: JSON.stringify(body),
+    body: JSON.stringify({ ...body, user }),
     method: 'POST',
   })
     .then(res => res.json())
@@ -2209,7 +2209,7 @@ export const getWaivAdvancedReports = (body, user = '', abortController) => {
 
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
-    body: JSON.stringify(body),
+    body: JSON.stringify({ ...body, user }),
     ...(abortController && { signal: abortController.signal }),
     method: 'POST',
   })

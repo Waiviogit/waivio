@@ -87,27 +87,28 @@ const DnDList = ({
     });
   };
 
-  const handleDragEnd = useCallback(
-    result => {
-      if (!result.destination) return;
+  const handleDragEnd = result => {
+    if (!result.destination) return;
 
-      const reordered = reorder(items, result.source.index, result.destination.index);
-      let updatedList = reordered;
+    const reordered = reorder(items, result.source.index, result.destination.index);
+    let updatedList = reordered;
 
-      setItems(reordered);
+    setItems(reordered);
 
-      if (wobjType === OBJECT_TYPE.LIST) {
-        updatedList = filterItems(reordered);
-      }
+    if (wobjType === OBJECT_TYPE.LIST) {
+      updatedList = filterItems(reordered);
+    }
 
-      onChange({
-        include: updatedList.map(item => item.id),
-        expand,
-        exclude,
-      });
-    },
-    [items],
-  );
+    const newInclude = updatedList.map(item => item.id);
+
+    setInclude(newInclude);
+
+    onChange({
+      include: newInclude,
+      expand,
+      exclude,
+    });
+  };
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
