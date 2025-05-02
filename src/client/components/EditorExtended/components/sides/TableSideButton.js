@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { ReactSVG } from 'react-svg';
-import { Editor, Node, Transforms } from 'slate';
+import { Editor, Node, Transforms, Path } from 'slate';
 import { ReactEditor, useSlate } from 'slate-react';
-import { createEmptyNode } from '../../util/SlateEditor/utils/embed';
 import { insertTable } from '../../util/SlateEditor/utils/table';
 
 export const isNestedTable = editor => {
@@ -29,15 +28,14 @@ export const isNestedTable = editor => {
 
 const TableSideButton = props => {
   const editor = useSlate();
-  const [anchorPath, setAnchor] = useState(editor.selection.anchor.path[0]);
 
   const onClick = () => {
-    insertTable(editor);
-    createEmptyNode(editor);
+    const nextPath = Path.next(editor.selection.anchor.path.slice(0, -1));
 
-    setAnchor(editor.selection.anchor.path[0] ? editor.selection.anchor.path[0] - 1 : 0);
+    insertTable(editor);
+
     setTimeout(() => {
-      Transforms.select(editor, [anchorPath, 0, 0, 0]);
+      Transforms.select(editor, [nextPath[0], 0, 0, 0]);
       ReactEditor.focus(editor);
       props.close();
     }, 0);
