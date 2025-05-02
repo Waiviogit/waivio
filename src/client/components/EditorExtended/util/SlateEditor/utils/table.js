@@ -1,20 +1,20 @@
 import { isEmpty } from 'lodash';
-import { Transforms, Editor } from 'slate';
+import { Transforms, Editor, Path } from 'slate';
+import { createEmptyNode } from './embed';
 
 export const insertTable = editor => {
   const rows = 2;
   const columns = 2;
   const cellText = Array.from({ length: rows }, () => Array.from({ length: columns }, () => ''));
   const newTable = createTableNode(cellText);
+  const nextPath = Path.next(editor.selection.anchor.path.slice(0, -1));
 
-  Transforms.insertNodes(editor, newTable, {
-    at: editor.selection.anchor.path,
+  Transforms.insertNodes(editor, createEmptyNode(editor), {
+    at: nextPath,
   });
-  Transforms.insertNodes(
-    editor,
-    { type: 'paragraph', children: [{ text: '' }] },
-    { mode: 'highest' },
-  );
+  Transforms.insertNodes(editor, newTable, {
+    at: nextPath,
+  });
 };
 
 const createRow = (cellText, action) => {

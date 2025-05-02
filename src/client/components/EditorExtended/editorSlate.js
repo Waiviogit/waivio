@@ -18,7 +18,7 @@ import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams, withRouter } from 'react-router';
-import { isKeyHotkey } from 'is-hotkey';
+import { isKeyHotkey, isHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
@@ -45,6 +45,7 @@ import {
   removeAllInlineFormats,
   resetEditorState,
   toggleBlock,
+  toggleMark,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import {
@@ -54,14 +55,15 @@ import {
   setShowEditorSearch,
   setCursorCoordinates,
 } from '../../../store/slateEditorStore/editorActions';
-import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
-
-import './index.less';
+import { HEADING_BLOCKS, HOTKEYS } from './util/SlateEditor/utils/constants';
 import {
   getParentTable,
   isSingleEmptyCellTable,
   getParentList,
+  insertTable,
 } from './util/SlateEditor/utils/table';
+
+import './index.less';
 
 const useEditor = props => {
   const editor = useMemo(
@@ -231,6 +233,25 @@ const EditorSlate = props => {
   };
 
   const handleKeyCommand = event => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const hotkey in HOTKEYS) {
+      if (isHotkey(hotkey, event)) {
+        event.preventDefault();
+        const format = HOTKEYS[hotkey];
+
+        if (format === 'table') {
+          insertTable(editor);
+        }
+
+        if (['bold', 'italic', 'underline'].includes(format)) {
+          toggleMark(editor, format);
+        } else {
+          toggleBlock(editor, format);
+        }
+
+        return true;
+      }
+    }
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { path, offset } = editor.selection.anchor;
     const selectedElementPath = path.slice(0, -1);
@@ -238,6 +259,23 @@ const EditorSlate = props => {
     const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
     const nextPath = Path.next(selectedElementPath);
     const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+    const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+
+    if (event.key === 'Delete') {
+      if (
+        ElementSlate.isElement(nextNode) &&
+        ['image', 'video'].includes(nextNode.type) &&
+        !['image', 'video'].includes(selectedElement.type)
+      ) {
+        if (!offset && Range.isCollapsed(editor.selection)) {
+          event.preventDefault();
+
+          Transforms.select(editor, Editor.range(editor, prevPath));
+
+          return true;
+        }
+      }
+    }
 
     if (event.key === 'Backspace' || event.key === 'Delete') {
       const key = path[0] ? path[0] - 1 : path[0];
@@ -284,8 +322,6 @@ const EditorSlate = props => {
           return true;
         }
       }
-
-      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
       if (
         selectedElement.type === 'paragraph' &&
@@ -370,13 +406,6 @@ const EditorSlate = props => {
       if (isKeyHotkey('left', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset', reverse: true });
-
-        if (selectedElement.type === 'image') {
-          Transforms.select(editor, Editor.before(editor, editor.selection.anchor));
-
-          // Focus the editor
-          ReactEditor.focus(editor);
-        }
 
         return true;
       }
