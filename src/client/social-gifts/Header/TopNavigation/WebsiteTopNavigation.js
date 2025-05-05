@@ -67,28 +67,24 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const config = useSelector(getWebsiteConfiguration);
   const currObj = useSelector(getObject);
   const baseObj = useSelector(getBaseObject);
-  const customSort = get(baseObj, 'sortCustom.include', []);
-  const menuItem = isEmpty(customSort)
+  const exclude = get(baseObj, 'sortCustom.exclude', []);
+  const menuItem = isEmpty(exclude)
     ? listItem
-    : customSort.reduce((acc, curr) => {
-        const currentLink = baseObj?.menuItem?.find(
-          btn =>
-            btn.body === curr ||
-            btn.author_permlink === curr ||
-            btn.permlink === curr ||
-            btn.id === curr,
-        );
+    : listItem.filter(
+        item =>
+          // Find if the current item is part of any excluded groupField
+          !exclude.some(curr => {
+            const currentLink = baseObj?.menuItem?.find(
+              btn =>
+                btn.body === curr ||
+                btn.author_permlink === curr ||
+                btn.permlink === curr ||
+                btn.id === curr,
+            );
 
-        if (currentLink && currentLink.groupField) {
-          const matchedItems = listItem.filter(item =>
-            currentLink.groupField.includes(item.permlink),
-          );
-
-          return [...acc, ...matchedItems];
-        }
-
-        return acc;
-      }, []);
+            return currentLink?.groupField?.includes(item.permlink);
+          }),
+      );
 
   const username = useSelector(getAuthenticatedUserName);
   const isAdministrator = useSelector(getUserAdministrator);
