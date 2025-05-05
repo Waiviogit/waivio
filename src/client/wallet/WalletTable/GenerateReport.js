@@ -73,7 +73,7 @@ const GenerateReport = ({ intl, form }) => {
 
   const handleSubmit = () => {
     form.validateFieldsAndScroll((err, values) => {
-      const { from, end, currency } = values;
+      const { from, end, currency, mergeRewards } = values;
 
       if (isEmpty(err)) {
         if (!isEmpty(filterAccounts)) {
@@ -95,6 +95,7 @@ const GenerateReport = ({ intl, form }) => {
                 .unix(),
             endDate: handleChangeEndDate(end) || moment().unix(),
             currency,
+            mergeRewards,
             symbol: 'WAIV',
             user: authUser,
           };
