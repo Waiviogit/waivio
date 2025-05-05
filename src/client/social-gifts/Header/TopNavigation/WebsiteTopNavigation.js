@@ -30,7 +30,7 @@ import {
   hasDelegation,
   haveAccess,
 } from '../../../../common/helpers/wObjectHelper';
-import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
+import { getBaseObject, getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -66,12 +66,12 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
   const currObj = useSelector(getObject);
-  const customSort = get(currObj, 'sortCustom.include', []);
-
+  const baseObj = useSelector(getBaseObject);
+  const customSort = get(baseObj, 'sortCustom.include', []);
   const menuItem = isEmpty(customSort)
     ? listItem
     : customSort.reduce((acc, curr) => {
-        const currentLink = currObj?.menuItem?.find(
+        const currentLink = baseObj?.menuItem?.find(
           btn =>
             btn.body === curr ||
             btn.author_permlink === curr ||

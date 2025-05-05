@@ -6,6 +6,7 @@ export const objectState = state => state.object;
 
 // reselect function
 export const getObject = createSelector([objectState], state => state.wobject);
+export const getBaseObject = createSelector([objectState], state => state.baseObject);
 
 export const getObjectFields = createSelector([getObject], state => get(state, 'fields', []));
 

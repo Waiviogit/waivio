@@ -36,6 +36,7 @@ import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
 
 export const initialState = {
   wobject: {},
+  baseObject: {},
   nestedWobject: {},
   authors: [],
   nearbyWobjects: [],
@@ -108,6 +109,13 @@ export default function wobjectReducer(state = initialState, action) {
         },
         isFetching: false,
         isFailed: false,
+      };
+    case actions.SET_BASE_OBJECT:
+      return {
+        ...state,
+        baseObject: {
+          ...action.payload,
+        },
       };
 
     case actions.ADD_ITEM_TO_LIST:
