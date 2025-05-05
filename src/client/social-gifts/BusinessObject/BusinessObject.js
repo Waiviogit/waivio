@@ -101,24 +101,21 @@ const BusinessObject = ({
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
   const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i.name !== 'avatar');
-  const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
+  const sortExclude = get(wobject, 'sortCustom.exclude', []);
+
   const phones = get(wobject, 'phone', []);
   const email = get(wobject, 'email');
-  const menuItem = isEmpty(customSort)
+  const menuItem = isEmpty(sortExclude)
     ? menuItems
-    : customSort.reduce((acc, curr) => {
-        const currentLink = wobject?.menuItem?.find(
-          btn =>
-            btn.body === curr ||
-            btn.author_permlink === curr ||
-            btn.permlink === curr ||
-            btn.id === curr,
-        );
-
-        return currentLink ? [...acc, currentLink] : acc;
-      }, []);
+    : menuItems.filter(
+        item =>
+          !sortExclude.includes(item.body) &&
+          !sortExclude.includes(item.author_permlink) &&
+          !sortExclude.includes(item.permlink) &&
+          !sortExclude.includes(item.id),
+      );
   const tagCategories = get(wobject, 'tagCategory', []);
   const companyIdBody = wobject.companyId
     ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
@@ -420,7 +417,11 @@ const BusinessObject = ({
               />
             )}
             {!isEmpty(menuItem) && (
-              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} />
+              <SocialMenuItems
+                menuItem={menuItem}
+                customVisibility={customVisibility}
+                wobject={wobject}
+              />
             )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">

@@ -3773,6 +3773,7 @@ class AppendForm extends Component {
             });
           });
         }
+        const isList = wobjType === OBJECT_TYPE.LIST;
 
         return (
           <React.Fragment>
@@ -3784,7 +3785,7 @@ class AppendForm extends Component {
                   include: listItems.map(item => item.id),
                 },
               })(
-                wobjType === OBJECT_TYPE.LIST ? (
+                isList ? (
                   <ListDnD
                     listItems={listItems}
                     accentColor={PRIMARY_COLOR}
@@ -3802,10 +3803,14 @@ class AppendForm extends Component {
                 ),
               )}
             </Form.Item>
-            <p className={'mt2'}>
-              Menu items can be collapsed/expanded (eye button), sorted, or hidden (checkbox).
-            </p>
-            <p> Collapse/expand is only applicable to social sites.</p>
+            {!isList && (
+              <>
+                <p className={'mt2'}>
+                  Menu items can be collapsed/expanded (eye button), sorted, or hidden (checkbox).
+                </p>
+                <p> Collapse/expand is only applicable to social sites.</p>
+              </>
+            )}
           </React.Fragment>
         );
       }
