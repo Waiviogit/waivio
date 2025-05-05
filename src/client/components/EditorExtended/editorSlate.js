@@ -243,7 +243,7 @@ const EditorSlate = props => {
           insertTable(editor);
         }
 
-        if (['bold', 'italic', 'underline'].includes(format)) {
+        if (['strong', 'italic', 'emphasis'].includes(format)) {
           toggleMark(editor, format);
         } else {
           toggleBlock(editor, format);
