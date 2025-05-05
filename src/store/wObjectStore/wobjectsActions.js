@@ -17,6 +17,7 @@ export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 export const CLEAR_OBJECT = '@objects/CLEAR_OBJECT';
 export const GET_OBJECT_FOLLOWERS = createAsyncActionType('@objects/GET_OBJECT_FOLLOWERS');
 export const GET_OBJECTS_NEARBY = createAsyncActionType('@objects/GET_OBJECTS_NEARBY');
+export const SET_BASE_OBJECT = '@objects/SET_BASE_OBJECT';
 
 export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank' }) => (
   dispatch,
@@ -46,6 +47,12 @@ export const getObject = authorPermlink => (dispatch, getState) => {
       .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
 };
+
+export const setBaseObject = wobj => dispatch =>
+  dispatch({
+    type: SET_BASE_OBJECT,
+    payload: wobj,
+  });
 
 export const clearObjectFromStore = () => dispatch =>
   dispatch({

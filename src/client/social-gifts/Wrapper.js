@@ -16,7 +16,10 @@ import {
 } from '../../store/authStore/authActions';
 import { getDraftsList } from '../../store/draftsStore/draftsActions';
 import { getObjectPosts, setFirstLoading } from '../../store/feedStore/feedActions';
-import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
+import {
+  getObject as getObjectAction,
+  setBaseObject,
+} from '../../store/wObjectStore/wobjectsActions';
 import {
   getUserDepartments,
   getUserShopList,
@@ -98,6 +101,7 @@ const SocialWrapper = props => {
       if (configuration.shopSettings?.type === 'object') {
         getObject(configuration.shopSettings?.value, props.username, props.locale).then(
           async wobject => {
+            dispatch(setBaseObject(wobject));
             const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
               const body = parseJSON(item.body);
 
@@ -343,6 +347,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
         if (configuration.shopSettings?.type === 'object') {
           return getObject(configuration.shopSettings?.value, username, activeLocale).then(
             async wobject => {
+              store.dispatch(setBaseObject(wobject));
               const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
                 const body = parseJSON(item.body);
 

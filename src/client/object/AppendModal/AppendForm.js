@@ -161,6 +161,7 @@ import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
 import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
+import ListDnD from '../../components/DnDList/ListSortingDnD/ListDnD';
 
 @connect(
   state => ({
@@ -3783,13 +3784,22 @@ class AppendForm extends Component {
                   include: listItems.map(item => item.id),
                 },
               })(
-                <SortingList
-                  sortCustom={sortCustom}
-                  listItems={listItems}
-                  accentColor={PRIMARY_COLOR}
-                  onChange={this.handleChangeSorting}
-                  wobjType={wobjType}
-                />,
+                wobjType === OBJECT_TYPE.LIST ? (
+                  <ListDnD
+                    listItems={listItems}
+                    accentColor={PRIMARY_COLOR}
+                    onChange={this.handleChangeSorting}
+                    wobjType={wobjType}
+                  />
+                ) : (
+                  <SortingList
+                    sortCustom={sortCustom}
+                    listItems={listItems}
+                    accentColor={PRIMARY_COLOR}
+                    onChange={this.handleChangeSorting}
+                    wobjType={wobjType}
+                  />
+                ),
               )}
             </Form.Item>
             <p className={'mt2'}>
