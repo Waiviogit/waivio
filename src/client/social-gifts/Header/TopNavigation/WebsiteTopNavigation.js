@@ -72,7 +72,6 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
     ? listItem
     : listItem.filter(
         item =>
-          // Find if the current item is part of any excluded groupField
           !exclude.some(curr => {
             const currentLink = baseObj?.menuItem?.find(
               btn =>
