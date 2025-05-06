@@ -224,6 +224,10 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           type: node.ordered ? 'orderedList' : 'unorderedList',
           children: next(node.children),
         }),
+        listItem: (node, next) => ({
+          type: 'listItem',
+          children: next(node.children),
+        }),
         tableCell: node => {
           const children = node.children.reduce((acc, child, i) => {
             const prevEl = node.children[i - 1];
@@ -372,8 +376,16 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
 
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i.replaceAll('<p>&nbsp;</p>', '<p />')).result;
+    const lastNode = blocks[blocks.length - 1];
+    const hasVideo = lastNode
+      ? lastNode?.children?.every(
+          child => child.type === 'video' || (child.text !== undefined && child.text.trim() === ''),
+        )
+      : false;
 
-    if (isThread) {
+    if (hasVideo) {
+      postParsed = [...postParsed, ...blocks];
+    } else if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];
     } else if (isNewReview) {
       postParsed = [
