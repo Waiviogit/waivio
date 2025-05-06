@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
-import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
+import {
+  getObjectInfo,
+  getObjectsRewards,
+  getReferenceObjectsList,
+} from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -119,6 +123,7 @@ const SocialProduct = ({
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
+  const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
@@ -155,7 +160,8 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
-  const menuItems = get(wobject, 'menuItem', []);
+  // const menuItems = get(wobject, 'menuItem', []);
+  const customSort = get(wobject, 'sortCustom.include', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
   const sortExclude = get(wobject, 'sortCustom.exclude', []);
 
@@ -175,15 +181,22 @@ const SocialProduct = ({
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
 
-  const menuItem = isEmpty(sortExclude)
-    ? menuItems
-    : menuItems.filter(
-        item =>
-          !sortExclude.includes(item.body) &&
-          !sortExclude.includes(item.author_permlink) &&
-          !sortExclude.includes(item.permlink) &&
-          !sortExclude.includes(item.id),
-      );
+  const menuItem = !has(wobject, 'sortCustom')
+    ? menuItemsArray
+    : menuItemsArray
+        .filter(
+          item =>
+            !sortExclude.includes(item.body) &&
+            !sortExclude.includes(item.author_permlink) &&
+            !sortExclude.includes(item.permlink) &&
+            !sortExclude.includes(item.id),
+        )
+        .sort((a, b) => {
+          const indexA = customSort.indexOf(a.permlink);
+          const indexB = customSort.indexOf(b.permlink);
+
+          return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+        });
 
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
@@ -246,10 +259,33 @@ const SocialProduct = ({
   const getPublisherManufacturerBrandMerchantObjects = () => {
     getProductInfoAction(wobject);
   };
+  const enrichMenuItems = (menuItems = []) =>
+    menuItems?.reduce(async (acc, curr) => {
+      const res = await acc;
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject], locale);
+
+        return [
+          ...res,
+          {
+            ...curr,
+            body: JSON.stringify({
+              ...itemBody,
+              title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+            }),
+          },
+        ];
+      }
+
+      return [...res, curr];
+    }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      enrichMenuItems(wobject.menuItem).then(r => setMenuItemsArray(r));
       isRecipe &&
         getObjectPosts({
           object: wobject.author_permlink,
@@ -554,6 +590,8 @@ const SocialProduct = ({
             )}
             {!isEmpty(menuItem) && (
               <SocialMenuItems
+                customSort={customSort}
+                sortExclude={sortExclude}
                 menuItem={menuItem}
                 customVisibility={customVisibility}
                 isProduct

@@ -78,13 +78,13 @@ const TableFilter = ({
       </div>
       {isGenerate && (
         <Form.Item>
-          <div className="WalletTable__exclude">
+          <div className="WalletTable__exclude flex flex-row">
             {getFieldDecorator('mergeRewards', {
               valuePropName: 'checked',
               initialValue: true,
             })(<Checkbox />)}
 
-            <span> Merge author and curations rewards</span>
+            <div className={'WalletTable__checkbox-text'}> Merge author and curations rewards</div>
           </div>
         </Form.Item>
       )}
@@ -208,6 +208,17 @@ const TableFilter = ({
             ))}
           </Select>,
         )}
+      </Form.Item>
+
+      <Form.Item>
+        <div className="WalletTable__exclude flex flex-row">
+          {getFieldDecorator('addSwaps', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(<Checkbox />)}
+
+          <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+        </div>
       </Form.Item>
 
       {!inModal && (
