@@ -82,7 +82,7 @@ const withEmbeds = cb => editor => {
         if (i.type === 'link' && i.children[0]?.type === 'image') {
           return i.children[0];
         }
-        if (i.type === 'link' && i.url.includes('/object/')) {
+        if (i.type === 'link' && i?.url?.includes('/object/')) {
           return {
             type: 'object',
             url: i.url,
