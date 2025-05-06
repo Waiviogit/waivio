@@ -24,6 +24,7 @@ const TableFilter = ({
   startDate,
   endDate,
   inModal,
+  isGenerate,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const disabledTillDate = (current, from) => current > moment().endOf('day') || current < from;
@@ -75,16 +76,18 @@ const TableFilter = ({
             'If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.',
         })}
       </div>
-      <Form.Item>
-        <div className="WalletTable__exclude">
-          {getFieldDecorator('mergeRewards', {
-            valuePropName: 'checked',
-            initialValue: true,
-          })(<Checkbox />)}
+      {isGenerate && (
+        <Form.Item>
+          <div className="WalletTable__exclude">
+            {getFieldDecorator('mergeRewards', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(<Checkbox />)}
 
-          <span> Merge author and curations rewards</span>
-        </div>
-      </Form.Item>
+            <span> Merge author and curations rewards</span>
+          </div>
+        </Form.Item>
+      )}
 
       <div className="WalletTable__date-wrap">
         <Form.Item
@@ -235,6 +238,7 @@ TableFilter.propTypes = {
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
   inModal: PropTypes.bool,
+  isGenerate: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func,

@@ -35,6 +35,7 @@ import Loading from '../../components/Icon/Loading';
 import ExportCsv from './ExportCSV';
 
 import './GenerateReport.less';
+import useQuery from '../../../hooks/useQuery';
 
 const GenerateReport = ({ intl, form }) => {
   const params = useParams();
@@ -47,6 +48,9 @@ const GenerateReport = ({ intl, form }) => {
   const currentCurrency = useSelector(getCurrentCurrency);
   const authUser = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
+  const query = useQuery();
+  const tab = query?.get('tab');
+  const isGenerate = tab === 'generate';
 
   const updatePageDate = () =>
     Promise.allSettled([dispatch(getInProgressReports()), dispatch(getHistoryReports())]);
@@ -95,7 +99,7 @@ const GenerateReport = ({ intl, form }) => {
                 .unix(),
             endDate: handleChangeEndDate(end) || moment().unix(),
             currency,
-            mergeRewards,
+            mergeRewards: isGenerate ? false : mergeRewards,
             symbol: 'WAIV',
             user: authUser,
           };
@@ -196,6 +200,7 @@ const GenerateReport = ({ intl, form }) => {
           okText={'Submit'}
         >
           <TableFilter
+            isGenerate={isGenerate}
             inModal
             intl={intl}
             filterUsersList={filterAccounts}
