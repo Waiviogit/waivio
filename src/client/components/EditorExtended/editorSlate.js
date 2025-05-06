@@ -243,7 +243,7 @@ const EditorSlate = props => {
           insertTable(editor);
         }
 
-        if (['strong', 'italic', 'emphasis'].includes(format)) {
+        if (['strong', 'italic', 'emphasis', 'underline'].includes(format)) {
           toggleMark(editor, format);
         } else {
           toggleBlock(editor, format);
@@ -267,17 +267,17 @@ const EditorSlate = props => {
         ['image', 'video'].includes(nextNode.type) &&
         !['image', 'video'].includes(selectedElement.type)
       ) {
-        if (!offset && Range.isCollapsed(editor.selection)) {
+        if (Range.isCollapsed(editor.selection)) {
           event.preventDefault();
 
-          Transforms.select(editor, Editor.range(editor, prevPath));
+          Transforms.select(editor, Editor.range(editor, nextPath));
 
           return true;
         }
       }
     }
 
-    if (event.key === 'Backspace' || event.key === 'Delete') {
+    if (event.key === 'Backspace') {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
