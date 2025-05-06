@@ -155,9 +155,9 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
-  const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
+  const sortExclude = get(wobject, 'sortCustom.exclude', []);
 
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -174,19 +174,17 @@ const SocialProduct = ({
     !isEmpty(departments);
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = isEmpty(customSort)
-    ? menuItems
-    : customSort.reduce((acc, curr) => {
-        const currentLink = wobject?.menuItem?.find(
-          btn =>
-            btn.body === curr ||
-            btn.author_permlink === curr ||
-            btn.permlink === curr ||
-            btn.id === curr,
-        );
 
-        return currentLink ? [...acc, currentLink] : acc;
-      }, []);
+  const menuItem = isEmpty(sortExclude)
+    ? menuItems
+    : menuItems.filter(
+        item =>
+          !sortExclude.includes(item.body) &&
+          !sortExclude.includes(item.author_permlink) &&
+          !sortExclude.includes(item.permlink) &&
+          !sortExclude.includes(item.id),
+      );
+
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery =
@@ -555,7 +553,12 @@ const SocialProduct = ({
               </div>
             )}
             {!isEmpty(menuItem) && (
-              <SocialMenuItems menuItem={menuItem} customVisibility={customVisibility} isProduct />
+              <SocialMenuItems
+                menuItem={menuItem}
+                customVisibility={customVisibility}
+                isProduct
+                wobject={wobject}
+              />
             )}
             {showProductDetails && (
               <ProductDetails
