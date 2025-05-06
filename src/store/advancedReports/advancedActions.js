@@ -49,6 +49,7 @@ export const getUserTableTransactions = ({
   endDate,
   currency,
   type,
+  addSwaps,
 }) => (dispatch, getState) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
@@ -75,6 +76,7 @@ export const getUserTableTransactions = ({
     filterAccounts,
     accounts,
     currency,
+    addSwaps: !addSwaps,
   };
 
   const method = type === 'HIVE' ? ApiClient.getAdvancedReports : getWaivAdvancedReports;

@@ -210,6 +210,17 @@ const TableFilter = ({
         )}
       </Form.Item>
 
+      <Form.Item>
+        <div className="WalletTable__exclude flex flex-row">
+          {getFieldDecorator('addSwaps', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(<Checkbox />)}
+
+          <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+        </div>
+      </Form.Item>
+
       {!inModal && (
         <Button
           className="WalletTable__submit"

@@ -199,7 +199,7 @@ class WalletTable extends React.Component {
   }
 
   handleSubmit = () => {
-    const { from, end, currency } = this.props.form.getFieldsValue();
+    const { from, end, currency, addSwaps } = this.props.form.getFieldsValue();
 
     if (!isEmpty(this.state.filterAccounts)) {
       this.setState({ dateEstablished: true, currentCurrency: currency });
@@ -210,6 +210,7 @@ class WalletTable extends React.Component {
         endDate: this.handleChangeEndDate(end),
         currency,
         type: this.state.tableType,
+        addSwaps: addSwaps || false,
       });
     }
   };
