@@ -28,11 +28,21 @@ export const prepareMenuItems = menuItem => {
   return menuItemList;
 };
 
-const SocialMenuItems = ({ menuItem, customVisibility, isProduct = false, wobject }) => {
+const SocialMenuItems = ({
+  menuItem,
+  customVisibility,
+  customSort,
+  sortExclude,
+  isProduct = false,
+  wobject,
+}) => {
   const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
 
   const showProduct = item =>
-    !has(wobject, 'sortCustom') ? true : customVisibility?.includes(item.permlink);
+    !has(wobject, 'sortCustom')
+      ? true
+      : customVisibility?.includes(item.permlink) ||
+        (!customSort?.includes(item.permlink) && !sortExclude?.includes(item.permlink));
 
   useEffect(() => {
     setMenuItems(prepareMenuItems(menuItem));
@@ -61,6 +71,8 @@ const SocialMenuItems = ({ menuItem, customVisibility, isProduct = false, wobjec
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
   customVisibility: PropTypes.arrayOf(),
+  sortExclude: PropTypes.arrayOf(),
+  customSort: PropTypes.arrayOf(),
   wobject: PropTypes.shape(),
   isProduct: PropTypes.bool,
 };
