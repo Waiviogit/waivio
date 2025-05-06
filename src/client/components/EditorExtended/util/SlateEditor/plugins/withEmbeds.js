@@ -78,27 +78,58 @@ const withEmbeds = cb => editor => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
       const isWrapped = selectedElement.type.includes(CODE_BLOCK);
 
-      let nodesNormalized = nodes.map(i => {
-        if (i.type === 'link' && i.children[0]?.type === 'image') {
-          return i.children[0];
-        }
-        if (i.type === 'link' && i?.url?.includes('/object/')) {
-          return {
-            type: 'object',
-            url: i.url,
-            children: [{ text: ' ' }],
-            hashtag: i.children[0]?.text,
-          };
-        }
+      let nodesNormalized = nodes
+        .filter(i => i.text !== '\n')
+        .map(i => {
+          if (i.type === 'link' && i.children[0]?.type === 'image') {
+            return i.children[0];
+          }
+          if (i.type === 'link' && i?.url?.includes('/object/')) {
+            return {
+              type: 'object',
+              url: i.url,
+              children: [{ text: ' ' }],
+              hashtag: i.children[0]?.text,
+            };
+          }
 
-        if (i.text === '\n') {
-          return {
-            text: '',
-          };
-        }
+          if (i.type === 'bulletedList') {
+            return {
+              type: 'bulletedList',
+              children: i?.children?.reduce((acc, it) => {
+                if (it.type === 'listItem') {
+                  return [
+                    ...acc,
+                    {
+                      type: 'listItem',
+                      children: it.children.reduce((a, c) => {
+                        if (c.type === 'paragraph') {
+                          return [...a, c.children[0]];
+                        }
 
-        return i;
-      });
+                        if (!c.type && c.text === '\n') {
+                          return a;
+                        }
+
+                        return [...a, c];
+                      }, []),
+                    },
+                  ];
+                }
+
+                return acc;
+              }, []),
+            };
+          }
+
+          if (i.text === '\n') {
+            return {
+              text: '',
+            };
+          }
+
+          return i;
+        });
 
       if (nodesNormalized.length === 1 && nodesNormalized[0].type === 'image') {
         nodesNormalized = [

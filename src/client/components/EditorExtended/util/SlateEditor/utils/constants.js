@@ -29,12 +29,6 @@ export const HOTKEYS = {
   'mod+alt+4': 'headingFour', // Windows  'mod+opt+1': 'heading-one', // Mac
   'mod+opt+b': 'blockquote',
   'mod+alt+b': 'blockquote',
-  'mod+opt+t': 'table',
+  // 'mod+opt+t': 'table',
   'mod+opt+c': CODE_BLOCK,
-
-  'mod+shift+l': 'orderedList',
-  'mod+shift+u': 'unorderedList',
-
-  'mod+shift+t': 'table',
-  'mod+shift+c': CODE_BLOCK,
 };

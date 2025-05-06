@@ -108,9 +108,18 @@ export const deserializeHtmlToSlate = el => {
   if (nodeName === 'PRE' && el.childNodes[0] && el.childNodes[0].nodeName === 'CODE') {
     parent = el.childNodes[0];
   }
-  let children = Array.from(parent.childNodes)
-    .map(deserializeHtmlToSlate)
-    .flat();
+  let children = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const child of Array.from(parent.childNodes)) {
+    const deserialized = deserializeHtmlToSlate(child);
+
+    if (Array.isArray(deserialized)) {
+      children.push(...deserialized);
+    } else if (deserialized != null) {
+      children.push(deserialized);
+    }
+  }
 
   if (children.length === 0) {
     children = [{ text: '' }];

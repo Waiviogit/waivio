@@ -60,7 +60,6 @@ import {
   getParentTable,
   isSingleEmptyCellTable,
   getParentList,
-  insertTable,
 } from './util/SlateEditor/utils/table';
 
 import './index.less';
@@ -239,9 +238,9 @@ const EditorSlate = props => {
         event.preventDefault();
         const format = HOTKEYS[hotkey];
 
-        if (format === 'table') {
-          insertTable(editor);
-        }
+        // if (format === 'table') {
+        //   insertTable(editor);
+        // }
 
         if (['strong', 'italic', 'emphasis', 'underline'].includes(format)) {
           toggleMark(editor, format);
@@ -267,7 +266,7 @@ const EditorSlate = props => {
         ['image', 'video'].includes(nextNode.type) &&
         !['image', 'video'].includes(selectedElement.type)
       ) {
-        if (Range.isCollapsed(editor.selection)) {
+        if (!offset && Range.isCollapsed(editor.selection)) {
           event.preventDefault();
 
           Transforms.select(editor, Editor.range(editor, nextPath));
