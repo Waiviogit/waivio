@@ -214,6 +214,44 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
+    case accountHistoryConstants.MARKET_BUY: {
+      const from = get(options, 'from', '');
+
+      return {
+        marketBuy: (
+          <FormattedMessage
+            id="bought_from"
+            defaultMessage="Bought from {from}"
+            values={{
+              from: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+    case accountHistoryConstants.MARKET_SELL: {
+      const to = get(options, 'to', '');
+
+      return {
+        marketSell: (
+          <FormattedMessage
+            id="sold_to"
+            defaultMessage="Sold to {to}"
+            values={{
+              to: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
 
     case accountHistoryConstants.CURATION_REWARDS: {
       const authorperm = get(options, 'authorperm', '');
