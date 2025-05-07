@@ -318,6 +318,15 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
+    case accountHistoryConstants.SWAP_TOKENS: {
+      return {
+        swap: (
+          <div>
+            <FormattedMessage id="swap" defaultMessage="Swap" />{' '}
+          </div>
+        ),
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const openPays = get(options, 'openPays', null);
       const currentPays = get(options, 'currentPays', null);

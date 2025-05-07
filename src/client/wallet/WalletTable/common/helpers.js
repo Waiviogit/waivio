@@ -212,6 +212,20 @@ const compareTransferBody = (
         }).commentRewards,
       };
     }
+    case accountHistoryConstants.SWAP_TOKENS: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).swap,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).swap,
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const currentPaysAmount = getTransactionTableCurrency(
         transaction.current_pays,

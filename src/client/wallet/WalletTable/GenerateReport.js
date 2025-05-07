@@ -201,7 +201,6 @@ const GenerateReport = ({ intl, form }) => {
           okText={'Submit'}
         >
           <TableFilter
-            isGenerate={isGenerate}
             inModal
             intl={intl}
             filterUsersList={filterAccounts}

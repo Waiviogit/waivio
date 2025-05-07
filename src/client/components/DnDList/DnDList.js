@@ -115,32 +115,39 @@ const DnDList = ({
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <div className="dnd-list" ref={provided.innerRef}>
-            {items.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(draggableProvided, draggableSnapshot) => (
-                  <div
-                    className="dnd-list__item"
-                    ref={draggableProvided.innerRef}
-                    {...draggableProvided.draggableProps}
-                    {...draggableProvided.dragHandleProps}
-                    style={getItemStyle(
-                      snapshot.isDraggingOver,
-                      draggableSnapshot.isDragging,
-                      draggableProvided.draggableProps.style,
-                      accentColor,
-                    )}
-                  >
-                    <DnDListItem
-                      exclude={exclude}
-                      onCheckboxClick={onCheckboxClick}
-                      expandedIds={expand}
-                      setOpen={setOpen}
-                      item={item}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
+            {items
+              .sort((a, b) => {
+                const indexA = sortCustom?.include?.indexOf(a.id);
+                const indexB = sortCustom?.include?.indexOf(b.id);
+
+                return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+              })
+              .map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(draggableProvided, draggableSnapshot) => (
+                    <div
+                      className="dnd-list__item"
+                      ref={draggableProvided.innerRef}
+                      {...draggableProvided.draggableProps}
+                      {...draggableProvided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDraggingOver,
+                        draggableSnapshot.isDragging,
+                        draggableProvided.draggableProps.style,
+                        accentColor,
+                      )}
+                    >
+                      <DnDListItem
+                        exclude={exclude}
+                        onCheckboxClick={onCheckboxClick}
+                        expandedIds={expand}
+                        setOpen={setOpen}
+                        item={item}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
             {provided.placeholder}
           </div>
         )}

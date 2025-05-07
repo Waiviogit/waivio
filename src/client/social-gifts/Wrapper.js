@@ -68,6 +68,7 @@ import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
+import { enrichMenuItems } from './SocialProduct/SocialProduct';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -154,10 +155,13 @@ const SocialWrapper = props => {
 
                 return findObj ? [...acc, findObj] : acc;
               }, []);
-              const buttonList = [
+              const fullList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-              ].map(i => ({
+              ];
+              const newList = await enrichMenuItems(fullList, language, true);
+
+              const buttonList = newList.map(i => ({
                 link: createLink(i),
                 name: i?.body?.title || getObjectName(i),
                 type: i.body.linkToObject ? 'nav' : 'blank',
@@ -431,10 +435,12 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
 
                 return findObj ? [...acc, findObj] : acc;
               }, []);
-              const buttonList = [
+              const fullList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-              ].map(i => ({
+              ];
+              const newList = await enrichMenuItems(fullList, activeLocale, true);
+              const buttonList = newList.map(i => ({
                 link: createLink(i),
                 name: i?.body?.title || getObjectName(i),
                 type: i.body.linkToObject ? 'nav' : 'blank',

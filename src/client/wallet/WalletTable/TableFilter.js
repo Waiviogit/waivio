@@ -10,6 +10,7 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { getCreationAccDate } from '../../../store/advancedReports/advancedSelectors';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
+import useQuery from '../../../hooks/useQuery';
 
 const TableFilter = ({
   intl,
@@ -24,7 +25,6 @@ const TableFilter = ({
   startDate,
   endDate,
   inModal,
-  isGenerate,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const disabledTillDate = (current, from) => current > moment().endOf('day') || current < from;
@@ -33,6 +33,10 @@ const TableFilter = ({
   const onOpenChange = () => setIsOpen(!isOpen);
   const invalidFields = endDate < startDate;
   const { from } = form.getFieldsValue();
+  const query = useQuery();
+  const tab = query?.get('tab');
+  const isGenerate = tab === 'generate';
+  const isStandard = tab === 'standard';
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -77,16 +81,31 @@ const TableFilter = ({
         })}
       </div>
       {isGenerate && (
-        <Form.Item>
-          <div className="WalletTable__exclude flex flex-row">
-            {getFieldDecorator('mergeRewards', {
-              valuePropName: 'checked',
-              initialValue: true,
-            })(<Checkbox />)}
+        <>
+          <Form.Item>
+            <div className="WalletTable__exclude flex flex-row">
+              {getFieldDecorator('mergeRewards', {
+                valuePropName: 'checked',
+                initialValue: true,
+              })(<Checkbox />)}
 
-            <div className={'WalletTable__checkbox-text'}> Merge author and curations rewards</div>
-          </div>
-        </Form.Item>
+              <div className={'WalletTable__checkbox-text'}>
+                {' '}
+                Merge author and curations rewards
+              </div>
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <div className="WalletTable__exclude--last flex flex-row">
+              {getFieldDecorator('addSwaps', {
+                valuePropName: 'checked',
+                initialValue: true,
+              })(<Checkbox />)}
+
+              <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+            </div>
+          </Form.Item>
+        </>
       )}
 
       <div className="WalletTable__date-wrap">
@@ -210,17 +229,18 @@ const TableFilter = ({
         )}
       </Form.Item>
 
-      <Form.Item>
-        <div className="WalletTable__exclude flex flex-row">
-          {getFieldDecorator('addSwaps', {
-            valuePropName: 'checked',
-            initialValue: true,
-          })(<Checkbox />)}
+      {isStandard && (
+        <Form.Item>
+          <div className="WalletTable__exclude flex flex-row">
+            {getFieldDecorator('addSwaps', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(<Checkbox />)}
 
-          <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
-        </div>
-      </Form.Item>
-
+            <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+          </div>
+        </Form.Item>
+      )}
       {!inModal && (
         <Button
           className="WalletTable__submit"
@@ -249,7 +269,6 @@ TableFilter.propTypes = {
   }).isRequired,
   isLoadingTableTransactions: PropTypes.bool.isRequired,
   inModal: PropTypes.bool,
-  isGenerate: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   filterUsersList: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleOnClick: PropTypes.func,
