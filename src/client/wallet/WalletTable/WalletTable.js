@@ -155,6 +155,7 @@ class WalletTable extends React.Component {
         filterAccounts,
         currency: this.props.currencyInfo.type,
         type: tableType,
+        addSwaps: true,
       })
       .then(({ value }) => {
         this.setState({
