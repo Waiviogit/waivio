@@ -6,7 +6,11 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
-import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
+import {
+  getObjectInfo,
+  getObjectsRewards,
+  getReferenceObjectsList,
+} from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -83,6 +87,34 @@ import InstacartWidget from '../../widgets/InstacartWidget';
 
 const limit = 30;
 
+export const enrichMenuItems = (menuItems = [], locale, isNav = false) =>
+  menuItems?.reduce(async (acc, curr) => {
+    const res = await acc;
+    const itemBody = isNav ? curr.body : JSON.parse(curr.body);
+
+    if (itemBody.linkToObject && !has(itemBody, 'title')) {
+      const newObj = await getObjectInfo([itemBody.linkToObject], locale);
+
+      return [
+        ...res,
+        {
+          ...curr,
+          body: isNav
+            ? {
+                ...itemBody,
+                title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+              }
+            : JSON.stringify({
+                ...itemBody,
+                title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+              }),
+        },
+      ];
+    }
+
+    return [...res, curr];
+  }, []);
+
 const SocialProduct = ({
   userName,
   locale,
@@ -119,6 +151,7 @@ const SocialProduct = ({
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
+  const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
@@ -155,9 +188,10 @@ const SocialProduct = ({
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
+  // const menuItems = get(wobject, 'menuItem', []);
   const customSort = get(wobject, 'sortCustom.include', []);
-  const menuItems = get(wobject, 'menuItem', []);
-
+  const customVisibility = get(wobject, 'sortCustom.expand', []);
+  const sortExclude = get(wobject, 'sortCustom.exclude', []);
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -173,19 +207,24 @@ const SocialProduct = ({
     !isEmpty(departments);
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = isEmpty(customSort)
-    ? menuItems
-    : customSort.reduce((acc, curr) => {
-        const currentLink = wobject?.menuItem?.find(
-          btn =>
-            btn.body === curr ||
-            btn.author_permlink === curr ||
-            btn.permlink === curr ||
-            btn.id === curr,
-        );
 
-        return currentLink ? [...acc, currentLink] : acc;
-      }, []);
+  const menuItem = !has(wobject, 'sortCustom')
+    ? menuItemsArray
+    : menuItemsArray
+        .filter(
+          item =>
+            !sortExclude.includes(item.body) &&
+            !sortExclude.includes(item.author_permlink) &&
+            !sortExclude.includes(item.permlink) &&
+            !sortExclude.includes(item.id),
+        )
+        .sort((a, b) => {
+          const indexA = customSort.indexOf(a.permlink);
+          const indexB = customSort.indexOf(b.permlink);
+
+          return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+        });
+
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery =
@@ -251,6 +290,8 @@ const SocialProduct = ({
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      if (!isEmpty(wobject.menuItem))
+        enrichMenuItems(wobject.menuItem, locale).then(r => setMenuItemsArray(r));
       isRecipe &&
         getObjectPosts({
           object: wobject.author_permlink,
@@ -553,7 +594,16 @@ const SocialProduct = ({
                 <br />
               </div>
             )}
-            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
+            {!isEmpty(menuItem) && (
+              <SocialMenuItems
+                customSort={customSort}
+                sortExclude={sortExclude}
+                menuItem={menuItem}
+                customVisibility={customVisibility}
+                isProduct
+                wobject={wobject}
+              />
+            )}
             {showProductDetails && (
               <ProductDetails
                 website={website}

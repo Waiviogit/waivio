@@ -1,25 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Checkbox } from 'antd';
-import OBJECT_TYPE from '../../object/const/objectTypes';
+import { Checkbox, Icon, Tooltip } from 'antd';
 import './DnDListItem.less';
 
-const DnDListItem = ({ item, toggleItemInSortingList }) => (
-  <div className="dnd-list-item">
-    {item.wobjType === OBJECT_TYPE.LIST && (
+const DnDListItem = ({ item, exclude, setOpen, expandedIds, onCheckboxClick }) => {
+  const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(item.type);
+  const isOpen = expandedIds?.includes(item.id);
+
+  return (
+    <div className="dnd-list-item">
       <Checkbox
+        onClick={() => onCheckboxClick(item.id)}
         defaultChecked
         id={item.id}
-        onChange={toggleItemInSortingList}
-        checked={item.checkedItemInList}
+        checked={!exclude?.includes(item.id)}
       />
-    )}
-    <div className="dnd-list-content">
-      <div className="dnd-list-content__name">{item.name}</div>
-      <div className="dnd-list-content__type">{item.type}</div>
+
+      <div className="dnd-list-content">
+        <div className="dnd-list-content__name">{item.name}</div>
+        {isNestedObjType && (
+          <div className="dnd-list-content__type" onClick={e => setOpen(e, item.id)}>
+            <Tooltip
+              title={isOpen ? 'Collapse on social sites' : 'Expand on social sites'}
+              overlayClassName="HeartButtonContainer"
+              overlayStyle={{ top: '10px' }}
+              placement={'topLeft'}
+            >
+              <Icon
+                style={{ cursor: 'pointer' }}
+                size={19}
+                type={isOpen ? 'eye' : 'eye-invisible'}
+              />
+            </Tooltip>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 DnDListItem.propTypes = {
   item: PropTypes.shape({
@@ -29,7 +47,10 @@ DnDListItem.propTypes = {
     id: PropTypes.string.isRequired,
     checkedItemInList: PropTypes.bool.isRequired,
   }),
-  toggleItemInSortingList: PropTypes.shape().isRequired,
+  exclude: PropTypes.arrayOf(),
+  expandedIds: PropTypes.arrayOf(),
+  onCheckboxClick: PropTypes.func,
+  setOpen: PropTypes.func,
 };
 
 DnDListItem.defaultProps = {

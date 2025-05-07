@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
@@ -18,7 +19,7 @@ import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams, withRouter } from 'react-router';
-import { isKeyHotkey } from 'is-hotkey';
+import { isKeyHotkey, isHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
@@ -45,6 +46,7 @@ import {
   removeAllInlineFormats,
   resetEditorState,
   toggleBlock,
+  toggleMark,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import {
@@ -54,14 +56,14 @@ import {
   setShowEditorSearch,
   setCursorCoordinates,
 } from '../../../store/slateEditorStore/editorActions';
-import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
-
-import './index.less';
+import { HEADING_BLOCKS, HOTKEYS } from './util/SlateEditor/utils/constants';
 import {
   getParentTable,
   isSingleEmptyCellTable,
   getParentList,
 } from './util/SlateEditor/utils/table';
+
+import './index.less';
 
 const useEditor = props => {
   const editor = useMemo(
@@ -231,6 +233,25 @@ const EditorSlate = props => {
   };
 
   const handleKeyCommand = event => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const hotkey in HOTKEYS) {
+      if (isHotkey(hotkey, event)) {
+        event.preventDefault();
+        const format = HOTKEYS[hotkey];
+
+        // if (format === 'table') {
+        //   insertTable(editor);
+        // }
+
+        if (['strong', 'italic', 'emphasis', 'underline'].includes(format)) {
+          toggleMark(editor, format);
+        } else {
+          toggleBlock(editor, format);
+        }
+
+        return true;
+      }
+    }
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { path, offset } = editor.selection.anchor;
     const selectedElementPath = path.slice(0, -1);
@@ -238,8 +259,26 @@ const EditorSlate = props => {
     const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
     const nextPath = Path.next(selectedElementPath);
     const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+    const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+    const endPoint = Editor.end(editor, selectedElementPath);
 
-    if (event.key === 'Backspace' || event.key === 'Delete') {
+    if (event.key === 'Delete') {
+      if (
+        ElementSlate.isElement(nextNode) &&
+        ['image', 'video'].includes(nextNode.type) &&
+        !['image', 'video'].includes(selectedElement.type)
+      ) {
+        if (endPoint.offset === offset && Range.isCollapsed(editor.selection)) {
+          event.preventDefault();
+
+          Transforms.select(editor, Editor.range(editor, nextPath));
+
+          return true;
+        }
+      }
+    }
+
+    if (event.key === 'Backspace') {
       const key = path[0] ? path[0] - 1 : path[0];
       const node = editor.children[key];
 
@@ -260,7 +299,7 @@ const EditorSlate = props => {
       if (['unorderedList', 'orderedList'].includes(node.type)) {
         const [, at] = getParentList(path, editor);
 
-        if (node.children.length === 1 && node.children[0].children.length === 1) {
+        if (!isEmpty(at) && node.children.length === 1 && node.children[0].children.length === 1) {
           Transforms.removeNodes(editor, {
             at,
             mode: 'highest',
@@ -284,8 +323,6 @@ const EditorSlate = props => {
           return true;
         }
       }
-
-      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
       if (
         selectedElement.type === 'paragraph' &&
@@ -370,13 +407,6 @@ const EditorSlate = props => {
       if (isKeyHotkey('left', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset', reverse: true });
-
-        if (selectedElement.type === 'image') {
-          Transforms.select(editor, Editor.before(editor, editor.selection.anchor));
-
-          // Focus the editor
-          ReactEditor.focus(editor);
-        }
 
         return true;
       }

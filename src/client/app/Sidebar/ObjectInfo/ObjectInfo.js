@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy, isEqual } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
@@ -175,6 +175,7 @@ class ObjectInfo extends React.Component {
       menuItem,
       mapObjectsList,
       mapObjectTags,
+      sortCustom,
     } = this.props.wobject;
 
     if (
@@ -185,6 +186,7 @@ class ObjectInfo extends React.Component {
       brand !== prevProps.wobject.brand ||
       merchant !== prevProps.wobject.merchant ||
       menuItem !== prevProps.wobject.menuItem ||
+      !isEqual(sortCustom, prevProps.wobject.sortCustom) ||
       mapObjectsList !== prevProps.wobject.mapObjectsList ||
       mapObjectTags !== prevProps.wobject.mapObjectTags
     ) {
@@ -417,6 +419,7 @@ class ObjectInfo extends React.Component {
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
+    const customSortExclude = get(wobject, 'sortCustom.exclude', []);
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
@@ -442,7 +445,9 @@ class ObjectInfo extends React.Component {
 
     switch (item.id) {
       case objectFields.menuItem:
-        menuItem = <MenuItemButton item={item} />;
+        menuItem = (
+          <MenuItemButton item={item} show={!customSortExclude?.includes(item.permlink)} />
+        );
         break;
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
@@ -547,7 +552,8 @@ class ObjectInfo extends React.Component {
     const groupLastActivity = get(wobject, 'groupLastActivity', []);
     const groupExpertise = parseWobjectField(wobject, 'groupExpertise');
     const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
-    const customSort = get(wobject, 'sortCustom.include', []);
+    const customSortInclude = get(wobject, 'sortCustom.include', []);
+    const customSortExclude = get(wobject, 'sortCustom.exclude', []);
     const promotion = get(wobject, 'promotion', []);
     const companyIdBody = wobject.companyId
       ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
@@ -838,9 +844,9 @@ class ObjectInfo extends React.Component {
         ...newsFilters,
       ];
 
-      const sortButtons = isEmpty(customSort)
+      const sortButtons = isEmpty(customSortInclude)
         ? buttonArray
-        : customSort?.reduce((acc, curr) => {
+        : customSortInclude?.reduce((acc, curr) => {
             const currentLink = buttonArray?.find(
               btn =>
                 btn.body === curr ||
@@ -853,7 +859,7 @@ class ObjectInfo extends React.Component {
           }, []);
       const allMenuItems = uniq([...sortButtons, ...buttonArray]);
 
-      if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
+      if (!isEditMode && !isEmpty(customSortInclude) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         return allMenuItems.map(item =>
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
@@ -880,7 +886,9 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={allMenuItems} />,
+                !isEmpty(menuItem) && (
+                  <MenuItemButtons menuItem={allMenuItems} customSortExclude={customSortExclude} />
+                ),
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>

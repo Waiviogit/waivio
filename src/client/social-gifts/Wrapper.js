@@ -16,7 +16,10 @@ import {
 } from '../../store/authStore/authActions';
 import { getDraftsList } from '../../store/draftsStore/draftsActions';
 import { getObjectPosts, setFirstLoading } from '../../store/feedStore/feedActions';
-import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
+import {
+  getObject as getObjectAction,
+  setBaseObject,
+} from '../../store/wObjectStore/wobjectsActions';
 import {
   getUserDepartments,
   getUserShopList,
@@ -65,6 +68,7 @@ import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
+import { enrichMenuItems } from './SocialProduct/SocialProduct';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -98,6 +102,7 @@ const SocialWrapper = props => {
       if (configuration.shopSettings?.type === 'object') {
         getObject(configuration.shopSettings?.value, props.username, props.locale).then(
           async wobject => {
+            dispatch(setBaseObject(wobject));
             const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
               const body = parseJSON(item.body);
 
@@ -150,10 +155,13 @@ const SocialWrapper = props => {
 
                 return findObj ? [...acc, findObj] : acc;
               }, []);
-              const buttonList = [
+              const fullList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-              ].map(i => ({
+              ];
+              const newList = await enrichMenuItems(fullList, language, true);
+
+              const buttonList = newList.map(i => ({
                 link: createLink(i),
                 name: i?.body?.title || getObjectName(i),
                 type: i.body.linkToObject ? 'nav' : 'blank',
@@ -343,6 +351,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
         if (configuration.shopSettings?.type === 'object') {
           return getObject(configuration.shopSettings?.value, username, activeLocale).then(
             async wobject => {
+              store.dispatch(setBaseObject(wobject));
               const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
                 const body = parseJSON(item.body);
 
@@ -426,10 +435,12 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
 
                 return findObj ? [...acc, findObj] : acc;
               }, []);
-              const buttonList = [
+              const fullList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-              ].map(i => ({
+              ];
+              const newList = await enrichMenuItems(fullList, activeLocale, true);
+              const buttonList = newList.map(i => ({
                 link: createLink(i),
                 name: i?.body?.title || getObjectName(i),
                 type: i.body.linkToObject ? 'nav' : 'blank',

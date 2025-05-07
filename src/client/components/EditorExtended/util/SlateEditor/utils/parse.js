@@ -31,6 +31,90 @@ export const defaultNodeTypes = {
   object: 'object',
 };
 
+// deserializeInlineMarks.js
+
+function deserializeInlineMarks(node, marks = {}) {
+  if (!node) return [];
+
+  // Текст
+  if (node.type === 'text') {
+    return [{ text: node.value || '', ...marks }];
+  }
+
+  // Жирный
+  if (node.type === 'strong') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, strong: true }),
+    );
+  }
+
+  // Курсив
+  if (node.type === 'em') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, italic: true }),
+    );
+  }
+
+  // Зачёркнутый
+  if (node.type === 'delete') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, strikethrough: true }),
+    );
+  }
+
+  // Подчёркнутый
+  if (node.type === 'u') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, underline: true }),
+    );
+  }
+
+  // Код
+  if (node.type === 'inlineCode') {
+    return node.children.flatMap(child => deserializeInlineMarks(child, { ...marks, code: true }));
+  }
+
+  // Надстрочный текст
+  if (node.type === 'sup') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, superscript: true }),
+    );
+  }
+
+  // Подстрочный текст
+  if (node.type === 'sub') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, subscript: true }),
+    );
+  }
+
+  // Подсветка
+  if (node.type === 'mark') {
+    return node.children.flatMap(child =>
+      deserializeInlineMarks(child, { ...marks, highlight: true }),
+    );
+  }
+
+  // Ссылки
+  if (node.type === 'link' && node.url) {
+    return [
+      {
+        type: 'link',
+        url: node.url,
+        children: node.children.flatMap(child => deserializeInlineMarks(child, marks)),
+      },
+    ];
+  }
+
+  // На всякий случай — просто текст, если нет type
+  if (!node.type && node.value) {
+    return [{ text: node.value, ...marks }];
+  }
+
+  // Пропускаем всё остальное
+  return [];
+}
+
 const emptyParagraph = {
   type: 'paragraph',
   children: [{ text: '' }],
@@ -140,48 +224,9 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           type: node.ordered ? 'orderedList' : 'unorderedList',
           children: next(node.children),
         }),
-        paragraph: (node, next) => {
-          const children = [];
-
-          for (let i = 0; i < node.children.length; i++) {
-            if (node.children[i].type === 'html' && node.children[i].value === '<u>') {
-              let text = '';
-              let withClose = false;
-              let j = i + 1;
-              const position = { start: node.children[i].position.start, end: null };
-
-              for (; j < node.children.length; j++) {
-                if (node.children[j].type === 'html' && node.children[j].value === '</u>') {
-                  withClose = true;
-                  position.end = node.children[j].position.end;
-                  break;
-                }
-                text += node.children[j].value;
-              }
-              if (withClose)
-                children.push({ underline: true, value: text, type: 'underline', position });
-              i = j + 1;
-            }
-            if (node.children[i]) children.push(node.children[i]);
-          }
-
-          return {
-            type: 'paragraph',
-            children: ['link', 'object'].includes(children[children?.length - 1]?.type)
-              ? next([
-                  ...children,
-                  {
-                    type: 'text',
-                    value: ' ',
-                  },
-                ])
-              : next(children),
-          };
-        },
-        underline: (node, next) => ({
-          text: node.value,
-          ...(node.underline && { underline: true }),
-          ...(node.children && { children: next(node.children) }),
+        listItem: (node, next) => ({
+          type: 'listItem',
+          children: next(node.children),
         }),
         tableCell: node => {
           const children = node.children.reduce((acc, child, i) => {
@@ -251,6 +296,20 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               ];
             }
 
+            if (
+              ['strong', 'em', 'delete', 'inlineCode', 'u', 'mark', 'sup', 'sub'].includes(
+                child.type,
+              )
+            ) {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: deserializeInlineMarks(child),
+                },
+              ];
+            }
+
             return [...acc, child];
           }, []);
 
@@ -259,6 +318,53 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             children: isEmpty(children) ? [emptyParagraph] : children,
           };
         },
+        paragraph: (node, next) => {
+          const children = [];
+
+          for (let i = 0; i < node.children.length; i++) {
+            if (node.children[i].type === 'html' && node.children[i].value === '<u>') {
+              let text = '';
+              let withClose = false;
+              let j = i + 1;
+              const position = { start: node.children[i].position.start, end: null };
+
+              for (; j < node.children.length; j++) {
+                if (node.children[j].type === 'html' && node.children[j].value === '</u>') {
+                  withClose = true;
+                  position.end = node.children[j].position.end;
+                  break;
+                }
+                text += node.children[j].value;
+              }
+              if (withClose)
+                children.push({ underline: true, value: text, type: 'underline', position });
+              i = j + 1;
+            }
+            if (node.children[i].type === 'html' && node.children[i].value === '</hr>') {
+              children.push({ children: [{ text: '' }], type: 'thematicBreak' });
+              i++;
+            }
+            if (node.children[i]) children.push(node.children[i]);
+          }
+
+          return {
+            type: 'paragraph',
+            children: ['link', 'object'].includes(children[children?.length - 1]?.type)
+              ? next([
+                  ...children,
+                  {
+                    type: 'text',
+                    value: ' ',
+                  },
+                ])
+              : next(children),
+          };
+        },
+        underline: (node, next) => ({
+          text: node.value,
+          ...(node.underline && { underline: true }),
+          ...(node.children && { children: next(node.children) }),
+        }),
       },
     });
   const _body = body
@@ -273,8 +379,16 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
 
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i.replaceAll('<p>&nbsp;</p>', '<p />')).result;
+    const lastNode = blocks[blocks.length - 1];
+    const hasVideo = lastNode
+      ? lastNode?.children?.every(
+          child => child.type === 'video' || (child.text !== undefined && child.text.trim() === ''),
+        )
+      : false;
 
-    if (isThread) {
+    if (hasVideo) {
+      postParsed = [...postParsed, ...blocks];
+    } else if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];
     } else if (isNewReview) {
       postParsed = [

@@ -5,7 +5,7 @@ import defaultToolbarGroups from '../toolbar/toolbarGroups';
 
 const inlineButtons = defaultToolbarGroups.filter(i => ['inline', 'link'].includes(i.type));
 
-const alignment = ['alignLeft', 'alignRight', 'alignCenter'];
+// const alignment = ['alignLeft', 'alignRight', 'alignCenter'];
 
 export const list_types = ['orderedList', 'unorderedList'];
 
@@ -23,8 +23,8 @@ export const fontFamilyMap = {
 export const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format);
   const isList = list_types.includes(format);
-  const isIndent = alignment.includes(format);
-  const isAligned = alignment.some(alignmentType => isBlockActive(editor, alignmentType));
+  // const isIndent = alignment.includes(format);
+  // const isAligned = alignment.some(alignmentType => isBlockActive(editor, alignmentType));
   const isCode = format === CODE_BLOCK;
 
   if (isCode && !isActive) {
@@ -36,34 +36,27 @@ export const toggleBlock = (editor, format) => {
     return;
   }
 
-  if (isAligned && isIndent) {
-    Transforms.unwrapNodes(editor, {
-      match: n => alignment.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
-      split: true,
-    });
-  }
+  // if (isAligned && isIndent) {
+  //   Transforms.unwrapNodes(editor, {
+  //     match: n => alignment.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+  //     split: true,
+  //   });
+  // }
 
-  if (isIndent) {
-    Transforms.wrapNodes(editor, {
-      type: format,
-      children: [],
-    });
+  // if (isIndent) {
+  //   Transforms.wrapNodes(editor, {
+  //     type: format,
+  //     children: [],
+  //   });
+  //
+  //   return;
+  // }
 
-    return;
-  }
-
-  if (isIndent) {
-    Transforms.wrapNodes(editor, {
-      type: format,
-      children: [],
-    });
-
-    return;
-  }
   Transforms.unwrapNodes(editor, {
     match: n => list_types.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
     split: true,
   });
+
   let type = '';
 
   if (isActive) type = 'paragraph';
@@ -73,6 +66,7 @@ export const toggleBlock = (editor, format) => {
   Transforms.setNodes(editor, {
     type,
   });
+
   if (isList && !isActive) {
     Transforms.wrapNodes(editor, {
       type: format,

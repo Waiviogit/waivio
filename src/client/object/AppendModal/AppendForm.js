@@ -161,6 +161,7 @@ import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
 import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
+import ListDnD from '../../components/DnDList/ListSortingDnD/ListDnD';
 
 @connect(
   state => ({
@@ -307,6 +308,7 @@ class AppendForm extends Component {
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
+
         checkedItemInList: !(
           !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
         ),
@@ -890,6 +892,13 @@ class AppendForm extends Component {
             this.state.selectedCategory.body
           } category`;
         }
+        case objectFields.sorting:
+          const val = getFieldValue(objectFields.sorting);
+
+          const expandInfo = isEmpty(val?.expand) ? '' : `expand: ${val.expand.join(', ')}`;
+          const includeInfo = isEmpty(val?.include) ? '' : `include: ${val.include.join(', ')}`;
+
+          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}`;
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           let rulesAllow = '';
@@ -3682,6 +3691,8 @@ class AppendForm extends Component {
         const buttons = parseButtonsField(wObject);
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
+        // const menuItem = get(wObject, 'menuItem', []);
+        const sortCustom = get(wObject, 'sortCustom', []);
         const blogs = getBlogItems(wObject);
         const forms = getFormItems(wObject);
         const wobjType = getObjectType(wObject);
@@ -3721,7 +3732,8 @@ class AppendForm extends Component {
             listItems.push({
               id: item.permlink,
               name: JSON.parse(item.body).title,
-              type: '',
+              type: JSON.parse(item.body).objectType,
+              expand: sortCustom?.expand?.includes(item.permlink) || false,
             });
           });
         }
@@ -3761,24 +3773,44 @@ class AppendForm extends Component {
             });
           });
         }
+        const isList = wobjType === OBJECT_TYPE.LIST;
 
         return (
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
                 initialValue: {
+                  expand: [],
                   exclude: [],
                   include: listItems.map(item => item.id),
                 },
               })(
-                <SortingList
-                  listItems={listItems}
-                  accentColor={PRIMARY_COLOR}
-                  onChange={this.handleChangeSorting}
-                  wobjType={wobjType}
-                />,
+                isList ? (
+                  <ListDnD
+                    listItems={listItems}
+                    accentColor={PRIMARY_COLOR}
+                    onChange={this.handleChangeSorting}
+                    wobjType={wobjType}
+                  />
+                ) : (
+                  <SortingList
+                    sortCustom={sortCustom}
+                    listItems={listItems}
+                    accentColor={PRIMARY_COLOR}
+                    onChange={this.handleChangeSorting}
+                    wobjType={wobjType}
+                  />
+                ),
               )}
             </Form.Item>
+            {!isList && (
+              <>
+                <p className={'mt2'}>
+                  Menu items can be collapsed/expanded (eye button), sorted, or hidden (checkbox).
+                </p>
+                <p> Collapse/expand is only applicable to social sites.</p>
+              </>
+            )}
           </React.Fragment>
         );
       }

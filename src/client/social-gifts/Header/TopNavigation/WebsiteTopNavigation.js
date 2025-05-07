@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { has, isEmpty, take, takeRight } from 'lodash';
+import { get, has, isEmpty, take, takeRight } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -30,7 +30,7 @@ import {
   hasDelegation,
   haveAccess,
 } from '../../../../common/helpers/wObjectHelper';
-import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
+import { getBaseObject, getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 
 export const userMenuTabsList = ['Blog', 'Map', 'Shop', 'Recipes'];
 const userNav = (user, intl) => [
@@ -66,6 +66,25 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
   const currObj = useSelector(getObject);
+  const baseObj = useSelector(getBaseObject);
+  const exclude = get(baseObj, 'sortCustom.exclude', []);
+  const menuItem = !has(baseObj, 'sortCustom')
+    ? listItem
+    : listItem.filter(
+        item =>
+          !exclude.some(curr => {
+            const currentLink = baseObj?.menuItem?.find(
+              btn =>
+                btn.body === curr ||
+                btn.author_permlink === curr ||
+                btn.permlink === curr ||
+                btn.id === curr,
+            );
+
+            return currentLink?.groupField?.includes(item.permlink);
+          }),
+      );
+
   const username = useSelector(getAuthenticatedUserName);
   const isAdministrator = useSelector(getUserAdministrator);
   const dispatch = useDispatch();
@@ -83,7 +102,8 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
       return orderA - orderB;
     });
   const isUserShop = shopSettings?.type === 'user';
-  const linkList = isUserShop ? filteredUserTab : listItem;
+
+  const linkList = isUserShop ? filteredUserTab : menuItem;
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const accessExtend =

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { isEqual } from 'lodash';
-import OBJECT_TYPE from '../../object/const/objectTypes';
+import OBJECT_TYPE, { featuredObjectTypes } from '../../object/const/objectTypes';
 import DnDListItem from './DnDListItem';
 import './DnDList.less';
 
@@ -21,123 +21,160 @@ export const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-class DnDList extends Component {
-  static propTypes = {
-    listItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string,
-        checkedItemInList: PropTypes.bool,
-        name: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        wobjType: PropTypes.string,
-      }),
-    ).isRequired,
-    accentColor: PropTypes.string,
-    onChange: PropTypes.func,
-    wobjType: PropTypes.string,
-    screenSize: PropTypes.string,
-    customSort: PropTypes.shape({
-      include: PropTypes.arrayOf(PropTypes.string),
-      exclude: PropTypes.arrayOf(PropTypes.string),
-    }),
-  };
-  static defaultProps = {
-    accentColor: 'lightgreen',
-    onChange: () => {},
-    wobjType: '',
-    screenSize: '',
-  };
+const DnDList = ({
+  listItems,
+  accentColor = 'lightgreen',
+  onChange = () => {},
+  wobjType = '',
+  sortCustom,
+}) => {
+  const [items, setItems] = useState(listItems);
+  const [expand, setExpand] = useState([]);
+  const [include, setInclude] = useState([]);
+  const [exclude, setExclude] = useState([]);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: props.listItems,
-    };
-    this.onDragEnd = this.onDragEnd.bind(this);
-  }
+  const filterItems = useCallback(i => i.filter(item => item.checkedItemInList), []);
 
-  componentDidUpdate(prevProps) {
-    const { listItems } = this.props;
+  useEffect(() => {
+    const productExpand = !isEmpty(sortCustom?.expand)
+      ? sortCustom.expand
+      : listItems.map(item => item.id);
 
-    if (!isEqual(prevProps.listItems, listItems)) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        items: listItems,
-      });
+    setItems(listItems);
+    setExpand(featuredObjectTypes.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
+    setInclude(isEmpty(sortCustom) ? listItems.map(item => item.id) : sortCustom.include);
+    setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
+  }, [listItems.length]);
+
+  const onCheckboxClick = id => {
+    let updatedInclude;
+    let updatedExclude;
+
+    if (include.includes(id)) {
+      updatedInclude = include.filter(itemId => itemId !== id);
+      updatedExclude = [...exclude, id];
+    } else {
+      updatedExclude = exclude.filter(itemId => itemId !== id);
+      updatedInclude = [...include, id];
     }
-  }
 
-  filterItems = items => items.filter(item => item.checkedItemInList);
+    setInclude(updatedInclude);
+    setExclude(updatedExclude);
 
-  onDragEnd(result) {
+    // Send to parent or external change handler
+    onChange({
+      include: updatedInclude,
+      exclude: updatedExclude,
+      expand,
+    });
+  };
+
+  const setOpen = (e, id) => {
+    let newExpanded;
+
+    if (expand.includes(id)) {
+      newExpanded = expand.filter(expandedId => expandedId !== id); // remove
+    } else {
+      newExpanded = [...expand, id]; // add
+    }
+
+    setExpand(newExpanded);
+
+    onChange({
+      expand: newExpanded,
+      include,
+      exclude,
+    });
+  };
+
+  const handleDragEnd = result => {
     if (!result.destination) return;
 
-    const items = reorder(this.state.items, result.source.index, result.destination.index);
-    let itemsList = items;
+    const reordered = reorder(items, result.source.index, result.destination.index);
+    let updatedList = reordered;
 
-    this.setState({ items });
+    setItems(reordered);
 
-    if (this.props.wobjType === OBJECT_TYPE.LIST) itemsList = this.filterItems(items);
+    if (wobjType === OBJECT_TYPE.LIST) {
+      updatedList = filterItems(reordered);
+    }
 
-    this.props.onChange({
-      include: itemsList.map(item => item.id),
-      exclude:
-        this.props.wobjType === OBJECT_TYPE.LIST
-          ? items.filter(i => !i.checkedItemInList).map(item => item.id)
-          : [],
-    });
-  }
+    const newInclude = updatedList.map(item => item.id);
 
-  toggleItemInSortingList = e => {
-    const { items } = this.state;
-    const itemsList = items.map(item => ({
-      ...item,
-      checkedItemInList: item.id === e.target.id ? e.target.checked : item.checkedItemInList,
-    }));
+    setInclude(newInclude);
 
-    this.setState({ items: itemsList });
-    this.props.onChange({
-      exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
-      include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+    onChange({
+      include: newInclude,
+      expand,
+      exclude,
     });
   };
 
-  render() {
-    return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <div className="dnd-list" ref={provided.innerRef}>
-              {this.state.items.map((item, index) => (
+  return (
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="droppable">
+        {(provided, snapshot) => (
+          <div className="dnd-list" ref={provided.innerRef}>
+            {items
+              .sort((a, b) => {
+                const indexA = sortCustom?.include?.indexOf(a.id);
+                const indexB = sortCustom?.include?.indexOf(b.id);
+
+                return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+              })
+              .map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(druggableProvided, druggableSnapshot) => (
+                  {(draggableProvided, draggableSnapshot) => (
                     <div
                       className="dnd-list__item"
-                      ref={druggableProvided.innerRef}
-                      {...druggableProvided.draggableProps}
-                      {...druggableProvided.dragHandleProps}
+                      ref={draggableProvided.innerRef}
+                      {...draggableProvided.draggableProps}
+                      {...draggableProvided.dragHandleProps}
                       style={getItemStyle(
                         snapshot.isDraggingOver,
-                        druggableSnapshot.isDragging,
-                        druggableProvided.draggableProps.style,
-                        this.props.accentColor,
+                        draggableSnapshot.isDragging,
+                        draggableProvided.draggableProps.style,
+                        accentColor,
                       )}
                     >
                       <DnDListItem
+                        exclude={exclude}
+                        onCheckboxClick={onCheckboxClick}
+                        expandedIds={expand}
+                        setOpen={setOpen}
                         item={item}
-                        toggleItemInSortingList={this.toggleItemInSortingList}
                       />
                     </div>
                   )}
                 </Draggable>
               ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  }
-}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};
+
+DnDList.propTypes = {
+  listItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      checkedItemInList: PropTypes.bool,
+      name: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      wobjType: PropTypes.string,
+    }),
+  ).isRequired,
+  accentColor: PropTypes.string,
+  sortCustom: PropTypes.arrayOf(),
+  onChange: PropTypes.func,
+  wobjType: PropTypes.string,
+  screenSize: PropTypes.string,
+  customSort: PropTypes.shape({
+    include: PropTypes.arrayOf(PropTypes.string),
+    exclude: PropTypes.arrayOf(PropTypes.string),
+  }),
+};
 
 export default DnDList;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, DatePicker, Form, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Select } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
@@ -10,6 +10,7 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { getCreationAccDate } from '../../../store/advancedReports/advancedSelectors';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
+import useQuery from '../../../hooks/useQuery';
 
 const TableFilter = ({
   intl,
@@ -32,6 +33,10 @@ const TableFilter = ({
   const onOpenChange = () => setIsOpen(!isOpen);
   const invalidFields = endDate < startDate;
   const { from } = form.getFieldsValue();
+  const query = useQuery();
+  const tab = query?.get('tab');
+  const isGenerate = tab === 'generate';
+  const isStandard = tab === 'standard';
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -75,6 +80,34 @@ const TableFilter = ({
             'If multiple accounts are included in the report, transactions between the specified accounts are excluded from the totals calculations for withdrawals and deposits.',
         })}
       </div>
+      {isGenerate && (
+        <>
+          <Form.Item>
+            <div className="WalletTable__exclude flex flex-row">
+              {getFieldDecorator('mergeRewards', {
+                valuePropName: 'checked',
+                initialValue: true,
+              })(<Checkbox />)}
+
+              <div className={'WalletTable__checkbox-text'}>
+                {' '}
+                Merge author and curations rewards
+              </div>
+            </div>
+          </Form.Item>
+          <Form.Item>
+            <div className="WalletTable__exclude--last flex flex-row">
+              {getFieldDecorator('addSwaps', {
+                valuePropName: 'checked',
+                initialValue: true,
+              })(<Checkbox />)}
+
+              <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+            </div>
+          </Form.Item>
+        </>
+      )}
+
       <div className="WalletTable__date-wrap">
         <Form.Item
           label={intl.formatMessage({
@@ -196,6 +229,18 @@ const TableFilter = ({
         )}
       </Form.Item>
 
+      {isStandard && (
+        <Form.Item>
+          <div className="WalletTable__exclude flex flex-row">
+            {getFieldDecorator('addSwaps', {
+              valuePropName: 'checked',
+              initialValue: true,
+            })(<Checkbox />)}
+
+            <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
+          </div>
+        </Form.Item>
+      )}
       {!inModal && (
         <Button
           className="WalletTable__submit"

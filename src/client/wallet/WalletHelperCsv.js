@@ -119,6 +119,11 @@ export const getTableDescription = (type, options) => {
         commentRewards: `Author and curator rewards`,
       };
     }
+    case accountHistoryConstants.SWAP_TOKENS: {
+      return {
+        swap: `Swap`,
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       return {
         limitOrder: 'Limit order',

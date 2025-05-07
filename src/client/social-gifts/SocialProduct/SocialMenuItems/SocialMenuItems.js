@@ -28,8 +28,21 @@ export const prepareMenuItems = menuItem => {
   return menuItemList;
 };
 
-const SocialMenuItems = ({ menuItem, isOpen = true }) => {
+const SocialMenuItems = ({
+  menuItem,
+  customVisibility,
+  customSort,
+  sortExclude,
+  isProduct = false,
+  wobject,
+}) => {
   const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
+
+  const showProduct = item =>
+    !has(wobject, 'sortCustom')
+      ? true
+      : customVisibility?.includes(item.permlink) ||
+        (!customSort?.includes(item.permlink) && !sortExclude?.includes(item.permlink));
 
   useEffect(() => {
     setMenuItems(prepareMenuItems(menuItem));
@@ -44,7 +57,11 @@ const SocialMenuItems = ({ menuItem, isOpen = true }) => {
           menuItems,
           menuItem.map(i => i.permlink),
         ).map(item => (
-          <SocialMenuItem key={item._id} item={item} isOpen={isOpen} />
+          <SocialMenuItem
+            key={item._id}
+            item={item}
+            isOpen={isProduct ? showProduct(item) : customVisibility?.includes(item.permlink)}
+          />
         ))}
       </div>
     </div>
@@ -53,7 +70,11 @@ const SocialMenuItems = ({ menuItem, isOpen = true }) => {
 
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
-  isOpen: PropTypes.bool,
+  customVisibility: PropTypes.arrayOf(),
+  sortExclude: PropTypes.arrayOf(),
+  customSort: PropTypes.arrayOf(),
+  wobject: PropTypes.shape(),
+  isProduct: PropTypes.bool,
 };
 
 export default SocialMenuItems;

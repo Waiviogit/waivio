@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { ReactSVG } from 'react-svg';
 import { withRouter } from 'react-router-dom';
-import { get, isEmpty, isNil, reduce } from 'lodash';
+import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import { Helmet } from 'react-helmet';
 import {
   getAuthenticatedUserName,
@@ -63,6 +63,7 @@ import Experts from './Experts/Experts';
 import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
 import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
+import { enrichMenuItems } from '../SocialProduct/SocialProduct';
 
 const BusinessObject = ({
   userName,
@@ -92,6 +93,7 @@ const BusinessObject = ({
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
   const [featured, setFeatured] = useState([]);
+  const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [mapObjPermlink, setMapObjPermlink] = useState('');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
@@ -101,23 +103,28 @@ const BusinessObject = ({
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
   const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i.name !== 'avatar');
+  const customVisibility = get(wobject, 'sortCustom.expand', []);
+  const sortExclude = get(wobject, 'sortCustom.exclude', []);
   const customSort = get(wobject, 'sortCustom.include', []);
-  const menuItems = get(wobject, 'menuItem', []);
   const phones = get(wobject, 'phone', []);
-  const email = get(wobject, 'email');
-  const menuItem = isEmpty(customSort)
-    ? menuItems
-    : customSort.reduce((acc, curr) => {
-        const currentLink = wobject?.menuItem?.find(
-          btn =>
-            btn.body === curr ||
-            btn.author_permlink === curr ||
-            btn.permlink === curr ||
-            btn.id === curr,
-        );
 
-        return currentLink ? [...acc, currentLink] : acc;
-      }, []);
+  const email = get(wobject, 'email');
+  const menuItem = !has(wobject, 'sortCustom')
+    ? menuItemsArray
+    : menuItemsArray
+        .filter(
+          item =>
+            !sortExclude.includes(item.body) &&
+            !sortExclude.includes(item.author_permlink) &&
+            !sortExclude.includes(item.permlink) &&
+            !sortExclude.includes(item.id),
+        )
+        .sort((a, b) => {
+          const indexA = customSort.indexOf(a.permlink);
+          const indexB = customSort.indexOf(b.permlink);
+
+          return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+        });
   const tagCategories = get(wobject, 'tagCategory', []);
   const companyIdBody = wobject.companyId
     ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
@@ -172,6 +179,8 @@ const BusinessObject = ({
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      if (!isEmpty(wobject.menuItem))
+        enrichMenuItems(wobject.menuItem, locale).then(r => setMenuItemsArray(r));
       getMapPermlinkByObject(wobject.author_permlink, locale, userName, host).then(r =>
         setMapObjPermlink(r.result),
       );
@@ -418,7 +427,13 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} isOpen={false} />}
+            {!isEmpty(menuItem) && (
+              <SocialMenuItems
+                menuItem={menuItem}
+                customVisibility={customVisibility}
+                wobject={wobject}
+              />
+            )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">

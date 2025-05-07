@@ -312,6 +312,11 @@ export function editorStateToMarkdownSlate(value) {
           children: next(node.children),
           ordered: false,
         }),
+        listItem: (node, next) => ({
+          type: 'listItem',
+          children: next([{ type: 'paragraph', children: node.children }]),
+          ordered: false,
+        }),
         paragraph: (node, next) => {
           const children = node.children.map(child => {
             if (child.text && child.underline) {

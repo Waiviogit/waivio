@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
 
-const MenuItemButton = ({ item }) => {
+const MenuItemButton = ({ item, show }) => {
   const [url, setUrl] = useState('');
   const itemBody = parseJSON(item.body);
 
@@ -103,11 +103,12 @@ const MenuItemButton = ({ item }) => {
 
   if (!itemBody) return null;
 
-  return <div className="mb2">{renderItem()}</div>;
+  return show && <div className="mb2">{renderItem()}</div>;
 };
 
 MenuItemButton.propTypes = {
   item: PropTypes.shape().isRequired,
+  show: PropTypes.bool,
 };
 
 export default MenuItemButton;
