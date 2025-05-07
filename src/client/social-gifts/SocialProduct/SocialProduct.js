@@ -87,6 +87,34 @@ import InstacartWidget from '../../widgets/InstacartWidget';
 
 const limit = 30;
 
+export const enrichMenuItems = (menuItems = [], locale, isNav = false) =>
+  menuItems?.reduce(async (acc, curr) => {
+    const res = await acc;
+    const itemBody = isNav ? curr.body : JSON.parse(curr.body);
+
+    if (itemBody.linkToObject && !has(itemBody, 'title')) {
+      const newObj = await getObjectInfo([itemBody.linkToObject], locale);
+
+      return [
+        ...res,
+        {
+          ...curr,
+          body: isNav
+            ? {
+                ...itemBody,
+                title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+              }
+            : JSON.stringify({
+                ...itemBody,
+                title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
+              }),
+        },
+      ];
+    }
+
+    return [...res, curr];
+  }, []);
+
 const SocialProduct = ({
   userName,
   locale,
@@ -164,7 +192,6 @@ const SocialProduct = ({
   const customSort = get(wobject, 'sortCustom.include', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
   const sortExclude = get(wobject, 'sortCustom.exclude', []);
-
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -259,33 +286,12 @@ const SocialProduct = ({
   const getPublisherManufacturerBrandMerchantObjects = () => {
     getProductInfoAction(wobject);
   };
-  const enrichMenuItems = (menuItems = []) =>
-    menuItems?.reduce(async (acc, curr) => {
-      const res = await acc;
-      const itemBody = JSON.parse(curr.body);
-
-      if (itemBody.linkToObject && !has(itemBody, 'title')) {
-        const newObj = await getObjectInfo([itemBody.linkToObject], locale);
-
-        return [
-          ...res,
-          {
-            ...curr,
-            body: JSON.stringify({
-              ...itemBody,
-              title: newObj.wobjects[0].name || newObj.wobjects[0].default_name,
-            }),
-          },
-        ];
-      }
-
-      return [...res, curr];
-    }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
-      enrichMenuItems(wobject.menuItem).then(r => setMenuItemsArray(r));
+      if (!isEmpty(wobject.menuItem))
+        enrichMenuItems(wobject.menuItem, locale).then(r => setMenuItemsArray(r));
       isRecipe &&
         getObjectPosts({
           object: wobject.author_permlink,

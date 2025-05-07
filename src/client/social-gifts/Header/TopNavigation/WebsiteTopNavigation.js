@@ -68,7 +68,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const currObj = useSelector(getObject);
   const baseObj = useSelector(getBaseObject);
   const exclude = get(baseObj, 'sortCustom.exclude', []);
-  const menuItem = isEmpty(exclude)
+  const menuItem = !has(baseObj, 'sortCustom')
     ? listItem
     : listItem.filter(
         item =>
