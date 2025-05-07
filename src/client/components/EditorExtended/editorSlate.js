@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
@@ -259,6 +260,7 @@ const EditorSlate = props => {
     const nextPath = Path.next(selectedElementPath);
     const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
     const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+    const endPoint = Editor.end(editor, selectedElementPath);
 
     if (event.key === 'Delete') {
       if (
@@ -266,7 +268,7 @@ const EditorSlate = props => {
         ['image', 'video'].includes(nextNode.type) &&
         !['image', 'video'].includes(selectedElement.type)
       ) {
-        if (!offset && Range.isCollapsed(editor.selection)) {
+        if (endPoint.offset === offset && Range.isCollapsed(editor.selection)) {
           event.preventDefault();
 
           Transforms.select(editor, Editor.range(editor, nextPath));
@@ -297,7 +299,7 @@ const EditorSlate = props => {
       if (['unorderedList', 'orderedList'].includes(node.type)) {
         const [, at] = getParentList(path, editor);
 
-        if (node.children.length === 1 && node.children[0].children.length === 1) {
+        if (!isEmpty(at) && node.children.length === 1 && node.children[0].children.length === 1) {
           Transforms.removeNodes(editor, {
             at,
             mode: 'highest',

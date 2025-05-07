@@ -318,7 +318,6 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             children: isEmpty(children) ? [emptyParagraph] : children,
           };
         },
-
         paragraph: (node, next) => {
           const children = [];
 
@@ -340,6 +339,10 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               if (withClose)
                 children.push({ underline: true, value: text, type: 'underline', position });
               i = j + 1;
+            }
+            if (node.children[i].type === 'html' && node.children[i].value === '</hr>') {
+              children.push({ children: [{ text: '' }], type: 'thematicBreak' });
+              i++;
             }
             if (node.children[i]) children.push(node.children[i]);
           }
