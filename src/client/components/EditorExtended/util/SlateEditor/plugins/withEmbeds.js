@@ -3,6 +3,37 @@ import { deserializeHtmlToSlate } from '../../constants';
 import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
 import { deserializeToSlate } from '../utils/parse';
 
+function wrapListItemsInBulletedList(nodes) {
+  const result = [];
+  let buffer = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const node of nodes) {
+    if (node.type === 'listItem') {
+      buffer.push(node);
+    } else {
+      if (buffer.length) {
+        result.push({
+          type: 'bulletedList',
+          children: [...buffer],
+        });
+        buffer = [];
+      }
+      result.push(node);
+    }
+  }
+
+  // В случае, если список закончился на listItem
+  if (buffer.length) {
+    result.push({
+      type: 'bulletedList',
+      children: [...buffer],
+    });
+  }
+
+  return result;
+}
+
 const withEmbeds = cb => editor => {
   const { isVoid, insertData, normalizeNode, selection } = editor;
 
@@ -76,7 +107,7 @@ const withEmbeds = cb => editor => {
       const parsed = new DOMParser().parseFromString(_html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
-      const isWrapped = selectedElement.type.includes(CODE_BLOCK);
+      const isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
 
       let nodesNormalized = nodes
         .filter(i => i.text !== '\n')
@@ -93,9 +124,9 @@ const withEmbeds = cb => editor => {
             };
           }
 
-          if (i.type === 'bulletedList') {
+          if (['orderedList', 'bulletedList'].includes(i.type)) {
             return {
-              type: 'bulletedList',
+              type: i.type,
               children: i?.children?.reduce((acc, it) => {
                 if (it.type === 'listItem') {
                   return [
@@ -104,7 +135,7 @@ const withEmbeds = cb => editor => {
                       type: 'listItem',
                       children: it.children.reduce((a, c) => {
                         if (c.type === 'paragraph') {
-                          return [...a, c.children[0]];
+                          return [...a, ...c.children];
                         }
 
                         if (!c.type && c.text === '\n') {
@@ -118,6 +149,23 @@ const withEmbeds = cb => editor => {
                 }
 
                 return acc;
+              }, []),
+            };
+          }
+
+          if (['listItem'].includes(i.type)) {
+            return {
+              type: 'listItem',
+              children: i.children.reduce((a, c) => {
+                if (c.type === 'paragraph') {
+                  return [...a, ...c.children];
+                }
+
+                if (!c.type && c.text === '\n') {
+                  return a;
+                }
+
+                return [...a, c];
               }, []),
             };
           }
@@ -147,10 +195,10 @@ const withEmbeds = cb => editor => {
           ? [
               {
                 type: PARAGRAPH_BLOCK,
-                children: nodesNormalized,
+                children: wrapListItemsInBulletedList(nodesNormalized),
               },
             ]
-          : nodesNormalized,
+          : wrapListItemsInBulletedList(nodesNormalized),
       );
       cb(html);
       if (isWrapped) Transforms.move(editor, { unit: 'offset' });
