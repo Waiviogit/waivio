@@ -40,7 +40,14 @@ const DnDList = ({
       ? sortCustom.expand
       : listItems.map(item => item.id);
 
-    setItems(listItems);
+    setItems(
+      listItems.sort((a, b) => {
+        const indexA = sortCustom?.include?.indexOf(a.id);
+        const indexB = sortCustom?.include?.indexOf(b.id);
+
+        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+      }),
+    );
     setExpand(featuredObjectTypes.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
     setInclude(isEmpty(sortCustom) ? listItems.map(item => item.id) : sortCustom.include);
     setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
@@ -99,7 +106,7 @@ const DnDList = ({
       updatedList = filterItems(reordered);
     }
 
-    const newInclude = updatedList.map(item => item.id);
+    const newInclude = updatedList.filter(item => include?.includes(item.id));
 
     setInclude(newInclude);
 
@@ -115,39 +122,32 @@ const DnDList = ({
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <div className="dnd-list" ref={provided.innerRef}>
-            {items
-              .sort((a, b) => {
-                const indexA = sortCustom?.include?.indexOf(a.id);
-                const indexB = sortCustom?.include?.indexOf(b.id);
-
-                return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
-              })
-              .map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(draggableProvided, draggableSnapshot) => (
-                    <div
-                      className="dnd-list__item"
-                      ref={draggableProvided.innerRef}
-                      {...draggableProvided.draggableProps}
-                      {...draggableProvided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDraggingOver,
-                        draggableSnapshot.isDragging,
-                        draggableProvided.draggableProps.style,
-                        accentColor,
-                      )}
-                    >
-                      <DnDListItem
-                        exclude={exclude}
-                        onCheckboxClick={onCheckboxClick}
-                        expandedIds={expand}
-                        setOpen={setOpen}
-                        item={item}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+            {items.map((item, index) => (
+              <Draggable key={item.id} draggableId={item.id} index={index}>
+                {(draggableProvided, draggableSnapshot) => (
+                  <div
+                    className="dnd-list__item"
+                    ref={draggableProvided.innerRef}
+                    {...draggableProvided.draggableProps}
+                    {...draggableProvided.dragHandleProps}
+                    style={getItemStyle(
+                      snapshot.isDraggingOver,
+                      draggableSnapshot.isDragging,
+                      draggableProvided.draggableProps.style,
+                      accentColor,
+                    )}
+                  >
+                    <DnDListItem
+                      exclude={exclude}
+                      onCheckboxClick={onCheckboxClick}
+                      expandedIds={expand}
+                      setOpen={setOpen}
+                      item={item}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
             {provided.placeholder}
           </div>
         )}

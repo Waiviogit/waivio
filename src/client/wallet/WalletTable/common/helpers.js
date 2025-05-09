@@ -226,6 +226,38 @@ const compareTransferBody = (
         }).swap,
       };
     }
+    case accountHistoryConstants.MARKET_BUY: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+          from: transaction.from,
+        }).marketBuy,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
+          authorperm: transaction.authorperm,
+          from: transaction.from,
+        }).marketBuy,
+      };
+    }
+    case accountHistoryConstants.MARKET_SELL: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+          to: transaction.to,
+        }).marketSell,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
+          authorperm: transaction.authorperm,
+          to: transaction.to,
+        }).marketSell,
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const currentPaysAmount = getTransactionTableCurrency(
         transaction.current_pays,

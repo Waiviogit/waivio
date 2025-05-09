@@ -38,6 +38,20 @@ export const getTableDescription = (type, options) => {
         powerUpTransactionTo: `Power up to ${to}`,
       };
     }
+    case accountHistoryConstants.MARKET_BUY: {
+      const from = get(options, 'from', '');
+
+      return {
+        marketBuy: `Bought from ${from}`,
+      };
+    }
+    case accountHistoryConstants.MARKET_SELL: {
+      const to = get(options, 'to', '');
+
+      return {
+        marketBuy: `Sold to ${to}`,
+      };
+    }
     case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
       return {
         powerDownStarted: 'Started power down',
