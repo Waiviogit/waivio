@@ -106,7 +106,7 @@ const DnDList = ({
       updatedList = filterItems(reordered);
     }
 
-    const newInclude = updatedList.map(item => item.id);
+    const newInclude = updatedList.filter(item => include?.includes(item.id));
 
     setInclude(newInclude);
 
