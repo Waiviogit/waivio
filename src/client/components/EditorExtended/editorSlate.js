@@ -354,6 +354,7 @@ const EditorSlate = props => {
 
         event.preventDefault();
         toggleBlock(editor, list.type);
+        Transforms.setNodes(editor, { type: 'paragraph' });
       }
 
       if (['image', 'video'].includes(selectedElement.type)) {
