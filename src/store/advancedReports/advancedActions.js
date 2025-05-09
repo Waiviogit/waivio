@@ -126,6 +126,7 @@ export const getMoreTableUserTransactionHistory = ({
   startDate,
   endDate,
   currency,
+  addSwaps,
   type,
 }) => (dispatch, getState) => {
   const state = getState();
@@ -144,6 +145,7 @@ export const getMoreTableUserTransactionHistory = ({
           filterAccounts,
           accounts,
           currency,
+          addSwaps: !addSwaps,
         },
         user,
       ).then(data => ({
