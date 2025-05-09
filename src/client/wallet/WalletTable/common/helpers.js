@@ -214,10 +214,11 @@ const compareTransferBody = (
     }
     case accountHistoryConstants.SWAP_TOKENS: {
       data.userName = transaction.account;
+      const isWithdraw = transaction.withdrawDeposit === 'w';
 
       return {
         ...data,
-        fieldWAIV: transaction.quantity,
+        fieldWAIV: isWithdraw ? `-${transaction.quantity}` : transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType, {
           authorperm: transaction.authorperm,
         }).swap,
@@ -228,10 +229,11 @@ const compareTransferBody = (
     }
     case accountHistoryConstants.MARKET_BUY: {
       data.userName = transaction.account;
+      const isWithdraw = transaction.withdrawDeposit === 'w';
 
       return {
         ...data,
-        fieldWAIV: transaction.quantity,
+        fieldWAIV: isWithdraw ? `-${transaction.quantity}` : transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType, {
           authorperm: transaction.authorperm,
           from: transaction.from,
@@ -244,10 +246,11 @@ const compareTransferBody = (
     }
     case accountHistoryConstants.MARKET_SELL: {
       data.userName = transaction.account;
+      const isWithdraw = transaction.withdrawDeposit === 'w';
 
       return {
         ...data,
-        fieldWAIV: transaction.quantity,
+        fieldWAIV: isWithdraw ? `-${transaction.quantity}` : transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType, {
           authorperm: transaction.authorperm,
           to: transaction.to,
