@@ -24,6 +24,7 @@ const SocialCampaignCard = ({
   isCampaign,
   intl,
 }) => {
+  const minPhotos = proposition?.requirements?.minPhotos;
   const buttonLabel =
     maxReward === proposition.minReward
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
@@ -47,11 +48,9 @@ const SocialCampaignCard = ({
         <div className="SocialCampaignCard__content">
           <h3>
             <FormattedMessage
-              id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-              defaultMessage={`Share {minPhotos} photo${
-                proposition?.requirements?.minPhotos === 1 ? '' : 's'
-              } and earn`}
-              values={{ minPhotos: proposition?.requirements?.minPhotos }}
+              id={`share_photo${minPhotos === 1 ? '' : 's'}_and_earn`}
+              defaultMessage={`Share {minPhotos} photo${minPhotos === 1 ? '' : 's'} and earn`}
+              values={{ minPhotos: minPhotos === 0 ? '' : minPhotos }}
             />
             <span className="SocialCampaignCard__earn">
               {' '}
@@ -82,6 +81,7 @@ const SocialCampaignCard = ({
           ) : (
             <div className="SocialCampaignCard__reservedButtons">
               <ReservedButtons
+                type={proposition.type}
                 handleReserveForPopover={handleReserveForPopup}
                 handleReserve={() => {
                   openDetailsModal();
