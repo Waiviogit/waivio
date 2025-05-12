@@ -189,7 +189,7 @@ const DetailsModalBody = ({
                 href={
                   proposition?.object?.url?.endsWith('*')
                     ? proposition?.object?.url?.slice(0, -1)
-                    : proposition?.object?.url
+                    : proposition?.object?.url || proposition?.object?.defaultShowLink
                 }
                 target={'_blank'}
                 rel="noreferrer"
@@ -221,7 +221,7 @@ const DetailsModalBody = ({
                   href={
                     requiredObject?.url?.endsWith('*')
                       ? requiredObject?.url?.slice(0, -1)
-                      : requiredObject?.url
+                      : requiredObject?.url || requiredObject?.defaultShowLink
                   }
                   target={'_blank'}
                   rel="noreferrer"
