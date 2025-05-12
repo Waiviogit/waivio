@@ -802,7 +802,7 @@ class AppendForm extends Component {
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
             !isNil(formValues[menuItemFields.menuItemTitle])
               ? formValues[menuItemFields.menuItemTitle].trim()
-              : this.state.selectedObject.name
+              : this.state.selectedObject.name || this.state.selectedObject.default_name
           }, style: ${this.state.menuItemButtonType}, link: ${
             !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
