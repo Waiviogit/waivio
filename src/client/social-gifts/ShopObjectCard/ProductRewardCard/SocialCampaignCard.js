@@ -25,6 +25,7 @@ const SocialCampaignCard = ({
   intl,
 }) => {
   const minPhotos = proposition?.requirements?.minPhotos;
+  const isMention = proposition.type === 'mentions';
   const buttonLabel =
     maxReward === proposition.minReward
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
@@ -67,7 +68,10 @@ const SocialCampaignCard = ({
             <span className="SocialCampaignCard__sponsor ml1">(sponsor)</span>
           </div>
         </div>
-        <div className="Proposition-new__button-container">
+        <div
+          className="Proposition-new__button-container"
+          style={{ marginTop: isMention ? '5px' : '' }}
+        >
           {isCampaign ? (
             <div style={{ marginTop: '8px' }}>
               <span onClick={goToProducts} className="Campaing__button">
