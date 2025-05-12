@@ -427,13 +427,6 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {!isEmpty(menuItem) && (
-              <SocialMenuItems
-                menuItem={menuItem}
-                customVisibility={customVisibility}
-                wobject={wobject}
-              />
-            )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
@@ -445,6 +438,13 @@ const BusinessObject = ({
                   authorPermlink={wobject.author_permlink}
                 />
               </div>
+            )}
+            {!isEmpty(menuItem) && (
+              <SocialMenuItems
+                menuItem={menuItem}
+                customVisibility={customVisibility}
+                wobject={wobject}
+              />
             )}
             {!isEmpty(featured) && (
               <ObjectsSlider

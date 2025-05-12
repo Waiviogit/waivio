@@ -25,7 +25,6 @@ import {
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
-import Loading from '../../components/Icon/Loading';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 
@@ -65,7 +64,20 @@ const WidgetContent = ({ wobj, intl }) => {
   }, [objName]);
 
   const widgetView = () => {
-    if (!widgetForm?.content) return <Loading margin />;
+    if (!widgetForm) {
+      return (
+        <div className="Checklist">
+          <div className={'Checklist__empty'}>
+            <span>
+              {intl.formatMessage({
+                id: 'empty_widget',
+                defaultMessage: 'This widget is empty',
+              })}
+            </span>
+          </div>
+        </div>
+      );
+    }
 
     if (widgetForm.type === 'Widget')
       return widgetForm?.content?.includes('<iframe') ? (
