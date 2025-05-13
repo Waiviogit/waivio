@@ -8,9 +8,9 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import BlacklistUser from './BlacklistUser';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
+import EmptyCampaing from '../../statics/EmptyCampaign';
 
 import './Blacklist.less';
-import EmptyCampaing from '../../statics/EmptyCampaing';
 
 const BlacklistContentNew = ({
   intl,

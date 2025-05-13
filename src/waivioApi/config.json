@@ -197,6 +197,7 @@
   "area": "/by-area",
   "prefetch": "/prefetch",
   "wobjects": "/wobjects",
+  "activeCampaigns": "/active-campaigns",
   "experts": "/experts",
   "lastPost": "/last-post",
   "requiredObject": "/required-object",

@@ -9,6 +9,7 @@ import createNestedRouts from '../../routes/helper';
 import ObjectFeed from '../object/ObjectFeed';
 import UserExpertise from '../user/UserExpertise';
 import UserFollowers from '../user/UserFollowers';
+import ActiveCampaignList from './ActiveCampaignList/ActiveCampaignList';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
@@ -48,6 +49,11 @@ const routes = () => ({
           component: ObjectDepartmentsWobjList,
         },
       ],
+    },
+    {
+      path: '/active-campaigns/:objectType?',
+      exact: true,
+      component: ActiveCampaignList,
     },
     {
       path: ['/(recipe)/:name/:department?'],
