@@ -194,7 +194,11 @@ const UserWalletSummary = ({
   const savingsHbdBalance = parseFloat(user.savings_hbd_balance);
   const hiveAuth = Cookie.get('auth');
   const billion = 1000000000;
-  const rcBalance = rcInfo ? rcInfo?.rc_manabar?.current_mana / billion : 0;
+  const rcBalance = rcInfo ? rcInfo?.max_rc / billion : 0;
+  const delegationsBalance = rcInfo
+    ? (rcInfo?.received_delegated_rc - rcInfo?.delegated_rc) / billion
+    : 0;
+  const showRcDelegate = rcInfo?.received_delegated_rc !== 0 && rcInfo?.delegated_rc !== 0;
 
   const estimateInterestBalance = hiveAccount => {
     const {
@@ -556,35 +560,72 @@ const UserWalletSummary = ({
               </div>
             )}
             {
-              <div className="UserWalletSummary__itemWrap--no-border last-block">
-                <div className="UserWalletSummary__item">
-                  <div className="UserWalletSummary__label power-down">
-                    <FormattedMessage id="rc_delegations" defaultMessage="RC Delegations" />
+              <>
+                <div
+                  className={`UserWalletSummary__itemWrap--no-border ${
+                    showRcDelegate ? '' : 'last-block'
+                  }`}
+                >
+                  <div className="UserWalletSummary__item">
+                    <div className="UserWalletSummary__label power-down">
+                      <FormattedMessage id="resource_credit" defaultMessage="Resource credit " />
+                    </div>
+                    <div className={powerClassList} onClick={() => setVisibleRcDetails(true)}>
+                      {user.fetching || loadingGlobalProperties ? (
+                        <Loading />
+                      ) : (
+                        <span>
+                          <FormattedNumber value={rcBalance.toFixed(2)} />
+                          {'b RC'}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className={powerClassList} onClick={() => setVisibleRcDetails(true)}>
-                    {user.fetching || loadingGlobalProperties ? (
-                      <Loading />
-                    ) : (
-                      <span>
-                        <FormattedNumber value={rcBalance.toFixed(2)} />
-                        {'b RC'}
-                      </span>
+                  <div className="UserWalletSummary__actions">
+                    <p className="UserWalletSummary__description">Maximum resource credit amount</p>
+                    {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
+                      <WalletAction
+                        mainKey={'delegate_rc'}
+                        delegatedRc={delegatedRc}
+                        rcBalance={rcBalance}
+                        // options={['delegate_rc']}
+                        mainCurrency={'HP'}
+                      />
                     )}
                   </div>
                 </div>
-                <div className="UserWalletSummary__actions">
-                  <p className="UserWalletSummary__description">Resource credit delegations</p>
-                  {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
-                    <WalletAction
-                      mainKey={'manage_rc'}
-                      delegatedRc={delegatedRc}
-                      rcBalance={rcBalance}
-                      options={['delegate_rc']}
-                      mainCurrency={'HP'}
-                    />
-                  )}
-                </div>
-              </div>
+                {showRcDelegate && (
+                  <div className="UserWalletSummary__itemWrap--no-border last-block">
+                    <div className="UserWalletSummary__item">
+                      <div className="UserWalletSummary__label power-down">
+                        <FormattedMessage id="rc_delegations" defaultMessage="RC Delegations" />
+                      </div>
+                      <div className={powerClassList} onClick={() => setVisibleRcDetails(true)}>
+                        {user.fetching || loadingGlobalProperties ? (
+                          <Loading />
+                        ) : (
+                          <span>
+                            <FormattedNumber value={delegationsBalance.toFixed(2)} />
+                            {'b RC'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="UserWalletSummary__actions">
+                      <p className="UserWalletSummary__description">Resource credit delegations</p>
+                      {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
+                        <WalletAction
+                          mainKey={'manage_rc'}
+                          delegatedRc={delegatedRc}
+                          rcBalance={rcBalance}
+                          // options={['delegate_rc']}
+                          mainCurrency={'HP'}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
             }
           </div>
           <div className="UserWalletSummary__itemWrap">
