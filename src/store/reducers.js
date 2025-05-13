@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { connectRouter } from 'connected-react-router';
+import activeCampaignReducer from './activeCampaign/activeCampaignReducer';
 
 import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
@@ -82,6 +83,7 @@ export default history =>
     shop: shopReducer,
     newRewards: newRewardsReducer,
     dynamicList: dynamicListReducer,
+    activeCampaign: activeCampaignReducer,
   });
 
 // common selectors
