@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -97,6 +98,8 @@ const SocialWrapper = props => {
   const antdLocale = getAntdLocale(language);
   const nightmode = Cookie.get('nightmode');
   const signInPage = props?.location.pathname?.includes('sign-in');
+  const isWidget = new URLSearchParams(props.location?.search).get('display');
+
   const createWebsiteMenu = configuration => {
     if (!isEmpty(configuration?.shopSettings)) {
       if (configuration.shopSettings?.type === 'object') {
@@ -266,13 +269,21 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && !isSocialGifts && <Header />}
-          <div className={'ShopWebsiteWrapper'}>
+          {!signInPage && !isSocialGifts && !isWidget && <Header />}
+          <div
+            className={classNames('ShopWebsiteWrapper', {
+              'ShopWebsiteWrapper--widget': isWidget,
+            })}
+          >
             {renderRoutes(props.route.routes, { isSocial: true })}
-            <NotificationPopup />
-            <BBackTop
-              className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
-            />
+            {!isWidget && (
+              <React.Fragment>
+                <NotificationPopup />
+                <BBackTop
+                  className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
+                />
+              </React.Fragment>
+            )}
           </div>
         </Layout>
         {props.isOpenModal && <QuickRewardsModal />}

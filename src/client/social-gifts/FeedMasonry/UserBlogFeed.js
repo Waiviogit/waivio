@@ -22,6 +22,8 @@ import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
+import './FeedMasonry.less';
+
 const limit = 25;
 
 const UserBlogFeed = ({ user }) => {

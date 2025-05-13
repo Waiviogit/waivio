@@ -198,6 +198,7 @@ const ObjectNewsFeed = ({ wobj, intl, isNested }) => {
         loading={isFetching || previewLoading}
         firstLoading={firstLoading}
         previews={previews}
+        className="Feed"
       />
     </React.Fragment>
   );
