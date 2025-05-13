@@ -159,7 +159,7 @@ const WAIVWalletSummaryInfo = props => {
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
               <div className={'WalletSummaryInfo__value'}>
-                {formattedNumber(stake)}
+                {formattedNumber(stake + delegationsOut)}
                 {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
                 {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
                 {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
