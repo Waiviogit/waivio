@@ -16,6 +16,7 @@ const ReservedButtons = props => {
   const [loadingButton, setLoadingButton] = useState(false);
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
+  const isMention = props.type === 'mentions';
 
   const handlePopoverClick = key =>
     props.onActionInitiated(() => {
@@ -51,11 +52,11 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        {props?.type === 'mentions'
+        {isMention
           ? props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' })
           : props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
       </Button>
-      {!props.reserved && props.type !== 'mentions' && (
+      {!props.reserved && !isMention && (
         <Popover
           placement="bottomRight"
           trigger="click"
