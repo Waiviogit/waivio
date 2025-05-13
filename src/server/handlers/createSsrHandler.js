@@ -130,22 +130,22 @@ export default function createSsrHandler(template) {
       }
     }
 
-    // if (isUser) {
-    //   return res.send(
-    //     renderSsrPage(
-    //       store,
-    //       null,
-    //       assets,
-    //       template,
-    //       isWaivio,
-    //       get(settings, 'googleAnalyticsTag', ''),
-    //       get(settings, 'googleGSCTag', ''),
-    //       get(settings, 'googleEventSnippet', ''),
-    //       get(settings, 'googleAdsConfig', ''),
-    //       get(adsenseSettings, 'code', ''),
-    //     ),
-    //   );
-    // }
+    if (isUser) {
+      return res.send(
+        renderSsrPage(
+          store,
+          null,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
+          get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
+          get(adsenseSettings, 'code', ''),
+        ),
+      );
+    }
 
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
