@@ -100,7 +100,7 @@ const UserBlogFeed = ({ user }) => {
       ) : (
         !isEmpty(posts) && (
           <ReduxInfiniteScroll
-            className="Feed"
+            className="Feed FeedContainer"
             loadMore={loadMore}
             loader={<Loading />}
             loadingMore={isFetching || previewLoading}
