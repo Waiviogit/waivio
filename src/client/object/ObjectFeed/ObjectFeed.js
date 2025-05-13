@@ -96,7 +96,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
       getFeedPosts(wobject?.newsFeed?.permlink);
     } else if (parentName) {
       isNewsfeedObjectPosts
-        ? getObject(name).then(wobj => {
+        ? getObject(parentName || name).then(wobj => {
             newsPerml = wobj?.newsFeed?.permlink;
             setNewsPermlink(newsPerml);
             getFeedPosts(newsPerml);
