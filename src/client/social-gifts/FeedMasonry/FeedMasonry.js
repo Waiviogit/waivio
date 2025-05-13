@@ -22,6 +22,7 @@ const FeedMasonry = ({
   previews,
   firstLoading,
   isReviewsPage,
+  className,
 }) => {
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
@@ -40,6 +41,7 @@ const FeedMasonry = ({
         loader={<Loading />}
         hasMore={hasMore}
         loadMore={loadMore}
+        className={className}
       >
         <Masonry
           breakpointCols={breakpointColumnsObj(posts?.length)}
@@ -78,6 +80,7 @@ FeedMasonry.propTypes = {
   isReviewsPage: PropTypes.bool,
   firstLoading: PropTypes.bool,
   emptyLable: PropTypes.string,
+  className: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape(),
