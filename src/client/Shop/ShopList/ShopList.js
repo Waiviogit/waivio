@@ -9,7 +9,7 @@ import { Icon } from 'antd';
 import classNames from 'classnames';
 import InfiniteSroll from 'react-infinite-scroller';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import EmptyCampaing from '../../statics/EmptyCampaing';
+import EmptyCampaing from '../../statics/EmptyCampaign';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';

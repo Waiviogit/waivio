@@ -2692,6 +2692,10 @@
   "mobnav_admin_subscriptions": "Subscriptions",
   "object_field_nutrition": "Macros",
   "delegate_rc": "Delegate RC",
-  "manage_rc": "Manage",
+  "activeCampaigns_all": "All",
+  "activeCampaigns_recipe": "Recipes",
+  "activeCampaigns_product": "Products",
+  "activeCampaigns_restaurant": "Restaurants",
+  "activeCampaigns_business": "Businesses",
   "object_field_featured": "Featured"
 }

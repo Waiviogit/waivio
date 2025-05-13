@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 import './EmptyFeed.less';
 
-const EmptyCampaing = ({ emptyMessage, intl }) => (
+const EmptyCampaign = ({ emptyMessage, intl }) => (
   <div className="feed_empty">
     <h3>
       {emptyMessage ||
@@ -13,11 +13,11 @@ const EmptyCampaing = ({ emptyMessage, intl }) => (
   </div>
 );
 
-EmptyCampaing.propTypes = {
+EmptyCampaign.propTypes = {
   emptyMessage: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
 };
 
-export default injectIntl(EmptyCampaing);
+export default injectIntl(EmptyCampaign);

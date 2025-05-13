@@ -4956,4 +4956,18 @@ export const getAllActiveSites = () => {
     .catch(e => e);
 };
 
+//active campaign
+export const getActiveCampaignsFromApi = (body, follower) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.activeCampaigns}`, {
+    headers: {
+      ...headers,
+      ...(follower ? { follower } : {}),
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;

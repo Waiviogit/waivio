@@ -56,8 +56,8 @@ const AddButtonSlate = props => {
     sideControl.current = control;
   };
 
-  const handleOpenToolbar = () => {
-    setOpen(prev => !prev);
+  const toggleToolbar = () => {
+    setOpen(!isOpen);
     if (isOpen) sideControl.current = null;
   };
 
@@ -77,7 +77,7 @@ const AddButtonSlate = props => {
 
   return (
     <div className="md-side-toolbar" style={{ top: initialPosTop }} ref={nodeRef}>
-      <button onClick={handleOpenToolbar} className={buttonClassList} type="button">
+      <button onClick={toggleToolbar} className={buttonClassList} type="button">
         <Icon
           type="plus-circle"
           style={{ fontSize: props.size, background: 'white', borderRadius: '50%' }}
@@ -110,7 +110,7 @@ const AddButtonSlate = props => {
                     <Button
                       {...extraProps}
                       handleObjectSelect={props.handleObjectSelect}
-                      close={handleOpenToolbar}
+                      close={handleClose}
                       renderControl={renderControl}
                       handleHashtag={props.handleHashtag}
                       selection={selection}

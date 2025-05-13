@@ -10,7 +10,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getObject, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
-import EmptyCampaing from '../../statics/EmptyCampaing';
+import EmptyCampaing from '../../statics/EmptyCampaign';
 import Proposition from '../reuseble/Proposition/Proposition';
 import {
   getObjectMap,

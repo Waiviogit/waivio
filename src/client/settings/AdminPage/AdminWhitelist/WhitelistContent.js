@@ -8,7 +8,7 @@ import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersA
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 
 import './WhitelistContent.less';
-import EmptyCampaing from '../../../statics/EmptyCampaing';
+import EmptyCampaing from '../../../statics/EmptyCampaign';
 import BlacklistUser from '../../../newRewards/BlackList/BlacklistUser';
 import {
   addUserToAdminWhitelist,

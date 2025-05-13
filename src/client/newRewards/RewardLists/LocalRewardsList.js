@@ -9,7 +9,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
-import EmptyCampaing from '../../statics/EmptyCampaing';
+import EmptyCampaign from '../../statics/EmptyCampaign';
 import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 import SortSelector from '../../components/SortSelector/SortSelector';
@@ -153,7 +153,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
           ))}
         </SortSelector>
         {isEmpty(rewards) ? (
-          <EmptyCampaing
+          <EmptyCampaign
             emptyMessage={intl.formatMessage({
               id: 'empty_campaign_message',
               defaultMessage: 'There are no rewards available for you to claim at this moment.',
