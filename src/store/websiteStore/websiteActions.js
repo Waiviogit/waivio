@@ -437,6 +437,18 @@ export const getWebAuthorities = host => (dispatch, getState) => {
     },
   });
 };
+export const GET_WEBSITE_TRUSTIES = createAsyncActionType('@website/GET_WEBSITE_TRUSTIES');
+
+export const getWebTrusties = host => (dispatch, getState) => {
+  const userName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_WEBSITE_TRUSTIES.ACTION,
+    payload: {
+      promise: ApiClient.getTrustedUsersList(host, userName),
+    },
+  });
+};
 
 export const ADD_WEBSITE_AUTHORITIES = createAsyncActionType('@website/ADD_WEBSITE_AUTHORITIES');
 
@@ -473,6 +485,41 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
       }),
     );
 };
+export const ADD_WEBSITE_TRUSTIES = createAsyncActionType('@website/ADD_WEBSITE_TRUSTIES');
+
+export const addWebTrusties = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
+
+  dispatch({
+    type: ADD_WEBSITE_TRUSTIES.START,
+    payload: account,
+  });
+
+  steemConnectAPI
+    .addWebsiteTrusties(userName, isGuest, host, [account.name])
+    .then(async res => {
+      if (!res.message) {
+        return dispatch(
+          getChangesInAccessOption(
+            userName,
+            host,
+            ADD_WEBSITE_TRUSTIES,
+            ApiClient.getTrustedUsersList,
+          ),
+        );
+      }
+
+      return dispatch({
+        type: ADD_WEBSITE_TRUSTIES.ERROR,
+      });
+    })
+    .catch(() =>
+      dispatch({
+        type: ADD_WEBSITE_TRUSTIES.ERROR,
+      }),
+    );
+};
 
 export const DELETE_WEBSITE_AUTHORITIES = createAsyncActionType(
   '@website/DELETE_WEBSITE_AUTHORITIES',
@@ -490,6 +537,24 @@ export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steem
   steemConnectAPI.deleteWebsiteAuthorities(userName, isGuest, host, [name]).then(() =>
     dispatch({
       type: DELETE_WEBSITE_AUTHORITIES.SUCCESS,
+      payload: name,
+    }),
+  );
+};
+export const DELETE_WEBSITE_TRUSTIES = createAsyncActionType('@website/DELETE_WEBSITE_TRUSTIES');
+
+export const deleteWebTrusties = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
+  const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
+
+  dispatch({
+    type: DELETE_WEBSITE_TRUSTIES.START,
+    payload: name,
+  });
+
+  steemConnectAPI.deleteWebsiteTrusties(userName, isGuest, host, [name]).then(() =>
+    dispatch({
+      type: DELETE_WEBSITE_TRUSTIES.SUCCESS,
       payload: name,
     }),
   );

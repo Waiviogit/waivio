@@ -274,5 +274,6 @@
   "incoming": "/incoming",
   "buyActions": "/buy-actions",
   "active": "/active",
-  "featured": "/featured"
+  "featured": "/featured",
+  "trusted": "/trusted"
 }
