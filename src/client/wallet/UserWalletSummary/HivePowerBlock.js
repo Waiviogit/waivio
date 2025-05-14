@@ -117,11 +117,12 @@ const HivePowerBlock = ({
   rcInfo,
 }) => {
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
-  const rcBalance = rcInfo ? rcInfo?.max_rc / billion : 0;
-  const delegationsBalance = rcInfo
-    ? (rcInfo?.received_delegated_rc - rcInfo?.delegated_rc) / billion
-    : 0;
-  const showRcDelegate = rcInfo?.received_delegated_rc !== 0 && rcInfo?.delegated_rc !== 0;
+  const rcBalance = rcInfo?.max_rc ? rcInfo?.max_rc / billion : 0;
+  const delegationsBalance =
+    rcInfo?.delegated_rc || rcInfo?.received_delegated_rc
+      ? (rcInfo?.received_delegated_rc - rcInfo?.delegated_rc) / billion
+      : 0;
+  const showRcDelegate = rcInfo?.received_delegated_rc !== 0 || rcInfo?.delegated_rc !== 0;
   const nextPowerDownDate = (
     <>
       {' '}
