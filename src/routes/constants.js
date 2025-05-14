@@ -161,6 +161,7 @@ export default {
       'administrations',
       'moderators',
       'authorities',
+      'trusties',
       'objects',
       'objects-filters',
       'muted-users',

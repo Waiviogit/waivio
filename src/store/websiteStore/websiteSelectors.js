@@ -42,6 +42,7 @@ export const getModerators = createSelector([websiteState], state => get(state, 
 export const getAuthorities = createSelector([websiteState], state =>
   get(state, 'authorities', {}),
 );
+export const getTrusties = createSelector([websiteState], state => get(state, 'trusties', {}));
 
 export const getTagsSite = createSelector([websiteState], state => get(state, 'tags', {}));
 

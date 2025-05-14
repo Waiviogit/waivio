@@ -129,6 +129,9 @@ export default {
   WebsitesAuthorities: loableComponent(
     import('../client/websites/WebsiteTools/Authorities/WebsitesAuthorities'),
   ),
+  WebsitesTrusties: loableComponent(
+    import('../client/websites/WebsiteTools/Trusties/WebsitesTrusties'),
+  ),
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),
