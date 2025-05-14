@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { getAppHost } from '../../../store/appStore/appSelectors';
 import { getMenuItemContent } from '../../../store/wObjectStore/wobjectsActions';
 import { getMenuItemsFromState } from '../../../store/wObjectStore/wObjectSelectors';
 
@@ -14,6 +15,7 @@ const NestedChecklist = ({ permlink }) => {
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
   const wobject = useSelector(getMenuItemsFromState)[permlink];
+  const host = useSelector(getAppHost);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [listItems, setLists] = useState(wobject?.listItems);
@@ -29,6 +31,7 @@ const NestedChecklist = ({ permlink }) => {
             wObject?.listItems,
             isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
             wObject?.sortCustom,
+            host,
           ),
         );
         setLoading(false);
