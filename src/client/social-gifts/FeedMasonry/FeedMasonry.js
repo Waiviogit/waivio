@@ -41,11 +41,10 @@ const FeedMasonry = ({
         loader={<Loading />}
         hasMore={hasMore}
         loadMore={loadMore}
-        className={className}
       >
         <Masonry
           breakpointCols={breakpointColumnsObj(posts?.length)}
-          className="FeedMasonry my-masonry-grid"
+          className={`${className} FeedMasonry my-masonry-grid`}
           columnClassName="my-masonry-grid_column"
           key={'my-masonry-grid_column'}
         >
