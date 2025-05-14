@@ -27,9 +27,11 @@ import {
 import { getObject } from '../../../waivioApi/ApiClient';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import Loading from '../../components/Icon/Loading';
 
 const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
+  const [loading, setLoading] = useState(false);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
   const { name } = useParams();
@@ -54,16 +56,23 @@ const WidgetContent = ({ wobj, intl }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     if (!wobj && wobj.author_permlink !== objName) {
       getObject(objName, userName, locale).then(obj => {
         setWobject(obj);
+        setLoading(false);
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', getObjectName(obj), { debug_mode: false });
       });
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
     }
   }, [objName]);
 
   const widgetView = () => {
+    if (loading) return <Loading />;
     if (!widgetForm) {
       return (
         <div className="Checklist">
