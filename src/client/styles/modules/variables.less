@@ -10,12 +10,14 @@
 @small-bp: 768px;
 @medium-bp: 998px;
 @large-bp: 1200px;
+@large-x-bp: 1550px;
 
 @usmall: ~'only screen and (min-width: @{usmall-bp})';
 @xsmall: ~'only screen and (min-width: @{xsmall-bp})';
 @small: ~'only screen and (min-width: @{small-bp})';
 @medium: ~'only screen and (min-width: @{medium-bp})';
 @large: ~'only screen and (min-width: @{large-bp})';
+@large-x: ~'only screen and (min-width: @{large-x-bp})';
 
 //You should not use those breakpoints. You should default to mobile first
 //and then use @xsmall, @small, @medium, @large to handle bigger screens.
