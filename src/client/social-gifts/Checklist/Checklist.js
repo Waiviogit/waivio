@@ -20,7 +20,12 @@ import {
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import { removeEmptyLines, shortenDescription, sortListItemsBy } from '../../object/wObjectHelper';
-import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
+import {
+  getHelmetIcon,
+  getMainObj,
+  getSiteName,
+  getAppHost,
+} from '../../../store/appStore/appSelectors';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import CheckListView from './CheckListView';
@@ -37,11 +42,14 @@ const Checklist = ({
   getObjectAction,
 }) => {
   const [loading, setLoading] = useState(false);
+  const host = useSelector(getAppHost);
+
   const [listItems, setLists] = useState(
     sortListItemsBy(
       wobject?.listItems,
       isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
       wobject?.sortCustom,
+      host,
     ),
   );
   const favicon = useSelector(getHelmetIcon);
@@ -80,6 +88,7 @@ const Checklist = ({
           wObject?.listItems,
           isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
           wObject?.sortCustom,
+          host,
         ),
       );
       setLoading(false);
