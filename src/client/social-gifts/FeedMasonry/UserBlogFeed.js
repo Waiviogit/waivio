@@ -100,7 +100,7 @@ const UserBlogFeed = ({ user }) => {
       ) : (
         !isEmpty(posts) && (
           <ReduxInfiniteScroll
-            className="Feed FeedContainer"
+            className="Feed"
             loadMore={loadMore}
             loader={<Loading />}
             loadingMore={isFetching || previewLoading}
@@ -110,7 +110,7 @@ const UserBlogFeed = ({ user }) => {
           >
             <Masonry
               breakpointCols={breakpointColumnsObj(posts?.length)}
-              className="FeedMasonry my-masonry-grid"
+              className={'FeedContainer FeedMasonry my-masonry-grid'}
               columnClassName="my-masonry-grid_column"
             >
               {posts?.map(post => {
