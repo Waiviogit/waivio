@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useRouteMatch } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import useQuery from '../../../hooks/useQuery';
 import { getActiveCampaign } from '../../../store/activeCampaign/activeCampaignActions';
 import {
   getSelectActiveCampaigns,
@@ -23,6 +24,7 @@ const ActiveCampaignList = ({ intl }) => {
   const isLoading = useSelector(getSelectIsLoadingActiveCampaigns);
   const { objectType } = useParams();
   const match = useRouteMatch();
+  const query = useQuery().toString();
 
   useEffect(() => {
     dispatch(getActiveCampaign({ objectType, skip: 0, limit: 15 }));
@@ -31,6 +33,13 @@ const ActiveCampaignList = ({ intl }) => {
   const loadMore = () => {
     if (!isLoading)
       dispatch(getActiveCampaign({ objectType, skip: activeCampaigns.length, limit: 15 }));
+  };
+
+  const getLinkUrl = (tab, isAll) => {
+    const url = isAll ? `/active-campaigns` : `/active-campaigns/${tab}`;
+    const queryString = query ? `?${query}` : '';
+
+    return `${url}${queryString}`;
   };
 
   return (
@@ -48,7 +57,7 @@ const ActiveCampaignList = ({ intl }) => {
                   : match?.url === `/active-campaigns/${tab}`
               }
               activeClassName="ActiveCampaignList__link--active"
-              to={isAll ? '/active-campaigns' : `/active-campaigns/${tab}`}
+              to={getLinkUrl(tab, isAll)}
             >
               {intl.formatMessage({ id: `activeCampaigns_${tab}` })}
             </NavLink>
