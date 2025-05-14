@@ -58,6 +58,7 @@ const RcBlock = ({
               <Loading />
             ) : (
               <span>
+                {delegationsBalance > 0 ? '+' : ''}
                 <FormattedNumber value={delegationsBalance.toFixed(2)} />
                 {'b RC'}
               </span>
