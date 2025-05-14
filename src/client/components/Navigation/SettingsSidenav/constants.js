@@ -201,6 +201,11 @@ export const currentWebsiteSettings = (site, parentHost) => {
       defaultMessage: 'Authorities',
     },
     {
+      to: `/${site}/trusties`,
+      id: 'trusties',
+      defaultMessage: 'Trusties',
+    },
+    {
       to: `/${site}/muted-users`,
       id: 'muted_users',
       defaultMessage: 'Muted users',

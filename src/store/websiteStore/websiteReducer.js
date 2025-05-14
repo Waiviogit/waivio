@@ -14,6 +14,7 @@ const initialState = {
   administrators: [],
   moderators: [],
   authorities: [],
+  trusties: [],
   tags: {},
   loading: false,
   loadingWebsite: false,
@@ -230,6 +231,12 @@ export default function websiteReducer(state = initialState, action) {
         authorities: action.payload,
       };
     }
+    case websiteAction.GET_WEBSITE_TRUSTIES.SUCCESS: {
+      return {
+        ...state,
+        trusties: action.payload,
+      };
+    }
     case websiteAction.GET_WEBSITE_ADMINISTRATORS.SUCCESS: {
       return {
         ...state,
@@ -322,7 +329,33 @@ export default function websiteReducer(state = initialState, action) {
         authorities: state.authorities.filter(admin => action.payload !== admin.name),
       };
     }
+    case websiteAction.DELETE_WEBSITE_TRUSTIES.START: {
+      const trusties = [...state.trusties];
+      const findUser = trusties.findIndex(admin => admin.name === action.payload);
+
+      trusties.splice(findUser, 1, {
+        ...trusties[findUser],
+        loading: true,
+      });
+
+      return {
+        ...state,
+        trusties,
+      };
+    }
+    case websiteAction.DELETE_WEBSITE_TRUSTIES.SUCCESS: {
+      return {
+        ...state,
+        trusties: state.trusties.filter(admin => action.payload !== admin.name),
+      };
+    }
     case websiteAction.ADD_WEBSITE_AUTHORITIES.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case websiteAction.ADD_WEBSITE_TRUSTIES.START: {
       return {
         ...state,
         loading: true,
@@ -332,6 +365,13 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         authorities: action.payload,
+        loading: false,
+      };
+    }
+    case websiteAction.ADD_WEBSITE_TRUSTIES.SUCCESS: {
+      return {
+        ...state,
+        trusties: action.payload,
         loading: false,
       };
     }

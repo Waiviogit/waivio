@@ -4969,5 +4969,14 @@ export const getActiveCampaignsFromApi = (body, follower) => {
     .then(res => res.json())
     .catch(e => e);
 };
+export const getTrustedUsersList = (host, owner) => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.trusted}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify({ host, owner }),
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
 
 export default null;
