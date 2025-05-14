@@ -21,9 +21,9 @@ const RcBlock = ({
     <div className={`UserWalletSummary__itemWrap--no-border ${showRcDelegate ? '' : 'last-block'}`}>
       <div className="UserWalletSummary__item">
         <div className="UserWalletSummary__label power-down">
-          <FormattedMessage id="resource_credit" defaultMessage="Resource credit " />
+          <FormattedMessage id="resource_credits" defaultMessage="Resource credits " />
         </div>
-        <div className={powerClassList} onClick={() => setVisibleRcDetails(true)}>
+        <div className={powerClassList}>
           {user.fetching || loadingGlobalProperties ? (
             <Loading />
           ) : (
@@ -35,8 +35,8 @@ const RcBlock = ({
         </div>
       </div>
       <div className="UserWalletSummary__actions">
-        <p className="UserWalletSummary__description">Maximum resource credit amount</p>
-        {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
+        <p className="UserWalletSummary__description">Maximum resource credits</p>
+        {isAuth && (
           <WalletAction
             mainKey={'delegate_rc'}
             delegatedRc={delegatedRc}
@@ -58,6 +58,7 @@ const RcBlock = ({
               <Loading />
             ) : (
               <span>
+                {delegationsBalance > 0 ? '+' : ''}
                 <FormattedNumber value={delegationsBalance.toFixed(2)} />
                 {'b RC'}
               </span>
@@ -65,13 +66,13 @@ const RcBlock = ({
           </div>
         </div>
         <div className="UserWalletSummary__actions">
-          <p className="UserWalletSummary__description">Resource credit delegations</p>
+          <p className="UserWalletSummary__description">Resource credits delegations</p>
           {isAuth && (!isEmpty(delegatedRc) || !isEmpty(inDelegatedRc)) && (
             <WalletAction
               mainKey={'manage_rc'}
               delegatedRc={delegatedRc}
               rcBalance={rcBalance}
-              // options={['delegate_rc']}
+              options={['delegate_rc']}
               mainCurrency={'HP'}
             />
           )}
