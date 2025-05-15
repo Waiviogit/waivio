@@ -123,11 +123,14 @@ const sortItemsByPromotion = (items, host) =>
  */
 export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null, host) => {
   if (!items || !items.length) return [];
-  if (!sortByParam || ['recency'].includes(sortByParam)) return items;
-  if (!sortByParam || ['custom'].includes(sortByParam)) return getSortList(sortOrder, items);
-  let comparator;
   const sortItemsByPr = sortItemsByPromotion(items, host);
   const withoutPromotion = items.filter(item => !sortItemsByPr.includes(item));
+
+  if (!sortByParam || ['recency'].includes(sortByParam))
+    return [...sortItemsByPr, ...withoutPromotion];
+  if (!sortByParam || ['custom'].includes(sortByParam))
+    return [...sortItemsByPr, ...getSortList(sortOrder, withoutPromotion)];
+  let comparator;
 
   switch (sortByParam) {
     case 'rank':
