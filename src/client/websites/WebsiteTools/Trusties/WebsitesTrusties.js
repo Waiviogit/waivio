@@ -132,7 +132,14 @@ const WebsitesTrusties = ({
               ) : (
                 <Button
                   type="primary"
-                  onClick={() => deleteWebsiteTrusties(host, t.name)}
+                  onClick={() =>
+                    deleteWebsiteTrusties(
+                      host,
+                      trusties
+                        .filter(tr => tr.name === t.name || tr.guideName === t.name)
+                        .map(i => i.name),
+                    )
+                  }
                   loading={t.loading}
                 >
                   <FormattedMessage id="delete" defaultMessage="Delete" />
