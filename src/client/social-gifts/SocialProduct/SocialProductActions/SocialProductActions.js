@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import BellButton from '../../../widgets/BellButton';
 import HeartButton from '../../../widgets/HeartButton';
@@ -14,7 +14,8 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import FollowButton from '../../../widgets/FollowButton';
 import { followWobject, unfollowWobject } from '../../../../store/wObjectStore/wobjActions';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
-import { getUserAdministrator } from '../../../../store/appStore/appSelectors';
+import { getSiteTrusties, getUserAdministrator } from '../../../../store/appStore/appSelectors';
+import { getAuthorityList } from '../../../../store/appendStore/appendSelectors';
 
 const SocialProductActions = ({
   wobject,
@@ -27,9 +28,16 @@ const SocialProductActions = ({
   isEditMode,
   isAdministrator,
 }) => {
+  const trusties = useSelector(getSiteTrusties);
+
+  const authorityList = useSelector(getAuthorityList);
+  const activeHeart = authorityList[wobject.author_permlink];
+  const isTrusty = trusties?.includes(username);
+
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && isAdministrator) ||
-    hasDelegation(wobject, username);
+    hasDelegation(wobject, username) ||
+    (activeHeart && isTrusty);
 
   return (
     <div className="ObjectHeader__controls">

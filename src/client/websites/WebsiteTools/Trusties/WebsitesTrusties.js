@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { Button, message } from 'antd';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -117,20 +118,26 @@ const WebsitesTrusties = ({
         {emptyTrusties ? (
           <FormattedMessage id={'web_trusties_empty'} defaultMessage={'No trusties added.'} />
         ) : (
-          trusties.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
-            <div key={id} className="WebsitesAuthorities__user">
+          trusties.map(t => (
+            <div key={t._id} className="WebsitesAuthorities__user">
               <span className="WebsitesAuthorities__user-info">
-                <Avatar size={50} username={name} />
-                <span>{name}</span>
-                <WeightTag weight={weight} />
+                <Avatar size={50} username={t.name} />{' '}
+                <Link className="WebsitesAuthorities__username" to={`/@${t.name}`}>
+                  {t.name}
+                </Link>
+                <WeightTag weight={t.wobjects_weight} />
               </span>
-              <Button
-                type="primary"
-                onClick={() => deleteWebsiteTrusties(host, name)}
-                loading={loading}
-              >
-                <FormattedMessage id="delete" defaultMessage="Delete" />
-              </Button>
+              {t.guideName ? (
+                <span className={'WebsitesAuthorities__grey-text'}>@{`${t.guideName}`}</span>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={() => deleteWebsiteTrusties(host, t.name)}
+                  loading={t.loading}
+                >
+                  <FormattedMessage id="delete" defaultMessage="Delete" />
+                </Button>
+              )}
             </div>
           ))
         )}
