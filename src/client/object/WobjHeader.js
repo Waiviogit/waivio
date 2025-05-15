@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { get } from 'lodash';
 
 import FollowButton from '../widgets/FollowButton';
@@ -23,11 +23,16 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
-import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
+import {
+  getIsWaivio,
+  getSiteTrusties,
+  getUserAdministrator,
+} from '../../store/appStore/appSelectors';
 import HeartButton from '../widgets/HeartButton';
 import OBJECT_TYPE from './const/objectTypes';
 import InstacartWidget from '../widgets/InstacartWidget';
 import '../components/ObjectHeader.less';
+import { getAuthorityList } from '../../store/appendStore/appendSelectors';
 
 const WobjHeader = ({
   isEditMode,
@@ -45,9 +50,14 @@ const WobjHeader = ({
   const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
   const coverImage = wobject.background || isRecipe ? '' : DEFAULTS.BACKGROUND;
   const descriptionShort = wobject.title || '';
+  const authorityList = useSelector(getAuthorityList);
+  const trusties = useSelector(getSiteTrusties);
+  const activeHeart = authorityList[wobject.author_permlink];
+  const isTrusty = trusties?.includes(username);
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && (isWaivio || isAdministrator)) ||
-    hasDelegation(wobject, username);
+    hasDelegation(wobject, username) ||
+    (activeHeart && isTrusty);
   const canEdit = accessExtend && isEditMode;
   const parent = get(wobject, 'parent', {});
   const parentName = getObjectName(parent);
