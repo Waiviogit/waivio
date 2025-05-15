@@ -40,7 +40,7 @@ import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configReportsWebsitesTableHeader } from './common/tableConfig';
 import Loading from '../../components/Icon/Loading';
-import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import { getCurrency } from '../../../store/appStore/appSelectors';
 
 import './WalletTable.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -60,7 +60,7 @@ import { currencyPrefix } from '../../websites/constants/currencyTypes';
     loading: getTransfersLoading(state),
     accounts: getTransfersAccounts(state),
     isLoadingAllData: getIsLoadingAllData(state),
-    currencyInfo: getCurrentCurrency(state),
+    currency: getCurrency(state),
     reportCurrency: getReportCurrency(state),
     reportAccounts: getReportAccounts(state),
     user: getAuthenticatedUser(state),
@@ -85,10 +85,7 @@ class WalletTable extends React.Component {
         reportId: PropTypes.string,
       }),
     }).isRequired,
-    currencyInfo: PropTypes.shape({
-      type: PropTypes.string,
-      rate: PropTypes.number,
-    }).isRequired,
+    currency: PropTypes.string.isRequired,
     reportAccounts: PropTypes.arrayOf(PropTypes.string),
     totalVestingShares: PropTypes.string.isRequired,
     withoutFilters: PropTypes.string,
@@ -135,9 +132,7 @@ class WalletTable extends React.Component {
     filterAccounts: [this.props.match.params.name],
     dateEstablished: false,
     currentCurrency:
-      this.props.match.params[0] === 'details'
-        ? this.props.reportCurrency
-        : this.props.currencyInfo.type,
+      this.props.match.params[0] === 'details' ? this.props.reportCurrency : this.props.currency,
     tableType: this.props.match.params[0] === 'table' ? 'HIVE' : 'WAIV',
     forCSV: [],
     hasMoreforCSV: false,
@@ -153,7 +148,7 @@ class WalletTable extends React.Component {
     this.props
       .getUserTableTransactions({
         filterAccounts,
-        currency: this.props.currencyInfo.type,
+        currency: this.props.currency,
         type: tableType,
         addSwaps: true,
       })
@@ -170,6 +165,24 @@ class WalletTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (prevProps.currency !== this.props.currency && !this.props.withoutFilters) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState(
+        {
+          currentCurrency: this.props.currency,
+        },
+        () => {
+          const { addSwaps } = this.props.form.getFieldsValue();
+
+          this.props.getUserTableTransactions({
+            filterAccounts: this.state.filterAccounts,
+            currency: this.props.currency,
+            type: this.state.tableType,
+            addSwaps: addSwaps || false,
+          });
+        },
+      );
+    }
     if (
       !isEmpty(this.props.accounts) &&
       !isEqual(prevProps.accounts, this.props.accounts) &&
@@ -292,8 +305,8 @@ class WalletTable extends React.Component {
   };
 
   exportCsv = () => {
-    const { transactionsList, currencyInfo } = this.props;
-    const currencyType = this.state.currentCurrency || currencyInfo.type;
+    const { transactionsList, currency } = this.props;
+    const currencyType = this.state.currentCurrency || currency;
     const walletType = this.state.tableType;
     const isHive = walletType === 'HIVE';
     const currentCurrency =
@@ -382,8 +395,8 @@ class WalletTable extends React.Component {
   };
 
   render() {
-    const { match, intl, form, transactionsList, currencyInfo } = this.props;
-    const currencyType = this.state.currentCurrency || currencyInfo.type;
+    const { match, intl, form, transactionsList, currency } = this.props;
+    const currencyType = this.state.currentCurrency || currency;
     const walletType = this.state.tableType;
     const { from, end } = this.props.form.getFieldsValue();
     const isHive = walletType === 'HIVE';
@@ -462,7 +475,7 @@ class WalletTable extends React.Component {
             handleSelectUser={this.handleSelectUserFilterAccounts}
             isLoadingTableTransactions={this.props.loading}
             deleteUser={this.deleteUserFromFilterAccounts}
-            currency={currencyInfo.type}
+            currency={currency}
             form={form}
             startDate={this.handleChangeStartDate(from)}
             endDate={this.handleChangeEndDate(end)}

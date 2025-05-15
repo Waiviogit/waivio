@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 
 const SelectUserForAutocomplete = ({ account, resetUser, isNewsFeed }) =>
@@ -9,7 +10,9 @@ const SelectUserForAutocomplete = ({ account, resetUser, isNewsFeed }) =>
       <div className="ObjectCard">
         <div className="ObjectCard__links">
           <Avatar username={account} size={34} isSquare />
-          <span className="ObjectCard__name">{account}</span>
+          <Link to={`/@${account}`} className="ObjectCard__name">
+            {account}
+          </Link>
         </div>
       </div>
       <div className="NewsFiltersRule__line-close">
@@ -20,7 +23,9 @@ const SelectUserForAutocomplete = ({ account, resetUser, isNewsFeed }) =>
     <div className="SelectUserForAutocomplete">
       <div className="SelectUserForAutocomplete__user-info">
         <Avatar username={account} size={40} />
-        <span>{account}</span>
+        <Link to={`/@${account}`} className="ObjectCard__name">
+          {account}
+        </Link>
       </div>
       {resetUser && (
         <span
