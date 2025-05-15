@@ -351,15 +351,47 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {!isRecipe && (
+      {isRecipe ? (
         <div>
-          {!isRecipe && <meta itemProp="mpn" content="925872" />}
+          <meta itemProp="name" content={getObjectName(wobject)} />
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={description} />
+          <meta itemProp="recipeCuisine" content={'International'} />
+          <meta itemProp="recipeCategory" content={wobject?.departments[0]?.body} />
+
+          {/* Время приготовления (ISO 8601 формат) */}
+          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
+
+          {/* Пищевая ценность (если есть) */}
+          {wobject.calories && (
+            <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
+              <meta itemProp="calories" content={wobject.calories} />
+            </div>
+          )}
+
+          {/* Оценка рецепта */}
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>
+          <meta itemProp="mpn" content="925872" />
           <meta itemProp="name" content={getObjectName(wobject)} />
           <link itemProp="image" href={image} />
           <meta itemProp="description" content={description} />
           <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
             <link itemProp="url" href={productUrl} />
             <meta itemProp="availability" content="https://schema.org/InStock" />
+            <meta
+              itemProp="priceValidUntil"
+              content={moment()
+                .add(1, 'months')
+                .format('YYYY-MM-DD')}
+            />
             <meta
               itemProp="priceCurrency"
               content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
