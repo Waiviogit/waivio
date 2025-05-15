@@ -16,6 +16,7 @@ const initialState = {
   rate: 0,
   trendingTopicsLoading: false,
   trendingTopics: [],
+  trustedAll: [],
   rewardFund: {},
   bannerClosed: false,
   appUrl: '',
@@ -175,6 +176,7 @@ export default (state = initialState, action) => {
         facebookAuthId,
         googleAuthId,
         language,
+        trustedAll,
       } = action.payload;
       const deviceType = mobileUserAgents.test(navigator.userAgent) ? 'mobile' : 'desktop';
       const currMap = configuration?.[`${deviceType}Map`];
@@ -187,6 +189,7 @@ export default (state = initialState, action) => {
         websiteName: configuration?.header?.name || getObjectName(configuration.aboutObject),
         mainPage,
         host,
+        trustedAll,
         configuration,
         websiteLanguage: language,
         websiteBeneficiary: {
