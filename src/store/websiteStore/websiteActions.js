@@ -543,19 +543,19 @@ export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steem
 };
 export const DELETE_WEBSITE_TRUSTIES = createAsyncActionType('@website/DELETE_WEBSITE_TRUSTIES');
 
-export const deleteWebTrusties = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
+export const deleteWebTrusties = (host, names) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
   const isGuest = isGuestUser(getState());
 
   dispatch({
     type: DELETE_WEBSITE_TRUSTIES.START,
-    payload: name,
+    payload: names,
   });
 
-  steemConnectAPI.deleteWebsiteTrusties(userName, isGuest, host, [name]).then(() =>
+  steemConnectAPI.deleteWebsiteTrusties(userName, isGuest, host, names).then(() =>
     dispatch({
       type: DELETE_WEBSITE_TRUSTIES.SUCCESS,
-      payload: name,
+      payload: names,
     }),
   );
 };
