@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button, Checkbox, DatePicker, Form, Select } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -30,6 +30,9 @@ const TableFilter = ({
   const disabledTillDate = (current, from) => current > moment().endOf('day') || current < from;
   const creationAccDate = useSelector(getCreationAccDate);
   const [isOpen, setIsOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const inputRef = useRef();
+
   const onOpenChange = () => setIsOpen(!isOpen);
   const invalidFields = endDate < startDate;
   const { from } = form.getFieldsValue();
@@ -37,6 +40,18 @@ const TableFilter = ({
   const tab = query?.get('tab');
   const isGenerate = tab === 'generate';
   const isStandard = tab === 'standard';
+
+  const handleDeleteUser = acc => {
+    deleteUser(acc);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+
+  const handleSubmitClick = e => {
+    setSubmitted(true);
+    handleOnClick(e);
+  };
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -53,13 +68,15 @@ const TableFilter = ({
         <div>
           {getFieldDecorator('filterAccounts')(
             <SearchUsersAutocomplete
+              autoFocus={isEmpty(filterUsersList)}
               handleSelect={handleSelectUser}
               className="WalletTable__userSearch"
               itemsIdsToOmit={filterUsersList}
+              ref={inputRef}
             />,
           )}
         </div>
-        {isEmpty(filterUsersList) && (
+        {isEmpty(filterUsersList) && submitted && (
           <span className="WalletTable__error">
             {intl.formatMessage({
               id: 'table_accounts_validation',
@@ -69,7 +86,7 @@ const TableFilter = ({
         )}
         <div className="WalletTable__selectedUserWrap">
           {filterUsersList.map(acc => (
-            <SelectUserForAutocomplete key={acc} account={acc} resetUser={deleteUser} />
+            <SelectUserForAutocomplete key={acc} account={acc} resetUser={handleDeleteUser} />
           ))}
         </div>
       </Form.Item>
@@ -88,7 +105,6 @@ const TableFilter = ({
                 valuePropName: 'checked',
                 initialValue: true,
               })(<Checkbox />)}
-
               <div className={'WalletTable__checkbox-text'}>
                 {' '}
                 Merge author and curations rewards
@@ -101,7 +117,6 @@ const TableFilter = ({
                 valuePropName: 'checked',
                 initialValue: true,
               })(<Checkbox />)}
-
               <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
             </div>
           </Form.Item>
@@ -236,7 +251,6 @@ const TableFilter = ({
               valuePropName: 'checked',
               initialValue: true,
             })(<Checkbox />)}
-
             <div className={'WalletTable__checkbox-text'}> Exclude swaps and trades records</div>
           </div>
         </Form.Item>
@@ -244,7 +258,7 @@ const TableFilter = ({
       {!inModal && (
         <Button
           className="WalletTable__submit"
-          onClick={handleOnClick}
+          onClick={handleSubmitClick}
           type="primary"
           htmlType="submit"
           loading={isLoadingTableTransactions}
