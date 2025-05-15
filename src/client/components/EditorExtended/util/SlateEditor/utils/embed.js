@@ -4,7 +4,7 @@ export const createImageNode = (alt, { url, width = 200, height = 200 }) => ({
   url,
   width,
   height,
-  children: [{ text: ' ' }],
+  children: [{ text: '' }],
 });
 export const createVideoNode = ({ url, width = 200, height = 200 }) => ({
   type: 'video',

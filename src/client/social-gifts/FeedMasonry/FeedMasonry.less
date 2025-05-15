@@ -6,10 +6,8 @@
   margin-left: 20px;
   margin-top: 20px;
 }
-.FeedMasonry {
-  display: flex;
-  justify-content: center;
 
+.FeedMasonry {
   &__item-with-pin {
     margin-top: -40px;
     position: relative;
@@ -364,6 +362,7 @@
     padding-right: 10px;
   }
 }
+
 .PinContainer {
   &.ant-tooltip.ant-tooltip-placement-topLeft {
     padding-bottom: 0 !important;
@@ -376,5 +375,12 @@
 
   & .ant-tooltip-arrow::before {
     background: transparent;
+  }
+}
+
+.FeedContainer {
+  @media @large-x {
+    display: flex;
+    justify-content: center;
   }
 }

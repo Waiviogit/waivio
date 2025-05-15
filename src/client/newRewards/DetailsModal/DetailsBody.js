@@ -183,16 +183,31 @@ const DetailsModalBody = ({
             <span className="nowrap">
               {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
             </span>
-            <Link
-              className="ml1 DetailsModal__container"
-              to={
-                proposition?.user
-                  ? `/@${proposition?.user.name}`
-                  : proposition?.object?.defaultShowLink
-              }
-            >
-              {proposition?.user ? proposition?.user.name : getObjectName(proposition?.object)}
-            </Link>
+            {isMentions ? (
+              <a
+                className="ml1 DetailsModal__container"
+                href={
+                  proposition?.object?.url?.endsWith('*')
+                    ? proposition?.object?.url?.slice(0, -1)
+                    : proposition?.object?.url || proposition?.object?.defaultShowLink
+                }
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                {proposition?.user ? proposition?.user.name : getObjectName(proposition?.object)}
+              </a>
+            ) : (
+              <Link
+                className="ml1 DetailsModal__container"
+                to={
+                  proposition?.user
+                    ? `/@${proposition?.user.name}`
+                    : proposition?.object?.defaultShowLink
+                }
+              >
+                {proposition?.user ? proposition?.user.name : getObjectName(proposition?.object)}
+              </Link>
+            )}
             ;
           </li>
           {!withoutSecondary && (
@@ -200,9 +215,24 @@ const DetailsModalBody = ({
               <span className="nowrap">
                 {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
               </span>
-              <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
-                {getObjectName(requiredObject)}
-              </Link>
+              {isMentions ? (
+                <a
+                  className="ml1 DetailsModal__container"
+                  href={
+                    requiredObject?.url?.endsWith('*')
+                      ? requiredObject?.url?.slice(0, -1)
+                      : requiredObject?.url || requiredObject?.defaultShowLink
+                  }
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  {getObjectName(requiredObject)}
+                </a>
+              ) : (
+                <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
+                  {getObjectName(requiredObject)}
+                </Link>
+              )}
               ;
             </li>
           )}
@@ -342,6 +372,7 @@ DetailsModalBody.propTypes = {
     activationPermlink: PropTypes.string,
     requiredObject: PropTypes.shape({
       defaultShowLink: PropTypes.string,
+      url: PropTypes.string,
     }),
     user: PropTypes.shape({
       name: PropTypes.string,
@@ -370,6 +401,7 @@ DetailsModalBody.propTypes = {
       }),
       defaultShowLink: PropTypes.string,
       id: PropTypes.string,
+      url: PropTypes.string,
     }),
   }).isRequired,
   intl: PropTypes.shape({

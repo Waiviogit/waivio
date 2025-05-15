@@ -183,7 +183,7 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, imageBlock, { at: [0] });
+    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
   };
 
   // Drug and drop method
@@ -220,13 +220,12 @@ const EditorSlate = props => {
       await encodeImageFileAsURL(file, insertImage);
     }
 
-    // eslint-disable-next-line array-callback-return
     uploadedImages.forEach(item => {
       const imageBlock = createImageNode(item.name, {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock]);
+      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
     });
 
     return true;
@@ -354,6 +353,7 @@ const EditorSlate = props => {
 
         event.preventDefault();
         toggleBlock(editor, list.type);
+        Transforms.setNodes(editor, { type: 'paragraph' });
       }
 
       if (['image', 'video'].includes(selectedElement.type)) {

@@ -103,23 +103,33 @@ export const removeEmptyLines = string => {
   return nonEmptyLines?.join('\n');
 };
 
+const sortItemsByPromotion = (items, host) =>
+  items
+    .filter(item => item.promotion?.some(promo => promo.body === host))
+    .sort((a, b) => {
+      const promoA = a.promotion.find(promo => promo.body === host);
+      const promoB = b.promotion.find(promo => promo.body === host);
+
+      return promoA.startDate - promoB.startDate;
+    });
+
 /**
  *
  * @param items - array of waivio objects
  * @param sortByParam - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'recency'|'custom'
  * @param sortOrder - array of strings (object permlinks)
- * @param isSortByDateAdding - if true, the list will be sorted by the date the object was added
+ * @param host - string, host name
  * @returns {*}
  */
-export const sortListItemsBy = (
-  items,
-  sortByParam = 'recency',
-  sortOrder = null,
-  isSortByDateAdding = false,
-) => {
+export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null, host) => {
   if (!items || !items.length) return [];
-  if (!sortByParam || ['recency'].includes(sortByParam)) return items;
-  if (!sortByParam || ['custom'].includes(sortByParam)) return getSortList(sortOrder, items);
+  const sortItemsByPr = sortItemsByPromotion(items, host);
+  const withoutPromotion = items.filter(item => !sortItemsByPr.includes(item));
+
+  if (!sortByParam || ['recency'].includes(sortByParam))
+    return [...sortItemsByPr, ...withoutPromotion];
+  if (!sortByParam || ['custom'].includes(sortByParam))
+    return [...sortItemsByPr, ...getSortList(sortOrder, withoutPromotion)];
   let comparator;
 
   switch (sortByParam) {
@@ -136,14 +146,13 @@ export const sortListItemsBy = (
       break;
   }
 
-  const sorted = uniqBy(items, 'author_permlink').sort(comparator);
-  const sortedByDate =
-    sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
-      ? orderBy(sorted, ['addedAt'], 'desc')
-      : sorted;
+  const sorted = uniqBy(withoutPromotion, 'author_permlink').sort(comparator);
+  const sortedByDate = sorted.every(item => has(item, 'addedAt'))
+    ? orderBy(sorted, ['addedAt'], 'desc')
+    : sorted;
   const sorting = (a, b) => isList(b) - isList(a);
 
-  return sortedByDate.sort(sorting);
+  return [...sortItemsByPr, ...sortedByDate.sort(sorting)];
 };
 
 export const getWobjectsForMap = objects =>

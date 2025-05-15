@@ -2,17 +2,20 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .SocialMenuItems {
-  margin-bottom: 20px;
+  margin: 0 20px 40px 20px;
   border-bottom: 1px solid @white-gainsboro;
   &__container {
   }
   &__item {
     display: flex;
-    justify-content: space-between;
+    //justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 20px 10px;
     border-top: 1px solid @white-gainsboro;
     cursor: pointer;
+    @media @small {
+      padding: 20px;
+    }
   }
   &__content {
     opacity: 0;
@@ -32,9 +35,23 @@
   }
 
   &__item-title {
+    margin-left: 35px;
     font-weight: 600;
     font-size: 18px;
     color: @black;
+    @media @small {
+      margin-left: 45px;
+    }
+
+    &--nested {
+      margin-left: 10px;
+      font-weight: 600;
+      font-size: 18px;
+      color: @black;
+      @media @small {
+        margin-left: 20px;
+      }
+    }
   }
   &__webLink {
     color: var(--website-color);

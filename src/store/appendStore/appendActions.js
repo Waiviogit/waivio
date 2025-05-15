@@ -129,7 +129,7 @@ export const getChangedWobjectField = (
   } else {
     busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
     busyAPI.instance.subscribe((datad, j) => {
-      if (j?.success && j?.permlink === id) {
+      if (j?.success && j?.permlink === id && j.parser === 'main') {
         if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
         subscribeCallback();
       }

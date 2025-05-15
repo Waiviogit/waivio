@@ -22,6 +22,7 @@ const FeedMasonry = ({
   previews,
   firstLoading,
   isReviewsPage,
+  className,
 }) => {
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
@@ -43,7 +44,7 @@ const FeedMasonry = ({
       >
         <Masonry
           breakpointCols={breakpointColumnsObj(posts?.length)}
-          className="FeedMasonry my-masonry-grid"
+          className={`${className} FeedMasonry my-masonry-grid`}
           columnClassName="my-masonry-grid_column"
           key={'my-masonry-grid_column'}
         >
@@ -78,6 +79,7 @@ FeedMasonry.propTypes = {
   isReviewsPage: PropTypes.bool,
   firstLoading: PropTypes.bool,
   emptyLable: PropTypes.string,
+  className: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape(),

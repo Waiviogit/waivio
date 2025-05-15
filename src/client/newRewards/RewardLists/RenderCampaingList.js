@@ -7,7 +7,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
-import EmptyCampaing from '../../statics/EmptyCampaing';
+import EmptyCampaing from '../../statics/EmptyCampaign';
 import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 import SortSelector from '../../components/SortSelector/SortSelector';

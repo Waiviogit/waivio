@@ -42,8 +42,8 @@ const PromotionForm = ({ getFieldDecorator, loading, intl, isSomeValue, getField
         )}
       </Form.Item>
       <p>
-        Enter the site domain where this promotion will be displayed. The update will be applied
-        only if you are the owner or administrator of the site.
+        Enter the site domain where this promotion will be displayed. The promotion will only be
+        applied to websites where you are the owner or have been added as an administrator.
       </p>
       <br />
       <p className={'ant-form-item-label AppendForm__appendTitles mb1'}>Period</p>

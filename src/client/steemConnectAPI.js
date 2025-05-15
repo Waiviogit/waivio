@@ -417,6 +417,23 @@ function sc2Extended() {
       },
     },
     {
+      addWebsiteTrusties(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_trusted_set',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_trusted_set',
+              json: JSON.stringify({ host, names }),
+            };
+
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
+      },
+    },
+    {
       deleteWebsiteAuthorities(username, isGuestUser, host, names, cb) {
         const params = isGuestUser
           ? {
@@ -427,6 +444,23 @@ function sc2Extended() {
               required_auths: [],
               required_posting_auths: [username],
               id: 'website_remove_authorities',
+              json: JSON.stringify({ host, names }),
+            };
+
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
+      },
+    },
+    {
+      deleteWebsiteTrusties(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_trusted_unset',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_trusted_unset',
               json: JSON.stringify({ host, names }),
             };
 

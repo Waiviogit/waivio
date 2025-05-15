@@ -5,8 +5,8 @@ import InfiniteSroll from 'react-infinite-scroller';
 import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import EmptyCampaign from '../../statics/EmptyCampaign';
 
-import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -83,7 +83,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   return (
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       {isEmpty(departmentInfo?.wobjects) ? (
-        <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
+        <EmptyCampaign emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
           <div

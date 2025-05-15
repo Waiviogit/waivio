@@ -25,12 +25,13 @@ import {
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
-import Loading from '../../components/Icon/Loading';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import Loading from '../../components/Icon/Loading';
 
 const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
+  const [loading, setLoading] = useState(false);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
   const { name } = useParams();
@@ -55,17 +56,37 @@ const WidgetContent = ({ wobj, intl }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     if (!wobj && wobj.author_permlink !== objName) {
       getObject(objName, userName, locale).then(obj => {
         setWobject(obj);
+        setLoading(false);
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', getObjectName(obj), { debug_mode: false });
       });
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
     }
   }, [objName]);
 
   const widgetView = () => {
-    if (!widgetForm?.content) return <Loading margin />;
+    if (loading) return <Loading />;
+    if (!widgetForm) {
+      return (
+        <div className="Checklist">
+          <div className={'Checklist__empty'}>
+            <span>
+              {intl.formatMessage({
+                id: 'empty_widget',
+                defaultMessage: 'This widget is empty',
+              })}
+            </span>
+          </div>
+        </div>
+      );
+    }
 
     if (widgetForm.type === 'Widget')
       return widgetForm?.content?.includes('<iframe') ? (

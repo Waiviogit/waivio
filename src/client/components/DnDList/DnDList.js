@@ -57,7 +57,7 @@ const DnDList = ({
     let updatedInclude;
     let updatedExclude;
 
-    if (include.includes(id)) {
+    if (!exclude.includes(id)) {
       updatedInclude = include.filter(itemId => itemId !== id);
       updatedExclude = [...exclude, id];
     } else {
@@ -67,10 +67,10 @@ const DnDList = ({
 
     setInclude(updatedInclude);
     setExclude(updatedExclude);
+    const newInclude = items.filter(item => !updatedExclude?.includes(item.id)).map(i => i.id);
 
-    // Send to parent or external change handler
     onChange({
-      include: updatedInclude,
+      include: newInclude,
       exclude: updatedExclude,
       expand,
     });
@@ -106,7 +106,7 @@ const DnDList = ({
       updatedList = filterItems(reordered);
     }
 
-    const newInclude = updatedList.map(item => item.id);
+    const newInclude = updatedList.filter(item => !exclude?.includes(item.id)).map(i => i.id);
 
     setInclude(newInclude);
 

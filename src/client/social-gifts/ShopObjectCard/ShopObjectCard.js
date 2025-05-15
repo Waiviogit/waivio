@@ -29,7 +29,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const wobjName = getObjectName(wObject);
   const { name } = useParams();
   const history = useHistory();
-  const withRewards = !isEmpty(wObject.propositions) || has(wObject, 'campaigns');
+  const withRewards = !isEmpty(wObject?.propositions) || has(wObject, 'campaigns');
   const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
   const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const shopObjectCardClassList = classNames('ShopObjectCard', {

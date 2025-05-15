@@ -163,7 +163,8 @@ const StatisticPage = () => {
             minimumFractionDigits={0}
             maximumFractionDigits={0}
           />{' '}
-          WAIV (<USDDisplay value={metrics?.availableInMonthUSD} currencyDisplay={'symbol'} />
+          WAIV (
+          <USDDisplay value={Number(metrics?.availableInMonthUSD)} currencyDisplay={'symbol'} />
           )/month
         </p>
         <p>
@@ -175,7 +176,8 @@ const StatisticPage = () => {
               minimumFractionDigits={0}
               maximumFractionDigits={0}
             />{' '}
-            WAIV (<USDDisplay value={metrics?.distributedInMonthUSD} currencyDisplay={'symbol'} />
+            WAIV (
+            <USDDisplay value={Number(metrics?.distributedInMonthUSD)} currencyDisplay={'symbol'} />
             )/month
           </p>
         </p>

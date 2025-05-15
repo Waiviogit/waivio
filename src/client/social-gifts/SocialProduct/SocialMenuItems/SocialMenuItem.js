@@ -69,6 +69,20 @@ const SocialMenuItem = ({ item, isOpen }) => {
     }
   };
 
+  const content = (
+    <>
+      {' '}
+      {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '24px' }} />}
+      <div
+        className={
+          isNestedObjType ? 'SocialMenuItems__item-title--nested' : 'SocialMenuItems__item-title'
+        }
+      >
+        {isImageButton ? getimagesLayout() : itemBody.title}
+      </div>
+    </>
+  );
+
   return (
     <div className="SocialMenuItems__container">
       {webLink ? (
@@ -79,17 +93,11 @@ const SocialMenuItem = ({ item, isOpen }) => {
           href={itemBody.linkToWeb}
           onClick={handleOpenItem}
         >
-          <div className="SocialMenuItems__item-title">
-            {isImageButton ? getimagesLayout() : itemBody.title}
-          </div>
-          {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />}
+          {content}
         </a>
       ) : (
         <div className="SocialMenuItems__item" onClick={handleOpenItem}>
-          <div className="SocialMenuItems__item-title">
-            {isImageButton ? getimagesLayout() : itemBody.title}
-          </div>
-          {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />}
+          {content}
         </div>
       )}
       <div className={`SocialMenuItems__content ${open ? 'SocialMenuItems__content--open' : ''}`}>

@@ -116,6 +116,7 @@ export const getSiteName = createSelector(
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
 export const getCurrency = createSelector([appState], state => state.currency);
+export const getSiteTrusties = createSelector([appState], state => state.trustedAll);
 
 export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
 export const getIsSocialGifts = createSelector([appState], state => state.isSocialGifts);

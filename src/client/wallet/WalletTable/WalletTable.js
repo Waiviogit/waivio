@@ -243,11 +243,12 @@ class WalletTable extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { from, end } = this.props.form.getFieldsValue();
+    const { from, end, addSwaps } = this.props.form.getFieldsValue();
 
     return this.props.getMoreTableUserTransactionHistory({
       filterAccounts: this.state.filterAccounts,
       currency: this.state.currentCurrency,
+      addSwaps,
       type: this.state.tableType,
       ...(this.state.dateEstablished
         ? {

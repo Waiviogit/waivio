@@ -1,9 +1,10 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { isEmpty, get, map, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { getAppHost } from '../../../store/appStore/appSelectors';
 import { sortListItemsBy } from '../wObjectHelper';
 import AddItemModal from './AddItemModal/AddItemModal';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -61,6 +62,7 @@ const CatalogWrap = props => {
   const [sortBy, setSortingBy] = useState();
   const [reward, setReward] = useState();
   const [recencySortList, setRecencySortList] = useState([]);
+  const host = useSelector(getAppHost);
 
   useEffect(() => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
@@ -80,6 +82,7 @@ const CatalogWrap = props => {
               getListItems(wobjectNested),
               defaultSortBy(wobjectNested),
               wobjectNested.sortCustom,
+              host,
             ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
@@ -94,6 +97,7 @@ const CatalogWrap = props => {
                 getListItems(wObject),
                 defaultSortBy(wObject),
                 get(wObject, 'sortCustom', {}),
+                host,
               ),
             );
             setNestedWobj(wObject);
@@ -109,6 +113,7 @@ const CatalogWrap = props => {
             getListItems(wobject),
             defaultSortBy(wobject),
             get(wobject, 'sortCustom', {}),
+            host,
           ),
         );
         setLoadingNestedWobject(false);
@@ -134,7 +139,7 @@ const CatalogWrap = props => {
 
     const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
 
-    setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
+    setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList, host));
     setRecencySortList(currentRecencySortList);
   };
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
@@ -150,7 +155,7 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     setSortingBy(sortType);
-    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {})));
+    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {}), host));
   };
 
   const getListRow = listItem => {

@@ -197,6 +197,7 @@
   "area": "/by-area",
   "prefetch": "/prefetch",
   "wobjects": "/wobjects",
+  "activeCampaigns": "/active-campaigns",
   "experts": "/experts",
   "lastPost": "/last-post",
   "requiredObject": "/required-object",
@@ -273,5 +274,6 @@
   "incoming": "/incoming",
   "buyActions": "/buy-actions",
   "active": "/active",
-  "featured": "/featured"
+  "featured": "/featured",
+  "trusted": "/trusted"
 }

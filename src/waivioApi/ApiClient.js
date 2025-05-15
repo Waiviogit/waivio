@@ -4956,4 +4956,27 @@ export const getAllActiveSites = () => {
     .catch(e => e);
 };
 
+//active campaign
+export const getActiveCampaignsFromApi = (body, follower) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.activeCampaigns}`, {
+    headers: {
+      ...headers,
+      ...(follower ? { follower } : {}),
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
+export const getTrustedUsersList = (host, owner) => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.trusted}`, {
+    headers: { ...headers, ...getAuthHeaders() },
+    method: 'POST',
+    body: JSON.stringify({ host, owner }),
+  })
+    .then(res => res.json())
+    .catch(e => e);
+};
+
 export default null;

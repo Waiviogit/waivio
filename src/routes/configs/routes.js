@@ -350,6 +350,11 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
+              path: '/trusties',
+              exact: true,
+              component: Views.WebsitesTrusties,
+            },
+            {
               path: '/affiliate-codes',
               exact: true,
               component: Views.AffiliateCodes,

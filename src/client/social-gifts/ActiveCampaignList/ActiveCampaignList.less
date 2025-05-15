@@ -1,0 +1,52 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/mixins.less';
+
+.ActiveCampaignList {
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 5px;
+
+    @media @xsmall {
+      .ShopCardWidth();
+    }
+  }
+
+  &__linksList {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    color: #99aab5;
+
+    a {
+      display: inline-block;
+      padding: 0 10px;
+      color: #99aab5;
+      text-transform: capitalize;
+      position: relative;
+      font-size: 18px;
+
+      &:first-child {
+        &::before {
+          content: none;
+        }
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 0;
+        display: block;
+        width: 1px;
+        height: 18px;
+        background-color: #99aab5;
+      }
+    }
+  }
+
+  a.ActiveCampaignList__link--active {
+    color: var(--website-color);
+  }
+}

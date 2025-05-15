@@ -24,6 +24,8 @@ const SocialCampaignCard = ({
   isCampaign,
   intl,
 }) => {
+  const minPhotos = proposition?.requirements?.minPhotos;
+  const isMention = proposition.type === 'mentions';
   const buttonLabel =
     maxReward === proposition.minReward
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
@@ -47,11 +49,9 @@ const SocialCampaignCard = ({
         <div className="SocialCampaignCard__content">
           <h3>
             <FormattedMessage
-              id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-              defaultMessage={`Share {minPhotos} photo${
-                proposition?.requirements?.minPhotos === 1 ? '' : 's'
-              } and earn`}
-              values={{ minPhotos: proposition?.requirements?.minPhotos }}
+              id={`share_photo${minPhotos === 1 ? '' : 's'}_and_earn`}
+              defaultMessage={`Share {minPhotos} photo${minPhotos === 1 ? '' : 's'} and earn`}
+              values={{ minPhotos: minPhotos === 0 ? '' : minPhotos }}
             />
             <span className="SocialCampaignCard__earn">
               {' '}
@@ -68,7 +68,10 @@ const SocialCampaignCard = ({
             <span className="SocialCampaignCard__sponsor ml1">(sponsor)</span>
           </div>
         </div>
-        <div className="Proposition-new__button-container">
+        <div
+          className="Proposition-new__button-container"
+          style={{ marginTop: isMention ? '5px' : '' }}
+        >
           {isCampaign ? (
             <div style={{ marginTop: '8px' }}>
               <span onClick={goToProducts} className="Campaing__button">
@@ -82,6 +85,7 @@ const SocialCampaignCard = ({
           ) : (
             <div className="SocialCampaignCard__reservedButtons">
               <ReservedButtons
+                type={proposition.type}
                 handleReserveForPopover={handleReserveForPopup}
                 handleReserve={() => {
                   openDetailsModal();

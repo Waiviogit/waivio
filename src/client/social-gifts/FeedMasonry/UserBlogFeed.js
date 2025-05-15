@@ -22,6 +22,8 @@ import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
+import './FeedMasonry.less';
+
 const limit = 25;
 
 const UserBlogFeed = ({ user }) => {
@@ -108,7 +110,7 @@ const UserBlogFeed = ({ user }) => {
           >
             <Masonry
               breakpointCols={breakpointColumnsObj(posts?.length)}
-              className="FeedMasonry my-masonry-grid"
+              className={'FeedContainer FeedMasonry my-masonry-grid'}
               columnClassName="my-masonry-grid_column"
             >
               {posts?.map(post => {
