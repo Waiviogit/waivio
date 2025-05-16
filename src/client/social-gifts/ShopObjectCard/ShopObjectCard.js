@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { get, has, isEmpty, truncate, uniq } from 'lodash';
@@ -22,6 +22,7 @@ import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import './ShopObjectCard.less';
 import { getTagName } from '../../../common/helpers/tagsNamesList';
 import useQuery from '../../../hooks/useQuery';
+import InstacartWidget from '../../widgets/InstacartWidget';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -86,9 +87,17 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const locale = useSelector(getUsedLocale);
   const isEnLocale = locale === 'en-US';
   const objLink = `/object/${wObject.author_permlink}`;
+  const onClick = useCallback(
+    e => {
+      const isInstacartButton = e.target.className.includes('instacart');
+
+      if (!isInstacartButton) history.push(link);
+    },
+    [link, history],
+  );
 
   return (
-    <div onClick={() => history.push(link)} className={shopObjectCardClassList}>
+    <div onClick={onClick} className={shopObjectCardClassList}>
       {withRewards && (
         <h3
           className={
@@ -163,7 +172,8 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.affiliateLinks
               .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
               .map(affLink => {
-                if (affLink.type.toLocaleLowerCase() === 'instacart') return null;
+                if (affLink.type.toLocaleLowerCase() === 'instacart')
+                  return <InstacartWidget key={affLink.link} wobjPerm={wObject?.author_permlink} />;
 
                 return <AffiliatLink key={affLink.link} link={affLink} />;
               })}

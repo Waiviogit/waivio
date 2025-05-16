@@ -554,11 +554,7 @@ const SocialProduct = ({
                 {price}
               </div>
               {!showPostModal && isRecipe && instacardAff && (
-                <InstacartWidget
-                  isProduct
-                  className={'SocialProduct__instacard'}
-                  instacartAff={instacardAff}
-                />
+                <InstacartWidget isProduct wobjPerm={wobject.author_permlink} />
               )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails

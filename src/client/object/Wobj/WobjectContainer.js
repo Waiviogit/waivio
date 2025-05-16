@@ -76,46 +76,10 @@ class WobjectContainer extends React.PureComponent {
       clickCount: 0,
       instacardAff: null,
     };
-    this.iframeRef = React.createRef();
-    this.lastVisibilityTime = React.createRef();
   }
 
   componentDidMount() {
     this.getWobjInfo();
-    this.lastVisibilityTime.current = Date.now();
-    const widgetContainer = document.getElementById('shop-with-instacart-v1');
-
-    if (widgetContainer) {
-      const observer = new MutationObserver(ms => {
-        ms.forEach(mutation => {
-          if (mutation.addedNodes.length) {
-            const iframe = widgetContainer.querySelector('iframe');
-
-            if (iframe) {
-              this.iframeRef.current = iframe;
-
-              const iframeObserver = new MutationObserver(m => {
-                m.forEach(i => {
-                  if (i.type === 'attributes' && i.attributeName === 'src') {
-                    this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
-                  }
-                });
-              });
-
-              iframeObserver.observe(iframe, {
-                attributes: true,
-                attributeFilter: ['src'],
-              });
-            }
-          }
-        });
-      });
-
-      observer.observe(widgetContainer, {
-        childList: true,
-        subtree: true,
-      });
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -128,18 +92,6 @@ class WobjectContainer extends React.PureComponent {
       if (element) element.remove();
 
       this.getWobjInfo();
-    }
-
-    if (prevProps.showPostModal !== this.props.showPostModal) {
-      if (this.props.showPostModal) {
-        const element = document.getElementById('standard-instacart-widget-v1');
-
-        if (element) element.remove();
-      } else {
-        const instacardAff = this.state.instacardAff ? this.state.instacardAff : null;
-
-        this.setInstacardScript(instacardAff);
-      }
     }
   }
 
@@ -155,38 +107,6 @@ class WobjectContainer extends React.PureComponent {
     this.props.setEditMode(false);
   }
 
-  setInstacardScript = async instacardAff => {
-    const element = document.getElementById('standard-instacart-widget-v1');
-
-    if (element) await element.remove();
-
-    if (instacardAff && typeof document !== 'undefined') {
-      const fjs = document.getElementsByTagName('script')[0];
-      const js = document.createElement('script');
-
-      js.id = 'standard-instacart-widget-v1';
-      js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
-      js.async = true;
-      js.dataset.source_origin = 'affiliate_hub';
-
-      js.onload = () => {
-        if (window.InstacartWidget) {
-          window.InstacartWidget.init();
-
-          try {
-            window.InstacartWidget.on('click', () => {
-              this.setState({ clickCount: this.state.clickCount + 1 });
-            });
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      };
-
-      await fjs.parentNode.insertBefore(js, fjs);
-    }
-  };
-
   getWobjInfo = () => {
     const name = this.props.match.params.name;
     const newsFilter =
@@ -194,31 +114,7 @@ class WobjectContainer extends React.PureComponent {
         ? { newsFilter: this.props.match.params.itemId }
         : {};
 
-    const element = document.getElementById('standard-instacart-widget-v1');
-
-    if (element) element.remove();
-
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
-      const isRecipe = res.value.object_type === 'recipe';
-      const instacardAff =
-        isRecipe && res?.value?.affiliateLinks
-          ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
-          : null;
-
-      await this.setState({ instacardAff });
-
-      if (instacardAff && typeof document !== 'undefined') {
-        const fjs = document.getElementsByTagName('script')[0];
-        const js = document.createElement('script');
-
-        js.id = 'standard-instacart-widget-v1';
-        js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
-        js.async = true;
-        js.dataset.source_origin = 'affiliate_hub';
-
-        await fjs.parentNode.insertBefore(js, fjs);
-      }
-
       if (this.props.currHost?.includes('waivio')) {
         if (
           (await showDescriptionPage(res.value, this.props.locale)) &&
