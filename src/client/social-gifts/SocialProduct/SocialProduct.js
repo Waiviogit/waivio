@@ -357,7 +357,7 @@ const SocialProduct = ({
           <link itemProp="image" href={image} />
           <meta itemProp="description" content={description} />
           <meta itemProp="recipeCuisine" content={'International'} />
-          <meta itemProp="recipeCategory" content={wobject?.departments[0]?.body} />
+          <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
 
           {/* Время приготовления (ISO 8601 формат) */}
           {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
