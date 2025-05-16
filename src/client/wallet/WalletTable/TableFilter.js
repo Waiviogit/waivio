@@ -69,7 +69,10 @@ const TableFilter = ({
           {getFieldDecorator('filterAccounts')(
             <SearchUsersAutocomplete
               autoFocus={isEmpty(filterUsersList)}
-              handleSelect={handleSelectUser}
+              handleSelect={acc => {
+                handleSelectUser(acc);
+                inputRef.current?.blur();
+              }}
               className="WalletTable__userSearch"
               itemsIdsToOmit={filterUsersList}
               ref={inputRef}
