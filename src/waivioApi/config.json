@@ -275,5 +275,6 @@
   "buyActions": "/buy-actions",
   "active": "/active",
   "featured": "/featured",
+  "instacartLink": "/instacart-link",
   "trusted": "/trusted"
 }

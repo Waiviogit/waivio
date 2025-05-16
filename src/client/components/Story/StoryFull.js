@@ -125,7 +125,6 @@ class StoryFull extends React.Component {
     };
 
     this.images = [];
-    this.imagesAlts = [];
 
     this.handleClick = this.handleClick.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
@@ -138,8 +137,6 @@ class StoryFull extends React.Component {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
-
-    this.setInstacardScript(linkedObjects);
 
     if (typeof window !== 'undefined' && window.location.hash) {
       if (typeof document !== 'undefined') {
@@ -165,31 +162,7 @@ class StoryFull extends React.Component {
     if (hideWhiteBG) {
       if (typeof document !== 'undefined') document.body.classList.remove('white-bg');
     }
-
-    const element = document.getElementById('standard-instacart-widget-v1');
-
-    if (element) element.remove();
   }
-
-  setInstacardScript = async wobjs => {
-    const wobjWithAff = wobjs?.find(obj =>
-      obj?.affiliateLinks?.some(aff => aff.type.toLocaleLowerCase() === 'instacart'),
-    );
-    const instacardAff = wobjWithAff
-      ? wobjWithAff?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
-      : null;
-
-    if (instacardAff && typeof document !== 'undefined') {
-      const fjs = document.getElementsByTagName('script')[0];
-      const js = document.createElement('script');
-
-      js.id = 'standard-instacart-widget-v1';
-      js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
-      js.async = true;
-      js.dataset.source_origin = 'affiliate_hub';
-      await fjs.parentNode.insertBefore(js, fjs);
-    }
-  };
 
   handleMutePostAuthor = post =>
     post.muted ? this.props.muteAuthorPost(post) : this.setState({ visible: true });
@@ -283,12 +256,9 @@ class StoryFull extends React.Component {
       else linkedObjects.push(wobj);
     });
 
-    const wobjWithAff = linkedObjects?.find(obj =>
+    const wobjWithInstacart = linkedObjects?.find(obj =>
       obj?.affiliateLinks?.some(aff => aff.type.toLocaleLowerCase() === 'instacart'),
     );
-    const instacardAff = wobjWithAff
-      ? wobjWithAff?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
-      : null;
 
     const { open, index } = this.state.lightbox;
     const getImagePath = item => getImagePathPost(item);
@@ -385,7 +355,7 @@ class StoryFull extends React.Component {
     return (
       <div
         className="StoryFull"
-        {...(instacardAff ? { itemType: 'https://schema.org/Recipe', itemScope: true } : {})}
+        {...(wobjWithInstacart ? { itemType: 'https://schema.org/Recipe', itemScope: true } : {})}
       >
         {replyUI}
         {!isRecipe && (
@@ -478,16 +448,16 @@ class StoryFull extends React.Component {
             </PostPopoverMenu>
           </div>
         )}
-        {instacardAff && !isRecipe && (
+        {wobjWithInstacart && !isRecipe && (
           <React.Fragment>
             <div style={{ display: 'none' }}>
-              {parseJSON(wobjWithAff?.recipeIngredients)?.map(ingredient => (
+              {parseJSON(wobjWithInstacart?.recipeIngredients)?.map(ingredient => (
                 <span key={ingredient} itemProp="recipeIngredient">
                   {ingredient}
                 </span>
               ))}
             </div>
-            <InstacartWidget className={'shop-with-instacart-v1'} instacartAff={instacardAff} />
+            <InstacartWidget wobjPerm={wobjWithInstacart?.author_permlink} />
           </React.Fragment>
         )}
 
