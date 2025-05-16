@@ -55,7 +55,7 @@ class SearchUsersAutocomplete extends React.Component {
     className: PropTypes.string,
     forwardedRef: PropTypes.oneOfType([
       PropTypes.func,
-      PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+      PropTypes.shape({ current: PropTypes.node }),
     ]),
   };
 
