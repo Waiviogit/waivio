@@ -19,6 +19,7 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
+  shopifySettings: {},
   areas: [],
   isLoadingAreas: false,
   showPayPal: false,
@@ -389,6 +390,12 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         settings: action.payload,
+      };
+    }
+    case websiteAction.GET_SHOPIFY_SETTINGS.SUCCESS: {
+      return {
+        ...state,
+        shopifySettings: action.payload,
       };
     }
     case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.START: {

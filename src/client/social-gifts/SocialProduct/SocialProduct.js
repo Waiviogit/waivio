@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
   getObjectInfo,
   getObjectsRewards,
@@ -32,6 +33,8 @@ import {
   parseAddress,
   parseWobjectField,
   getTitleForLink,
+  isOldInstacartProgram,
+  isNewInstacartProgram,
 } from '../../../common/helpers/wObjectHelper';
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -155,6 +158,7 @@ const SocialProduct = ({
   const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
+  const isProduct = wobject.object_type === 'product';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const price = hoveredOption.price || defaultPrice;
@@ -320,40 +324,10 @@ const SocialProduct = ({
   }, []);
 
   const bestRating = getRatingForSocial(wobject.rating);
-
-  return (
-    <div
-      {...(showPostModal
-        ? {}
-        : {
-            itemType: isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product',
-            itemScope: true,
-          })}
-    >
-      <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="article" />
-        <link rel="canonical" href={productUrl} />
-        <meta property="og:url" content={url} />
-        <meta property="og:image" content={image} />
-        <meta property="og:image:url" content={image} />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={description} />
-        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-        <meta name="twitter:site" content={`@${siteName}`} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" property="twitter:image" content={image} />
-        <meta property="og:site_name" content={siteName} />
-        <link rel="image_src" href={image} />
-        <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
-      </Helmet>
-      {isRecipe ? (
+  const getMicroSchema = () => {
+    if (isRecipe) {
+      return (
         <div>
-          <meta itemProp="name" content={getObjectName(wobject)} />
           <link itemProp="image" href={image} />
           <meta itemProp="description" content={description} />
           <meta itemProp="recipeCuisine" content={'International'} />
@@ -361,7 +335,9 @@ const SocialProduct = ({
 
           {/* Время приготовления (ISO 8601 формат) */}
           {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
-
+          {parseJSON(wobject?.recipeIngredients)?.map(ingredient => (
+            <meta key={ingredient} itemProp="recipeIngredient" content={ingredient} />
+          ))}
           {/* Пищевая ценность (если есть) */}
           {wobject.calories && (
             <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
@@ -377,7 +353,11 @@ const SocialProduct = ({
             </div>
           )}
         </div>
-      ) : (
+      );
+    }
+
+    if (isProduct) {
+      return (
         <div>
           <meta itemProp="mpn" content="925872" />
           <meta itemProp="name" content={getObjectName(wobject)} />
@@ -406,7 +386,43 @@ const SocialProduct = ({
             </div>
           )}
         </div>
-      )}
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div
+      {...(showPostModal || (!isRecipe && !isProduct)
+        ? {}
+        : {
+            itemType: isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product',
+            itemScope: true,
+          })}
+    >
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:type" content="article" />
+        <link rel="canonical" href={productUrl} />
+        <meta property="og:url" content={url} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={description} />
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" property="twitter:image" content={image} />
+        <meta property="og:site_name" content={siteName} />
+        <link rel="image_src" href={image} />
+        <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
+      </Helmet>
+      {getMicroSchema()}
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
@@ -553,9 +569,17 @@ const SocialProduct = ({
               >
                 {price}
               </div>
-              {!showPostModal && isRecipe && instacardAff && (
-                <InstacartWidget isProduct wobjPerm={wobject.author_permlink} />
-              )}
+              {!showPostModal &&
+                isRecipe &&
+                instacardAff &&
+                isOldInstacartProgram(instacardAff) && (
+                  <InstacartWidget
+                    isProduct
+                    className={'SocialProduct__instacard'}
+                    instacartAff={instacardAff}
+                    wobjPerm={wobject.author_permlink}
+                  />
+                )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
                   wobject={wobject}
@@ -584,16 +608,28 @@ const SocialProduct = ({
                   <div className="SocialProduct__subtitle">
                     <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                   </div>
-                  <div>
-                    <div>
-                      {affiliateLinks
-                        .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-                        .map(affLink => {
-                          if (affLink.type.toLocaleLowerCase() === 'instacart') return null;
+                  <div className="SocialProduct__affiliateContainer">
+                    {affiliateLinks
+                      .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+                      .map(affLink => {
+                        if (
+                          affLink.type.toLocaleLowerCase() === 'instacart' &&
+                          isNewInstacartProgram(affLink)
+                        )
+                          return (
+                            <InstacartWidget
+                              key={affLink.link}
+                              wobjPerm={wobject.author_permlink}
+                            />
+                          );
+                        if (
+                          affLink.type.toLocaleLowerCase() === 'instacart' &&
+                          isOldInstacartProgram(affLink)
+                        )
+                          return null;
 
-                          return <AffiliatLink key={affLink.link} link={affLink} />;
-                        })}
-                    </div>
+                        return <AffiliatLink key={affLink.link} link={affLink} />;
+                      })}
                   </div>
                 </div>
               )}

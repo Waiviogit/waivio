@@ -166,7 +166,12 @@ const WobjHeader = ({
         </div>
       </div>
       {!showPostModal && isRecipe && instacardAff && (
-        <InstacartWidget wobjPerm={wobject.author_permlink} />
+        <InstacartWidget
+          containerClassName={'ObjectHeader__instCont'}
+          wobjPerm={wobject.author_permlink}
+          className={'shop-with-instacart-v1'}
+          instacartAff={instacardAff}
+        />
       )}
     </div>
   );

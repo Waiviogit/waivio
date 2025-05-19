@@ -2698,5 +2698,6 @@
   "activeCampaigns_restaurant": "Restaurants",
   "activeCampaigns_business": "Businesses",
   "object_field_featured": "Featured",
-  "manage_rc": "Manage"
+  "manage_rc": "Manage",
+  "shopify_updated_successfully": "Shopify credentials updated successfully"
 }
