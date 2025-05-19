@@ -64,6 +64,7 @@ import {
   showDescriptionPage,
   sortListItems,
   parseWobjectField,
+  isOldInstacartProgram,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -93,6 +94,18 @@ class WobjectContainer extends React.PureComponent {
 
       this.getWobjInfo();
     }
+
+    if (prevProps.showPostModal !== this.props.showPostModal) {
+      if (this.props.showPostModal) {
+        const element = document.getElementById('standard-instacart-widget-v1');
+
+        if (element) element.remove();
+      } else {
+        const instacardAff = this.state.instacardAff ? this.state.instacardAff : null;
+
+        this.setInstacardScript(instacardAff);
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -105,7 +118,42 @@ class WobjectContainer extends React.PureComponent {
     this.props.resetGallery();
     this.props.resetWobjectExpertise();
     this.props.setEditMode(false);
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
   }
+
+  setInstacardScript = async instacardAff => {
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) await element.remove();
+
+    if (instacardAff && isOldInstacartProgram(instacardAff) && typeof document !== 'undefined') {
+      const fjs = document.getElementsByTagName('script')[0];
+      const js = document.createElement('script');
+
+      js.id = 'standard-instacart-widget-v1';
+      js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+      js.async = true;
+      js.dataset.source_origin = 'affiliate_hub';
+
+      js.onload = () => {
+        if (window.InstacartWidget) {
+          window.InstacartWidget.init();
+
+          try {
+            window.InstacartWidget.on('click', () => {
+              this.setState({ clickCount: this.state.clickCount + 1 });
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      };
+
+      await fjs.parentNode.insertBefore(js, fjs);
+    }
+  };
 
   getWobjInfo = () => {
     const name = this.props.match.params.name;
@@ -114,7 +162,31 @@ class WobjectContainer extends React.PureComponent {
         ? { newsFilter: this.props.match.params.itemId }
         : {};
 
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
+
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
+      const isRecipe = res.value.object_type === 'recipe';
+      const instacardAff =
+        isRecipe && res?.value?.affiliateLinks
+          ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+          : null;
+
+      await this.setState({ instacardAff });
+
+      if (instacardAff && isOldInstacartProgram(instacardAff) && typeof document !== 'undefined') {
+        const fjs = document.getElementsByTagName('script')[0];
+        const js = document.createElement('script');
+
+        js.id = 'standard-instacart-widget-v1';
+        js.src = 'https://widgets.instacart.com/widget-bundle-v2.js';
+        js.async = true;
+        js.dataset.source_origin = 'affiliate_hub';
+
+        await fjs.parentNode.insertBefore(js, fjs);
+      }
+
       if (this.props.currHost?.includes('waivio')) {
         if (
           (await showDescriptionPage(res.value, this.props.locale)) &&

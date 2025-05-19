@@ -8,7 +8,12 @@ import { useParams, useHistory } from 'react-router';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { createQueryBreadcrumbs, getObjectName } from '../../../common/helpers/wObjectHelper';
+import {
+  createQueryBreadcrumbs,
+  getObjectName,
+  isNewInstacartProgram,
+  isOldInstacartProgram,
+} from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -172,8 +177,16 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.affiliateLinks
               .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
               .map(affLink => {
-                if (affLink.type.toLocaleLowerCase() === 'instacart')
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isNewInstacartProgram(affLink)
+                )
                   return <InstacartWidget key={affLink.link} wobjPerm={wObject?.author_permlink} />;
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isOldInstacartProgram(affLink)
+                )
+                  return null;
 
                 return <AffiliatLink key={affLink.link} link={affLink} />;
               })}
