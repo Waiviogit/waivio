@@ -132,6 +132,7 @@ export default {
   WebsitesTrusties: loableComponent(
     import('../client/websites/WebsiteTools/Trusties/WebsitesTrusties'),
   ),
+  WebsitesShopify: loableComponent(import('../client/websites/WebsiteTools/Shopify/Shopify')),
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),

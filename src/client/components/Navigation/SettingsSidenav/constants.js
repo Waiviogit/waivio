@@ -206,6 +206,11 @@ export const currentWebsiteSettings = (site, parentHost) => {
       defaultMessage: 'Trusties',
     },
     {
+      to: `/${site}/shopify`,
+      id: 'shopify',
+      defaultMessage: 'Shopify',
+    },
+    {
       to: `/${site}/muted-users`,
       id: 'muted_users',
       defaultMessage: 'Muted users',
