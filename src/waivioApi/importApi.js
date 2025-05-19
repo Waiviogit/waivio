@@ -1428,5 +1428,58 @@ export const changeRepostingBotHost = async (user, host) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getShopifySettings = async (userName, waivioHostName) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
 
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.shopify}${config.credentials}?userName=${userName}&waivioHostName=${waivioHostName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const saveShopifySettings = async (
+  userName,
+  waivioHostName,
+  hostName,
+  accessToken,
+  apiKey,
+  apiSecretKey,
+) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.shopify}${config.credentials}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    body: JSON.stringify({
+      userName,
+      waivioHostName,
+      hostName,
+      accessToken,
+      apiKey,
+      apiSecretKey,
+    }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 export default null;

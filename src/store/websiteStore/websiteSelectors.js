@@ -47,6 +47,9 @@ export const getTrusties = createSelector([websiteState], state => get(state, 't
 export const getTagsSite = createSelector([websiteState], state => get(state, 'tags', {}));
 
 export const getSettingsSite = createSelector([websiteState], state => get(state, 'settings', {}));
+export const getSettingsShopify = createSelector([websiteState], state =>
+  get(state, 'shopifySettings', {}),
+);
 
 export const getIsLoadingAreas = createSelector([websiteState], state => state.isLoadingAreas);
 

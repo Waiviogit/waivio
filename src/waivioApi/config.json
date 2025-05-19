@@ -276,5 +276,7 @@
   "active": "/active",
   "featured": "/featured",
   "instacartLink": "/instacart-link",
-  "trusted": "/trusted"
+  "trusted": "/trusted",
+  "shopify": "/shopify",
+  "credentials": "/credentials"
 }

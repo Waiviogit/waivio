@@ -162,6 +162,7 @@ export default {
       'moderators',
       'authorities',
       'trusties',
+      'shopify',
       'objects',
       'objects-filters',
       'muted-users',

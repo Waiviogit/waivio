@@ -11,6 +11,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { getShopifySettings } from '../../waivioApi/importApi';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -691,6 +692,13 @@ export const getAdsenseSettings = host => ({
   type: GET_ADSENSE_SETTINGS.ACTION,
   payload: {
     promise: ApiClient.getSettingsAdsense(host),
+  },
+});
+export const GET_SHOPIFY_SETTINGS = createAsyncActionType('@website/GET_SHOPIFY_SETTINGS');
+export const getShopifySettingsAction = (user, host) => ({
+  type: GET_SHOPIFY_SETTINGS.ACTION,
+  payload: {
+    promise: getShopifySettings(user, host),
   },
 });
 
