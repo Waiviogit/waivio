@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
@@ -146,6 +147,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
+      <EarnsCommissionsOnPurchases />
     </div>
   );
 };

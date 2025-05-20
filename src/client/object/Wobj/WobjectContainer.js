@@ -65,6 +65,7 @@ import {
   sortListItems,
   parseWobjectField,
   isOldInstacartProgram,
+  getInstacartAff,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -169,9 +170,7 @@ class WobjectContainer extends React.PureComponent {
     this.props.getObject(name, this.props.authenticatedUserName).then(async res => {
       const isRecipe = res.value.object_type === 'recipe';
       const instacardAff =
-        isRecipe && res?.value?.affiliateLinks
-          ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
-          : null;
+        isRecipe && res?.value?.affiliateLinks ? getInstacartAff(res?.value?.affiliateLinks) : null;
 
       await this.setState({ instacardAff });
 

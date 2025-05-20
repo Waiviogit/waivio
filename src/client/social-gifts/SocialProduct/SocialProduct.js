@@ -23,6 +23,7 @@ import {
   getUsedLocale,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
@@ -35,6 +36,7 @@ import {
   getTitleForLink,
   isOldInstacartProgram,
   isNewInstacartProgram,
+  getInstacartAff,
 } from '../../../common/helpers/wObjectHelper';
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -76,7 +78,6 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-import './SocialProduct.less';
 import SocialListItem from './SocialListItem/SocialListItem';
 import { objectFields } from '../../../common/constants/listOfFields';
 import RecipeDetails from './RecipeDetails/RecipeDetails';
@@ -87,6 +88,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -180,9 +182,7 @@ const SocialProduct = ({
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
-    isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type.toLowerCase() === 'instacart')
-      : null;
+    isRecipe && wobject?.affiliateLinks ? getInstacartAff(wobject.affiliateLinks) : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -604,19 +604,20 @@ const SocialProduct = ({
                 </div>
               )}
               {!isEmpty(affiliateLinks) &&
-                !(affiliateLinks.length === 1 && isOldInstacartProgram(instacardAff)) && (
+                !(
+                  affiliateLinks.length === 1 &&
+                  instacardAff &&
+                  isOldInstacartProgram(instacardAff)
+                ) && (
                   <div className="SocialProduct__paddingBottom">
                     <div className="SocialProduct__subtitle">
-                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                      <FormattedMessage id="Affiliate_Link" defaultMessage="Affiliate Link" />:
                     </div>
                     <div className="SocialProduct__affiliateContainer">
                       {affiliateLinks
                         .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
                         .map(affLink => {
-                          if (
-                            affLink.type.toLocaleLowerCase() === 'instacart' &&
-                            isNewInstacartProgram(affLink)
-                          )
+                          if (isNewInstacartProgram(affLink)) {
                             return (
                               <InstacartWidget
                                 key={affLink.link}
@@ -624,15 +625,14 @@ const SocialProduct = ({
                                 instacartAff={affLink}
                               />
                             );
-                          if (
-                            affLink.type.toLocaleLowerCase() === 'instacart' &&
-                            isOldInstacartProgram(affLink)
-                          )
-                            return null;
+                          }
+
+                          if (isOldInstacartProgram(affLink)) return null;
 
                           return <AffiliatLink key={affLink.link} link={affLink} />;
                         })}
                     </div>
+                    <EarnsCommissionsOnPurchases />
                   </div>
                 )}
               {isEmpty(wobject.preview_gallery) && (
