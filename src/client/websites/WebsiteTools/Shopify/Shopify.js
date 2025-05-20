@@ -86,9 +86,9 @@ const AdSenseAds = ({ intl, match, userName }) => {
         necessary information in your Shopify admin dashboard, see Details.
       </p>
       <p>
-        All required information can be found in your Shopify app account. The host name should look
-        like <code>test.myshopify.com</code>. API details are available in the API credentials
-        section.
+        All required information can be found in your Shopify app account. API details are available
+        in the API credentials section. The host name should look like{' '}
+        <code>test.myshopify.com</code>.
       </p>
 
       <h3 key="label-host">Shopify store host name:</h3>
@@ -148,6 +148,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
       />
 
       <Button
+        style={{ marginTop: '25px' }}
         type="primary"
         htmlType="submit"
         loading={buttonLoading}
