@@ -155,7 +155,8 @@ const TopNavigation = ({ location: { pathname } }) => {
             <Link
               to={`${LINKS.SHOP}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.WEBSITES_SHOPIFY),
               })}
             >
               <FormattedMessage id="shop" defaultMessage="Shop" />
