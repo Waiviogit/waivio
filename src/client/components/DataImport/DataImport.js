@@ -17,6 +17,7 @@ import {
   getHistoryImportedObjects,
   getImportedObjects,
   getImportVote,
+  getSyncShopify,
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
@@ -24,6 +25,7 @@ import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/
 import VoteInfoBlock from './VoteInfoBlock';
 
 import './DataImport.less';
+import ShopifyBlock from './ShopifyBlock';
 
 const limit = 30;
 
@@ -38,6 +40,8 @@ const DataImport = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const [shopifySyncs, setShopifySyncs] = useState([]);
+
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -72,6 +76,10 @@ const DataImport = ({ intl }) => {
     });
 
   useEffect(() => {
+    getSyncShopify(authUserName).then(res => {
+      setShopifySyncs(res);
+    });
+
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
@@ -205,6 +213,7 @@ const DataImport = ({ intl }) => {
           defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
         })}
       />
+      <ShopifyBlock shopifySyncs={shopifySyncs} setShopifySyncs={setShopifySyncs} />
       <hr />
       <Button type="primary" onClick={toggleModal}>
         {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}
