@@ -278,5 +278,6 @@
   "instacartLink": "/instacart-link",
   "trusted": "/trusted",
   "shopify": "/shopify",
-  "credentials": "/credentials"
+  "credentials": "/credentials",
+  "sync": "/sync"
 }
