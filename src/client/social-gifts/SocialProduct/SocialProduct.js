@@ -603,36 +603,38 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) && !(affiliateLinks.length === 1 && instacardAff) && (
-                <div className="SocialProduct__paddingBottom">
-                  <div className="SocialProduct__subtitle">
-                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                  </div>
-                  <div className="SocialProduct__affiliateContainer">
-                    {affiliateLinks
-                      .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-                      .map(affLink => {
-                        if (
-                          affLink.type.toLocaleLowerCase() === 'instacart' &&
-                          isNewInstacartProgram(affLink)
-                        )
-                          return (
-                            <InstacartWidget
-                              key={affLink.link}
-                              wobjPerm={wobject.author_permlink}
-                            />
-                          );
-                        if (
-                          affLink.type.toLocaleLowerCase() === 'instacart' &&
-                          isOldInstacartProgram(affLink)
-                        )
-                          return null;
+              {!isEmpty(affiliateLinks) &&
+                !(affiliateLinks.length === 1 && isOldInstacartProgram(instacardAff)) && (
+                  <div className="SocialProduct__paddingBottom">
+                    <div className="SocialProduct__subtitle">
+                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                    </div>
+                    <div className="SocialProduct__affiliateContainer">
+                      {affiliateLinks
+                        .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+                        .map(affLink => {
+                          if (
+                            affLink.type.toLocaleLowerCase() === 'instacart' &&
+                            isNewInstacartProgram(affLink)
+                          )
+                            return (
+                              <InstacartWidget
+                                key={affLink.link}
+                                wobjPerm={wobject.author_permlink}
+                                instacartAff={affLink}
+                              />
+                            );
+                          if (
+                            affLink.type.toLocaleLowerCase() === 'instacart' &&
+                            isOldInstacartProgram(affLink)
+                          )
+                            return null;
 
-                        return <AffiliatLink key={affLink.link} link={affLink} />;
-                      })}
+                          return <AffiliatLink key={affLink.link} link={affLink} />;
+                        })}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
