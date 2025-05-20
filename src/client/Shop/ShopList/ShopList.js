@@ -103,35 +103,37 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
           }
         />
       ) : (
-        <InfiniteSroll loadMore={loadMore} hasMore={hasMore} loader={<Loading />}>
-          <div
-            className={classNames('ShopList__departments', {
-              'ShopList__departments--isSocial': isSocial,
-            })}
-          >
-            {departments?.map(dep => {
-              if (isEmpty(dep.wobjects)) return null;
+        <React.Fragment>
+          <InfiniteSroll loadMore={loadMore} hasMore={hasMore} loader={<Loading />}>
+            <div
+              className={classNames('ShopList__departments', {
+                'ShopList__departments--isSocial': isSocial,
+              })}
+            >
+              {departments?.map(dep => {
+                if (isEmpty(dep.wobjects)) return null;
 
-              return (
-                <div key={dep.department} className="ShopList__departments">
-                  <Link to={getPath(dep.department)} className="ShopList__departments-title">
-                    {dep.department} <Icon size={12} type="right" />
-                  </Link>
-                  <ObjCardListViewSwitcherForShop
-                    isSocial={isSocial}
-                    wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
-                  />
-                  {dep.hasMore && (
-                    <Link className="ShopList__showMore" to={getPath(dep.department)}>
-                      {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
-                      {dep.department}
+                return (
+                  <div key={dep.department} className="ShopList__departments">
+                    <Link to={getPath(dep.department)} className="ShopList__departments-title">
+                      {dep.department} <Icon size={12} type="right" />
                     </Link>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </InfiniteSroll>
+                    <ObjCardListViewSwitcherForShop
+                      isSocial={isSocial}
+                      wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
+                    />
+                    {dep.hasMore && (
+                      <Link className="ShopList__showMore" to={getPath(dep.department)}>
+                        {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
+                        {dep.department}
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </InfiniteSroll>
+        </React.Fragment>
       )}
     </div>
   );

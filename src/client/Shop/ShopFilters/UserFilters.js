@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 
 import ShopFilters from './ShopFilters';
 import {
@@ -19,11 +20,14 @@ const UserFilters = ({ onClose, name, isRecipePage }) => {
     showMoreTagsForUserFilters(name || match.params.name, schema, path, tagCategory, skip, limit);
 
   return (
-    <ShopFilters
-      getDepartmentsFilters={getDepartmentsFilters}
-      onClose={onClose}
-      showMoreTagsForFilters={showMoreTagsForFilters}
-    />
+    <React.Fragment>
+      <ShopFilters
+        getDepartmentsFilters={getDepartmentsFilters}
+        onClose={onClose}
+        showMoreTagsForFilters={showMoreTagsForFilters}
+      />
+      <EarnsCommissionsOnPurchases />
+    </React.Fragment>
   );
 };
 

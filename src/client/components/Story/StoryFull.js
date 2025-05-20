@@ -21,8 +21,12 @@ import {
   isPostDeleted,
   replaceBotWithGuestName,
 } from '../../../common/helpers/postHelpers';
-import { isOldInstacartProgram } from '../../../common/helpers/wObjectHelper';
+import {
+  isOldInstacartProgram,
+  getPreferredInstacartItem,
+} from '../../../common/helpers/wObjectHelper';
 import withAuthActions from '../../auth/withAuthActions';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -287,7 +291,7 @@ class StoryFull extends React.Component {
       obj?.affiliateLinks?.some(aff => aff.type.toLocaleLowerCase() === 'instacart'),
     );
     const instacardAff = wobjWithAff
-      ? wobjWithAff?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+      ? getPreferredInstacartItem(wobjWithAff?.affiliateLinks)
       : null;
 
     const { open, index } = this.state.lightbox;
@@ -487,12 +491,14 @@ class StoryFull extends React.Component {
                 </span>
               ))}
             </div>
-            {isOldInstacartProgram(instacardAff) && (
-              <InstacartWidget
-                className={'shop-with-instacart-v1'}
-                instacartAff={instacardAff}
-                wobjPerm={wobjWithAff?.author_permlink}
-              />
+            {instacardAff && (
+              <div className={'StoryFull__aff'}>
+                <InstacartWidget
+                  className={'shop-with-instacart-v1'}
+                  instacartAff={instacardAff}
+                  wobjPerm={wobjWithAff?.author_permlink}
+                />
+              </div>
             )}
           </React.Fragment>
         )}
@@ -583,6 +589,7 @@ class StoryFull extends React.Component {
                   </div>
                 );
               })}
+              <EarnsCommissionsOnPurchases />
             </Collapse.Panel>
           )}
           {!isEmpty(taggedObjects) && (

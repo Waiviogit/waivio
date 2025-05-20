@@ -245,7 +245,8 @@ const ObjectCardView = ({
               ) && (
                 <div className="ObjectCardView__affiliatLinksWrap">
                   <span className="ObjectCardView__buyOn">
-                    {intl.formatMessage({ id: 'buy_it_on', defaultMessage: 'Buy it on' })}:
+                    {intl.formatMessage({ id: 'Affiliate_Link', defaultMessage: 'Affiliate Link' })}
+                    :
                   </span>
                   <div className="ObjectCardView__affiliatLinks">
                     {wObject.affiliateLinks.map(link => (
