@@ -181,7 +181,13 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isNewInstacartProgram(affLink)
                 )
-                  return <InstacartWidget key={affLink.link} wobjPerm={wObject?.author_permlink} />;
+                  return (
+                    <InstacartWidget
+                      key={affLink.link}
+                      instacartAff={affLink}
+                      wobjPerm={wObject?.author_permlink}
+                    />
+                  );
                 if (
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isOldInstacartProgram(affLink)
