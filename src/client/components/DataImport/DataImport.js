@@ -188,6 +188,7 @@ const DataImport = ({ intl }) => {
             'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
         })}
       </p>
+      <ShopifyBlock shopifySyncs={shopifySyncs} setShopifySyncs={setShopifySyncs} />
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'dataimport'} onlyAuth />
       <p>
         {intl.formatMessage({
@@ -207,13 +208,13 @@ const DataImport = ({ intl }) => {
           } on the account drops below the set threshold.`,
         })}
       </p>
+
       <VoteInfoBlock
         info={intl.formatMessage({
           id: 'data_import_service',
           defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
         })}
       />
-      <ShopifyBlock shopifySyncs={shopifySyncs} setShopifySyncs={setShopifySyncs} />
       <hr />
       <Button type="primary" onClick={toggleModal}>
         {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}

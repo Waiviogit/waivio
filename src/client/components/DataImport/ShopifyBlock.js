@@ -64,12 +64,11 @@ const ShopifyBlock = ({ shopifySyncs, intl, setShopifySyncs }) => {
         <p>
           Connect your Shopify store to import products. To get started, fill in the information in
           the site&apos;s management section under the Shopify tab. Once filled, the store will
-          automatically appear here, and the synchronization process can begin, during which
-          products and other supported objects will be imported.
+          automatically appear here, and the synchronization process can begin.
         </p>
 
         {shopifySyncs.map(sync => (
-          <div key={sync._id} style={{ marginTop: '10px' }}>
+          <div key={sync._id} className="MatchBots__hostName">
             <span>{sync.hostName} </span>(<Link to={`/${sync.waivioHostName}/shopify`}>change</Link>
             ):&nbsp;
             <span className="WalletTable__csv-button" onClick={() => onResumeClick(sync)}>
