@@ -273,7 +273,7 @@ const SocialWrapper = props => {
             !isSocialGifts &&
             !isWidget &&
             typeof window !== 'undefined' &&
-            window.self !== window.top && <Header />}
+            window.self === window.top && <Header />}
           <div
             className={classNames('ShopWebsiteWrapper', {
               'ShopWebsiteWrapper--widget': isWidget,
