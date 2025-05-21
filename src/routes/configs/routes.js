@@ -350,7 +350,7 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
-              path: '/trusties',
+              path: '/trusted-accounts',
               exact: true,
               component: Views.WebsitesTrusties,
             },

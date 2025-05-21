@@ -118,6 +118,7 @@ const HivePowerBlock = ({
 }) => {
   const showDelegation = user.delegated_vesting_shares !== '0.000000 VESTS' || hasDelegations;
   const rcBalance = rcInfo?.max_rc ? rcInfo?.max_rc / billion : 0;
+  const delegatedOut = rcInfo?.delegated_rc ? rcInfo?.delegated_rc / billion : 0;
   const delegationsBalance =
     rcInfo?.delegated_rc || rcInfo?.received_delegated_rc
       ? (rcInfo?.received_delegated_rc - rcInfo?.delegated_rc) / billion
@@ -195,7 +196,9 @@ const HivePowerBlock = ({
       )}
       {
         <RcBlock
+          rcInfo={rcInfo}
           rcBalance={rcBalance}
+          delegatedOut={delegatedOut}
           delegationsBalance={delegationsBalance}
           user={user}
           powerClassList={powerClassList}
