@@ -6,6 +6,8 @@ import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
+import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 
 import WobjHero from '../WobjHero';
 import Affix from '../../components/Utils/Affix';
@@ -110,6 +112,7 @@ const WobjectView = ({
     'center--middleForm': middleRightColumn,
     'center--fullForm': entireColumn,
   });
+  const bestRating = getRatingForSocial(wobject.rating);
 
   const url =
     match.params[0] === 'reviews'
@@ -152,6 +155,26 @@ const WobjectView = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
+      {hasType(wobject, OBJECT_TYPE.RECIPE) && (
+        <div>
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={desc} />
+          <meta itemProp="recipeCuisine" content={'International'} />
+          <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
+          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
+          {wobject.calories && (
+            <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
+              <meta itemProp="calories" content={wobject.calories} />
+            </div>
+          )}
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      )}
       <WobjHero
         isEditMode={isEditMode}
         authenticated={authenticated}
@@ -190,6 +213,7 @@ const WobjectView = ({
                   {!isMobile() && <ObjectExpertise wobject={wobject} />}
                   {wobject.map && !isMobile() && <WobjectNearby wobject={wobject} />}
                   {!isMobile() && <WobjectSidebarFollowers wobject={wobject} />}
+                  {hasType(wobject, OBJECT_TYPE.LIST) && <EarnsCommissionsOnPurchases />}
                 </React.Fragment>
               )}
             </Affix>

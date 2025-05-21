@@ -589,7 +589,7 @@ class StoryFull extends React.Component {
                   </div>
                 );
               })}
-              <EarnsCommissionsOnPurchases />
+              {linkedObjects.some(i => i.affiliateLinks) && <EarnsCommissionsOnPurchases />}
             </Collapse.Panel>
           )}
           {!isEmpty(taggedObjects) && (
