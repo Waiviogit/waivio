@@ -5,6 +5,7 @@ import { Button, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import Loading from '../../components/Icon/Loading';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
+import { billion } from './HivePowerBlock';
 
 const RcBlock = ({
   powerClassList,
@@ -21,6 +22,7 @@ const RcBlock = ({
   rcInfo,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const totalRc = rcBalance + delegatedOut;
   const cancelModal = () => setShowModal(false);
 
   return (
@@ -37,7 +39,7 @@ const RcBlock = ({
               <Loading />
             ) : (
               <span>
-                <FormattedNumber value={(rcBalance + delegatedOut).toFixed(2)} />
+                <FormattedNumber value={totalRc.toFixed(2)} />
                 {'b RC'}
               </span>
             )}
@@ -99,10 +101,14 @@ const RcBlock = ({
         ]}
       >
         <div className={'mb2'}>
-          <b>Max mana:</b> <span>{rcInfo?.max_rc}</span>RC
+          <b>Total RC owned:</b> <FormattedNumber value={totalRc * billion} /> RC
+        </div>
+        <div className={'mb2'}>
+          <b>Maximum RC capacity:</b> <FormattedNumber value={rcInfo?.max_rc} /> RC
         </div>
         <div>
-          <b>Current mana:</b> <span>{rcInfo?.rc_manabar?.current_mana}</span>RC
+          <b>Currently available RC:</b>{' '}
+          <FormattedNumber value={rcInfo?.rc_manabar?.current_mana} /> RC
         </div>
       </Modal>
     </>

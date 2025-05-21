@@ -15,7 +15,7 @@ import PowerDownBlock from './PowerDownBlock';
 import DelegateHiveBlock from './DelegateHiveBlock';
 import RcBlock from './RcBlock';
 
-const billion = 1000000000;
+export const billion = 1000000000;
 const getFormattedTotalDelegatedSP = (
   user,
   totalVestingShares,
