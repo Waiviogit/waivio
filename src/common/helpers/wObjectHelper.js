@@ -31,9 +31,6 @@ export const isOldInstacartProgram = instacartAff =>
 export const isNewInstacartProgram = instacartAff =>
   instacartAff?.link?.includes('instacart-impact');
 
-export const getInstacartAff = items =>
-  items.find(item => item.type === 'instacart' && isOldInstacartProgram(item)) || null;
-
 export const getPreferredInstacartItem = items => {
   const impactItem = items.find(item => item.link.includes('instacart-impact.com'));
 

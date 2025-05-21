@@ -269,7 +269,11 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && !isSocialGifts && !isWidget && <Header />}
+          {!signInPage &&
+            !isSocialGifts &&
+            !isWidget &&
+            typeof window !== 'undefined' &&
+            window.self !== window.top && <Header />}
           <div
             className={classNames('ShopWebsiteWrapper', {
               'ShopWebsiteWrapper--widget': isWidget,
