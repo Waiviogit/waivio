@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
   getObjectInfo,
   getObjectsRewards,
@@ -332,13 +331,7 @@ const SocialProduct = ({
           <meta itemProp="description" content={description} />
           <meta itemProp="recipeCuisine" content={'International'} />
           <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
-
-          {/* Время приготовления (ISO 8601 формат) */}
           {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
-          {parseJSON(wobject?.recipeIngredients)?.map(ingredient => (
-            <meta key={ingredient} itemProp="recipeIngredient" content={ingredient} />
-          ))}
-          {/* Пищевая ценность (если есть) */}
           {wobject.calories && (
             <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
               <meta itemProp="calories" content={wobject.calories} />
@@ -632,7 +625,7 @@ const SocialProduct = ({
                           return <AffiliatLink key={affLink.link} link={affLink} />;
                         })}
                     </div>
-                    <EarnsCommissionsOnPurchases />
+                    <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
                 )}
               {isEmpty(wobject.preview_gallery) && (
