@@ -16,6 +16,7 @@ const RcBlock = ({
   showRcDelegate,
   rcBalance,
   delegationsBalance,
+  delegatedOut,
 }) => (
   <>
     <div className={`UserWalletSummary__itemWrap--no-border ${showRcDelegate ? '' : 'last-block'}`}>
@@ -28,7 +29,7 @@ const RcBlock = ({
             <Loading />
           ) : (
             <span>
-              <FormattedNumber value={rcBalance.toFixed(2)} />
+              <FormattedNumber value={(rcBalance + delegatedOut).toFixed(2)} />
               {'b RC'}
             </span>
           )}
@@ -85,6 +86,7 @@ const RcBlock = ({
 RcBlock.propTypes = {
   delegationsBalance: PropTypes.number,
   rcBalance: PropTypes.number,
+  delegatedOut: PropTypes.number,
   user: PropTypes.shape(),
   delegatedRc: PropTypes.arrayOf(),
   inDelegatedRc: PropTypes.arrayOf(),
