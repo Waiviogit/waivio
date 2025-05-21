@@ -69,7 +69,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
   if (loading) return <Loading />;
 
   return (
-    <div className="AdSenseAds">
+    <div className="AdSenseAds center">
       <h1 className="AffiliateCodes__mainTitle">
         {intl.formatMessage({
           id: 'shopify',

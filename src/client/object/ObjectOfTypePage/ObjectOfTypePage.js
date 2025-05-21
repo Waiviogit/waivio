@@ -31,6 +31,7 @@ import CatalogWrap from '../Catalog/CatalogWrap';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getBreadCrumbs,
+  getIsEditMode,
   getLoadingFlag,
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
@@ -413,6 +414,7 @@ const mapStateToProps = state => ({
   nestedWobject: getWobjectNested(state),
   breadcrumb: getBreadCrumbs(state),
   userName: getAuthenticatedUserName(state),
+  isEditMode: getIsEditMode(state),
 });
 const mapDispatchToProps = {
   appendPageContent: appendObject,

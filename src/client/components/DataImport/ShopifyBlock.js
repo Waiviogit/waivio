@@ -28,6 +28,7 @@ const ShopifyBlock = ({ shopifySyncs, intl, setShopifySyncs }) => {
       setOpenSync(true);
     } else {
       Modal.confirm({
+        className: 'Shopify-confirm',
         title: 'Stop synchronization',
         content: `Are you sure you want to stop the synchronization process from ${sync.waivioHostName}?`,
         onOk: () => {
@@ -42,6 +43,7 @@ const ShopifyBlock = ({ shopifySyncs, intl, setShopifySyncs }) => {
   const onResumeClick = sync => {
     setHost(sync.waivioHostName);
     Modal.confirm({
+      className: 'Shopify-confirm',
       title: 'Resume synchronization',
       content: `Are you sure you want to resume the synchronization process from ${sync.waivioHostName}?`,
       onOk: () => {
