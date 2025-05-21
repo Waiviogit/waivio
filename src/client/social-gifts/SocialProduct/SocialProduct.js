@@ -35,7 +35,7 @@ import {
   getTitleForLink,
   isOldInstacartProgram,
   isNewInstacartProgram,
-  getInstacartAff,
+  getPreferredInstacartItem,
 } from '../../../common/helpers/wObjectHelper';
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -181,7 +181,7 @@ const SocialProduct = ({
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
-    isRecipe && wobject?.affiliateLinks ? getInstacartAff(wobject.affiliateLinks) : null;
+    isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
