@@ -87,8 +87,17 @@ const AdSenseAds = ({ intl, match, userName }) => {
       </p>
       <p>
         All required information can be found in your Shopify app account. API details are available
-        in the API credentials section. The host name should look like{' '}
-        <code>test.myshopify.com</code>.
+        in the API credentials section. The host name should look like test.myshopify.com. Here are{' '}
+        <a
+          href={
+            'https://www.waivio.com/object/rxj-shopify-api-credentials-setup-guide-for-waivio-integration'
+          }
+          target={'_blank'}
+          rel="noreferrer"
+        >
+          instructions
+        </a>{' '}
+        on how to receive all the necessary credentials on Shopify.
       </p>
 
       <h3 key="label-host">Shopify store host name:</h3>
