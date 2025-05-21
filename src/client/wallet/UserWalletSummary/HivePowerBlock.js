@@ -196,6 +196,7 @@ const HivePowerBlock = ({
       )}
       {
         <RcBlock
+          rcInfo={rcInfo}
           rcBalance={rcBalance}
           delegatedOut={delegatedOut}
           delegationsBalance={delegationsBalance}
