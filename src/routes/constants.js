@@ -161,7 +161,7 @@ export default {
       'administrations',
       'moderators',
       'authorities',
-      'trusties',
+      'trusted-accounts',
       'shopify',
       'objects',
       'objects-filters',
