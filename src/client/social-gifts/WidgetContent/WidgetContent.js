@@ -14,6 +14,7 @@ import {
   getSiteName,
   getUsedLocale,
   getUserAdministrator,
+  getAppHost,
 } from '../../../store/appStore/appSelectors';
 import {
   accessTypesArr,
@@ -42,6 +43,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const username = useSelector(getAuthenticatedUserName);
   const authenticated = useSelector(getIsAuthenticated);
   const isAdministrator = useSelector(getUserAdministrator);
+  const appHost = useSelector(getAppHost);
   const accessExtend =
     (haveAccess(wobj || currentWobject, username, accessTypesArr[0]) && isAdministrator) ||
     hasDelegation(wobj || currentWobject, username);
@@ -105,10 +107,18 @@ const WidgetContent = ({ wobj, intl }) => {
         </>
       );
 
+    const createUrl = () => {
+      if (widgetForm.content.includes('/active-campaigns?display=widget')) {
+        return `${widgetForm.content}&host=${appHost}`;
+      }
+
+      return widgetForm.content;
+    };
+
     return (
       <div className="FormPage__block">
         <iframe
-          src={widgetForm.content}
+          src={createUrl()}
           width="100%"
           height="100%"
           allowFullScreen
