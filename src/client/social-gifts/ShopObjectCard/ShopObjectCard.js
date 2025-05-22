@@ -96,7 +96,13 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     e => {
       const isInstacartButton = e.target.className.includes('instacart');
 
-      if (!isInstacartButton) history.push(link);
+      if (!isInstacartButton) {
+        if (query.get('display') === 'widget') {
+          window.location.href = `https://${query.get('host')}${link}`;
+        } else {
+          history.push(link);
+        }
+      }
     },
     [link, history],
   );
