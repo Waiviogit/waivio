@@ -1,3 +1,4 @@
+// --- SearchUsersAutocomplete.js ---
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -17,17 +18,6 @@ import {
 
 import './SearchUsersAutocomplete.less';
 
-@injectIntl
-@connect(
-  state => ({
-    searchUsersResults: getSearchUsersResults(state),
-    isSearchUser: getIsStartSearchUser(state),
-  }),
-  {
-    searchUsers: searchUsersAutoCompete,
-    clearSearchResults: clearSearchObjectsResults,
-  },
-)
 class SearchUsersAutocomplete extends React.Component {
   static defaultProps = {
     intl: {},
@@ -45,7 +35,9 @@ class SearchUsersAutocomplete extends React.Component {
     onChange: undefined,
     notGuest: false,
     className: '',
+    forwardedRef: null,
   };
+
   static propTypes = {
     intl: PropTypes.shape(),
     searchUsersResults: PropTypes.arrayOf(PropTypes.shape),
@@ -61,6 +53,10 @@ class SearchUsersAutocomplete extends React.Component {
     notGuest: PropTypes.bool,
     onChange: PropTypes.func,
     className: PropTypes.string,
+    forwardedRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({ current: PropTypes.node }),
+    ]),
   };
 
   state = {
@@ -79,11 +75,11 @@ class SearchUsersAutocomplete extends React.Component {
   };
 
   handleChange = value => {
+    this.setState({ searchString: value });
+    this.props.setSearchString(value);
     if (typeof this.props.onChange === 'function') {
       this.props.onChange(value);
     }
-    this.setState({ searchString: value });
-    this.props.setSearchString(value);
   };
 
   handleSelect = value => {
@@ -109,7 +105,10 @@ class SearchUsersAutocomplete extends React.Component {
       style,
       isSearchUser,
       className,
+      placeholder,
+      forwardedRef,
     } = this.props;
+
     const searchUsersOptions = searchString
       ? searchUsersResults
           .filter(obj => !itemsIdsToOmit.includes(obj.account))
@@ -124,19 +123,19 @@ class SearchUsersAutocomplete extends React.Component {
       : [];
 
     return (
-      <React.Fragment>
+      <>
         <AutoComplete
+          ref={forwardedRef}
           onChange={this.handleChange}
           onSelect={this.handleSelect}
           onSearch={this.handleSearch}
           optionLabelProp={'label'}
           placeholder={
-            !this.props.placeholder
-              ? intl.formatMessage({
-                  id: 'users_auto_complete_placeholder',
-                  defaultMessage: 'Find users',
-                })
-              : this.props.placeholder
+            placeholder ||
+            intl.formatMessage({
+              id: 'users_auto_complete_placeholder',
+              defaultMessage: 'Find users',
+            })
           }
           value={searchString}
           autoFocus={autoFocus}
@@ -147,12 +146,25 @@ class SearchUsersAutocomplete extends React.Component {
         >
           {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
         </AutoComplete>
-        {this.state.error && (
-          <span className="SearchUser__error">The user must be selected from the search</span>
-        )}
-      </React.Fragment>
+      </>
     );
   }
 }
 
-export default SearchUsersAutocomplete;
+const mapStateToProps = state => ({
+  searchUsersResults: getSearchUsersResults(state),
+  isSearchUser: getIsStartSearchUser(state),
+});
+
+const mapDispatchToProps = {
+  searchUsers: searchUsersAutoCompete,
+  clearSearchResults: clearSearchObjectsResults,
+};
+
+const ConnectedComponent = injectIntl(
+  connect(mapStateToProps, mapDispatchToProps)(SearchUsersAutocomplete),
+);
+
+export default React.forwardRef((props, ref) => (
+  <ConnectedComponent {...props} forwardedRef={ref} />
+));

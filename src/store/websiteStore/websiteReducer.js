@@ -19,6 +19,7 @@ const initialState = {
   loading: false,
   loadingWebsite: false,
   settings: {},
+  shopifySettings: {},
   areas: [],
   isLoadingAreas: false,
   showPayPal: false,
@@ -331,24 +332,27 @@ export default function websiteReducer(state = initialState, action) {
     }
     case websiteAction.DELETE_WEBSITE_TRUSTIES.START: {
       const trusties = [...state.trusties];
-      const findUser = trusties.findIndex(admin => admin.name === action.payload);
+      const namesToDelete = action.payload;
 
-      trusties.splice(findUser, 1, {
-        ...trusties[findUser],
-        loading: true,
-      });
+      const updatedTrusties = trusties.map(trusty =>
+        namesToDelete.includes(trusty.name) ? { ...trusty, loading: true } : trusty,
+      );
 
       return {
         ...state,
-        trusties,
+        trusties: updatedTrusties,
       };
     }
+
     case websiteAction.DELETE_WEBSITE_TRUSTIES.SUCCESS: {
+      const namesToDelete = action.payload;
+
       return {
         ...state,
-        trusties: state.trusties.filter(admin => action.payload !== admin.name),
+        trusties: state.trusties.filter(admin => !namesToDelete.includes(admin.name)),
       };
     }
+
     case websiteAction.ADD_WEBSITE_AUTHORITIES.START: {
       return {
         ...state,
@@ -386,6 +390,12 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         settings: action.payload,
+      };
+    }
+    case websiteAction.GET_SHOPIFY_SETTINGS.SUCCESS: {
+      return {
+        ...state,
+        shopifySettings: action.payload,
       };
     }
     case websiteAction.SET_WEBSITE_OBJECTS_COORDINATES.START: {

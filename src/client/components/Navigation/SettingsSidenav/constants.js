@@ -201,9 +201,9 @@ export const currentWebsiteSettings = (site, parentHost) => {
       defaultMessage: 'Authorities',
     },
     {
-      to: `/${site}/trusties`,
-      id: 'trusties',
-      defaultMessage: 'Trusties',
+      to: `/${site}/trusted-accounts`,
+      id: 'trusted_accounts',
+      defaultMessage: 'Trusted accounts',
     },
     {
       to: `/${site}/muted-users`,
@@ -214,6 +214,11 @@ export const currentWebsiteSettings = (site, parentHost) => {
       to: `/${site}/adsense`,
       id: 'adsense',
       defaultMessage: 'AdSense ads',
+    },
+    {
+      to: `/${site}/shopify`,
+      id: 'shopify',
+      defaultMessage: 'Shopify',
     },
   ];
 

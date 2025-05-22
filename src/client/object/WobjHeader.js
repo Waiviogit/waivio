@@ -21,6 +21,7 @@ import {
   parseWobjectField,
   hasDelegation,
   hasType,
+  getPreferredInstacartItem,
 } from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import {
@@ -65,9 +66,7 @@ const WobjHeader = ({
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
   const instacardAff =
-    isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
-      : null;
+    isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
   const style = {
     backgroundImage: `url("${coverImage}")`,
     paddingBottom: instacardAff ? '20px' : '30px',
@@ -166,7 +165,12 @@ const WobjHeader = ({
         </div>
       </div>
       {!showPostModal && isRecipe && instacardAff && (
-        <InstacartWidget className={'shop-with-instacart-v1'} instacartAff={instacardAff} />
+        <InstacartWidget
+          containerClassName={'ObjectHeader__instCont'}
+          wobjPerm={wobject.author_permlink}
+          className={'shop-with-instacart-v1'}
+          instacartAff={instacardAff}
+        />
       )}
     </div>
   );

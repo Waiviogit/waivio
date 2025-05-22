@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
 
-import { getHelmetIcon } from '../../../store/appStore/appSelectors';
+import { getHelmetIcon, getAppHost } from '../../../store/appStore/appSelectors';
 import {
   getObjectsTypeByTypesName,
   getObjectsTypeByTypesNameMore,
@@ -34,6 +34,7 @@ const NewDiscover = () => {
   const userName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const history = useHistory();
+  const host = useSelector(getAppHost);
   const query = useQuery();
   const dispatch = useDispatch();
   const objects = useSelector(getWobjectsList);
@@ -47,7 +48,7 @@ const NewDiscover = () => {
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
   const { canonicalUrl } = useSeoInfo();
-  const canonical = `${canonicalUrl}?${query?.toString() || ''}`;
+  const canonical = `https://${host}${canonicalUrl}?${query?.toString() || ''}`;
 
   const title = 'Discover - Waivio';
   const tagTitle = search || `${category}: ${tag}`;

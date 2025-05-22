@@ -25,6 +25,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
+  getIsEditMode,
   getLoadingFlag,
   getObject,
   getObjectLists,
@@ -317,6 +318,7 @@ const mapStateToProps = state => ({
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
+  isEditMode: getIsEditMode(state),
 });
 
 const mapDispatchToProps = {

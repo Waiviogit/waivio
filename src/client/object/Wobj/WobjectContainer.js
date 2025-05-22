@@ -64,6 +64,8 @@ import {
   showDescriptionPage,
   sortListItems,
   parseWobjectField,
+  isOldInstacartProgram,
+  getPreferredInstacartItem,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -76,46 +78,10 @@ class WobjectContainer extends React.PureComponent {
       clickCount: 0,
       instacardAff: null,
     };
-    this.iframeRef = React.createRef();
-    this.lastVisibilityTime = React.createRef();
   }
 
   componentDidMount() {
     this.getWobjInfo();
-    this.lastVisibilityTime.current = Date.now();
-    const widgetContainer = document.getElementById('shop-with-instacart-v1');
-
-    if (widgetContainer) {
-      const observer = new MutationObserver(ms => {
-        ms.forEach(mutation => {
-          if (mutation.addedNodes.length) {
-            const iframe = widgetContainer.querySelector('iframe');
-
-            if (iframe) {
-              this.iframeRef.current = iframe;
-
-              const iframeObserver = new MutationObserver(m => {
-                m.forEach(i => {
-                  if (i.type === 'attributes' && i.attributeName === 'src') {
-                    this.setState(prevState => ({ clickCount: prevState.clickCount + 1 }));
-                  }
-                });
-              });
-
-              iframeObserver.observe(iframe, {
-                attributes: true,
-                attributeFilter: ['src'],
-              });
-            }
-          }
-        });
-      });
-
-      observer.observe(widgetContainer, {
-        childList: true,
-        subtree: true,
-      });
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -153,6 +119,9 @@ class WobjectContainer extends React.PureComponent {
     this.props.resetGallery();
     this.props.resetWobjectExpertise();
     this.props.setEditMode(false);
+    const element = document.getElementById('standard-instacart-widget-v1');
+
+    if (element) element.remove();
   }
 
   setInstacardScript = async instacardAff => {
@@ -160,7 +129,7 @@ class WobjectContainer extends React.PureComponent {
 
     if (element) await element.remove();
 
-    if (instacardAff && typeof document !== 'undefined') {
+    if (instacardAff && isOldInstacartProgram(instacardAff) && typeof document !== 'undefined') {
       const fjs = document.getElementsByTagName('script')[0];
       const js = document.createElement('script');
 
@@ -202,12 +171,12 @@ class WobjectContainer extends React.PureComponent {
       const isRecipe = res.value.object_type === 'recipe';
       const instacardAff =
         isRecipe && res?.value?.affiliateLinks
-          ? res?.value?.affiliateLinks?.find(aff => aff.type.toLocaleLowerCase() === 'instacart')
+          ? getPreferredInstacartItem(res?.value?.affiliateLinks)
           : null;
 
       await this.setState({ instacardAff });
 
-      if (instacardAff && typeof document !== 'undefined') {
+      if (instacardAff && isOldInstacartProgram(instacardAff) && typeof document !== 'undefined') {
         const fjs = document.getElementsByTagName('script')[0];
         const js = document.createElement('script');
 

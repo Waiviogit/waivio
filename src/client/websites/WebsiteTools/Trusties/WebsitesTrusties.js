@@ -58,28 +58,27 @@ const WebsitesTrusties = ({
   return (
     <div className="WebsitesAuthorities">
       <h1>
-        <FormattedMessage id="website_trusties" defaultMessage="Website trusties" />
+        <FormattedMessage id="website_trusted_accounts" defaultMessage="Website trusted accounts" />
       </h1>
       <p>
-        The site owner can designate certain users as Trusties, granting them special administrative
-        privileges over specific objects. These users act as trusted collaborators, responsible for
-        the appearance and quality of the content they co-author.
+        The site owner can add certain users as Trusted accounts, granting them special
+        administrative privileges over specific objects. These users act as trusted collaborators,
+        responsible for the appearance and quality of the content they co-author.
       </p>
       <p>
-        Trusties have the ability to approve updates for objects where they have claimed authority.
-        Their decisions are treated with the same weight as those of the owner.
+        Trusted accounts have the ability to approve updates to objects over which they have claimed
+        authority. Their decisions are treated with the same weight as those of the site’s owner or
+        administrators.
       </p>
       <p>
-        In addition, the Trusties system supports a network of trust: when a user is added as a
-        Trustie, all users from their personal trust list are also included. This allows for a
-        scalable delegation of responsibility while maintaining oversight and quality.
+        In addition, the Trusted accounts system supports a network of trust: when a user is added
+        as a Trusted account, all users from their personal trusted accounts list are also included.
+        This allows for scalable delegation of responsibility while maintaining oversight and
+        quality.
       </p>
-      <p>
-        This mechanism enables collaborative object management while ensuring that updates come from
-        a trusted and vetted group.
-      </p>
+
       <h3>
-        <FormattedMessage id="add_trusties" defaultMessage="Add trusties:" />
+        <FormattedMessage id="add_trusted_accounts" defaultMessage="Add trusted accounts" />:
       </h3>
       <div className="WebsitesAuthorities__search-user">
         {selectUser ? (
@@ -112,11 +111,15 @@ const WebsitesTrusties = ({
         <FormattedMessage id="add" defaultMessage="Add" />
       </Button>
       <h3>
-        <FormattedMessage id="website_trusties" defaultMessage="Website trusties" />:
+        <FormattedMessage id="website_trusted_accounts" defaultMessage="Website trusted accounts" />
+        :
       </h3>
       <div className={authoritiesClassList}>
         {emptyTrusties ? (
-          <FormattedMessage id={'web_trusties_empty'} defaultMessage={'No trusties added.'} />
+          <FormattedMessage
+            id={'web_trusties_empty'}
+            defaultMessage={'No trusted accounts added.'}
+          />
         ) : (
           trusties.map(t => (
             <div key={t._id} className="WebsitesAuthorities__user">
@@ -132,7 +135,14 @@ const WebsitesTrusties = ({
               ) : (
                 <Button
                   type="primary"
-                  onClick={() => deleteWebsiteTrusties(host, t.name)}
+                  onClick={() =>
+                    deleteWebsiteTrusties(
+                      host,
+                      trusties
+                        .filter(tr => tr.name === t.name || tr.guideName === t.name)
+                        .map(i => i.name),
+                    )
+                  }
                   loading={t.loading}
                 >
                   <FormattedMessage id="delete" defaultMessage="Delete" />

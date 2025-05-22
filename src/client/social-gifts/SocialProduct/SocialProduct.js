@@ -22,6 +22,7 @@ import {
   getUsedLocale,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
@@ -32,6 +33,9 @@ import {
   parseAddress,
   parseWobjectField,
   getTitleForLink,
+  isOldInstacartProgram,
+  isNewInstacartProgram,
+  getPreferredInstacartItem,
 } from '../../../common/helpers/wObjectHelper';
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -73,7 +77,6 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-import './SocialProduct.less';
 import SocialListItem from './SocialListItem/SocialListItem';
 import { objectFields } from '../../../common/constants/listOfFields';
 import RecipeDetails from './RecipeDetails/RecipeDetails';
@@ -84,6 +87,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -155,6 +159,7 @@ const SocialProduct = ({
   const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
+  const isProduct = wobject.object_type === 'product';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const price = hoveredOption.price || defaultPrice;
@@ -176,9 +181,7 @@ const SocialProduct = ({
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
-    isRecipe && wobject?.affiliateLinks
-      ? wobject?.affiliateLinks?.find(aff => aff.type.toLowerCase() === 'instacart')
-      : null;
+    isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
   const productAuthors = wobject.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -320,10 +323,71 @@ const SocialProduct = ({
   }, []);
 
   const bestRating = getRatingForSocial(wobject.rating);
+  const getMicroSchema = () => {
+    if (isRecipe) {
+      return (
+        <div>
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={description} />
+          <meta itemProp="recipeCuisine" content={'International'} />
+          <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
+          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
+          {wobject.calories && (
+            <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
+              <meta itemProp="calories" content={wobject.calories} />
+            </div>
+          )}
+
+          {/* Оценка рецепта */}
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (isProduct) {
+      return (
+        <div>
+          <meta itemProp="mpn" content="925872" />
+          <meta itemProp="name" content={getObjectName(wobject)} />
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={description} />
+          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+            <link itemProp="url" href={productUrl} />
+            <meta itemProp="availability" content="https://schema.org/InStock" />
+            <meta
+              itemProp="priceValidUntil"
+              content={moment()
+                .add(1, 'months')
+                .format('YYYY-MM-DD')}
+            />
+            <meta
+              itemProp="priceCurrency"
+              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
+            />
+            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
+          </div>
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <div
-      {...(showPostModal
+      {...(showPostModal || (!isRecipe && !isProduct)
         ? {}
         : {
             itemType: isRecipe ? 'https://schema.org/Recipe' : 'https://schema.org/Product',
@@ -351,30 +415,7 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {!isRecipe && (
-        <div>
-          {!isRecipe && <meta itemProp="mpn" content="925872" />}
-          <meta itemProp="name" content={getObjectName(wobject)} />
-          <link itemProp="image" href={image} />
-          <meta itemProp="description" content={description} />
-          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-            <link itemProp="url" href={productUrl} />
-            <meta itemProp="availability" content="https://schema.org/InStock" />
-            <meta
-              itemProp="priceCurrency"
-              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
-            />
-            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-            <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
-          </div>
-          {Boolean(averageRate(bestRating)) && (
-            <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
-            </div>
-          )}
-        </div>
-      )}
+      {getMicroSchema()}
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
@@ -521,13 +562,17 @@ const SocialProduct = ({
               >
                 {price}
               </div>
-              {!showPostModal && isRecipe && instacardAff && (
-                <InstacartWidget
-                  isProduct
-                  className={'SocialProduct__instacard'}
-                  instacartAff={instacardAff}
-                />
-              )}
+              {!showPostModal &&
+                isRecipe &&
+                instacardAff &&
+                isOldInstacartProgram(instacardAff) && (
+                  <InstacartWidget
+                    isProduct
+                    className={'SocialProduct__instacard'}
+                    instacartAff={instacardAff}
+                    wobjPerm={wobject.author_permlink}
+                  />
+                )}
               {showRecipeFields && isRecipe && (
                 <RecipeDetails
                   wobject={wobject}
@@ -551,24 +596,38 @@ const SocialProduct = ({
                   />
                 </div>
               )}
-              {!isEmpty(affiliateLinks) && !(affiliateLinks.length === 1 && instacardAff) && (
-                <div className="SocialProduct__paddingBottom">
-                  <div className="SocialProduct__subtitle">
-                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                  </div>
-                  <div>
-                    <div>
+              {!isEmpty(affiliateLinks) &&
+                !(
+                  affiliateLinks.length === 1 &&
+                  instacardAff &&
+                  isOldInstacartProgram(instacardAff)
+                ) && (
+                  <div className="SocialProduct__paddingBottom">
+                    <div className="SocialProduct__subtitle">
+                      <FormattedMessage id="Affiliate_Link" defaultMessage="Affiliate Link" />:
+                    </div>
+                    <div className="SocialProduct__affiliateContainer">
                       {affiliateLinks
                         .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
                         .map(affLink => {
-                          if (affLink.type.toLocaleLowerCase() === 'instacart') return null;
+                          if (isNewInstacartProgram(affLink)) {
+                            return (
+                              <InstacartWidget
+                                key={affLink.link}
+                                wobjPerm={wobject.author_permlink}
+                                instacartAff={affLink}
+                              />
+                            );
+                          }
+
+                          if (isOldInstacartProgram(affLink)) return null;
 
                           return <AffiliatLink key={affLink.link} link={affLink} />;
                         })}
                     </div>
+                    <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
-                </div>
-              )}
+                )}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}

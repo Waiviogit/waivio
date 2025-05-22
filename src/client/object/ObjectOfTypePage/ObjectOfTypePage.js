@@ -23,7 +23,7 @@ import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
-import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getHtml } from '../../components/Story/Body';
 import { extractImageTags } from '../../../common/helpers/parser';
@@ -31,6 +31,7 @@ import CatalogWrap from '../Catalog/CatalogWrap';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getBreadCrumbs,
+  getIsEditMode,
   getLoadingFlag,
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
@@ -171,7 +172,7 @@ const ObjectOfTypePage = props => {
     e.preventDefault();
 
     props.form.validateFieldsAndScroll((err, values) => {
-      const { appendPageContent, toggleViewEditMode, nestedWobject, breadcrumb } = props;
+      const { appendPageContent, nestedWobject, breadcrumb } = props;
       const { follow } = values;
 
       if (!err) {
@@ -200,9 +201,10 @@ const ObjectOfTypePage = props => {
                 },
               ),
             );
-            toggleViewEditMode();
+            props.setEditMode(!props.isEditMode);
           })
-          .catch(() => {
+          .catch(error => {
+            console.error(error);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
@@ -392,7 +394,7 @@ ObjectOfTypePage.propTypes = {
   nestedWobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
-  toggleViewEditMode: PropTypes.func.isRequired,
+  setEditMode: PropTypes.func.isRequired,
   breadcrumb: PropTypes.shape(),
 };
 
@@ -413,10 +415,12 @@ const mapStateToProps = state => ({
   nestedWobject: getWobjectNested(state),
   breadcrumb: getBreadCrumbs(state),
   userName: getAuthenticatedUserName(state),
+  isEditMode: getIsEditMode(state),
 });
 const mapDispatchToProps = {
   appendPageContent: appendObject,
   setNestedWobj: setNestedWobject,
+  setEditMode,
 };
 
 export default connect(

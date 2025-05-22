@@ -275,5 +275,9 @@
   "buyActions": "/buy-actions",
   "active": "/active",
   "featured": "/featured",
-  "trusted": "/trusted"
+  "instacartLink": "/instacart-link",
+  "trusted": "/trusted",
+  "shopify": "/shopify",
+  "credentials": "/credentials",
+  "sync": "/sync"
 }

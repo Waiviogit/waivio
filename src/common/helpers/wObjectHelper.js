@@ -24,6 +24,23 @@ export const getNumbersFromWobjPrice = wobj => {
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
+export const isOldInstacartProgram = instacartAff =>
+  instacartAff.type.toLowerCase() === 'instacart' &&
+  !instacartAff?.link?.includes('instacart-impact');
+
+export const isNewInstacartProgram = instacartAff =>
+  instacartAff?.link?.includes('instacart-impact');
+
+export const getPreferredInstacartItem = items => {
+  const impactItem = items.find(item => item.link.includes('instacart-impact.com'));
+
+  if (impactItem) {
+    return impactItem;
+  }
+
+  return items.find(item => item.type === 'instacart') || null;
+};
+
 export const getTitleForLink = (wobj = {}) => {
   if (!wobj?.title) return getObjectName(wobj);
   if (wobj?.title.includes(`${getObjectName(wobj)} - `)) return wobj?.title;

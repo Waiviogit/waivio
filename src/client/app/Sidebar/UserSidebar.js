@@ -1,21 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { size } from 'lodash';
+import { useLocation } from 'react-router';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 
 const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, locale }) => {
+  const { pathname } = useLocation();
+
   if (authenticated && isGuest && !size(content)) {
     return (
       <React.Fragment>
         <InterestingObjects />
         <InterestingPeople />
+        {pathname.includes('/favorites') && <EarnsCommissionsOnPurchases />}
       </React.Fragment>
     );
   }
 
-  return <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />;
+  return (
+    <React.Fragment>
+      <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />
+      {pathname.includes('/favorites') && <EarnsCommissionsOnPurchases />}
+    </React.Fragment>
+  );
 };
 
 UserSidebar.propTypes = {

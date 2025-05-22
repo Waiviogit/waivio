@@ -1,16 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../../common/helpers/wObjectHelper';
-import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
+import {
+  getIsWaivio,
+  getSiteTrusties,
+  getUserAdministrator,
+} from '../../store/appStore/appSelectors';
 
 import './ObjectMenu.less';
+import { getAuthorityList } from '../../store/appendStore/appendSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const TAB_NAME = {
   ABOUT: 'about',
@@ -46,6 +52,12 @@ const ObjectMenu = props => {
     name,
     0: tab = isSpesialPage ? props.wobject?.object_type : TAB_NAME.REVIEWS,
   } = useParams();
+  const authorityList = useSelector(getAuthorityList);
+  const trusties = useSelector(getSiteTrusties);
+  const activeHeart = authorityList[props.wobject.author_permlink];
+  const isTrusty = trusties?.includes(props.username);
+  const showUpdates =
+    (props.accessExtend && (props.isWaivio || props.isAdministrator)) || (activeHeart && isTrusty);
   const getItemClasses = key =>
     classNames('ObjectMenu__item', {
       'ObjectMenu__item--active': key.includes(tab),
@@ -133,7 +145,7 @@ const ObjectMenu = props => {
               </Link>
             </li>
           )}
-          {props.accessExtend && (props.isWaivio || props.isAdministrator) && (
+          {showUpdates && (
             <li
               className={getItemClasses(TAB_NAME.UPDATES)}
               role="presentation"
@@ -176,6 +188,7 @@ const ObjectMenu = props => {
 
 ObjectMenu.propTypes = {
   followers: PropTypes.number,
+  username: PropTypes.string,
   accessExtend: PropTypes.bool,
   wobject: PropTypes.shape(),
   isWaivio: PropTypes.bool,
@@ -192,4 +205,5 @@ ObjectMenu.defaultProps = {
 export default connect(state => ({
   isWaivio: getIsWaivio(state),
   isAdministrator: getUserAdministrator(state),
+  username: getAuthenticatedUserName(state),
 }))(ObjectMenu);

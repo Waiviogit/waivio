@@ -4968,6 +4968,18 @@ export const getActiveCampaignsFromApi = (body, follower) => {
   })
     .then(res => res.json())
     .catch(e => e);
+}; //active campaign
+
+export const getInstacartLink = authorPermlink => {
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.instacartLink}`, {
+    headers: {
+      ...headers,
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
 };
 export const getTrustedUsersList = (host, owner) => {
   return fetch(`${config.apiPrefix}${config.sites}${config.trusted}`, {

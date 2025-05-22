@@ -17,6 +17,7 @@ import {
   getHistoryImportedObjects,
   getImportedObjects,
   getImportVote,
+  getSyncShopify,
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
@@ -24,6 +25,7 @@ import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/
 import VoteInfoBlock from './VoteInfoBlock';
 
 import './DataImport.less';
+import ShopifyBlock from './ShopifyBlock';
 
 const limit = 30;
 
@@ -38,6 +40,8 @@ const DataImport = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const [shopifySyncs, setShopifySyncs] = useState([]);
+
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -72,6 +76,10 @@ const DataImport = ({ intl }) => {
     });
 
   useEffect(() => {
+    getSyncShopify(authUserName).then(res => {
+      setShopifySyncs(res);
+    });
+
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
@@ -180,6 +188,7 @@ const DataImport = ({ intl }) => {
             'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
         })}
       </p>
+      <ShopifyBlock shopifySyncs={shopifySyncs} setShopifySyncs={setShopifySyncs} />
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'dataimport'} onlyAuth />
       <p>
         {intl.formatMessage({
@@ -199,6 +208,7 @@ const DataImport = ({ intl }) => {
           } on the account drops below the set threshold.`,
         })}
       </p>
+
       <VoteInfoBlock
         info={intl.formatMessage({
           id: 'data_import_service',

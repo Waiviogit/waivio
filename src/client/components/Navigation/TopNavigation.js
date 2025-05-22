@@ -35,7 +35,8 @@ const LINKS = {
   WEBSITES_ADMINISTRATION: '/administrations',
   WEBSITES_MODERATORS: '/moderators',
   WEBSITES_AUTHORITIES: '/authorities',
-  WEBSITES_TRUSTIES: '/trusties',
+  WEBSITES_TRUSTED_ACCOUNTS: '/trusted-accounts',
+  WEBSITES_SHOPIFY: '/shopify',
   WEBSITES_OBJECT_FILTERS: '/objects-filters',
   WEBSITES_AREAS: '/objects',
   WEBSITES_MUTED_USER: '/muted-users',
@@ -104,7 +105,8 @@ const WEBSITE_URLS = [
   LINKS.WEBSITES_ADMINISTRATION,
   LINKS.WEBSITES_MODERATORS,
   LINKS.WEBSITES_AUTHORITIES,
-  LINKS.WEBSITES_TRUSTIES,
+  LINKS.WEBSITES_TRUSTED_ACCOUNTS,
+  LINKS.WEBSITES_SHOPIFY,
   LINKS.WEBSITES_OBJECT_FILTERS,
   LINKS.WEBSITES_MUTED_USER,
   LINKS.AFFILIATE_CODES,
@@ -153,7 +155,8 @@ const TopNavigation = ({ location: { pathname } }) => {
             <Link
               to={`${LINKS.SHOP}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.WEBSITES_SHOPIFY),
               })}
             >
               <FormattedMessage id="shop" defaultMessage="Shop" />
