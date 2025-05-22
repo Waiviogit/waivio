@@ -1482,6 +1482,27 @@ export const saveShopifySettings = async (
     .then(response => response)
     .catch(e => e);
 };
+export const deleteShopifySettings = async (userName, waivioHostName) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.shopify}${config.credentials}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    body: JSON.stringify({
+      userName,
+      waivioHostName,
+    }),
+    method: 'DELETE',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const syncShopify = async (userName, waivioHostName, authority, locale) => {
   let token = getGuestAccessToken();
