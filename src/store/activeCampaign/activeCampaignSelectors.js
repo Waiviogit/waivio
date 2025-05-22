@@ -3,10 +3,14 @@ import { createSelector } from 'reselect';
 // Base selector
 const activeCampaignState = state => state.activeCampaign;
 
-// Derived selectors
 export const getSelectActiveCampaigns = createSelector(
   [activeCampaignState],
   state => state.activeCampaigns,
+);
+
+export const getSelectActiveCampaignsTypes = createSelector(
+  [activeCampaignState],
+  state => state.activeCampaignTypes,
 ); // Derived selectors
 
 export const getSelectActiveCampaignHasMore = createSelector(

@@ -571,6 +571,8 @@ const SocialProduct = ({
                     className={'SocialProduct__instacard'}
                     instacartAff={instacardAff}
                     wobjPerm={wobject.author_permlink}
+                    withDisclamer
+                    marginBottom={'5px'}
                   />
                 )}
               {showRecipeFields && isRecipe && (
