@@ -5,26 +5,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useRouteMatch } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import useQuery from '../../../hooks/useQuery';
-import { getActiveCampaign } from '../../../store/activeCampaign/activeCampaignActions';
+import {
+  getActiveCampaign,
+  getActiveCampaignTypes,
+} from '../../../store/activeCampaign/activeCampaignActions';
 import {
   getSelectActiveCampaigns,
   getSelectActiveCampaignHasMore,
   getSelectIsLoadingActiveCampaigns,
+  getSelectActiveCampaignsTypes,
 } from '../../../store/activeCampaign/activeCampaignSelectors';
 import ActiveCampaignContent from './ActiveCampaignContent';
 
 import './ActiveCampaignList.less';
 
-const tabs = ['all', 'product', 'business', 'restaurant', 'recipe'];
-
 const ActiveCampaignList = ({ intl }) => {
   const dispatch = useDispatch();
   const activeCampaigns = useSelector(getSelectActiveCampaigns);
   const hasMore = useSelector(getSelectActiveCampaignHasMore);
+  const tabs = useSelector(getSelectActiveCampaignsTypes);
   const isLoading = useSelector(getSelectIsLoadingActiveCampaigns);
   const { objectType } = useParams();
   const match = useRouteMatch();
   const query = useQuery().toString();
+
+  useEffect(() => {
+    dispatch(getActiveCampaignTypes());
+  }, []);
 
   useEffect(() => {
     dispatch(getActiveCampaign({ objectType, skip: 0, limit: 15 }));

@@ -5,8 +5,17 @@ import { isNewInstacartProgram } from '../../common/helpers/wObjectHelper';
 import { getInstacartLink, websiteStatisticsAction } from '../../waivioApi/ApiClient';
 
 import './AffiliatLinks/AffiliatLink.less';
+import EarnsCommissionsOnPurchases from '../statics/EarnsCommissionsOnPurchases';
 
-const InstacartWidget = ({ wobjPerm, instacartAff, className, isProduct, containerClassName }) => {
+const InstacartWidget = ({
+  wobjPerm,
+  instacartAff,
+  className,
+  isProduct,
+  containerClassName,
+  withDisclamer,
+  marginBottom,
+}) => {
   const [loading, setLoading] = React.useState(false);
 
   const handleClick = e => {
@@ -52,18 +61,21 @@ const InstacartWidget = ({ wobjPerm, instacartAff, className, isProduct, contain
       </button>
     </span>
   ) : (
-    <div
-      className={className}
-      id="shop-with-instacart-v1"
-      data-affiliate_id={instacartAff?.affiliateCode}
-      data-source_origin="affiliate_hub"
-      data-affiliate_platform="recipe_widget"
-      style={
-        isProduct
-          ? { marginBottom: '15px' }
-          : { display: 'flex', justifyContent: 'center', marginBottom: '10px' }
-      }
-    />
+    <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
+      <div
+        className={className}
+        id="shop-with-instacart-v1"
+        data-affiliate_id={instacartAff?.affiliateCode}
+        data-source_origin="affiliate_hub"
+        data-affiliate_platform="recipe_widget"
+        style={
+          isProduct
+            ? { marginBottom: marginBottom || '15px' }
+            : { display: 'flex', justifyContent: 'center', marginBottom: marginBottom || '10px' }
+        }
+      />
+      {withDisclamer && <EarnsCommissionsOnPurchases />}
+    </div>
   );
 };
 
@@ -76,6 +88,8 @@ InstacartWidget.propTypes = {
   className: PropTypes.string,
   containerClassName: PropTypes.string,
   isProduct: PropTypes.bool,
+  withDisclamer: PropTypes.bool,
+  marginBottom: PropTypes.string,
 };
 
 export default InstacartWidget;

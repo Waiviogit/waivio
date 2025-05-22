@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
@@ -30,6 +31,8 @@ import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 
+import './WidgetContent.less';
+
 const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
   const [loading, setLoading] = useState(false);
@@ -56,6 +59,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const editObjectClick = () => {
     dispatch(setEditMode(true));
   };
+  const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
 
   useEffect(() => {
     setLoading(true);
@@ -108,7 +112,7 @@ const WidgetContent = ({ wobj, intl }) => {
       );
 
     const createUrl = () => {
-      if (widgetForm.content.includes('/active-campaigns?display=widget')) {
+      if (isActiveCamp) {
         return `${widgetForm.content}&host=${appHost}`;
       }
 
@@ -116,7 +120,11 @@ const WidgetContent = ({ wobj, intl }) => {
     };
 
     return (
-      <div className="FormPage__block">
+      <div
+        className={classNames('FormPage__block', {
+          'FormPage__block--active-campaign': isActiveCamp,
+        })}
+      >
         <iframe
           src={createUrl()}
           width="100%"

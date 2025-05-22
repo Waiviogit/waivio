@@ -4970,6 +4970,18 @@ export const getActiveCampaignsFromApi = (body, follower) => {
     .catch(e => e);
 }; //active campaign
 
+export const getActiveCampaignsTypesFromApi = (body, follower) => {
+  return fetch(`${config.apiPrefix}${config.sites}${config.challenges}${config.objectTypes1}`, {
+    headers: {
+      ...headers,
+      ...(follower ? { follower } : {}),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(e => e);
+}; //active campaign
+
 export const getInstacartLink = authorPermlink => {
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.instacartLink}`, {
     headers: {
