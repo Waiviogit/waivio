@@ -32,7 +32,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
   const showDelete =
     !isEmpty(fields.hostName) ||
     !isEmpty(fields.accessToken) ||
-    !fields.apiKey ||
+    !isEmpty(fields.apiKey) ||
     !isEmpty(fields.apiSecretKey);
   const waivioHostName = match.params.site;
 
