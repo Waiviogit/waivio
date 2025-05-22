@@ -67,39 +67,28 @@ const LightboxHeader = ({
           'LightboxTools__albumInfo-related-container': !isEmpty(relatedWobjs),
         })}
       >
-        {!isPost &&
-          //   ? (
-          //   <div className={'LightboxTools__search-container'}>
-          //     <span className="LightboxTools__albumInfo-title">
-          //       <FormattedMessage id="album" defaultMessage="Album" />:
-          //     </span>
-          //     <SearchObjectsAutocomplete className={'LightboxTools__search-objects'} />
-          //   </div>
-          // ) :
-          getObjectName(wobject) &&
-          albumName &&
-          !isMobile() && (
-            <>
-              <span className="LightboxTools__albumInfo-title">
-                <FormattedMessage id="album" defaultMessage="Album" />:
-              </span>
-              <Select
-                defaultValue={albumName}
-                value={albumName}
-                onSelect={onSelectOption}
-                className={'LightboxTools__select'}
-                dropdownClassName={'LightboxTools__dropdown'}
-              >
-                {options
-                  ?.filter(a => albumName !== a.body)
-                  .map(al => (
-                    <Select.Option key={al.body} label={al.body}>
-                      {avatarOption === al.body ? al.body : `Add to album: ${al.body}`}{' '}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </>
-          )}
+        {!isPost && getObjectName(wobject) && albumName && !isMobile() && (
+          <>
+            <span className="LightboxTools__albumInfo-title">
+              <FormattedMessage id="album" defaultMessage="Album" />:
+            </span>
+            <Select
+              defaultValue={albumName}
+              value={albumName}
+              onSelect={onSelectOption}
+              className={'LightboxTools__select'}
+              dropdownClassName={'LightboxTools__dropdown'}
+            >
+              {options
+                ?.filter(a => albumName !== a.body)
+                .map(al => (
+                  <Select.Option key={al.body} label={al.body}>
+                    {avatarOption === al.body ? al.body : `Add to album: ${al.body}`}{' '}
+                  </Select.Option>
+                ))}
+            </Select>
+          </>
+        )}
         {!isEmpty(relatedWobjs) && !isMobile() && isPost && (
           <>
             <a onClick={closeModal} href={relatedPath} className="LightboxTools__albumInfo-title">
