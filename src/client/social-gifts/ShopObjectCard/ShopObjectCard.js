@@ -97,11 +97,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       const isInstacartButton = e.target.className.includes('instacart');
 
       if (!isInstacartButton) {
-        if (query.get('display') === 'widget') {
-          window.location.href = `https://${query.get('host')}${link}`;
-        } else {
-          history.push(link);
-        }
+        history.push(link);
       }
     },
     [link, history],

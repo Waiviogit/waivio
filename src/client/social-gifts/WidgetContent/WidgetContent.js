@@ -30,6 +30,8 @@ import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 
+import './WidgetContent.less';
+
 const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const editObjectClick = () => {
     dispatch(setEditMode(true));
   };
+  const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
 
   useEffect(() => {
     setLoading(true);
@@ -108,7 +111,7 @@ const WidgetContent = ({ wobj, intl }) => {
       );
 
     const createUrl = () => {
-      if (widgetForm.content.includes('/active-campaigns?display=widget')) {
+      if (isActiveCamp) {
         return `${widgetForm.content}&host=${appHost}`;
       }
 
@@ -116,7 +119,7 @@ const WidgetContent = ({ wobj, intl }) => {
     };
 
     return (
-      <div className="FormPage__block">
+      <div className={'FormPage__block'}>
         <iframe
           src={createUrl()}
           width="100%"
