@@ -9,9 +9,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const LightboxWithAppendForm = ({
   isPost,
-  albums,
   wobject,
-  album,
   pics,
   onCloseRequest,
   onMovePrevRequest,
@@ -19,6 +17,7 @@ const LightboxWithAppendForm = ({
   photoIndex,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [obj, setObj] = useState(wobject || {});
   const [field, setField] = useState('');
   const [selectedAlbum, setSelectedAlbum] = useState('');
   const currentSrc = pics[photoIndex]?.body;
@@ -37,10 +36,9 @@ const LightboxWithAppendForm = ({
       wrapperClassName="LightboxTools"
       imageTitle={
         <LightboxHeader
-          isPost={isPost}
-          albums={albums}
-          wobject={wobject}
-          albumName={album?.body}
+          obj={obj}
+          setObj={setObj}
+          objs={[wobject]}
           userName={pics[photoIndex]?.creator}
           currentSrc={pics[photoIndex]?.body}
           setField={setField}
@@ -64,10 +62,8 @@ const LightboxWithAppendForm = ({
 };
 
 LightboxWithAppendForm.propTypes = {
-  albums: PropTypes.arrayOf(),
   pics: PropTypes.arrayOf(),
   wobject: PropTypes.shape(),
-  album: PropTypes.shape(),
   photoIndex: PropTypes.number,
   onMovePrevRequest: PropTypes.func,
   isPost: PropTypes.bool,
