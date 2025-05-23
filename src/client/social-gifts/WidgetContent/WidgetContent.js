@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
@@ -120,11 +119,7 @@ const WidgetContent = ({ wobj, intl }) => {
     };
 
     return (
-      <div
-        className={classNames('FormPage__block', {
-          'FormPage__block--active-campaign': isActiveCamp,
-        })}
-      >
+      <div className={'FormPage__block'}>
         <iframe
           src={createUrl()}
           width="100%"
