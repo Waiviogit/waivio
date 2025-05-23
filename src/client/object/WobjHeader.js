@@ -171,6 +171,7 @@ const WobjHeader = ({
           className={'shop-with-instacart-v1'}
           instacartAff={instacardAff}
           withDisclamer
+          marginBottom={'5px'}
         />
       )}
     </div>
