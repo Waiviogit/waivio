@@ -572,6 +572,7 @@ const SocialProduct = ({
                     instacartAff={instacardAff}
                     wobjPerm={wobject.author_permlink}
                     withDisclamer
+                    inlineFlex
                     marginBottom={'5px'}
                   />
                 )}

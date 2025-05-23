@@ -170,6 +170,7 @@ const WobjHeader = ({
           wobjPerm={wobject.author_permlink}
           className={'shop-with-instacart-v1'}
           instacartAff={instacardAff}
+          withDisclamer
         />
       )}
     </div>

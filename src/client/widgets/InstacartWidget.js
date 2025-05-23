@@ -15,6 +15,7 @@ const InstacartWidget = ({
   containerClassName,
   withDisclamer,
   marginBottom,
+  inlineFlex,
 }) => {
   const [loading, setLoading] = React.useState(false);
 
@@ -61,7 +62,7 @@ const InstacartWidget = ({
       </button>
     </span>
   ) : (
-    <div style={{ display: 'inline-flex', flexDirection: 'column' }}>
+    <div style={{ display: inlineFlex ? 'inline-flex' : 'flex', flexDirection: 'column' }}>
       <div
         className={className}
         id="shop-with-instacart-v1"
@@ -90,6 +91,7 @@ InstacartWidget.propTypes = {
   isProduct: PropTypes.bool,
   withDisclamer: PropTypes.bool,
   marginBottom: PropTypes.string,
+  inlineFlex: PropTypes.bool,
 };
 
 export default InstacartWidget;
