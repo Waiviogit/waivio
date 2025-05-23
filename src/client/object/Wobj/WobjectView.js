@@ -8,7 +8,6 @@ import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
-
 import WobjHero from '../WobjHero';
 import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
@@ -213,7 +212,9 @@ const WobjectView = ({
                   {!isMobile() && <ObjectExpertise wobject={wobject} />}
                   {wobject.map && !isMobile() && <WobjectNearby wobject={wobject} />}
                   {!isMobile() && <WobjectSidebarFollowers wobject={wobject} />}
-                  {hasType(wobject, OBJECT_TYPE.LIST) && <EarnsCommissionsOnPurchases />}
+                  {(hasType(wobject, OBJECT_TYPE.LIST) || isEmpty(wobject.affiliateCodes)) && (
+                    <EarnsCommissionsOnPurchases />
+                  )}
                 </React.Fragment>
               )}
             </Affix>

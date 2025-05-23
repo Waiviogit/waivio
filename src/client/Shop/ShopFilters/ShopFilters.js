@@ -5,12 +5,13 @@ import { Checkbox, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
+import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
-import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 
 const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) => {
   const [filters, setFilters] = useState();
@@ -82,57 +83,60 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) =>
   if (isEmpty(filters?.rating) && isEmpty(filters?.tagCategoryFilters)) return null;
 
   return (
-    <div className="ShopFilters">
-      <div className="ShopFilters__title">
-        <i className="iconfont icon-trysearchlist ShopFilters__icon" />
-        <FormattedMessage id="filters" defaultMessage="Filters" />
-      </div>
-      <div className="ShopFilters__block">
-        <span className="ShopFilters__subtitle">
-          {intl.formatMessage({ id: 'ratings', defaultMessage: 'Ratings' })}:
-        </span>
-        {filters?.rating?.map(rate => (
-          <div key={rate}>
-            <Checkbox
-              checked={activeFilter?.rating?.some(r => +r === +rate)}
-              onChange={() => setActiveFilters('rating', rate, true)}
-            >
-              {' '}
-              <Rate defaultValue={rate / 2} allowHalf disabled />
-            </Checkbox>
-          </div>
-        ))}
-      </div>
-      {filters?.tagCategoryFilters?.map(category => {
-        if (isEmpty(category.tags)) return null;
-
-        return (
-          <div key={category.tagCategory} className="ShopFilters__block">
-            <span className="ShopFilters__subtitle">{category.tagCategory}:</span>
-            {category?.tags?.map(tag => (
-              <div key={tag}>
-                <Checkbox
-                  checked={activeFilter[category.tagCategory]?.includes(tag)}
-                  onChange={() => setActiveFilters(category.tagCategory, tag)}
-                >
-                  {' '}
-                  {tag}
-                </Checkbox>
-              </div>
-            ))}
-            {category.hasMore && (
-              <span
-                className="ShopFilters__show-more"
-                role="presentation"
-                onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
+    <React.Fragment>
+      <div className="ShopFilters">
+        <div className="ShopFilters__title">
+          <i className="iconfont icon-trysearchlist ShopFilters__icon" />
+          <FormattedMessage id="filters" defaultMessage="Filters" />
+        </div>
+        <div className="ShopFilters__block">
+          <span className="ShopFilters__subtitle">
+            {intl.formatMessage({ id: 'ratings', defaultMessage: 'Ratings' })}:
+          </span>
+          {filters?.rating?.map(rate => (
+            <div key={rate}>
+              <Checkbox
+                checked={activeFilter?.rating?.some(r => +r === +rate)}
+                onChange={() => setActiveFilters('rating', rate, true)}
               >
-                {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-              </span>
-            )}
-          </div>
-        );
-      })}
-    </div>
+                {' '}
+                <Rate defaultValue={rate / 2} allowHalf disabled />
+              </Checkbox>
+            </div>
+          ))}
+        </div>
+        {filters?.tagCategoryFilters?.map(category => {
+          if (isEmpty(category.tags)) return null;
+
+          return (
+            <div key={category.tagCategory} className="ShopFilters__block">
+              <span className="ShopFilters__subtitle">{category.tagCategory}:</span>
+              {category?.tags?.map(tag => (
+                <div key={tag}>
+                  <Checkbox
+                    checked={activeFilter[category.tagCategory]?.includes(tag)}
+                    onChange={() => setActiveFilters(category.tagCategory, tag)}
+                  >
+                    {' '}
+                    {tag}
+                  </Checkbox>
+                </div>
+              ))}
+              {category.hasMore && (
+                <span
+                  className="ShopFilters__show-more"
+                  role="presentation"
+                  onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
+                >
+                  {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <EarnsCommissionsOnPurchases />
+    </React.Fragment>
   );
 };
 

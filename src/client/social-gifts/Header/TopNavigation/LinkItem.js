@@ -13,6 +13,14 @@ const LinkItem = ({ link, index, intl }) => {
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
 
+  if (linkTo.includes('/active-campaigns')) {
+    return (
+      <a key={link.link} className="WebsiteTopNavigation__link" rel="noreferrer" href={link.link}>
+        {getMenuLinkTitle(link, intl, 24)}
+      </a>
+    );
+  }
+
   return link.type === 'blank' ? (
     <a
       key={link.link}
