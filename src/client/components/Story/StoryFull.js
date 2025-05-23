@@ -24,6 +24,7 @@ import {
 import {
   isOldInstacartProgram,
   getPreferredInstacartItem,
+  getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import withAuthActions from '../../auth/withAuthActions';
 import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
@@ -48,6 +49,7 @@ import CommentForm from '../Comments/CommentForm';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import InstacartWidget from '../../widgets/InstacartWidget';
 import './StoryFull.less';
+import AppendModal from '../../object/AppendModal/AppendModal';
 
 @injectIntl
 @withRouter
@@ -127,6 +129,10 @@ class StoryFull extends React.Component {
       },
       loadingAssign: false,
       visible: false,
+      showModal: false,
+      field: false,
+      selectedAlbum: {},
+      obj: this.props.post.wobjects[0],
     };
 
     this.images = [];
@@ -153,7 +159,10 @@ class StoryFull extends React.Component {
           );
 
           window.scrollTo({ top: relElement.offsetTop });
-          this.setState({ activeKeys: !isEmpty(linkedObjects) ? ['1'] : ['2'] });
+          this.setState({
+            activeKeys: !isEmpty(linkedObjects) ? ['1'] : ['2'],
+            obj: this.props.post.wobjects[0],
+          });
         }, 300);
       }
     }
@@ -504,51 +513,62 @@ class StoryFull extends React.Component {
         )}
 
         <div className="StoryFull__content">{content}</div>
-        {open && (
-          <Lightbox
-            wrapperClassName="LightboxTools"
-            imageTitle={
-              <LightboxHeader
-                isPost
-                albums={[]}
-                relatedWobjs={post.wobjects}
-                closeModal={() => this.closeLightboxModal(linkedObjects)}
-                relatedPath={!isEmpty(linkedObjects) ? '#allLinkedObjects' : '#allRelatedObjects'}
-                userName={post.author}
-              />
-            }
-            mainSrc={this.images[index].src}
-            nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
-            prevSrc={
-              imagesArraySize > 1 &&
-              this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src
-            }
-            onCloseRequest={() => {
-              this.setState({
-                lightbox: {
-                  ...this.state.lightbox,
-                  open: false,
-                },
-              });
-            }}
-            onMovePrevRequest={() =>
-              this.setState({
-                lightbox: {
-                  ...this.state.lightbox,
-                  index: (index + (imagesArraySize - 1)) % imagesArraySize,
-                },
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                lightbox: {
-                  ...this.state.lightbox,
-                  index: (index + (this.images.length + 1)) % this.images.length,
-                },
-              })
-            }
-          />
-        )}
+        {open &&
+          (this.state.showModal ? (
+            <AppendModal
+              selectedAlbum={this.state.selectedAlbum}
+              hideModal={() => this.setState({ showModal: false })}
+              fieldBodyContent={this.images[index].src}
+              showModal={this.state.showModal}
+              objName={getObjectName(this.state.obj)}
+              field={this.state.field}
+            />
+          ) : (
+            <Lightbox
+              wrapperClassName="LightboxTools"
+              imageTitle={
+                <LightboxHeader
+                  obj={this.state.obj}
+                  setObj={obj => this.setState({ obj })}
+                  objs={post.wobjects}
+                  userName={post.author}
+                  setField={field => this.setState({ field })}
+                  setShowModal={showModal => this.setState({ showModal })}
+                  setSelectedAlbum={selectedAlbum => this.setState({ selectedAlbum })}
+                />
+              }
+              mainSrc={this.images[index].src}
+              nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
+              prevSrc={
+                imagesArraySize > 1 &&
+                this.images[(index + (imagesArraySize - 1)) % imagesArraySize].src
+              }
+              onCloseRequest={() => {
+                this.setState({
+                  lightbox: {
+                    ...this.state.lightbox,
+                    open: false,
+                  },
+                });
+              }}
+              onMovePrevRequest={() =>
+                this.setState({
+                  lightbox: {
+                    ...this.state.lightbox,
+                    index: (index + (imagesArraySize - 1)) % imagesArraySize,
+                  },
+                })
+              }
+              onMoveNextRequest={() =>
+                this.setState({
+                  lightbox: {
+                    ...this.state.lightbox,
+                    index: (index + (this.images.length + 1)) % this.images.length,
+                  },
+                })
+              }
+            />
+          ))}
 
         <Collapse defaultActiveKey={typeof document !== 'undefined' ? ['1'] : ['1', '2']}>
           {!isEmpty(linkedObjects) && (

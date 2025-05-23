@@ -16,6 +16,7 @@ import {
 const AdSenseAds = ({ intl, match, userName }) => {
   const [loading, setLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const initialFields = {
     hostName: '',
     accessToken: '',
@@ -29,11 +30,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
     apiKey: false,
     apiSecretKey: false,
   });
-  const showDelete =
-    !isEmpty(fields.hostName) ||
-    !isEmpty(fields.accessToken) ||
-    !isEmpty(fields.apiKey) ||
-    !isEmpty(fields.apiSecretKey);
+
   const waivioHostName = match.params.site;
 
   useEffect(() => {
@@ -41,6 +38,13 @@ const AdSenseAds = ({ intl, match, userName }) => {
       setLoading(true);
 
       getShopifySettings(userName, waivioHostName).then(r => {
+        const showDeleteBtn =
+          !isEmpty(r.hostName) ||
+          !isEmpty(r.accessToken) ||
+          !isEmpty(r.apiKey) ||
+          !isEmpty(r.apiSecretKey);
+
+        setShowDelete(showDeleteBtn);
         setFields({
           hostName: r.hostName,
           accessToken: r.accessToken,
@@ -182,7 +186,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
           style={{ marginTop: '25px', marginLeft: '15px' }}
           type="danger"
           htmlType="submit"
-          loading={buttonLoading}
           onClick={handleDeleteShopifySettings}
         >
           <FormattedMessage id="matchBot_btn_delete" defaultMessage="Delete" />
