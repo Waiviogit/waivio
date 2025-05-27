@@ -2703,5 +2703,6 @@
   "activeCampaigns_dish": "Dishes",
   "object_field_featured": "Featured",
   "manage_rc": "Manage",
-  "shopify_updated_successfully": "Shopify credentials updated successfully"
+  "shopify_updated_successfully": "Shopify credentials updated successfully",
+  "object_field_sale": "Sale"
 }
