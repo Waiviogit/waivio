@@ -241,6 +241,13 @@
 
     .price-value {
       white-space: normal;
+
+      &--sale {
+        text-decoration: line-through;
+      }
+      &--orange {
+        color: var(--website-color);
+      }
     }
   }
 }
@@ -265,7 +272,23 @@
 
   .price-value {
     white-space: break-spaces;
+    &--sale {
+      text-decoration: line-through;
+    }
+    &--orange {
+      color: var(--website-color);
+    }
   }
+}
+.sale-button {
+  background-color: var(--website-color);
+  color: @white;
+  border: none;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 0.5rem;
 }
 
 .field-info__title {
