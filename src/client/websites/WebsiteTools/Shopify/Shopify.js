@@ -67,6 +67,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
   const saveSettings = (hostName, accessToken, apiKey, apiSecretKey) => {
     saveShopifySettings(userName, waivioHostName, hostName, accessToken, apiKey, apiSecretKey).then(
       res => {
+        setShowDelete(true);
         setButtonLoading(false);
         if (!res.message) {
           message.success(intl.formatMessage({ id: 'shopify_updated_successfully' }));
@@ -77,6 +78,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
     );
   };
   const handleDeleteShopifySettings = () => {
+    setShowDelete(false);
     deleteShopifySettings(userName, waivioHostName);
     setFields(initialFields);
   };
