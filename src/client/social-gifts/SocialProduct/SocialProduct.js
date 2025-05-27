@@ -162,6 +162,7 @@ const SocialProduct = ({
   const isProduct = wobject.object_type === 'product';
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
+  const sale = get(wobject, 'sale');
   const price = hoveredOption.price || defaultPrice;
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
@@ -553,14 +554,26 @@ const SocialProduct = ({
                     ))}
                 </div>
               )}
-              <div
-                className={
-                  isNil(price) && !isEmpty(wobject?.options)
-                    ? 'SocialProduct__price-no'
-                    : 'SocialProduct__price'
-                }
-              >
-                {price}
+              <div className="flex flex-row">
+                <div
+                  className={
+                    // eslint-disable-next-line no-nested-ternary
+                    isNil(price) && !isEmpty(wobject?.options)
+                      ? 'SocialProduct__price-no'
+                      : sale
+                      ? 'SocialProduct__price--old'
+                      : 'SocialProduct__price'
+                  }
+                >
+                  {price}
+                </div>
+                {sale && (
+                  <div>
+                    {' '}
+                    <span className={'SocialProduct__price'}>{sale}</span>{' '}
+                    <button className="SocialProduct__sale-button">Sale</button>
+                  </div>
+                )}
               </div>
               {!showPostModal &&
                 isRecipe &&

@@ -91,6 +91,7 @@ export const objectFields = {
   promotion: 'promotion',
   featured: 'featured',
   nutrition: 'nutrition',
+  sale: 'sale',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',
@@ -175,6 +176,11 @@ export const promotionFields = {
   promotionSite: 'promotionSite',
   promotionFrom: 'promotionFrom',
   promotionTill: 'promotionTill',
+};
+
+export const saleFields = {
+  saleFrom: 'saleFrom',
+  saleTill: 'saleTill',
 };
 export const manufacturerFields = {
   manufacturer: 'manufacturer',
