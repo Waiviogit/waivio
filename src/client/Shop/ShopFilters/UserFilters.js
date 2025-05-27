@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
-import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 
 import ShopFilters from './ShopFilters';
 import {
@@ -26,7 +25,6 @@ const UserFilters = ({ onClose, name, isRecipePage }) => {
         onClose={onClose}
         showMoreTagsForFilters={showMoreTagsForFilters}
       />
-      <EarnsCommissionsOnPurchases />
     </React.Fragment>
   );
 };

@@ -9,6 +9,7 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
 import Wobj from '../../object/Wobj/Wobj';
+import ActiveCampaignList from '../ActiveCampaignList/ActiveCampaignList';
 import Checklist from '../Checklist/Checklist';
 import { getAlbums } from '../../../store/galleryStore/galleryActions';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
@@ -28,6 +29,8 @@ const ShopMainForWobject = () => {
   }, [links]);
 
   const getFirstPage = () => {
+    if (links[0]?.link?.includes('/active-campaigns')) return <ActiveCampaignList />;
+
     switch (objType) {
       case 'shop':
         return (
