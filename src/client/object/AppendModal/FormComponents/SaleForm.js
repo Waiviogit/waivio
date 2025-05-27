@@ -36,19 +36,20 @@ const SaleForm = ({
         })(
           <Input.TextArea
             autoFocus
-            className={classNames('AppendForm__input', {
+            className={classNames('AppendForm__input-sale', {
               'validation-error': !isSomeValue,
             })}
             disabled={loading}
             placeholder={intl.formatMessage({
               id: 'object_field_sale_placeholder',
-              defaultMessage: 'Enter sale price',
+              defaultMessage: 'Enter sale price information',
             })}
             autoSize={{ minRows: 4, maxRows: 100 }}
           />,
         )}
       </Form.Item>
       <p>The sale price will be displayed next to the original price, which will be crossed out.</p>
+      <br />
       <p className={'ant-form-item-label AppendForm__appendTitles mb1'}>Period</p>
       <div className="WalletTable__date-wrap">
         <span className={'AppendForm__appendTitles mt1 mr3'}>
