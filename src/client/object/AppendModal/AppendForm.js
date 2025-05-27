@@ -4307,11 +4307,7 @@ class AppendForm extends Component {
           isEmpty(getFieldValue(promotionFields.promotionTill))
         );
       case objectFields.sale:
-        return (
-          isEmpty(getFieldValue(objectFields.sale)) ||
-          isEmpty(getFieldValue(saleFields.saleFrom)) ||
-          isEmpty(getFieldValue(saleFields.saleTill))
-        );
+        return isEmpty(getFieldValue(objectFields.sale));
       case objectFields.authors:
         return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;
       case mapObjectTypeFields.mapObjectsList:

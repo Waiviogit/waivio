@@ -763,25 +763,18 @@ class ObjectInfo extends React.Component {
               <span className={sale ? 'price-value--sale fw8' : 'price-value fw8'}>
                 {hoveredOption.price || price}
               </span>
-              {sale && !isEditMode && (
-                <>
-                  <span className="price-value--orange fw8 ml2"> {sale}</span>
-                  <button className="sale-button">Sale</button>
-                </>
-              )}
             </div>
           ),
         )}{' '}
-        {isEditMode &&
-          this.listItem(
-            objectFields.sale,
-            sale && (
-              <div className="flex">
-                {!isEditMode && <span className="field-icon">$</span>}
-                <span className="price-value fw8">{sale}</span>
-              </div>
-            ),
-          )}
+        {this.listItem(
+          objectFields.sale,
+          sale && (
+            <>
+              <div className="price-value--orange fw8 ml2"> {sale}</div>
+              <button className="sale-button">Sale</button>
+            </>
+          ),
+        )}
         {!isEmpty(affiliateLinks) && !isEditMode && (
           <div className="object-sidebar__affLinks">
             <p>Affiliate Link:</p>
@@ -1310,27 +1303,17 @@ class ObjectInfo extends React.Component {
               <div className="flex">
                 {!isEditMode && <span className="field-icon">$</span>}
                 <span className="price-value fw8">{price}</span>
-                {sale && !isEditMode && (
-                  <>
-                    <span className="price-value--orange fw8 ml2"> {sale}</span>
-                    <button className="sale-button">Sale</button>
-                  </>
-                )}
               </div>
             ),
           )}
         {!isOptionsObjectType &&
-          isEditMode &&
           this.listItem(
             objectFields.sale,
             sale && (
-              <div className="flex">
-                {!isEditMode && <span className="field-icon">$</span>}
-                <>
-                  <span className="price-value fw8">{sale}</span>
-                  <button className="sale-button">Sale</button>
-                </>
-              </div>
+              <>
+                <div className="price-value--orange fw8 ml2"> {sale}</div>
+                <button className="sale-button">Sale</button>
+              </>
             ),
           )}
         {this.listItem(
