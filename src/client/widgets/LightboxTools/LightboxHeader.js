@@ -21,12 +21,21 @@ const LightboxHeader = ({
   objs,
   obj,
   setObj,
+  currentSrc,
+  isPost,
 }) => {
   const avatarOption = 'Set as avatar picture';
   const filteredAlbums = albums?.filter(album => album?.body !== 'Related');
   const options = [...filteredAlbums, { body: avatarOption }];
 
   const dispatch = useDispatch();
+
+  const albumName = albums.reduce((result, album) => {
+    if (result) return result;
+    const match = album.items.find(item => item.body === currentSrc);
+
+    return match ? album.body : null;
+  }, null);
 
   const onSelectOption = opt => {
     if (opt === avatarOption) {
@@ -43,7 +52,7 @@ const LightboxHeader = ({
   }, [obj?.author_permlink]);
 
   return (
-    <div className="LightboxTools__container">
+    <div className="LightboxTools__container-header">
       <div className="ObjectCard">
         <div className="ObjectCard__top">
           {userName && (
@@ -62,57 +71,60 @@ const LightboxHeader = ({
           )}
         </div>
       </div>
+      <div className={'LightboxTools__selects'}>
+        {!isEmpty(objs) && !isMobile() && (
+          <div>
+            <span className="LightboxTools__albumInfo-title">
+              <FormattedMessage id="related_object" defaultMessage="Related object" />:
+            </span>
+            <Select
+              defaultValue={objs[0]?.author_permlink}
+              value={obj?.author_permlink}
+              onChange={permlink => {
+                const selectedObj = objs.find(w => w.author_permlink === permlink);
 
-      {!isEmpty(objs) && !isMobile() && (
-        <div>
-          <span className="LightboxTools__albumInfo-title">
-            <FormattedMessage id="related_object" defaultMessage="Related object" />:
-          </span>
-          <Select
-            defaultValue={objs[0]?.author_permlink}
-            value={obj?.author_permlink}
-            onChange={permlink => {
-              const selectedObj = objs.find(w => w.author_permlink === permlink);
-
-              if (selectedObj) setObj(selectedObj);
-            }}
-            className="LightboxTools__select"
-            dropdownClassName="LightboxTools__dropdown"
-          >
-            {objs.map(w => (
-              <Select.Option key={w.author_permlink} value={w.author_permlink}>
-                {w.name || w.default_name}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      )}
-      {!isMobile() && !isEmpty(objs) && (
-        <div>
-          <span className="LightboxTools__albumInfo-title">
-            <FormattedMessage id="album" defaultMessage="Album" />:
-          </span>
-          <Select
-            defaultValue={options[0].body}
-            // value={options[0].body}
-            onSelect={onSelectOption}
-            className={'LightboxTools__select'}
-            dropdownClassName={'LightboxTools__dropdown'}
-          >
-            {options.map(al => (
-              <Select.Option key={al.body} value={al.body}>
-                {avatarOption === al.body ? al.body : `Add to album: ${al.body}`}{' '}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-      )}
+                if (selectedObj) setObj(selectedObj);
+              }}
+              className="LightboxTools__select"
+              dropdownClassName="LightboxTools__dropdown"
+            >
+              {objs.map(w => (
+                <Select.Option key={w.author_permlink} value={w.author_permlink}>
+                  {w.name || w.default_name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        )}
+        {!isMobile() && !isEmpty(objs) && (
+          <div>
+            <span className="LightboxTools__albumInfo-title">
+              <FormattedMessage id="album" defaultMessage="Album" />:
+            </span>
+            <Select
+              defaultValue={isPost ? 'Related' : options[0]?.body}
+              onSelect={onSelectOption}
+              className={'LightboxTools__select'}
+              dropdownClassName={'LightboxTools__dropdown'}
+            >
+              {options.map(al => (
+                <Select.Option key={al.body} value={al.body}>
+                  {avatarOption === al.body || albumName === al.body
+                    ? al.body
+                    : `Add to album: ${al.body}`}{' '}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 LightboxHeader.propTypes = {
   userName: PropType.string,
+  currentSrc: PropType.string,
   setField: PropType.func,
   setShowModal: PropType.func,
   setObj: PropType.func,
@@ -120,6 +132,7 @@ LightboxHeader.propTypes = {
   objs: PropType.arrayOf(),
   albums: PropType.arrayOf(),
   obj: PropType.shape(),
+  isPost: PropType.bool,
 };
 
 LightboxHeader.defaultProps = {
