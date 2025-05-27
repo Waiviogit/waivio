@@ -212,7 +212,7 @@ const WobjectView = ({
                   {!isMobile() && <ObjectExpertise wobject={wobject} />}
                   {wobject.map && !isMobile() && <WobjectNearby wobject={wobject} />}
                   {!isMobile() && <WobjectSidebarFollowers wobject={wobject} />}
-                  {(hasType(wobject, OBJECT_TYPE.LIST) || isEmpty(wobject.affiliateCodes)) && (
+                  {(hasType(wobject, OBJECT_TYPE.LIST) || !isEmpty(wobject.affiliateCodes)) && (
                     <EarnsCommissionsOnPurchases />
                   )}
                 </React.Fragment>
