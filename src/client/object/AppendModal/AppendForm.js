@@ -198,6 +198,7 @@ class AppendForm extends Component {
     match: PropTypes.shape(),
     /* from connect */
     wObject: PropTypes.shape(),
+    postObj: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
     sliderMode: PropTypes.bool,
@@ -229,6 +230,7 @@ class AppendForm extends Component {
     currentUsername: '',
     hideModal: () => {},
     wObject: {},
+    postObj: {},
     post: {},
     updates: [],
     form: {},
@@ -987,11 +989,12 @@ class AppendForm extends Component {
 
     fieldBody.forEach(bodyField => {
       const data = {};
+      const { postObj } = this.props;
 
       data.author = this.props.user.name;
       data.isLike = like;
-      data.parentAuthor = wObject.author;
-      data.parentPermlink = wObject.author_permlink;
+      data.parentAuthor = wObject.author || postObj.author;
+      data.parentPermlink = wObject.author_permlink || postObj.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';

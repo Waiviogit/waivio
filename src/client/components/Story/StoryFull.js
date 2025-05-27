@@ -522,12 +522,14 @@ class StoryFull extends React.Component {
               showModal={this.state.showModal}
               objName={getObjectName(this.state.obj)}
               field={this.state.field}
+              postObj={this.state.obj}
             />
           ) : (
             <Lightbox
               wrapperClassName="LightboxTools"
               imageTitle={
                 <LightboxHeader
+                  isPost
                   obj={this.state.obj}
                   setObj={obj => this.setState({ obj })}
                   objs={post.wobjects}
