@@ -110,6 +110,7 @@ const EditorSlate = props => {
   const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);
   const [draftInit, setDraftInit] = useState(!!params[0]);
+
   const editor = useEditor(props);
   const editorRef = useRef(null);
   const editorClass = `md-RichEditor-editor Body Body--full public-DraftEditor-content${
@@ -183,7 +184,10 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+    console.log('lastSelection', lastSelection);
+    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
+      at: lastSelection.current.anchor.path,
+    });
   };
 
   // Drug and drop method
@@ -225,7 +229,9 @@ const EditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
+        at: lastSelection.current.anchor.path,
+      });
     });
 
     return true;
@@ -348,7 +354,7 @@ const EditorSlate = props => {
     if (event.key === 'Enter') {
       removeAllInlineFormats(editor);
 
-      if (selectedElement.type === 'listItem' && selectedElement.children[0].text === '') {
+      if (['listItem'].includes(selectedElement.type) && selectedElement.children[0].text === '') {
         const [list] = getParentList(path, editor);
 
         event.preventDefault();
@@ -367,13 +373,17 @@ const EditorSlate = props => {
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
-        const selectedLeaf = Node.descendant(editor, path);
+        event.preventDefault();
+        // Insert a new block after the current block
+        Transforms.insertNodes(editor, {
+          type: 'paragraph',
+          children: [{ text: '' }],
+        });
 
-        if (selectedLeaf.text.length === offset) {
-          setTimeout(() => {
-            Transforms.setNodes(editor, { type: 'paragraph' });
-          }, 0);
-        }
+        // Keep the current block styles intact
+        Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
+
+        return true;
       } else if (isSoftNewlineEvent(event)) {
         event.preventDefault();
         editor.insertText('\n');
@@ -430,6 +440,10 @@ const EditorSlate = props => {
     if (!draftInit) onChange(editor);
     setDraftInit(false);
     setValue(newState);
+
+    if (editor.selection && Range.isCollapsed(editor.selection)) {
+      lastSelection.current = editor.selection;
+    }
   };
 
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
@@ -442,6 +456,10 @@ const EditorSlate = props => {
     },
     [],
   );
+
+  const lastSelection = useRef(null);
+
+  const handleBlur = () => {};
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.slateEditor = editor;
@@ -477,6 +495,14 @@ const EditorSlate = props => {
     }
   }, [body, initiallized]);
 
+  const handleFocus = () => {
+    if (!editor.selection && lastSelection.current) {
+      Transforms.select(editor, lastSelection.current);
+    }
+    props.setEditor(editor);
+    if (props.onFocus) props.onFocus();
+  };
+
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
@@ -499,15 +525,13 @@ const EditorSlate = props => {
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
-            onFocus={() => {
-              props.setEditor(editor);
-              if (props.onFocus) props.onFocus();
-            }}
-            onBlur={() => {
-              // editor.lastSelection = editor.selection;
-            }}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
             spellCheck={false}
-            onPaste={handlePastedFiles}
+            autoCorrect={false}
+            onPaste={(e) => {
+              handlePastedFiles(e)
+            }}
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
@@ -522,6 +546,7 @@ const EditorSlate = props => {
             size={isComment ? 25 : 30}
             initialPosTop={initialPosTopBtn}
             ADD_BTN_DIF={ADD_BTN_DIF}
+            lastSelection={lastSelection.current}
           />
         </div>
       </div>

@@ -5,6 +5,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { useSlate } from 'slate-react';
 import classNames from 'classnames';
+import { isAndroidDevice } from '../../../../common/helpers/apiHelpers';
 
 import { getSelection } from '../util';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
@@ -44,7 +45,9 @@ const AddButtonSlate = props => {
         }
         if (bound.top > 0) {
           nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-        } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || '-14px';
+        } else if (bound.top <= 0) {
+          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosOfBtn?.current?.top || '-14px';
+        }
         if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
           initialPosOfBtn.current.top = nodeStyle.top;
       }

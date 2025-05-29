@@ -40,6 +40,7 @@ const Checklist = ({
   setNestedObject,
   wobject,
   getObjectAction,
+                     isMain
 }) => {
   const [loading, setLoading] = useState(false);
   const host = useSelector(getAppHost);
@@ -59,7 +60,7 @@ const Checklist = ({
   const title = getTitleForLink(wobject);
   const desc = wobject?.description || mainObj?.description;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
-  const image = getObjectAvatar(wobject) || favicon;
+  const image = isMain ? favicon : getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true, wobject.object_type);
   const breadbcrumbsFromQuery = query.get('breadcrumbs');
 
@@ -155,6 +156,7 @@ Checklist.propTypes = {
     }),
   }).isRequired,
   setBreadcrumb: PropTypes.func.isRequired,
+  isMain: PropTypes.func,
 };
 
 Checklist.fetchData = ({ store, match, query }) => {
