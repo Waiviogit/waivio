@@ -1037,8 +1037,8 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: getFieldValue(objectFields.sale),
-          startDate: getFieldValue(saleFields.saleFrom)?.valueOf(),
-          endDate: getFieldValue(saleFields.saleTill)?.valueOf(),
+          startDate: getFieldValue(saleFields.saleFrom)?.valueOf() || undefined,
+          endDate: getFieldValue(saleFields.saleTill)?.valueOf() || undefined,
         };
       }
       if ([objectFields.groupFollowers, objectFields.groupFollowing].includes(currentField)) {
@@ -4311,11 +4311,7 @@ class AppendForm extends Component {
           isEmpty(getFieldValue(promotionFields.promotionTill))
         );
       case objectFields.sale:
-        return (
-          isEmpty(getFieldValue(objectFields.sale)) ||
-          isEmpty(getFieldValue(saleFields.saleFrom)) ||
-          isEmpty(getFieldValue(saleFields.saleTill))
-        );
+        return isEmpty(getFieldValue(objectFields.sale));
       case objectFields.authors:
         return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;
       case mapObjectTypeFields.mapObjectsList:
