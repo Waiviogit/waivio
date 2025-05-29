@@ -27,7 +27,8 @@
   &__select {
     border-radius: 4px;
     padding: 4px 16px;
-    min-width: 200px;
+    min-width: 155px;
+    max-width: 170px;
     top: 10px;
     line-height: 1;
     text-overflow: ellipsis;
@@ -37,6 +38,11 @@
     opacity: 0.7;
     border: 1px solid @normal-grey;
     background-color: @grey-nero;
+
+    @media @medium {
+      min-width: 200px;
+      max-width: 200px;
+    }
 
     .ant-select-selection-selected-value {
       color: @white-smoke;
@@ -76,20 +82,28 @@
   &__container {
     font-size: 16px;
     display: flex;
-    width: 95%;
+    width: 100%;
     justify-content: space-between;
+    @media (min-width: @medium-bp) {
+      width: 95%;
+    }
   }
   &__selects {
     display: flex;
     justify-content: space-between;
     width: 66%;
+    padding-top: 1px;
   }
   &__container-header {
     height: 60px;
     font-size: 16px;
     display: flex;
-    width: 77%;
-    justify-content: space-between;
+    width: 83%;
+    justify-content: flex-start;
+    @media @medium {
+      width: 77%;
+      justify-content: space-between;
+    }
   }
   &__guestContainer {
     font-size: 16px;

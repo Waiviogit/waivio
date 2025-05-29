@@ -50,6 +50,7 @@ import { parseJSON } from '../../../common/helpers/parseJSON';
 import InstacartWidget from '../../widgets/InstacartWidget';
 import './StoryFull.less';
 import AppendModal from '../../object/AppendModal/AppendModal';
+import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
 
 @injectIntl
 @withRouter
@@ -539,6 +540,7 @@ class StoryFull extends React.Component {
                   setSelectedAlbum={selectedAlbum => this.setState({ selectedAlbum })}
                 />
               }
+              imageCaption={<LightboxFooter post={this.images[index]} />}
               mainSrc={this.images[index].src}
               nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
               prevSrc={
