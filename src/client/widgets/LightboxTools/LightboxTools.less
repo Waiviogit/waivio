@@ -4,6 +4,7 @@
 .LightboxTools {
   &__search-container {
     display: flex;
+    justify-content: space-evenly;
     align-items: center;
   }
   &__search-objects {
@@ -26,7 +27,9 @@
   &__select {
     border-radius: 4px;
     padding: 4px 16px;
-    min-width: 300px;
+    min-width: 155px;
+    max-width: 170px;
+    top: 10px;
     line-height: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -35,6 +38,11 @@
     opacity: 0.7;
     border: 1px solid @normal-grey;
     background-color: @grey-nero;
+
+    @media @medium {
+      min-width: 200px;
+      max-width: 200px;
+    }
 
     .ant-select-selection-selected-value {
       color: @white-smoke;
@@ -76,11 +84,31 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+    @media (min-width: @medium-bp) {
+      width: 95%;
+    }
+  }
+  &__selects {
+    display: flex;
+    justify-content: space-between;
+    width: 66%;
+    padding-top: 1px;
+  }
+  &__container-header {
+    height: 60px;
+    font-size: 16px;
+    display: flex;
+    width: 83%;
+    justify-content: flex-start;
+    @media @medium {
+      width: 77%;
+      justify-content: space-between;
+    }
   }
   &__guestContainer {
     font-size: 16px;
     display: flex;
-    width: 100%;
+    width: 95%;
     justify-content: flex-end;
   }
   &__albumInfo,

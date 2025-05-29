@@ -1,34 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select } from 'antd';
 import { isEmpty } from 'lodash';
 import * as PropType from 'prop-types';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import Avatar from '../../components/Avatar';
-import ObjectAvatar from '../../components/ObjectAvatar';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
-// import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
+import { getAlbums } from '../../../store/galleryStore/galleryActions';
 import './LightboxTools.less';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 const LightboxHeader = ({
   userName,
-  albumName,
-  relatedWobjs,
-  relatedPath,
-  closeModal,
-  wobject,
   albums,
   setField,
   setShowModal,
   setSelectedAlbum,
+  objs,
+  obj,
+  setObj,
+  currentSrc,
   isPost,
+  relatedAlbum = {},
 }) => {
+  const isAuth = useSelector(getIsAuthenticated);
   const avatarOption = 'Set as avatar picture';
-  const filteredAlbums = albums?.filter(album => album?.body !== 'Related');
-  const options = [...filteredAlbums, { body: avatarOption }];
+  const options = [...albums, { body: avatarOption }];
+
+  const dispatch = useDispatch();
+
+  const albumName = [...albums, relatedAlbum].reduce((result, album) => {
+    if (result) return result;
+    const match = album.items?.find(item => item.body === currentSrc);
+
+    return match ? album.body : null;
+  }, null);
 
   const onSelectOption = opt => {
     if (opt === avatarOption) {
@@ -40,8 +49,12 @@ const LightboxHeader = ({
     setShowModal(true);
   };
 
+  useEffect(() => {
+    dispatch(getAlbums(obj?.author_permlink));
+  }, [obj?.author_permlink]);
+
   return (
-    <div className="LightboxTools__container">
+    <div className="LightboxTools__container-header">
       <div className="ObjectCard">
         <div className="ObjectCard__top">
           {userName && (
@@ -60,85 +73,75 @@ const LightboxHeader = ({
           )}
         </div>
       </div>
+      {isAuth && (
+        <div className={'LightboxTools__selects'}>
+          {!isEmpty(objs) && !isMobile() && (
+            <div>
+              <span className="LightboxTools__albumInfo-title">
+                <FormattedMessage id="related_object" defaultMessage="Related object" />:
+              </span>
+              <Select
+                defaultValue={objs[0]?.author_permlink}
+                value={obj?.author_permlink}
+                onChange={permlink => {
+                  const selectedObj = objs.find(w => w.author_permlink === permlink);
 
-      <div
-        className={classNames({
-          'LightboxTools__albumInfo-container': !isEmpty(albumName),
-          'LightboxTools__albumInfo-related-container': !isEmpty(relatedWobjs),
-        })}
-      >
-        {!isPost &&
-          //   ? (
-          //   <div className={'LightboxTools__search-container'}>
-          //     <span className="LightboxTools__albumInfo-title">
-          //       <FormattedMessage id="album" defaultMessage="Album" />:
-          //     </span>
-          //     <SearchObjectsAutocomplete className={'LightboxTools__search-objects'} />
-          //   </div>
-          // ) :
-          getObjectName(wobject) &&
-          albumName &&
-          !isMobile() && (
-            <>
+                  if (selectedObj) setObj(selectedObj);
+                }}
+                className="LightboxTools__select"
+                dropdownClassName="LightboxTools__dropdown"
+              >
+                {objs.map(w => (
+                  <Select.Option key={w.author_permlink} value={w.author_permlink}>
+                    {w.name || w.default_name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+          )}
+          {!isMobile() && !isEmpty(objs) && (
+            <div>
               <span className="LightboxTools__albumInfo-title">
                 <FormattedMessage id="album" defaultMessage="Album" />:
               </span>
               <Select
-                defaultValue={albumName}
-                value={albumName}
+                defaultValue={isPost ? 'Related' : albumName}
                 onSelect={onSelectOption}
                 className={'LightboxTools__select'}
                 dropdownClassName={'LightboxTools__dropdown'}
               >
-                {options
-                  ?.filter(a => albumName !== a.body)
-                  .map(al => (
-                    <Select.Option key={al.body} label={al.body}>
-                      {avatarOption === al.body ? al.body : `Add to album: ${al.body}`}{' '}
-                    </Select.Option>
-                  ))}
+                {options.map(al => (
+                  <Select.Option key={al.body} value={al.body}>
+                    {avatarOption === al.body || albumName === al.body
+                      ? al.body
+                      : `Add to album: ${al.body}`}{' '}
+                  </Select.Option>
+                ))}
               </Select>
-            </>
-          )}
-        {!isEmpty(relatedWobjs) && !isMobile() && isPost && (
-          <>
-            <a onClick={closeModal} href={relatedPath} className="LightboxTools__albumInfo-title">
-              <FormattedMessage id="related_wobjects" defaultMessage="Related objects" />:
-            </a>
-            <div className="LightboxTools__width">
-              {relatedWobjs.slice(0, 4).map(wobj => (
-                <div className="Story__published ml2" key={wobj.author_permlink}>
-                  <Link to={wobj.defaultShowLink}>
-                    <ObjectAvatar item={wobj} size={34} className={'Avatar-lightbox'} />
-                  </Link>
-                </div>
-              ))}
             </div>
-          </>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
 LightboxHeader.propTypes = {
   userName: PropType.string,
-  albumName: PropType.string,
-  relatedPath: PropType.string,
-  closeModal: PropType.func,
+  currentSrc: PropType.string,
   setField: PropType.func,
   setShowModal: PropType.func,
+  setObj: PropType.func,
   setSelectedAlbum: PropType.func,
-  isPost: PropType.bool,
-  relatedWobjs: PropType.arrayOf(),
+  objs: PropType.arrayOf(),
   albums: PropType.arrayOf(),
-  wobject: PropType.shape(),
+  obj: PropType.shape(),
+  relatedAlbum: PropType.shape(),
+  isPost: PropType.bool,
 };
 
 LightboxHeader.defaultProps = {
   userName: '',
-  albumName: '',
-  relatedPath: '',
   isPost: false,
   relatedWobjs: [],
   albums: [],
@@ -148,4 +151,9 @@ LightboxHeader.defaultProps = {
   setShowModal: () => {},
   setSelectedAlbum: () => {},
 };
-export default LightboxHeader;
+const mapStateToProps = state => ({
+  albums: getObjectAlbums(state),
+  relatedAlbum: getRelatedPhotos(state),
+});
+
+export default connect(mapStateToProps)(LightboxHeader);

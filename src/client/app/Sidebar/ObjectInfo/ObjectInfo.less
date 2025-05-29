@@ -241,6 +241,13 @@
 
     .price-value {
       white-space: normal;
+
+      &--sale {
+        text-decoration: line-through;
+      }
+      &--orange {
+        color: var(--website-color);
+      }
     }
   }
 }
@@ -262,10 +269,27 @@
     min-width: 12px;
     min-height: 12px;
   }
-
-  .price-value {
-    white-space: break-spaces;
+}
+.price-value {
+  white-space: break-spaces;
+  &--sale {
+    text-decoration: line-through;
   }
+  &--orange {
+    color: var(--website-color);
+    margin-left: 18px;
+  }
+}
+.sale-button {
+  background-color: var(--website-color);
+  color: @white;
+  border: none;
+  font-weight: 500;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  width: 50px;
+  margin-left: 8px;
 }
 
 .field-info__title {

@@ -14,6 +14,7 @@ import {
   getSiteName,
   getUsedLocale,
   getUserAdministrator,
+  getAppHost,
 } from '../../../store/appStore/appSelectors';
 import {
   accessTypesArr,
@@ -29,6 +30,8 @@ import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 
+import './WidgetContent.less';
+
 const WidgetContent = ({ wobj, intl }) => {
   const [currentWobject, setWobject] = useState(wobj);
   const [loading, setLoading] = useState(false);
@@ -42,6 +45,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const username = useSelector(getAuthenticatedUserName);
   const authenticated = useSelector(getIsAuthenticated);
   const isAdministrator = useSelector(getUserAdministrator);
+  const appHost = useSelector(getAppHost);
   const accessExtend =
     (haveAccess(wobj || currentWobject, username, accessTypesArr[0]) && isAdministrator) ||
     hasDelegation(wobj || currentWobject, username);
@@ -54,6 +58,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const editObjectClick = () => {
     dispatch(setEditMode(true));
   };
+  const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
 
   useEffect(() => {
     setLoading(true);
@@ -105,10 +110,18 @@ const WidgetContent = ({ wobj, intl }) => {
         </>
       );
 
+    const createUrl = () => {
+      if (isActiveCamp) {
+        return `${widgetForm.content}&host=${appHost}`;
+      }
+
+      return widgetForm.content;
+    };
+
     return (
-      <div className="FormPage__block">
+      <div className={'FormPage__block'}>
         <iframe
-          src={widgetForm.content}
+          src={createUrl()}
           width="100%"
           height="100%"
           allowFullScreen

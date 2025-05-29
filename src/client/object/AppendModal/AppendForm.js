@@ -64,6 +64,7 @@ import {
   walletAddressFields,
   recipeFields,
   promotionFields,
+  saleFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -162,6 +163,7 @@ import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
 import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
 import ListDnD from '../../components/DnDList/ListSortingDnD/ListDnD';
+import SaleForm from './FormComponents/SaleForm';
 
 @connect(
   state => ({
@@ -196,6 +198,7 @@ class AppendForm extends Component {
     match: PropTypes.shape(),
     /* from connect */
     wObject: PropTypes.shape(),
+    postObj: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()),
     history: PropTypes.shape().isRequired,
     sliderMode: PropTypes.bool,
@@ -227,6 +230,7 @@ class AppendForm extends Component {
     currentUsername: '',
     hideModal: () => {},
     wObject: {},
+    postObj: {},
     post: {},
     updates: [],
     form: {},
@@ -473,6 +477,7 @@ class AppendForm extends Component {
       case objectFields.affiliateGeoArea:
       case objectFields.background:
       case objectFields.price:
+      case objectFields.sale:
       case objectFields.nutrition:
       case objectFields.categoryItem:
       case objectFields.parent:
@@ -880,6 +885,16 @@ class AppendForm extends Component {
           )},\nTill: ${moment(getFieldValue(promotionFields.promotionTill)).format(
             'MMMM DD, YYYY',
           )}`;
+        case objectFields.sale:
+          const dateInfo =
+            getFieldValue(saleFields.saleFrom) && getFieldValue(saleFields.saleTill)
+              ? `,\nFrom: ${moment(getFieldValue(saleFields.saleFrom)).format(
+                  'MMMM DD, YYYY',
+                )},\nTill: ${moment(getFieldValue(saleFields.saleTill)).format('MMMM DD, YYYY')}`
+              : '';
+          return `@${author} added ${currentField} (${langReadable}):\nSale: ${getFieldValue(
+            objectFields.sale,
+          )}${dateInfo}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -978,11 +993,14 @@ class AppendForm extends Component {
 
     fieldBody.forEach(bodyField => {
       const data = {};
+      const { postObj } = this.props;
 
       data.author = this.props.user.name;
       data.isLike = like;
-      data.parentAuthor = wObject.author;
-      data.parentPermlink = wObject.author_permlink;
+      data.parentAuthor = !isEmpty(wObject.author) ? wObject.author : postObj.author;
+      data.parentPermlink = !isEmpty(wObject.author_permlink)
+        ? wObject.author_permlink
+        : postObj.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';
@@ -1017,6 +1035,14 @@ class AppendForm extends Component {
           body: getFieldValue(promotionFields.promotionSite),
           startDate: getFieldValue(promotionFields.promotionFrom)?.valueOf(),
           endDate: getFieldValue(promotionFields.promotionTill)?.valueOf(),
+        };
+      }
+      if (currentField === objectFields.sale) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: getFieldValue(objectFields.sale),
+          startDate: getFieldValue(saleFields.saleFrom)?.valueOf() || undefined,
+          endDate: getFieldValue(saleFields.saleTill)?.valueOf() || undefined,
         };
       }
       if ([objectFields.groupFollowers, objectFields.groupFollowing].includes(currentField)) {
@@ -1658,12 +1684,14 @@ class AppendForm extends Component {
   };
 
   getWobjectData = () => {
-    const { user, wObject } = this.props;
+    const { user, wObject, postObj } = this.props;
     const data = {};
 
     data.author = user.name;
-    data.parentAuthor = wObject.author;
-    data.parentPermlink = wObject.author_permlink;
+    data.parentAuthor = !isEmpty(wObject.author) ? wObject.author : postObj.author;
+    data.parentPermlink = !isEmpty(wObject.author_permlink)
+      ? wObject.author_permlink
+      : postObj.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
     data.wobjectName = getObjectName(wObject);
@@ -2551,6 +2579,17 @@ class AppendForm extends Component {
       case objectFields.promotion: {
         return (
           <PromotionForm
+            getFieldValue={this.props.form.getFieldValue}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+          />
+        );
+      }
+      case objectFields.sale: {
+        return (
+          <SaleForm
             getFieldValue={this.props.form.getFieldValue}
             getFieldDecorator={getFieldDecorator}
             getFieldRules={this.getFieldRules}
@@ -4275,6 +4314,8 @@ class AppendForm extends Component {
           isEmpty(getFieldValue(promotionFields.promotionFrom)) ||
           isEmpty(getFieldValue(promotionFields.promotionTill))
         );
+      case objectFields.sale:
+        return isEmpty(getFieldValue(objectFields.sale));
       case objectFields.authors:
         return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;
       case mapObjectTypeFields.mapObjectsList:

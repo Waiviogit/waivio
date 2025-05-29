@@ -48,16 +48,21 @@ const Header = () => {
     'Header__logo--upperCase': !header,
   });
 
+  let to =
+    config?.shopSettings?.type === 'user'
+      ? `/${currUserTab}/${config?.shopSettings?.value}`
+      : link?.link;
+
+  if (to?.includes('/active-campaigns')) {
+    to = '/active-campaigns';
+  }
+
   return (
     <React.Fragment>
       <div className="Header">
         {!searchBarActive && (
           <Link
-            to={
-              config?.shopSettings?.type === 'user'
-                ? `/${currUserTab}/${config?.shopSettings?.value}`
-                : link?.link
-            }
+            to={to}
             className={logoClassList}
             title={mainObj?.title || mainObj?.description || currHost}
           >

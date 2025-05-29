@@ -8,10 +8,7 @@ import AppendModal from '../../object/AppendModal/AppendModal';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const LightboxWithAppendForm = ({
-  isPost,
-  albums,
   wobject,
-  album,
   pics,
   onCloseRequest,
   onMovePrevRequest,
@@ -19,6 +16,7 @@ const LightboxWithAppendForm = ({
   photoIndex,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [obj, setObj] = useState(wobject || {});
   const [field, setField] = useState('');
   const [selectedAlbum, setSelectedAlbum] = useState('');
   const currentSrc = pics[photoIndex]?.body;
@@ -37,10 +35,9 @@ const LightboxWithAppendForm = ({
       wrapperClassName="LightboxTools"
       imageTitle={
         <LightboxHeader
-          isPost={isPost}
-          albums={albums}
-          wobject={wobject}
-          albumName={album?.body}
+          obj={obj}
+          setObj={setObj}
+          objs={[wobject]}
           userName={pics[photoIndex]?.creator}
           currentSrc={pics[photoIndex]?.body}
           setField={setField}
@@ -48,7 +45,7 @@ const LightboxWithAppendForm = ({
           setSelectedAlbum={setSelectedAlbum}
         />
       }
-      imageCaption={!isPost && <LightboxFooter post={pics[photoIndex]} />}
+      imageCaption={<LightboxFooter post={pics[photoIndex]} />}
       mainSrc={pics[photoIndex]?.body || pics[photoIndex]?.src}
       nextSrc={
         pics.length <= 1 || photoIndex === pics.length - 1
@@ -64,13 +61,10 @@ const LightboxWithAppendForm = ({
 };
 
 LightboxWithAppendForm.propTypes = {
-  albums: PropTypes.arrayOf(),
   pics: PropTypes.arrayOf(),
   wobject: PropTypes.shape(),
-  album: PropTypes.shape(),
   photoIndex: PropTypes.number,
   onMovePrevRequest: PropTypes.func,
-  isPost: PropTypes.bool,
   onMoveNextRequest: PropTypes.func,
   onCloseRequest: PropTypes.func,
 };

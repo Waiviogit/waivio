@@ -9,7 +9,17 @@ const LinkItem = ({ link, index, intl }) => {
   const history = useHistory();
   const directObjTypes = ['person'];
 
-  const linkTo = directObjTypes.includes(link.object_type) ? `/object/${link.permlink}` : link.link;
+  let linkTo = directObjTypes.includes(link.object_type) ? `/object/${link.permlink}` : link.link;
+
+  if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
+
+  if (linkTo.includes('/active-campaigns')) {
+    return (
+      <a key={link.link} className="WebsiteTopNavigation__link" rel="noreferrer" href={link.link}>
+        {getMenuLinkTitle(link, intl, 24)}
+      </a>
+    );
+  }
 
   return link.type === 'blank' ? (
     <a

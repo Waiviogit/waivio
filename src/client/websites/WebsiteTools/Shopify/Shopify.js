@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button, Input, message, Icon } from 'antd';
 import Loading from '../../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import { getShopifySettings, saveShopifySettings } from '../../../../waivioApi/importApi';
+import {
+  deleteShopifySettings,
+  getShopifySettings,
+  saveShopifySettings,
+} from '../../../../waivioApi/importApi';
 
 const AdSenseAds = ({ intl, match, userName }) => {
   const [loading, setLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [fields, setFields] = useState({
+  const [showDelete, setShowDelete] = useState(false);
+  const initialFields = {
     hostName: '',
     accessToken: '',
     apiKey: '',
     apiSecretKey: '',
-  });
+  };
+  const [fields, setFields] = useState(initialFields);
 
   const [visibility, setVisibility] = useState({
     accessToken: false,
@@ -31,6 +38,13 @@ const AdSenseAds = ({ intl, match, userName }) => {
       setLoading(true);
 
       getShopifySettings(userName, waivioHostName).then(r => {
+        const showDeleteBtn =
+          !isEmpty(r.hostName) ||
+          !isEmpty(r.accessToken) ||
+          !isEmpty(r.apiKey) ||
+          !isEmpty(r.apiSecretKey);
+
+        setShowDelete(showDeleteBtn);
         setFields({
           hostName: r.hostName,
           accessToken: r.accessToken,
@@ -50,12 +64,10 @@ const AdSenseAds = ({ intl, match, userName }) => {
     setVisibility(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSaveAdSenseSettings = () => {
-    setButtonLoading(true);
-    const { hostName, accessToken, apiKey, apiSecretKey } = fields;
-
+  const saveSettings = (hostName, accessToken, apiKey, apiSecretKey) => {
     saveShopifySettings(userName, waivioHostName, hostName, accessToken, apiKey, apiSecretKey).then(
       res => {
+        setShowDelete(true);
         setButtonLoading(false);
         if (!res.message) {
           message.success(intl.formatMessage({ id: 'shopify_updated_successfully' }));
@@ -64,6 +76,17 @@ const AdSenseAds = ({ intl, match, userName }) => {
         }
       },
     );
+  };
+  const handleDeleteShopifySettings = () => {
+    setShowDelete(false);
+    deleteShopifySettings(userName, waivioHostName);
+    setFields(initialFields);
+  };
+  const handleSaveShopifySettings = () => {
+    setButtonLoading(true);
+    const { hostName, accessToken, apiKey, apiSecretKey } = fields;
+
+    saveSettings(hostName, accessToken, apiKey, apiSecretKey);
   };
 
   if (loading) return <Loading />;
@@ -99,7 +122,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
         </a>{' '}
         on how to receive all the necessary credentials on Shopify.
       </p>
-
       <h3 key="label-host">Shopify store host name:</h3>
       <Input
         key="input-host"
@@ -107,7 +129,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
         onChange={e => handleChange('hostName', e.target.value)}
         placeholder="Enter host"
       />
-
       <h3 key="label-admin-token">Admin API access token:</h3>
       <Input
         key="input-admin-token"
@@ -123,7 +144,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
           />
         }
       />
-
       <h3 key="label-api-key">API key:</h3>
       <Input
         key="input-api-key"
@@ -139,7 +159,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
           />
         }
       />
-
       <h3 key="label-api-secret">API secret key:</h3>
       <Input
         key="input-api-secret"
@@ -155,16 +174,25 @@ const AdSenseAds = ({ intl, match, userName }) => {
           />
         }
       />
-
       <Button
         style={{ marginTop: '25px' }}
         type="primary"
         htmlType="submit"
         loading={buttonLoading}
-        onClick={handleSaveAdSenseSettings}
+        onClick={handleSaveShopifySettings}
       >
         <FormattedMessage id="save" defaultMessage="Save" />
       </Button>
+      {showDelete && (
+        <Button
+          style={{ marginTop: '25px', marginLeft: '15px' }}
+          type="danger"
+          htmlType="submit"
+          onClick={handleDeleteShopifySettings}
+        >
+          <FormattedMessage id="matchBot_btn_delete" defaultMessage="Delete" />
+        </Button>
+      )}{' '}
     </div>
   );
 };
