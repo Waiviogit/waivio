@@ -886,11 +886,15 @@ class AppendForm extends Component {
             'MMMM DD, YYYY',
           )}`;
         case objectFields.sale:
+          const dateInfo =
+            getFieldValue(saleFields.saleFrom) && getFieldValue(saleFields.saleTill)
+              ? `,\nFrom: ${moment(getFieldValue(saleFields.saleFrom)).format(
+                  'MMMM DD, YYYY',
+                )},\nTill: ${moment(getFieldValue(saleFields.saleTill)).format('MMMM DD, YYYY')}`
+              : '';
           return `@${author} added ${currentField} (${langReadable}):\nSale: ${getFieldValue(
             objectFields.sale,
-          )},\nFrom: ${moment(getFieldValue(saleFields.saleFrom)).format(
-            'MMMM DD, YYYY',
-          )},\nTill: ${moment(getFieldValue(saleFields.saleTill)).format('MMMM DD, YYYY')}`;
+          )}${dateInfo}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
