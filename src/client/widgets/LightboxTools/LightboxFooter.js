@@ -25,7 +25,7 @@ const LightboxFooter = ({ post }) => {
   const currImg = [...albums, relatedAlbum].reduce((result, album) => {
     if (result) return result;
 
-    const al = album.items.find(item => item.body === post.body);
+    const al = album?.items?.find(item => item.body === post.body);
 
     return al || null;
   }, null);
@@ -40,15 +40,15 @@ const LightboxFooter = ({ post }) => {
   const defaultVotePercent = useSelector(getVotePercent);
   const match = useRouteMatch();
   const dispatch = useDispatch();
-  const upVotes = currentPost.active_votes && getAppendUpvotes(currentPost.active_votes);
-  const isLiked = currentPost.isLiked || some(upVotes, { voter: user.name });
+  const upVotes = currentPost?.active_votes && getAppendUpvotes(currentPost?.active_votes);
+  const isLiked = currentPost?.isLiked || some(upVotes, { voter: user.name });
 
   const handleLikeClick = (pic, weight = 10000) => {
     if (isLiked) {
-      dispatch(voteAppends(pic.author, pic.permlink, 0, currentPost.name, false, match.params[0]));
+      dispatch(voteAppends(pic.author, pic.permlink, 0, currentPost?.name, false, match.params[0]));
     } else {
       dispatch(
-        voteAppends(pic.author, pic.permlink, weight, currentPost.name, false, match.params[0]),
+        voteAppends(pic.author, pic.permlink, weight, currentPost?.name, false, match.params[0]),
       );
     }
   };
@@ -60,10 +60,17 @@ const LightboxFooter = ({ post }) => {
     const voteWeight = onlyMyLike ? 1 : myWeight;
 
     if (isReject) {
-      dispatch(voteAppends(pic.author, pic.permlink, 0, currentPost.name, false, match.params[0]));
+      dispatch(voteAppends(pic.author, pic.permlink, 0, currentPost?.name, false, match.params[0]));
     } else {
       dispatch(
-        voteAppends(pic.author, pic.permlink, voteWeight, currentPost.name, false, match.params[0]),
+        voteAppends(
+          pic.author,
+          pic.permlink,
+          voteWeight,
+          currentPost?.name,
+          false,
+          match.params[0],
+        ),
       );
     }
   };

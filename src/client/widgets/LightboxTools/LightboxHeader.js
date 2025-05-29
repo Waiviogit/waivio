@@ -28,9 +28,7 @@ const LightboxHeader = ({
 }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const avatarOption = 'Set as avatar picture';
-  const options = isEmpty(relatedAlbum)
-    ? [...albums, { body: avatarOption }]
-    : [...albums, relatedAlbum, { body: avatarOption }];
+  const options = [...albums, { body: avatarOption }];
 
   const dispatch = useDispatch();
 
