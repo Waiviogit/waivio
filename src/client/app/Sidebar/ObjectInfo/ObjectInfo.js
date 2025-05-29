@@ -769,10 +769,10 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.sale,
           sale && (
-            <>
-              <div className="price-value--orange fw8 ml2"> {sale}</div>
-              <button className="sale-button">Sale</button>
-            </>
+            <div className={'flex items-center'}>
+              <span className="price-value--orange fw8"> {sale}</span>
+              <span className="sale-button">Sale</span>
+            </div>
           ),
         )}
         {!isEmpty(affiliateLinks) && !isEditMode && (
@@ -1310,10 +1310,10 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.sale,
             sale && (
-              <>
-                <div className="price-value--orange fw8 ml2"> {sale}</div>
-                <button className="sale-button">Sale</button>
-              </>
+              <div className={'flex items-center'}>
+                <span className="price-value--orange fw8"> {sale}</span>
+                <span className="sale-button">Sale</span>
+              </div>
             ),
           )}
         {this.listItem(

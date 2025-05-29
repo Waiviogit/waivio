@@ -60,15 +60,6 @@ const SaleForm = ({
         </span>
         <Form.Item>
           {getFieldDecorator(saleFields.saleFrom, {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_from_validation',
-                  defaultMessage: 'Field "from" is required',
-                }),
-              },
-            ],
             getValueFromEvent: date => date && moment(date).startOf('day'),
           })(
             <DatePicker
@@ -92,15 +83,6 @@ const SaleForm = ({
         </span>{' '}
         <Form.Item>
           {getFieldDecorator(saleFields.saleTill, {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'table_till_validation',
-                  defaultMessage: 'Field "till" is required',
-                }),
-              },
-            ],
             getValueFromEvent: date => date && moment(date).endOf('day'),
           })(
             <DatePicker
