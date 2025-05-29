@@ -367,13 +367,17 @@ const EditorSlate = props => {
         HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
-        const selectedLeaf = Node.descendant(editor, path);
+        event.preventDefault();
+        // Insert a new block after the current block
+        Transforms.insertNodes(editor, {
+          type: 'paragraph',
+          children: [{ text: '' }],
+        });
 
-        if (selectedLeaf.text.length === offset) {
-          setTimeout(() => {
-            Transforms.setNodes(editor, { type: 'paragraph' });
-          }, 0);
-        }
+        // Keep the current block styles intact
+        Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
+
+        return true;
       } else if (isSoftNewlineEvent(event)) {
         event.preventDefault();
         editor.insertText('\n');

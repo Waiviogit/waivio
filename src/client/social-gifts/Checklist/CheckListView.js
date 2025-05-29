@@ -147,7 +147,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
-      <EarnsCommissionsOnPurchases />
+      {listType && <EarnsCommissionsOnPurchases />}
     </div>
   );
 };
