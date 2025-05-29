@@ -196,7 +196,7 @@ export default (state = initialState, action) => {
           account: beneficiary.account,
           weight: beneficiary.percent,
         },
-        helmetIcon: getObjectAvatar(configuration.aboutObject) || logo,
+        helmetIcon: logo || getObjectAvatar(configuration.aboutObject),
         logo,
         currMap,
         isWaivio: mainPage === 'waivio',
