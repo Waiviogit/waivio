@@ -993,8 +993,10 @@ class AppendForm extends Component {
 
       data.author = this.props.user.name;
       data.isLike = like;
-      data.parentAuthor = wObject.author || postObj.author;
-      data.parentPermlink = wObject.author_permlink || postObj.author_permlink;
+      data.parentAuthor = !isEmpty(wObject.author) ? wObject.author : postObj.author;
+      data.parentPermlink = !isEmpty(wObject.author_permlink)
+        ? wObject.author_permlink
+        : postObj.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';
@@ -1678,12 +1680,14 @@ class AppendForm extends Component {
   };
 
   getWobjectData = () => {
-    const { user, wObject } = this.props;
+    const { user, wObject, postObj } = this.props;
     const data = {};
 
     data.author = user.name;
-    data.parentAuthor = wObject.author;
-    data.parentPermlink = wObject.author_permlink;
+    data.parentAuthor = !isEmpty(wObject.author) ? wObject.author : postObj.author;
+    data.parentPermlink = !isEmpty(wObject.author_permlink)
+      ? wObject.author_permlink
+      : postObj.author_permlink;
     data.title = '';
     data.lastUpdated = Date.now();
     data.wobjectName = getObjectName(wObject);
