@@ -91,8 +91,20 @@
   &__selects {
     display: flex;
     justify-content: space-between;
-    width: 66%;
+    width: 77%;
     padding-top: 1px;
+    @media (min-width: 820px) {
+      margin-left: 20px;
+      width: 80%;
+    }
+    @media (min-width: 1023px) {
+      margin-left: 60px;
+      width: 85%;
+    }
+    @media (min-width: 1200px) {
+      margin-left: 60px;
+      width: 66%;
+    }
   }
   &__container-header {
     height: 60px;
@@ -100,7 +112,13 @@
     display: flex;
     width: 83%;
     justify-content: flex-start;
-    @media @medium {
+    @media (min-width: 820px) {
+      width: 100%;
+    }
+    @media (min-width: 1023px) {
+      width: 90%;
+    }
+    @media (min-width: @large-bp) {
       width: 77%;
       justify-content: space-between;
     }

@@ -40,13 +40,16 @@ const LightboxHeader = ({
   }, null);
 
   const onSelectOption = opt => {
+    const alb = albums.find(al => al.body === opt);
+
     if (opt === avatarOption) {
       setField(objectFields.avatar);
     } else {
       setField(objectFields.galleryItem);
-      setSelectedAlbum(albums.find(al => al.body === opt));
+
+      setSelectedAlbum(alb);
     }
-    setShowModal(true);
+    if (!alb?.items?.some(i => i.body === currentSrc)) setShowModal(true);
   };
 
   useEffect(() => {
@@ -112,7 +115,9 @@ const LightboxHeader = ({
               >
                 {options.map(al => (
                   <Select.Option key={al.body} value={al.body}>
-                    {avatarOption === al.body || albumName === al.body
+                    {avatarOption === al.body ||
+                    albumName === al.body ||
+                    al?.items?.some(i => i.body === currentSrc)
                       ? al.body
                       : `Add to album: ${al.body}`}{' '}
                   </Select.Option>

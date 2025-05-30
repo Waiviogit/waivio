@@ -892,6 +892,7 @@ class AppendForm extends Component {
                   'MMMM DD, YYYY',
                 )},\nTill: ${moment(getFieldValue(saleFields.saleTill)).format('MMMM DD, YYYY')}`
               : '';
+
           return `@${author} added ${currentField} (${langReadable}):\nSale: ${getFieldValue(
             objectFields.sale,
           )}${dateInfo}`;
