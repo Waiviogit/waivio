@@ -51,7 +51,7 @@ const ShopMainForWobject = () => {
       case 'list':
       case 'page':
       case 'newsfeed':
-        return <Checklist permlink={authorPermlink} />;
+        return <Checklist permlink={authorPermlink} isMain />;
       case 'map':
         return <WebsiteBody permlink={authorPermlink} isSocial />;
 

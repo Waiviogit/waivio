@@ -231,7 +231,7 @@ export default (state = initialState, action) => {
         ...state,
         configuration: action.payload,
         currency: action.payload.currency,
-        helmetIcon: getObjectAvatar(action.payload.aboutObject) || logo,
+        helmetIcon: logo || getObjectAvatar(action.payload.aboutObject),
         websiteName:
           action.payload?.header?.name || getObjectName(action.payload.aboutObject) || action.meta,
         hostAddress: action.meta,
