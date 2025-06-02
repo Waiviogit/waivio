@@ -40,7 +40,7 @@ const Checklist = ({
   setNestedObject,
   wobject,
   getObjectAction,
-                     isMain
+  isMain,
 }) => {
   const [loading, setLoading] = useState(false);
   const host = useSelector(getAppHost);

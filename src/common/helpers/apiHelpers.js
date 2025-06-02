@@ -166,8 +166,8 @@ export const isMobile = () =>
 export const isAppleDevice = () =>
   typeof navigator !== 'undefined' && appleDevice.test(navigator.userAgent);
 
-export const isAndroidDevice = () => typeof navigator !== 'undefined' && androidDevice.test(navigator.userAgent);
-
+export const isAndroidDevice = () =>
+  typeof navigator !== 'undefined' && androidDevice.test(navigator.userAgent);
 
 export const isSafari = () =>
   typeof navigator !== 'undefined' && safariDevice.test(navigator.userAgent);

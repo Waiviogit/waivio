@@ -110,7 +110,6 @@ const EditorSlate = props => {
   const query = useQuery();
   const [initiallized, setInitiallized] = useState(false);
   const [draftInit, setDraftInit] = useState(!!params[0]);
-
   const editor = useEditor(props);
   const editorRef = useRef(null);
   const editorClass = `md-RichEditor-editor Body Body--full public-DraftEditor-content${
@@ -184,7 +183,6 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    console.log('lastSelection', lastSelection);
     Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
       at: lastSelection.current.anchor.path,
     });
@@ -440,10 +438,6 @@ const EditorSlate = props => {
     if (!draftInit) onChange(editor);
     setDraftInit(false);
     setValue(newState);
-
-    if (editor.selection && Range.isCollapsed(editor.selection)) {
-      lastSelection.current = editor.selection;
-    }
   };
 
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
@@ -458,8 +452,6 @@ const EditorSlate = props => {
   );
 
   const lastSelection = useRef(null);
-
-  const handleBlur = () => {};
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.slateEditor = editor;
@@ -503,6 +495,12 @@ const EditorSlate = props => {
     if (props.onFocus) props.onFocus();
   };
 
+  const onSelect = selection => {
+    if (selection) {
+      lastSelection.current = selection;
+    }
+  };
+
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
@@ -525,16 +523,16 @@ const EditorSlate = props => {
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
-            onBlur={handleBlur}
             onFocus={handleFocus}
             spellCheck={false}
             autoCorrect={false}
-            onPaste={(e) => {
-              handlePastedFiles(e)
+            onPaste={e => {
+              handlePastedFiles(e);
             }}
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
+            setLastSelection={onSelect}
             parentPost={parentPost}
             editor={editor}
             sideButtons={SIDE_BUTTONS_SLATE}
