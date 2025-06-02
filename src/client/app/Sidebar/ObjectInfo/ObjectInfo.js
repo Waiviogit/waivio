@@ -771,7 +771,10 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.price,
           price && (
-            <div className="flex">
+            <div
+              className="flex"
+              style={{ marginLeft: compareAtPrice && !isEditMode ? '18px' : '0px' }}
+            >
               {!isEditMode && !compareAtPrice && <span className="field-icon">$</span>}
               <span className={sale ? 'price-value--sale fw8' : 'price-value fw8'}>
                 {hoveredOption.price || price}
@@ -782,7 +785,10 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.sale,
           sale && (
-            <div className={'flex items-center'}>
+            <div
+              className={'flex items-center'}
+              style={{ marginLeft: isEditMode ? '-15px' : '0px' }}
+            >
               <span className="price-value--orange fw8"> {sale}</span>
               <span className="sale-button">Sale</span>
             </div>
