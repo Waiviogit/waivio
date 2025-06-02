@@ -38,6 +38,7 @@ const ImageSetter = ({
   isOkayBtn,
   isModal,
   imagesList,
+  lastSelection = null,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -70,8 +71,11 @@ const ImageSetter = ({
         if (isEditor && newImage) {
           const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
-          Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
-          Transforms.insertNodes(editor, createEmptyNode());
+          Transforms.insertNodes(
+            editor,
+            [createImageNode(newImage.name, { url }), createEmptyNode()],
+            { at: lastSelection.anchor.path || null },
+          );
           ReactEditor.focus(editor);
         }
       });
@@ -82,8 +86,7 @@ const ImageSetter = ({
 
   useEffect(() => {
     addImage();
-  }, [isOkayBtn, isModal]);
-
+  }, [isOkayBtn, isModal, lastSelection]);
   // For image pasted for link
   const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
@@ -360,6 +363,7 @@ const ImageSetter = ({
 
 ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
+  lastSelection: PropTypes.shape(),
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
   onLoadingImage: PropTypes.func,

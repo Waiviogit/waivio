@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Editor, Range } from 'slate';
+import { Editor, Range, Transforms } from 'slate';
 import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
@@ -30,10 +30,13 @@ const Toolbar = props => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setOpen] = useState(false);
   const refToolbar = useRef(null);
+  const lastSelectionRef = useRef(null);
 
   const { selection } = editor;
 
   useEffect(() => {
+    if (isShowLinkInput) return setOpen(true);
+
     if (
       !selection ||
       !ReactEditor.isFocused(editor) ||
@@ -85,9 +88,14 @@ const Toolbar = props => {
 
   const setLink = e => {
     e.preventDefault();
+
+    if (!editor.selection && lastSelectionRef.current) {
+      Transforms.select(editor, lastSelectionRef.current);
+    }
     wrapLink(editor, urlInputValue);
     setShowLinkInput(false);
     setUrlInputValue('');
+
     ReactEditor.focus(editor);
   };
 
@@ -165,7 +173,14 @@ const Toolbar = props => {
                 <span
                   className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
                   role="presentation"
-                  onClick={() => setShowLinkInput(prev => !prev)}
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={e => {
+                    e.preventDefault();
+                    if (editor.selection && ReactEditor.isFocused(editor)) {
+                      lastSelectionRef.current = editor.selection;
+                    }
+                    setShowLinkInput(prev => !prev);
+                  }}
                   aria-label="Add a link"
                 >
                   <Icon type="link" />
