@@ -540,7 +540,12 @@ class StoryFull extends React.Component {
                   setSelectedAlbum={selectedAlbum => this.setState({ selectedAlbum })}
                 />
               }
-              imageCaption={<LightboxFooter post={this.images[index]} />}
+              imageCaption={
+                <LightboxFooter
+                  post={this.images[index]}
+                  selectedAlbum={this.state.selectedAlbum}
+                />
+              }
               mainSrc={this.images[index].src}
               nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
               prevSrc={

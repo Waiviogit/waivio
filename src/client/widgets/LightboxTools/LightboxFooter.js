@@ -17,20 +17,20 @@ import { voteAppends } from '../../../store/appendStore/appendActions';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import './LightboxTools.less';
-import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 
-const LightboxFooter = ({ post }) => {
-  const albums = useSelector(getObjectAlbums);
-  const relatedAlbum = useSelector(getRelatedPhotos);
-  const currImg = [...albums, relatedAlbum].reduce((result, album) => {
-    if (result) return result;
+const LightboxFooter = ({ post, selectedAlbum }) => {
+  // const albums = useSelector(getObjectAlbums);
+  // const relatedAlbum = useSelector(getRelatedPhotos);
+  // const currImg = [...albums, relatedAlbum].reduce((result, album) => {
+  //   if (result) return result;
+  //
+  //   const al = album?.items?.find(item => item.body === post.body);
+  //
+  //   return al || null;
+  // }, null);
 
-    const al = album?.items?.find(item => item.body === post.body);
-
-    return al || null;
-  }, null);
-
-  const initialPost = has(post, 'active_votes') ? post : currImg;
+  const imgPost = selectedAlbum?.items?.find(item => item.body === post.body);
+  const initialPost = has(post, 'active_votes') ? post : imgPost;
   const [reactionsModalVisible, showReactionModal] = useState(false);
   const [currentPost, setCurrentPost] = useState(initialPost);
   const updatesList = useSelector(getAppendList);
@@ -87,6 +87,10 @@ const LightboxFooter = ({ post }) => {
     }
   }, [updatesList, post]);
 
+  useEffect(() => {
+    setCurrentPost(imgPost);
+  }, [selectedAlbum.id]);
+
   return currentPost?.approvePercent && currentPost ? (
     <div
       className={classNames({
@@ -115,6 +119,7 @@ const LightboxFooter = ({ post }) => {
 
 LightboxFooter.propTypes = {
   post: PropTypes.shape().isRequired,
+  selectedAlbum: PropTypes.shape(),
 };
 
 export default LightboxFooter;
