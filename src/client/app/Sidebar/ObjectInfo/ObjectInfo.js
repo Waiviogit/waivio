@@ -539,6 +539,7 @@ class ObjectInfo extends React.Component {
     const address = parseAddress(wobject);
     const description = get(wobject, 'description');
     const price = get(wobject, 'price');
+    const compareAtPrice = get(wobject, 'compareAtPrice');
     const sale = get(wobject, 'sale');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
@@ -756,10 +757,22 @@ class ObjectInfo extends React.Component {
           ),
         )}
         {this.listItem(
+          objectFields.compareAtPrice,
+          compareAtPrice && (
+            <div className="flex">
+              {!isEditMode && <span className="field-icon">$</span>}
+              <span className={price ? 'price-value--sale fw8' : 'price-value fw8'}>
+                {' '}
+                {compareAtPrice}
+              </span>
+            </div>
+          ),
+        )}{' '}
+        {this.listItem(
           objectFields.price,
           price && (
             <div className="flex">
-              {!isEditMode && <span className="field-icon">$</span>}
+              {!isEditMode && !compareAtPrice && <span className="field-icon">$</span>}
               <span className={sale ? 'price-value--sale fw8' : 'price-value fw8'}>
                 {hoveredOption.price || price}
               </span>
@@ -1303,16 +1316,6 @@ class ObjectInfo extends React.Component {
               <div className="flex">
                 {!isEditMode && <span className="field-icon">$</span>}
                 <span className="price-value fw8">{price}</span>
-              </div>
-            ),
-          )}
-        {!isOptionsObjectType &&
-          this.listItem(
-            objectFields.sale,
-            sale && (
-              <div className={'flex items-center'}>
-                <span className="price-value--orange fw8"> {sale}</span>
-                <span className="sale-button">Sale</span>
               </div>
             ),
           )}

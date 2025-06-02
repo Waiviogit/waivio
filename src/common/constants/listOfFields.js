@@ -92,6 +92,7 @@ export const objectFields = {
   featured: 'featured',
   nutrition: 'nutrition',
   sale: 'sale',
+  compareAtPrice: 'compareAtPrice',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',

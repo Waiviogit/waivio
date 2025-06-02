@@ -163,6 +163,7 @@ const SocialProduct = ({
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const sale = get(wobject, 'sale');
+  const compareAtPrice = get(wobject, 'compareAtPrice');
   const price = hoveredOption.price || defaultPrice;
   const cookingTime = wobject.cookingTime;
   const calories = wobject.calories;
@@ -555,6 +556,18 @@ const SocialProduct = ({
                 </div>
               )}
               <div className="flex flex-row">
+                <div
+                  className={
+                    // eslint-disable-next-line no-nested-ternary
+                    isNil(compareAtPrice) && !isEmpty(wobject?.options)
+                      ? 'SocialProduct__price-no'
+                      : price
+                      ? 'SocialProduct__price--old'
+                      : 'SocialProduct__price'
+                  }
+                >
+                  {compareAtPrice}
+                </div>
                 <div
                   className={
                     // eslint-disable-next-line no-nested-ternary
