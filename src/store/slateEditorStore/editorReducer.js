@@ -22,6 +22,7 @@ const defaultState = {
     editorState: [],
     titleValue: '',
   },
+  lastSelection: null,
 };
 
 const editor = (state = defaultState, action) => {
@@ -142,6 +143,11 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         editorSlate: action.payload.editor,
+      };
+    case editorActions.SET_LAST_SELECTION:
+      return {
+        ...state,
+        lastSelection: action.payload,
       };
     case editorActions.LEAVE_EDITOR:
       return defaultState;

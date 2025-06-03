@@ -25,8 +25,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   getRestoreObjects: (rawContent, newObject, draftId) =>
     dispatch(getRestoreObjects(rawContent, newObject, draftId)),
   setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
-  handleObjectSelect: (object, isFocusEndCursor) =>
-    dispatch(handleObjectSelect(object, isFocusEndCursor, props.intl, props.match)),
+  handleObjectSelect: (object, isFocusEndCursor, lastSelection) =>
+    dispatch(handleObjectSelect(object, isFocusEndCursor, props.intl, props.match, lastSelection)),
   setUpdatedEditorExtendedData: data => dispatch(setUpdatedEditorExtendedData(data)),
   setShowEditorSearch: data => dispatch(setShowEditorSearch(data)),
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),

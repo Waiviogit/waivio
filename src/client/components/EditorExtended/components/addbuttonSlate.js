@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { useSlate, ReactEditor } from 'slate-react';
 import classNames from 'classnames';
 import { isAndroidDevice } from '../../../../common/helpers/apiHelpers';
+import { setLastSelection } from '../../../../store/slateEditorStore/editorActions';
+import { getLastSelection } from '../../../../store/slateEditorStore/editorSelectors';
 
 import { SIDE_BUTTONS_SLATE } from '../model/content';
 
@@ -13,7 +16,7 @@ import './addbutton.less';
 
 const AddButtonSlate = props => {
   const { editorNode, isComment, initialPosTop, ADD_BTN_DIF, parentPost } = props;
-
+  const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
   const editor = useSlate();
@@ -23,15 +26,15 @@ const AddButtonSlate = props => {
   const initialPosOfBtn = useRef(null);
   const firstRender = useRef(false);
   const lastBounding = useRef(null);
-  const lastSect = useRef(null);
+  const lastSect = useSelector(getLastSelection);
 
   useEffect(() => {
     if (!editorNode) return;
-
-    if (selection) {
-      lastSect.current = selection;
+    if (selection && isAndroidDevice()) {
+      dispatch(setLastSelection(selection));
       props.setLastSelection(selection);
     }
+
     setTimeout(() => {
       if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
@@ -42,7 +45,7 @@ const AddButtonSlate = props => {
         const parentBoundary = editorNode.getBoundingClientRect();
         const nodeStyle = nodeRef.current?.style || {};
 
-        if (selection) {
+        if (selection && isAndroidDevice()) {
           lastBounding.current = bound;
         }
 
@@ -131,7 +134,7 @@ const AddButtonSlate = props => {
                       editorNode={editorNode}
                       isComment={isComment}
                       parentPost={parentPost}
-                      lastSelection={lastSect.current}
+                      lastSelection={lastSect}
                     />
                   </CSSTransition>
                 );
