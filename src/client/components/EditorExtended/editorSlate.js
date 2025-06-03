@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import { useParams, withRouter } from 'react-router';
 import { isKeyHotkey, isHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
+import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
 
@@ -488,7 +489,7 @@ const EditorSlate = props => {
   }, [body, initiallized]);
 
   const handleFocus = () => {
-    if (!editor.selection && lastSelection.current) {
+    if (!editor.selection && lastSelection.current && isAndroidDevice()) {
       Transforms.select(editor, lastSelection.current);
     }
     props.setEditor(editor);
@@ -496,7 +497,7 @@ const EditorSlate = props => {
   };
 
   const onSelect = selection => {
-    if (selection) {
+    if (selection && isAndroidDevice()) {
       lastSelection.current = selection;
     }
   };
@@ -544,7 +545,6 @@ const EditorSlate = props => {
             size={isComment ? 25 : 30}
             initialPosTop={initialPosTopBtn}
             ADD_BTN_DIF={ADD_BTN_DIF}
-            lastSelection={lastSelection.current}
           />
         </div>
       </div>

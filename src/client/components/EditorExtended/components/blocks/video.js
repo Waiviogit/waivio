@@ -19,6 +19,7 @@ const Video = ({ url }) => {
       <div
         style={{ boxShadow: selected && focused && '0 0 3px 3px lightgray', textAlign: 'center' }}
         className={getIframeContainerClass({ url }, true)}
+        contentEditable={false}
       >
         <iframe
           title={src}

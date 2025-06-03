@@ -63,6 +63,7 @@ import {
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getEditorSlate,
+  getLastSelection,
 } from './editorSelectors';
 import { getAppendData, getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
@@ -527,6 +528,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
   getState,
 ) => {
   const state = getState();
+  const lastSelection = getLastSelection(state);
   const { content, titleValue, topics = [] } = getEditor(state);
   const editor = getEditorSlate(state);
   const objName = getObjectName(object);
@@ -550,8 +552,9 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
       topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
-
-  const { beforeRange } = checkCursorInSearchSlate(editor, false, true);
+  const { beforeRange } = editor.selection
+    ? checkCursorInSearchSlate(editor, false, true)
+    : { beforeRange: lastSelection };
   const url = getObjectLink(object, match);
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
@@ -834,3 +837,10 @@ export const setImportObject = obj => dispatch => {
     payload: obj,
   });
 };
+
+export const SET_LAST_SELECTION = 'SET_LAST_SELECTION';
+
+export const setLastSelection = selection => ({
+  type: SET_LAST_SELECTION,
+  payload: selection,
+});

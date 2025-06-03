@@ -8,6 +8,7 @@ import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
+import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../../common/helpers/image';
@@ -74,7 +75,7 @@ const ImageSetter = ({
           Transforms.insertNodes(
             editor,
             [createImageNode(newImage.name, { url }), createEmptyNode()],
-            { at: lastSelection.anchor.path || null },
+            isAndroidDevice() ? { at: lastSelection.anchor.path || null } : {},
           );
           ReactEditor.focus(editor);
         }

@@ -5,6 +5,7 @@ import { Editor, Range } from 'slate';
 
 import { Entity } from '../../client/components/EditorExtended';
 import { list_types } from '../../client/components/EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+import { isAndroidDevice } from './apiHelpers';
 import { getObjectName } from './wObjectHelper';
 
 export const getNewLinkedObjectsCards = (
@@ -141,29 +142,40 @@ const findHashtagInChildren = (children, startOffset) => {
   return null;
 };
 
-export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
-  const { selection } = editor;
+export const checkCursorInSearchSlate = (editor, showSearch, onlyRange, lastSelection) => {
+  const rawSelection = editor.selection || lastSelection;
+
+  if (!rawSelection || !Range.isRange(rawSelection)) {
+    return { isNeedOpenSearch: false };
+  }
+
+  const sel = isAndroidDevice() ? lastSelection || rawSelection : rawSelection;
 
   try {
-    const [start] = Range.edges(selection);
-    let currItem = editor.children[selection?.anchor?.path[0]];
+    const [start] = Range.edges(sel);
+    const currBlock = editor.children[start.path[0]];
 
-    if (list_types.includes(currItem?.type) || currItem?.type === 'table') {
-      currItem = findHashtagInChildren(currItem.children, start.offset);
+    let currItem = null;
+
+    if (list_types.includes(currBlock?.type) || currBlock?.type === 'table') {
+      currItem = findHashtagInChildren(currBlock.children, start.offset);
     } else {
-      currItem = currItem.children.find(
-        child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
+      currItem = currBlock?.children?.find(
+        child => child.text && child.text.lastIndexOf('#', start.offset) !== -1,
       );
     }
 
     const blockText = currItem?.text;
-    const wordBefore = Editor.before(editor, start, { unit: 'word' });
-    const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
-    const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
+
+    if (!blockText) {
+      return { isNeedOpenSearch: false };
+    }
+
+    const startPositionOfWord = blockText.lastIndexOf('#', start.offset);
     const { searchString, range } = findHashtag(editor, start, '', showSearch) ?? {};
 
     if (searchString && onlyRange) {
-      const beforeRange = range && Editor.range(editor, range, start);
+      const beforeRange = range && Editor.range(editor, range.anchor, start);
 
       return {
         beforeRange,
@@ -175,11 +187,17 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
       blockText.includes(searchString) &&
       startPositionOfWord + searchString.length === start.offset
     ) {
+      const wordStartPoint = Editor.before(editor, start, { unit: 'word' });
+      const characterStart = Editor.before(editor, wordStartPoint, { unit: 'character' });
+
       return {
         searchString: searchString.slice(1),
         selection: {
-          anchor: wordBeforeWithCharacter,
-          focus: { ...wordBeforeWithCharacter, offset: searchString.length + 1 },
+          anchor: characterStart,
+          focus: {
+            ...characterStart,
+            offset: characterStart.offset + searchString.length,
+          },
         },
         startPositionOfWord,
         isNeedOpenSearch: true,
@@ -187,13 +205,9 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange) => {
       };
     }
 
-    return {
-      isNeedOpenSearch: false,
-    };
-  } catch {
-    return {
-      isNeedOpenSearch: false,
-    };
+    return { isNeedOpenSearch: false };
+  } catch (e) {
+    return { isNeedOpenSearch: false };
   }
 };
 

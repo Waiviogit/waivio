@@ -7,6 +7,8 @@ export const editorState = state => state.editor;
 // reselect function
 export const getImportObject = createSelector([editorState], state => state.importObject);
 
+export const getLastSelection = createSelector([editorState], state => state.lastSelection);
+
 export const getIsEditorLoading = createSelector([editorState], state => state.loading);
 
 export const getIsEditorSaving = createSelector([editorState], state => state.saving);
