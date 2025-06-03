@@ -762,12 +762,11 @@ class ObjectInfo extends React.Component {
             <div className="flex">
               {!isEditMode && <span className="field-icon">$</span>}
               <span className={price ? 'price-value--sale fw8' : 'price-value fw8'}>
-                {' '}
                 {compareAtPrice}
               </span>
             </div>
           ),
-        )}{' '}
+        )}
         {this.listItem(
           objectFields.price,
           price && (
@@ -781,7 +780,7 @@ class ObjectInfo extends React.Component {
               </span>
             </div>
           ),
-        )}{' '}
+        )}
         {this.listItem(
           objectFields.sale,
           sale && (
@@ -789,7 +788,7 @@ class ObjectInfo extends React.Component {
               className={'flex items-center'}
               style={{ marginLeft: isEditMode ? '-15px' : '0px' }}
             >
-              <span className="price-value--orange fw8"> {sale}</span>
+              <span className="price-value--orange fw8">{sale}</span>
               <span className="sale-button">Sale</span>
             </div>
           ),
