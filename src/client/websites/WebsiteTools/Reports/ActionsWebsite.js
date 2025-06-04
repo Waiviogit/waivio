@@ -55,9 +55,9 @@ const ActionsWebsite = ({
     setLoadingMore(true);
     try {
       await getMoreActionsInfo(isAdmin, {
+        ...data,
         skip: reportsInfo.payments.length,
         limit,
-        ...data,
       });
     } finally {
       setLoadingMore(false);
@@ -82,6 +82,7 @@ const ActionsWebsite = ({
             : {}),
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
         };
+
         setFormData(formData);
         getActionsInfo(isAdmin, formData);
       }
