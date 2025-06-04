@@ -4,7 +4,6 @@ import { Editor, Range, Transforms } from 'slate';
 import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
 
 import useTable from '../utils/useTable';
@@ -99,8 +98,15 @@ const Toolbar = props => {
     ReactEditor.focus(editor);
   };
 
-  const handleClickPrevPage = () => setCurrentPage(prev => prev - 1);
-  const handleClickNextPage = () => setCurrentPage(prev => prev + 1);
+  const handleClickPrevPage = e => {
+    e.preventDefault();
+    setCurrentPage(prev => prev - 1);
+  };
+  const handleClickNextPage = e => {
+    e.preventDefault();
+
+    setCurrentPage(prev => prev + 1);
+  };
 
   if (isShowLinkInput) {
     const isEmptyUrlInput = isEmpty(urlInputValue);
@@ -150,12 +156,26 @@ const Toolbar = props => {
   const getToolBar = () => (
     <>
       {currentPage > 1 && (
-        <ReactSVG
+        <span
+          style={{
+            display: 'inline-block',
+            width: '30px',
+            textAlign: 'center',
+            lineHeight: '30px',
+            cursor: 'pointer',
+          }}
           onMouseDown={handleClickPrevPage}
-          src="/images/icons/arrow-toolbar.svg"
-          wrapper={'span'}
-          className="md-RichEditor-pagination-icon"
-        />
+        >
+          <img
+            src={'/images/icons/arrow-toolbar.svg'}
+            style={{
+              display: 'inline-block',
+              height: '12px',
+              margin: '0',
+            }}
+            alt={''}
+          />
+        </span>
       )}
       <BlockToolbar
         editor={editor}
@@ -194,12 +214,27 @@ const Toolbar = props => {
         }
       })}
       {currentPage < TOTAL_PAGE && (
-        <ReactSVG
+        <span
+          style={{
+            display: 'inline-block',
+            width: '30px',
+            textAlign: 'center',
+            lineHeight: '30px',
+            cursor: 'pointer',
+          }}
           onMouseDown={handleClickNextPage}
-          src="/images/icons/arrow-toolbar.svg"
-          wrapper={'span'}
-          className="md-RichEditor-pagination-icon md-RichEditor-pagination-icon--next"
-        />
+        >
+          <img
+            src={'/images/icons/arrow-toolbar.svg'}
+            style={{
+              display: 'inline-block',
+              height: '12px',
+              transform: 'rotate(180deg)',
+              margin: '0',
+            }}
+            alt={''}
+          />
+        </span>
       )}
     </>
   );

@@ -184,9 +184,7 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
-      at: lastSelection.current.anchor.path,
-    });
+    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
   };
 
   // Drug and drop method
@@ -228,9 +226,7 @@ const EditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
-        at: lastSelection.current.anchor.path,
-      });
+      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
     });
 
     return true;
@@ -525,6 +521,7 @@ const EditorSlate = props => {
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
             onFocus={handleFocus}
+            onBlur={() => {}}
             spellCheck={false}
             autoCorrect={false}
             onPaste={e => {
