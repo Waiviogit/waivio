@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import { useParams, withRouter } from 'react-router';
 import { isKeyHotkey, isHotkey } from 'is-hotkey';
 import { injectIntl } from 'react-intl';
+import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
 
@@ -183,7 +184,9 @@ const EditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
+      at: lastSelection.current.anchor.path,
+    });
   };
 
   // Drug and drop method
@@ -225,7 +228,9 @@ const EditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()], {
+        at: lastSelection.current.anchor.path,
+      });
     });
 
     return true;
@@ -348,7 +353,7 @@ const EditorSlate = props => {
     if (event.key === 'Enter') {
       removeAllInlineFormats(editor);
 
-      if (selectedElement.type === 'listItem' && selectedElement.children[0].text === '') {
+      if (['listItem'].includes(selectedElement.type) && selectedElement.children[0].text === '') {
         const [list] = getParentList(path, editor);
 
         event.preventDefault();
@@ -447,6 +452,8 @@ const EditorSlate = props => {
     [],
   );
 
+  const lastSelection = useRef(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') window.slateEditor = editor;
     props.setEditor(editor);
@@ -481,6 +488,20 @@ const EditorSlate = props => {
     }
   }, [body, initiallized]);
 
+  const handleFocus = () => {
+    if (!editor.selection && lastSelection.current && isAndroidDevice()) {
+      Transforms.select(editor, lastSelection.current);
+    }
+    props.setEditor(editor);
+    if (props.onFocus) props.onFocus();
+  };
+
+  const onSelect = selection => {
+    if (selection && isAndroidDevice()) {
+      lastSelection.current = selection;
+    }
+  };
+
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
@@ -503,18 +524,16 @@ const EditorSlate = props => {
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
-            onFocus={() => {
-              props.setEditor(editor);
-              if (props.onFocus) props.onFocus();
-            }}
-            onBlur={() => {
-              // editor.lastSelection = editor.selection;
-            }}
+            onFocus={handleFocus}
             spellCheck={false}
-            onPaste={handlePastedFiles}
+            autoCorrect={false}
+            onPaste={e => {
+              handlePastedFiles(e);
+            }}
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
+            setLastSelection={onSelect}
             parentPost={parentPost}
             editor={editor}
             sideButtons={SIDE_BUTTONS_SLATE}

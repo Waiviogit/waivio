@@ -1,19 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
-import { useSlate } from 'slate-react';
+import { useSlate, ReactEditor } from 'slate-react';
 import classNames from 'classnames';
+import { isAndroidDevice } from '../../../../common/helpers/apiHelpers';
+import { setLastSelection } from '../../../../store/slateEditorStore/editorActions';
+import { getLastSelection } from '../../../../store/slateEditorStore/editorSelectors';
 
-import { getSelection } from '../util';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
 
 import './addbutton.less';
 
 const AddButtonSlate = props => {
   const { editorNode, isComment, initialPosTop, ADD_BTN_DIF, parentPost } = props;
-
+  const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
   const editor = useSlate();
@@ -22,19 +25,29 @@ const AddButtonSlate = props => {
   const sideControl = useRef(null);
   const initialPosOfBtn = useRef(null);
   const firstRender = useRef(false);
+  const lastBounding = useRef(null);
+  const lastSect = useSelector(getLastSelection);
 
   useEffect(() => {
     if (!editorNode) return;
+    if (selection && isAndroidDevice()) {
+      dispatch(setLastSelection(selection));
+      props.setLastSelection(selection);
+    }
+
     setTimeout(() => {
       if (typeof window !== 'undefined') {
         const nativeSelection = getSelection(window);
 
-        if (nativeSelection?.rangeCount < 1) return;
-
+        if (nativeSelection?.rangeCount < 1 && !props.lastSelection) return;
         const range = nativeSelection.getRangeAt(0);
-        const bound = range.getBoundingClientRect();
+        const bound = editor.selection ? range.getBoundingClientRect() : lastBounding.current;
         const parentBoundary = editorNode.getBoundingClientRect();
         const nodeStyle = nodeRef.current?.style || {};
+
+        if (selection && isAndroidDevice()) {
+          lastBounding.current = bound;
+        }
 
         if (!firstRender.current && initialPosTop) {
           firstRender.current = true;
@@ -44,7 +57,9 @@ const AddButtonSlate = props => {
         }
         if (bound.top > 0) {
           nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-        } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || '-14px';
+        } else if (bound.top <= 0) {
+          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosOfBtn?.current?.top || '-14px';
+        }
         if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
           initialPosOfBtn.current.top = nodeStyle.top;
       }
@@ -64,6 +79,7 @@ const AddButtonSlate = props => {
   const handleClose = () => {
     setOpen(false);
     sideControl.current = null;
+    ReactEditor.focus(editor);
   };
 
   useEffect(() => {
@@ -118,6 +134,7 @@ const AddButtonSlate = props => {
                       editorNode={editorNode}
                       isComment={isComment}
                       parentPost={parentPost}
+                      lastSelection={lastSect}
                     />
                   </CSSTransition>
                 );
@@ -137,7 +154,9 @@ AddButtonSlate.propTypes = {
   parentPost: PropTypes.shape({
     id: PropTypes.string,
   }),
+  lastSelection: PropTypes.shape(),
   focus: PropTypes.func,
+  setLastSelection: PropTypes.func,
   sideButtons: PropTypes.arrayOf(
     PropTypes.shape({
       component: PropTypes.elementType.isRequired,

@@ -478,6 +478,7 @@ class AppendForm extends Component {
       case objectFields.background:
       case objectFields.price:
       case objectFields.sale:
+      case objectFields.compareAtPrice:
       case objectFields.nutrition:
       case objectFields.categoryItem:
       case objectFields.parent:
@@ -892,6 +893,7 @@ class AppendForm extends Component {
                   'MMMM DD, YYYY',
                 )},\nTill: ${moment(getFieldValue(saleFields.saleTill)).format('MMMM DD, YYYY')}`
               : '';
+
           return `@${author} added ${currentField} (${langReadable}):\nSale: ${getFieldValue(
             objectFields.sale,
           )}${dateInfo}`;
@@ -2970,6 +2972,34 @@ class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.compareAtPrice: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.compareAtPrice, {
+                rules: this.getFieldRules(objectFields.price),
+              })(
+                <Input.TextArea
+                  autoFocus
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'object_field_compareAtPrice',
+                    defaultMessage: 'Compare price',
+                  })}
+                  autoSize={{ minRows: 4, maxRows: 100 }}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              The compare-at price will be displayed before the regular price and will appear
+              crossed out.
+            </p>
+          </>
         );
       }
       case objectFields.nutrition: {

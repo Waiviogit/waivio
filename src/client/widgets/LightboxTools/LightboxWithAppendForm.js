@@ -45,7 +45,7 @@ const LightboxWithAppendForm = ({
           setSelectedAlbum={setSelectedAlbum}
         />
       }
-      imageCaption={<LightboxFooter post={pics[photoIndex]} />}
+      imageCaption={<LightboxFooter post={pics[photoIndex]} selectedAlbum={selectedAlbum} />}
       mainSrc={pics[photoIndex]?.body || pics[photoIndex]?.src}
       nextSrc={
         pics.length <= 1 || photoIndex === pics.length - 1

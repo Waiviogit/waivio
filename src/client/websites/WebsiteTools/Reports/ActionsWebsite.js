@@ -34,11 +34,15 @@ const ActionsWebsite = ({
 }) => {
   const limit = 20;
   const [sites, setSites] = useState([]);
+  const [data, setFormData] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
-  const { getFieldDecorator, resetFields } = form;
+  const { getFieldDecorator, resetFields, getFieldValue } = form;
   const formatDate = selectFormatDate(locale);
   const history = useHistory();
 
+  useEffect(() => {
+    setFormData({});
+  }, [getFieldValue('host')]);
   useEffect(() => {
     resetFields();
     getActionsInfo(isAdmin, { skip: 0, limit });
@@ -51,6 +55,7 @@ const ActionsWebsite = ({
     setLoadingMore(true);
     try {
       await getMoreActionsInfo(isAdmin, {
+        ...data,
         skip: reportsInfo.payments.length,
         limit,
       });
@@ -78,6 +83,7 @@ const ActionsWebsite = ({
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
         };
 
+        setFormData(formData);
         getActionsInfo(isAdmin, formData);
       }
     });
@@ -192,6 +198,7 @@ ActionsWebsite.propTypes = {
     validateFields: PropTypes.func,
     isFieldsTouched: PropTypes.func,
     resetFields: PropTypes.func,
+    getFieldValue: PropTypes.func,
   }).isRequired,
   getActionsInfo: PropTypes.func.isRequired,
   getMoreActionsInfo: PropTypes.func.isRequired,

@@ -6,7 +6,7 @@ import { useSlate } from 'slate-react';
 import classnames from 'classnames';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 
-const objectSearchInput = (props, editor) => {
+const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
     const objectName = selectedObject.author_permlink;
 
@@ -15,7 +15,7 @@ const objectSearchInput = (props, editor) => {
       (selectedObject.object_type === 'hashtag' && props.handleHashtag)
     )
       props.handleHashtag(objectName);
-    props.handleObjectSelect(selectedObject, true, editor);
+    props.handleObjectSelect(selectedObject, true, props.lastSelection);
     props.handleClose();
   };
 

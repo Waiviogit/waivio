@@ -10,6 +10,7 @@ import ImageSetter from '../../../ImageSetter/ImageSetterSlate';
 class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    lastSelection: PropTypes.shape().isRequired,
     close: PropTypes.func.isRequired,
   };
 
@@ -81,6 +82,7 @@ class ImageSideButton extends React.Component {
             isEditor
             isOkayBtn={isOkayBtn}
             isModal={isModal}
+            lastSelection={this.props.lastSelection}
           />
         </Modal>
       </React.Fragment>

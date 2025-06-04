@@ -278,7 +278,9 @@ const HeaderButtons = props => {
             placement="bottom"
             title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
             mouseEnterDelay={1}
-            overlayClassName="Topnav__notifications-tooltip"
+            overlayClassName={classNames('Topnav__notifications-tooltip', {
+              'Topnav__notifications-tooltip--hide': isMobile(),
+            })}
           >
             <Link to="/editor" className="Topnav__link Topnav__link--action" onClick={handleEditor}>
               <i className="iconfont icon-write" />
