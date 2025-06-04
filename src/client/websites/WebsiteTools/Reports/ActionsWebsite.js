@@ -36,10 +36,13 @@ const ActionsWebsite = ({
   const [sites, setSites] = useState([]);
   const [data, setFormData] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
-  const { getFieldDecorator, resetFields } = form;
+  const { getFieldDecorator, resetFields, getFieldValue } = form;
   const formatDate = selectFormatDate(locale);
   const history = useHistory();
 
+  useEffect(() => {
+    setFormData({});
+  }, [getFieldValue('host')]);
   useEffect(() => {
     resetFields();
     getActionsInfo(isAdmin, { skip: 0, limit });
@@ -194,6 +197,7 @@ ActionsWebsite.propTypes = {
     validateFields: PropTypes.func,
     isFieldsTouched: PropTypes.func,
     resetFields: PropTypes.func,
+    getFieldValue: PropTypes.func,
   }).isRequired,
   getActionsInfo: PropTypes.func.isRequired,
   getMoreActionsInfo: PropTypes.func.isRequired,
