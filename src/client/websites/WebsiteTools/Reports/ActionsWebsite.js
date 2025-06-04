@@ -34,6 +34,7 @@ const ActionsWebsite = ({
 }) => {
   const limit = 20;
   const [sites, setSites] = useState([]);
+  const [data, setFormData] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
   const { getFieldDecorator, resetFields } = form;
   const formatDate = selectFormatDate(locale);
@@ -53,6 +54,7 @@ const ActionsWebsite = ({
       await getMoreActionsInfo(isAdmin, {
         skip: reportsInfo.payments.length,
         limit,
+        ...data,
       });
     } finally {
       setLoadingMore(false);
@@ -77,7 +79,7 @@ const ActionsWebsite = ({
             : {}),
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
         };
-
+        setFormData(formData);
         getActionsInfo(isAdmin, formData);
       }
     });
