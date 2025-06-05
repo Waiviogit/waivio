@@ -64,6 +64,8 @@ const LINKS = {
   ADMIN_SUBSCRIPTIONS: '/admin-subscriptions',
   ADMIN_WHITELIST: '/admin-whitelist',
   ADMIN_NEW_ACCOUNTS: '/admin-new-accounts',
+  ADMIN_GUESTS: '/admin-guests',
+  ADMIN_SPAM: '/admin-spam',
 };
 
 const FEED_URLS = [

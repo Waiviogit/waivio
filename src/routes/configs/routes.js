@@ -198,6 +198,16 @@ const routes = {
       component: Views.AdminNewAccounts,
     },
     {
+      path: '/admin-guests',
+      exact: true,
+      component: Views.AdminGuests,
+    },
+    {
+      path: '/admin-spam',
+      exact: true,
+      component: Views.AdminSpam,
+    },
+    {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
       component: SettingsMain,

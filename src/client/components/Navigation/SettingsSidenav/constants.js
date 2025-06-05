@@ -78,6 +78,12 @@ export const adminSettings = {
       id: 'new_accounts',
       defaultMessage: 'New accounts',
     },
+    {
+      to: '/admin-guests',
+      id: 'guests',
+      defaultMessage: 'Guests',
+      paths: ['/admin-guests', '/admin-spam'],
+    },
   ],
 };
 export const dataManagementSettings = {

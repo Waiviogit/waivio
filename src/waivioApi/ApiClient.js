@@ -4784,6 +4784,24 @@ export const addCreditsByAdmin = (admin, userName, amount) =>
     .then(res => res)
     .catch(error => error);
 
+export const getAdminGuests = (admin, skip, limit, searchString) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.users}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+      searchString,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export const deleteUserFromAdminWhitelist = (userName, name) =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
     headers: {
