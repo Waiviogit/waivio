@@ -567,6 +567,7 @@ EditorSlate.propTypes = {
   parentPost: PropTypes.shape(),
   match: PropTypes.shape(),
   onChange: PropTypes.func.isRequired,
+  setLastSelection: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
