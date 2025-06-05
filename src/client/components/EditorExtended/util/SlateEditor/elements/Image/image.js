@@ -16,9 +16,8 @@ const Image = ({ attributes, element, children }) => {
       className="md-block-image-inner-container"
       style={{ boxShadow: selected && focused && '0 0 3px 3px lightgray', textAlign: 'center' }}
       role="presentation"
-      contentEditable={false}
     >
-      <div contentEditable={false}>
+      <div>
         <img alt={element.alt} src={url} />
       </div>
       {children}
