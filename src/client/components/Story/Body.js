@@ -42,7 +42,7 @@ export const remarkable = new Remarkable({
   quotes: '“”‘’',
 });
 
-const getEmbed = link => {
+export const getEmbed = link => {
   const embed = steemEmbed.get(link, { width: '100%', height: 400, autoplay: false });
 
   if (isUndefined(embed)) {
