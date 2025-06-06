@@ -434,7 +434,7 @@ class AppendForm extends Component {
       }
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.trace(e);
+      console.error(e);
     }
   };
 
@@ -1116,7 +1116,7 @@ class AppendForm extends Component {
       if (currentField === objectFields.avatar) {
         fieldsObject = {
           ...fieldsObject,
-          id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
+          id: this.props.albums?.find(album => album.body === 'Photos').id,
         };
       }
       if (currentField === objectFields.affiliateButton) {
