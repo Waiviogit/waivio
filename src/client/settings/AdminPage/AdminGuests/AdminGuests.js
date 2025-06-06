@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Cookie from 'js-cookie';
 import { injectIntl } from 'react-intl';
@@ -6,7 +6,7 @@ import { Button, Input, Tabs } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { isEmpty, map } from 'lodash';
+import { debounce, isEmpty, isNil, map } from 'lodash';
 import { useHistory } from 'react-router';
 import { Link, useLocation } from 'react-router-dom';
 import Affix from '../../../components/Utils/Affix';
@@ -33,9 +33,10 @@ const limit = 100;
 const AdminGuests = ({ intl }) => {
   const [users, setGuestUsers] = useState([]);
   const [muted, setMuted] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(false);
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
@@ -58,6 +59,18 @@ const AdminGuests = ({ intl }) => {
     dispatch(muteUser(authUserName, userName, action));
   };
 
+  const debouncedSetSearch = useMemo(
+    () =>
+      debounce(value => {
+        setSearch(value);
+      }, 500),
+    [],
+  );
+
+  const handleSearch = value => {
+    debouncedSetSearch(value);
+  };
+
   useEffect(() => {
     if (isAuth && iaAppAdmin) {
       setLoading(true);
@@ -78,8 +91,22 @@ const AdminGuests = ({ intl }) => {
     }
   }, [isAuth, authUserName]);
 
+  useEffect(() => {
+    if (!isNil(search))
+      getAdminGuests(authUserName, 0, limit, searchString).then(r => {
+        setGuestUsers(r.result);
+        const initiallyMuted = r.result
+          .filter(u => u.mutedBy?.includes(authUserName))
+          .map(u => u.name);
+
+        setMuted(initiallyMuted);
+      });
+  }, [search]);
+
   const loadMore = () => {
+    setListLoading(true);
     getAdminGuests(authUserName, users.length, limit, searchString).then(r => {
+      setListLoading(false);
       setGuestUsers([...users, ...r.result]);
 
       const newMuted = r.result.filter(u => u.mutedBy?.includes(authUserName)).map(u => u.name);
@@ -87,10 +114,6 @@ const AdminGuests = ({ intl }) => {
       setMuted(prev => [...prev, ...newMuted.filter(name => !prev.includes(name))]);
     });
   };
-
-  useEffect(() => {
-    getAdminGuests(authUserName, 0, limit, searchString).then(r => setGuestUsers(r.result));
-  }, [search.length]);
 
   return (
     <div className="shifted">
@@ -113,7 +136,7 @@ const AdminGuests = ({ intl }) => {
                 <Tabs.TabPane tab={<Link to="/admin-guests">Users</Link>} key={tabs.users}>
                   <div className={'AdminPage min-width'}>
                     <Input
-                      onInput={e => setSearch(e.currentTarget.value)}
+                      onChange={e => handleSearch(e.currentTarget.value)}
                       placeholder={'Find users'}
                     />
                     <br />
@@ -162,10 +185,16 @@ const AdminGuests = ({ intl }) => {
                             />
                           );
                         })}
-                        {users.length >= limit && hasMore && isEmpty(search) && (
-                          <div className="Blacklist__show-more" onClick={loadMore}>
-                            Show more
-                          </div>
+                        {listLoading ? (
+                          <Loading />
+                        ) : (
+                          users.length >= limit &&
+                          hasMore &&
+                          isEmpty(search) && (
+                            <div className="Blacklist__show-more" onClick={loadMore}>
+                              Show more
+                            </div>
+                          )
                         )}
                       </div>
                     ) : (
