@@ -14,7 +14,7 @@ import {
 import { getWebsiteLanguage } from '../appStore/appSelectors';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { setToken } from '../../common/helpers/getToken';
+import { setToken, setNightMode } from '../../common/helpers/getToken';
 import {
   getAppAdmins,
   getGuestPaymentsHistory,
@@ -110,7 +110,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const hiveAuth = Cookie.get('auth');
   const language = getWebsiteLanguage(state);
 
-  Cookie.set('nightmode', 'false');
+  setNightMode(false);
   Cookie.remove('access_token');
   Cookie.remove('currentUser');
 
@@ -181,7 +181,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
+        setNightMode(userMetaData.settings?.nightmode);
+
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -210,7 +211,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
     const appAdmins = await getAppAdmins();
 
-    Cookie.set('nightmode', userMetaData.settings?.nightmode);
+    setNightMode(userMetaData.settings?.nightmode);
     Cookie.set('appAdmins', appAdmins);
     Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
@@ -227,7 +228,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         Cookie.set('currentUser', userData.name);
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
+        setNightMode(userMetaData.settings?.nightmode);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -266,8 +267,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
         const appAdmins = await getAppAdmins();
 
+        setNightMode(userMetaData.settings?.nightmode);
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
         Cookie.set('currentUser', scUserData.name);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
@@ -288,6 +289,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         if (e) message.error('Authorization was not successful. Please try again later.');
         clearGuestAuthData();
         Cookie.remove('auth');
+        Cookie.remove('currentUser');
+        Cookie.remove('appAdmins');
+        setNightMode(false);
       }
     });
   }
@@ -306,6 +310,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     .then(() => dispatch({ type: SHOW_SETTINGS }))
     .catch(e => {
       dispatch(loginError());
+      Cookie.remove('auth');
+      Cookie.remove('currentUser');
+      Cookie.remove('appAdmins');
+      Cookie.remove('nightmode');
+      Cookie.remove('access_token');
+      clearGuestAuthData();
 
       return e;
     });
