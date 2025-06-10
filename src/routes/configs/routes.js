@@ -361,9 +361,9 @@ const routes = {
               component: Views.WebsitesTrusties,
             },
             {
-              path: '/shopify',
+              path: '/(shopify)',
               exact: true,
-              component: Views.WebsitesShopify,
+              component: Views.WebsitesIntegrations,
             },
             {
               path: '/affiliate-codes',
