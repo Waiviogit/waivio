@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import { getAuthenticatedUser, getRewardsTab } from '../../../store/authStore/authSelectors';
 
 import './TopNavigation.less';
@@ -119,7 +120,8 @@ const WEBSITE_URLS = [
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const rewardsTab = useSelector(getRewardsTab);
-  const isRouteMathed =
+
+  const isRouteMatched =
     pathname === '/' ||
     Object.values(LINKS).some(
       url =>
@@ -128,67 +130,63 @@ const TopNavigation = ({ location: { pathname } }) => {
         !pathname.includes(`/favorites/`),
     );
 
-  return isRouteMathed ? (
+  const navItems = [
+    {
+      to: '/',
+      id: 'feed',
+      defaultMessage: 'Feed',
+      isActive: pathname === '/' || FEED_URLS.some(url => pathname.includes(url)),
+      event: 'click_myfeed',
+    },
+    {
+      to: `${LINKS.REWARDS}${rewardsTab}`,
+      id: 'earn',
+      defaultMessage: 'Earn',
+      isActive: pathname.includes(LINKS.REWARDS),
+      event: 'click_earn',
+    },
+    {
+      to: LINKS.SHOP,
+      id: 'shop',
+      defaultMessage: 'Shop',
+      isActive: pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.WEBSITES_SHOPIFY),
+      event: 'click_mainshop',
+    },
+    !isEmpty(authenticatedUser) && {
+      to: LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
+      id: 'tools',
+      defaultMessage: 'Tools',
+      isActive:
+        !pathname.includes(LINKS.REWARDS) &&
+        (TOOLS_URLS.includes(pathname) || WEBSITE_URLS.some(url => pathname.includes(url))),
+      event: 'click_tools',
+    },
+    {
+      to: LINKS.ABOUT,
+      id: 'about',
+      defaultMessage: 'About',
+      isActive: pathname.includes(LINKS.ABOUT),
+      event: 'click_about',
+    },
+  ].filter(Boolean);
+
+  return isRouteMatched ? (
     <div className="TopNavigation">
       <div className="container menu-layout">
         <ul className="TopNavigation__menu center">
-          <li className="TopNavigation__item">
-            <Link
-              to="/"
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname === '/' || FEED_URLS.some(feedUrl => pathname.includes(feedUrl)),
-              })}
-            >
-              <FormattedMessage id="feed" defaultMessage="Feed" />
-            </Link>
-          </li>
-          <li className="TopNavigation__item">
-            <Link
-              to={`${LINKS.REWARDS}${rewardsTab}`}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(`${LINKS.REWARDS}`),
-              })}
-            >
-              <FormattedMessage id="earn" defaultMessage="Earn" />
-            </Link>
-          </li>
-          <li className="TopNavigation__item">
-            <Link
-              to={`${LINKS.SHOP}`}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.WEBSITES_SHOPIFY),
-              })}
-            >
-              <FormattedMessage id="shop" defaultMessage="Shop" />
-            </Link>
-          </li>
-          {!isEmpty(authenticatedUser) && (
-            <li className="TopNavigation__item">
+          {navItems.map(({ to, id, defaultMessage, isActive, event }) => (
+            <li className="TopNavigation__item" key={id}>
               <Link
-                to={`${LINKS.TOOLS_SETTINGS_NOTIFICATIONS}`}
+                to={to}
                 className={classNames('TopNavigation__link', {
-                  'TopNavigation__link--active':
-                    !pathname.includes(LINKS.REWARDS) &&
-                    (TOOLS_URLS.some(item => pathname === item) ||
-                      WEBSITE_URLS.some(item => pathname.includes(item))),
+                  'TopNavigation__link--active': isActive,
                 })}
+                onClick={() => setGoogleTagEvent(event)}
               >
-                <FormattedMessage id="tools" defaultMessage="Tools" />
+                <FormattedMessage id={id} defaultMessage={defaultMessage} />
               </Link>
             </li>
-          )}
-          <li className="TopNavigation__item">
-            <Link
-              to={LINKS.ABOUT}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.ABOUT),
-              })}
-            >
-              <FormattedMessage id="about" defaultMessage="About" />
-            </Link>
-          </li>
+          ))}
         </ul>
       </div>
     </div>

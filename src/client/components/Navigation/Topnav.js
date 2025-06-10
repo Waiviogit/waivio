@@ -6,6 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
 import classNames from 'classnames';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,
@@ -119,7 +120,10 @@ class Topnav extends React.Component {
     }
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 5, 15, null, true), 300);
+  debouncedSearch = debounce(value => {
+    this.props.searchAutoComplete(value, 5, 15, null, true);
+    setGoogleTagEvent('use_search');
+  }, 300);
 
   debouncedSearchByObject = debounce(
     (searchString, objType) => this.props.searchObjectsAutoCompete(searchString, objType),
@@ -521,7 +525,13 @@ class Topnav extends React.Component {
       <div className="Topnav">
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
-            <Link className="Topnav__brand" to="/">
+            <Link
+              className="Topnav__brand"
+              to="/"
+              onClick={() => {
+                setGoogleTagEvent('click_logo');
+              }}
+            >
               <img src="/images/icons/waivio.svg" alt="Waivio" />
             </Link>
           </div>

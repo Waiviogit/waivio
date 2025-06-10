@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import classNames from 'classnames';
+import { setGoogleTagEvent } from '../../common/helpers';
 
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -31,7 +32,11 @@ const Shop = ({ route }) => {
   const desc = route.isSocial ? mainObj?.description : 'Find and buy easily. Shop with pleasure!';
   const { canonicalUrl } = useSeoInfo();
 
-  useEffect(() => () => dispatch(resetBreadCrumb()), []);
+  useEffect(() => {
+    setGoogleTagEvent('view_mainshop');
+
+    return () => dispatch(resetBreadCrumb());
+  }, []);
 
   return (
     <div className="shifted">
