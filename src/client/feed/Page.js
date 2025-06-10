@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
+import { setGoogleTagEvent } from '../../common/helpers';
 import { getFeedContent, getUserFeedContent } from '../../store/feedStore/feedActions';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -56,6 +57,10 @@ class Page extends React.Component {
     wobject: {},
     getObject: () => {},
   };
+
+  componentDidMount() {
+    setGoogleTagEvent('view_myfeed');
+  }
 
   handleSortChange = key => {
     const { category } = this.props.match.params;

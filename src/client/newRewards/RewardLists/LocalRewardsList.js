@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
@@ -114,6 +115,8 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   };
 
   useEffect(() => {
+    setGoogleTagEvent('view_earn');
+
     if (query.get('showAll') || !authUser) {
       setShowAll(true);
       query.set('showAll', true);

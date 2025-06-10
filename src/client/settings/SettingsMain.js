@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { some } from 'lodash';
 import classNames from 'classnames';
+import { setGoogleTagEvent } from '../../common/helpers';
 import Loading from '../components/Icon/Loading';
 
 import Affix from '../components/Utils/Affix';
@@ -36,6 +37,8 @@ const SettingsMain = props => {
 
   useEffect(() => {
     if (!props.auth || (host && !props.isWaivio)) props.history.push('/');
+    setGoogleTagEvent('view_tools');
+
     props.getOwnWebsites().then(({ value }) => {
       if (host && !some(value, website => website.host === host)) props.history.push('/');
     });
