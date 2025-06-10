@@ -223,8 +223,8 @@ export const currentWebsiteSettings = (site, parentHost) => {
     },
     {
       to: `/${site}/shopify`,
-      id: 'shopify',
-      defaultMessage: 'Shopify',
+      id: 'integrations',
+      defaultMessage: 'Integrations',
     },
   ];
 

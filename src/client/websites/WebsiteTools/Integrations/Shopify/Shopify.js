@@ -5,13 +5,13 @@ import { isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button, Input, message, Icon } from 'antd';
-import Loading from '../../../components/Icon/Loading';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import Loading from '../../../../components/Icon/Loading';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 import {
   deleteShopifySettings,
   getShopifySettings,
   saveShopifySettings,
-} from '../../../../waivioApi/importApi';
+} from '../../../../../waivioApi/importApi';
 
 const AdSenseAds = ({ intl, match, userName }) => {
   const [loading, setLoading] = useState(false);
