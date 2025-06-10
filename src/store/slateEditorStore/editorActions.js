@@ -313,6 +313,13 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         hiveBeneficiaryAccount,
       )
         .then(async result => {
+          if (result.status === 422) {
+            message.error('Something went wrong.');
+            dispatch({
+              type: CREATE_POST_ERROR,
+            });
+          }
+
           if (draftId) {
             batch(() => {
               if (result.ok || result?.result?.id) dispatch(deleteDraft([draftId]));
