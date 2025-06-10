@@ -198,15 +198,11 @@ const routes = {
       component: Views.AdminNewAccounts,
     },
     {
-      path: '/admin-guests',
+      path: '/(admin-guests|admin-spam)',
       exact: true,
       component: Views.AdminGuests,
     },
-    {
-      path: '/admin-spam',
-      exact: true,
-      component: Views.AdminSpam,
-    },
+
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
@@ -365,9 +361,9 @@ const routes = {
               component: Views.WebsitesTrusties,
             },
             {
-              path: '/shopify',
+              path: '/(shopify)',
               exact: true,
-              component: Views.WebsitesShopify,
+              component: Views.WebsitesIntegrations,
             },
             {
               path: '/affiliate-codes',

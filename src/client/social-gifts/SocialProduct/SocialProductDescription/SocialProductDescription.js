@@ -17,7 +17,9 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, objec
   const photosToSort = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
   const isRecipeSingleImage =
     objectType === 'recipe' && photosToSort?.length === 1 && photosToSort[0]?.name === 'avatar';
-  const photos = isRecipeSingleImage ? [] : photosToSort?.sort((a, b) => b.weight - a.weight);
+  const photos = isRecipeSingleImage
+    ? []
+    : photosToSort?.filter(i => i.name !== 'avatar')?.sort((a, b) => b.weight - a.weight);
 
   const onPicClick = (e, pic) => {
     setOpen(true);
