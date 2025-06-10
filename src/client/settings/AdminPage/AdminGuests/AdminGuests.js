@@ -22,8 +22,9 @@ import { getAdminGuests } from '../../../../waivioApi/ApiClient';
 import BlacklistUser from '../../../newRewards/BlackList/BlacklistUser';
 import EmptyCampaing from '../../../statics/EmptyCampaign';
 import { muteUser } from '../../../../store/websiteStore/websiteActions';
+import AdminSpam from '../AdminSpam/AdminSpam';
 
-const tabs = {
+export const adminGuestTabs = {
   users: 'users',
   spam: 'spam',
 };
@@ -50,9 +51,11 @@ const AdminGuests = ({ intl }) => {
   const title = `Admin guests`;
 
   const getActiveTab = () => {
-    const active = Object.entries(tabs).find(([, value]) => location.pathname.includes(value));
+    const active = Object.entries(adminGuestTabs).find(([, value]) =>
+      location.pathname.includes(value),
+    );
 
-    return active ? active[1] : tabs.users;
+    return active ? active[1] : adminGuestTabs.users;
   };
 
   const handleClickMute = (userName, action) => {
@@ -128,89 +131,102 @@ const AdminGuests = ({ intl }) => {
         </Affix>
         <div className={classNames('center')}>
           <MobileNavigation />
-          {loading ? (
-            <Loading />
-          ) : (
+          {
             <div>
               <Tabs className="Wallets" activeKey={getActiveTab()} animated={false}>
-                <Tabs.TabPane tab={<Link to="/admin-guests">Users</Link>} key={tabs.users}>
+                <Tabs.TabPane
+                  tab={<Link to="/admin-guests">Users</Link>}
+                  key={adminGuestTabs.users}
+                >
                   <div className={'AdminPage min-width'}>
                     <Input
                       onChange={e => handleSearch(e.currentTarget.value)}
                       placeholder={'Find users'}
                     />
                     <br />
-                    {!isEmpty(users) ? (
-                      <div className="WhitelistContent__container" style={{ marginTop: '20px' }}>
-                        {map(users, u => {
-                          const isMuted = muted.includes(u.name);
-                          const isInMuted = u.mutedBy.includes(authUserName);
-
-                          return (
-                            <BlacklistUser
-                              key={u.name}
-                              user={u}
-                              customBtn={
-                                <div className="Blacklist__user__profile__delete">
-                                  {!isInMuted && !isEmpty(u.mutedBy) ? (
-                                    <div className={'Blacklist__guide'}>
-                                      Muted by:{' '}
-                                      {u.mutedBy?.map((user, i) => (
-                                        <React.Fragment key={user}>
-                                          <a className={'Blacklist__guide'} href={`/@${user}`}>
-                                            @{user}
-                                          </a>
-                                          {i < u.mutedBy.length - 1 && ', '}
-                                        </React.Fragment>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <Button
-                                      type="secondary"
-                                      onClick={() => {
-                                        handleClickMute(u.name, isMuted ? [] : ['ignore']);
-                                        setMuted(prev =>
-                                          isMuted
-                                            ? prev.filter(name => name !== u.name)
-                                            : [...prev, u.name],
-                                        );
-                                      }}
-                                      id={u.name}
-                                    >
-                                      {isMuted ? 'Unmute' : 'Mute'}
-                                    </Button>
-                                  )}
-                                </div>
-                              }
-                            />
-                          );
-                        })}
-                        {listLoading ? (
-                          <Loading />
-                        ) : (
-                          users.length >= limit &&
-                          hasMore &&
-                          isEmpty(search) && (
-                            <div className="Blacklist__show-more" onClick={loadMore}>
-                              Show more
-                            </div>
-                          )
-                        )}
-                      </div>
+                    {loading ? (
+                      <Loading />
                     ) : (
-                      <EmptyCampaing
-                        emptyMessage={intl.formatMessage({
-                          id: 'your_list_is_empty',
-                          defaultMessage: 'Your list is empty',
-                        })}
-                      />
+                      <>
+                        {!isEmpty(users) ? (
+                          <div
+                            className="WhitelistContent__container"
+                            style={{ marginTop: '20px' }}
+                          >
+                            {map(users, u => {
+                              const isMuted = muted.includes(u.name);
+                              const isInMuted = u.mutedBy.includes(authUserName);
+
+                              return (
+                                <BlacklistUser
+                                  key={u.name}
+                                  user={u}
+                                  customBtn={
+                                    <div className="Blacklist__user__profile__delete">
+                                      {!isInMuted && !isEmpty(u.mutedBy) ? (
+                                        <div className={'Blacklist__guide'}>
+                                          Muted by:{' '}
+                                          {u.mutedBy?.map((user, i) => (
+                                            <React.Fragment key={user}>
+                                              <a className={'Blacklist__guide'} href={`/@${user}`}>
+                                                @{user}
+                                              </a>
+                                              {i < u.mutedBy.length - 1 && ', '}
+                                            </React.Fragment>
+                                          ))}
+                                        </div>
+                                      ) : (
+                                        <Button
+                                          type="secondary"
+                                          onClick={() => {
+                                            handleClickMute(u.name, isMuted ? [] : ['ignore']);
+                                            setMuted(prev =>
+                                              isMuted
+                                                ? prev.filter(name => name !== u.name)
+                                                : [...prev, u.name],
+                                            );
+                                          }}
+                                          id={u.name}
+                                        >
+                                          {isMuted ? 'Unmute' : 'Mute'}
+                                        </Button>
+                                      )}
+                                    </div>
+                                  }
+                                />
+                              );
+                            })}
+                            {listLoading ? (
+                              <Loading />
+                            ) : (
+                              users.length >= limit &&
+                              hasMore &&
+                              isEmpty(search) && (
+                                <div className="Blacklist__show-more" onClick={loadMore}>
+                                  Show more
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <EmptyCampaing
+                            emptyMessage={intl.formatMessage({
+                              id: 'your_list_is_empty',
+                              defaultMessage: 'Your list is empty',
+                            })}
+                          />
+                        )}
+                      </>
                     )}
                     <br />
                   </div>
                 </Tabs.TabPane>
+                <Tabs.TabPane tab={<Link to="/admin-spam">Spam</Link>} key={adminGuestTabs.spam}>
+                  <AdminSpam />
+                </Tabs.TabPane>
               </Tabs>
             </div>
-          )}
+          }
         </div>
       </div>
     </div>

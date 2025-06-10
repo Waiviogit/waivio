@@ -53,7 +53,7 @@ export default {
   ),
   AdminNewAccounts: loableComponent(import('../client/settings/AdminPage/AdminNewAccounts')),
   AdminGuests: loableComponent(import('../client/settings/AdminPage/AdminGuests/AdminGuests')),
-  AdminSpam: loableComponent(import('../client/settings/AdminPage/AdminGuests/AdminSpam')),
+  AdminSpam: loableComponent(import('../client/settings/AdminPage/AdminSpam/AdminSpam')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),
   Editor: loableComponent(import('../client/post/EditPost/EditorContainer')),
