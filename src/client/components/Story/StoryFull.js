@@ -133,7 +133,7 @@ class StoryFull extends React.Component {
       showModal: false,
       field: false,
       selectedAlbum: {},
-      obj: this.props.post.wobjects[0],
+      obj: this.props.post.wobjects?.[0],
     };
 
     this.images = [];
