@@ -282,5 +282,7 @@
   "challenges": "/challenges",
   "objectTypes1": "/object-types",
   "sync": "/sync",
-  "guests": "/guests"
+  "guests": "/guests",
+  "spam": "/spam",
+  "block": "/block"
 }
