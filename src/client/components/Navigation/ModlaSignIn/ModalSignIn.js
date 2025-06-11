@@ -5,6 +5,7 @@ import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
+import { setGoogleTagEvent } from '../../../../common/helpers';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   login,
@@ -138,6 +139,7 @@ const ModalSignIn = ({
   };
 
   const handleClickLoading = () => {
+    setGoogleTagEvent('click_sign_in_google');
     if (lastError !== 'idpiframe_initialization_failed') {
       setIsLoading(true);
     }
@@ -232,7 +234,13 @@ const ModalSignIn = ({
                       })}
                     </span>
                   </p>
-                  <a role="button" href={hiveSigner.getLoginURL()} className="ModalSignIn__signin">
+                  <div
+                    onClick={() => {
+                      setGoogleTagEvent('click_sign_in_hivesigner');
+                      window.location.href = hiveSigner.getLoginURL();
+                    }}
+                    className="ModalSignIn__signin"
+                  >
                     <img
                       src="/images/icons/logo-hive.svg"
                       alt="hive"
@@ -242,11 +250,12 @@ const ModalSignIn = ({
                       id: 'signin_with_steemIt',
                       defaultMessage: 'HiveSigner',
                     })}
-                  </a>
+                  </div>
                   <HiveAuth
                     onCloseSingIn={open => {
                       setIsModalOpen(open);
                       clearTimeout(timeOutId);
+                      setGoogleTagEvent('click_sign_in_hiveauth');
                     }}
                     setQRcodeForAuth={url => {
                       setShowQr(url);
@@ -336,6 +345,7 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
+    setGoogleTagEvent('click_sign_in');
     if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',

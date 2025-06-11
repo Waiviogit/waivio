@@ -149,8 +149,8 @@ class PostPreviewModal extends Component {
       if (this.props.reviewData && !this.props.isUpdating) {
         this.setState({ isCheckReviewModalOpen: true });
       } else {
-        setGoogleTagEvent('publish_post');
         this.props.onSubmit();
+        setGoogleTagEvent('publish_post');
       }
     } catch (e) {
       console.error(e);

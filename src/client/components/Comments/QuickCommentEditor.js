@@ -5,7 +5,6 @@ import { Icon } from 'antd';
 import { debounce, isEmpty } from 'lodash';
 import { Editor, Transforms } from 'slate';
 import { injectIntl } from 'react-intl';
-import { setGoogleTagEvent } from '../../../common/helpers';
 
 import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
@@ -61,7 +60,6 @@ const QuickCommentEditor = props => {
     e.stopPropagation();
     const { signature } = props;
 
-    setGoogleTagEvent('add_comment');
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {

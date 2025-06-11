@@ -4,6 +4,7 @@ import { Icon } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import ObjectFeed from './ObjectFeed';
 import IconButton from '../../components/IconButton';
 import { handleCreatePost } from '../../../common/helpers/wObjectHelper';
@@ -39,6 +40,7 @@ const ObjectFeedContainer = ({
   const authors = useSelector(getWobjectAuthors);
   const handleWriteReviewClick = () => {
     handleCreatePost(wobject, authors, history);
+    setGoogleTagEvent('click_write_a_new_review_for_object');
   };
 
   useEffect(() => {
