@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
+import { setGoogleTagEvent } from '../../common/helpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { loadLanguage } from '../../common/translations';
 import {
@@ -182,7 +183,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
         Cookie.set('appAdmins', appAdmins);
         setNightMode(userMetaData.settings?.nightmode);
-
+        setGoogleTagEvent('signed_in_hiveauth');
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -226,6 +227,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = await getGuestWaivBalance(userData.name);
         const appAdmins = await getAppAdmins();
 
+        setGoogleTagEvent('signed_in_google');
         Cookie.set('currentUser', userData.name);
         Cookie.set('appAdmins', appAdmins);
         setNightMode(userMetaData.settings?.nightmode);
@@ -254,6 +256,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         let account;
         const scUserData = await steemConnectAPI.me();
+
+        setGoogleTagEvent('signed_in_hivesigner');
 
         if (isGuest) {
           account = scUserData?.account;
@@ -295,8 +299,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       }
     });
   }
-
-  // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
 
   return dispatch({
     type: LOGIN,

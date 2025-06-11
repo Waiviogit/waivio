@@ -11,7 +11,6 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 const WebsiteSignInModalContent = ({
   intl,
   loading,
-  hiveSigner,
   onClickHiveSignerAuthButton,
   responseSocial,
   handleFailure,
@@ -75,7 +74,6 @@ const WebsiteSignInModalContent = ({
           <SocialButton
             socialNetwork={'HiveSigner'}
             size={'28px'}
-            href={hiveSigner.getLoginURL()}
             onClick={onClickHiveSignerAuthButton}
           />
           <p>
@@ -183,7 +181,6 @@ WebsiteSignInModalContent.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
   onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   handleFailure: PropTypes.func.isRequired,

@@ -8,15 +8,9 @@ import './WebsiteSignIn.less';
 
 const SocialButton = props => (
   // eslint-disable-next-line jsx-a11y/interactive-supports-focus
-  <a
-    role="button"
+  <div
     className="SocialButton"
     style={isMobile() ? styles.mobileButton : styles.button}
-    {...(props.href
-      ? {
-          href: props.href,
-        }
-      : {})}
     onClick={props.onClick}
   >
     <img
@@ -35,7 +29,7 @@ const SocialButton = props => (
     >
       {props.socialNetwork}
     </i>
-  </a>
+  </div>
 );
 
 SocialButton.propTypes = {
@@ -43,7 +37,6 @@ SocialButton.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   socialNetwork: PropTypes.string.isRequired,
-  href: PropTypes.string,
   size: PropTypes.string,
   onClick: PropTypes.func,
 };

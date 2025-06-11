@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil, has } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
   getObjectPosts,
@@ -255,6 +256,7 @@ class WobjectContainer extends React.PureComponent {
 
     const toggleViewEditMode = () => {
       this.props.setEditMode(!this.props.isEdit);
+      if (!this.props.isEdit) setGoogleTagEvent('click_edit_object');
     };
 
     if (this.props.failed)

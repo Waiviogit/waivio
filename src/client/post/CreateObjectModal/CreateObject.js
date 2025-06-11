@@ -6,6 +6,7 @@ import { Form, Input, Select, Button, Modal, Dropdown, Icon, Menu } from 'antd';
 import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
 import BigNumber from 'bignumber.js';
+import { setGoogleTagEvent } from '../../../common/helpers';
 
 import LANGUAGES from '../../../common/translations/languages';
 import { getLanguageText } from '../../../common/translations';
@@ -151,6 +152,7 @@ class CreateObject extends React.Component {
           .then(res => {
             const { parentPermlink, parentAuthor } = res;
 
+            setGoogleTagEvent('create_object');
             if (!isEmpty(this.props.parentObject)) {
               this.props.appendObject(
                 getAppendData(

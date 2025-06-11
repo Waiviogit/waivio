@@ -22,7 +22,7 @@ import {
 } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
-import { hexToRgb } from '../../../common/helpers';
+import { hexToRgb, setGoogleTagEvent } from '../../../common/helpers';
 
 import SocialSignInModalContent from './SocialSingInModalContent/SocialSignInModalContent';
 import WebsiteSignInModalContent from './WebsiteSignInModalContent/WebsiteSignInModalContent';
@@ -58,12 +58,13 @@ const WebsiteSignIn = props => {
   }, [query]);
 
   const onClickHiveSignerAuthButton = () => {
-    if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'login_hive_singer', { debug_mode: false });
+    setGoogleTagEvent('click_sign_in_hivesigner');
+    window.location.href = hiveSigner.getLoginURL();
   };
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
+    setGoogleTagEvent('click_sign_in_google');
 
     if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);

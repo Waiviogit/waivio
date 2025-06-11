@@ -6,15 +6,9 @@ import styles from './styles';
 
 const SocialGiftsButton = props => (
   // eslint-disable-next-line jsx-a11y/interactive-supports-focus
-  <a
-    role="button"
+  <div
     className="SocialGiftsButton"
     style={isMobile() ? styles.mobileButton : styles.socialButton}
-    {...(props.href
-      ? {
-          href: props.href,
-        }
-      : {})}
     onClick={props.onClick}
   >
     <img
@@ -29,7 +23,7 @@ const SocialGiftsButton = props => (
       {props.intl.formatMessage({ id: 'continue_with', defaultMessage: 'Continue with' })}{' '}
       {props.socialNetwork}
     </div>
-  </a>
+  </div>
 );
 
 SocialGiftsButton.propTypes = {
@@ -37,7 +31,6 @@ SocialGiftsButton.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   socialNetwork: PropTypes.string.isRequired,
-  href: PropTypes.string,
   size: PropTypes.string,
   onClick: PropTypes.func,
 };
