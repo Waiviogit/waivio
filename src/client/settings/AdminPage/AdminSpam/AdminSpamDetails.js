@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
 import moment from 'moment/moment';
 import Loading from '../../../components/Icon/Loading';
+import { getHtml } from '../../../components/Story/Body';
 
 const AdminSpamDetails = ({
   loadDetails,
@@ -44,46 +45,48 @@ const AdminSpamDetails = ({
           Back
         </div>
       </div>
-      {details?.map((d, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <div key={index}>
-          {index === 0 && <h3 className={'mb3'}>{d.account}</h3>}
-          <div>
-            <b>{moment(d.createdAt).format('MMMM DD, YYYY')}</b>
+      {details?.map((d, index) => {
+        const body =
+          expandedItems[index] || d.body.length <= 300 ? d.body : `${d.body.slice(0, 300)}`;
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={index}>
+            {index === 0 && <h3 className={'mb3'}>{d.account}</h3>}
             <div>
-              <b>Reason: </b>
-              <span>{d.reason}</span>
+              <b>{moment(d.createdAt).format('MMMM DD, YYYY')}</b>
+              <div>
+                <b>Reason: </b>
+                <span>{d.reason}</span>
+              </div>
+              <div>
+                <b>Content: </b>
+                <span>{getHtml(body, {}, 'Object')}</span>
+                {d.body.length > 300 && (
+                  <span
+                    className="main-color-button ml-2 cursor-pointer"
+                    onClick={() => toggleExpand(index)}
+                  >
+                    {expandedItems[index] ? 'Show less' : 'Show more'}
+                  </span>
+                )}
+              </div>
+              <br />
             </div>
-            <div>
-              <b>Content: </b>
-              <span>
-                {expandedItems[index] || d.body.length <= 300 ? d.body : `${d.body.slice(0, 300)}`}
-              </span>
-              {d.body.length > 300 && (
-                <span
-                  className="main-color-button ml-2 cursor-pointer"
-                  onClick={() => toggleExpand(index)}
-                >
-                  {expandedItems[index] ? 'Show less' : 'Show more'}
-                </span>
-              )}
-            </div>
-            <br />
+            {hasMoreDetails && index === details.length - 1 && (
+              <div className={'flex justify-center'}>
+                {loadDetails ? (
+                  <Loading />
+                ) : (
+                  <span className="main-color-button" onClick={() => getMoreDetails(d.account)}>
+                    {' '}
+                    Show more records
+                  </span>
+                )}
+              </div>
+            )}
           </div>
-          {hasMoreDetails && index === details.length - 1 && (
-            <div className={'flex justify-center'}>
-              {loadDetails ? (
-                <Loading />
-              ) : (
-                <span className="main-color-button" onClick={() => getMoreDetails(d.account)}>
-                  {' '}
-                  Show more details
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
