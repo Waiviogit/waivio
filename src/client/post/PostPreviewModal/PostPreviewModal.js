@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
+import { setGoogleTagEvent } from '../../../common/helpers';
 import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
@@ -148,6 +149,7 @@ class PostPreviewModal extends Component {
       if (this.props.reviewData && !this.props.isUpdating) {
         this.setState({ isCheckReviewModalOpen: true });
       } else {
+        setGoogleTagEvent('publish_post');
         this.props.onSubmit();
       }
     } catch (e) {

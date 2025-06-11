@@ -74,4 +74,9 @@ export function hexToRgb(color, opacity) {
   return color;
 }
 
+export const setGoogleTagEvent = event => {
+  if (typeof window !== 'undefined' && window.gtag)
+    window.gtag('event', event, { debug_mode: false });
+};
+
 export default null;
