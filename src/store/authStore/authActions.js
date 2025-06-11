@@ -111,6 +111,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const hiveAuth = Cookie.get('auth');
   const language = getWebsiteLanguage(state);
 
+  setGoogleTagEvent('logout');
   setNightMode(false);
   Cookie.remove('access_token');
   Cookie.remove('currentUser');

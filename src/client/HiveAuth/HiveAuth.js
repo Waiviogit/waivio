@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
-import { setGoogleTagEvent } from '../../common/helpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { login, busyLogin } from '../../store/authStore/authActions';
 import { getNotifications } from '../../store/userStore/userActions';
@@ -96,8 +95,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
 
   const handleAuth = () => {
     const auth = parseJSON(Cookie.get('auth'));
-
-    setGoogleTagEvent('click_sign_in_hiveauth');
 
     if (auth) {
       authorizeUserHAS({
