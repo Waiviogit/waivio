@@ -105,10 +105,6 @@ const AdSenseAds = ({ intl, match, userName }) => {
         be able to begin importing product data seamlessly.
       </p>
       <p>
-        For step-by-step guidance on how to find your Shopify API credentials and locate the
-        necessary information in your Shopify admin dashboard, see Details.
-      </p>
-      <p>
         All required information can be found in your Shopify app account. API details are available
         in the API credentials section. The host name should look like test.myshopify.com. Here are{' '}
         <a
@@ -120,7 +116,7 @@ const AdSenseAds = ({ intl, match, userName }) => {
         >
           instructions
         </a>{' '}
-        on how to receive all the necessary credentials on Shopify.
+        on how to find all the necessary credentials on Shopify.
       </p>
       <h3 key="label-host">Shopify store host name:</h3>
       <Input
