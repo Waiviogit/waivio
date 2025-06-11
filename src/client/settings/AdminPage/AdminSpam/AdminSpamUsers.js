@@ -53,14 +53,14 @@ const AdminSpamUsers = ({
     });
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div>
       <div className={'AdminPage min-width'}>
         <Input onChange={e => handleSearch(e.currentTarget.value)} placeholder={'Find users'} />
         <br />
-        {loading ? (
-          <Loading />
-        ) : (
+        {
           <>
             {!isEmpty(users) ? (
               <div className="WhitelistContent__container" style={{ marginTop: '20px' }}>
@@ -119,13 +119,13 @@ const AdminSpamUsers = ({
             ) : (
               <EmptyCampaing
                 emptyMessage={intl.formatMessage({
-                  id: 'your_list_is_empty',
-                  defaultMessage: 'Your list is empty',
+                  id: 'no_results',
+                  defaultMessage: 'No results',
                 })}
               />
             )}
           </>
-        )}
+        }
         <br />
       </div>
       <Modal
@@ -136,9 +136,11 @@ const AdminSpamUsers = ({
         onCancel={() => setOpen(false)}
         title={blockedUsers.includes(user.name) ? `Unblock ${user.name}` : `Block ${user.name}`}
       >
-        {blockedUsers.includes(user.name)
-          ? 'Are you sure you want to unblock this user? Their mana will be fully restored.'
-          : 'Are you sure you want to block this user? Their mana will be reset to zero with no possibility of recovery, but you can unblock them later if needed.'}
+        <span className={blockedUsers.includes(user.name) ? 'flex justify-center' : ''}>
+          {blockedUsers.includes(user.name)
+            ? 'Are you sure you want to unblock this user?'
+            : "Are you sure you want to block this user? Once blocked, the user won't be able to perform any actions. You can unblock them later if needed."}
+        </span>
       </Modal>
     </div>
   );

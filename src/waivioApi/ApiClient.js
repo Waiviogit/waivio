@@ -4820,7 +4820,7 @@ export const getAdminSpam = (admin, skip, limit, searchString) =>
     .then(res => res)
     .catch(error => error);
 
-export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 1) =>
+export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 5) =>
   fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.spam}/${user}`, {
     headers: {
       ...headers,
