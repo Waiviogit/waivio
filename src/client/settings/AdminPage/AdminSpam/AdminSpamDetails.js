@@ -48,6 +48,7 @@ const AdminSpamDetails = ({
       {details?.map((d, index) => {
         const body =
           expandedItems[index] || d.body.length <= 300 ? d.body : `${d.body.slice(0, 300)}`;
+
         return (
           // eslint-disable-next-line react/no-array-index-key
           <div key={index}>
@@ -56,7 +57,7 @@ const AdminSpamDetails = ({
               <b>{moment(d.createdAt).format('MMMM DD, YYYY')}</b>
               <div>
                 <b>Reason: </b>
-                <span>{d.reason}</span>
+                <div>{d.reason}</div>
               </div>
               <div>
                 <b>Content: </b>
