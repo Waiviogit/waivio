@@ -215,8 +215,8 @@ const AdminGuests = ({ intl }) => {
                           ) : (
                             <EmptyCampaing
                               emptyMessage={intl.formatMessage({
-                                id: 'your_list_is_empty',
-                                defaultMessage: 'Your list is empty',
+                                id: 'no_results',
+                                defaultMessage: 'No results',
                               })}
                             />
                           )}
