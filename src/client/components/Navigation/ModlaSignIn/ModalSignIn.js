@@ -255,7 +255,6 @@ const ModalSignIn = ({
                     onCloseSingIn={open => {
                       setIsModalOpen(open);
                       clearTimeout(timeOutId);
-                      setGoogleTagEvent('click_sign_in_hiveauth');
                     }}
                     setQRcodeForAuth={url => {
                       setShowQr(url);
@@ -345,7 +344,6 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    setGoogleTagEvent('click_sign_in');
     if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',

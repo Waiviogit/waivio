@@ -313,58 +313,63 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         hiveBeneficiaryAccount,
       )
         .then(async result => {
-          if (result.status === 422) {
-            message.error('Something went wrong.');
-            dispatch({
-              type: CREATE_POST_ERROR,
-            });
+          const { status, ok, result: res } = result;
+          const isRateLimit = status === 429;
+          const isErrorStatus = [422, 403].includes(status);
+          const isResultSuccess = ok || res?.id;
+
+          if (isErrorStatus) {
+            if (status !== 403) message.error('Something went wrong.');
+            dispatch({ type: CREATE_POST_ERROR });
+
+            return result;
+          }
+
+          if (isRateLimit) {
+            if (isGuest) {
+              const guestMana = await dispatch(setGuestMana(authUser.name));
+
+              if (guestMana.payload < 10) {
+                message.error('Guest mana is too low. Please wait for recovery.');
+              } else {
+                dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
+              }
+            } else {
+              dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
+            }
+            dispatch({ type: CREATE_POST_ERROR });
+
+            return result;
           }
 
           if (draftId) {
             batch(() => {
-              if (result.ok || result?.result?.id) dispatch(deleteDraft([draftId]));
+              if (isResultSuccess) dispatch(deleteDraft([draftId]));
               dispatch(addEditedPost(permlink));
             });
           }
-          if (isGuest) {
+
+          const publishPostActions = () => {
             const getMessage = getTranslationByKey('post_publication');
             const publicMessage = getMessage(state);
 
+            dispatch(push(`/@${author}`));
+            if (isResultSuccess) {
+              if (isGuest) {
+                dispatch(notify(publicMessage, 'success'));
+              } else {
+                message.success(publicMessage);
+              }
+            }
+          };
+
+          if (isGuest) {
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
             }
-
-            setTimeout(() => {
-              dispatch(push(`/@${author}`));
-              if (result.ok) dispatch(notify(publicMessage, 'success'));
-            }, 5000);
+            setTimeout(publishPostActions, 5000);
           } else {
-            setTimeout(() => {
-              const getMessage = getTranslationByKey('post_publication');
-              const publicMessage = getMessage(state);
-
-              dispatch(push(`/@${author}`));
-              if (result?.ok || result?.result?.id) {
-                message.success(publicMessage);
-              }
-            }, 3000);
-          }
-          if (typeof window !== 'undefined' && window?.gtag)
-            window.gtag('event', 'publish_post', { debug_mode: false });
-
-          if (result.status === 429) {
-            if (isGuest) {
-              const guestMana = await dispatch(setGuestMana(authUser.name));
-
-              guestMana.payload < 10
-                ? message.error('Guest mana is too low. Please wait for recovery.')
-                : dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
-            } else {
-              dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
-            }
-            dispatch({
-              type: CREATE_POST_ERROR,
-            });
+            setTimeout(publishPostActions, 3000);
           }
 
           dispatch(clearBeneficiariesUsers());

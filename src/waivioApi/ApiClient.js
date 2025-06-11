@@ -1094,7 +1094,14 @@ export const broadcastGuestOperation = async (operationId, data) => {
         body: JSON.stringify(body),
       })
         // .then(res => res.json())
-        .then(res => res)
+        .then(res => {
+          if ([403].includes(res.status)) message.error('Something went wrong');
+
+          return res;
+        })
+        .catch(e => {
+          console.log(e);
+        })
     );
   }
 };
