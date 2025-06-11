@@ -1,6 +1,6 @@
 import { Icon } from 'antd';
 import React from 'react';
-import { size } from 'lodash';
+import { isEmpty, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -33,11 +33,14 @@ class InterestingObjects extends React.Component {
   componentDidMount() {
     if (size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
   }
+  componentDidUpdate() {
+    if (size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
+  }
 
   render() {
     const { recommendedObjects } = this.props;
 
-    return size(recommendedObjects) >= 5 ? (
+    return !isEmpty(recommendedObjects) ? (
       <div className="InterestingObjects SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">
           <Icon type="codepen" className="SidebarContentBlock__icon" />
