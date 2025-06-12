@@ -27,7 +27,7 @@ const GuestSignUpFormContent = ({
 
   return (
     <div className="GuestSignUpFormContent">
-      <h2 className="ModalSignUp__title">
+      <h2 className="ModalSignUp__title mb2 flex justify-center">
         <FormattedMessage id="public_profile" defaultMessage="Public profile" />
       </h2>
       <Form layout="vertical" onSubmit={handleSubmit}>
@@ -66,9 +66,12 @@ const GuestSignUpFormContent = ({
           )}
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          label={<FormattedMessage id="profile_picture" defaultMessage="Profile picture" />}
+        >
           {getFieldDecorator('avatar')(
             <ImageSetter
+              isTitle={false}
               onImageLoaded={getAvatar}
               onLoadingImage={setIsLoading}
               defaultImage={image}
@@ -145,7 +148,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
+                      href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
                     >
                       Terms And Conditions
                     </a>
@@ -154,7 +157,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
+                      href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
                     >
                       Privacy Policy
                     </a>
@@ -163,7 +166,7 @@ const GuestSignUpFormContent = ({
                     <a
                       rel="noopener noreferrer"
                       target="_blank"
-                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
+                      href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
                     >
                       Cookies Policy
                     </a>
