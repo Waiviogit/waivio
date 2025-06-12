@@ -169,7 +169,9 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
           );
         }
       })
-      .catch(() => {
+      .catch(e => {
+        message.error(e.error_description);
+
         dispatch({
           type: LIKE_POST.ERROR,
           meta: getPostKey(post),
