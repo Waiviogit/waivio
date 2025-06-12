@@ -23,6 +23,13 @@ export const setToken = async (socialToken, social, regData) => {
   }
 };
 
+export const setNightMode = isNightMode => {
+  if (isNightMode === Cookie.get('nightmode')) return;
+
+  Cookie.remove('nightmode');
+  Cookie.set('nightmode', isNightMode);
+};
+
 // eslint-disable-next-line no-unused-vars
 export const getValidTokenData = async () => {
   const expiration = store.get('accessTokenExpiration');

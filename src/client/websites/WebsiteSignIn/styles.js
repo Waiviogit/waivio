@@ -52,6 +52,7 @@ const styles = {
   },
   socialButton: {
     background: '#ececec',
+    cursor: 'pointer',
     height: '35px',
     minWidth: '335px',
     boxShadow: '1px 1px 4px 1px rgba(34, 60, 80, 0.2)',
@@ -82,6 +83,7 @@ const styles = {
 
   mobileButton: {
     background: '#ececec',
+    cursor: 'pointer',
     height: '35px',
     minWidth: '317px',
     boxShadow: '1px 1px 4px 1px rgba(34, 60, 80, 0.2)',

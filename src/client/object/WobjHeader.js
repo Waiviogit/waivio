@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import { get } from 'lodash';
+import { setGoogleTagEvent } from '../../common/helpers';
 
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
@@ -213,7 +214,15 @@ const mapStateToProps = state => ({
 
 export default injectIntl(
   connect(mapStateToProps, {
-    followWobj: followWobject,
-    unfollowWobj: unfollowWobject,
+    followWobj: (permlink, name, type) => {
+      setGoogleTagEvent('click_follow_object');
+
+      return followWobject(permlink, name, type);
+    },
+    unfollowWobj: (permlink, name, type) => {
+      setGoogleTagEvent('click_unfollow_object');
+
+      return unfollowWobject(permlink, name, type);
+    },
   })(WobjHeader),
 );

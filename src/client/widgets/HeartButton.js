@@ -6,6 +6,7 @@ import { has, isEmpty } from 'lodash';
 import { useRouteMatch } from 'react-router';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import { setGoogleTagEvent } from '../../common/helpers';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
 import { getAuthorityList } from '../../store/appendStore/appendSelectors';
 import { setAuthorityForObject, setObjectinAuthority } from '../../store/appendStore/appendActions';
@@ -46,6 +47,7 @@ const HeartButton = ({ wobject, size }) => {
   const onHeartClick = e => {
     e.stopPropagation();
     dispatch(setAuthorityForObject(wobject, match));
+    setGoogleTagEvent('click_heart');
   };
 
   const heartClasses = classnames('HeartButton', { 'HeartButton--active': activeHeart });

@@ -78,6 +78,12 @@ export const adminSettings = {
       id: 'new_accounts',
       defaultMessage: 'New accounts',
     },
+    {
+      to: '/admin-guests',
+      id: 'guests',
+      defaultMessage: 'Guests',
+      paths: ['/admin-guests', '/admin-spam'],
+    },
   ],
 };
 export const dataManagementSettings = {
@@ -217,8 +223,8 @@ export const currentWebsiteSettings = (site, parentHost) => {
     },
     {
       to: `/${site}/shopify`,
-      id: 'shopify',
-      defaultMessage: 'Shopify',
+      id: 'integrations',
+      defaultMessage: 'Integrations',
     },
   ];
 

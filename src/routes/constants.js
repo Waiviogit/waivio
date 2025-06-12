@@ -174,6 +174,8 @@ export default {
       'admin-websites',
       'admin-whitelist',
       'admin-new-accounts',
+      'admin-guests',
+      'admin-spam',
       'admin-credits',
       'admin-actions',
       'admin-subscriptions',

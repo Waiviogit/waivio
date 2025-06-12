@@ -14,7 +14,7 @@ const SignUpButton = ({ isButton, setIsModalOpen, className, text, intl }) => {
     color: colors.background,
   };
   const onClick = () => {
-    const evenName = text ? text.replace(' ', '_').toLowerCase() : 'sign_in';
+    const evenName = text ? text.replace(' ', '_').toLowerCase() : 'click_sign_in';
 
     if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', evenName, { debug_mode: false });

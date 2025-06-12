@@ -221,6 +221,14 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'admin';
       filterName = 'admin_new_accounts';
       break;
+    case '/admin-guests':
+      pageName = 'admin';
+      filterName = 'guests';
+      break;
+    case '/admin-spam':
+      pageName = 'admin';
+      filterName = 'spam';
+      break;
     case '/':
       if (!authenticated) {
         pageName = pages.hive.id;

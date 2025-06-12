@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { isEmpty, some } from 'lodash';
+import { setGoogleTagEvent } from '../../common/helpers';
 import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -132,6 +133,7 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
       // eslint-disable-next-line consistent-return
       .then(async data => {
         if (data.error) throw new Error();
+        setGoogleTagEvent('add_vote');
         if (!isThread) {
           if (isGuest && !data.ok) {
             const guestMana = await dispatch(setGuestMana(authUser));

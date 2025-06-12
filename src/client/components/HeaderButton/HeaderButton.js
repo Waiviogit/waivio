@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { ReactEditor } from 'slate-react';
+import { setGoogleTagEvent } from '../../../common/helpers';
 
 import BTooltip from '../BTooltip';
 import Popover from '../Popover';
@@ -122,6 +123,7 @@ const HeaderButtons = props => {
   const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
 
   const handleScrollToTop = () => {
+    setGoogleTagEvent('click_profile');
     if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
@@ -134,7 +136,10 @@ const HeaderButtons = props => {
   const handleNotificationsPopoverVisibleChange = visible =>
     setNotificationsPopoverVisible(visible);
 
-  const handleEditor = () => window && window.slateEditor && ReactEditor.focus(window.slateEditor);
+  const handleEditor = () => {
+    setGoogleTagEvent('click_editor');
+    if (window && window.slateEditor) ReactEditor.focus(window.slateEditor);
+  };
 
   const handleMenuItemClick = key => {
     switch (key) {

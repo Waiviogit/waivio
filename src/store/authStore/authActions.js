@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
+import { setGoogleTagEvent } from '../../common/helpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { loadLanguage } from '../../common/translations';
 import {
@@ -14,7 +15,7 @@ import {
 import { getWebsiteLanguage } from '../appStore/appSelectors';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { setToken } from '../../common/helpers/getToken';
+import { setToken, setNightMode } from '../../common/helpers/getToken';
 import {
   getAppAdmins,
   getGuestPaymentsHistory,
@@ -110,7 +111,8 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const hiveAuth = Cookie.get('auth');
   const language = getWebsiteLanguage(state);
 
-  Cookie.set('nightmode', 'false');
+  setGoogleTagEvent('logout');
+  setNightMode(false);
   Cookie.remove('access_token');
   Cookie.remove('currentUser');
 
@@ -181,7 +183,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
+        setNightMode(userMetaData.settings?.nightmode);
+        setGoogleTagEvent('signed_in_hiveauth');
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
@@ -210,7 +213,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
     const appAdmins = await getAppAdmins();
 
-    Cookie.set('nightmode', userMetaData.settings?.nightmode);
+    setNightMode(userMetaData.settings?.nightmode);
     Cookie.set('appAdmins', appAdmins);
     Cookie.set('currentUser', authenticatedUserName);
     dispatch(changeAdminStatus(authenticatedUserName));
@@ -225,9 +228,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = await getGuestWaivBalance(userData.name);
         const appAdmins = await getAppAdmins();
 
+        setGoogleTagEvent('signed_in_google');
         Cookie.set('currentUser', userData.name);
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
+        setNightMode(userMetaData.settings?.nightmode);
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -254,6 +258,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         let account;
         const scUserData = await steemConnectAPI.me();
 
+        setGoogleTagEvent('signed_in_hivesigner');
+
         if (isGuest) {
           account = scUserData?.account;
         } else {
@@ -266,8 +272,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
         const appAdmins = await getAppAdmins();
 
+        setNightMode(userMetaData.settings?.nightmode);
         Cookie.set('appAdmins', appAdmins);
-        Cookie.set('nightmode', userMetaData.settings?.nightmode);
         Cookie.set('currentUser', scUserData.name);
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
@@ -288,11 +294,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         if (e) message.error('Authorization was not successful. Please try again later.');
         clearGuestAuthData();
         Cookie.remove('auth');
+        Cookie.remove('currentUser');
+        Cookie.remove('appAdmins');
+        setNightMode(false);
       }
     });
   }
-
-  // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
 
   return dispatch({
     type: LOGIN,
@@ -306,6 +313,12 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     .then(() => dispatch({ type: SHOW_SETTINGS }))
     .catch(e => {
       dispatch(loginError());
+      Cookie.remove('auth');
+      Cookie.remove('currentUser');
+      Cookie.remove('appAdmins');
+      Cookie.remove('nightmode');
+      Cookie.remove('access_token');
+      clearGuestAuthData();
 
       return e;
     });

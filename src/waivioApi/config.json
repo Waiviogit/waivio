@@ -281,5 +281,8 @@
   "credentials": "/credentials",
   "challenges": "/challenges",
   "objectTypes1": "/object-types",
-  "sync": "/sync"
+  "sync": "/sync",
+  "guests": "/guests",
+  "spam": "/spam",
+  "block": "/block"
 }

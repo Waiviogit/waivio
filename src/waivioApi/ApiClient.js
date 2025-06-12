@@ -1094,7 +1094,14 @@ export const broadcastGuestOperation = async (operationId, data) => {
         body: JSON.stringify(body),
       })
         // .then(res => res.json())
-        .then(res => res)
+        .then(res => {
+          if ([403].includes(res.status)) message.error('Something went wrong');
+
+          return res;
+        })
+        .catch(e => {
+          console.log(e);
+        })
     );
   }
 };
@@ -4778,6 +4785,76 @@ export const addCreditsByAdmin = (admin, userName, amount) =>
     body: JSON.stringify({
       userName,
       amount,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getAdminGuests = (admin, skip, limit, searchString) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.users}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+      searchString,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getAdminSpam = (admin, skip, limit, searchString) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.spam}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+      searchString,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 5) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.spam}/${user}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const blockAdminSpamUser = (admin, name, blocked) =>
+  fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.block}`, {
+    headers: {
+      ...headers,
+      admin,
+      ...getAuthHeaders(),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      blocked,
     }),
   })
     .then(res => res.json())

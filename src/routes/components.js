@@ -52,6 +52,8 @@ export default {
     import('../client/settings/AdminPage/AdminWhitelist/AdminWhitelist'),
   ),
   AdminNewAccounts: loableComponent(import('../client/settings/AdminPage/AdminNewAccounts')),
+  AdminGuests: loableComponent(import('../client/settings/AdminPage/AdminGuests/AdminGuests')),
+  AdminSpam: loableComponent(import('../client/settings/AdminPage/AdminSpam/AdminSpam')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),
   Editor: loableComponent(import('../client/post/EditPost/EditorContainer')),
@@ -132,7 +134,9 @@ export default {
   WebsitesTrusties: loableComponent(
     import('../client/websites/WebsiteTools/Trusties/WebsitesTrusties'),
   ),
-  WebsitesShopify: loableComponent(import('../client/websites/WebsiteTools/Shopify/Shopify')),
+  WebsitesIntegrations: loableComponent(
+    import('../client/websites/WebsiteTools/Integrations/Integrations'),
+  ),
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),
