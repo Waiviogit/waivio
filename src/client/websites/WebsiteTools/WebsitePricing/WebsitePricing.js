@@ -20,15 +20,7 @@ const WebsitePricing = ({ intl }) => (
       </h3>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
-        {intl.formatMessage({
-          id: '005_per_day',
-          defaultMessage: '0.005 USD per day per active user',
-        })}
-        ;
-      </div>
-      <div>
-        <span className="WebsitePricing__dot">&bull;</span>
-        {intl.formatMessage({ id: 'one_dollar_per_day', defaultMessage: 'Minimum 1 USD per day' })}.
+        {intl.formatMessage({ id: 'one_dollar_per_day_price', defaultMessage: '1 USD per day' })}.
       </div>
     </div>
     <div className={'WebsitePricing__padding'}>

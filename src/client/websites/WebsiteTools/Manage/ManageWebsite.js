@@ -115,21 +115,8 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_per_active_user_usd',
-                  defaultMessage: '{price} {currency} per day per active user;',
-                },
-                {
-                  price: round(get(prices, 'perUser', 0) * props.currencyInfo.rate, 3),
-                  currency: props.currencyInfo.type,
-                },
-              )}
-            </div>
-            <div>
-              <span className="ManageWebsites__dot">&bull;</span>
-              {props.intl.formatMessage(
-                {
-                  id: 'prices_min_value_usd',
-                  defaultMessage: 'Minimum {price} {currency} per day.',
+                  id: 'prices_value_usd',
+                  defaultMessage: '{price} {currency} per day.',
                 },
                 {
                   price: round(get(prices, 'minimumValue', 0) * props.currencyInfo.rate, 3),
