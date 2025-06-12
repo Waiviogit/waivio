@@ -8,6 +8,7 @@ export default function renderSsrPage(
   isWaivio,
   googleTag,
   googleGSC,
+  verifTags,
   googleEventSnippetTag,
   googleAdsConfig,
   adSense,
@@ -36,6 +37,7 @@ export default function renderSsrPage(
   let googleGSCTag = isWaivio
     ? `<meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />`
     : googleGSC;
+  const verificationTags = verifTags?.join('\n');
   const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';
   if (tag)
@@ -63,6 +65,7 @@ export default function renderSsrPage(
     nightmode,
     googleAnalytics,
     googleGSCTag,
+    verificationTags,
     googleEventSnippet,
     adSense,
   });

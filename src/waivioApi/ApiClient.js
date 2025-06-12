@@ -2008,7 +2008,7 @@ export const saveTagCategoryForSite = async (host, userName, objectsFilter) => {
 };
 
 export const getSettingsWebsite = host =>
-  fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
+  fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=wiv.socialgifts.pp.ua`, {
     headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
