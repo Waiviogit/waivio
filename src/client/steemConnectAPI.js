@@ -690,6 +690,7 @@ function sc2Extended() {
         language,
         objectControl,
         disableOwnerAuthority,
+        verificationTags,
         cb,
       ) {
         const params = isGuestUser
@@ -707,6 +708,7 @@ function sc2Extended() {
                 language,
                 objectControl,
                 disableOwnerAuthority,
+                verificationTags,
               },
             }
           : {
@@ -725,6 +727,7 @@ function sc2Extended() {
                 language,
                 objectControl,
                 disableOwnerAuthority,
+                verificationTags,
               }),
             };
 

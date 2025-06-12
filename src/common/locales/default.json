@@ -2705,5 +2705,6 @@
   "manage_rc": "Manage",
   "shopify_updated_successfully": "Shopify credentials updated successfully",
   "object_field_sale": "Sale",
-  "object_field_compareAtPrice": "Compare-at price"
+  "object_field_compareAtPrice": "Compare-at price",
+  "paste_your_meta_tags_here": "Paste your meta tags here"
 }

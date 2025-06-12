@@ -556,18 +556,20 @@ const SocialProduct = ({
                 </div>
               )}
               <div className="flex flex-row">
-                <div
-                  className={
-                    // eslint-disable-next-line no-nested-ternary
-                    isNil(compareAtPrice) && !isEmpty(wobject?.options)
-                      ? 'SocialProduct__price-no'
-                      : price
-                      ? 'SocialProduct__price--old'
-                      : 'SocialProduct__price'
-                  }
-                >
-                  {compareAtPrice}
-                </div>
+                {compareAtPrice && (
+                  <div
+                    className={
+                      // eslint-disable-next-line no-nested-ternary
+                      isNil(compareAtPrice) && !isEmpty(wobject?.options)
+                        ? 'SocialProduct__price-no'
+                        : price
+                        ? 'SocialProduct__price--old'
+                        : 'SocialProduct__price'
+                    }
+                  >
+                    {compareAtPrice}
+                  </div>
+                )}
                 <div
                   className={
                     // eslint-disable-next-line no-nested-ternary

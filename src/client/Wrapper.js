@@ -52,7 +52,7 @@ import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
 import { getTokenRates, getGlobalProperties } from '../store/walletStore/walletActions';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
-import { initialColors } from './websites/constants/colors';
+import { initialColors, initialFont } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
@@ -199,6 +199,7 @@ class Wrapper extends React.PureComponent {
 
     if (typeof document !== 'undefined') {
       document.body.style.setProperty('--website-color', initialColors.marker);
+      document.body.style.setProperty('--website-font', initialFont);
       document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 8));
       document.body.style.setProperty('--website-text-color', initialColors.text);
       document.body.style.setProperty('--website-light-color', hexToRgb(initialColors.marker, 1));
