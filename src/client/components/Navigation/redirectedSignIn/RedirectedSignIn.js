@@ -19,7 +19,6 @@ const RedirectedSignIn = props => {
           visible={isFormVisible}
           onCancel={() => setIsFormVisible(false)}
           footer={null}
-          className={'ModalSignIn__website'}
         >
           <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={url} />
         </Modal>
