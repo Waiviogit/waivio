@@ -192,24 +192,38 @@ export const voteAppends = (
         );
     })
     .catch(() =>
-      steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
-        if (!hideMessageFields) {
-          message.success('Please wait, we are processing your update');
-        }
-        dispatch(
-          getChangedWobjectField(
-            wobj.author_permlink,
-            fieldName,
-            author,
-            permlink,
-            isNew,
-            type,
-            appendObj,
-            isUpdatesPage,
-            res.id || res.result.id,
-          ),
-        );
-      }),
+      steemConnectAPI
+        .appendVote(voter, isGuest, author, permlink, weight)
+        .then(res => {
+          if (!hideMessageFields) {
+            message.success('Please wait, we are processing your update');
+          }
+          dispatch(
+            getChangedWobjectField(
+              wobj.author_permlink,
+              fieldName,
+              author,
+              permlink,
+              isNew,
+              type,
+              appendObj,
+              isUpdatesPage,
+              res.id || res.result.id,
+            ),
+          );
+        })
+        .catch(e => {
+          dispatch({
+            type: VOTE_APPEND.ERROR,
+            payload: {
+              post,
+              permlink,
+            },
+          });
+          message.error(e.error_description);
+
+          return e;
+        }),
     );
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
@@ -232,22 +246,37 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
     },
   });
 
-  return steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
-    if (isObjectPage)
-      dispatch(
-        getChangedWobjectField(
-          authorPermlink,
-          'authority',
-          author,
-          permlink,
-          '',
-          '',
-          '',
-          '',
-          res.result.id,
-        ),
-      );
-  });
+  return steemConnectAPI
+    .appendVote(voter, isGuest, author, permlink, weight)
+    .then(res => {
+      if (isObjectPage)
+        dispatch(
+          getChangedWobjectField(
+            authorPermlink,
+            'authority',
+            author,
+            permlink,
+            '',
+            '',
+            '',
+            '',
+            res.result.id,
+          ),
+        );
+    })
+    .catch(e => {
+      const authorityList = getAuthorityList(getState());
+      const activeHeart = authorityList[authorPermlink];
+
+      if (activeHeart) {
+        dispatch(removeObjectFromAuthority(authorPermlink));
+      } else {
+        dispatch(setObjectinAuthority(authorPermlink));
+      }
+      message.error(e.error_description);
+
+      return e;
+    });
 };
 export const AFFILIATE_CODE_VOTE_APPEND = createAsyncActionType(
   '@append/AFFILIATE_CODE_VOTE_APPEND',

@@ -5,7 +5,7 @@ import './WalletAddress.less';
 
 const WalletAddress = ({ walletAddress, isSocial }) => (
   <div className={'WalletAddress'}>
-    {walletAddress.map(address => (
+    {walletAddress?.map(address => (
       <WalletAddressItem key={address._id} address={address} isSocial={isSocial} />
     ))}
   </div>
