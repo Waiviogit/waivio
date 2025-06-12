@@ -53,6 +53,7 @@ const WebsitesSettings = ({
   const [googleGSCState, setGoogleGSCState] = useState('');
   const [googleEventSnippetState, setGoogleEventSnippetState] = useState('');
   const [googleAdsConfigState, setGoogleAdsConfigState] = useState('');
+  const [verificationTags, setVerificationTags] = useState('');
   const [buttonLoading, setButtonLoading] = useState(false);
   const host = match.params.site;
 
@@ -69,6 +70,7 @@ const WebsitesSettings = ({
         const objControl = get(res, ['value', 'objectControl']);
         const mapImportTag = get(res, ['value', 'mapImportTag']);
         const disableOwnerAuth = get(res, ['value', 'disableOwnerAuthority']);
+        const verifTags = get(res, ['value', 'verificationTags']);
 
         const importTag = !isEmpty(mapImportTag)
           ? (await getObjectInfo([mapImportTag]))?.wobjects[0]
@@ -83,6 +85,7 @@ const WebsitesSettings = ({
         setDisableOwnerAuthority(disableOwnerAuth);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
+        setVerificationTags(verifTags?.join('\n'));
         setSettingsLoading(false);
       })
       .catch(() => setSettingsLoading(false));
@@ -118,6 +121,11 @@ const WebsitesSettings = ({
         const account = beneficiaryAccount || 'waivio';
         const tag = values.googleAnalyticsTag || '';
         const gscTag = values.googleGSCTag || '';
+        const verifTags =
+          values.verificationTags
+            ?.split('\n')
+            .map(t => t.trim())
+            .filter(Boolean) || [];
         const googleEventSnippetTag = values.googleEventSnippet || '';
         const googleAdsConfigTag = values.googleAdsConfig || '';
         const mapImportTag = isEmpty(values.mapImportTag)
@@ -138,6 +146,7 @@ const WebsitesSettings = ({
           values.language,
           objectControl,
           disableOwnerAuthority,
+          verifTags,
         ).then(res => {
           referralUserForWeb(referralAccount, host).then(() => {
             setButtonLoading(false);
@@ -204,6 +213,27 @@ const WebsitesSettings = ({
             </div>
           </div>
           <p>{intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info_2' })}</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>
+            {intl.formatMessage({
+              id: 'verification_tags',
+              defaultMessage: 'Verification Tags:',
+            })}
+          </h3>
+          {getFieldDecorator('verificationTags', {
+            initialValue: verificationTags,
+          })(
+            <Input.TextArea
+              autoSize={{ minRows: 4, maxRows: 8 }}
+              type="text"
+              placeholder={intl.formatMessage({
+                id: 'paste_your_meta_tags_here',
+              })}
+              onChange={e => handleChangeAndCheckField(e, 'verificationTags', setVerificationTags)}
+            />,
+          )}
+          <p>Tags will be added to your site&apos;s header. To list the tags use a new line.</p>
         </Form.Item>
         <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
