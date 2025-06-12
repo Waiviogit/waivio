@@ -575,6 +575,7 @@ export const saveWebsiteSettings = (
   language,
   objectControl,
   disableOwnerAuthority,
+  verificationTags,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -598,6 +599,7 @@ export const saveWebsiteSettings = (
         language,
         objectControl,
         disableOwnerAuthority,
+        verificationTags,
       ),
     },
   });
