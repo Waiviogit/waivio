@@ -17,6 +17,7 @@ import {
 } from '../../store/walletStore/walletActions';
 import { getUserAccount, getInfoForSideBar, resetUsers } from '../../store/usersStore/usersActions';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
+import { getQueryString } from '../../waivioApi/helpers';
 import { getAvatarURL } from '../components/Avatar';
 import UserHero from './UserHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -153,7 +154,7 @@ const User = props => {
   const hasCover = !!coverImage;
   const image = getAvatarURL(name) || DEFAULTS.AVATAR;
   const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
-  const canonical = `${canonicalUrl}?${query.toString()}`;
+  const canonical = `${canonicalUrl}${getQueryString(query)}`;
   const title = `${displayedUsername} ${getTitle(tab)}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';

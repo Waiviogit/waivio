@@ -259,7 +259,7 @@ const SocialProduct = ({
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
   const socialScrollHeight = bannerEl
-    ? socialHeaderEl.offsetHeight + bannerEl.offsetHeight
+    ? socialHeaderEl?.offsetHeight + bannerEl?.offsetHeight
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
