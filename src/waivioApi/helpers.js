@@ -41,4 +41,6 @@ export const parseQueryForFilters = query => {
   );
 };
 
+export const getQueryString = query => (query ? `?${query}` : '');
+
 export default null;
