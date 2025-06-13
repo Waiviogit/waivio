@@ -59,7 +59,7 @@ import QuickRewardsModal from './../rewards/QiuckRewardsModal/QuickRewardsModal'
 import { getIsOpenModal } from '../../store/quickRewards/quickRewardsSelectors';
 import { getTokenRates, getGlobalProperties } from '../../store/walletStore/walletActions';
 import { hexToRgb } from '../../common/helpers';
-import { initialColors, initialFont } from '../websites/constants/colors';
+import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
@@ -224,7 +224,6 @@ const SocialWrapper = props => {
 
       if (typeof document !== 'undefined') {
         document.body.style.setProperty('--website-color', mainColor);
-        document.body.style.setProperty('--website-font', initialFont);
         document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
         document.body.style.setProperty('--website-text-color', textColor);
         document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));

@@ -284,5 +284,7 @@
   "sync": "/sync",
   "guests": "/guests",
   "spam": "/spam",
-  "block": "/block"
+  "block": "/block",
+  "link": "/link",
+  "safety": "/safety"
 }
