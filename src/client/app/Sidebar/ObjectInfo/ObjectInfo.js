@@ -64,7 +64,7 @@ import Department from '../../../object/Department/Department';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../../object/ObjectTypeShop/DepartmentsWobject';
-import { setAuthors } from '../../../../store/wObjectStore/wobjActions';
+import { setAuthors, setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
@@ -92,7 +92,14 @@ import './ObjectInfo.less';
     activeCategory: getActiveCategory(state),
     storeGroupId: getGroupId(state),
   }),
-  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption, setAuthors, getCoordinates },
+  {
+    getRelatedAlbum,
+    setStoreGroupId,
+    setStoreActiveOption,
+    setAuthors,
+    getCoordinates,
+    setLinkSafetyInfo,
+  },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -117,6 +124,7 @@ class ObjectInfo extends React.Component {
     children: PropTypes.node.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
+    setLinkSafetyInfo: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -716,7 +724,6 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
-    const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showGroupSection = hasType(wobject, OBJECT_TYPE.GROUP);
     const showLRecipeSection = hasType(wobject, OBJECT_TYPE.RECIPE);
@@ -1082,9 +1089,12 @@ class ObjectInfo extends React.Component {
                 src={'/images/icons/link-icon.svg'}
                 wrapper={'span'}
               />{' '}
-              <a href={linkUrlHref} target="_blank" rel="noopener noreferrer">
+              <span
+                className={'main-color-button'}
+                onClick={() => this.props.setLinkSafetyInfo(linkUrl)}
+              >
                 {linkUrl}
-              </a>
+              </span>
             </span>
           ),
         )}

@@ -25,6 +25,9 @@ export const getManufacturerObject = createSelector([objectState], state =>
 export const getMerchantObject = createSelector([objectState], state =>
   get(state, 'merchantObject', null),
 );
+export const getLinkSafetyInfo = createSelector([objectState], state =>
+  get(state, 'linkSafety', null),
+);
 export const getPublisherObject = createSelector([objectState], state =>
   get(state, 'publisherObject', null),
 );

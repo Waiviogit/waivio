@@ -5080,4 +5080,16 @@ export const getTrustedUsersList = (host, owner) => {
     .catch(e => e);
 };
 
+export const checkLinkSafety = url =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.link}${config.safety}`, {
+    headers: {
+      ...headers,
+    },
+    body: JSON.stringify({ url }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+
 export default null;

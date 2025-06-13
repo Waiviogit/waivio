@@ -5,6 +5,7 @@ import { get, size } from 'lodash';
 import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
+  checkLinkSafety,
   getAuthorsChildWobjects,
   getWobjectsExpertiseWithNewsFilter,
 } from '../../waivioApi/ApiClient';
@@ -24,6 +25,8 @@ export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 export const CLEAR_RELATED_OBJECTS = '@wobj/CLEAR_RELATED_OBJECTS';
 export const RESET_WOBJECT_EXPERTISE = '@wobj/RESET_WOBJECT_EXPERTISE';
+export const RESET_LINK_SAFETY = '@wobj/RESET_LINK_SAFETY';
+export const SET_LINK_SAFETY = createAsyncActionType('@wobj/SET_LINK_SAFETY');
 export const GET_WOBJECT_EXPERTISE = createAsyncActionType('@wobj/GET_WOBJECT_EXPERTISE');
 export const GET_RELATED_WOBJECT = createAsyncActionType('@wobj/GET_RELATED_WOBJECT');
 export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
@@ -354,6 +357,21 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
     },
   });
 };
+
+export const setLinkSafetyInfo = url => dispatch =>
+  dispatch({
+    type: SET_LINK_SAFETY.ACTION,
+    payload: {
+      promise: checkLinkSafety(url),
+    },
+    meta: url,
+  });
+
+export const resetLinkSafetyInfo = () => dispatch =>
+  dispatch({
+    type: RESET_LINK_SAFETY,
+  });
+
 export const resetWobjectExpertise = () => dispatch =>
   dispatch({
     type: RESET_WOBJECT_EXPERTISE,
