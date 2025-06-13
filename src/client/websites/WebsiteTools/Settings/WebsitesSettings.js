@@ -215,27 +215,6 @@ const WebsitesSettings = ({
           <p>{intl.formatMessage({ id: 'exclude_owner_from_site_authorities_info_2' })}</p>
         </Form.Item>
         <Form.Item>
-          <h3>
-            {intl.formatMessage({
-              id: 'verification_tags',
-              defaultMessage: 'Verification Tags:',
-            })}
-          </h3>
-          {getFieldDecorator('verificationTags', {
-            initialValue: verificationTags,
-          })(
-            <Input.TextArea
-              autoSize={{ minRows: 4, maxRows: 8 }}
-              type="text"
-              placeholder={intl.formatMessage({
-                id: 'paste_your_meta_tags_here',
-              })}
-              onChange={e => handleChangeAndCheckField(e, 'verificationTags', setVerificationTags)}
-            />,
-          )}
-          <p>Tags will be added to your site&apos;s header. To list the tags use a new line.</p>
-        </Form.Item>
-        <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
           {getFieldDecorator('googleAnalyticsTag', {
             initialValue: get(settings, 'googleAnalyticsTag', ''),
@@ -271,6 +250,27 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'gsc_tag_description_info' })}</p>
         </Form.Item>{' '}
+        <Form.Item>
+          <h3>
+            {intl.formatMessage({
+              id: 'verification_tags',
+              defaultMessage: 'Verification Tags:',
+            })}
+          </h3>
+          {getFieldDecorator('verificationTags', {
+            initialValue: verificationTags,
+          })(
+            <Input.TextArea
+              autoSize={{ minRows: 4, maxRows: 8 }}
+              type="text"
+              placeholder={intl.formatMessage({
+                id: 'paste_your_meta_tags_here',
+              })}
+              onChange={e => handleChangeAndCheckField(e, 'verificationTags', setVerificationTags)}
+            />,
+          )}
+          <p>Tags will be added to your site&apos;s header. To list the tags use a new line.</p>
+        </Form.Item>
         <Form.Item validateStatus={showGoogleAdsConfigError(googleAdsConfigState) ? 'error' : ''}>
           <h3>
             {intl.formatMessage({
