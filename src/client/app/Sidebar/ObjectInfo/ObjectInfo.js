@@ -1403,9 +1403,12 @@ class ObjectInfo extends React.Component {
             <div className="field-website">
               <span className="field-website__title">
                 <i className="iconfont icon-link text-icon link" />
-                <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
+                <span
+                  className={'main-color-button'}
+                  onClick={() => this.props.setLinkSafetyInfo(website.link)}
+                >
                   {website.title}
-                </a>
+                </span>
               </span>
             </div>
           ),
