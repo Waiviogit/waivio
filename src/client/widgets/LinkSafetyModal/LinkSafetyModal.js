@@ -60,9 +60,11 @@ const LinkSafetyModal = () => {
       okText={'Confirm'}
     >
       <div className={'mb2 flex items-center flex-column'}>
-        <b>{noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}</b>
-        <div className={'main-color-button'}>{info?.url}</div>
-        <div>Do you want to proceed to the external site?</div>
+        <b className={'mb2'}>
+          {noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
+        </b>
+        <div className={'mb2'}>Do you want to proceed to the external site?</div>
+        <b className={'main-color-button'}>{info?.url}</b>
       </div>
       <br />
       {
