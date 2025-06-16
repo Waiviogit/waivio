@@ -139,7 +139,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
 
   return (
     <div className="Checklist">
-      {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
+      <div className="Checklist__breadcrumbsContainre">
+        {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
+        {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
+      </div>
       {listType && wobject?.background && !loading && (
         <div className="Checklist__banner">
           <img src={wobject?.background} alt={'Promotional list banner'} />
@@ -147,7 +150,6 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
-      {listType && <EarnsCommissionsOnPurchases />}
     </div>
   );
 };

@@ -10,7 +10,7 @@ const LinkSafetyModal = () => {
   const dispatch = useDispatch();
   let status;
 
-  switch (info.rating) {
+  switch (info?.rating) {
     case 1:
     case 2:
     case 3:

@@ -248,8 +248,10 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
 
   return steemConnectAPI
     .appendVote(voter, isGuest, author, permlink, weight)
-    .then(res => {
-      if (isObjectPage)
+    .then(async res => {
+      const result = isGuest ? await res : res;
+
+      if (isObjectPage && res?.result)
         dispatch(
           getChangedWobjectField(
             authorPermlink,
@@ -260,7 +262,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
             '',
             '',
             '',
-            res.result.id,
+            result?.result?.id,
           ),
         );
     })
