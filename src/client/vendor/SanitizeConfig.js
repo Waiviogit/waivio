@@ -98,6 +98,17 @@ export const parseLink = (
   if (!href) href = '#';
   href = href.trim();
   const attys = {};
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (emailRegex.test(href)) {
+    attys.href = `mailto:${href}`;
+    attys.target = '_blank';
+    return {
+      tagName,
+      attribs: attys,
+    };
+  }
+
   try {
     const linkUrl = url.parse(href);
     const linkWebsiteUrl = url.format({
