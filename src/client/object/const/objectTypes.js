@@ -14,6 +14,7 @@ export default {
   LINK: 'link',
   RECIPE: 'recipe',
   GROUP: 'group',
+  PRODUCT: 'product',
 };
 
 export const addOnsRelatedSimilarTypes = ['product', 'book', 'service', 'recipe'];

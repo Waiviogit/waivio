@@ -1,3 +1,4 @@
+import moment from 'moment/moment';
 import React, { useEffect } from 'react';
 import { renderRoutes } from 'react-router-config';
 import classNames from 'classnames';
@@ -24,6 +25,7 @@ import {
   getObjectName,
   hasType,
   parseAddress,
+  getNumbersFromWobjPrice,
 } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { formColumnsField } from '../../../common/constants/listOfFields';
@@ -124,15 +126,89 @@ const WobjectView = ({
     }
   }, [isEditMode]);
 
+  const getItemData = () => {
+    if (!showModal) {
+      if (hasType(wobject, OBJECT_TYPE.RECIPE))
+        return {
+          itemScope: true,
+          itemType: 'https://schema.org/Recipe',
+        };
+
+      if (hasType(wobject, OBJECT_TYPE.PRODUCT))
+        return {
+          itemScope: true,
+          itemType: 'https://schema.org/Product',
+        };
+    }
+
+    return {};
+  };
+
+  const getMicroSchema = () => {
+    if (hasType(wobject, OBJECT_TYPE.RECIPE)) {
+      return (
+        <div>
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={desc} />
+          <meta itemProp="recipeCuisine" content={'International'} />
+          <meta itemProp="recipeYield" content={'1 servings'} />
+          <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
+          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
+          {wobject.calories && (
+            <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
+              <meta itemProp="calories" content={wobject.calories} />
+            </div>
+          )}
+
+          {/* Оценка рецепта */}
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (hasType(wobject, OBJECT_TYPE.PRODUCT)) {
+      return (
+        <div>
+          <meta itemProp="mpn" content="925872" />
+          <meta itemProp="name" content={getObjectName(wobject)} />
+          <link itemProp="image" href={image} />
+          <meta itemProp="description" content={desc} />
+          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+            <link itemProp="url" href={url} />
+            <meta itemProp="availability" content="https://schema.org/InStock" />
+            <meta
+              itemProp="priceValidUntil"
+              content={moment()
+                .add(1, 'months')
+                .format('YYYY-MM-DD')}
+            />
+            <meta
+              itemProp="priceCurrency"
+              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
+            />
+            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+            <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
+          </div>
+          {Boolean(averageRate(bestRating)) && (
+            <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
-    <div
-      {...(hasType(wobject, OBJECT_TYPE.RECIPE) && !showModal
-        ? {
-            itemScope: true,
-            itemType: 'https://schema.org/Recipe',
-          }
-        : {})}
-    >
+    <div {...getItemData()}>
       <Helmet>
         <title>{titleText}</title>
         <meta name="description" content={desc} />
@@ -154,26 +230,7 @@ const WobjectView = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {hasType(wobject, OBJECT_TYPE.RECIPE) && (
-        <div>
-          <link itemProp="image" href={image} />
-          <meta itemProp="description" content={desc} />
-          <meta itemProp="recipeCuisine" content={'International'} />
-          <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
-          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
-          {wobject.calories && (
-            <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
-              <meta itemProp="calories" content={wobject.calories} />
-            </div>
-          )}
-          {Boolean(averageRate(bestRating)) && (
-            <div itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
-              <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-              <meta itemProp="ratingValue" content={averageRate(bestRating)} />
-            </div>
-          )}
-        </div>
-      )}
+      {getMicroSchema()}
       <WobjHero
         isEditMode={isEditMode}
         authenticated={authenticated}
