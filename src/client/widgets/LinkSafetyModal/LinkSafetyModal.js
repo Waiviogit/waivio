@@ -37,6 +37,7 @@ const LinkSafetyModal = () => {
   };
   const goToSite = () =>
     window.open(info.url?.endsWith('*') ? info.url?.slice(0, -1) : info.url, '_blank');
+
   const openLink = () => {
     cancelModal();
     goToSite();
@@ -45,8 +46,10 @@ const LinkSafetyModal = () => {
   useEffect(() => {
     if (!info.dangerous && info.url) goToSite();
 
-    return () => dispatch(resetLinkSafetyInfo());
-  }, [info.url]);
+    return () => {
+      dispatch(resetLinkSafetyInfo());
+    };
+  }, []);
 
   return info.dangerous ? (
     <Modal
