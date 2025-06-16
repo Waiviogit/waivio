@@ -84,6 +84,7 @@ export default class Post extends React.Component {
 
     return Promise.all([
       store.dispatch(getContent(author, permlink), store.dispatch(getPostsByAuthor(author))),
+      store.dispatch(getPostsByAuthor(author)),
     ]);
   }
 
