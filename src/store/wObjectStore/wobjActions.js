@@ -358,14 +358,19 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-export const setLinkSafetyInfo = url => dispatch =>
-  dispatch({
+export const setLinkSafetyInfo = url => dispatch => {
+  const waivioLink = url?.includes('/object/');
+
+  const promise = waivioLink ? Promise.resolve({ dangerous: false }) : checkLinkSafety(url);
+
+  return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise: checkLinkSafety(url),
+      promise,
     },
     meta: url,
   });
+};
 
 export const resetLinkSafetyInfo = () => dispatch =>
   dispatch({
