@@ -37,6 +37,7 @@ const LinkSafetyModal = () => {
   };
   const goToSite = () =>
     window.open(info?.url?.endsWith('*') ? info?.url?.slice(0, -1) : info?.url, '_blank');
+
   const openLink = () => {
     cancelModal();
     goToSite();
@@ -45,7 +46,9 @@ const LinkSafetyModal = () => {
   useEffect(() => {
     if (!info?.dangerous && info?.url) goToSite();
 
-    return () => dispatch(resetLinkSafetyInfo());
+    // return () => {
+    //   dispatch(resetLinkSafetyInfo());
+    // };
   }, [info?.url]);
 
   return info?.dangerous ? (
@@ -57,9 +60,11 @@ const LinkSafetyModal = () => {
       okText={'Confirm'}
     >
       <div className={'mb2 flex items-center flex-column'}>
-        <b>{noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}</b>
-        <div className={'main-color-button'}>{info?.url}</div>
-        <div>Do you want to proceed to the external site?</div>
+        <b className={'mb2'}>
+          {noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
+        </b>
+        <div className={'mb2'}>Do you want to proceed to the external site?</div>
+        <b className={'main-color-button'}>{info?.url}</b>
       </div>
       <br />
       {
@@ -75,7 +80,7 @@ const LinkSafetyModal = () => {
           </span>
         </div>
       )}
-      {info.linkWaivio && (
+      {info?.linkWaivio && (
         <div className={'mb2'}>
           <b>Details:</b>{' '}
           <a
@@ -83,7 +88,7 @@ const LinkSafetyModal = () => {
             target={'_blank'}
             rel="noreferrer"
           >
-            https://www.waivio.com/object/{info.linkWaivio}
+            https://www.waivio.com/object/{info?.linkWaivio}
           </a>
         </div>
       )}

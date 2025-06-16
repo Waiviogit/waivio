@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -17,7 +18,7 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-
+import { setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './Body.less';
 
 function parseGPSCoordinates(text) {
@@ -159,6 +160,19 @@ export function getHtml(
 const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
+  const dispatch = useDispatch();
+
+  const openLink = e => {
+    const anchor = e.target.closest('a');
+
+    if (anchor) {
+      e.preventDefault();
+      e.stopPropagation();
+      const href = anchor.getAttribute('href');
+
+      dispatch(setLinkSafetyInfo(href));
+    }
+  };
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -198,7 +212,9 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>
+      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
+        {htmlSections}
+      </div>
       {!isEmpty(withMap) &&
         withMap.map(map => {
           const center = parseGPSCoordinates(map);

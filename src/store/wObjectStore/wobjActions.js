@@ -18,6 +18,7 @@ import {
   getObject as getObjectState,
 } from './wObjectSelectors';
 import { getAppHost, getUsedLocale } from '../appStore/appSelectors';
+import { getExitPageSetting } from '../settingsStore/settingsSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -358,14 +359,21 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-export const setLinkSafetyInfo = url => dispatch =>
-  dispatch({
+export const setLinkSafetyInfo = url => (dispatch, getState) => {
+  const waivioLink = url?.includes('/object/');
+  const checkLinks = getExitPageSetting(getState());
+
+  const promise =
+    waivioLink || !checkLinks ? Promise.resolve({ dangerous: false }) : checkLinkSafety(url);
+
+  return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise: checkLinkSafety(url),
+      promise,
     },
     meta: url,
   });
+};
 
 export const resetLinkSafetyInfo = () => dispatch =>
   dispatch({

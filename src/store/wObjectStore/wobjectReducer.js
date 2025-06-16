@@ -129,10 +129,6 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         linkSafety: {
-          dangerous: null,
-          linkWaivio: null,
-          rating: null,
-          url: null,
           showModal: false,
         },
       };
