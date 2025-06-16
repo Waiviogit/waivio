@@ -364,7 +364,7 @@ export const setLinkSafetyInfo = url => (dispatch, getState) => {
   const checkLinks = getExitPageSetting(getState());
 
   const promise =
-    waivioLink || checkLinks ? Promise.resolve({ dangerous: false }) : checkLinkSafety(url);
+    waivioLink || !checkLinks ? Promise.resolve({ dangerous: false }) : checkLinkSafety(url);
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
