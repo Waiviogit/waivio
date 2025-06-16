@@ -17,7 +17,7 @@ const GuestSignUpFormContent = ({
   hasErrors,
   handleSubmit,
   getAvatar,
-  setIsLoading,
+  // setIsLoading,
   image,
   initialLanguages,
 }) => {
@@ -73,7 +73,7 @@ const GuestSignUpFormContent = ({
             <ImageSetter
               isTitle={false}
               onImageLoaded={getAvatar}
-              onLoadingImage={setIsLoading}
+              isMultiple={false}
               defaultImage={image}
             />,
           )}
@@ -203,7 +203,6 @@ GuestSignUpFormContent.propTypes = {
   hasErrors: PropTypes.func,
   handleSubmit: PropTypes.func,
   getAvatar: PropTypes.func,
-  setIsLoading: PropTypes.func,
   image: PropTypes.string,
   initialLanguages: PropTypes.string,
 };
