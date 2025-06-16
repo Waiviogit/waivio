@@ -19,7 +19,7 @@ const SocialSignInModalContent = ({
   responseSocial,
   handleFailure,
   setIsModalOpen,
-  // websiteName,
+  websiteName,
   showCloseIcon,
 }) => {
   const [showQR, setShowQr] = useState('');
@@ -212,7 +212,7 @@ const SocialSignInModalContent = ({
               })}{' '}
               <a
                 title={'Terms & Conditions'}
-                href={`/object/ljc-legal?breadcrumbs=ljc-legal/xrj-terms-and-conditions`}
+                href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/xrj-terms-and-conditions`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -221,7 +221,7 @@ const SocialSignInModalContent = ({
               , our{' '}
               <a
                 title={'Privacy Policy'}
-                href={`/object/ljc-legal?breadcrumbs=ljc-legal/poi-privacy-policy`}
+                href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/poi-privacy-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -230,7 +230,7 @@ const SocialSignInModalContent = ({
               , and our{' '}
               <a
                 title={'Cookies Policy'}
-                href={`/object/ljc-legal?breadcrumbs=ljc-legal/uid-cookies-policy`}
+                href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/uid-cookies-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -262,6 +262,7 @@ SocialSignInModalContent.propTypes = {
   showCloseIcon: PropTypes.bool,
   onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
+  websiteName: PropTypes.string.isRequired,
   handleFailure: PropTypes.func.isRequired,
   responseSocial: PropTypes.func.isRequired,
   setIsModalOpen: PropTypes.func.isRequired,
