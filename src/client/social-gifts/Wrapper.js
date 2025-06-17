@@ -51,6 +51,7 @@ import {
   getUsedLocale,
   getWebsiteColors,
   getWebsiteConfiguration,
+  getAppHost,
 } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
@@ -100,6 +101,7 @@ const SocialWrapper = props => {
   const nightmode = Cookie.get('nightmode');
   const signInPage = props?.location.pathname?.includes('sign-in');
   const isWidget = new URLSearchParams(props.location?.search).get('display');
+  const host = useSelector(getAppHost);
 
   const createWebsiteMenu = configuration => {
     if (!isEmpty(configuration?.shopSettings)) {
@@ -116,7 +118,6 @@ const SocialWrapper = props => {
 
               return acc;
             }, []);
-
             const customSort = get(wobject, 'sortCustom.include', []);
 
             if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
@@ -159,10 +160,15 @@ const SocialWrapper = props => {
 
                 return findObj ? [...acc, findObj] : acc;
               }, []);
+
+              if (sortingButton?.[0]?.linkToWeb && !sortingButton?.[0]?.linkToWeb.includes(host))
+                window.location.href = sortingButton[0].linkToWeb;
+
               const fullList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort?.includes(i.permlink)),
               ];
+
               const newList = await enrichMenuItems(fullList, language, true);
 
               const buttonList = newList.map(i => ({

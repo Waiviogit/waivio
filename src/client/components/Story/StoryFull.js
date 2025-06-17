@@ -69,6 +69,7 @@ class StoryFull extends React.Component {
     onActionInitiated: PropTypes.func.isRequired,
     muteAuthorPost: PropTypes.func.isRequired,
     signature: PropTypes.string,
+    image: PropTypes.string,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -403,9 +404,12 @@ class StoryFull extends React.Component {
       >
         {replyUI}
         {!isRecipe && (
-          <h1 className="StoryFull__title" itemProp="name">
-            {post.title}
-          </h1>
+          <React.Fragment>
+            <h1 className="StoryFull__title" itemProp="name">
+              {post.title}
+            </h1>
+            <link itemProp="image" href={this.props.image} />
+          </React.Fragment>
         )}
         {isRecipe && <span className="StoryFull__title">{post.title}</span>}
         {!isOriginalPost && !isRecipe && (
@@ -508,6 +512,7 @@ class StoryFull extends React.Component {
                   instacartAff={instacardAff}
                   wobjPerm={wobjWithAff?.author_permlink}
                   withDisclamer
+                  marginBottom={'5px'}
                 />
               </div>
             )}
