@@ -37,9 +37,17 @@ const GeneralSearch = props => {
   const getSocialLink = obj => `/object/${obj.author_permlink}`;
   const isSocialWobj = wobj =>
     props.isSocialProduct &&
-    ['product', 'book', 'person', 'business', 'link', 'restaurant', 'list', 'recipe'].includes(
-      wobj.object_type,
-    );
+    [
+      'product',
+      'book',
+      'person',
+      'business',
+      'place',
+      'link',
+      'restaurant',
+      'list',
+      'recipe',
+    ].includes(wobj.object_type);
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
@@ -48,6 +56,7 @@ const GeneralSearch = props => {
           'product',
           'book',
           'business',
+          'place',
           'link',
           'restaurant',
           'list',

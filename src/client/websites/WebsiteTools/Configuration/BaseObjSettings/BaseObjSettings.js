@@ -56,6 +56,7 @@ const BaseObjSettings = ({
         dispatch(
           searchAutoComplete(value, 3, 50, null, true, [
             'business',
+            'place',
             'link',
             'book',
             'product',

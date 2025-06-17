@@ -160,7 +160,7 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const isProduct = wobject.object_type === 'product';
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const sale = get(wobject, 'sale');
   const compareAtPrice = get(wobject, 'compareAtPrice');

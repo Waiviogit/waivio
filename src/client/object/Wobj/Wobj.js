@@ -121,6 +121,7 @@ const Wobj = ({
         'book',
         'product',
         'business',
+        'place',
         'restaurant',
         'person',
         'widget',
@@ -161,6 +162,7 @@ const Wobj = ({
           />
         );
       case 'business':
+      case 'place':
       case 'restaurant':
       case 'link':
       case 'person':

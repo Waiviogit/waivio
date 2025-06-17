@@ -78,6 +78,7 @@ const createLink = i => {
     case 'list':
     case 'page':
     case 'business':
+    case 'place':
     case 'link':
     case 'product':
     case 'book':
