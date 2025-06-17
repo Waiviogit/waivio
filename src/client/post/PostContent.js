@@ -382,7 +382,7 @@ class PostContent extends React.Component {
             <meta name="twitter:title" content={metaTitle} />
             <meta name="twitter:description" content={desc} />
             <meta property="og:image" content={image} />
-            <meta property="image" content={image} />
+            <link itemProp="image" href={image} />
             <meta property="og:image:alt" content="image" />
             <meta property="og:image:url" content={image} />
             <meta property="og:image:width" content="680" />
