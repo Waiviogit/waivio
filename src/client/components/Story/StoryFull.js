@@ -625,6 +625,7 @@ class StoryFull extends React.Component {
                     'This post contains affiliate links. Commissions may be earned from purchases made through these links at no extra cost to the buyer.'
                   }
                   padding="0 20px"
+                  marginBottom={'5px'}
                 />
               )}
             </Collapse.Panel>
