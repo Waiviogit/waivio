@@ -251,7 +251,9 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
     .then(async res => {
       const result = isGuest ? await res : res;
 
-      if (isObjectPage && res?.result)
+      if (isGuest && res.status !== 200) return Promise.reject(res);
+
+      if (isObjectPage)
         dispatch(
           getChangedWobjectField(
             authorPermlink,
@@ -265,6 +267,8 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
             result?.result?.id,
           ),
         );
+
+      return res;
     })
     .catch(e => {
       const authorityList = getAuthorityList(getState());
@@ -275,7 +279,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
       } else {
         dispatch(setObjectinAuthority(authorPermlink));
       }
-      message.error(e.error_description);
+      message.error(e.error_description || e.error.message || 'Something went wrong');
 
       return e;
     });
