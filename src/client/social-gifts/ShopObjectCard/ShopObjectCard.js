@@ -63,6 +63,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     case 'product':
     case 'recipe':
     case 'business':
+    case 'place':
     case 'link':
     case 'restaurant':
     case 'page':

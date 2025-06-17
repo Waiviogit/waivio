@@ -121,6 +121,7 @@ export default function wobjectReducer(state = initialState, action) {
           ...action.payload,
           url: action.meta,
           showModal: action.payload.dangerous,
+          triggerId: Date.now(),
         },
         isFetching: false,
         isFailed: false,

@@ -85,7 +85,8 @@ const WobjectView = ({
 
   const desc = `${objectName}. ${rank} ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategories}`;
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type) && !isMobile();
+  const referenceWobjType =
+    ['business', 'person', 'place'].includes(wobject.object_type) && !isMobile();
   const albumsAndImagesCount = wobject.albums_count;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList?.find(item => item?.permlink === match.params.parentName) || {};
