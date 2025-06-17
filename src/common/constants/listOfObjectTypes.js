@@ -5,6 +5,7 @@ export const listOfSocialObjectTypes = [
   'book',
   'person',
   'business',
+  'place',
   'link',
   'restaurant',
   'map',
