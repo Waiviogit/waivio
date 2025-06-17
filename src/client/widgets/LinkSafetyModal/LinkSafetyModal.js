@@ -35,8 +35,15 @@ const LinkSafetyModal = () => {
   const cancelModal = () => {
     dispatch(resetLinkSafetyInfo());
   };
-  const goToSite = () =>
-    window.open(info?.url?.endsWith('*') ? info?.url?.slice(0, -1) : info?.url, '_blank');
+
+  const goToSite = () => {
+    const waivioLink = info?.url?.includes('/object/');
+
+    window.open(
+      info?.url?.endsWith('*') ? info?.url?.slice(0, -1) : info?.url,
+      waivioLink ? '_self' : '_blank',
+    );
+  };
 
   const openLink = () => {
     cancelModal();
@@ -45,11 +52,7 @@ const LinkSafetyModal = () => {
 
   useEffect(() => {
     if (!info?.dangerous && info?.url) goToSite();
-
-    // return () => {
-    //   dispatch(resetLinkSafetyInfo());
-    // };
-  }, [info?.url]);
+  }, [info?.triggerId, info?.url]);
 
   return info?.dangerous ? (
     <Modal
