@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Rate } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
 import { resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 
@@ -63,7 +63,7 @@ const LinkSafetyModal = () => {
       okText={'Confirm'}
     >
       <div className={'mb2 flex items-center flex-column'}>
-        <b className={'mb2'}>
+        <b className={isMobile() ? 'mb2 text-center' : 'mb2'}>
           {noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
         </b>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
