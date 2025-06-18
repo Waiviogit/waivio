@@ -104,7 +104,7 @@ const Checklist = ({
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={description} />
         <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="author" content={wobject?.creator} />
         <meta name="wobject-title" content={wobject?.title} />

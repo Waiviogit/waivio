@@ -53,7 +53,7 @@ const ShopSwitcher = () => {
         <meta property="og:title" content={title} />
         <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <link rel="canonical" href={canonicalUrl} />
