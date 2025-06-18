@@ -402,6 +402,7 @@ class PostContent extends React.Component {
           isRecipe={isRecipe}
           user={user}
           post={content}
+          image={image}
           postState={postState}
           signature={signature}
           isThread={isThread}

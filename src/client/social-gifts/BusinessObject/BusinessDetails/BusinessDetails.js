@@ -8,7 +8,6 @@ import {
   getObjectName,
   haveAccess,
 } from '../../../../common/helpers/wObjectHelper';
-import { getLink } from '../../../object/wObjectHelper';
 
 import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
@@ -28,6 +27,7 @@ const BusinessDetails = ({
   walletAddress,
   mapObjPermlink,
   mapCenter,
+  setLinkSafety,
 }) => {
   const profile = linkField
     ? {
@@ -93,9 +93,9 @@ const BusinessDetails = ({
             <div className="BusinessObject__website field-website mb5px ">
               <span className="field-website__title">
                 <i className="iconfont icon-link text-icon link" />
-                <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
+                <span className={'main-color-button'} onClick={() => setLinkSafety(website.link)}>
                   {website.title}
-                </a>
+                </span>
               </span>
             </div>
           )}
@@ -142,6 +142,7 @@ BusinessDetails.propTypes = {
   email: PropTypes.string,
   mapObjPermlink: PropTypes.string,
   username: PropTypes.string.isRequired,
+  setLinkSafety: PropTypes.func,
 };
 
 export default BusinessDetails;

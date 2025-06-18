@@ -29,14 +29,14 @@ import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import {
-  getNumbersFromWobjPrice,
+  // getNumbersFromWobjPrice,
   getObjectAvatar,
-  getObjectName,
+  // getObjectName,
   parseAddress,
   parseWobjectField,
   getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
-import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+// import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import Loading from '../../components/Icon/Loading';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
@@ -60,7 +60,7 @@ import BusinessDetails from './BusinessDetails/BusinessDetails';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
-import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
 import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
 import { enrichMenuItems } from '../SocialProduct/SocialProduct';
@@ -88,6 +88,7 @@ const BusinessObject = ({
   nearbyObjects,
   intl,
   resetWobjExpertise,
+  setLinkSafety,
   host,
 }) => {
   const [reward, setReward] = useState([]);
@@ -153,7 +154,7 @@ const BusinessObject = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['business', 'restaurant'].includes(wobject.object_type)
+  const url = ['business', 'restaurant', 'place'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
@@ -161,11 +162,11 @@ const BusinessObject = ({
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
   const socialScrollHeight = bannerEl
-    ? socialHeaderEl.offsetHeight + bannerEl.offsetHeight
+    ? socialHeaderEl?.offsetHeight + bannerEl?.offsetHeight
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
-  const bestRating = getRatingForSocial(wobject.rating);
+  // const bestRating = getRatingForSocial(wobject.rating);
   const showBusinessDetails =
     !isEmpty(phones) ||
     !isNil(website) ||
@@ -230,25 +231,25 @@ const BusinessObject = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div itemType="https://schema.org/Product" itemScope>
-        <meta itemProp="mpn" content="925872" />
-        <meta itemProp="name" content={getObjectName(wobject)} />
-        <link itemProp="image" href={image} />
-        <meta itemProp="description" content={description} />
-        <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-          <link itemProp="url" href={productUrl} />
-          <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} />
-          <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
-        </div>
-        {Boolean(averageRate(bestRating)) && (
-          <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-            <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-            <meta itemProp="ratingValue" content={averageRate(bestRating)} />
-          </div>
-        )}
-      </div>
+      {/* <div itemType="https://schema.org/Product" itemScope> */}
+      {/*   <meta itemProp="mpn" content="925872" /> */}
+      {/*   <meta itemProp="name" content={getObjectName(wobject)} /> */}
+      {/*   <link itemProp="image" href={image} /> */}
+      {/*   <meta itemProp="description" content={description} /> */}
+      {/*   <div itemProp="offers" itemType="https://schema.org/Offer" itemScope> */}
+      {/*     <link itemProp="url" href={productUrl} /> */}
+      {/*     <meta itemProp="availability" content="https://schema.org/InStock" /> */}
+      {/*     <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} /> */}
+      {/*     <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" /> */}
+      {/*     <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} /> */}
+      {/*   </div> */}
+      {/*   {Boolean(averageRate(bestRating)) && ( */}
+      {/*     <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope> */}
+      {/*       <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} /> */}
+      {/*       <meta itemProp="ratingValue" content={averageRate(bestRating)} /> */}
+      {/*     </div> */}
+      {/*   )} */}
+      {/* </div> */}
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
@@ -364,9 +365,12 @@ const BusinessObject = ({
                         src={'/images/icons/link-icon.svg'}
                         wrapper={'span'}
                       />{' '}
-                      <a href={linkUrlHref} target="_blank" rel="noopener noreferrer">
+                      <span
+                        className={'main-color-button'}
+                        onClick={() => setLinkSafety(linkUrlHref)}
+                      >
                         {linkUrl}
-                      </a>
+                      </span>
                     </span>
                   )}
                 </div>
@@ -381,6 +385,7 @@ const BusinessObject = ({
                 </div>
                 {showBusinessDetails && (
                   <BusinessDetails
+                    setLinkSafety={setLinkSafety}
                     mapObjPermlink={mapObjPermlink}
                     mapCenter={[Number(map?.latitude), Number(map?.longitude)]}
                     email={email}
@@ -512,6 +517,7 @@ BusinessObject.propTypes = {
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   resetWobjExpertise: PropTypes.func,
+  setLinkSafety: PropTypes.func,
   brandObject: PropTypes.shape({}),
   nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
@@ -543,6 +549,7 @@ const mapDispatchToProps = dispatch => ({
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));

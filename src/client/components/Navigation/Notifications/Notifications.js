@@ -101,7 +101,7 @@ class Notifications extends React.Component {
     const contentElement = this.notificationsContent;
     const topScrollPos = contentElement.scrollTop;
     const totalContainerHeight = contentElement.scrollHeight;
-    const containerFixedHeight = contentElement.offsetHeight;
+    const containerFixedHeight = contentElement?.offsetHeight;
     const bottomScrollPos = topScrollPos + containerFixedHeight;
     const bottomPosition = totalContainerHeight - bottomScrollPos;
     const threshold = 100;

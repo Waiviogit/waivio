@@ -69,6 +69,7 @@ class StoryFull extends React.Component {
     onActionInitiated: PropTypes.func.isRequired,
     muteAuthorPost: PropTypes.func.isRequired,
     signature: PropTypes.string,
+    image: PropTypes.string,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -403,9 +404,12 @@ class StoryFull extends React.Component {
       >
         {replyUI}
         {!isRecipe && (
-          <h1 className="StoryFull__title" itemProp="name">
-            {post.title}
-          </h1>
+          <React.Fragment>
+            <h1 className="StoryFull__title" itemProp="name">
+              {post.title}
+            </h1>
+            <link itemProp="image" href={this.props.image} />
+          </React.Fragment>
         )}
         {isRecipe && <span className="StoryFull__title">{post.title}</span>}
         {!isOriginalPost && !isRecipe && (
@@ -507,6 +511,8 @@ class StoryFull extends React.Component {
                   className={'shop-with-instacart-v1'}
                   instacartAff={instacardAff}
                   wobjPerm={wobjWithAff?.author_permlink}
+                  withDisclamer
+                  marginBottom={'5px'}
                 />
               </div>
             )}
@@ -618,12 +624,13 @@ class StoryFull extends React.Component {
                   </div>
                 );
               })}
-              {linkedObjects.some(i => i.affiliateLinks) && (
+              {linkedObjects.some(i => !isEmpty(i.affiliateLinks)) && (
                 <EarnsCommissionsOnPurchases
                   text={
                     'This post contains affiliate links. Commissions may be earned from purchases made through these links at no extra cost to the buyer.'
                   }
                   padding="0 20px"
+                  marginBottom={'5px'}
                 />
               )}
             </Collapse.Panel>

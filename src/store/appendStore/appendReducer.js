@@ -151,7 +151,7 @@ export default (state = defaultState, action) => {
 
         return {
           ...state,
-          fields: [...state.wobject.fields],
+          fields: [...state.fields],
         };
       }
 

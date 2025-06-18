@@ -54,6 +54,7 @@ import { getTokenRates, getGlobalProperties } from '../store/walletStore/walletA
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { initialColors } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
+import LinkSafetyModal from './widgets/LinkSafetyModal/LinkSafetyModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 @withRouter
@@ -330,6 +331,7 @@ class Wrapper extends React.PureComponent {
                   />
                 )}
                 {renderRoutes(this.props.route.routes)}
+                <LinkSafetyModal />
                 {!isWidget && (
                   <React.Fragment>
                     <NotificationPopup />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Modal } from 'antd';
 
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
@@ -13,7 +14,14 @@ const RedirectedSignIn = props => {
   return (
     <div className="Wrapper">
       {isFormVisible ? (
-        <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={url} />
+        <Modal
+          width={480}
+          visible={isFormVisible}
+          onCancel={() => setIsFormVisible(false)}
+          footer={null}
+        >
+          <GuestSignUpForm userData={userData} isModalOpen={isFormVisible} url={url} />
+        </Modal>
       ) : (
         <div
           style={{

@@ -13,7 +13,7 @@ import './ObjectInfoExperts.less';
 import ObjectsFeatured from '../../../components/Sidebar/ObjectsFeatured/ObjectsFeatured';
 
 const ObjectInfoExperts = ({ wobject }) => {
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type);
   const showContent = isMobile() && !isEmpty(wobject.author_permlink);
 
   return (

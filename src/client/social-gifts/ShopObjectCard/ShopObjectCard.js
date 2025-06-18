@@ -63,15 +63,18 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     case 'product':
     case 'recipe':
     case 'business':
+    case 'place':
     case 'link':
     case 'restaurant':
     case 'page':
     case 'widget':
     case 'newsfeed':
     case 'book': {
-      link = isChecklist
-        ? `${wObject?.defaultShowLink}${breadbrumbs}`
-        : `/object/${wObject?.author_permlink}`;
+      const defaultLink = wObject.defaultShowLink?.endsWith('/about')
+        ? wObject.defaultShowLink.slice(0, -6)
+        : wObject.defaultShowLink;
+
+      link = isChecklist ? `${defaultLink}${breadbrumbs}` : `/object/${wObject?.author_permlink}`;
       break;
     }
 

@@ -48,26 +48,44 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
 
   const dispatch = useDispatch();
 
-  const validateUserName = async (rule, value, callback) => {
+  let debounceTimer = null;
+
+  const validateUserName = value => {
+    if (!value) return Promise.resolve();
+
     if (value.length >= 25) {
-      callback(
+      return Promise.reject(
         <FormattedMessage
           id="name_is_too_long"
-          defaultMessage="Name is too long (map 25 symbols)"
+          defaultMessage="Name is too long (max 25 symbols)"
         />,
       );
     }
-    const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
 
-    if (user.id) {
-      callback(
-        <FormattedMessage
-          id="already_exists"
-          defaultMessage="User with such username already exists"
-        />,
-      );
-    }
-    callback();
+    return new Promise((resolve, reject) => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+
+      debounceTimer = setTimeout(async () => {
+        try {
+          const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
+
+          if (user?.id) {
+            reject(
+              <FormattedMessage
+                id="already_exists"
+                defaultMessage="User with such username already exists"
+              />,
+            );
+          } else {
+            resolve();
+          }
+        } catch (err) {
+          reject(
+            <FormattedMessage id="validation_error" defaultMessage="Error validating username" />,
+          );
+        }
+      }, 800);
+    });
   };
 
   const checkboxValidator = (rule, value, callback) => {
@@ -102,7 +120,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
           setIsLoading(false);
 
           if (typeof window !== 'undefined' && !isWaivio && url) {
-            window.location.href = `${url}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
+            window.location.href = `https://${url}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
           }
         });
       } else {

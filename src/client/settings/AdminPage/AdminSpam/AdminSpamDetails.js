@@ -61,7 +61,7 @@ const AdminSpamDetails = ({
               </div>
               <div>
                 <b>Content: </b>
-                <span>{getHtml(body, {}, 'Object')}</span>
+                <span className={'AdminPage__details-body'}>{getHtml(body, {}, 'Object')}</span>
                 {d.body.length > 300 && (
                   <span
                     className="main-color-button ml-2 cursor-pointer"

@@ -30,6 +30,8 @@ import {
   SET_BREDCRUMB_FOR_CHECKLIST,
   SET_ALL_BREDCRUMBS_FOR_CHECKLIST,
   SET_EDIT_MODE,
+  SET_LINK_SAFETY,
+  RESET_LINK_SAFETY,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -69,6 +71,7 @@ export const initialState = {
   manufacturerObject: {},
   publisherObject: {},
   merchantObject: {},
+  linkSafety: {},
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -110,6 +113,27 @@ export default function wobjectReducer(state = initialState, action) {
         isFetching: false,
         isFailed: false,
       };
+
+    case SET_LINK_SAFETY.SUCCESS:
+      return {
+        ...state,
+        linkSafety: {
+          ...action.payload,
+          url: action.meta,
+          showModal: action.payload.dangerous,
+          triggerId: Date.now(),
+        },
+        isFetching: false,
+        isFailed: false,
+      };
+    case RESET_LINK_SAFETY: {
+      return {
+        ...state,
+        linkSafety: {
+          showModal: false,
+        },
+      };
+    }
     case actions.SET_BASE_OBJECT:
       return {
         ...state,

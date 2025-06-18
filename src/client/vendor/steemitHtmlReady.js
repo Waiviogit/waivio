@@ -119,9 +119,11 @@ function traverse(node, state, depth = 0) {
 
 function link(state, child) {
   const url = child.getAttribute('href');
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   if (url) {
     state.links.add(url);
-    if (state.mutate) {
+    if (state.mutate && !url.includes('mailto:') && emailRegex.test(url)) {
       // If this link is not relative, http, or https -- add https.
       if (!/^((#)|(\/(?!\/))|((https?:)?\/\/))/.test(url)) {
         child.setAttribute('href', 'https://' + url);

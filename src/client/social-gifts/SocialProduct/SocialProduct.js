@@ -88,6 +88,7 @@ import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
 import './SocialProduct.less';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 
 const limit = 30;
 
@@ -131,6 +132,7 @@ const SocialProduct = ({
   optionClicked,
   helmetIcon,
   params,
+  setLinkSafety,
   history,
   setStoreActiveOpt,
   resetOptClicked,
@@ -160,7 +162,7 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const isProduct = wobject.object_type === 'product';
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type);
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const sale = get(wobject, 'sale');
   const compareAtPrice = get(wobject, 'compareAtPrice');
@@ -259,7 +261,7 @@ const SocialProduct = ({
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
   const socialScrollHeight = bannerEl
-    ? socialHeaderEl.offsetHeight + bannerEl.offsetHeight
+    ? socialHeaderEl?.offsetHeight + bannerEl?.offsetHeight
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
@@ -556,18 +558,20 @@ const SocialProduct = ({
                 </div>
               )}
               <div className="flex flex-row">
-                <div
-                  className={
-                    // eslint-disable-next-line no-nested-ternary
-                    isNil(compareAtPrice) && !isEmpty(wobject?.options)
-                      ? 'SocialProduct__price-no'
-                      : price
-                      ? 'SocialProduct__price--old'
-                      : 'SocialProduct__price'
-                  }
-                >
-                  {compareAtPrice}
-                </div>
+                {compareAtPrice && (
+                  <div
+                    className={
+                      // eslint-disable-next-line no-nested-ternary
+                      isNil(compareAtPrice) && !isEmpty(wobject?.options)
+                        ? 'SocialProduct__price-no'
+                        : price
+                        ? 'SocialProduct__price--old'
+                        : 'SocialProduct__price'
+                    }
+                  >
+                    {compareAtPrice}
+                  </div>
+                )}
                 <div
                   className={
                     // eslint-disable-next-line no-nested-ternary
@@ -694,6 +698,7 @@ const SocialProduct = ({
             )}
             {showProductDetails && (
               <ProductDetails
+                setLinkSafety={setLinkSafety}
                 website={website}
                 locale={locale}
                 publisher={publisher}
@@ -798,6 +803,7 @@ SocialProduct.propTypes = {
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
   publisherObject: PropTypes.shape({}),
+  setLinkSafety: PropTypes.func,
   getProductInfoAction: PropTypes.func,
   intl: PropTypes.shape().isRequired,
 };
@@ -831,6 +837,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
+  resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
   getObjectPosts: (username, object, lim) =>
     dispatch(getObjectPosts({ username, object, limit: lim })),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),

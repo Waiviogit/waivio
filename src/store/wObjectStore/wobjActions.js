@@ -5,6 +5,7 @@ import { get, size } from 'lodash';
 import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
+  checkLinkSafety,
   getAuthorsChildWobjects,
   getWobjectsExpertiseWithNewsFilter,
 } from '../../waivioApi/ApiClient';
@@ -17,6 +18,7 @@ import {
   getObject as getObjectState,
 } from './wObjectSelectors';
 import { getAppHost, getUsedLocale } from '../appStore/appSelectors';
+import { getExitPageSetting } from '../settingsStore/settingsSelectors';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -24,6 +26,8 @@ export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 export const CLEAR_RELATED_OBJECTS = '@wobj/CLEAR_RELATED_OBJECTS';
 export const RESET_WOBJECT_EXPERTISE = '@wobj/RESET_WOBJECT_EXPERTISE';
+export const RESET_LINK_SAFETY = '@wobj/RESET_LINK_SAFETY';
+export const SET_LINK_SAFETY = createAsyncActionType('@wobj/SET_LINK_SAFETY');
 export const GET_WOBJECT_EXPERTISE = createAsyncActionType('@wobj/GET_WOBJECT_EXPERTISE');
 export const GET_RELATED_WOBJECT = createAsyncActionType('@wobj/GET_RELATED_WOBJECT');
 export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
@@ -354,6 +358,31 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
     },
   });
 };
+
+export const setLinkSafetyInfo = url => (dispatch, getState) => {
+  const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
+
+  const checkLinks = getExitPageSetting(getState());
+
+  const promise =
+    waivioLink || !checkLinks
+      ? Promise.resolve({ dangerous: false, showModal: false })
+      : checkLinkSafety(url);
+
+  return dispatch({
+    type: SET_LINK_SAFETY.ACTION,
+    payload: {
+      promise,
+    },
+    meta: url,
+  });
+};
+
+export const resetLinkSafetyInfo = () => dispatch =>
+  dispatch({
+    type: RESET_LINK_SAFETY,
+  });
+
 export const resetWobjectExpertise = () => dispatch =>
   dispatch({
     type: RESET_WOBJECT_EXPERTISE,
