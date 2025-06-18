@@ -26,7 +26,7 @@ const LinkSafetyModal = () => {
     default:
       status = 'Safe';
   }
-  const noInfo = info?.rating === 0 && !info?.linkWaivio;
+  // const noInfo = info?.rating === 0 && !info?.linkWaivio;
 
   const isDangerous = status === 'Dangerous';
   const infoText = isDangerous
@@ -51,10 +51,10 @@ const LinkSafetyModal = () => {
   };
 
   useEffect(() => {
-    if (!info?.dangerous && info?.url) goToSite();
+    // if (!info?.dangerous && info?.url) goToSite();
   }, [info?.triggerId, info?.url]);
 
-  return info?.dangerous ? (
+  return (
     <Modal
       title={'External link'}
       visible={info?.showModal}
@@ -62,19 +62,19 @@ const LinkSafetyModal = () => {
       onOk={openLink}
       okText={'Confirm'}
     >
-      <div className={'mb2 flex items-center flex-column'}>
-        <b className={isMobile() ? 'mb2 text-center' : 'mb2'}>
-          {noInfo ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
-        </b>
+      <div className={'flex items-center flex-column'}>
+        <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
+          {!info?.dangerous ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
+        </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b className={'main-color-button'}>{info?.url}</b>
       </div>
       <br />
-      {
+      {info?.dangerous && (
         <div className={'mb2'}>
           <b>Status:</b> <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
         </div>
-      }
+      )}
       {info?.rating > 0 && (
         <div className={'mb2 flex items-center'}>
           <b>Community rating:</b>{' '}
@@ -95,14 +95,14 @@ const LinkSafetyModal = () => {
           </a>
         </div>
       )}
-      {noInfo && (
+      {!info?.dangerous && (
         <div className={'WebsitesAuthorities__grey-text'}>
           Note: We do not have a community rating for this site. Proceed with caution when visiting
           external links.
         </div>
       )}
     </Modal>
-  ) : null;
+  );
 };
 
 export default LinkSafetyModal;
