@@ -317,6 +317,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           const isRateLimit = status === 429;
           const isErrorStatus = [422, 403].includes(status);
           const isResultSuccess = ok || res?.id;
+          const r = isGuest ? await result.json() : res;
 
           if (isErrorStatus) {
             if (status !== 403) message.error('Something went wrong.');
@@ -329,7 +330,9 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
             if (isGuest) {
               const guestMana = await dispatch(setGuestMana(authUser.name));
 
-              if (guestMana.payload < 10) {
+              if (r.error.message) {
+                message.error(r.error.message);
+              } else if (guestMana.payload < 10) {
                 message.error('Guest mana is too low. Please wait for recovery.');
               } else {
                 dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));

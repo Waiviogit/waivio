@@ -20,7 +20,7 @@ import {
   getAuthenticatedUserName,
 } from '../../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
-import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getAppUrl, getHelmetIcon, getSiteName } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter
@@ -30,6 +30,7 @@ import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
   wobject: getObjectState(state),
   helmetIcon: getHelmetIcon(state),
   appUrl: getAppUrl(state),
+  siteName: getSiteName(state),
 }))
 class Page extends React.Component {
   static fetchData({ store, match }) {
@@ -45,6 +46,7 @@ class Page extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     helmetIcon: PropTypes.string.isRequired,
     appUrl: PropTypes.string.isRequired,
+    siteName: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
@@ -62,18 +64,8 @@ class Page extends React.Component {
     setGoogleTagEvent('view_myfeed');
   }
 
-  handleSortChange = key => {
-    const { category } = this.props.match.params;
-
-    if (category) {
-      this.props.history.push(`/${key}/${category}`);
-    } else {
-      this.props.history.push(`/${key}`);
-    }
-  };
-
   render() {
-    const { authenticated, history, wobject, match, appUrl } = this.props;
+    const { authenticated, history, wobject, match, appUrl, siteName } = this.props;
     const isPageMode = true;
     const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
     const description =
@@ -96,11 +88,11 @@ class Page extends React.Component {
           <meta property="og:image:height" content="600" />
           <meta property="og:description" content={description} />
           <meta name="twitter:card" content={'summary_large_image'} />
-          <meta name="twitter:site" content={'@waivio'} />
+          <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
-          <meta property="og:site_name" content={'Waivio'} />
+          <meta property="og:site_name" content={siteName} />
           <link rel="image_src" href={this.props.helmetIcon} />
           <link id="favicon" rel="icon" href={this.props.helmetIcon} type="image/x-icon" />
         </Helmet>

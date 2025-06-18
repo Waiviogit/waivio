@@ -16,7 +16,7 @@ import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
-import { getHelmetIcon, getAppHost } from '../../store/appStore/appSelectors';
+import { getHelmetIcon, getAppHost, getWebsiteName } from '../../store/appStore/appSelectors';
 import { parseTagsFilters } from './helper';
 
 import './DiscoverObjects.less';
@@ -26,6 +26,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
   const typesList = useSelector(getObjectTypesList, shallowEqual);
   const favicon = useSelector(getHelmetIcon);
   const host = useSelector(getAppHost);
+  const siteName = useSelector(getWebsiteName);
 
   useEffect(() => {
     if (isEmpty(typesList)) dispatch(getObjectTypes());
@@ -34,8 +35,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
   const title = `Discover objects - Waivio`;
   const desc = 'All objects are located here. Discover new objects!';
-  const image =
-    'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
+  const image = favicon;
   const canonicalUrl = `https://${host}/discover-objects/${match.params.typeName || ''}${
     history.location.search
   }`;
@@ -48,7 +48,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={image} />
@@ -59,7 +59,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
