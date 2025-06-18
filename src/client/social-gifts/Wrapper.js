@@ -71,6 +71,7 @@ import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 import { enrichMenuItems } from './SocialProduct/SocialProduct';
+import LinkSafetyModal from '../widgets/LinkSafetyModal/LinkSafetyModal';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -287,6 +288,7 @@ const SocialWrapper = props => {
             })}
           >
             {renderRoutes(props.route.routes, { isSocial: true })}
+            <LinkSafetyModal />
             {!isWidget && (
               <React.Fragment>
                 <NotificationPopup />

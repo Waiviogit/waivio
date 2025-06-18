@@ -58,7 +58,7 @@ const GuestSignUpFormContent = ({
                 ),
               },
               {
-                validator: validateUserName,
+                validator: (_, value) => validateUserName(value),
               },
             ],
           })(
