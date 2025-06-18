@@ -37,7 +37,9 @@ const LinkSafetyModal = () => {
   };
 
   const goToSite = () => {
-    const waivioLink = info?.url?.includes('/object/');
+    const waivioLink =
+      info?.url?.includes('/object/') ||
+      (info?.url?.includes('/@') && !info?.url?.includes('http'));
 
     window.open(
       info?.url?.endsWith('*') ? info?.url?.slice(0, -1) : info?.url,
