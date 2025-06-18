@@ -360,11 +360,14 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 };
 
 export const setLinkSafetyInfo = url => (dispatch, getState) => {
-  const waivioLink = url?.includes('/object/');
+  const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
+
   const checkLinks = getExitPageSetting(getState());
 
   const promise =
-    waivioLink || !checkLinks ? Promise.resolve({ dangerous: false }) : checkLinkSafety(url);
+    waivioLink || !checkLinks
+      ? Promise.resolve({ dangerous: false, showModal: false })
+      : checkLinkSafety(url);
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
