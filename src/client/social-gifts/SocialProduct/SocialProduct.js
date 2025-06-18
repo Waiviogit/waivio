@@ -88,6 +88,7 @@ import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
 import './SocialProduct.less';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 
 const limit = 30;
 
@@ -131,6 +132,7 @@ const SocialProduct = ({
   optionClicked,
   helmetIcon,
   params,
+  setLinkSafety,
   history,
   setStoreActiveOpt,
   resetOptClicked,
@@ -696,6 +698,7 @@ const SocialProduct = ({
             )}
             {showProductDetails && (
               <ProductDetails
+                setLinkSafety={setLinkSafety}
                 website={website}
                 locale={locale}
                 publisher={publisher}
@@ -800,6 +803,7 @@ SocialProduct.propTypes = {
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
   publisherObject: PropTypes.shape({}),
+  setLinkSafety: PropTypes.func,
   getProductInfoAction: PropTypes.func,
   intl: PropTypes.shape().isRequired,
 };
@@ -833,6 +837,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
+  resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
   getObjectPosts: (username, object, lim) =>
     dispatch(getObjectPosts({ username, object, limit: lim })),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),

@@ -16,6 +16,7 @@ const ProductDetails = ({
   history,
   groupId,
   dimensions,
+  setLinkSafety,
   productIdBody,
   parent,
   ageRange,
@@ -83,7 +84,13 @@ const ProductDetails = ({
             />
           </div>
         )}
-        {!isEmpty(website) && <SocialListItem fieldName={objectFields.website} field={website} />}
+        {!isEmpty(website) && (
+          <SocialListItem
+            fieldName={objectFields.website}
+            field={website}
+            setLinkSafety={setLinkSafety}
+          />
+        )}
       </div>
     </div>
   );
@@ -106,6 +113,7 @@ ProductDetails.propTypes = {
   language: PropTypes.string,
   publicationDate: PropTypes.string,
   printLength: PropTypes.string,
+  setLinkSafety: PropTypes.func,
   intl: PropTypes.shape().isRequired,
 };
 

@@ -5,9 +5,8 @@ import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../socialProductHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getBrandName, getObjectName } from '../../../../common/helpers/wObjectHelper';
-import { getLink } from '../../../object/wObjectHelper';
 
-const SocialListItem = ({ fieldName, field, title, showTitle }) => {
+const SocialListItem = ({ fieldName, field, title, showTitle, setLinkSafety }) => {
   const fieldPermlink = field.author_permlink || field.authorPermlink;
   const getLayout = () => {
     switch (fieldName) {
@@ -42,9 +41,9 @@ const SocialListItem = ({ fieldName, field, title, showTitle }) => {
       case objectFields.website:
         return (
           <span>
-            <a target="_blank" rel="noopener noreferrer" href={getLink(field.link)}>
+            <span className={'main-color-button'} onClick={() => setLinkSafety(field.link)}>
               {field.title}
-            </a>
+            </span>
           </span>
         );
       case objectFields.printLength:
@@ -107,6 +106,7 @@ SocialListItem.propTypes = {
   title: PropTypes.string,
   field: PropTypes.shape(),
   showTitle: PropTypes.bool,
+  setLinkSafety: PropTypes.func,
 };
 
 SocialListItem.defaultProps = {

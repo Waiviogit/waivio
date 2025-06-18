@@ -60,7 +60,7 @@ import BusinessDetails from './BusinessDetails/BusinessDetails';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
-import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
 import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
 import { enrichMenuItems } from '../SocialProduct/SocialProduct';
@@ -88,6 +88,7 @@ const BusinessObject = ({
   nearbyObjects,
   intl,
   resetWobjExpertise,
+  setLinkSafety,
   host,
 }) => {
   const [reward, setReward] = useState([]);
@@ -364,9 +365,12 @@ const BusinessObject = ({
                         src={'/images/icons/link-icon.svg'}
                         wrapper={'span'}
                       />{' '}
-                      <a href={linkUrlHref} target="_blank" rel="noopener noreferrer">
+                      <span
+                        className={'main-color-button'}
+                        onClick={() => setLinkSafety(linkUrlHref)}
+                      >
                         {linkUrl}
-                      </a>
+                      </span>
                     </span>
                   )}
                 </div>
@@ -381,6 +385,7 @@ const BusinessObject = ({
                 </div>
                 {showBusinessDetails && (
                   <BusinessDetails
+                    setLinkSafety={setLinkSafety}
                     mapObjPermlink={mapObjPermlink}
                     mapCenter={[Number(map?.latitude), Number(map?.longitude)]}
                     email={email}
@@ -512,6 +517,7 @@ BusinessObject.propTypes = {
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   resetWobjExpertise: PropTypes.func,
+  setLinkSafety: PropTypes.func,
   brandObject: PropTypes.shape({}),
   nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
@@ -543,6 +549,7 @@ const mapDispatchToProps = dispatch => ({
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));
