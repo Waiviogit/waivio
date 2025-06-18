@@ -46,7 +46,7 @@ const Shop = ({ route }) => {
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={favicon} />
