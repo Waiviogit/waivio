@@ -249,9 +249,9 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
   return steemConnectAPI
     .appendVote(voter, isGuest, author, permlink, weight)
     .then(async res => {
-      const result = isGuest ? await res : res;
+      const result = isGuest ? await res.json() : res;
 
-      if (isGuest && res.status !== 200) return Promise.reject(res);
+      if (isGuest && res.status !== 200) return Promise.reject(result);
 
       if (isObjectPage)
         dispatch(

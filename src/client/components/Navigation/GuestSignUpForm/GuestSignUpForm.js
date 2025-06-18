@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
@@ -48,27 +48,46 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
 
   const dispatch = useDispatch();
 
-  const validateUserName = async (rule, value, callback) => {
-    if (value.length >= 25) {
-      callback(
-        <FormattedMessage
-          id="name_is_too_long"
-          defaultMessage="Name is too long (map 25 symbols)"
-        />,
-      );
-    }
-    const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
+  const validateUserName = useMemo(
+    () =>
+      debounce(async (rule, value, callback) => {
+        if (value.length >= 25) {
+          callback(
+            <FormattedMessage
+              id="name_is_too_long"
+              defaultMessage="Name is too long (max 25 symbols)"
+            />,
+          );
 
-    if (user.id) {
-      callback(
-        <FormattedMessage
-          id="already_exists"
-          defaultMessage="User with such username already exists"
-        />,
-      );
-    }
-    callback();
-  };
+          return;
+        }
+
+        try {
+          const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
+
+          if (user.id) {
+            callback(
+              <FormattedMessage
+                id="already_exists"
+                defaultMessage="User with such username already exists"
+              />,
+            );
+
+            return;
+          }
+        } catch (err) {
+          callback(
+            <FormattedMessage id="validation_error" defaultMessage="Error validating username" />,
+          );
+
+          return;
+        }
+
+        callback();
+      }, 800),
+    [],
+    [],
+  );
 
   const checkboxValidator = (rule, value, callback) => {
     if (value) {

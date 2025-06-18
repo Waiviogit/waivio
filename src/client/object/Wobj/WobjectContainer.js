@@ -164,6 +164,7 @@ class WobjectContainer extends React.PureComponent {
         ? { newsFilter: this.props.match.params.itemId }
         : {};
 
+    this.props.setEditMode(false);
     const element = document.getElementById('standard-instacart-widget-v1');
 
     if (element) element.remove();
