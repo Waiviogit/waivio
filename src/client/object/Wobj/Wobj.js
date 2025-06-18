@@ -120,6 +120,7 @@ const Wobj = ({
       ![
         'book',
         'product',
+        'service',
         'business',
         'place',
         'restaurant',
@@ -152,6 +153,7 @@ const Wobj = ({
 
     switch (wobject?.object_type) {
       case 'book':
+      case 'service':
       case 'product':
       case 'recipe':
         return (
