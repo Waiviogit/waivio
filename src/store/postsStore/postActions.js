@@ -193,29 +193,6 @@ export const sendPostError = postId => (dispatch, getState, { busyAPI }) => {
   }
 };
 
-export const voteHistoryPost = (currentPost, author, permlink, weight) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const { auth } = getState();
-  const post = currentPost;
-  const voter = auth.user.name;
-
-  if (!auth.isAuthenticated) {
-    return null;
-  }
-
-  return dispatch({
-    type: LIKE_POST_HISTORY,
-    payload: {
-      promise: steemConnectAPI
-        .vote(voter, post.author || author, post.permlink, weight)
-        .then(res => res),
-    },
-  });
-};
-
 export const voteComment = (comment, weight) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
@@ -239,25 +216,6 @@ export const reblogPost = (postId, userName) => dispatch =>
     type: FAKE_REBLOG_POST,
     payload: { postId, userName },
   });
-
-export const voteCommentFromRewards = (postId, author, permlink, weight = 10000) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const { auth } = getState();
-  const voter = auth.user.name;
-
-  return steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-    if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'vote_comment', { debug_mode: false });
-
-    // Delay to make sure you get the latest data (unknown issue with API)
-    setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
-
-    return res;
-  });
-};
 
 export const FOLLOWING_POST_AUTHOR = createAsyncActionType('FOLLOWING_POST_AUTHOR');
 

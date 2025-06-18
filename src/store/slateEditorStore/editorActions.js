@@ -299,7 +299,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           ...jsonMetadata,
           ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
           ...(isReview && campaign ? { campaignId: campaign?._id } : {}),
-          host,
+          ...(isUpdating ? {} : { host }),
         },
         reward,
         beneficiary,
