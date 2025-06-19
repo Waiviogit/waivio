@@ -4,10 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
 import { resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
+import {
+  getHostAddress,
+  getIsWaivio,
+  getWebsiteConfiguration,
+} from '../../../store/appStore/appSelectors';
 
 const LinkSafetyModal = () => {
-  const info = useSelector(getLinkSafetyInfo);
   const dispatch = useDispatch();
+  const info = useSelector(getLinkSafetyInfo);
+  const config = useSelector(getWebsiteConfiguration);
+  const isWaivio = useSelector(getIsWaivio);
+  const host = useSelector(getHostAddress);
+  const currHost = host || (typeof location !== 'undefined' && location.hostname);
+  const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
   let status;
 
   switch (info?.rating) {
@@ -66,7 +76,9 @@ const LinkSafetyModal = () => {
     >
       <div className={'flex items-center flex-column'}>
         <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {!info?.dangerous ? "Attention! You're about to leave the Waivio platform." : infoText}
+          {!info?.dangerous
+            ? `Attention! You're about to leave the ${siteName} platform.`
+            : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b className={'main-color-button'}>{info?.url}</b>

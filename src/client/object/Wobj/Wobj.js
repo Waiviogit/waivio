@@ -155,7 +155,6 @@ const Wobj = ({
 
     switch (wobject?.object_type) {
       case 'book':
-      case 'service':
       case 'product':
       case 'recipe':
         return (
@@ -168,6 +167,7 @@ const Wobj = ({
       case 'business':
       case 'place':
       case 'restaurant':
+      case 'service':
       case 'link':
       case 'person':
         return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
