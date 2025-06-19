@@ -18,19 +18,25 @@ import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
 import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 @injectIntl
-@connect((state, ownProps) => {
-  const user = getUser(state, ownProps.match.params.name);
+@connect(
+  (state, ownProps) => {
+    const user = getUser(state, ownProps.match.params.name);
 
-  return {
-    user,
-    rewardFund: getRewardFund(state),
-    rate: getRate(state),
-    weightValue: user.wobjects_weight,
-    sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
-  };
-})
+    return {
+      user,
+      rewardFund: getRewardFund(state),
+      rate: getRate(state),
+      weightValue: user.wobjects_weight,
+      sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
+    };
+  },
+  {
+    setLinkSafetyInfo,
+  },
+)
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -38,6 +44,7 @@ class UserInfo extends React.Component {
     user: PropTypes.shape(),
     weightValue: PropTypes.number,
     sideBarLoading: PropTypes.bool,
+    setLinkSafetyInfo: PropTypes.func,
   };
 
   static defaultProps = {
@@ -110,9 +117,12 @@ class UserInfo extends React.Component {
               {website && (
                 <div>
                   <i className="iconfont icon-link text-icon link" />
-                  <a target="_blank" rel="noopener noreferrer" href={website}>
+                  <span
+                    className={'main-color-button'}
+                    onClick={() => this.props.setLinkSafetyInfo(website)}
+                  >
                     {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
-                  </a>
+                  </span>
                 </div>
               )}
               {email && (
