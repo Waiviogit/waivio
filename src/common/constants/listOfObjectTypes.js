@@ -3,6 +3,7 @@ export const listObjectTypeOfDining = ['restaurant', 'dish'];
 export const listOfSocialObjectTypes = [
   'product',
   'book',
+  'service',
   'person',
   'business',
   'place',

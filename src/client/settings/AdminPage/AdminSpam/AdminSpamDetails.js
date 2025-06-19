@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
+import { useDispatch } from 'react-redux';
 import moment from 'moment/moment';
 import Loading from '../../../components/Icon/Loading';
 import { getHtml } from '../../../components/Story/Body';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const AdminSpamDetails = ({
   loadDetails,
@@ -16,6 +18,7 @@ const AdminSpamDetails = ({
 }) => {
   const [expandedItems, setExpandedItems] = useState({});
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!history?.location?.pathname?.includes('/admin-spam')) setShowDetails(false);
@@ -34,6 +37,18 @@ const AdminSpamDetails = ({
       ...prev,
       [index]: !prev[index],
     }));
+  };
+
+  const openLink = e => {
+    const anchor = e.target.closest('a');
+
+    if (anchor) {
+      e.preventDefault();
+      e.stopPropagation();
+      const href = anchor.getAttribute('href');
+
+      dispatch(setLinkSafetyInfo(href));
+    }
   };
 
   return isEmpty(details) ? (
@@ -61,7 +76,9 @@ const AdminSpamDetails = ({
               </div>
               <div>
                 <b>Content: </b>
-                <span className={'AdminPage__details-body'}>{getHtml(body, {}, 'Object')}</span>
+                <span onClick={openLink} className={'AdminPage__details-body'}>
+                  {getHtml(body, {}, 'Object')}
+                </span>
                 {d.body.length > 300 && (
                   <span
                     className="main-color-button ml-2 cursor-pointer"
