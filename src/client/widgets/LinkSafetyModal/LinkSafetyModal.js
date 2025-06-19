@@ -66,7 +66,7 @@ const LinkSafetyModal = () => {
     >
       <div className={'flex items-center flex-column'}>
         <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {!info?.dangerous ? 'Attention! You`re about to leave the Waivio platform.' : infoText}
+          {!info?.dangerous ? "Attention! You're about to leave the Waivio platform." : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b className={'main-color-button'}>{info?.url}</b>

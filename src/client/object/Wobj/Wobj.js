@@ -30,6 +30,7 @@ import BusinessObject from '../../social-gifts/BusinessObject/BusinessObject';
 import ObjectOfTypeWebpage from '../ObjectOfTypeWebpage/ObjectOfTypeWebpage';
 import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import ObjShop from '../../Shop/ObjShop';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -133,6 +134,7 @@ const Wobj = ({
         'map',
         'link',
         'recipe',
+        'shop',
       ]?.includes(wobject.object_type) ||
       (isSocial && isEditMode)
     )
@@ -180,6 +182,8 @@ const Wobj = ({
         return <WebsiteBody isSocial={isSocial} />;
       case 'newsfeed':
         return <ObjectNewsFeed wobj={wobject} />;
+      case 'shop':
+        return <ObjShop isSocial={isSocial} />;
 
       default:
         return (

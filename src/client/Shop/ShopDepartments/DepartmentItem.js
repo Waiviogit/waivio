@@ -27,6 +27,8 @@ const DepartmentItem = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const categories = getPermlinksFromHash(history.location.hash);
+  const urlDepartment = match.params.department || match.params.itemId;
+
   const itemClassList = classNames('ShopDepartmentsList__item', {
     'ShopDepartmentsList__item--withNested': department.subdirectory,
   });
@@ -35,14 +37,14 @@ const DepartmentItem = ({
   });
   const depNameWithoutNestedClassList = classNames('ShopDepartmentsList__link', {
     'ShopDepartmentsList__link--active':
-      match.params.department === department.name || categories.includes(department.name),
+      urlDepartment === department.name || categories.includes(department.name),
   });
   const itemListClassList = classNames('ShopDepartmentsList__list', {
     'ShopDepartmentsList__list--show': showNested,
   });
 
   const getNestedDepartments = () => {
-    if (match.params.department && match.params.department !== department.name) {
+    if (urlDepartment && urlDepartment !== department.name) {
       const findIndex = categories.findIndex(el => el === department.name);
       const hashPermlinks = [...categories];
 
@@ -57,8 +59,8 @@ const DepartmentItem = ({
 
   useEffect(() => {
     if (
-      (match.params.department === department.name ||
-        (match.params.department !== department.name && categories.includes(department.name))) &&
+      (urlDepartment === department.name ||
+        (urlDepartment !== department.name && categories.includes(department.name))) &&
       department.subdirectory &&
       isEmpty(nestedDepartments)
     ) {
@@ -71,21 +73,21 @@ const DepartmentItem = ({
     }
 
     if (
-      (!categories.includes(department.name) && department.name !== match.params.department) ||
-      !match.params.department
+      (!categories.includes(department.name) && department.name !== urlDepartment) ||
+      !urlDepartment
     ) {
       setShowNested(false);
     } else {
       setShowNested(true);
     }
-  }, [match.params.department, history.location.hash]);
+  }, [urlDepartment, history.location.hash]);
 
   useEffect(() => {
-    if (match.params.department === department.name) {
+    if (urlDepartment === department.name) {
       dispatch(setBreadCrumb(department));
       dispatch(setExcluded(excludedMain));
     }
-  }, [match.params.department]);
+  }, [urlDepartment]);
 
   useEffect(() => {
     if (
@@ -147,6 +149,7 @@ DepartmentItem.propTypes = {
     url: PropTypes.string,
     params: PropTypes.shape({
       department: PropTypes.string,
+      itemId: PropTypes.string,
     }),
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
