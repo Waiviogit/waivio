@@ -64,6 +64,9 @@ import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObject
 import './BusinessObject.less';
 import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
 import { enrichMenuItems } from '../SocialProduct/SocialProduct';
+import Options from '../../object/Options/Options';
+import Department from '../../object/Department/Department';
+import ProductId from '../../app/Sidebar/ProductId';
 
 const BusinessObject = ({
   userName,
@@ -97,8 +100,11 @@ const BusinessObject = ({
   const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [mapObjPermlink, setMapObjPermlink] = useState('');
+  const [hoveredOption, setHoveredOption] = useState({});
+  const departments = get(wobject, 'departments');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const price = get(wobject, 'price');
+  const serviceObj = ['service'].includes(wobject.object_type);
+  const price = hoveredOption.price || get(wobject, 'price');
   const website = parseWobjectField(wobject, 'website');
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
@@ -137,6 +143,10 @@ const BusinessObject = ({
   const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery = !isEmpty(wobject.preview_gallery);
+  const groupId = wobject.groupId;
+  const productIdBody = wobject.productId
+    ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
+    : [];
   const tagCategoriesForDescr = reduce(
     wobject.tagCategory,
     (acc, curr) => {
@@ -305,7 +315,7 @@ const BusinessObject = ({
                     albums={albums}
                     altText={description}
                     currentWobj={wobject}
-                    // hoveredOption={hoveredOption}
+                    hoveredOption={hoveredOption}
                     activeOption={activeOption}
                     activeCategory={activeCategory}
                   />
@@ -383,6 +393,16 @@ const BusinessObject = ({
                 >
                   {price}
                 </div>
+                {!isEmpty(wobject?.options) && serviceObj && (
+                  <div className="SocialProduct__paddingBottom">
+                    <Options
+                      isSocialProduct
+                      setHoveredOption={option => setHoveredOption(option)}
+                      isEditMode={false}
+                      wobject={wobject}
+                    />
+                  </div>
+                )}
                 {showBusinessDetails && (
                   <BusinessDetails
                     setLinkSafety={setLinkSafety}
@@ -397,6 +417,26 @@ const BusinessObject = ({
                     username={userName}
                     linkField={linkField}
                     website={website}
+                  />
+                )}
+                {(groupId || Boolean(productIdBody.length)) && serviceObj && (
+                  <div style={{ marginBottom: '8px' }}>
+                    <ProductId
+                      isSocialGifts
+                      isEditMode={false}
+                      authorPermlink={wobject.author_permlink}
+                      groupId={groupId}
+                      productIdBody={productIdBody}
+                    />
+                  </div>
+                )}
+                {!isEmpty(departments) && serviceObj && (
+                  <Department
+                    isSocialGifts
+                    departments={departments}
+                    isEditMode={false}
+                    history={history}
+                    wobject={wobject}
                   />
                 )}
                 {!isMobile() && <ProductRewardCard isSocialProduct reward={reward} />}
