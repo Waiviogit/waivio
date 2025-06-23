@@ -251,6 +251,7 @@ class PostPreviewModal extends Component {
                 disabled={!isConfirmed}
                 htmlType="submit"
                 loading={isPublishing}
+                type={'primary'}
                 size="large"
                 onClick={this.handleSubmit}
               >

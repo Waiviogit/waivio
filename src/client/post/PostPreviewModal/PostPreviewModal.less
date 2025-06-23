@@ -44,13 +44,19 @@
 
 .edit-post-controls {
   text-align: center;
-  margin-top: 10px;
+  margin: 10px 0;
 
   &__publish-ready-btn {
+    background-color: var(--website-color) !important;
+    border-color: var(--website-color) !important;
+    color: @white;
+    font-weight: 500;
+    border-radius: 8px;
+
     &:hover {
-      border-color: var(--website-color) !important;
-      color: var(--website-color) !important;
+      color: @white;
     }
+
     &:disabled,
     &:disabled:hover {
       background-color: @white-smoke !important;
