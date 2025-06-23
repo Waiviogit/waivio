@@ -133,15 +133,14 @@
 
   .chat-header-buttons-wrap {
     display: flex;
-    width: 65px;
     align-items: center;
-    justify-content: space-between;
-    &--all {
-      display: flex;
-      width: 85px;
-      align-items: center;
-      justify-content: space-between;
-    }
+    gap: 10px;
+  }
+
+  .chat-header-buttons-wrap--all {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .chat-body {
@@ -286,5 +285,19 @@
 
   & .ant-tooltip-arrow::before {
     background: transparent;
+  }
+}
+.ChatWindow.fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  z-index: 9999;
+  background-color: white;
+
+  .chat-header,
+  .chat-footer {
+    border-radius: 0 !important;
   }
 }

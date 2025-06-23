@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Rate } from 'antd';
-import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
@@ -30,46 +29,78 @@ class RateInfo extends React.PureComponent {
   static defaultProps = {
     ratingFields: [],
   };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      localFields: props.ratingFields,
+    };
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.ratingFields !== this.props.ratingFields) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ localFields: this.props.ratingFields });
+    }
+  }
 
   handleSubmit = (rate, field) => {
-    this.props.rateObject(field.author, field.permlink, this.props.authorPermlink, rate * 2);
-  };
+    const { username, authorPermlink } = this.props;
 
+    this.props.rateObject(field.author, field.permlink, authorPermlink, rate * 2);
+
+    // Optimistically update local state
+    this.setState(prevState => {
+      const updatedFields = prevState.localFields.map(f => {
+        if (f.permlink === field.permlink) {
+          const filteredVotes = (f.rating_votes || []).filter(v => v.voter !== username);
+
+          return {
+            ...f,
+            rating_votes: [...filteredVotes, { voter: username, rate: rate * 2 }],
+          };
+        }
+
+        return f;
+      });
+
+      return { localFields: updatedFields };
+    });
+  };
   render() {
-    const { ratingFields, username } = this.props;
+    const { username } = this.props;
+    const { localFields } = this.state;
 
     return (
       <React.Fragment>
-        {ratingFields &&
-          ratingFields.map(field => {
-            const haveCurrentUserVote = get(field, 'rating_votes', []).some(
-              vote => vote.voter === username,
-            );
-            const ratingClassList = classNames({
-              myvote: haveCurrentUserVote,
-            });
+        {localFields.map(field => {
+          const ratingVotes = field.rating_votes || [];
+          const haveCurrentUserVote = ratingVotes.some(v => v.voter === username);
 
-            return (
-              <div className="RateInfo__header" key={field.permlink}>
-                <div>{field.body}</div>
-                <div className="RateInfo__stars">
-                  <div className="RateInfo__stars-container" role="presentation">
-                    <Rate
-                      allowHalf
-                      defaultValue={
-                        haveCurrentUserVote
-                          ? calculateRateCurrUser(field.rating_votes, username)
-                          : formatAverageRate(field.average_rating_weight)
-                      }
-                      className={ratingClassList}
-                      onChange={e => this.handleSubmit(e, field)}
-                    />
-                  </div>
-                  <div>({rateCount(field)})</div>
+          const ratingClassList = classNames({
+            myvote: haveCurrentUserVote,
+          });
+
+          return (
+            <div className="RateInfo__header" key={field.permlink}>
+              <div>{field.body}</div>
+              <div className="RateInfo__stars">
+                <div className="RateInfo__stars-container" role="presentation">
+                  <Rate
+                    allowHalf
+                    defaultValue={
+                      haveCurrentUserVote
+                        ? calculateRateCurrUser(ratingVotes, username)
+                        : formatAverageRate(field.average_rating_weight)
+                    }
+                    className={ratingClassList}
+                    onChange={e => this.handleSubmit(e, field)}
+                  />
                 </div>
+                <div>({rateCount(field)})</div>
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
       </React.Fragment>
     );
   }

@@ -120,7 +120,7 @@ export default function wobjectReducer(state = initialState, action) {
         linkSafety: {
           ...action.payload,
           url: action.meta,
-          showModal: true,
+          showModal: action.payload?.rating < 9,
           triggerId: Date.now(),
         },
         isFetching: false,
