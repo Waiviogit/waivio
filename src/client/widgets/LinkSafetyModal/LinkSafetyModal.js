@@ -39,6 +39,7 @@ const LinkSafetyModal = () => {
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
 
   const isDangerous = status === 'Dangerous';
+  const dangerous = info?.rating < 9;
   const infoText = isDangerous
     ? 'Caution! This link has a low safety rating and may be dangerous.'
     : 'Attention! This link is mostly safe, but minor risks may exist.';
@@ -76,15 +77,13 @@ const LinkSafetyModal = () => {
     >
       <div className={'flex items-center flex-column'}>
         <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {!info?.dangerous
-            ? `Attention! You're about to leave the ${siteName} platform.`
-            : infoText}
+          {!dangerous ? `Attention! You're about to leave the ${siteName} platform.` : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b className={'main-color-button'}>{info?.url}</b>
       </div>
       <br />
-      {info?.dangerous && (
+      {dangerous && (
         <div className={'mb2'}>
           <b>Status:</b> <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
         </div>
@@ -109,7 +108,7 @@ const LinkSafetyModal = () => {
           </a>
         </div>
       )}
-      {!info?.dangerous && (
+      {!dangerous && (
         <div className={'WebsitesAuthorities__grey-text'}>
           Note: We do not have a community rating for this site. Proceed with caution when visiting
           external links.
