@@ -35,19 +35,21 @@ const CHAT_ID = 'chatId';
 
 const ChatWindow = ({ className, hideChat, open }) => {
   const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
-  const config = useSelector(getWebsiteConfiguration);
-  const mobileLogo = get(config, 'mobileLogo');
-  const desktopLogo = get(config, 'desktopLogo');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const dispatch = useDispatch();
+  const config = useSelector(getWebsiteConfiguration);
+  const mobileLogo = get(config, 'mobileLogo');
+  const desktopLogo = get(config, 'desktopLogo');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
   const authUser = useSelector(getAuthenticatedUserName);
   const host = useSelector(getHostAddress);
   const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
-  const dispatch = useDispatch();
   const textAreaRef = useRef(null);
   const chatBodyRef = useRef(null);
   const touchStartRef = useRef(0);
@@ -60,15 +62,17 @@ const ChatWindow = ({ className, hideChat, open }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
 
+  const toggleFullScreen = () => {
+    setIsFullScreen(prev => !prev);
+  };
+
   const sendMessage = mess => {
     dispatch(setChatBotId());
     const question = typeof mess === 'string' ? mess : message;
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
-    if (isEmpty(chatId)) {
-      Cookie.set(CHAT_ID, id);
-    }
+    if (isEmpty(chatId)) Cookie.set(CHAT_ID, id);
     if (!isEmpty(question) && !loading) {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
@@ -85,14 +89,16 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   };
 
-  const setInputData = e => {
-    setMessage(e.target.value);
-  };
-
+  const setInputData = e => setMessage(e.target.value);
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
     setMessage('');
     dispatch(resetChatBotMessages());
+  };
+
+  const onHideClick = () => {
+    hideChat();
+    setIsFullScreen(false);
   };
 
   const handleKeyDown = e => {
@@ -114,19 +120,13 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   }, [chatMessages, loading]);
 
-  const stopPropagation = e => {
-    e.stopPropagation();
-  };
-
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     const chatBody = chatBodyRef.current;
 
     if (chatBody) {
-      const handleTouchStart = e => {
-        touchStartRef.current = e.touches[0].clientY;
-      };
-
+      // eslint-disable-next-line no-return-assign
+      const handleTouchStart = e => (touchStartRef.current = e.touches[0].clientY);
       const handleTouchMove = e => {
         const touchCurrent = e.touches[0].clientY;
         const { scrollTop, scrollHeight, clientHeight } = chatBody;
@@ -139,7 +139,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
           e.preventDefault();
         }
       };
-
+      const stopPropagation = e => e.stopPropagation();
       const handleWheel = e => {
         const { scrollTop, scrollHeight, clientHeight } = chatBody;
         const delta = e.deltaY;
@@ -170,20 +170,52 @@ const ChatWindow = ({ className, hideChat, open }) => {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    const handleTouchMove = e => {
-      e.stopPropagation();
-    };
-
     const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
     if (textArea) {
+      const handleTouchMove = e => e.stopPropagation();
+
       textArea.addEventListener('touchmove', handleTouchMove, { passive: false });
 
+      return () => textArea.removeEventListener('touchmove', handleTouchMove);
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (textArea) {
+      const handleFocus = () => {
+        setTimeout(() => {
+          if (textAreaRef.current) textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      };
+
+      textArea.addEventListener('focus', handleFocus);
+
+      return () => textArea.removeEventListener('focus', handleFocus);
+    }
+  }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.visualViewport) {
+      const handleViewportChange = () => {
+        setHeight(window.visualViewport.height);
+      };
+
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+      handleViewportChange();
+
       return () => {
-        textArea.removeEventListener('touchmove', handleTouchMove);
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+        window.visualViewport.removeEventListener('scroll', handleViewportChange);
       };
     }
   }, []);
+
   const onReloadClick = () => {
     isNil(aiExpiredDate) || aiExpiredDate < Date.now()
       ? updateAIKnowledge(authUser, currHost).then(r => {
@@ -197,6 +229,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
         })
       : antdMessage.info('Update AI Assistant can only be done once per day.');
   };
+
   const handleQuickMessageClick = mess => {
     setMessage(`${mess.text}:\n`);
     setTimeout(() => {
@@ -208,47 +241,6 @@ const ChatWindow = ({ className, hideChat, open }) => {
       }
     }, 0);
   };
-
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    const handleFocus = () => {
-      setTimeout(() => {
-        if (textAreaRef.current) {
-          textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 300);
-    };
-
-    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
-
-    if (textArea) {
-      textArea.addEventListener('focus', handleFocus);
-
-      return () => {
-        textArea.removeEventListener('focus', handleFocus);
-      };
-    }
-  }, []);
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.visualViewport) {
-      const handleViewportChange = () => {
-        const viewportHeight = window.visualViewport.height;
-
-        setHeight(viewportHeight);
-      };
-
-      window.visualViewport.addEventListener('resize', handleViewportChange);
-      window.visualViewport.addEventListener('scroll', handleViewportChange);
-
-      handleViewportChange();
-
-      return () => {
-        window.visualViewport.removeEventListener('resize', handleViewportChange);
-        window.visualViewport.removeEventListener('scroll', handleViewportChange);
-      };
-    }
-  }, []);
 
   const reloadBtn = (
     <Tooltip
@@ -263,58 +255,36 @@ const ChatWindow = ({ className, hideChat, open }) => {
 
   const content = (
     <div
-      className={`ChatWindow  ${className} ${isMobile() ? 'smooth-height' : ''}`}
+      className={`ChatWindow ${className} ${isMobile() ? 'smooth-height' : ''} ${
+        isFullScreen ? 'fullscreen' : ''
+      }`}
       style={isMobile() ? { height: `${height}px` } : {}}
     >
       <div className="chat-header">
-        {isWaivio || (!isWaivio && shortSiteName) ? (
-          <>
-            <div className="chat-header-logo-wrap">
-              <img className="chat-logo" src={siteImage} alt={siteName} />
-              <div className="chat-header-text">{siteName} AI Assistant</div>
-            </div>
-            <div
-              className={
-                isAdministrator && chatId
-                  ? 'chat-header-buttons-wrap--all'
-                  : 'chat-header-buttons-wrap'
-              }
-            >
-              {!isWaivio && isAdministrator && reloadBtn}
-              {chatId ? (
-                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
-              ) : (
-                <span />
-              )}
-              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="chat-header-logo-wrap">
-              <img className="chat-logo" src={siteImage} alt={siteName} />
-            </div>
-            <div>
-              <div className="chat-header-text-sites">{siteName}</div>
-              <div className="chat-header-text-sites"> AI Assistant</div>
-            </div>
-            <div
-              className={
-                isAdministrator && chatId
-                  ? 'chat-header-buttons-wrap--all'
-                  : 'chat-header-buttons-wrap'
-              }
-            >
-              {!isWaivio && isAdministrator && reloadBtn}
-              {chatId ? (
-                <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
-              ) : (
-                <span />
-              )}
-              <Icon type="shrink" className="header-button-icon" onClick={hideChat} />
-            </div>
-          </>
-        )}
+        <div className="chat-header-logo-wrap">
+          <img className="chat-logo" src={siteImage} alt={siteName} />
+          {(isWaivio || shortSiteName) && (
+            <div className="chat-header-text">{siteName} AI Assistant</div>
+          )}
+        </div>
+        <div
+          className={
+            isAdministrator && chatId ? 'chat-header-buttons-wrap--all' : 'chat-header-buttons-wrap'
+          }
+        >
+          {!isWaivio && isAdministrator && reloadBtn}
+          <Icon
+            type={isFullScreen ? 'fullscreen' : 'fullscreen-exit'}
+            className="header-button-icon"
+            onClick={toggleFullScreen}
+          />
+          {chatId ? (
+            <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+          ) : (
+            <span />
+          )}
+          <Icon type="shrink" className="header-button-icon" onClick={onHideClick} />
+        </div>
       </div>
 
       <div className="chat-body" ref={chatBodyRef}>
@@ -364,6 +334,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
           )}
         </div>
       </div>
+
       <div className="chat-footer">
         <Input.TextArea
           placeholder="Type your question here..."
@@ -386,7 +357,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
   );
 
   return isMobile() ? (
-    <Drawer visible={open} placement={'bottom'}>
+    <Drawer visible={open} placement="bottom">
       {content}
     </Drawer>
   ) : (

@@ -359,20 +359,27 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-export const setLinkSafetyInfo = url => (dispatch, getState) => {
+export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
 
-  const checkLinks = getExitPageSetting(getState());
+  if (waivioLink) {
+    return dispatch({
+      type: SET_LINK_SAFETY.ACTION,
+      payload: {
+        promise: Promise.resolve({ showModal: false }),
+      },
+      meta: url,
+    });
+  }
 
-  const promise =
-    waivioLink || !checkLinks
-      ? Promise.resolve({ dangerous: false, showModal: false })
-      : checkLinkSafety(url);
+  const checkLinks = getExitPageSetting(getState());
+  const result = await checkLinkSafety(url);
+  const showModal = checkLinks || result.rating < 5;
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise,
+      promise: Promise.resolve({ ...result, showModal }),
     },
     meta: url,
   });

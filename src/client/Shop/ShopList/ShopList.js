@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
 import classNames from 'classnames';
-import InfiniteSroll from 'react-infinite-scroller';
+import InfiniteScroll from 'react-infinite-scroller'; // ✅ Fixed typo
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import EmptyCampaing from '../../statics/EmptyCampaign';
 import Loading from '../../components/Icon/Loading';
@@ -65,8 +65,6 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
     }
   }, [query.toString(), activeCrumb, match.params.name, match.params.department]);
 
-  if (loading) return <Loading />;
-
   const getPath = name => {
     if (match.params.department && match.params.department !== name) {
       return location.hash ? `${location.hash}/${name}` : `#${name}`;
@@ -92,6 +90,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
     }
   };
 
+  if (loading) return <Loading />;
+
   return (
     <div className="ShopList">
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
@@ -103,37 +103,41 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
           }
         />
       ) : (
-        <React.Fragment>
-          <InfiniteSroll loadMore={loadMore} hasMore={hasMore} loader={<Loading />}>
-            <div
-              className={classNames('ShopList__departments', {
-                'ShopList__departments--isSocial': isSocial,
-              })}
-            >
-              {departments?.map(dep => {
-                if (isEmpty(dep.wobjects)) return null;
+        <InfiniteScroll
+          loadMore={loadMore}
+          hasMore={hasMore}
+          loader={<Loading />}
+          initialLoad={false}
+          useWindow={!isMobile()}
+        >
+          <div
+            className={classNames('ShopList__departments', {
+              'ShopList__departments--isSocial': isSocial,
+            })}
+          >
+            {departments?.map(dep => {
+              if (isEmpty(dep.wobjects)) return null;
 
-                return (
-                  <div key={dep.department} className="ShopList__departments">
-                    <Link to={getPath(dep.department)} className="ShopList__departments-title">
-                      {dep.department} <Icon size={12} type="right" />
+              return (
+                <div key={dep.department} className="ShopList__departments">
+                  <Link to={getPath(dep.department)} className="ShopList__departments-title">
+                    {dep.department} <Icon size={12} type="right" />
+                  </Link>
+                  <ObjCardListViewSwitcherForShop
+                    isSocial={isSocial}
+                    wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
+                  />
+                  {dep.hasMore && (
+                    <Link className="ShopList__showMore" to={getPath(dep.department)}>
+                      {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
+                      {dep.department}
                     </Link>
-                    <ObjCardListViewSwitcherForShop
-                      isSocial={isSocial}
-                      wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
-                    />
-                    {dep.hasMore && (
-                      <Link className="ShopList__showMore" to={getPath(dep.department)}>
-                        {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
-                        {dep.department}
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </InfiniteSroll>
-        </React.Fragment>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </InfiniteScroll>
       )}
     </div>
   );

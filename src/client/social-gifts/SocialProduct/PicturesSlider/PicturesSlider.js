@@ -32,7 +32,7 @@ const PicturesSlider = ({
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
-    currentSrc = hoveredOption.avatar || activeOption[activeCategory].avatar;
+    currentSrc = hoveredOption?.avatar || activeOption[activeCategory]?.avatar;
   }
   const limitToShow = isMobile() ? 6 : 8;
 
