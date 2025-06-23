@@ -64,10 +64,10 @@ const LinkSafetyModal = () => {
   };
 
   useEffect(() => {
-    // if (!info?.dangerous && info?.url) goToSite();
+    if (!dangerous && info?.url) goToSite();
   }, [info?.triggerId, info?.url]);
 
-  return (
+  return dangerous ? (
     <Modal
       title={'External link'}
       visible={info?.showModal}
@@ -77,13 +77,15 @@ const LinkSafetyModal = () => {
     >
       <div className={'flex items-center flex-column'}>
         <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {!dangerous ? `Attention! You're about to leave the ${siteName} platform.` : infoText}
+          {info.rating === 0
+            ? `Attention! You're about to leave the ${siteName} platform.`
+            : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b className={'main-color-button'}>{info?.url}</b>
       </div>
       <br />
-      {dangerous && (
+      {dangerous && info?.rating > 0 && (
         <div className={'mb2'}>
           <b>Status:</b> <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
         </div>
@@ -108,14 +110,14 @@ const LinkSafetyModal = () => {
           </a>
         </div>
       )}
-      {!dangerous && (
+      {info.rating === 0 && (
         <div className={'WebsitesAuthorities__grey-text'}>
           Note: We do not have a community rating for this site. Proceed with caution when visiting
           external links.
         </div>
       )}
     </Modal>
-  );
+  ) : null;
 };
 
 export default LinkSafetyModal;
