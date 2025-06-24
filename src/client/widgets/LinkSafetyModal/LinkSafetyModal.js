@@ -1,21 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Rate } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
+import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
-import { resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
+import { rateObject, resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import {
   getHostAddress,
   getIsWaivio,
+  getUsedLocale,
   getWebsiteConfiguration,
 } from '../../../store/appStore/appSelectors';
+import { createWaivioObject } from '../../../store/wObjectStore/wobjectsActions';
+import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
+import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
+import { getAppendData } from '../../../common/helpers/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
+import { appendObject } from '../../../store/appendStore/appendActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { checkLinkSafety } from '../../../waivioApi/ApiClient';
 
 const LinkSafetyModal = () => {
+  const [hasVoted, setHasVoted] = useState(false);
   const dispatch = useDispatch();
   const info = useSelector(getLinkSafetyInfo);
   const config = useSelector(getWebsiteConfiguration);
   const isWaivio = useSelector(getIsWaivio);
   const host = useSelector(getHostAddress);
+  const objectTypes = useSelector(getObjectTypesList);
+  const user = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
+  const votePercent = 100;
   const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
   let status;
@@ -63,9 +80,77 @@ const LinkSafetyModal = () => {
     goToSite();
   };
 
+  const getVote = () =>
+    votePercent !== null
+      ? Number(
+          BigNumber(votePercent)
+            .multipliedBy(100)
+            .toFixed(0),
+        )
+      : null;
+
+  const writeUpdates = (res, rate) => {
+    const readyCb = async () => {
+      const field = await checkLinkSafety(info?.url);
+
+      dispatch(rateObject(field?.fieldAuthor, field?.fieldPermlink, res.parentPermlink, rate * 2));
+    };
+    const url = new URL(info?.url);
+
+    dispatch(
+      appendObject(
+        getAppendData(
+          user,
+          {
+            id: res.parentPermlink,
+            author: res.parentAuthor,
+            creator: user,
+            name: url.hostname,
+            locale,
+            author_permlink: res.parentPermlink,
+          },
+          '',
+          {
+            name: objectFields.url,
+            body: info?.url,
+            locale,
+          },
+        ),
+        { isUpdateReady: true, readyCb },
+      ),
+    );
+  };
+  const handleRateClick = rate => {
+    setHasVoted(true);
+    const url = new URL(info?.url);
+    const selectedType = objectTypes.link;
+
+    const options = { subscribeSupposedUpdate: true, cb: res => writeUpdates(res, rate) };
+    const data = {
+      name: url.hostname,
+      id: info?.url,
+      type: 'link',
+      isExtendingOpen: true,
+      isPostingOpen: true,
+      votePower: getVote(),
+      parentAuthor: selectedType.author,
+      parentPermlink: selectedType.permlink,
+    };
+
+    if (!isEmpty(info?.linkWaivio)) {
+      dispatch(rateObject(info.fieldAuthor, info.fieldPermlink, info.linkWaivio, rate * 2));
+    } else {
+      dispatch(createWaivioObject(data, options));
+    }
+  };
+
   useEffect(() => {
+    if (isEmpty(objectTypes)) dispatch(getObjectTypes());
     if (!dangerous && info?.url) goToSite();
   }, [info?.triggerId, info?.url]);
+  const ratingClassList = classNames({
+    myvote: hasVoted,
+  });
 
   return dangerous ? (
     <Modal
@@ -82,7 +167,9 @@ const LinkSafetyModal = () => {
             : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
-        <b className={'main-color-button'}>{info?.url}</b>
+        <b className={'main-color-button'} style={{ wordBreak: 'break-all' }}>
+          {info?.url}
+        </b>
       </div>
       <br />
       {dangerous && info?.rating > 0 && (
@@ -90,14 +177,17 @@ const LinkSafetyModal = () => {
           <b>Status:</b> <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
         </div>
       )}
-      {info?.rating > 0 && (
-        <div className={'mb2 flex items-center'}>
-          <b>Community rating:</b>{' '}
-          <span className={'RatingsWrap__stars ml2'}>
-            <Rate allowHalf defaultValue={info?.rating / 2} disabled />
-          </span>
-        </div>
-      )}
+      <div className={'mb2 flex items-center'}>
+        <b>Community rating:</b>{' '}
+        <span className={'RatingsWrap__stars ml2'}>
+          <Rate
+            allowHalf
+            defaultValue={info?.rating / 2}
+            className={ratingClassList}
+            onChange={handleRateClick}
+          />
+        </span>
+      </div>
       {info?.linkWaivio && (
         <div className={'mb2'}>
           <b>Details:</b>{' '}

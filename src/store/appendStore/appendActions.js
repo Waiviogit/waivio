@@ -461,7 +461,16 @@ const followAndLikeAfterCreateAppend = (
 
 export const appendObject = (
   postData,
-  { follow, isLike, votePercent, isObjectPage, isUpdatesPage, host } = {},
+  {
+    follow,
+    isLike,
+    votePercent,
+    isObjectPage,
+    isUpdatesPage,
+    host,
+    isUpdateReady = false,
+    readyCb,
+  } = {},
 ) => (dispatch, getState, { busyAPI }) => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
@@ -493,6 +502,7 @@ export const appendObject = (
       busyAPI.instance.subscribe((datad, j) => {
         if (j?.success && j?.permlink === res.transactionId) {
           websocketCallback();
+          if (isUpdateReady) readyCb();
         }
       });
       dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
