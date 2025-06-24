@@ -29,6 +29,7 @@ import { getAutoCompleteSearchResults } from '../../../store/searchStore/searchS
 class BeneficiariesFindUsers extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    filterOption: PropTypes.shape(),
     autoCompleteSearchResults: PropTypes.oneOfType([
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
@@ -39,6 +40,7 @@ class BeneficiariesFindUsers extends React.Component {
   };
   static defaultProps = {
     autoCompleteSearchResults: {},
+    filterOption: () => {},
   };
 
   constructor(props) {
@@ -99,7 +101,7 @@ class BeneficiariesFindUsers extends React.Component {
     const { Option } = AutoComplete;
 
     return (
-      <Option key={user.account} text={user.wobjects_weight}>
+      <Option key={user.account} label={user.account} text={user.wobjects_weight}>
         <div className="beneficiariesFindUsers__search-content-wrap">
           <Avatar username={user.account} size={40} />
           <div className="beneficiariesFindUsers__search-content">{user.account}</div>
@@ -126,7 +128,7 @@ class BeneficiariesFindUsers extends React.Component {
   };
 
   render() {
-    const { intl, autoCompleteSearchResults } = this.props;
+    const { intl, autoCompleteSearchResults, filterOption } = this.props;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const options = dropdownOptions[0] ? dropdownOptions[0].map(this.renderOption) : [];
 
@@ -147,6 +149,7 @@ class BeneficiariesFindUsers extends React.Component {
               onFocus={this.handleOnFocus}
               onBlur={this.handleOnBlure}
               optionLabelProp="value"
+              filterOption={filterOption}
             >
               <Input
                 onPressEnter={this.handleSearchForInput}
