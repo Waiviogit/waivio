@@ -9,6 +9,7 @@ import { getAppHost, getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { checkExistPermlink } from '../../waivioApi/ApiClient';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -90,7 +91,11 @@ export const getObjectInfo = (authorPermlink, username, requiredField) => dispat
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
 // eslint-disable-next-line consistent-return
-export const createWaivioObject = postData => async (dispatch, getState) => {
+export const createWaivioObject = (postData, options = {}) => async (
+  dispatch,
+  getState,
+  { busyAPI },
+) => {
   const { auth, settings } = getState();
 
   if (!auth.isAuthenticated) return null;
@@ -141,6 +146,17 @@ export const createWaivioObject = postData => async (dispatch, getState) => {
   };
 
   return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+    if (options.subscribeSupposedUpdate) {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeSupposedUpdate, [
+        auth.user.name,
+        response.parentPermlink,
+      ]);
+      busyAPI.instance.subscribe((datad, j) => {
+        if (j?.authorPermlink === response.parentPermlink) {
+          options.cb(response);
+        }
+      });
+    }
     if (follow) {
       dispatch(followObject(response.permlink));
     }
