@@ -96,6 +96,7 @@ const LinkSafetyModal = () => {
       dispatch(rateObject(field?.fieldAuthor, field?.fieldPermlink, res.parentPermlink, rate * 2));
     };
     const url = new URL(info?.url);
+    const hostname = url?.hostname?.startsWith('www.') ? url.hostname.slice(4) : url?.hostname;
 
     dispatch(
       appendObject(
@@ -105,7 +106,7 @@ const LinkSafetyModal = () => {
             id: res.parentPermlink,
             author: res.parentAuthor,
             creator: user,
-            name: url.hostname,
+            name: hostname,
             locale,
             author_permlink: res.parentPermlink,
           },
@@ -123,12 +124,14 @@ const LinkSafetyModal = () => {
   const handleRateClick = rate => {
     setHasVoted(true);
     const url = new URL(info?.url);
+
     const selectedType = objectTypes.link;
+    const hostname = url?.hostname?.startsWith('www.') ? url.hostname.slice(4) : url?.hostname;
 
     const options = { subscribeSupposedUpdate: true, cb: res => writeUpdates(res, rate) };
     const data = {
-      name: url.hostname,
-      id: info?.url,
+      name: hostname,
+      id: hostname,
       type: 'link',
       isExtendingOpen: true,
       isPostingOpen: true,
