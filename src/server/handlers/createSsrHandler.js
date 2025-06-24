@@ -15,6 +15,7 @@ import {
   setIsSocialGifts,
   setParentHost,
   setUsedLocale,
+  setAppUrl,
 } from '../../store/appStore/appActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
@@ -82,6 +83,7 @@ export default function createSsrHandler(template) {
     const store = getStore(sc2Api, waivioAPI, req.url);
 
     store.dispatch(setAppHost(hostname));
+    store.dispatch(setAppUrl(`https://${req.headers.host}`));
 
     let settings = {};
     let adsenseSettings = {};

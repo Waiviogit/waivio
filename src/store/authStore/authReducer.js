@@ -43,7 +43,9 @@ export default (state = initialState, action) => {
       if (state.isAuthenticatedInServer)
         return {
           ...state,
-          isAuthenticatedInServer: false,
+          isFetching: false,
+          isAuthenticated: true,
+          loaded: true,
           user: {
             ...(action.payload.account || state.user),
             ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),

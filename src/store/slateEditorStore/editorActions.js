@@ -141,6 +141,78 @@ const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,j
   ',',
 );
 
+const buildCommentOp = (
+  parentAuthor,
+  parentPermlink,
+  author,
+  permlink,
+  title,
+  body,
+  jsonMetadata,
+) => [
+  'comment',
+  {
+    parent_author: parentAuthor,
+    parent_permlink: parentPermlink,
+    author,
+    permlink,
+    title,
+    body,
+    json_metadata: JSON.stringify(jsonMetadata),
+  },
+];
+
+const buildCommentOptions = (
+  author,
+  permlink,
+  reward,
+  beneficiaries,
+  isGuest,
+  hiveBeneficiaryAccount,
+) => {
+  const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
+  const config = {
+    author,
+    permlink,
+    allow_votes: true,
+    allow_curation_rewards: true,
+    max_accepted_payout: reward === rewardsValues.none ? '0.000 HBD' : '1000000.000 HBD',
+    // eslint-disable-next-line no-nested-ternary
+    percent_hbd: reward === rewardsValues.all ? 0 : isGuest ? guestHivePresent : 10000,
+    extensions: [],
+  };
+
+  if (beneficiaries.length > 0) {
+    config.extensions.push([0, { beneficiaries }]);
+  }
+
+  return ['comment_options', config];
+};
+
+const buildVoteOp = (author, permlink) => [
+  'vote',
+  {
+    voter: author,
+    author,
+    permlink,
+    weight: 10000,
+  },
+];
+
+const mergeBeneficiaries = beneficiaries => {
+  const beneficiariesMap = {};
+
+  beneficiaries.forEach(({ account, weight }) => {
+    if (beneficiariesMap[account]) {
+      beneficiariesMap[account] += weight;
+    } else {
+      beneficiariesMap[account] = weight;
+    }
+  });
+
+  return Object.entries(beneficiariesMap).map(([account, weight]) => ({ account, weight }));
+};
+
 const broadcastComment = (
   steemConnectAPI,
   isUpdating,
@@ -151,8 +223,6 @@ const broadcastComment = (
   body,
   jsonMetadata,
   reward,
-  beneficiary,
-  upvote,
   permlink,
   referral,
   authUsername,
@@ -160,61 +230,32 @@ const broadcastComment = (
   isReview,
   isGuest,
   hiveBeneficiaryAccount,
+  upvote,
 ) => {
-  const operations = [];
-  const commentOp = [
-    'comment',
-    {
-      parent_author: parentAuthor,
-      parent_permlink: parentPermlink,
-      author,
-      permlink,
-      title,
-      body,
-      json_metadata: JSON.stringify(jsonMetadata),
-    },
+  const operations = [
+    buildCommentOp(parentAuthor, parentPermlink, author, permlink, title, body, jsonMetadata),
   ];
 
-  operations.push(commentOp);
   if (isUpdating) return steemConnectAPI.broadcast(operations);
-  const guestHivePresent = hiveBeneficiaryAccount && isGuest ? 5000 : 0;
-  const commentOptionsConfig = {
-    author,
-    permlink,
-    allow_votes: true,
-    allow_curation_rewards: true,
-    max_accepted_payout: '1000000.000 HBD',
-    percent_hbd: isGuest ? guestHivePresent : 10000,
-    extensions: [],
-  };
-
-  if (reward === rewardsValues.none) {
-    commentOptionsConfig.max_accepted_payout = '0.000 HBD';
-  } else if (reward === rewardsValues.all) {
-    commentOptionsConfig.percent_hbd = 0;
-  }
 
   if (referral && referral !== authUsername) {
     beneficiaries.push({ account: referral, weight: REFERRAL_PERCENT });
   }
 
-  if (beneficiaries.length !== 0) {
-    commentOptionsConfig.extensions.push([0, { beneficiaries }]);
-  }
+  const mergedBeneficiaries = mergeBeneficiaries(beneficiaries);
 
-  operations.push(['comment_options', commentOptionsConfig]);
+  operations.push(
+    buildCommentOptions(
+      author,
+      permlink,
+      reward,
+      mergedBeneficiaries,
+      isGuest,
+      hiveBeneficiaryAccount,
+    ),
+  );
 
-  if (upvote) {
-    operations.push([
-      'vote',
-      {
-        voter: author,
-        author,
-        permlink,
-        weight: 10000,
-      },
-    ]);
-  }
+  if (upvote) operations.push(buildVoteOp(author, permlink));
 
   return steemConnectAPI.broadcast(operations, isReview);
 };
@@ -224,15 +265,13 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
 
-  return (dispatch, getState, { steemConnectAPI }) => {
-    if (isReview && campaign) {
-      // eslint-disable-next-line no-param-reassign
-      postData.body += `\n***\n<center>This review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})</center>\n\n`;
-    }
-    const url = getCurrentHost(getState());
-    const regex = /^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/;
-    const match = url?.match(regex);
-    const host = match?.[1] || location?.hostname;
+  return async (dispatch, getState, { steemConnectAPI }) => {
+    const state = getState();
+    const authUser = state.auth.user;
+    const isGuest = state.auth.isGuestUser;
+    const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
+    const locale = getLocale(state);
+    const follower = getAuthenticatedUserName(state);
 
     const {
       parentAuthor,
@@ -241,159 +280,135 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       title,
       body,
       reward,
-      beneficiary,
       upvote,
       draftId,
       isUpdating,
       jsonMetadata,
     } = postData;
 
-    const state = getState();
-    const authUser = state.auth.user;
-    const isGuest = state.auth.isGuestUser;
-    const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
-    const locale = getLocale(state);
-    const follower = getAuthenticatedUserName(state);
-    // const isWaivio = getIsWaivio(state);
-    const newBody = body;
+    const newBody =
+      isReview && campaign
+        ? `${body}\n***\n<center>This review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})</center>\n\n`
+        : body;
+
+    const url = getCurrentHost(state);
+    const match = url?.match(/^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/);
+    const host = match?.[1] || location?.hostname;
 
     const getPermLink = isUpdating
       ? Promise.resolve(postData.permlink)
       : createPermlink(title, author, parentAuthor, parentPermlink, locale, follower);
 
     const account = hiveBeneficiaryAccount || 'waivio.hpower';
-    const weight = 10000 - beneficiaries.reduce((acc, val) => acc + val.weight, 0);
-
-    const guestBeneficiary = [{ account, weight }, ...beneficiaries];
-    const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
-
-    dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
+    const baseWeight = 10000 - beneficiaries.reduce((acc, val) => acc + val.weight, 0);
+    const allBeneficiaries = isGuest
+      ? [{ account, weight: baseWeight }, ...beneficiaries]
+      : beneficiaries;
 
     let referral;
+    const refCookie = Cookie.get('referral');
 
-    if (Cookie.get('referral')) {
-      const accountCreatedDaysAgo =
-        (new Date().getTime() - new Date(`${authUser.created}Z`).getTime()) / 1000 / 60 / 60 / 24;
+    if (refCookie) {
+      const daysOld =
+        (Date.now() - new Date(`${authUser.created}Z`).getTime()) / (1000 * 60 * 60 * 24);
 
-      if (accountCreatedDaysAgo < 30) {
-        referral = Cookie.get('referral');
-      }
+      if (daysOld < 30) referral = refCookie;
     }
 
-    dispatch({
-      type: CREATE_POST_START,
+    const metaData = {
+      ...jsonMetadata,
+      ...(get(campaign, 'reservation_permlink') && {
+        reservation_permlink: get(campaign, 'reservation_permlink'),
+      }),
+      ...(isReview && campaign ? { campaignId: campaign._id } : {}),
+      ...(isUpdating ? {} : { host }),
+    };
+
+    dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
+    dispatch({ type: CREATE_POST_START });
+
+    const permlink = await getPermLink;
+
+    const result = await broadcastComment(
+      steemConnectAPI,
+      isUpdating,
+      parentAuthor,
+      parentPermlink,
+      author,
+      title,
+      newBody,
+      metaData,
+      reward,
+      permlink,
+      referral,
+      authUser.name,
+      orderBy(mergeBeneficiaries(allBeneficiaries), ['account'], ['asc']),
+      isReview,
+      isGuest,
+      hiveBeneficiaryAccount,
+      !isUpdating && !isGuest && upvote,
+    ).catch(err => {
+      const errorMsg = err.error?.message || err.error_description || 'Error';
+
+      dispatch({ type: CREATE_POST_ERROR, payload: err });
+      dispatch(notify(errorMsg, 'error'));
+
+      return null;
     });
-    const reservationPermlink =
-      get(campaign, 'reservation_permlink') || get(jsonMetadata, 'reservation_permlink');
 
-    getPermLink.then(permlink =>
-      broadcastComment(
-        steemConnectAPI,
-        isUpdating,
-        parentAuthor,
-        parentPermlink,
-        author,
-        title,
-        newBody,
-        {
-          ...jsonMetadata,
-          ...(reservationPermlink ? { reservation_permlink: reservationPermlink } : {}),
-          ...(isReview && campaign ? { campaignId: campaign?._id } : {}),
-          ...(isUpdating ? {} : { host }),
-        },
-        reward,
-        beneficiary,
-        !isUpdating && !isGuest && upvote,
-        permlink,
-        referral,
-        authUser.name,
-        orderBy(currentBeneficiaries, ['account'], ['asc']),
-        isReview,
-        isGuest,
-        hiveBeneficiaryAccount,
-      )
-        .then(async result => {
-          const { status, ok, result: res } = result;
-          const isRateLimit = status === 429;
-          const isErrorStatus = [422, 403].includes(status);
-          const isResultSuccess = ok || res?.id;
-          const r = isGuest ? await result.json() : res;
+    if (!result) return;
 
-          if (isErrorStatus) {
-            if (status !== 403) message.error('Something went wrong.');
-            dispatch({ type: CREATE_POST_ERROR });
+    const { status, ok, result: res } = result;
+    const r = isGuest ? await result.json() : res;
 
-            return result;
-          }
+    if ([422, 403].includes(status)) {
+      if (status !== 403) message.error('Something went wrong.');
+      dispatch({ type: CREATE_POST_ERROR });
 
-          if (isRateLimit) {
-            if (isGuest) {
-              const guestMana = await dispatch(setGuestMana(authUser.name));
+      return;
+    }
 
-              if (r.error.message) {
-                message.error(r.error.message);
-              } else if (guestMana.payload < 10) {
-                message.error('Guest mana is too low. Please wait for recovery.');
-              } else {
-                dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
-              }
-            } else {
-              dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
-            }
-            dispatch({ type: CREATE_POST_ERROR });
+    if (status === 429) {
+      if (isGuest) {
+        const guestMana = await dispatch(setGuestMana(authUser.name));
 
-            return result;
-          }
+        if (r.error.message) {
+          message.error(r.error.message);
+        } else if (guestMana.payload < 10) {
+          message.error('Guest mana is too low. Please wait for recovery.');
+        } else {
+          dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
+        }
+      } else {
+        dispatch(notify(`Too many comments from ${authUser.name} in queue`, 'error'));
+      }
+      dispatch({ type: CREATE_POST_ERROR });
 
-          if (draftId) {
-            batch(() => {
-              if (isResultSuccess) dispatch(deleteDraft([draftId]));
-              dispatch(addEditedPost(permlink));
-            });
-          }
+      return;
+    }
 
-          const publishPostActions = () => {
-            const getMessage = getTranslationByKey('post_publication');
-            const publicMessage = getMessage(state);
+    const isResultSuccess = ok || res?.id;
 
-            dispatch(push(`/@${author}`));
-            if (isResultSuccess) {
-              if (isGuest) {
-                dispatch(notify(publicMessage, 'success'));
-              } else {
-                message.success(publicMessage);
-              }
-            }
-          };
+    if (draftId) {
+      batch(() => {
+        if (isResultSuccess) dispatch(deleteDraft([draftId]));
+        dispatch(addEditedPost(permlink));
+      });
+    }
 
-          if (isGuest) {
-            if (upvote) {
-              steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
-            }
-            setTimeout(publishPostActions, 5000);
-          } else {
-            setTimeout(publishPostActions, 3000);
-          }
+    const notifySuccess = () => {
+      const publicMessage = getTranslationByKey('post_publication')(state);
 
-          dispatch(clearBeneficiariesUsers());
+      dispatch(push(`/@${author}`));
+      isGuest ? dispatch(notify(publicMessage, 'success')) : message.success(publicMessage);
+    };
 
-          return result;
-        })
-        .catch(err => {
-          let errorText = 'Error';
+    if (isGuest && upvote) {
+      steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+    }
 
-          dispatch({
-            type: CREATE_POST_ERROR,
-            payload: err,
-          });
-          if (err.error && err.error.message) {
-            errorText = err.error.message;
-          } else if (err.error_description) {
-            errorText = err.error_description;
-          }
-          dispatch(notify(errorText, 'error'));
-        }),
-    );
+    setTimeout(notifySuccess, isGuest ? 5000 : 3000);
+    dispatch(clearBeneficiariesUsers());
   };
 }
 
