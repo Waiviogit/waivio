@@ -360,6 +360,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
       </div>
     </>
   );
+
   return isMobile() ? (
     <Drawer visible={open} placement="bottom">
       {content}
