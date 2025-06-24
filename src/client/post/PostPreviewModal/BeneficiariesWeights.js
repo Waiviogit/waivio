@@ -4,17 +4,18 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Icon, Progress, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 import BeneficiariesFindUsers from './BeneficiariesFindUsers';
 import {
   updateBeneficiariesUsers,
   removeBeneficiariesUsers,
 } from '../../../store/searchStore/searchActions';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
-
-import './AdvanceSettings.less';
 import { getCurrentAppSettings } from '../../../waivioApi/ApiClient';
 import { initialColors } from '../../websites/constants/colors';
+
+import './AdvanceSettings.less';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
@@ -87,8 +88,13 @@ class BeneficiariesWeight extends React.PureComponent {
 const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
   const [weightBuffer, setWeightBuffer] = useState(100);
   const [mainColor, setMainColor] = useState('orange');
-  const user = useSelector(getAuthenticatedUser);
-  const beneficiariesUsers = useSelector(getBeneficiariesUsers);
+  const isGuest = useSelector(isGuestUser);
+  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
+  const authUser = useSelector(getAuthenticatedUser);
+  const user = isGuest ? { name: hiveBeneficiaryAccount } || authUser : authUser;
+  const beneficiariesUsers = useSelector(getBeneficiariesUsers)?.filter(
+    i => i.account !== user.name,
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -111,7 +117,12 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
       <div className="title">
         {intl.formatMessage({ id: 'beneficiaries-weights', defaultMessage: 'Beneficiaries' })}
       </div>
-      <BeneficiariesFindUsers intl={intl} />
+      <BeneficiariesFindUsers
+        intl={intl}
+        filterOption={(value, opt) =>
+          ![user.name, ...beneficiariesUsers?.map(i => i.account)].includes(opt.props.label)
+        }
+      />
       <div className="beneficiaries-weights__header">
         <div className="user">{`${user.name} ${weightBuffer}%`}</div>
         <div
