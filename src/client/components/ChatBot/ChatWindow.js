@@ -254,108 +254,112 @@ const ChatWindow = ({ className, hideChat, open }) => {
   );
 
   const content = (
-    <div
-      className={`ChatWindow ${className} ${isMobile() ? 'smooth-height' : ''} ${
-        isFullScreen ? 'fullscreen' : ''
-      }`}
-      style={isMobile() ? { height: `${height}px` } : {}}
-    >
-      <div className="chat-header">
-        <div className="chat-header-logo-wrap">
-          <img className="chat-logo" src={siteImage} alt={siteName} />
-          {(isWaivio || shortSiteName) && (
-            <div className="chat-header-text">{siteName} AI Assistant</div>
-          )}
-        </div>
-        <div
-          className={
-            isAdministrator && chatId ? 'chat-header-buttons-wrap--all' : 'chat-header-buttons-wrap'
-          }
-        >
-          {!isWaivio && isAdministrator && reloadBtn}
-          <Icon
-            type={isFullScreen ? 'fullscreen' : 'fullscreen-exit'}
-            className="header-button-icon"
-            onClick={toggleFullScreen}
-          />
-          {chatId ? (
-            <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
-          ) : (
-            <span />
-          )}
-          <Icon type="shrink" className="header-button-icon" onClick={onHideClick} />
-        </div>
-      </div>
-
-      <div className="chat-body" ref={chatBodyRef}>
-        {isEmpty(chatMessages) && (
-          <>
-            <div className="info">
-              <div className="info-paragraph">How can I help you today?</div>
-            </div>
-            <div className="options">
-              {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
-                <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
-                  {mess.label}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-        <div className="chat-messages">
-          {!isEmpty(chatMessages) &&
-            chatMessages.map((mes, index) => {
-              const text = mes.text.replace(/\n\n/g, '\n');
-
-              return mes.role === 'human' ? (
-                <UserMessage
-                  key={mes.text}
-                  text={text}
-                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
-                />
-              ) : (
-                <AssistantMessage
-                  siteImage={siteImage}
-                  siteName={siteName}
-                  key={mes.text}
-                  text={text}
-                  loading={false}
-                  lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
-                />
-              );
-            })}
-          {loading && (
-            <AssistantMessage
-              siteImage={siteImage}
-              siteName={siteName}
-              loading
-              lastMessageRef={lastMessageRef}
+    <>
+      <div className={isFullScreen ? 'ChatWindow fullscreen-wrapper' : ''} />
+      <div
+        className={`ChatWindow ${className} ${isMobile() ? 'smooth-height' : ''} ${
+          isFullScreen ? 'fullscreen' : ''
+        }`}
+        style={isMobile() ? { height: `${height}px` } : {}}
+      >
+        <div className="chat-header">
+          <div className="chat-header-logo-wrap">
+            <img className="chat-logo" src={siteImage} alt={siteName} />
+            {(isWaivio || shortSiteName) && (
+              <div className="chat-header-text">{siteName} AI Assistant</div>
+            )}
+          </div>
+          <div
+            className={
+              isAdministrator && chatId
+                ? 'chat-header-buttons-wrap--all'
+                : 'chat-header-buttons-wrap'
+            }
+          >
+            {!isWaivio && isAdministrator && reloadBtn}
+            <Icon
+              type={isFullScreen ? 'fullscreen-exit' : 'fullscreen'}
+              className="header-button-icon"
+              onClick={toggleFullScreen}
             />
+            {chatId ? (
+              <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
+            ) : (
+              <span />
+            )}
+            <Icon type="close" className="header-button-icon" onClick={onHideClick} />
+          </div>
+        </div>
+
+        <div className="chat-body" ref={chatBodyRef}>
+          {isEmpty(chatMessages) && (
+            <>
+              <div className="info">
+                <div className="info-paragraph">How can I help you today?</div>
+              </div>
+              <div className="options">
+                {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
+                  <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
+                    {mess.label}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
+          <div className="chat-messages">
+            {!isEmpty(chatMessages) &&
+              chatMessages.map((mes, index) => {
+                const text = mes.text.replace(/\n\n/g, '\n');
+
+                return mes.role === 'human' ? (
+                  <UserMessage
+                    key={mes.text}
+                    text={text}
+                    lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                  />
+                ) : (
+                  <AssistantMessage
+                    siteImage={siteImage}
+                    siteName={siteName}
+                    key={mes.text}
+                    text={text}
+                    loading={false}
+                    lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                  />
+                );
+              })}
+            {loading && (
+              <AssistantMessage
+                siteImage={siteImage}
+                siteName={siteName}
+                loading
+                lastMessageRef={lastMessageRef}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="chat-footer">
+          <Input.TextArea
+            placeholder="Type your question here..."
+            value={message}
+            onInput={setInputData}
+            onKeyDown={handleKeyDown}
+            className="chat-input"
+            autoSize={{ minRows: 1, maxRows: 5 }}
+            ref={textAreaRef}
+          />
+          <span
+            role="presentation"
+            onClick={() => sendMessage()}
+            className="QuickComment__send-comment"
+          >
+            <img src="/images/icons/send.svg" alt="send" />
+          </span>
         </div>
       </div>
-
-      <div className="chat-footer">
-        <Input.TextArea
-          placeholder="Type your question here..."
-          value={message}
-          onInput={setInputData}
-          onKeyDown={handleKeyDown}
-          className="chat-input"
-          autoSize={{ minRows: 1, maxRows: 5 }}
-          ref={textAreaRef}
-        />
-        <span
-          role="presentation"
-          onClick={() => sendMessage()}
-          className="QuickComment__send-comment"
-        >
-          <img src="/images/icons/send.svg" alt="send" />
-        </span>
-      </div>
-    </div>
+    </>
   );
-
   return isMobile() ? (
     <Drawer visible={open} placement="bottom">
       {content}
