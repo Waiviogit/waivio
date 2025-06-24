@@ -287,15 +287,30 @@
     background: transparent;
   }
 }
+.ChatWindow.fullscreen-wrapper {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  border-radius: 0;
+  background-color: rgba(300, 300, 300, 0.9);
+}
+
 .ChatWindow.fullscreen {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh !important;
+  margin: auto;
+  width: 95vw;
+  height: 95vh !important;
   border-radius: 0 !important;
   z-index: 9999;
   background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 
+  .message {
+    max-width: 50vw;
+  }
   .chat-header,
   .chat-footer {
     border-radius: 0 !important;
