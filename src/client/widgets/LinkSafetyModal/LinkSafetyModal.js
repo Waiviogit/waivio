@@ -172,40 +172,43 @@ const LinkSafetyModal = () => {
         </b>
       </div>
       <br />
-      {dangerous && info?.rating > 0 && (
-        <div className={'mb2'}>
-          <b>Status:</b> <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
+      <div className={'ml3'}>
+        {' '}
+        {dangerous && info?.rating > 0 && (
+          <div className={'mb2'}>
+            <b>Status:</b>{' '}
+            <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
+          </div>
+        )}
+        <div className={'mb2 flex items-center'}>
+          <b>Community rating:</b>{' '}
+          <span className={'RatingsWrap__stars ml2'}>
+            <Rate
+              allowHalf
+              defaultValue={info?.rating / 2}
+              className={ratingClassList}
+              onChange={handleRateClick}
+            />
+          </span>
         </div>
-      )}
-      <div className={'mb2 flex items-center'}>
-        <b>Community rating:</b>{' '}
-        <span className={'RatingsWrap__stars ml2'}>
-          <Rate
-            allowHalf
-            defaultValue={info?.rating / 2}
-            className={ratingClassList}
-            onChange={handleRateClick}
-          />
-        </span>
+        {info?.linkWaivio && (
+          <div className={'mb2'}>
+            <b>Details:</b>{' '}
+            <a
+              href={`https://www.waivio.com/object/${info?.linkWaivio}`}
+              target={'_blank'}
+              rel="noreferrer"
+            >
+              https://www.waivio.com/object/{info?.linkWaivio}
+            </a>
+          </div>
+        )}
+        {info.rating === 0 && (
+          <div className={'WebsitesAuthorities__grey-text'}>
+            This site has no rating yet. Proceed with caution or leave a rating to help others.
+          </div>
+        )}
       </div>
-      {info?.linkWaivio && (
-        <div className={'mb2'}>
-          <b>Details:</b>{' '}
-          <a
-            href={`https://www.waivio.com/object/${info?.linkWaivio}`}
-            target={'_blank'}
-            rel="noreferrer"
-          >
-            https://www.waivio.com/object/{info?.linkWaivio}
-          </a>
-        </div>
-      )}
-      {info.rating === 0 && (
-        <div className={'WebsitesAuthorities__grey-text'}>
-          Note: We do not have a community rating for this site. Proceed with caution when visiting
-          external links.
-        </div>
-      )}
     </Modal>
   ) : null;
 };
