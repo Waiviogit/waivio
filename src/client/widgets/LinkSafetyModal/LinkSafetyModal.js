@@ -170,7 +170,10 @@ const LinkSafetyModal = () => {
             : infoText}
         </div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
-        <b className={'main-color-button'} style={{ wordBreak: 'break-all' }}>
+        <b
+          className={'main-color-button '}
+          style={{ wordBreak: 'break-all', paddingLeft: '16px', paddingRight: '16px' }}
+        >
           {info?.url}
         </b>
       </div>
@@ -208,7 +211,8 @@ const LinkSafetyModal = () => {
         )}
         {info.rating === 0 && (
           <div className={'WebsitesAuthorities__grey-text'}>
-            This site has no rating yet. Proceed with caution or leave a rating to help others.
+            Note: This site has no rating yet. Proceed with caution or leave a rating to help
+            others.
           </div>
         )}
       </div>
