@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { has } from 'lodash';
+import { useDispatch } from 'react-redux';
 import { Icon } from 'antd';
 import MenuItemContentSwitcher from './MenuItemContentSwitcher';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const SocialMenuItem = ({ item, isOpen }) => {
   const [open, setOpen] = useState(isOpen);
   const history = useHistory();
   const itemBody = JSON.parse(item.body);
+  const dispatch = useDispatch();
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
   const isImageButton = ['image', 'icon'].includes(itemBody.style);
@@ -38,7 +41,10 @@ const SocialMenuItem = ({ item, isOpen }) => {
       case 'icon':
         return webLink ? (
           <div>
-            <a target={linkTarget} href={itemBody.linkToWeb} className="SocialMenuItems__link">
+            <a
+              onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
+              className="SocialMenuItems__link"
+            >
               <img src={itemBody.image} className="SocialMenuItems__icon" alt="pic" />
             </a>
             <a target={linkTarget} href={itemBody.linkToWeb} className="SocialMenuItems__link">
@@ -57,7 +63,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
       case 'image':
         return webLink ? (
           <div>
-            <a href={itemBody.linkToWeb} target={linkTarget}>
+            <a onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}>
               <img src={itemBody.image} className="SocialMenuItems__image" alt="pic" />
             </a>
           </div>
@@ -88,10 +94,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
       {webLink ? (
         <a
           className="SocialMenuItems__item"
-          rel="noreferrer"
-          target="_blank"
-          href={itemBody.linkToWeb}
-          onClick={handleOpenItem}
+          onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
         >
           {content}
         </a>
