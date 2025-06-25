@@ -46,14 +46,83 @@ const ImageSetter = ({
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
 
+  const handleOnUploadImageByLink = async image => {
+    if (currentImages.length >= 25) {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_cannot',
+          defaultMessage: 'You cannot upload more then 25 images',
+        }),
+      );
+
+      return;
+    }
+    if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
+      const url = image || imageLinkInput.current.value;
+      const urlValidation = url.match(objectURLValidationRegExp);
+
+      if (urlValidation) {
+        const onErrorLoadImage = () => {
+          onLoadingImage(false);
+        };
+        let newImage = {};
+        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+          newImage = {
+            src: currentLinkSrc,
+            name: currentLinkName,
+            id: uuidv4(),
+          };
+        };
+
+        await onImageUpload(url, insertImage, onErrorLoadImage, true);
+        imageLinkInput.current.value = '';
+        checkImage(true, newImage);
+      } else {
+        checkImage(false);
+      }
+    }
+  };
+
   const onPaste = async () => {
     const clipboardItems = await navigator.clipboard.read();
-    const blobOutput = await clipboardItems[0].getType('image/png');
+    const item = clipboardItems[0];
 
-    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+    const htmlBlob = await item.getType('text/html');
+    const htmlText = await htmlBlob.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    const img = doc.querySelector('img');
 
-    handleChangeImage({ target: { files: [res] } });
+    if (img?.src) {
+      const imageUrl = img.src;
+
+      if (imageUrl) {
+        const url = imageUrl;
+        const urlValidation = url.match(objectURLValidationRegExp);
+
+        if (urlValidation) {
+          const onErrorLoadImage = () => {
+            onLoadingImage(false);
+          };
+          let newImage = {};
+          const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+            newImage = {
+              src: currentLinkSrc,
+              name: currentLinkName,
+              id: uuidv4(),
+            };
+          };
+
+          await onImageUpload(url, insertImage, onErrorLoadImage, true);
+          imageLinkInput.current.value = '';
+          checkImage(true, newImage);
+        } else {
+          checkImage(false);
+        }
+      }
+    }
   };
+
   const colors = useWebsiteColor();
 
   const editor = useSlate();
@@ -120,42 +189,6 @@ const ImageSetter = ({
   };
 
   // For image pasted for link
-  const handleOnUploadImageByLink = async image => {
-    if (currentImages.length >= 25) {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_cannot',
-          defaultMessage: 'You cannot upload more then 25 images',
-        }),
-      );
-
-      return;
-    }
-    if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
-      const url = image || imageLinkInput.current.value;
-      const urlValidation = url.match(objectURLValidationRegExp);
-
-      if (urlValidation) {
-        const onErrorLoadImage = () => {
-          onLoadingImage(false);
-        };
-        let newImage = {};
-        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
-          newImage = {
-            src: currentLinkSrc,
-            name: currentLinkName,
-            id: uuidv4(),
-          };
-        };
-
-        await onImageUpload(url, insertImage, onErrorLoadImage, true);
-        imageLinkInput.current.value = '';
-        checkImage(true, newImage);
-      } else {
-        checkImage(false);
-      }
-    }
-  };
 
   useEffect(() => {
     handleOnUploadImageByLink(defaultImage);
