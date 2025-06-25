@@ -1,12 +1,15 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const LinkItem = ({ link, index, intl }) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const directObjTypes = ['person'];
 
   let linkTo = directObjTypes.includes(link.object_type) ? `/object/${link.permlink}` : link.link;
@@ -25,9 +28,7 @@ const LinkItem = ({ link, index, intl }) => {
     <a
       key={link.link}
       className="WebsiteTopNavigation__link"
-      rel="noreferrer"
-      target={'_blank'}
-      href={link.link}
+      onClick={() => dispatch(setLinkSafetyInfo(link.link))}
     >
       {getMenuLinkTitle(link, intl, 24)}
     </a>
