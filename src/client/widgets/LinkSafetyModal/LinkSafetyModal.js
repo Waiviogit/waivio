@@ -113,7 +113,7 @@ const LinkSafetyModal = () => {
           '',
           {
             name: objectFields.url,
-            body: info?.url,
+            body: `${url.protocol}//${url.host}`,
             locale,
           },
         ),

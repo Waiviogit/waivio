@@ -14,7 +14,7 @@ const initialState = {
   rewriteLinks: false,
   loading: false,
   upvoteSetting: false,
-  exitPageSetting: true,
+  exitPageSetting: false,
   rewardSetting: rewardsValues.half,
   postLocales: [],
   currencyList: [],
