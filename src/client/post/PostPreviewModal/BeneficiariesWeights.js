@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
 import { Icon, Progress, Slider } from 'antd';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
-import BeneficiariesFindUsers from './BeneficiariesFindUsers';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
+import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import {
   updateBeneficiariesUsers,
   removeBeneficiariesUsers,
 } from '../../../store/searchStore/searchActions';
-import { getAuthenticatedUser, isGuestUser } from '../../../store/authStore/authSelectors';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
-import { getCurrentAppSettings } from '../../../waivioApi/ApiClient';
-import { initialColors } from '../../websites/constants/colors';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+import BeneficiariesFindUsers from './BeneficiariesFindUsers';
 
 import './AdvanceSettings.less';
 
@@ -87,11 +86,15 @@ class BeneficiariesWeight extends React.PureComponent {
 
 const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
   const [weightBuffer, setWeightBuffer] = useState(100);
-  const [mainColor, setMainColor] = useState('orange');
+  const { background } = useWebsiteColor();
   const isGuest = useSelector(isGuestUser);
   const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
-  const authUser = useSelector(getAuthenticatedUser);
-  const user = isGuest ? { name: hiveBeneficiaryAccount } || authUser : authUser;
+  let user = useSelector(getAuthenticatedUser);
+
+  if (hiveBeneficiaryAccount && isGuest) {
+    user = { name: hiveBeneficiaryAccount };
+  }
+
   const beneficiariesUsers = useSelector(getBeneficiariesUsers)?.filter(
     i => i.account !== user.name,
   );
@@ -99,9 +102,6 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
 
   useEffect(() => {
     setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weight / 100, 100));
-    getCurrentAppSettings().then(res => {
-      setMainColor(res.configuration.colors?.mapMarkerBody || initialColors.marker);
-    });
   }, [beneficiariesUsers]);
 
   const onBenefPercentChange = (objName, percent) => {
@@ -139,7 +139,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
             showInfo={false}
             percent={weightBuffer}
             strokeWidth={5}
-            strokeColor={mainColor}
+            strokeColor={background}
             trailColor="red"
           />
         </div>
