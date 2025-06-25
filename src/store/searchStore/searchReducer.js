@@ -15,6 +15,7 @@ const initialState = {
     loading: false,
   },
   beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
+  defaultBeneficiaries: [{ account: 'waivio', weight: 300 }],
   isStartSearchAutoComplete: false,
   isStartSearchUser: false,
   isStartSearchObject: false,
@@ -385,7 +386,7 @@ export default (state = initialState, action) => {
     case searchActions.CLEAR_BENEFICIARIES_USERS.ACTION: {
       return {
         ...state,
-        beneficiariesUsers: [{ account: 'waivio', weight: 300 }],
+        beneficiariesUsers: state.defaultBeneficiaries,
       };
     }
 
@@ -554,6 +555,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         beneficiariesUsers: action.payload,
+        defaultBeneficiaries: action.payload,
       };
     }
 

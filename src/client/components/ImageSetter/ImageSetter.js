@@ -155,15 +155,37 @@ const ImageSetter = ({
   };
   const onPaste = async () => {
     const clipboardItems = await navigator.clipboard.read();
-    const blobOutput = await clipboardItems[0].getType('image/png');
+    const item = clipboardItems[0];
 
-    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+    const htmlBlob = await item.getType('text/html');
+    const htmlText = await htmlBlob.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    const image = doc.querySelector('img');
 
-    if (isEditable) {
-      setState({ ...initialState, image: res });
-      setIsOpen(true);
-    } else {
-      handleChangeImage({ target: { files: [res] } });
+    if (image) {
+      const url = image.src;
+      const urlValidation = url.match(objectURLValidationRegExp);
+
+      if (urlValidation) {
+        const onErrorLoadImage = () => {
+          onLoadingImage(false);
+        };
+        let newImage = {};
+        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
+          newImage = {
+            src: currentLinkSrc,
+            name: currentLinkName,
+            id: uuidv4(),
+          };
+        };
+
+        await onImageUpload(url, insertImage, onErrorLoadImage, true);
+        imageLinkInput.current.value = '';
+        checkImage(true, newImage);
+      } else {
+        checkImage(false);
+      }
     }
   };
 
