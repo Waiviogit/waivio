@@ -303,7 +303,7 @@
   margin: auto;
   width: 95vw;
   height: 95vh !important;
-  border-radius: 5px;
+  border-radius: 10px;
   z-index: 9999;
   background-color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -315,8 +315,11 @@
   .message {
     max-width: 50vw;
   }
-  .chat-header,
+  .chat-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
   .chat-footer {
-    border-radius: 5px;
+    border-radius: 10px;
   }
 }
