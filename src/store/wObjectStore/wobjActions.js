@@ -374,7 +374,8 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
 
   const checkLinks = getExitPageSetting(getState());
   const result = await checkLinkSafety(url);
-  const showModal = checkLinks || result.rating < 5;
+
+  const showModal = checkLinks || (result.rating < 5 && result.rating > 0);
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
