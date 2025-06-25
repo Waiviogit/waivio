@@ -277,11 +277,13 @@ const ChatWindow = ({ className, hideChat, open }) => {
             }
           >
             {!isWaivio && isAdministrator && reloadBtn}
-            <Icon
-              type={isFullScreen ? 'fullscreen-exit' : 'fullscreen'}
-              className="header-button-icon"
-              onClick={toggleFullScreen}
-            />
+            {!isMobile() && (
+              <Icon
+                type={isFullScreen ? 'fullscreen-exit' : 'fullscreen'}
+                className="header-button-icon"
+                onClick={toggleFullScreen}
+              />
+            )}
             {chatId ? (
               <Icon type="delete" className="header-button-icon" onClick={clearChatMessages} />
             ) : (

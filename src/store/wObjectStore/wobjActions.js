@@ -374,12 +374,13 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
 
   const checkLinks = getExitPageSetting(getState());
   const result = await checkLinkSafety(url);
-  const showModal = checkLinks || result.rating < 5;
+  const rating = Math.round(result?.rating);
+  const showModal = checkLinks || (rating < 5 && rating > 0);
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise: Promise.resolve({ ...result, showModal }),
+      promise: Promise.resolve({ ...result, rating, showModal }),
     },
     meta: url,
   });
