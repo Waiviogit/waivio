@@ -128,7 +128,7 @@ export function createPostMetadata(
     app: `${appName}/${appVersion}`,
     format: 'markdown',
     timeOfPostCreation: Date.now() + 3000,
-    host: oldMetadata.host,
+    host: oldMetadata.host || host,
     tags: [],
   };
 

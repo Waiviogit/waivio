@@ -77,7 +77,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       link = isChecklist ? `${defaultLink}${breadbrumbs}` : `/object/${wObject?.author_permlink}`;
       break;
     }
-
+    case 'shop':
+      link = `/object-shop/${wObject?.author_permlink}`;
+      break;
     default:
       link = `/object/${wObject?.author_permlink}`;
       break;

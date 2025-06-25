@@ -121,8 +121,9 @@ export const searchObjectsAutoCompete = (
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
   const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(state);
   const search = replacer(searchString);
-  const body = {};
+  const body = { userName };
 
   if (addHashtag) body.addHashtag = true;
 

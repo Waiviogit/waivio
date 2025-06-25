@@ -9,4 +9,5 @@ export const subscribeTypes = {
   subscribeCampaignDeactivation: 'subscribeCampaignDeactivation',
   subscribeTransactionId: 'subscribeTransactionId',
   clientError: 'clientError',
+  subscribeSupposedUpdate: 'subscribeSupposedUpdate',
 };

@@ -162,12 +162,10 @@ export const buildDraft = (draftId, data = {}, isEditPost, deleteCamp) => (dispa
     postData.title = titleValue || title;
   }
 
-  const oldMetadata = get(currDraft, 'jsonMetadata', {});
-
   postData.jsonMetadata = createPostMetadata(
     content,
     tags,
-    oldMetadata,
+    get(currDraft, 'jsonMetadata', null) || jsonMetadata,
     linkedObject?.map(obj => ({
       object_type: obj.object_type,
       name: getObjectName(obj),
