@@ -361,6 +361,11 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
+  const isAuth = getIsAuthenticated(getState());
+  const checkLinks = getExitPageSetting(getState());
+  const result = await checkLinkSafety(url);
+  const rating = Math.round(result?.rating);
+  const showModal = checkLinks || (rating < 5 && rating > 0) || !isAuth;
 
   if (waivioLink) {
     return dispatch({
@@ -371,11 +376,6 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
       meta: url,
     });
   }
-
-  const checkLinks = getExitPageSetting(getState());
-  const result = await checkLinkSafety(url);
-  const rating = Math.round(result?.rating);
-  const showModal = checkLinks || (rating < 5 && rating > 0);
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
