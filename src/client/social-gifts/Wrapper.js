@@ -66,7 +66,7 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
+import { getAdsenseSettings, getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
@@ -225,6 +225,7 @@ const SocialWrapper = props => {
     props.getSwapEnginRates();
     props.setSocialFlag();
     location && props.getWebsiteSettings(location?.hostname);
+    location && props.getAdsenseSettings(location?.hostname);
     props.getCurrentAppSettings().then(res => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
@@ -327,6 +328,7 @@ SocialWrapper.propTypes = {
   dispatchGetAuthGuestBalance: PropTypes.func,
   setUsedLocale: PropTypes.func,
   getWebsiteSettings: PropTypes.func,
+  getAdsenseSettings: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func,
@@ -530,6 +532,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     }),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(getWebsiteSettings(req.headers.host)),
+    store.dispatch(getAdsenseSettings(req.headers.host)),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
     store.dispatch(getTokenRates('WAIV')),
@@ -572,6 +575,7 @@ export default ErrorBoundary(
         getSwapEnginRates,
         setFavoriteObjectTypes,
         getWebsiteSettings,
+        getAdsenseSettings,
         getDraftsList,
       },
     )(SocialWrapper),
