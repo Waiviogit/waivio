@@ -60,7 +60,7 @@ const LinkSafetyModal = () => {
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
 
   const isDangerous = status === 'Dangerous';
-  const dangerous = info?.rating < 9;
+  const dangerous = info?.rating < 9 && info.rating > 0;
   const infoText = isDangerous
     ? 'Caution! This link has a low safety rating and may be dangerous.'
     : 'Attention! This link is mostly safe, but minor risks may exist.';
