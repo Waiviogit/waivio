@@ -77,7 +77,7 @@ const FeedMasonry = ({
               elements.push(
                 <div
                   key={`ad-${index}`}
-                  style={{ width: '100%', textAlign: 'center', minHeight: 100 }}
+                  style={{ minWidth: '250px', textAlign: 'center', minHeight: 100 }}
                 >
                   <GoogleAds isNewsfeed />
                 </div>,
