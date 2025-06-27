@@ -153,7 +153,7 @@ const LinkSafetyModal = () => {
 
   useEffect(() => {
     if (isEmpty(objectTypes)) dispatch(getObjectTypes());
-    if (!info.rating < 5 && info?.url) goToSite();
+    if (!dangerous && info?.url) goToSite();
   }, [info?.triggerId, info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
