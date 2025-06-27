@@ -20,27 +20,25 @@ const GoogleAds = ({ isNewsfeed = false, isPostText = false }) => {
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={{ display: 'inline-block', minWidth: '250px', minHeight: '250px' }}
+        style={{ display: 'block' }}
         data-ad-client="ca-pub-4624906456940175"
-        data-ad-slot="6608674711"
-        data-ad-format="fluid"
-        {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+        data-ad-slot="1450952461"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
       />
     );
 
   if (isPostText)
     return (
-      <div style={{ minWidth: '250px', minHeight: '250px' }}>
-        <ins
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block' }}
-          data-ad-layout-key="-gw-3+1f-3d+2z"
-          data-ad-client="ca-pub-4624906456940175"
-          data-ad-slot="5593107956"
-          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        />
-      </div>
+      <ins
+        ref={adRef}
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-layout-key="-gw-3+1f-3d+2z"
+        data-ad-client="ca-pub-4624906456940175"
+        data-ad-slot="5593107956"
+        {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+      />
     );
 
   return null;
