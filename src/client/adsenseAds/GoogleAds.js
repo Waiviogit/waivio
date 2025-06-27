@@ -20,11 +20,14 @@ const GoogleAds = ({ isNewsfeed = false, isPostText = false }) => {
       <ins
         ref={adRef}
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{
+          display: 'block',
+        }}
         data-ad-client="ca-pub-4624906456940175"
         data-ad-slot="1450952461"
         data-ad-format="auto"
         data-full-width-responsive="true"
+        {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
       />
     );
 
