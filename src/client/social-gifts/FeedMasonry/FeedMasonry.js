@@ -9,7 +9,7 @@ import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj } from './helpers';
-import NewsfeedAd from '../../adsenseAds/NewsfeedAd';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
 import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
 
@@ -79,7 +79,7 @@ const FeedMasonry = ({
                   key={`ad-${index}`}
                   style={{ width: '100%', textAlign: 'center', minHeight: 100 }}
                 >
-                  <NewsfeedAd />
+                  <GoogleAds isNewsfeed />
                 </div>,
               );
             }
