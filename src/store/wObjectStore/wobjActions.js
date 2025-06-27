@@ -371,16 +371,18 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
     return dispatch({
       type: SET_LINK_SAFETY.ACTION,
       payload: {
-        promise: Promise.resolve({ showModal: false, url }),
+        promise: Promise.resolve({ showModal: false }),
       },
+      meta: url,
     });
   }
 
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise: Promise.resolve({ ...result, rating, showModal, url }),
+      promise: Promise.resolve({ ...result, rating, showModal }),
     },
+    meta: url,
   });
 };
 
