@@ -74,7 +74,11 @@ const FeedMasonry = ({
             );
 
             if ((index + 1) % adFrequency === 0) {
-              elements.push(<GoogleAds isNewsfeed key={`ad-${index}`} />);
+              elements.push(
+                <div style={{ maxHeight: '300px' }}>
+                  <GoogleAds isNewsfeed key={`ad-${index}`} />{' '}
+                </div>,
+              );
             }
 
             return elements;
