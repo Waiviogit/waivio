@@ -6,15 +6,21 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
   useEffect(() => {
-    if (adRef.current) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-        // eslint-disable-next-line no-console
-        console.log('Adsense started');
-      } catch (e) {
-        console.error('AdSense error', e);
+    const interval = setInterval(() => {
+      if (window.adsbygoogle && adRef.current) {
+        try {
+          window.adsbygoogle.push({});
+          // eslint-disable-next-line no-console
+          console.log('Adsense started');
+          clearInterval(interval);
+        } catch (e) {
+          console.error('AdSense error', e);
+          clearInterval(interval);
+        }
       }
-    }
+    }, 300);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (isNewsfeed)
