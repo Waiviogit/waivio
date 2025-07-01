@@ -21,6 +21,8 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
         <ins
           className="adsbygoogle"
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
+          data-ad-format="fluid"
+          data-ad-layout-key="-6t+ed+2i-1n-4w"
           data-ad-client="ca-pub-4624906456940175"
           data-ad-slot="6608674711"
           {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
