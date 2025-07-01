@@ -6,21 +6,19 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
-          console.log('Adsense started');
-          clearInterval(interval);
+          console.log('✅ Adsense initialized');
         } catch (e) {
           console.error('AdSense error', e);
-          clearInterval(interval);
         }
       }
     }, 300);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, []);
 
   if (isNewsfeed)
