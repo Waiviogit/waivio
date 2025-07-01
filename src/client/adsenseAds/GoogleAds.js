@@ -22,6 +22,9 @@ const GoogleAds = ({ isNewsfeed = false, isPostText = false }) => {
         className="adsbygoogle"
         style={{
           display: 'block',
+          width: '100%',
+          maxHeight: '300px',
+          overflow: 'hidden',
         }}
         data-ad-client="ca-pub-4624906456940175"
         data-ad-slot="1450952461"
