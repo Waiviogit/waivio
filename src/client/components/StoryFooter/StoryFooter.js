@@ -18,12 +18,14 @@ import MuteModal from '../../widgets/MuteModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import './StoryFooter.less';
+import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
 
 @withAuthActions
 @connect(
   state => ({
     isGuest: isGuestUser(state),
     userName: getAuthenticatedUserName(state),
+    adSenseSettings: getSettingsAds(state),
   }),
   {
     getSocialInfoPostAction: getSocialInfoPost,
@@ -35,6 +37,7 @@ class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
+    // adSenseSettings: PropTypes.shape(),
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
@@ -81,6 +84,7 @@ class StoryFooter extends React.Component {
     getSocialInfoPostAction: () => {},
     userComments: false,
     isThread: false,
+    adSenseSettings: {},
   };
 
   constructor(props) {
@@ -220,8 +224,12 @@ class StoryFooter extends React.Component {
       editThread,
       closeEditThread,
       isRecipe,
+      // adSenseSettings,
     } = this.props;
 
+    // const minimalAds =adSenseSettings?.level==='minimal'
+    // const moderateAds=adSenseSettings?.level==='moderate'
+    // const intensiveAds= adSenseSettings?.level==='intensive'
     return (
       <div className="StoryFooter">
         <div className="StoryFooter__actions">
@@ -266,6 +274,9 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
+
+        {/* {// minimalAds && */}
+        {/*  <GoogleAds isPostText/>} */}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}

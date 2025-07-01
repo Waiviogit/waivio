@@ -31,6 +31,7 @@ const initialState = {
   socialSearchResultLoading: true,
   wobjectsPointHasMore: false,
   districts: null,
+  adSense: {},
 };
 
 export default function websiteReducer(state = initialState, action) {
@@ -68,6 +69,13 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         loadingWebsite: false,
+      };
+    }
+    case websiteAction.GET_ADSENSE_SETTINGS.SUCCESS:
+    case websiteAction.SAVE_ADSENSE_SETTINGS.SUCCESS: {
+      return {
+        ...state,
+        adSense: action.payload,
       };
     }
     case websiteAction.CREATE_NEW_WEBSITE.ERROR: {

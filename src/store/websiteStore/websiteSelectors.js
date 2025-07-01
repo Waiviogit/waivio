@@ -51,6 +51,8 @@ export const getSettingsShopify = createSelector([websiteState], state =>
   get(state, 'shopifySettings', {}),
 );
 
+export const getSettingsAds = createSelector([websiteState], state => get(state, 'adSense', {}));
+
 export const getIsLoadingAreas = createSelector([websiteState], state => state.isLoadingAreas);
 
 export const getRestrictions = createSelector([websiteState], state =>

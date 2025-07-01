@@ -19,13 +19,17 @@ import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActio
 import { getAppendData } from '../../../common/helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import { checkLinkSafety } from '../../../waivioApi/ApiClient';
 
 const LinkSafetyModal = () => {
   const [hasVoted, setHasVoted] = useState(false);
   const dispatch = useDispatch();
   const info = useSelector(getLinkSafetyInfo);
+  const isAuth = useSelector(getIsAuthenticated);
   const config = useSelector(getWebsiteConfiguration);
   const isWaivio = useSelector(getIsWaivio);
   const host = useSelector(getHostAddress);
@@ -149,7 +153,13 @@ const LinkSafetyModal = () => {
 
   useEffect(() => {
     if (isEmpty(objectTypes)) dispatch(getObjectTypes());
-    if (!dangerous && info?.url) goToSite();
+    if (
+      ((info?.checkLinks && info?.rating > 8) ||
+        (!info?.checkLinks && info?.rating > 4) ||
+        (!info?.checkLinks && info?.rating === 0)) &&
+      info?.url
+    )
+      goToSite();
   }, [info?.triggerId, info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
@@ -190,6 +200,7 @@ const LinkSafetyModal = () => {
           <b>Community rating:</b>{' '}
           <span className={'RatingsWrap__stars ml2'}>
             <Rate
+              disabled={!isAuth}
               allowHalf
               defaultValue={info?.rating / 2}
               className={ratingClassList}
