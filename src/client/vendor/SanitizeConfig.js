@@ -2,6 +2,7 @@ import sanitizeHtml from 'sanitize-html';
 import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
+import CryptoJS from 'crypto-js';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -93,8 +94,13 @@ export const parseLink = (
   isChatBotLink,
   name,
   parsedJsonMetadata,
+  safeLinks,
 ) => (tagName, attribs) => {
   let { href } = attribs;
+  if (typeof window === 'undefined' && safeLinks && !isHostSafeFrontend(href, safeLinks)) {
+    return { tagName: 'div', text: '' };
+  }
+
   if (!href) href = '#';
   href = href.trim();
   const attys = {};
@@ -196,19 +202,61 @@ export const parseLink = (
   }
 };
 
+const getHostFromUrl = (url = '') => {
+  try {
+    // Clean the URL first
+    let cleanUrl = url.trim();
+
+    // Remove any trailing punctuation that might have slipped through
+    cleanUrl = cleanUrl.replace(/[*.,;:!?)\]}>"']+$/, '');
+
+    const urlObj = new URL(cleanUrl);
+
+    const { hostname } = urlObj;
+
+    if (hostname.startsWith('www.')) return hostname.replace('www.', '');
+    return hostname;
+  } catch (error) {
+    console.log(`Failed to parse URL: ${url}`, error.message);
+    return null;
+  }
+};
+
+const normalizeDomain = domain => domain.toLowerCase().trim();
+
+const isHostSafeFrontend = (inputUrl, redisData) => {
+  const hostname = getHostFromUrl(inputUrl);
+  if (!hostname) return false;
+
+  const baseDomain = normalizeDomain(hostname);
+  const hash = CryptoJS.SHA256(baseDomain).toString(CryptoJS.enc.Hex);
+  const prefix = Buffer.from(hash.slice(0, redisData.prefixLength * 2), 'hex');
+
+  const buffer = Buffer.from(redisData.data, 'base64');
+  const prefixLen = redisData.prefixLength;
+
+  for (let i = 0; i < buffer.length; i += prefixLen) {
+    const storedPrefix = buffer.slice(i, i + prefixLen);
+    if (storedPrefix.equals(prefix)) {
+      return true;
+    }
+  }
+
+  return false;
+};
 // Medium insert plugin uses: div, figure, figcaption, iframe
 export default ({
   large = true,
   noImage = false,
   sanitizeErrors = [],
   appUrl,
-  secureLinks = false,
   location,
   isPage,
   isPost,
   isChatBotLink,
   baseObj,
   parsedJsonMetadata,
+  safeLinks,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -315,6 +363,15 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location, isPage, isPost, isChatBotLink, baseObj, parsedJsonMetadata),
+    a: parseLink(
+      appUrl,
+      location,
+      isPage,
+      isPost,
+      isChatBotLink,
+      baseObj,
+      parsedJsonMetadata,
+      safeLinks,
+    ),
   },
 });

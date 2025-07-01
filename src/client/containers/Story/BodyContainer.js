@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Body from '../../components/Story/Body';
-import { getAppHost } from '../../../store/appStore/appSelectors';
+import { getAppHost, getSafeLinksFromState } from '../../../store/appStore/appSelectors';
 import {
   getExitPageSetting,
   getRewriteLinks,
@@ -12,6 +12,7 @@ export default connect(
     appUrl: getAppHost(state),
     rewriteLinks: getRewriteLinks(state),
     exitPageSetting: getExitPageSetting(state),
+    safeLinks: getSafeLinksFromState(state),
   }),
   { sendPostError },
 )(Body);

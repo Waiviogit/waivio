@@ -135,21 +135,23 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
-          {props.draftPosts.some(d => d.draftId === props.draftId) && (
-            <div className="edit-post__saving-badge">
-              {props.saving ? (
-                <Badge
-                  status="error"
-                  text={props.intl.formatMessage({ id: 'saving', defaultMessage: 'Saving...' })}
-                />
-              ) : (
-                <Badge
-                  status="success"
-                  text={props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' })}
-                />
-              )}
-            </div>
-          )}
+          <div className="edit-post__saving-badge">
+            {props.draftPosts.some(d => d.draftId === props.draftId) && (
+              <React.Fragment>
+                {props.saving ? (
+                  <Badge
+                    status="error"
+                    text={props.intl.formatMessage({ id: 'saving', defaultMessage: 'Saving...' })}
+                  />
+                ) : (
+                  <Badge
+                    status="success"
+                    text={props.intl.formatMessage({ id: 'saved', defaultMessage: 'Saved' })}
+                  />
+                )}
+              </React.Fragment>
+            )}
+          </div>
           <PostPreviewModal
             content={content}
             isPublishing={props.publishing}

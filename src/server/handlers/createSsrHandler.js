@@ -16,11 +16,17 @@ import {
   setParentHost,
   setUsedLocale,
   setAppUrl,
+  getSafeLinksAction,
 } from '../../store/appStore/appActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
+import {
+  getSettingsAdsense,
+  getSettingsWebsite,
+  waivioAPI,
+  getSafeLinks,
+} from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -62,7 +68,7 @@ const isPageExistSitemap = async ({ url = '', host }) => {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
-    const isWaivio = req.hostname.includes('waivio');
+    const isWaivio = hostname.includes('waivio');
     const userAgent = req.get('User-Agent');
     const inheritedHost = isInheritedHost(hostname);
 
@@ -149,6 +155,8 @@ export default function createSsrHandler(template) {
         ),
       );
     }
+
+    store.dispatch(getSafeLinksAction());
 
     const routes = switchRoutes(hostname, parentHost);
     const branch = matchRoutes(routes, splittedUrl[0]);
