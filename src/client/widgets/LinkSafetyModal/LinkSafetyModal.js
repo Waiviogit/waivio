@@ -60,7 +60,7 @@ const LinkSafetyModal = () => {
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
 
   const isDangerous = status === 'Dangerous';
-  const dangerous = info?.rating < 9 && info.rating > 0;
+  const dangerous = info?.rating < 9;
   const infoText = isDangerous
     ? 'Caution! This link has a low safety rating and may be dangerous.'
     : 'Attention! This link is mostly safe, but minor risks may exist.';
@@ -153,7 +153,13 @@ const LinkSafetyModal = () => {
 
   useEffect(() => {
     if (isEmpty(objectTypes)) dispatch(getObjectTypes());
-    if (!dangerous && info?.url) goToSite();
+    if (
+      ((info?.checkLinks && info?.rating > 8) ||
+        (!info?.checkLinks && info?.rating > 4) ||
+        (!info?.checkLinks && info?.rating === 0)) &&
+      info?.url
+    )
+      goToSite();
   }, [info?.triggerId, info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
