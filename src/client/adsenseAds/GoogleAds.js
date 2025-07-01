@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
-const GoogleAds = (isNewsfeed, isPostText) => {
+const GoogleAds = ({ isNewsfeed, isPostText }) => {
   const adRef = useRef();
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
@@ -55,4 +56,8 @@ const GoogleAds = (isNewsfeed, isPostText) => {
   return null;
 };
 
+GoogleAds.propTypes = {
+  isNewsfeed: PropTypes.bool,
+  isPostText: PropTypes.bool,
+};
 export default GoogleAds;
