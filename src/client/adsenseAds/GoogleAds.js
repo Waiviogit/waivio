@@ -20,21 +20,15 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
   if (isNewsfeed)
     return (
       <div style={{ minWidth: '250px', minHeight: '250px' }}>
-        {/* <ins */}
-        {/*  ref={adRef} */}
-        {/*  className="adsbygoogle" */}
-        {/*  style={{ display: 'inline-block', width: '300px', height: '250px' }} */}
-        {/*  data-ad-format="fluid" */}
-        {/*  data-ad-layout-key="-6t+ed+2i-1n-4w" */}
-        {/*  data-ad-client="ca-pub-4624906456940175" */}
-        {/*  data-ad-slot="6608674711" */}
-        {/*  {...(isLocalhost ? { 'data-adtest': 'on' } : {})} */}
-        {/* /> */}
         <ins
+          ref={adRef}
           className="adsbygoogle"
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
-          data-ad-client="ca-pub-3940256099942544"
-          data-ad-slot="6300978111"
+          data-ad-format="fluid"
+          data-ad-layout-key="-6t+ed+2i-1n-4w"
+          data-ad-client="ca-pub-4624906456940175"
+          data-ad-slot="6608674711"
+          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         />
       </div>
     );
