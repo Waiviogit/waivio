@@ -35,6 +35,14 @@ export const setAppAgent = payload => ({ type: SET_APP_AGENT, payload });
 
 export const SET_APP_URL = '@app/SET_APP_URL';
 export const setAppUrl = createAction(SET_APP_URL);
+export const GET_SAFE_LINKS = createAsyncActionType('@app/GET_SAFE_LINKS');
+export const getSafeLinksAction = () => dispatch =>
+  dispatch({
+    type: GET_SAFE_LINKS.ACTION,
+    payload: {
+      promise: ApiClient.getSafeLinks(),
+    },
+  });
 
 export const SET_USED_LOCALE = '@app/SET_USED_LOCALE';
 export const setUsedLocale = createAction(SET_USED_LOCALE);

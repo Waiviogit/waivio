@@ -77,6 +77,7 @@ export function getHtml(
   isPage,
   baseObj = '',
   sendPostError,
+  safeLinks,
 ) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   const isMobl = isMobile();
@@ -129,6 +130,7 @@ export function getHtml(
       baseObj,
       parsedJsonMetadata,
       large: !isMobl,
+      safeLinks,
     }),
   );
 
@@ -208,6 +210,7 @@ const Body = props => {
     props.isPage,
     params.name,
     sendError,
+    props.safeLinks,
   );
 
   return (
@@ -247,6 +250,7 @@ Body.propTypes = {
   full: PropTypes.bool,
   isPage: PropTypes.bool,
   isPost: PropTypes.bool,
+  safeLinks: PropTypes.shape({}),
 };
 
 Body.defaultProps = {
