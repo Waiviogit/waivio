@@ -365,7 +365,7 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const checkLinks = getExitPageSetting(getState());
   const result = await checkLinkSafety(url);
   const rating = Math.round(result?.rating);
-  const showModal = checkLinks || (rating < 5 && rating > 0) || !isAuth;
+  const showModal = isAuth && (checkLinks || (rating < 5 && rating > 0));
 
   if (waivioLink) {
     return dispatch({
