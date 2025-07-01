@@ -6,35 +6,35 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
   useEffect(() => {
-    if (adRef.current) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-        // eslint-disable-next-line no-console
-        console.log('Adsense started');
-      } catch (e) {
-        console.error('AdSense error', e);
+    const interval = setInterval(() => {
+      if (window.adsbygoogle && adRef.current) {
+        try {
+          window.adsbygoogle.push({});
+          // eslint-disable-next-line no-console
+          console.log('Adsense started');
+          clearInterval(interval);
+        } catch (e) {
+          console.error('AdSense error', e);
+          clearInterval(interval);
+        }
       }
-    }
+    }, 300);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (isNewsfeed)
     return (
       <div style={{ minWidth: '250px', minHeight: '250px' }}>
-        {/* <ins */}
-        {/*  ref={adRef} */}
-        {/*  className="adsbygoogle" */}
-        {/*  style={{ display: 'inline-block', width: '300px', height: '250px' }} */}
-        {/*  data-ad-format="fluid" */}
-        {/*  data-ad-layout-key="-6t+ed+2i-1n-4w" */}
-        {/*  data-ad-client="ca-pub-4624906456940175" */}
-        {/*  data-ad-slot="6608674711" */}
-        {/*  {...(isLocalhost ? { 'data-adtest': 'on' } : {})} */}
-        {/* /> */}
         <ins
+          ref={adRef}
           className="adsbygoogle"
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
-          data-ad-client="ca-pub-3940256099942544"
-          data-ad-slot="6300978111"
+          data-ad-format="fluid"
+          data-ad-layout-key="-6t+ed+2i-1n-4w"
+          data-ad-client="ca-pub-4624906456940175"
+          data-ad-slot="6608674711"
+          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         />
       </div>
     );
