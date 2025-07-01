@@ -55,43 +55,34 @@ const FeedMasonry = ({
           columnClassName="my-masonry-grid_column"
           key={'my-masonry-grid_column'}
         >
-          <>
-            <ins
-              className="adsbygoogle"
-              // eslint-disable-next-line react/style-prop-object
-              style="display:inline-block;width:300px;height:250px"
-              data-ad-client="ca-pub-3940256099942544"
-              data-ad-slot="6300978111"
-            />
-            {posts?.flatMap((post, index) => {
-              const elements = [];
+          {posts?.flatMap((post, index) => {
+            const elements = [];
 
-              const urlPreview = isEmpty(previews)
-                ? ''
-                : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
+            const urlPreview = isEmpty(previews)
+              ? ''
+              : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
 
+            elements.push(
+              <div key={`${post.author}/${post.permlink}`}>
+                <FeedItem
+                  isReviewsPage={isReviewsPage}
+                  preview={urlPreview}
+                  photoQuantity={2}
+                  post={post}
+                />
+              </div>,
+            );
+
+            if ((index + 1) % adFrequency === 0) {
               elements.push(
-                <div key={`${post.author}/${post.permlink}`}>
-                  <FeedItem
-                    isReviewsPage={isReviewsPage}
-                    preview={urlPreview}
-                    photoQuantity={2}
-                    post={post}
-                  />
+                <div style={{ maxHeight: '300px' }}>
+                  <GoogleAds isNewsfeed key={`ad-${index}`} />{' '}
                 </div>,
               );
+            }
 
-              if ((index + 1) % adFrequency === 0) {
-                elements.push(
-                  <div style={{ maxHeight: '300px' }}>
-                    <GoogleAds isNewsfeed key={`ad-${index}`} />{' '}
-                  </div>,
-                );
-              }
-
-              return elements;
-            })}
-          </>
+            return elements;
+          })}
         </Masonry>
         <PostModal />
       </InfiniteSroll>
