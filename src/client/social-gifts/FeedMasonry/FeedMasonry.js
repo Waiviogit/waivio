@@ -75,7 +75,10 @@ const FeedMasonry = ({
 
             if ((index + 1) % adFrequency === 0) {
               elements.push(
-                <div style={{ maxHeight: '300px' }}>
+                <div
+                  key={`ad-${post.author}-${post.permlink}-${index}`}
+                  style={{ maxHeight: '300px' }}
+                >
                   <GoogleAds isNewsfeed key={`ad-${index}`} />{' '}
                 </div>,
               );
