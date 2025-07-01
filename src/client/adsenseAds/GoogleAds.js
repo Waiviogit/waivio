@@ -22,7 +22,7 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
           className="adsbygoogle"
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
           data-ad-client="ca-pub-4624906456940175"
-          data-ad-slot="1450952461"
+          data-ad-slot="6608674711"
           {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         />
 
