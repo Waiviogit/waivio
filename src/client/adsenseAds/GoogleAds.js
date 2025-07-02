@@ -12,20 +12,31 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
-          console.log('Adsense pushed');
+          console.log('✅ Adsense pushed');
 
+          // Через 2.5 сек перевіримо розмір iframe
           setTimeout(() => {
-            const hasContent =
-              adRef.current?.offsetHeight > 0 && adRef.current?.innerHTML.trim().length > 0;
+            const iframe = adRef.current?.querySelector('iframe');
+            if (iframe) {
+              const rect = iframe.getBoundingClientRect();
+              const isEmpty = rect.height < 50 || rect.width < 50;
 
-            if (!hasContent) {
+              if (isEmpty) {
+                // eslint-disable-next-line no-console
+                console.log('🕳 Empty ad iframe — hiding ad block');
+                setVisible(false);
+              } else {
+                // eslint-disable-next-line no-console
+                console.log(' Ad iframe has size — ad likely visible');
+              }
+            } else {
               // eslint-disable-next-line no-console
-              console.log('Adsense block empty');
+              console.log('️ No iframe found in ad block');
               setVisible(false);
             }
-          }, 2000);
+          }, 2500);
         } catch (e) {
-          console.error('AdSense error', e);
+          console.error(' AdSense error', e);
         }
       }
     }, 300);
