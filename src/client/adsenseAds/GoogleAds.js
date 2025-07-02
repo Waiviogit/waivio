@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const GoogleAds = ({ isNewsfeed, isPostText }) => {
+const GoogleAds = ({ isNewsfeed = false }) => {
   const adRef = useRef();
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -27,7 +27,7 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
               console.log('✅ Ad filled');
             } else {
               // eslint-disable-next-line no-console
-              console.log('❓ Ad status unknown');
+              console.log(adStatus, '❓ Ad status');
 
               const iframe = adRef.current?.querySelector('iframe');
 
@@ -53,6 +53,7 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
     return (
       <div style={{ minWidth: '250px', minHeight: '250px' }}>
         <ins
+          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
           ref={adRef}
           className="adsbygoogle"
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
@@ -60,23 +61,6 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
           data-ad-layout-key="-6t+ed+2i-1n-4w"
           data-ad-client="ca-pub-4624906456940175"
           data-ad-slot="6608674711"
-          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        />
-      </div>
-    );
-
-  if (isPostText)
-    return (
-      <div style={{ minWidth: '250px', minHeight: '250px' }}>
-        <ins
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block' }}
-          data-ad-format="fluid"
-          data-ad-layout-key="-gw-3+1f-3d+2z"
-          data-ad-client="ca-pub-4624906456940175"
-          data-ad-slot="5593107956"
-          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         />
       </div>
     );
