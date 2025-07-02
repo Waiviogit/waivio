@@ -231,7 +231,6 @@ const isHostSafeFrontend = (inputUrl, redisData) => {
   const baseDomain = normalizeDomain(hostname);
   const hash = CryptoJS.SHA256(baseDomain).toString(CryptoJS.enc.Hex);
   const prefix = Buffer.from(hash.slice(0, redisData.prefixLength * 2), 'hex');
-
   const buffer = Buffer.from(redisData.data, 'base64');
   const prefixLen = redisData.prefixLength;
 

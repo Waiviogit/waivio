@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import { debounce, get, includes, find, uniqWith, isEqual, isEmpty } from 'lodash';
 import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
+import GiveawayModal from '../Giveaway/GiveawayModal';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
@@ -135,6 +136,7 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
+          <GiveawayModal />
           <div className="edit-post__saving-badge">
             {props.draftPosts.some(d => d.draftId === props.draftId) && (
               <React.Fragment>
