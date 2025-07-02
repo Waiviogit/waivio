@@ -14,29 +14,32 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
           // eslint-disable-next-line no-console
           console.log('✅ Adsense pushed');
 
-          // Через 2.5 сек перевіримо розмір iframe
           setTimeout(() => {
-            const iframe = adRef.current?.querySelector('iframe');
-            if (iframe) {
-              const rect = iframe.getBoundingClientRect();
-              const isEmpty = rect.height < 50 || rect.width < 50;
+            const adElement = adRef.current;
+            const adStatus = adElement?.getAttribute('data-ad-status');
 
-              if (isEmpty) {
-                // eslint-disable-next-line no-console
-                console.log('🕳 Empty ad iframe — hiding ad block');
-                setVisible(false);
-              } else {
-                // eslint-disable-next-line no-console
-                console.log(' Ad iframe has size — ad likely visible');
-              }
+            if (adStatus === 'unfilled') {
+              // eslint-disable-next-line no-console
+              console.log('🚫 No ad filled — hiding ad block');
+              setVisible(false);
+            } else if (adStatus === 'filled') {
+              // eslint-disable-next-line no-console
+              console.log('✅ Ad filled');
             } else {
               // eslint-disable-next-line no-console
-              console.log('️ No iframe found in ad block');
-              setVisible(false);
+              console.log('❓ Ad status unknown');
+
+              const iframe = adRef.current?.querySelector('iframe');
+
+              if (!iframe) {
+                // eslint-disable-next-line no-console
+                console.log('⚠️ No iframe found — hiding ad block');
+                setVisible(false);
+              }
             }
           }, 2500);
         } catch (e) {
-          console.error(' AdSense error', e);
+          console.error('❌ AdSense error', e);
         }
       }
     }, 300);
@@ -46,7 +49,7 @@ const GoogleAds = ({ isNewsfeed, isPostText }) => {
 
   if (!visible) return null;
 
-  if (isNewsfeed)
+  if (isNewsfeed && visible)
     return (
       <div style={{ minWidth: '250px', minHeight: '250px' }}>
         <ins
