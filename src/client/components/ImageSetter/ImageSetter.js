@@ -12,6 +12,7 @@ import {
   ALLOWED_IMG_FORMATS,
   MAX_IMG_SIZE,
   objectURLValidationRegExp,
+  ALLOWED_IMG_FORMATS_EDITS,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { hexToRgb } from '../../../common/helpers';
@@ -182,7 +183,15 @@ const ImageSetter = ({
 
         await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
-        checkImage(true, newImage);
+        if (
+          isEditable &&
+          isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS_EDITS)
+        ) {
+          setState({ ...initialState, image: url });
+          setIsOpen(true);
+        } else {
+          checkImage(true, newImage);
+        }
       } else {
         checkImage(false);
       }
@@ -219,7 +228,15 @@ const ImageSetter = ({
 
         await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
-        checkImage(true, newImage);
+        if (
+          isEditable &&
+          isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS_EDITS)
+        ) {
+          setState({ ...initialState, image: url });
+          setIsOpen(true);
+        } else {
+          checkImage(true, newImage);
+        }
       } else {
         checkImage(false);
       }
