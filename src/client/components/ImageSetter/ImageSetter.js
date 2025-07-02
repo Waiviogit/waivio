@@ -153,6 +153,7 @@ const ImageSetter = ({
       );
     }
   };
+
   const onPaste = async () => {
     const clipboardItems = await navigator.clipboard.read();
     const item = clipboardItems[0];
@@ -166,7 +167,7 @@ const ImageSetter = ({
       const doc = parser.parseFromString(htmlText, 'text/html');
       const image = doc.querySelector('img');
 
-      if (image) {
+      if (image?.src?.includes('.gif')) {
         const url = image.src;
         const urlValidation = url.match(objectURLValidationRegExp);
 
@@ -186,52 +187,22 @@ const ImageSetter = ({
           await onImageUpload(url, insertImage, onErrorLoadImage, true);
           imageLinkInput.current.value = '';
 
-          if (isEditable && !url.includes('.gif')) {
-            setState({ ...initialState, image: url });
-            setIsOpen(true);
-          } else {
-            checkImage(true, newImage);
-          }
+          checkImage(true, newImage);
 
           return;
         }
         checkImage(false);
+      } else {
+        const blobOutput = await clipboardItems[0].getType('image/png');
 
-        return;
-      }
-    }
+        const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
-    // ДОДАНО: ПЕРЕВІРКА НА text/plain
-    if (types.includes('text/plain')) {
-      const textBlob = await item.getType('text/plain');
-      const plainText = await textBlob.text();
-
-      const isImageUrl = plainText.match(objectURLValidationRegExp);
-
-      if (isImageUrl) {
-        const onErrorLoadImage = () => {
-          onLoadingImage(false);
-        };
-        let newImage = {};
-        const insertImage = (currentLinkSrc, currentLinkName = 'image') => {
-          newImage = {
-            src: currentLinkSrc,
-            name: currentLinkName,
-            id: uuidv4(),
-          };
-        };
-
-        await onImageUpload(plainText, insertImage, onErrorLoadImage, true);
-        imageLinkInput.current.value = '';
-
-        if (isEditable && !plainText.includes('.gif')) {
-          setState({ ...initialState, image: plainText });
+        if (isEditable) {
+          setState({ ...initialState, image: res });
           setIsOpen(true);
         } else {
-          checkImage(true, newImage);
+          handleChangeImage({ target: { files: [res] } });
         }
-      } else {
-        checkImage(false);
       }
     }
   };
@@ -247,6 +218,7 @@ const ImageSetter = ({
 
       return;
     }
+
     if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
       const url = image || imageLinkInput.current.value;
       const urlValidation = url.match(objectURLValidationRegExp);
@@ -266,12 +238,8 @@ const ImageSetter = ({
 
         await onImageUpload(url, insertImage, onErrorLoadImage, true);
         imageLinkInput.current.value = '';
-        if (isEditable && !url.includes('.gif')) {
-          setState({ ...initialState, image: url });
-          setIsOpen(true);
-        } else {
-          checkImage(true, newImage);
-        }
+
+        checkImage(true, newImage);
       } else {
         checkImage(false);
       }
