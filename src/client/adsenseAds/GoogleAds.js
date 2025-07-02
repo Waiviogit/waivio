@@ -1,30 +1,39 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const GoogleAds = ({ isNewsfeed, isPostText }) => {
   const adRef = useRef();
+  const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
   useEffect(() => {
-    let attempts = 0;
-    const maxAttempts = 10;
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
-          console.log('✅ Adsense pushed successfully');
-          clearInterval(interval);
+          console.log('Adsense pushed');
+
+          setTimeout(() => {
+            const hasContent =
+              adRef.current?.offsetHeight > 0 && adRef.current?.innerHTML.trim().length > 0;
+
+            if (!hasContent) {
+              // eslint-disable-next-line no-console
+              console.log('Adsense block empty');
+              setVisible(false);
+            }
+          }, 2000);
         } catch (e) {
-          console.error('❌ AdSense error:', e);
+          console.error('AdSense error', e);
         }
       }
-
-      if (++attempts > maxAttempts) clearInterval(interval);
     }, 300);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(timer);
   }, []);
+
+  if (!visible) return null;
 
   if (isNewsfeed)
     return (
