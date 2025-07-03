@@ -54,9 +54,7 @@ export default function renderSsrPage(
   }
  
   </script>`;
-  const adSenseClientId = adsbygoogleScript
-    ? new URL(adsbygoogleScript.src).searchParams.get('client')
-    : null;
+  const adSenseClientId = adSense ? new URL(adSense.src).searchParams.get('client') : '';
   const googleEventSnippet = googleEventSnippetTag
     ? googleEventSnippetTag?.replace('window.location = url', '')
     : '';
