@@ -13,12 +13,12 @@ import {
 } from '../../../../store/websiteStore/websiteActions';
 import Loading from '../../../components/Icon/Loading';
 
+export const adIntensityLevels = [
+  { value: '1 - Minimal', key: 'minimal', frequency: 15 },
+  { value: '2 - Moderate', key: 'moderate', frequency: 10 },
+  { value: '3 - Intensive', key: 'intensive', frequency: 5 },
+];
 const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
-  const adIntensityLevels = [
-    { value: '1 - Minimal', key: 'minimal' },
-    { value: '2 - Moderate', key: 'moderate' },
-    { value: '3 - Intensive', key: 'intensive' },
-  ];
   const [loading, setLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [level, setLevel] = useState('');

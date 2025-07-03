@@ -8,6 +8,7 @@ export const appState = state => state.app;
 
 // reselect function
 export const getRate = createSelector([appState], state => state.rate);
+export const getSafeLinksFromState = createSelector([appState], state => state.safeLinks);
 
 export const getIsTrendingTopicsLoading = createSelector(
   [appState],

@@ -258,6 +258,11 @@ export default (state = initialState, action) => {
         ...state,
         isDiningGifts: action.payload,
       };
+    case appTypes.GET_SAFE_LINKS.SUCCESS:
+      return {
+        ...state,
+        safeLinks: action.payload,
+      };
 
     case appTypes.SET_SOCIAL_FLAG:
       return {

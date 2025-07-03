@@ -363,15 +363,15 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
   const isAuth = getIsAuthenticated(getState());
   const checkLinks = getExitPageSetting(getState());
-  const result = await checkLinkSafety(url);
+  const result = waivioLink ? {} : await checkLinkSafety(url);
   const rating = Math.round(result?.rating);
-  const showModal = checkLinks || (rating < 5 && rating > 0) || !isAuth;
+  const showModal = (isAuth && checkLinks) || (rating < 5 && rating > 0);
 
   if (waivioLink) {
     return dispatch({
       type: SET_LINK_SAFETY.ACTION,
       payload: {
-        promise: Promise.resolve({ showModal: false }),
+        promise: Promise.resolve({ showModal: false, isWaivioLink: true }),
       },
       meta: url,
     });
@@ -380,7 +380,7 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   return dispatch({
     type: SET_LINK_SAFETY.ACTION,
     payload: {
-      promise: Promise.resolve({ ...result, rating, showModal }),
+      promise: Promise.resolve({ ...result, rating, showModal, checkLinks }),
     },
     meta: url,
   });

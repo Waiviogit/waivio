@@ -52,7 +52,7 @@ const HeartButton = ({ wobject, size }) => {
 
   const heartClasses = classnames('HeartButton', { 'HeartButton--active': activeHeart });
   const heart = (
-    <button className={heartClasses} onClick={onHeartClick}>
+    <button className={heartClasses} onClick={onHeartClick} type="button">
       <Icon type="heart" theme="filled" style={{ fontSize: size }} />
     </button>
   );

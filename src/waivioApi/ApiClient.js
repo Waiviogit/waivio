@@ -5092,4 +5092,16 @@ export const checkLinkSafety = url =>
     .then(res => res.json())
     .catch(e => e);
 
+export const getSafeLinks = () =>
+  fetch(`${config.apiPrefix}${config.safeLinks}`, {
+    headers: {
+      ...headers,
+    },
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(r => r)
+    .catch(e => e);
+
 export default null;

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { has } from 'lodash';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const MenuItemButton = ({ item, show }) => {
   const [url, setUrl] = useState('');
   const itemBody = parseJSON(item.body);
-
+  const dispatch = useDispatch();
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
   const defaultButtonType = itemBody?.style === 'highlight' ? 'primary' : 'default';
@@ -47,7 +49,7 @@ const MenuItemButton = ({ item, show }) => {
       case 'icon':
         return webLink ? (
           <div>
-            <a target={linkTarget} href={url} className="MenuItemButtons__link ">
+            <a onClick={() => dispatch(setLinkSafetyInfo(url))} className="MenuItemButtons__link ">
               <img src={itemBody.image} className="MenuItemButtons__icon" alt={itemBody.title} />
             </a>
             <a target={linkTarget} href={url} className="MenuItemButtons__link">
@@ -69,7 +71,7 @@ const MenuItemButton = ({ item, show }) => {
       case 'image':
         return webLink ? (
           <div>
-            <a href={url} target={linkTarget}>
+            <a onClick={() => dispatch(setLinkSafetyInfo(url))}>
               <img src={itemBody.image} className="MenuItemButtons__image" alt={linkTarget} />
             </a>
           </div>
@@ -84,7 +86,10 @@ const MenuItemButton = ({ item, show }) => {
         return webLink ? (
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
-              <a target={linkTarget} href={url} className="MenuItemButtons__hideLongTitle">
+              <a
+                onClick={() => dispatch(setLinkSafetyInfo(url))}
+                className="MenuItemButtons__hideLongTitle"
+              >
                 {itemBody.title}
               </a>
             </Button>

@@ -286,5 +286,6 @@
   "spam": "/spam",
   "block": "/block",
   "link": "/link",
-  "safety": "/safety"
+  "safety": "/safety",
+  "safeLinks": "/safe-links"
 }
