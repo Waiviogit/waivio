@@ -19,7 +19,6 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 
 import './StoryFooter.less';
 import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
-import GooglePostAds from '../../adsenseAds/GooglePostAds';
 
 @withAuthActions
 @connect(
@@ -38,7 +37,7 @@ class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
-    adSenseSettings: PropTypes.shape(),
+    // adSenseSettings: PropTypes.shape(),
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
@@ -225,11 +224,11 @@ class StoryFooter extends React.Component {
       editThread,
       closeEditThread,
       isRecipe,
-      adSenseSettings,
+      // adSenseSettings,
     } = this.props;
 
     // const minimalAds = adSenseSettings?.level === 'minimal';
-    const moderateAds = adSenseSettings?.level === 'moderate';
+    // const moderateAds = adSenseSettings?.level === 'moderate';
     // const intensiveAds = adSenseSettings?.level === 'intensive';
 
     return (
@@ -276,7 +275,7 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {moderateAds && singlePostVew && <GooglePostAds />}
+        {/* {moderateAds && singlePostVew && <GooglePostAds />} */}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
