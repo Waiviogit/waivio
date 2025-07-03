@@ -5,12 +5,15 @@
   border: 1px solid #eee;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   font-family: inherit;
+  margin-top: 10px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 12px;
   }
 
   &__title {
@@ -48,5 +51,16 @@
     font-size: 13px;
     color: #777;
     margin-top: 8px;
+  }
+
+  .ant-checkbox-inner {
+    margin-right: 5px;
+
+    &::after {
+      border-color: var(--website-color) !important;
+      color: var(--website-color) !important;
+      -webkit-animation-name: none;
+      animation-name: none;
+    }
   }
 }

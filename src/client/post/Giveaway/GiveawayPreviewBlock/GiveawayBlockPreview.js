@@ -1,9 +1,10 @@
+import PropsType from 'prop-types';
 import React from 'react';
-import { Button, Icon } from 'antd';
+import { Button, Checkbox } from 'antd';
 
-import './GiveawayPreviewBlock.less';
+import './GiveawayBlockPreview.less';
 
-const GiveawayPreviewBlock = ({ formData, onEdit }) => {
+const GiveawayBlockPreview = ({ formData, onEdit }) => {
   const {
     reward,
     winners,
@@ -17,7 +18,7 @@ const GiveawayPreviewBlock = ({ formData, onEdit }) => {
   const renderRequirement = (label, key) =>
     requirements.includes(key) && (
       <div className="GiveawayPreviewBlock__item">
-        <Icon type="check" className="GiveawayPreviewBlock__icon" />
+        <Checkbox checked disabled />
         <span>{label}</span>
       </div>
     );
@@ -26,20 +27,21 @@ const GiveawayPreviewBlock = ({ formData, onEdit }) => {
     if (eligible === 'all') {
       return (
         <div className="GiveawayPreviewBlock__item">
-          <Icon type="check" className="GiveawayPreviewBlock__icon" />
+          <Checkbox checked disabled />
           <span>Available to everyone</span>
         </div>
       );
     }
 
     const rules = [];
+
     if (minExpertise) rules.push(`Minimum Waivio expertise: ${minExpertise}`);
     if (minFollowers) rules.push(`Minimum number of followers: ${minFollowers}`);
     if (minPosts) rules.push(`Minimum number of posts: ${minPosts}`);
 
-    return rules.map((rule, i) => (
-      <div key={i} className="GiveawayPreviewBlock__item">
-        <Icon type="check" className="GiveawayPreviewBlock__icon" />
+    return rules.map(rule => (
+      <div key={rule} className="GiveawayPreviewBlock__item">
+        <Checkbox checked disabled />
         <span>{rule}</span>
       </div>
     ));
@@ -49,7 +51,8 @@ const GiveawayPreviewBlock = ({ formData, onEdit }) => {
     <div className="GiveawayPreviewBlock">
       <div className="GiveawayPreviewBlock__header">
         <h3 className="GiveawayPreviewBlock__title">
-          Giveaway time! Your chance to win ${reward} with {winners} winner{winners > 1 ? 's' : ''}!
+          Giveaway time! Your chance to win ${reward} {winners > 1 ? `with ${winners} winners` : ''}
+          !
         </h3>
         <Button size="small" onClick={onEdit}>
           Edit
@@ -79,4 +82,17 @@ const GiveawayPreviewBlock = ({ formData, onEdit }) => {
   );
 };
 
-export default GiveawayPreviewBlock;
+GiveawayBlockPreview.propTypes = {
+  formData: PropsType.shape({
+    reward: PropsType.number,
+    winners: PropsType.number,
+    requirements: PropsType.number,
+    eligible: PropsType.number,
+    minExpertise: PropsType.number,
+    minFollowers: PropsType.number,
+    minPosts: PropsType.number,
+  }),
+  onEdit: PropsType.func,
+};
+
+export default GiveawayBlockPreview;

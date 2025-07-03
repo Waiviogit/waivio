@@ -227,9 +227,10 @@ class StoryFooter extends React.Component {
       // adSenseSettings,
     } = this.props;
 
-    // const minimalAds =adSenseSettings?.level==='minimal'
-    // const moderateAds=adSenseSettings?.level==='moderate'
-    // const intensiveAds= adSenseSettings?.level==='intensive'
+    // const minimalAds = adSenseSettings?.level === 'minimal';
+    // const moderateAds = adSenseSettings?.level === 'moderate';
+    // const intensiveAds = adSenseSettings?.level === 'intensive';
+
     return (
       <div className="StoryFooter">
         <div className="StoryFooter__actions">
@@ -274,9 +275,7 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-
-        {/* {// minimalAds && */}
-        {/*  <GoogleAds isPostText/>} */}
+        {/* {moderateAds && singlePostVew && <GooglePostAds />} */}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
