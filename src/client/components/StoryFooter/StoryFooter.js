@@ -276,7 +276,7 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {moderateAds && <GooglePostAds />}
+        {moderateAds && singlePostVew && <GooglePostAds />}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
