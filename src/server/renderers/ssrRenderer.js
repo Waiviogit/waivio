@@ -54,8 +54,6 @@ export default function renderSsrPage(
   }
  
   </script>`;
-  const adSenseClientId = adSense ? new URL(adSense.src).searchParams.get('client') : '';
-  console.log(adSenseClientId, 'adSenseClientId');
   const googleEventSnippet = googleEventSnippetTag
     ? googleEventSnippetTag?.replace('window.location = url', '')
     : '';
@@ -70,6 +68,5 @@ export default function renderSsrPage(
     verificationTags,
     googleEventSnippet,
     adSense,
-    adSenseClientId,
   });
 }
