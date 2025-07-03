@@ -156,7 +156,8 @@ const LinkSafetyModal = () => {
     if (
       ((info?.checkLinks && info?.rating > 8) ||
         (!info?.checkLinks && info?.rating > 4) ||
-        (!info?.checkLinks && info?.rating === 0)) &&
+        (!info?.checkLinks && info?.rating === 0) ||
+        info?.isWaivioLink) &&
       info?.url
     )
       goToSite();
