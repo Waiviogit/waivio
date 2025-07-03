@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Rate } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
@@ -25,23 +27,14 @@ import {
 } from '../../../store/authStore/authSelectors';
 import { checkLinkSafety } from '../../../waivioApi/ApiClient';
 
-const LinkSafetyModal = () => {
+const LinkSafetyModal = props => {
   const [hasVoted, setHasVoted] = useState(false);
-  const dispatch = useDispatch();
-  const info = useSelector(getLinkSafetyInfo);
-  const isAuth = useSelector(getIsAuthenticated);
-  const config = useSelector(getWebsiteConfiguration);
-  const isWaivio = useSelector(getIsWaivio);
-  const host = useSelector(getHostAddress);
-  const objectTypes = useSelector(getObjectTypesList);
-  const user = useSelector(getAuthenticatedUserName);
-  const locale = useSelector(getUsedLocale);
   const votePercent = 100;
-  const currHost = host || (typeof location !== 'undefined' && location.hostname);
-  const siteName = isWaivio ? 'Waivio' : config?.header?.name || currHost;
+  const currHost = props.host || (typeof location !== 'undefined' && location.hostname);
+  const siteName = props.isWaivio ? 'Waivio' : props.config?.header?.name || currHost;
   let status;
 
-  switch (info?.rating) {
+  switch (props.info?.rating) {
     case 1:
     case 2:
     case 3:
@@ -60,21 +53,21 @@ const LinkSafetyModal = () => {
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
 
   const isDangerous = status === 'Dangerous';
-  const dangerous = info?.rating < 9 && info.rating > 0;
+  const dangerous = props.info?.rating < 9;
   const infoText = isDangerous
     ? 'Caution! This link has a low safety rating and may be dangerous.'
     : 'Attention! This link is mostly safe, but minor risks may exist.';
   const cancelModal = () => {
-    dispatch(resetLinkSafetyInfo());
+    props.resetLinkSafetyInfo();
   };
 
   const goToSite = () => {
     const waivioLink =
-      info?.url?.includes('/object/') ||
-      (info?.url?.includes('/@') && !info?.url?.includes('http'));
+      props.info?.url?.includes('/object/') ||
+      (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
     window.open(
-      info?.url?.endsWith('*') ? info?.url?.slice(0, -1) : info?.url,
+      props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
       waivioLink ? '_self' : '_blank',
     );
   };
@@ -95,41 +88,39 @@ const LinkSafetyModal = () => {
 
   const writeUpdates = (res, rate) => {
     const readyCb = async () => {
-      const field = await checkLinkSafety(info?.url);
+      const field = await checkLinkSafety(props.info?.url);
 
-      dispatch(rateObject(field?.fieldAuthor, field?.fieldPermlink, res.parentPermlink, rate * 2));
+      props.rateObject(field?.fieldAuthor, field?.fieldPermlink, res.parentPermlink, rate * 2);
     };
-    const url = new URL(info?.url);
+    const url = new URL(props.info?.url);
     const hostname = url?.hostname?.startsWith('www.') ? url.hostname.slice(4) : url?.hostname;
 
-    dispatch(
-      appendObject(
-        getAppendData(
-          user,
-          {
-            id: res.parentPermlink,
-            author: res.parentAuthor,
-            creator: user,
-            name: hostname,
-            locale,
-            author_permlink: res.parentPermlink,
-          },
-          '',
-          {
-            name: objectFields.url,
-            body: `${url.protocol}//${url.host}`,
-            locale,
-          },
-        ),
-        { isUpdateReady: true, readyCb },
+    props.appendObject(
+      getAppendData(
+        props.user,
+        {
+          id: res.parentPermlink,
+          author: res.parentAuthor,
+          creator: props.user,
+          name: hostname,
+          locale: props.locale,
+          author_permlink: res.parentPermlink,
+        },
+        '',
+        {
+          name: objectFields.url,
+          body: `${url.protocol}//${url.host}`,
+          locale: props.locale,
+        },
       ),
+      { isUpdateReady: true, readyCb },
     );
   };
   const handleRateClick = rate => {
     setHasVoted(true);
-    const url = new URL(info?.url);
+    const url = new URL(props.info?.url);
 
-    const selectedType = objectTypes.link;
+    const selectedType = props.objectTypes.link;
     const hostname = url?.hostname?.startsWith('www.') ? url.hostname.slice(4) : url?.hostname;
 
     const options = { subscribeSupposedUpdate: true, cb: res => writeUpdates(res, rate) };
@@ -144,24 +135,29 @@ const LinkSafetyModal = () => {
       parentPermlink: selectedType.permlink,
     };
 
-    if (!isEmpty(info?.linkWaivio)) {
-      dispatch(rateObject(info.fieldAuthor, info.fieldPermlink, info.linkWaivio, rate * 2));
+    if (!isEmpty(props.info?.linkWaivio)) {
+      props.rateObject(
+        props.info.fieldAuthor,
+        props.info.fieldPermlink,
+        props.info.linkWaivio,
+        rate * 2,
+      );
     } else {
-      dispatch(createWaivioObject(data, options));
+      props.createWaivioObject(data, options);
     }
   };
 
   useEffect(() => {
-    if (isEmpty(objectTypes)) dispatch(getObjectTypes());
+    if (isEmpty(props.objectTypes)) props.getObjectTypes();
     if (
-      ((info?.checkLinks && info?.rating > 8) ||
-        (!info?.checkLinks && info?.rating > 4) ||
-        (!info?.checkLinks && info?.rating === 0) ||
-        info?.isWaivioLink) &&
-      info?.url
+      ((props.info?.checkLinks && props.info?.rating > 8) ||
+        (!props.info?.checkLinks && props.info?.rating > 4) ||
+        (!props.info?.checkLinks && props.info?.rating === 0) ||
+        props.info?.isWaivioLink) &&
+      props.info?.url
     )
       goToSite();
-  }, [info?.triggerId, info?.url]);
+  }, [props.info?.triggerId, props.info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
   });
@@ -169,14 +165,14 @@ const LinkSafetyModal = () => {
   return dangerous ? (
     <Modal
       title={'External link'}
-      visible={info?.showModal}
+      visible={props.info?.showModal}
       onCancel={cancelModal}
       onOk={openLink}
       okText={'Confirm'}
     >
       <div className={'flex items-center flex-column'}>
         <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {info.rating === 0
+          {props.info.rating === 0
             ? `Attention! You're about to leave the ${siteName} platform.`
             : infoText}
         </div>
@@ -185,13 +181,13 @@ const LinkSafetyModal = () => {
           className={'main-color-button '}
           style={{ wordBreak: 'break-all', paddingLeft: '16px', paddingRight: '16px' }}
         >
-          {info?.url}
+          {props.info?.url}
         </b>
       </div>
       <br />
       <div className={'ml3'}>
         {' '}
-        {dangerous && info?.rating > 0 && (
+        {dangerous && props.info?.rating > 0 && (
           <div className={'mb2'}>
             <b>Status:</b>{' '}
             <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
@@ -201,27 +197,27 @@ const LinkSafetyModal = () => {
           <b>Community rating:</b>{' '}
           <span className={'RatingsWrap__stars ml2'}>
             <Rate
-              disabled={!isAuth}
+              disabled={!props.isAuth}
               allowHalf
-              defaultValue={info?.rating / 2}
+              defaultValue={props.info?.rating / 2}
               className={ratingClassList}
               onChange={handleRateClick}
             />
           </span>
         </div>
-        {info?.linkWaivio && (
+        {props.info?.linkWaivio && (
           <div className={'mb2'}>
             <b>Details:</b>{' '}
             <a
-              href={`https://www.waivio.com/object/${info?.linkWaivio}`}
+              href={`https://www.waivio.com/object/${props.info?.linkWaivio}`}
               target={'_blank'}
               rel="noreferrer"
             >
-              https://www.waivio.com/object/{info?.linkWaivio}
+              https://www.waivio.com/object/{props.info?.linkWaivio}
             </a>
           </div>
         )}
-        {info.rating === 0 && (
+        {props.info.rating === 0 && (
           <div className={'WebsitesAuthorities__grey-text'}>
             Note: This site has no rating yet. Proceed with caution or leave a rating to help
             others.
@@ -232,4 +228,38 @@ const LinkSafetyModal = () => {
   ) : null;
 };
 
-export default LinkSafetyModal;
+LinkSafetyModal.propTypes = {
+  info: PropTypes.shape(),
+  config: PropTypes.shape(),
+  objectTypes: PropTypes.shape(),
+  isAuth: PropTypes.bool,
+  isWaivio: PropTypes.bool,
+  host: PropTypes.string,
+  user: PropTypes.string,
+  locale: PropTypes.string,
+  resetLinkSafetyInfo: PropTypes.func,
+  rateObject: PropTypes.func,
+  appendObject: PropTypes.func,
+  createWaivioObject: PropTypes.func,
+  getObjectTypes: PropTypes.func,
+};
+const mapStateToProps = state => ({
+  info: getLinkSafetyInfo(state),
+  isAuth: getIsAuthenticated(state),
+  config: getWebsiteConfiguration(state),
+  isWaivio: getIsWaivio(state),
+  host: getHostAddress(state),
+  objectTypes: getObjectTypesList(state),
+  user: getAuthenticatedUserName(state),
+  locale: getUsedLocale(state),
+});
+
+const mapDispatchToProps = {
+  resetLinkSafetyInfo,
+  rateObject,
+  appendObject,
+  createWaivioObject,
+  getObjectTypes,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LinkSafetyModal));
