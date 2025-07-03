@@ -1,10 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
 const GoogleAds = ({ isNewsfeed = false }) => {
   const adRef = useRef();
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+  const adSense = useSelector(getSettingsAds)?.code;
+
+  const ADSENSE_CLIENT_ID = useMemo(() => {
+    if (!adSense || typeof adSense !== 'string') return '';
+
+    const match = adSense.match(/client=([\w-]+)/);
+
+    return match ? match[1] : '';
+  }, [adSense]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -59,7 +70,7 @@ const GoogleAds = ({ isNewsfeed = false }) => {
           style={{ display: 'inline-block', width: '300px', height: '250px' }}
           data-ad-format="fluid"
           data-ad-layout-key="-6t+ed+2i-1n-4w"
-          data-ad-client="ca-pub-4624906456940175"
+          data-ad-client={ADSENSE_CLIENT_ID}
           data-ad-slot="6608674711"
         />
       </div>
