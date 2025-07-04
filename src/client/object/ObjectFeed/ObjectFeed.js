@@ -132,7 +132,9 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
         <Loading />
       ) : (
         <React.Fragment>
-          {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
+          {!isEmpty(reward?.main) && (
+            <Campaing campain={reward.main} secondary={reward?.secondary} />
+          )}
           {!isEmpty(reward?.secondary) &&
             reward?.secondary?.map((proposition, i) => (
               <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
