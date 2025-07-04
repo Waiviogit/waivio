@@ -191,19 +191,21 @@ const ImageSetter = ({
 
           return;
         }
+
         checkImage(false);
-      } else {
-        const blobOutput = await clipboardItems[0].getType('image/png');
 
-        const res = new File([blobOutput], 'filename', { type: 'image/png' });
-
-        if (isEditable) {
-          setState({ ...initialState, image: res });
-          setIsOpen(true);
-        } else {
-          handleChangeImage({ target: { files: [res] } });
-        }
+        return;
       }
+    }
+
+    const blobOutput = await clipboardItems[0].getType('image/png');
+    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+
+    if (isEditable) {
+      setState({ ...initialState, image: res });
+      setIsOpen(true);
+    } else {
+      handleChangeImage({ target: { files: [res] } });
     }
   };
 
