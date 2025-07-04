@@ -97,7 +97,13 @@ export const parseLink = (
   safeLinks,
 ) => (tagName, attribs) => {
   let { href } = attribs;
-  if (typeof window === 'undefined' && safeLinks && !isHostSafeFrontend(href, safeLinks)) {
+  if (
+    typeof window === 'undefined' &&
+    safeLinks &&
+    !href.startsWith('/') &&
+    !href.startsWith('#') &&
+    !isHostSafeFrontend(href, safeLinks)
+  ) {
     return { tagName: 'div', text: '' };
   }
 
