@@ -227,7 +227,7 @@ class StoryFooter extends React.Component {
       // adSenseSettings,
     } = this.props;
 
-    // const minimalAds = adSenseSettings?.level === 'minimal';
+    //  const minimalAds = adSenseSettings?.level === 'minimal';
     // const moderateAds = adSenseSettings?.level === 'moderate';
     // const intensiveAds = adSenseSettings?.level === 'intensive';
 
@@ -275,7 +275,8 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {/* {moderateAds && singlePostVew && <GooglePostAds />} */}
+        {/* {(moderateAds||minimalAds ||intensiveAds) && */}
+        {/*  singlePostVew && <GooglePostAds isMultiplex={intensiveAds} />} */}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
@@ -284,6 +285,7 @@ class StoryFooter extends React.Component {
             isRecipe={isRecipe}
           />
         )}
+        {/* {intensiveAds &&<GooglePostAds isHorisontal/>} */}
         <MuteModal
           item={post}
           type={'post'}

@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
-const GooglePostAds = () => {
+const GooglePostAds = ({ isMultiplex = false, isHorisontal = false }) => {
   const [visible, setVisible] = useState(true);
   const adRef = useRef();
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -55,7 +56,7 @@ const GooglePostAds = () => {
                   setVisible(false);
                 }
               }
-            }, 2500); // Give it time to render
+            }, 2500);
           } catch (e) {
             console.error('❌ AdSense push error', e);
           }
@@ -67,6 +68,37 @@ const GooglePostAds = () => {
       return () => clearTimeout(timeout);
     }
   }, []);
+
+  if (isMultiplex)
+    return (
+      <div style={{ minWidth: '250px', maxHeight: '350px' }}>
+        <ins
+          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+          ref={adRef}
+          className="adsbygoogle"
+          style={{ display: 'inline-block', minWidth: '250px' }}
+          data-ad-format="autorelaxed"
+          data-ad-client={ADSENSE_CLIENT_ID}
+          data-ad-slot="6985655648"
+        />
+      </div>
+    );
+
+  if (isHorisontal)
+    return (
+      <div style={{ minWidth: '250px', maxHeight: '350px' }}>
+        <ins
+          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+          ref={adRef}
+          className="adsbygoogle"
+          style={{ display: 'inline-block', minWidth: '250px' }}
+          data-ad-client={ADSENSE_CLIENT_ID}
+          data-ad-slot="7361060163"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      </div>
+    );
 
   return (
     visible && (
@@ -84,6 +116,11 @@ const GooglePostAds = () => {
       </div>
     )
   );
+};
+
+GooglePostAds.propTypes = {
+  isMultiplex: PropTypes.bool,
+  isHorisontal: PropTypes.bool,
 };
 
 export default GooglePostAds;
