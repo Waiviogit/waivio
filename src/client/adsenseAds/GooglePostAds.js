@@ -1,9 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
 const GooglePostAds = () => {
   const [visible, setVisible] = useState(true);
   const adRef = useRef();
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+  const adSense = useSelector(getSettingsAds)?.code;
+
+  const ADSENSE_CLIENT_ID = useMemo(() => {
+    if (!adSense || typeof adSense !== 'string') return '';
+
+    const match = adSense.match(/client=([\w-]+)/);
+
+    return match ? match[1] : '';
+  }, [adSense]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -65,7 +76,7 @@ const GooglePostAds = () => {
           ref={adRef}
           className="adsbygoogle"
           style={{ display: 'inline-block' }}
-          data-ad-client="ca-pub-4624906456940175"
+          data-ad-client={ADSENSE_CLIENT_ID}
           data-ad-slot="6623791043"
           data-ad-format="auto"
           data-full-width-responsive="true"
