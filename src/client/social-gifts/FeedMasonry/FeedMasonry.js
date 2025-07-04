@@ -4,14 +4,10 @@ import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj } from './helpers';
-import GoogleAds from '../../adsenseAds/GoogleAds';
-import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
-import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
 
 import './FeedMasonry.less';
 
@@ -27,10 +23,6 @@ const FeedMasonry = ({
   isReviewsPage,
   className,
 }) => {
-  const adSenseSettings = useSelector(getSettingsAds);
-
-  const adFrequency = adIntensityLevels?.find(l => l.key === adSenseSettings?.level)?.frequency;
-
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
     if (isEmpty(posts))
@@ -55,34 +47,20 @@ const FeedMasonry = ({
           columnClassName="my-masonry-grid_column"
           key={'my-masonry-grid_column'}
         >
-          {posts?.flatMap((post, index) => {
-            const elements = [];
-
+          {posts?.map(post => {
             const urlPreview = isEmpty(previews)
               ? ''
-              : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
+              : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
 
-            elements.push(
-              <div key={`${post.author}/${post.permlink}`}>
-                <FeedItem
-                  isReviewsPage={isReviewsPage}
-                  preview={urlPreview}
-                  photoQuantity={2}
-                  post={post}
-                />
-              </div>,
+            return (
+              <FeedItem
+                isReviewsPage={isReviewsPage}
+                preview={urlPreview}
+                key={`${post.author}/${post?.permlink}`}
+                photoQuantity={2}
+                post={post}
+              />
             );
-
-            if ((index + 1) % adFrequency === 0) {
-              elements.push(
-                // eslint-disable-next-line react/no-array-index-key
-                <div key={`google-ad-${index}`} style={{ maxHeight: '300px' }}>
-                  <GoogleAds isNewsfeed />{' '}
-                </div>,
-              );
-            }
-
-            return elements;
           })}
         </Masonry>
         <PostModal />
