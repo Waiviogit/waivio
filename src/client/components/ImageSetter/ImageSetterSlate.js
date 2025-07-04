@@ -86,18 +86,17 @@ const ImageSetter = ({
   const onPaste = async () => {
     const clipboardItems = await navigator.clipboard.read();
     const item = clipboardItems[0];
+    const types = item.types;
 
-    const htmlBlob = await item.getType('text/html');
-    const htmlText = await htmlBlob.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlText, 'text/html');
-    const img = doc.querySelector('img');
+    if (types.includes('text/html')) {
+      const htmlBlob = await item.getType('text/html');
+      const htmlText = await htmlBlob.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, 'text/html');
+      const image = doc.querySelector('img');
 
-    if (img?.src) {
-      const imageUrl = img.src;
-
-      if (imageUrl) {
-        const url = imageUrl;
+      if (image?.src?.includes('.gif')) {
+        const url = image.src;
         const urlValidation = url.match(objectURLValidationRegExp);
 
         if (urlValidation) {
@@ -115,12 +114,22 @@ const ImageSetter = ({
 
           await onImageUpload(url, insertImage, onErrorLoadImage, true);
           imageLinkInput.current.value = '';
+
           checkImage(true, newImage);
-        } else {
-          checkImage(false);
+
+          return;
         }
+
+        checkImage(false);
+
+        return;
       }
     }
+
+    const blobOutput = await clipboardItems[0].getType('image/png');
+    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+
+    handleChangeImage({ target: { files: [res] } });
   };
 
   const colors = useWebsiteColor();
