@@ -65,7 +65,7 @@ const SearchAllResult = props => {
       !shownMaps?.includes(props.currObj?.author_permlink) &&
       !isMobile(),
   );
-  const isUsersSearch = props.searchType === 'Users';
+  // const isUsersSearch = props.searchType === 'Users';
   const showInfo = has(props.currObj, 'description');
   const resultList = useRef();
   const history = useHistory();
@@ -239,7 +239,7 @@ const SearchAllResult = props => {
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        {!isUsersSearch && !props.isSocial && !props.isUserMap && <SearchMapFilters />}
+        {!props.isSocial && !props.isUserMap && <SearchMapFilters />}
         <div
           className={showReload ? 'SearchAllResult__buttons-wrap' : 'SearchAllResult__edit-wrap'}
         >
