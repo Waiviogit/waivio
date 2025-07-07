@@ -23,24 +23,28 @@ const CookieNotice = () => {
 
   return (
     <div className="cookie-notice-box">
-      <div className="cookie-title">Cookies policy</div>
-      <div className="cookie-description">
+      <div className={'cookie-wrap'}>
+        {' '}
         <div>
+          {' '}
           <span>
             {' '}
             <ReactSVG
               wrapper="span"
               src="/images/icons/cookies-icon.svg"
-              style={{ width: '30px' }}
+              className={'cookie-icon'}
             />
           </span>
         </div>
         <div>
-          This website uses cookies to ensure you get the best experience. For details, see our{' '}
-          <span>
-            <Link to="/object/uid-cookies-policy">Cookies Policy</Link>
-          </span>
-          .
+          <div className="cookie-title">Cookies policy</div>
+          <div>
+            This website uses cookies to ensure you get the best experience. For details, see our{' '}
+            <span>
+              <Link to="/object/uid-cookies-policy">Cookies Policy</Link>
+            </span>
+            .
+          </div>
         </div>
       </div>
       <div className="cookie-buttons">
