@@ -35,8 +35,15 @@ const GoogleAds = () => {
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
 
   const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
-  const insTagMatch = unitCode.match(/<ins\s[^>]*class=["']adsbygoogle["'][^>]*><\/ins>/i);
-  const insAttributes = insTagMatch ? parseInsTagAttributes(insTagMatch?.[0]) : {};
+  const insTagMatch = unitCode?.match(/<ins\s[^>]*class=["']adsbygoogle["'][^>]*><\/ins>/i);
+
+  // eslint-disable-next-line no-console
+  console.log(insTagMatch, 'insTagMatch');
+  let insAttributes = {};
+
+  if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
+    insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
