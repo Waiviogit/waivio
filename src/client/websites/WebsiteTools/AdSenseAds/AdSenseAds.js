@@ -205,13 +205,6 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
           })}
         </div>
       )}
-      <p>
-        {intl.formatMessage({
-          id: 'adsense_advertisements_adsense_code_note',
-          defaultMessage:
-            'This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your site.',
-        })}
-      </p>
       <Button
         disabled={disabled}
         type="primary"
