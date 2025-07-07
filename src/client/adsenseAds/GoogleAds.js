@@ -36,7 +36,7 @@ const GoogleAds = () => {
 
   const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   const insTagMatch = unitCode.match(/<ins\s[^>]*class=["']adsbygoogle["'][^>]*><\/ins>/i);
-  const insAttributes = insTagMatch ? parseInsTagAttributes(insTagMatch[0]) : null;
+  const insAttributes = insTagMatch ? parseInsTagAttributes(insTagMatch?.[0]) : {};
 
   useEffect(() => {
     const timer = setTimeout(() => {
