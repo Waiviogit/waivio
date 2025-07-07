@@ -23,6 +23,8 @@ const GiveawayModal = ({
   currencyInfo,
   rateInUsd,
   getTokenBalanceAction,
+  isEdit,
+  saveData,
 }) => {
   const [filtered, setFiltered] = useState(false);
   const [isOpenGiveAwayModal, setIsiOpenGiveAwayModal] = React.useState(false);
@@ -44,11 +46,17 @@ const GiveawayModal = ({
     resetFields();
   };
 
+  const onDelete = () => {
+    resetFields();
+    setShowPreview(false);
+  };
+
   // eslint-disable-next-line consistent-return
   const validateRewards = (rule, value, callback) => {
     const winners = getFieldValue('winners');
 
     if (winners * value > budget) return callback('Rewards more than user balance.');
+    if (value * currency.rate < 0.5) return callback('Minimum reward of $0.5 is required.');
     callback();
   };
 
@@ -66,10 +74,11 @@ const GiveawayModal = ({
 
   const handleSubmit = e => {
     e.preventDefault();
-    validateFields(err => {
+    validateFields((err, values) => {
       if (!err) {
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
+        saveData({ ...values, guideName: user.name, currency: currency.type });
       }
     });
   };
@@ -77,7 +86,12 @@ const GiveawayModal = ({
   return (
     <React.Fragment>
       {showPreview ? (
-        <GiveawayBlockPreview formData={getFieldsValue()} onEdit={onClickGiveawayButton} />
+        <GiveawayBlockPreview
+          formData={getFieldsValue()}
+          onEdit={onClickGiveawayButton}
+          onDelete={onDelete}
+          isEditable={!isEdit}
+        />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
           Add giveaway
@@ -88,13 +102,13 @@ const GiveawayModal = ({
           <Form onSubmit={handleSubmit} layout="vertical">
             <FormItem label="Name">
               {getFieldDecorator('name', {
-                rules: [{ required: true, message: 'Enter campaign name' }],
+                rules: [{ required: true, message: 'Campaign name is required.' }],
               })(<Input placeholder="Enter campaign name" />)}
             </FormItem>
             <FormItem label="Reward (per winner, USD)">
               {getFieldDecorator('reward', {
                 rules: [
-                  { required: true },
+                  { required: true, message: 'Reward is required.' },
                   {
                     validator: validateRewards,
                   },
@@ -137,14 +151,19 @@ const GiveawayModal = ({
 
             <FormItem label="Expiry date">
               {getFieldDecorator('expiry', {
-                rules: [{ required: true }],
+                rules: [{ required: true, message: 'Expiry date is required.' }],
               })(
                 <DatePicker
-                  disabledDate={currDate =>
-                    moment()
-                      // .add(1, 'days')
-                      .unix() > currDate.unix()
-                  }
+                  disabledDate={currDate => {
+                    const tomorrow = moment()
+                      .add(1, 'days')
+                      .startOf('day');
+                    const maxDate = moment()
+                      .add(30, 'days')
+                      .endOf('day');
+
+                    return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
+                  }}
                   showTime
                   format="YYYY-MM-DD hh:mm A"
                   style={{ width: '100%' }}
@@ -153,13 +172,13 @@ const GiveawayModal = ({
             </FormItem>
 
             <FormItem label="Giveaway requirements">
-              {getFieldDecorator('requirements', {
-                initialValue: ['like', 'comment', 'tag', 'reblog', 'follow'],
+              {getFieldDecorator('giveawayRequirements', {
+                initialValue: ['likePost', 'comment', 'tag', 'reblog', 'follow'],
                 rules: [
                   {
                     validator: (_, value, callback) => {
                       if (!value || value.length === 0) {
-                        callback('Please select at least one requirement.');
+                        callback('At least one giveaway rule is required.');
                       } else {
                         callback();
                       }
@@ -169,7 +188,7 @@ const GiveawayModal = ({
               })(
                 <Checkbox.Group style={{ display: 'flex', flexDirection: 'column' }}>
                   <Checkbox value="follow">Follow the author</Checkbox>
-                  <Checkbox value="like">Like the post</Checkbox>
+                  <Checkbox value="likePost">Like the post</Checkbox>
                   <Checkbox value="comment">Leave a comment</Checkbox>
                   <Checkbox value="tag">Tag 2 friends in a comment</Checkbox>
                   <Checkbox value="reblog">Re-blog the post</Checkbox>
@@ -179,7 +198,7 @@ const GiveawayModal = ({
 
             <FormItem label="Eligible users">
               {getFieldDecorator('eligible', {
-                initialValue: 'all',
+                initialValue: filtered ? 'filtered' : 'all',
               })(
                 <RadioGroup onChange={e => setFiltered(e.target.value === 'filtered')}>
                   <Radio value="all">All users</Radio>
@@ -191,15 +210,21 @@ const GiveawayModal = ({
             {filtered && (
               <>
                 <FormItem label="Minimum Waivio expertise (optional)">
-                  {getFieldDecorator('minExpertise')(<InputNumber style={{ width: '100%' }} />)}
+                  {getFieldDecorator('minExpertise', { initialValue: 0 })(
+                    <InputNumber style={{ width: '100%' }} />,
+                  )}
                 </FormItem>
 
                 <FormItem label="Minimum number of followers (optional)">
-                  {getFieldDecorator('minFollowers')(<InputNumber style={{ width: '100%' }} />)}
+                  {getFieldDecorator('minFollowers', { initialValue: 0 })(
+                    <InputNumber style={{ width: '100%' }} />,
+                  )}
                 </FormItem>
 
                 <FormItem label="Minimum number of posts (optional)">
-                  {getFieldDecorator('minPosts')(<InputNumber style={{ width: '100%' }} />)}
+                  {getFieldDecorator('minPosts', { initialValue: 0 })(
+                    <InputNumber style={{ width: '100%' }} />,
+                  )}
                 </FormItem>
               </>
             )}
@@ -207,8 +232,10 @@ const GiveawayModal = ({
             <FormItem label="Commissions to Waivio and partners">
               {getFieldDecorator('commission', {
                 initialValue: 5,
+                rules: [{ required: true, message: 'Minimum commission of 5% is required.' }],
+                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
-                <Input
+                <InputNumber
                   style={{
                     width: '100%',
                   }}
@@ -223,19 +250,39 @@ const GiveawayModal = ({
             <FormItem>
               {getFieldDecorator('agreement', {
                 valuePropName: 'checked',
-                rules: [{ required: true }],
+                rules: [
+                  { required: true, message: 'Accepting the Terms and Conditions is required.' },
+                ],
+                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
                 <Checkbox>
-                  I agree to the <a href="">Terms and Conditions</a> of the service and acknowledge
-                  that this campaign does not violate any laws of British Columbia, Canada.
+                  I agree to the{' '}
+                  <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions</a> of the
+                  service and acknowledge that this campaign does not violate any laws of British
+                  Columbia, Canada.
                 </Checkbox>,
               )}
             </FormItem>
 
             <FormItem>
-              <Button type="primary" htmlType="submit" block>
-                Create Giveaway
-              </Button>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <Button
+                  style={{
+                    width: 'auto',
+                    fontWeight: '500',
+                  }}
+                  type="primary"
+                  htmlType="submit"
+                  block
+                >
+                  Create giveaway
+                </Button>
+              </div>
             </FormItem>
           </Form>
         </Modal>
@@ -256,6 +303,8 @@ GiveawayModal.propTypes = {
   currencyInfo: PropTypes.shape(),
   rateInUsd: PropTypes.string,
   getTokenBalanceAction: PropTypes.func,
+  saveData: PropTypes.func,
+  isEdit: PropTypes.bool,
 };
 
 export default injectIntl(

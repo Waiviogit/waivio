@@ -4,11 +4,11 @@ import { Button, Checkbox } from 'antd';
 
 import './GiveawayBlockPreview.less';
 
-const GiveawayBlockPreview = ({ formData, onEdit }) => {
+const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
   const {
     reward,
     winners,
-    requirements = [],
+    giveawayRequirements = [],
     eligible,
     minExpertise,
     minFollowers,
@@ -16,7 +16,7 @@ const GiveawayBlockPreview = ({ formData, onEdit }) => {
   } = formData;
 
   const renderRequirement = (label, key) =>
-    requirements.includes(key) && (
+    giveawayRequirements.includes(key) && (
       <div className="GiveawayPreviewBlock__item">
         <Checkbox checked disabled />
         <span>{label}</span>
@@ -54,15 +54,22 @@ const GiveawayBlockPreview = ({ formData, onEdit }) => {
           Giveaway time! Your chance to win ${reward} {winners > 1 ? `with ${winners} winners` : ''}
           !
         </h3>
-        <Button size="small" onClick={onEdit}>
-          Edit
-        </Button>
+        {isEditable && (
+          <div>
+            <Button style={{ marginRight: '5px' }} onClick={onEdit}>
+              Edit
+            </Button>
+            <Button onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        )}
       </div>
-
       <div className="GiveawayPreviewBlock__section">
         <strong className="GiveawayPreviewBlock__label">To enter:</strong>
         <div className="GiveawayPreviewBlock__list">
-          {renderRequirement('Like the post', 'like')}
+          {renderRequirement('Like the post', 'likePost')}
+          {renderRequirement('Follow the author', 'follow')}
           {renderRequirement('Leave a comment', 'comment')}
           {renderRequirement('Tag a friend in a comment', 'tag')}
           {renderRequirement('Re-blog the post', 'reblog')}
@@ -86,13 +93,15 @@ GiveawayBlockPreview.propTypes = {
   formData: PropsType.shape({
     reward: PropsType.number,
     winners: PropsType.number,
-    requirements: PropsType.number,
+    giveawayRequirements: PropsType.number,
     eligible: PropsType.number,
     minExpertise: PropsType.number,
     minFollowers: PropsType.number,
     minPosts: PropsType.number,
   }),
   onEdit: PropsType.func,
+  onDelete: PropsType.func,
+  isEditable: PropsType.bool,
 };
 
 export default GiveawayBlockPreview;

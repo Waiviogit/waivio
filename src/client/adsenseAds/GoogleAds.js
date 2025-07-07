@@ -1,10 +1,49 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
-const GoogleAds = ({ isNewsfeed = false }) => {
-  const adRef = useRef();
+const parseInsTagAttributes = str => {
+  const attrs = Object.fromEntries(
+    [...str.matchAll(/(\S+)=["']([^"']+)["']/g)].map(([, key, value]) => [
+      key === 'class' ? 'className' : key,
+      value,
+    ]),
+  );
+
+  if (attrs.style) {
+    attrs.style = Object.fromEntries(
+      attrs.style
+        .split(';')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(s => {
+          const [k, v] = s.split(':').map(x => x.trim());
+
+          const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+
+          return [camelKey, v];
+        }),
+    );
+  }
+
+  return attrs;
+};
+
+const GoogleAds = () => {
+  const adRef = useRef(null);
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
+  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
+  const insTagMatch = unitCode?.match(/<ins\s[^>]*class=["']adsbygoogle["'][^>]*><\/ins>/i);
+
+  // eslint-disable-next-line no-console
+  console.log(insTagMatch, 'insTagMatch');
+  let insAttributes = {};
+
+  if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
+    insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,8 +67,7 @@ const GoogleAds = ({ isNewsfeed = false }) => {
             } else {
               // eslint-disable-next-line no-console
               console.log(adStatus, '❓ Ad status');
-
-              const iframe = adRef.current?.querySelector('iframe');
+              const iframe = adElement?.querySelector('iframe');
 
               if (!iframe) {
                 // eslint-disable-next-line no-console
@@ -47,30 +85,15 @@ const GoogleAds = ({ isNewsfeed = false }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!visible) return null;
+  if (!visible || !insAttributes) return null;
 
-  if (isNewsfeed && visible)
-    return (
-      <div style={{ minWidth: '250px', minHeight: '250px' }}>
-        <ins
-          {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'inline-block', width: '300px', height: '250px' }}
-          data-ad-format="fluid"
-          data-ad-layout-key="-6t+ed+2i-1n-4w"
-          data-ad-client="ca-pub-4624906456940175"
-          data-ad-slot="6608674711"
-        />
-      </div>
-    );
-
-  return null;
+  return (
+    <div style={{ minWidth: '250px', minHeight: '100px' }}>
+      <ins {...insAttributes} {...(isLocalhost ? { 'data-adtest': 'on' } : {})} ref={adRef} />
+    </div>
+  );
 };
 
-GoogleAds.propTypes = {
-  isNewsfeed: PropTypes.bool,
-  isPostText: PropTypes.bool,
-};
+GoogleAds.propTypes = {};
 
 export default GoogleAds;

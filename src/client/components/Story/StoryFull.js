@@ -51,13 +51,20 @@ import InstacartWidget from '../../widgets/InstacartWidget';
 import './StoryFull.less';
 import AppendModal from '../../object/AppendModal/AppendModal';
 import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
+import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 @injectIntl
 @withRouter
 @withAuthActions
-@connect(null, {
-  muteAuthorPost,
-})
+@connect(
+  state => ({
+    adSenseSettings: getSettingsAds(state),
+  }),
+  {
+    muteAuthorPost,
+  },
+)
 class StoryFull extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -65,6 +72,7 @@ class StoryFull extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    adSenseSettings: PropTypes.shape(),
     defaultVotePercent: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     muteAuthorPost: PropTypes.func.isRequired,
@@ -286,8 +294,10 @@ class StoryFull extends React.Component {
       handleEditThread,
       closeEditThread,
       newBody,
+      adSenseSettings,
     } = this.props;
-
+    const moderateAds = adSenseSettings?.level === 'moderate';
+    const intensiveAds = adSenseSettings?.level === 'intensive';
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -431,6 +441,7 @@ class StoryFull extends React.Component {
             </a>
           </h3>
         )}
+        {(moderateAds || intensiveAds) && <GoogleAds />}
         {post && (
           <div className="StoryFull__header">
             <Link to={`/@${authorName}`}>
