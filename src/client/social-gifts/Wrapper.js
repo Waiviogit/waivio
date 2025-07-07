@@ -72,6 +72,7 @@ import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActi
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
 import { enrichMenuItems } from './SocialProduct/SocialProduct';
 import LinkSafetyModal from '../widgets/LinkSafetyModal/LinkSafetyModal';
+import CookieNotice from '../widgets/CookieNotice/CookieNotice';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -294,6 +295,7 @@ const SocialWrapper = props => {
             {!isWidget && (
               <React.Fragment>
                 <NotificationPopup />
+                <CookieNotice />
                 <BBackTop
                   className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
                 />
