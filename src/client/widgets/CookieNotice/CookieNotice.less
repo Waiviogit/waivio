@@ -1,25 +1,41 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
 .cookie-notice-box {
   position: fixed;
   bottom: 24px;
-  left: 24px;
+  left: 15px;
+  right: 15px;
   background: #fff;
   padding: 16px 20px;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 2000;
   max-width: 360px;
+  @media @small {
+    left: 24px;
+    right: 0;
+  }
 }
 
 .cookie-title {
   font-weight: 600;
   font-size: 16px;
-  margin-bottom: 8px;
+
+  padding-top: 4px;
 }
 
 .cookie-description {
+  padding-bottom: 10px;
   color: #555;
-  font-size: 15px;
+  font-size: 16px;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.cookie-wrap {
+  align-items: flex-start;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -27,11 +43,17 @@
 
 .cookie-description a {
   color: var(--website-color);
-  text-decoration: underline;
 }
 
 .cookie-buttons {
   display: flex;
   gap: 12px;
   justify-content: end;
+}
+.cookie-icon {
+  svg {
+    path {
+      fill: var(--website-color);
+    }
+  }
 }
