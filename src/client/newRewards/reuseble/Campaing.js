@@ -26,7 +26,7 @@ const Campaing = ({
   isLinkedObj,
   secondary,
 }) => {
-  const rewardInUSD = campain?.rewardInUSD || secondary[0]?.rewardInUSD;
+  const rewardInUSD = campain?.rewardInUSD || secondary?.[0]?.rewardInUSD;
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   let mainItem = campain.object;
