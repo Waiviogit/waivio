@@ -733,7 +733,7 @@ function sc2Extended() {
 
         return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
-      saveAdSenseSettings(username, isGuestUser, host, code, level, txtFile, cb) {
+      saveAdSenseSettings(username, isGuestUser, host, code, level, txtFile, displayUnitCode, cb) {
         const params = isGuestUser
           ? {
               id: 'website_adsense',
@@ -742,6 +742,7 @@ function sc2Extended() {
                 code,
                 level,
                 txtFile,
+                displayUnitCode,
               },
             }
           : {
@@ -752,6 +753,7 @@ function sc2Extended() {
                 code,
                 level,
                 txtFile,
+                displayUnitCode,
               }),
             };
 
