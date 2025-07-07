@@ -44,6 +44,7 @@ import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { setLocale } from '../store/settingsStore/settingsActions';
 import { getWebsiteSettings } from '../store/websiteStore/websiteActions';
 import LinkSafetyModal from './widgets/LinkSafetyModal/LinkSafetyModal';
+import CookieNotice from './widgets/CookieNotice/CookieNotice';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -276,6 +277,7 @@ class WebsiteWrapper extends React.PureComponent {
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <LinkSafetyModal />
                 <NotificationPopup />
+                <CookieNotice />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
             </Layout>
