@@ -52,6 +52,7 @@ import './StoryFull.less';
 import AppendModal from '../../object/AppendModal/AppendModal';
 import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
 import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 @injectIntl
 @withRouter
@@ -293,10 +294,10 @@ class StoryFull extends React.Component {
       handleEditThread,
       closeEditThread,
       newBody,
-      // adSenseSettings
+      adSenseSettings,
     } = this.props;
-    //    const moderateAds = adSenseSettings?.level === 'moderate';
-    // const intensiveAds = adSenseSettings?.level === 'intensive';
+    const moderateAds = adSenseSettings?.level === 'moderate';
+    const intensiveAds = adSenseSettings?.level === 'intensive';
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -440,9 +441,7 @@ class StoryFull extends React.Component {
             </a>
           </h3>
         )}
-        {/* { */}
-        {/*   (moderateAds|| intensiveAds) && */}
-        {/*  <GooglePostAds/>} */}
+        {(moderateAds || intensiveAds) && <GoogleAds />}
         {post && (
           <div className="StoryFull__header">
             <Link to={`/@${authorName}`}>

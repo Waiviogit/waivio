@@ -24,6 +24,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   const [level, setLevel] = useState('');
   const [txtFile, setTxtFile] = useState('');
   const [adSense, setAdSense] = useState('');
+  const [displayUnitCode, setDisplayUnitCode] = useState('');
   const host = match.params.site;
   const scriptRegex = /<script[^>]*>/g;
 
@@ -35,8 +36,12 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       !adSense.includes('<script') ||
       !adSense.includes('src="https://pagead2.googlesyndication.com') ||
       scriptTags.length > 1);
+  const showDisplayUnitCodeError = !isEmpty(displayUnitCode) && !displayUnitCode.includes('<ins');
   const handleChangeAdSense = e => {
     setAdSense(e.target.value);
+  };
+  const handleChangeDisplayUnitCode = e => {
+    setDisplayUnitCode(e.target.value);
   };
   const handleChangeAdSenseText = e => {
     setTxtFile(e.target.value);
@@ -52,7 +57,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
 
   const handleSaveAdSenseSettings = () => {
     setButtonLoading(true);
-    saveAdSense(host, adSense, level, txtFile).then(res => {
+    saveAdSense(host, adSense, level, txtFile, displayUnitCode).then(res => {
       setButtonLoading(false);
       if (!res.value.error)
         message.success(intl.formatMessage({ id: 'adSense_advertisements_updated_successfully' }));
@@ -174,6 +179,38 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
             'Choose the advertising intensity to balance user experience with revenue generation',
         })}
         .
+      </p>
+      <h3>
+        {intl.formatMessage({
+          id: 'display_ad_unit_code',
+          defaultMessage: 'Display ad unit code',
+        })}
+        :
+      </h3>
+      <Input.TextArea
+        value={displayUnitCode}
+        onChange={e => handleChangeDisplayUnitCode(e)}
+        placeholder={intl.formatMessage({
+          id: 'display_unit_code_add_yours',
+          defaultMessage: 'Paste your display ad unit code here',
+        })}
+        autoSize={{ minRows: 2 }}
+      />
+      {showDisplayUnitCodeError && (
+        <div className="AdSenseAds__error">
+          {' '}
+          {intl.formatMessage({
+            id: 'ad_unit_invalid_code',
+            defaultMessage: 'Invalid display ad unit code entered. Please provide a valid script.',
+          })}
+        </div>
+      )}
+      <p>
+        {intl.formatMessage({
+          id: 'adsense_advertisements_adsense_code_note',
+          defaultMessage:
+            'This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your site.',
+        })}
       </p>
       <Button
         disabled={disabled}
