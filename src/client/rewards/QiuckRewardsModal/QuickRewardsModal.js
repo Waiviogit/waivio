@@ -101,7 +101,7 @@ const QuickRewardsModal = props => {
     e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
-      if (!props?.selectedDish?.reserved) {
+      if (!props?.selectedDish?.reserved && props.selectedDish.type === 'review') {
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', 'reserve_proposition_in_quick_rewards_modal', { debug_mode: false });
         const permlink = `reserve-${generatePermlink()}`;
