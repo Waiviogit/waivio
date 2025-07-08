@@ -147,7 +147,7 @@ const SearchAllResult = props => {
     ) {
       currentSearchMethod(props.searchString);
     }
-  }, [props.activeFilters, props.searchMap, props.searchString]);
+  }, [props.activeFilters, props.searchMap, props.searchString, props.searchType]);
 
   useEffect(() => {
     if ((props.isSocial || props.isUserMap) && !isMobile()) {
