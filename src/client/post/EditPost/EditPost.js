@@ -136,7 +136,7 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
-          <GiveawayModal />
+          <GiveawayModal isEdit={isUpdating} />
           <div className="edit-post__saving-badge">
             {props.draftPosts.some(d => d.draftId === props.draftId) && (
               <React.Fragment>

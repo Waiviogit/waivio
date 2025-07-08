@@ -4,7 +4,7 @@ import { Button, Checkbox } from 'antd';
 
 import './GiveawayBlockPreview.less';
 
-const GiveawayBlockPreview = ({ formData, onEdit }) => {
+const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
   const {
     reward,
     winners,
@@ -54,9 +54,16 @@ const GiveawayBlockPreview = ({ formData, onEdit }) => {
           Giveaway time! Your chance to win ${reward} {winners > 1 ? `with ${winners} winners` : ''}
           !
         </h3>
-        <Button size="small" onClick={onEdit}>
-          Edit
-        </Button>
+        {isEditable && (
+          <div>
+            <Button style={{ marginRight: '5px' }} size="small" onClick={onEdit}>
+              Edit
+            </Button>
+            <Button size="small" onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="GiveawayPreviewBlock__section">
@@ -93,6 +100,8 @@ GiveawayBlockPreview.propTypes = {
     minPosts: PropsType.number,
   }),
   onEdit: PropsType.func,
+  onDelete: PropsType.func,
+  isEditable: PropsType.bool,
 };
 
 export default GiveawayBlockPreview;
