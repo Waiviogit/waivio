@@ -38,7 +38,7 @@ const CookieNotice = () => {
         </div>
         <div>
           <div className="cookie-title">Cookies policy</div>
-          <div>
+          <div className="cookie-description">
             This website uses cookies to ensure you get the best experience. For details, see our{' '}
             <span>
               <Link to="/object/uid-cookies-policy">Cookies Policy</Link>

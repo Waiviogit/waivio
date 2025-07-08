@@ -53,7 +53,7 @@ const WebsiteReservedButtons = props => {
         className="WebsiteReservedButtons__button"
         disabled={props.disable}
       >
-        <b>Submit</b> dish photos
+        <b>Submit</b> photos
       </Button>
       {props.dish.type !== 'mentions' && (
         <Popover

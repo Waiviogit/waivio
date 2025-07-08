@@ -7,7 +7,6 @@ const switchRoutes = (host, parentHost) => {
   const hostForCheck = parentHost || host || '';
 
   if (socialDomens.some(item => hostForCheck?.includes(item))) return socialRoutes(host);
-
   if (hostForCheck?.includes('dining')) return websitesRoutes(host);
 
   return routes;
