@@ -71,6 +71,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         setLevel(isEmpty(res.value.level) ? adIntensityLevels[0].key : res.value.level);
         setAdSense(res.value.code);
         setTxtFile(res.value.txtFile);
+        setDisplayUnitCode(res.value.displayUnitCode);
         setLoading(false);
       });
   }, [host]);
