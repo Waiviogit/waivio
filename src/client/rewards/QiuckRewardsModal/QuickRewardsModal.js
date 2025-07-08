@@ -58,7 +58,7 @@ const QuickRewardsModal = props => {
   const isPropositionObj =
     (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
     !props?.selectedDish?.propositions?.[0]?.notEligible;
-
+  const isReview = props.selectedDish.type === 'reviews';
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -101,7 +101,7 @@ const QuickRewardsModal = props => {
     e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
-      if (!props?.selectedDish?.reserved && props.selectedDish.type === 'review') {
+      if (!props?.selectedDish?.reserved && isReview) {
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', 'reserve_proposition_in_quick_rewards_modal', { debug_mode: false });
         const permlink = `reserve-${generatePermlink()}`;
@@ -137,8 +137,7 @@ const QuickRewardsModal = props => {
   const handelRejectReservation = () => {
     const proposition = get(props.selectedDish, 'propositions[0]', null) || props.selectedDish;
 
-    if (props.selectedDish.type === 'review')
-      props.realiseRewards({ ...proposition, reservationPermlink });
+    if (isReview) props.realiseRewards({ ...proposition, reservationPermlink });
   };
 
   const getCurrentScreen = (() => {

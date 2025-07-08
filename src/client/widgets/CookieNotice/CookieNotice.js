@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
+import { useSelector } from 'react-redux';
 import Cookie from 'js-cookie';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import './CookieNotice.less';
 
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
+  const isAuth = useSelector(getIsAuthenticated);
 
   useEffect(() => {
     const accepted = Cookie.get('cookie_accepted');
 
-    if (!accepted) setVisible(true);
+    if (!accepted && isAuth) setVisible(true);
   }, []);
 
   const handleAccept = () => {

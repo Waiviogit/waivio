@@ -37,14 +37,14 @@ const GoogleAds = () => {
   const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   const insTagMatch = unitCode?.match(/<ins\s[^>]*class=["']adsbygoogle["'][^>]*><\/ins>/i);
 
-  // eslint-disable-next-line no-console
-  console.log(insTagMatch, 'insTagMatch');
   let insAttributes = {};
 
   if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
     insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
   }
 
+  // eslint-disable-next-line no-console
+  console.log(insAttributes, 'insAttributes');
   useEffect(() => {
     const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current) {
