@@ -27,6 +27,7 @@ const SocialSignInModalContent = ({
   const query = useQuery();
   const host = query.get('host');
   const backUrl = query.get('backUrl');
+  const color = query.get('color');
 
   const handleCloseModal = () => {
     if (typeof window !== 'undefined' && (backUrl || host)) {
@@ -68,6 +69,7 @@ const SocialSignInModalContent = ({
           style={{
             ...styles.resetTitleStyles,
             ...styles.webColor,
+            color: `#${color}` || styles.webColor.color,
           }}
         >
           {websiteTitle}
@@ -106,11 +108,19 @@ const SocialSignInModalContent = ({
                 </p>
                 {isMobile() ? (
                   <center>
-                    <a href={new URLSearchParams(showQR).get('data')}>
+                    <a
+                      href={new URLSearchParams(showQR).get('data')}
+                      style={{ color: `#${color}` }}
+                    >
                       <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
                     </a>
                     <p className="ModalSignIn__rules">or</p>
-                    <a href={new URLSearchParams(showQR).get('data')}>Click here</a>
+                    <a
+                      href={new URLSearchParams(showQR).get('data')}
+                      style={{ color: `#${color}` }}
+                    >
+                      Click here
+                    </a>
                   </center>
                 ) : (
                   <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
@@ -215,6 +225,7 @@ const SocialSignInModalContent = ({
                 href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/xrj-terms-and-conditions`}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ color: `#${color}` }}
               >
                 <span>Terms & Conditions</span>
               </a>
@@ -224,6 +235,7 @@ const SocialSignInModalContent = ({
                 href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/poi-privacy-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ color: `#${color}` }}
               >
                 <span>Privacy Policy</span>
               </a>
@@ -233,6 +245,7 @@ const SocialSignInModalContent = ({
                 href={`https://${websiteName}/object/ljc-legal?breadcrumbs=ljc-legal/uid-cookies-policy`}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ color: `#${color}` }}
               >
                 <span>Cookies Policy</span>
               </a>
@@ -243,7 +256,12 @@ const SocialSignInModalContent = ({
                 id: 'need_hive_account',
                 defaultMessage: 'Need a Hive Account?',
               })}{' '}
-              <a href="https://signup.hive.io/" target="_blank" rel="noreferrer">
+              <a
+                href="https://signup.hive.io/"
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: `#${color}` }}
+              >
                 {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}
               </a>
             </p>
