@@ -7,7 +7,7 @@ import './CookieNotice.less';
 
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
-  const cookieKey = `cookie_accepted_${window.location.hostname}`;
+  const cookieKey = `cookie_accepted_${window?.location?.hostname}`;
 
   useEffect(() => {
     const accepted = Cookie.get(cookieKey);
