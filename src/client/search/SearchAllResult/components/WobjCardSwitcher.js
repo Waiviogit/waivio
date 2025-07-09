@@ -29,6 +29,7 @@ const WobjCardSwitcher = React.memo(props => {
           minReward: props.obj.campaigns?.min_reward,
           object: props.obj,
         }}
+        secondary={props.obj.propositions[0]}
         hovered
       />
     );
