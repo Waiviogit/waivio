@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
+import { useHistory } from 'react-router';
 import Cookie from 'js-cookie';
 import './CookieNotice.less';
 
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
-  const cookieKey = `cookie_accepted_${window?.location?.hostname}`;
+  const history = useHistory();
+  const cookieKey = `cookie_accepted_${history?.location?.hostname}`;
+
+  const isWaivio = history?.location?.hostname?.includes('waivio');
+  const signInPage = history?.location?.pathname?.includes('sign-in');
+  const showNotice = isWaivio || !signInPage;
 
   useEffect(() => {
     const accepted = Cookie.get(cookieKey);
 
-    if (!accepted) {
+    if (!accepted && showNotice) {
       setVisible(true);
     }
   }, [cookieKey]);

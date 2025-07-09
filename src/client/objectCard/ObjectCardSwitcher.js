@@ -8,13 +8,20 @@ import Campaing from '../newRewards/reuseble/Campaing';
 
 const ObjectCardSwitcher = ({ wObj, intl }) => {
   if (wObj.campaigns) {
-    return <Campaing key={wObj.author_permlink} campain={{ ...wObj.campaigns, object: wObj }} />;
+    return (
+      <Campaing
+        key={wObj.author_permlink}
+        campain={{ ...wObj.campaigns, object: wObj }}
+        secondary={wObj?.propositions}
+      />
+    );
   }
 
   if (wObj.propositions && wObj.propositions.length) {
     // eslint-disable-next-line array-callback-return,consistent-return
     return wObj.propositions.map(proposition => (
       <PropositionNew
+        type={proposition.reserved ? 'reserved' : ''}
         key={proposition._id}
         proposition={{
           ...proposition,

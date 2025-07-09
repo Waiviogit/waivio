@@ -222,7 +222,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                       intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })
                     ) : (
                       <span>
-                        <b>Submit</b> dish
+                        <b>Submit</b>
                       </span>
                     )}{' '}
                     {isMentions
@@ -327,6 +327,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               ...proposition.object,
               parent: proposition?.object?.parent,
             }}
+            reserved={type === 'reserved'}
             handleReserve={handleReserveForPopup}
             isNewReward
           />

@@ -294,7 +294,7 @@ QuickRewardsModal.propTypes = {
   createQuickPost: PropTypes.func.isRequired,
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
-  reservePropositionForQuick: PropTypes.bool.isRequired,
+  reservePropositionForQuick: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 

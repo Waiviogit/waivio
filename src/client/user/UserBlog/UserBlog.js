@@ -83,7 +83,7 @@ const UserBlog = props => {
         <meta name="twitter:description" content={description} />
         <meta property="og:description" content={description} />
       </Helmet>
-      {mentions.main && <Campaing campain={mentions.main} />}
+      {mentions.main && <Campaing campain={mentions.main} secondary={mentions?.secondary} />}
       {!isEmpty(mentions.secondary) &&
         mentions.secondary.map(propos => <Proposition key={propos._id} proposition={propos} />)}
       <Feed
