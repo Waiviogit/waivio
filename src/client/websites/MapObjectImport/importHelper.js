@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import uuidv4 from 'uuid/v4';
-import { isEmpty } from 'lodash';
 
 import { formBusinessObjects, handleArrayToFile } from '../../components/Maps/mapHelpers';
 import { uploadObject } from '../../../waivioApi/importApi';
@@ -29,8 +28,10 @@ export const prepareObjects = async (
   objects,
   checkedIds,
   isRestaurant,
+  isPlace,
   restaurantTags,
   businessTags,
+  placeTags,
   listAssociations,
   userName,
 ) => {
@@ -39,7 +40,11 @@ export const prepareObjects = async (
   // eslint-disable-next-line no-return-await
   return await Promise.all(
     filteredObjects?.map(async object => {
-      const waivioTags = isRestaurant(object) ? restaurantTags : businessTags;
+      let waivioTags = businessTags;
+
+      if (isRestaurant(object)) {
+        waivioTags = restaurantTags;
+      }
 
       const processed = formBusinessObjects({
         object,
@@ -60,9 +65,11 @@ export const prepareObjects = async (
     }),
   );
 };
+
 export const importData = (
   processedObjects,
   isRestaurant,
+  isPlace,
   userName,
   locale,
   isEditor,
@@ -71,80 +78,60 @@ export const importData = (
   cancelModal,
   history,
 ) => {
-  const businessObjects = [];
-  const restaurantObjects = [];
+  const groupedObjects = {
+    restaurant: [],
+    place: [],
+    business: [],
+  };
 
   processedObjects.forEach(obj => {
     if (isRestaurant(obj)) {
-      restaurantObjects.push(obj);
+      groupedObjects.restaurant.push(obj);
+    } else if (isPlace(obj)) {
+      groupedObjects.place.push(obj);
     } else {
-      businessObjects.push(obj);
+      groupedObjects.business.push(obj);
     }
   });
 
-  const uploadedBusinessFile = handleArrayToFile(businessObjects);
-  const businessFormData = new FormData();
-  const uploadedRestaurantFile = handleArrayToFile(restaurantObjects);
-  const restaurantFormData = new FormData();
+  const uploadByType = (type, objects) => {
+    if (!objects || objects.length === 0) return;
 
-  businessFormData.append('file', uploadedBusinessFile, `${uuidv4()}.json`);
-  businessFormData.append('user', userName);
-  businessFormData.append('locale', locale);
-  businessFormData.append('objectType', 'business');
-  businessFormData.append('authority', 'administrative');
-  businessFormData.append('useGPT', true);
-  businessFormData.append('forceImport', true);
-  restaurantFormData.append('file', uploadedRestaurantFile, `${uuidv4()}-1.json`);
-  restaurantFormData.append('user', userName);
-  restaurantFormData.append('locale', locale);
-  restaurantFormData.append('objectType', 'restaurant');
-  restaurantFormData.append('authority', 'administrative');
-  restaurantFormData.append('useGPT', true);
-  restaurantFormData.append('forceImport', true);
+    const file = handleArrayToFile(objects);
+    const formData = new FormData();
+    const filenameSuffix = `-${type}.json`;
 
-  if (!isEmpty(businessObjects))
-    uploadObject(businessFormData)
+    formData.append('file', file, `${uuidv4()}${filenameSuffix}`);
+    formData.append('user', userName);
+    formData.append('locale', locale);
+    formData.append('objectType', type);
+    formData.append('authority', 'administrative');
+    formData.append('useGPT', true);
+    formData.append('forceImport', true);
+
+    uploadObject(formData)
       .then(async res => {
         setLoading(false);
         cancelModal();
 
         if (!res.ok) {
-          const errorText = res.message ? res.message : 'An error occurred';
-
-          message.error(errorText);
+          message.error(res.message || 'An error occurred');
         } else {
-          cancelModal();
           message.success('Data import started successfully!');
-          !isEditor && history.push('/data-import');
+          if (!isEditor) history.push('/data-import');
         }
       })
       .catch(error => {
         setLoading(false);
         message.error('Failed to upload. Please check your network connection.');
-        console.error('Network Error:', error);
+        console.error(`Network Error [${type}]:`, error);
       });
+  };
 
-  if (!isEmpty(restaurantObjects))
-    uploadObject(restaurantFormData)
-      .then(async res => {
-        setLoading(false);
-
-        // Since the response will be opaque, you cannot access its body
-        if (!res.ok) {
-          const errorText = res.message ? res.message : 'An error occurred';
-
-          message.error(errorText);
-        } else {
-          cancelModal();
-          message.success('Data import started successfully!');
-          !isEditor && history.push('/data-import');
-        }
-      })
-      .catch(error => {
-        setLoading(false);
-        message.error('Failed to upload. Please check your network connection.');
-        console.error('Network Error:', error);
-      });
+  setLoading(true);
+  uploadByType('business', groupedObjects.business);
+  uploadByType('place', groupedObjects.place);
+  uploadByType('restaurant', groupedObjects.restaurant);
 };
 
 export default null;

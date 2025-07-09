@@ -726,6 +726,7 @@ export const selectObjectFromSearch = (selectedObject, editor, match) => dispatc
 
 export const prepareAndImportObjects = (
   isRestaurant,
+  isPlace,
   isEditor,
   isComment,
   parentPost,
@@ -746,13 +747,21 @@ export const prepareAndImportObjects = (
     objects,
     checkedIds,
     isRestaurant,
+    isPlace,
     restaurantTags,
     businessTags,
     listAssociations,
     userName,
   ).then(async processedObjects => {
     if (isEditor) {
-      const type = isRestaurant(processedObjects[0]) ? 'restaurant' : 'business';
+      let type = 'business';
+
+      if (isRestaurant(processedObjects[0])) {
+        type = 'restaurant';
+      } else if (isPlace(processedObjects[0])) {
+        type = 'place';
+      }
+
       const selectedType = objTypes[type];
       const objData = {
         ...processedObjects[0],
@@ -778,6 +787,7 @@ export const prepareAndImportObjects = (
         importData(
           processedObjects,
           isRestaurant,
+          isPlace,
           userName,
           locale,
           isEditor,
@@ -831,6 +841,7 @@ export const prepareAndImportObjects = (
                 importData(
                   processedObjects,
                   isRestaurant,
+                  isPlace,
                   userName,
                   locale,
                   isEditor,
@@ -849,6 +860,7 @@ export const prepareAndImportObjects = (
       importData(
         processedObjects,
         isRestaurant,
+        isPlace,
         userName,
         locale,
         isEditor,
