@@ -2,23 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
-import { useSelector } from 'react-redux';
 import Cookie from 'js-cookie';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import './CookieNotice.less';
 
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
-  const isAuth = useSelector(getIsAuthenticated);
+  const cookieKey = `cookie_accepted_${window.location.hostname}`;
 
   useEffect(() => {
-    const accepted = Cookie.get('cookie_accepted');
+    const accepted = Cookie.get(cookieKey);
 
-    if (!accepted && isAuth) setVisible(true);
-  }, []);
+    if (!accepted) {
+      setVisible(true);
+    }
+  }, [cookieKey]);
 
   const handleAccept = () => {
-    Cookie.set('cookie_accepted', 'true');
+    Cookie.set(cookieKey, 'true', {
+      expires: 365,
+      sameSite: 'Lax',
+    });
     setVisible(false);
   };
 
@@ -26,27 +29,15 @@ const CookieNotice = () => {
 
   return (
     <div className="cookie-notice-box">
-      <div className={'cookie-wrap'}>
-        {' '}
-        <div>
-          {' '}
-          <span>
-            {' '}
-            <ReactSVG
-              wrapper="span"
-              src="/images/icons/cookies-icon.svg"
-              className={'cookie-icon'}
-            />
-          </span>
-        </div>
+      <div className="cookie-wrap">
+        <span>
+          <ReactSVG wrapper="span" src="/images/icons/cookies-icon.svg" className="cookie-icon" />
+        </span>
         <div>
           <div className="cookie-title">Cookies policy</div>
           <div className="cookie-description">
             This website uses cookies to ensure you get the best experience. For details, see our{' '}
-            <span>
-              <Link to="/object/uid-cookies-policy">Cookies Policy</Link>
-            </span>
-            .
+            <Link to="/object/uid-cookies-policy">Cookies Policy</Link>.
           </div>
         </div>
       </div>
