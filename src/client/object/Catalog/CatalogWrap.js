@@ -186,6 +186,7 @@ const CatalogWrap = props => {
           handleReportClick={onReportClick}
           isRejected={isRejected}
           campain={{ object: listItem, ...listItem?.campaigns }}
+          secondary={reward?.secondary}
         />
       );
     }
@@ -256,7 +257,9 @@ const CatalogWrap = props => {
             />
           </div>
         )}
-        {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
+        {!isEmpty(reward?.main) && (
+          <Campaing campain={reward?.main} secondary={reward?.secondary} />
+        )}
         <React.Fragment>
           <div className="CatalogWrap__breadcrumb">
             <CatalogBreadcrumb intl={intl} wobject={wobject} />

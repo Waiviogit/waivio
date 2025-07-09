@@ -58,7 +58,7 @@ const QuickRewardsModal = props => {
   const isPropositionObj =
     (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
     !props?.selectedDish?.propositions?.[0]?.notEligible;
-  const isReview = props.selectedDish.type === 'reviews';
+  const isReview = props.selectedDish?.type === 'reviews';
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
