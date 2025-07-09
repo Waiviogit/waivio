@@ -611,12 +611,19 @@ class StoryFull extends React.Component {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
 
-                  return <Campaing isLinkedObj campain={{ minReward, maxReward, object: obj }} />;
+                  return (
+                    <Campaing
+                      isLinkedObj
+                      campain={{ minReward, maxReward, object: obj }}
+                      secondary={obj.propositions}
+                    />
+                  );
                 }
 
                 if (!isEmpty(obj.propositions)) {
                   return obj.propositions.map(proposition => (
                     <PropositionNew
+                      type={proposition.reserved ? 'reserved' : ''}
                       key={proposition._id}
                       proposition={{
                         ...proposition,

@@ -137,7 +137,11 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject, inNewsFeed }) 
           )}
           {!isEmpty(reward?.secondary) &&
             reward?.secondary?.map((proposition, i) => (
-              <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
+              <Proposition
+                key={getPropositionsKey(proposition, i)}
+                proposition={proposition}
+                type={proposition.reserved ? 'reserved' : ''}
+              />
             ))}
           {!isEmpty(content) ? (
             <Feed

@@ -38,7 +38,9 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
     <React.Fragment>
       <div className="object-about">
         <ObjectInfo isEditMode={isEditMode} wobject={wobject} userName={userName}>
-          {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
+          {!isEmpty(reward?.main) && (
+            <Campaing campain={reward.main} secondary={reward?.secondary} />
+          )}
           {!isEmpty(reward?.secondary) &&
             reward?.secondary?.map((proposition, i) => (
               <Proposition
