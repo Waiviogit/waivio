@@ -16,18 +16,13 @@ const CookieNotice = () => {
   const showNotice = isWaivio || !signInPage;
 
   useEffect(() => {
-    const accepted = Cookie.get(cookieKey);
-
-    if (!accepted && showNotice) {
+    if (Cookie.get(cookieKey) !== 'accepted' && showNotice) {
       setVisible(true);
     }
   }, [cookieKey]);
 
   const handleAccept = () => {
-    Cookie.set(cookieKey, 'true', {
-      expires: 365,
-      sameSite: 'Lax',
-    });
+    Cookie.set(cookieKey, 'accepted');
     setVisible(false);
   };
 
