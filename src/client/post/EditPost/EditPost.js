@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { debounce, get, includes, find, uniqWith, isEqual, isEmpty } from 'lodash';
 import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
-// import GiveawayModal from '../Giveaway/GiveawayModal';
+import GiveawayModal from '../Giveaway/GiveawayModal';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
@@ -24,6 +24,7 @@ const EditPost = props => {
     objPercentage,
   } = props;
   const [isNewReview, setIsNewReview] = React.useState(false);
+  const [giveawayData, setGiveawayData] = React.useState(null);
   const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
@@ -77,7 +78,7 @@ const EditPost = props => {
     const isReview =
       !isEmpty(props.campaign) || includes(get(props.history, ['location', 'search']), 'review');
 
-    props.createPost(postData, props.beneficiaries, isReview, props.campaign, props.intl);
+    props.createPost(postData, props.beneficiaries, isReview, props.campaign, giveawayData);
   };
 
   const handleToggleLinkedObject = (objId, isLinked) => {
@@ -117,6 +118,8 @@ const EditPost = props => {
 
   const handlePasteText = (text, html) => props.handlePasteText(html);
 
+  const safeGiveawayData = data => setGiveawayData(data);
+
   if (props.campaignId) return <Loading />;
 
   return (
@@ -136,7 +139,7 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
-          {/* <GiveawayModal isEdit={isUpdating} /> */}
+          <GiveawayModal isEdit={isUpdating} saveData={safeGiveawayData} />
           <div className="edit-post__saving-badge">
             {props.draftPosts.some(d => d.draftId === props.draftId) && (
               <React.Fragment>
@@ -156,6 +159,7 @@ const EditPost = props => {
           </div>
           <PostPreviewModal
             content={content}
+            giveawayData={giveawayData}
             isPublishing={props.publishing}
             isUpdating={isUpdating}
             linkedObjects={props.filteredObjectsCards}

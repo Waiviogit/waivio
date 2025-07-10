@@ -24,6 +24,7 @@ const GiveawayModal = ({
   rateInUsd,
   getTokenBalanceAction,
   isEdit,
+  saveData,
 }) => {
   const [filtered, setFiltered] = useState(false);
   const [isOpenGiveAwayModal, setIsiOpenGiveAwayModal] = React.useState(false);
@@ -55,6 +56,7 @@ const GiveawayModal = ({
     const winners = getFieldValue('winners');
 
     if (winners * value > budget) return callback('Rewards more than user balance.');
+    if (value * currency.rate < 0.5) return callback('Minimum reward of $0.5 is required.');
     callback();
   };
 
@@ -72,10 +74,11 @@ const GiveawayModal = ({
 
   const handleSubmit = e => {
     e.preventDefault();
-    validateFields(err => {
+    validateFields((err, values) => {
       if (!err) {
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
+        saveData({ ...values, guideName: user.name, currency: currency.type });
       }
     });
   };
@@ -229,9 +232,7 @@ const GiveawayModal = ({
             <FormItem label="Commissions to Waivio and partners">
               {getFieldDecorator('commission', {
                 initialValue: 5,
-                rules: [
-                  { required: true, message: 'Accepting the Terms and Conditions is required.' },
-                ],
+                rules: [{ required: true, message: 'Minimum commission of 5% is required.' }],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
                 <InputNumber
@@ -302,6 +303,7 @@ GiveawayModal.propTypes = {
   currencyInfo: PropTypes.shape(),
   rateInUsd: PropTypes.string,
   getTokenBalanceAction: PropTypes.func,
+  saveData: PropTypes.func,
   isEdit: PropTypes.bool,
 };
 
