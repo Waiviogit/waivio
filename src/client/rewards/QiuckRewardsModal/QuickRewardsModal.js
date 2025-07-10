@@ -23,7 +23,6 @@ import StepsItems from '../../widgets/CircleSteps/StepsItems';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import * as newRewards from '../../../store/newRewards/newRewardsActions';
-import { hexToRgb } from '../../../common/helpers';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './QuickRewardsModal.less';
@@ -59,6 +58,10 @@ const QuickRewardsModal = props => {
   const isPropositionObj =
     (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
     !props?.selectedDish?.propositions?.[0]?.notEligible;
+  const isReview =
+    props.selectedDish?.type === 'reviews' ||
+    props.selectedDish?.propositions?.[0]?.type === 'reviews';
+
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -101,7 +104,7 @@ const QuickRewardsModal = props => {
     e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
-      if (!props?.selectedDish?.reserved) {
+      if (!props?.selectedDish?.reserved && isReview) {
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', 'reserve_proposition_in_quick_rewards_modal', { debug_mode: false });
         const permlink = `reserve-${generatePermlink()}`;
@@ -137,7 +140,7 @@ const QuickRewardsModal = props => {
   const handelRejectReservation = () => {
     const proposition = get(props.selectedDish, 'propositions[0]', null) || props.selectedDish;
 
-    props.realiseRewards({ ...proposition, reservationPermlink });
+    if (isReview) props.realiseRewards({ ...proposition, reservationPermlink });
   };
 
   const getCurrentScreen = (() => {
@@ -234,10 +237,6 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
       wrapClassName={'QuickRewardsModal__container'}
-      style={{
-        '--website-color': `${colors?.background}`,
-        '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
-      }}
     >
       <StepsItems
         config={stepsConfig}
@@ -279,7 +278,7 @@ const QuickRewardsModal = props => {
         <Button
           type="primary"
           className={nextButtonClassList}
-          disabled={getCurrentScreen.disabled}
+          // disabled={getCurrentScreen.disabled}
           loading={loading}
           onClick={getCurrentScreen.buttonHandler}
         >
@@ -298,7 +297,7 @@ QuickRewardsModal.propTypes = {
   createQuickPost: PropTypes.func.isRequired,
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
-  reservePropositionForQuick: PropTypes.bool.isRequired,
+  reservePropositionForQuick: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 

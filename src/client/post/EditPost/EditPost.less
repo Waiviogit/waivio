@@ -10,6 +10,21 @@
       color: @grey-darkGrey;
     }
   }
+
+  &__giveaway {
+    border-color: var(--website-color);
+    color: var(--website-color);
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 5px;
+    font-weight: 600;
+    height: 35px;
+
+    &:hover {
+      background-color: var(--website-hover-color);
+      color: @white !important;
+    }
+  }
 }
 
 .container-edit-post {
@@ -51,4 +66,16 @@
 
 .search-object-panel {
   margin: 1px;
+}
+
+.ant-form-item-required::before {
+  content: none;
+}
+
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0 !important;
+}
+
+.has-error .ant-form-explain {
+  margin-bottom: 2px;
 }

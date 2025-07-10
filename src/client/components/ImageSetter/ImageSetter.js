@@ -64,11 +64,19 @@ const ImageSetter = ({
 
   const colors = useWebsiteColor();
 
+  // eslint-disable-next-line consistent-return
   const handleNewImage = async e => {
     if (
       !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
     ) {
-      onImageInvalid(MAX_IMG_SIZE[objectFields.background], `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
+      return onImageInvalid(
+        MAX_IMG_SIZE[objectFields.background],
+        `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+      );
+    }
+
+    if (e.target.files[0].type.includes('image/gif')) {
+      handleChangeImage(e);
     } else {
       await setState({ ...initialState, image: e.target.files[0] });
       setIsOpen(true);
@@ -269,6 +277,7 @@ const ImageSetter = ({
 
         return;
       }
+
       const disableAndInsertImage = (image, imageName = 'image') => {
         const newImage = {
           src: image,

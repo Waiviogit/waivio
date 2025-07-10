@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useHistory } from 'react-router';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { useSelector } from 'react-redux';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -24,7 +24,12 @@ const Campaing = ({
   intl,
   handleReportClick,
   isLinkedObj,
+  secondary,
 }) => {
+  const rewardInUSD = !isNil(campain?.rewardInUSD)
+    ? campain?.rewardInUSD
+    : secondary?.[0]?.rewardInUSD;
+  const type = secondary?.[0]?.type;
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   let mainItem = campain.object;
@@ -65,6 +70,8 @@ const Campaing = ({
       setRestaurant({
         ...mainItem,
         campaigns: { min_reward: minReward, max_reward: maxReward },
+        rewardInUSD,
+        type,
       });
     });
 
@@ -105,6 +112,7 @@ Campaing.propTypes = {
   campain: PropTypes.shape({
     maxReward: PropTypes.number,
     minReward: PropTypes.number,
+    rewardInUSD: PropTypes.number,
     reach: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
@@ -116,6 +124,7 @@ Campaing.propTypes = {
     }),
     _id: PropTypes.string,
   }).isRequired,
+  secondary: PropTypes.shape({ rewardInUSD: PropTypes.number }),
   onActionInitiated: PropTypes.func.isRequired,
   handleReportClick: PropTypes.func,
   hovered: PropTypes.bool,

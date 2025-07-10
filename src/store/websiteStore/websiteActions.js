@@ -606,7 +606,7 @@ export const saveWebsiteSettings = (
 };
 export const SAVE_ADSENSE_SETTINGS = createAsyncActionType('@website/SAVE_ADSENSE_SETTINGS');
 
-export const saveAdSenseSettings = (host, code, level, txtFile) => (
+export const saveAdSenseSettings = (host, code, level, txtFile, displayUnitCode) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -618,7 +618,15 @@ export const saveAdSenseSettings = (host, code, level, txtFile) => (
   return dispatch({
     type: SAVE_ADSENSE_SETTINGS.ACTION,
     payload: {
-      promise: steemConnectAPI.saveAdSenseSettings(userName, isGuest, host, code, level, txtFile),
+      promise: steemConnectAPI.saveAdSenseSettings(
+        userName,
+        isGuest,
+        host,
+        code,
+        level,
+        txtFile,
+        displayUnitCode,
+      ),
     },
   });
 };
