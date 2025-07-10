@@ -6,7 +6,7 @@ import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 import { linkifyText } from '../../../common/helpers/parser';
 
-const AssistantMessage = ({ text, loading, lastMessageRef, siteImage, siteName }) => {
+const AssistantMessage = React.memo(({ text, loading, lastMessageRef, siteImage, siteName }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
@@ -24,7 +24,7 @@ const AssistantMessage = ({ text, loading, lastMessageRef, siteImage, siteName }
       </div>
     </>
   );
-};
+});
 
 AssistantMessage.propTypes = {
   text: PropTypes.string,
