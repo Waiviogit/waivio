@@ -8,7 +8,7 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
   const {
     reward,
     winners,
-    requirements = [],
+    giveawayRequirements = [],
     eligible,
     minExpertise,
     minFollowers,
@@ -16,7 +16,7 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
   } = formData;
 
   const renderRequirement = (label, key) =>
-    requirements.includes(key) && (
+    giveawayRequirements.includes(key) && (
       <div className="GiveawayPreviewBlock__item">
         <Checkbox checked disabled />
         <span>{label}</span>
@@ -51,25 +51,23 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     <div className="GiveawayPreviewBlock">
       <div className="GiveawayPreviewBlock__header">
         <h3 className="GiveawayPreviewBlock__title">
-          Giveaway time! Your chance to win ${reward} {winners > 1 ? `with ${winners} winners` : ''}
-          !
+          Giveaway time! Your chance to win ${reward}
+          {winners > 1 ? ` with ${winners} winners` : ''}!
         </h3>
         {isEditable && (
           <div>
-            <Button style={{ marginRight: '5px' }} size="small" onClick={onEdit}>
+            <Button style={{ marginRight: '5px' }} onClick={onEdit}>
               Edit
             </Button>
-            <Button size="small" onClick={onDelete}>
-              Delete
-            </Button>
+            <Button onClick={onDelete}>Delete</Button>
           </div>
         )}
       </div>
-
       <div className="GiveawayPreviewBlock__section">
         <strong className="GiveawayPreviewBlock__label">To enter:</strong>
         <div className="GiveawayPreviewBlock__list">
-          {renderRequirement('Like the post', 'like')}
+          {renderRequirement('Like the post', 'likePost')}
+          {renderRequirement('Follow the author', 'follow')}
           {renderRequirement('Leave a comment', 'comment')}
           {renderRequirement('Tag a friend in a comment', 'tag')}
           {renderRequirement('Re-blog the post', 'reblog')}
@@ -93,7 +91,7 @@ GiveawayBlockPreview.propTypes = {
   formData: PropsType.shape({
     reward: PropsType.number,
     winners: PropsType.number,
-    requirements: PropsType.number,
+    giveawayRequirements: PropsType.number,
     eligible: PropsType.number,
     minExpertise: PropsType.number,
     minFollowers: PropsType.number,
