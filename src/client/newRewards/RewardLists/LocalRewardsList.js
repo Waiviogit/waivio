@@ -172,7 +172,10 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
             threshold={500}
           >
             {rewards?.map(cap => (
-              <Campaing key={cap?._id} campain={cap} />
+              <Campaing
+                key={cap?._id}
+                campain={{ ...cap, rewardInUSD: cap?.rewardInUSD || cap?.payout }}
+              />
             ))}
           </ReduxInfiniteScroll>
         )}
