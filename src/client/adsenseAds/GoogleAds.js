@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
 const parseInsTagAttributes = str => {
@@ -85,7 +86,7 @@ const GoogleAds = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!visible || !insAttributes) return null;
+  if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
   return (
     <div style={{ minWidth: '250px', minHeight: '100px' }}>
