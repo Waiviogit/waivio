@@ -1,12 +1,9 @@
-import moment from 'moment/moment';
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 import { withRouter } from 'react-router';
 import { debounce, get, includes, find, uniqWith, isEqual, isEmpty } from 'lodash';
 import { getInitialState } from '../../../common/helpers/postHelpers';
-import { createNewCampaing, validateActivateCampaing } from '../../../waivioApi/ApiClient';
-import * as apiConfig from '../../../waivioApi/config.json';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import GiveawayModal from '../Giveaway/GiveawayModal';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -81,8 +78,7 @@ const EditPost = props => {
     const isReview =
       !isEmpty(props.campaign) || includes(get(props.history, ['location', 'search']), 'review');
 
-    props
-      .createPost(postData, props.beneficiaries, isReview, props.campaign, giveawayData)
+    props.createPost(postData, props.beneficiaries, isReview, props.campaign, giveawayData);
   };
 
   const handleToggleLinkedObject = (objId, isLinked) => {
@@ -163,6 +159,7 @@ const EditPost = props => {
           </div>
           <PostPreviewModal
             content={content}
+            giveawayData={giveawayData}
             isPublishing={props.publishing}
             isUpdating={isUpdating}
             linkedObjects={props.filteredObjectsCards}

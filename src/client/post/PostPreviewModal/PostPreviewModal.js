@@ -8,6 +8,7 @@ import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActi
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
+import GiveawayBlockPreview from '../Giveaway/GiveawayPreviewBlock/GiveawayBlockPreview';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
 import { isContentValid } from '../../../common/helpers/postHelpers';
@@ -54,6 +55,7 @@ class PostPreviewModal extends Component {
     }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
+    giveawayData: PropTypes.shape(),
     setUpdatedEditorData: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -172,6 +174,7 @@ class PostPreviewModal extends Component {
       isGuest,
       titleValue,
       defaultHashtag,
+      giveawayData,
     } = this.props;
 
     return (
@@ -196,6 +199,7 @@ class PostPreviewModal extends Component {
             )}
             <h1 className="StoryFull__title preview">{titleValue}</h1>
             <BodyContainer full body={body} isPostPreviewModal />
+            <GiveawayBlockPreview formData={giveawayData} isEditable={false} />
             <TagsSelector
               className="post-preview-topics"
               disabled={isPublishing}

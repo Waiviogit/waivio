@@ -51,17 +51,15 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     <div className="GiveawayPreviewBlock">
       <div className="GiveawayPreviewBlock__header">
         <h3 className="GiveawayPreviewBlock__title">
-          Giveaway time! Your chance to win ${reward} {winners > 1 ? `with ${winners} winners` : ''}
-          !
+          Giveaway time! Your chance to win ${reward}
+          {winners > 1 ? ` with ${winners} winners` : ''}!
         </h3>
         {isEditable && (
           <div>
             <Button style={{ marginRight: '5px' }} onClick={onEdit}>
               Edit
             </Button>
-            <Button onClick={onDelete}>
-              Delete
-            </Button>
+            <Button onClick={onDelete}>Delete</Button>
           </div>
         )}
       </div>

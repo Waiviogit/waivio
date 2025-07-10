@@ -22,6 +22,7 @@ import {
 } from 'lodash';
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
+import { rewardsPost, createBody } from '../../client/newRewards/ManageCampaingsTab/constants';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
@@ -51,7 +52,9 @@ import {
   getMentionCampaign,
   getObjectInfo,
   getObjectsByIds,
-  getObjPermlinkByCompanyId, createNewCampaing, validateActivateCampaing,
+  getObjPermlinkByCompanyId,
+  createNewCampaing,
+  validateActivateCampaing,
 } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
@@ -67,7 +70,12 @@ import {
   getEditorSlate,
   getLastSelection,
 } from './editorSelectors';
-import { getAppendData, getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import {
+  getAppendData,
+  getObjectName,
+  getObjectType,
+  generatePermlink,
+} from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { Entity } from '../../client/components/EditorExtended';
 import { extractLinks } from '../../common/helpers/parser';
@@ -262,7 +270,7 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export const createGiveawayCamp = async (permlink, giveawayData) => {
+export const createGiveawayCamp = async (permlink, giveawayData, steemConnectAPI) => {
   if (giveawayData) {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
 
@@ -312,17 +320,42 @@ export const createGiveawayCamp = async (permlink, giveawayData) => {
     const campaign = await createNewCampaing(k, giveawayData.guideName);
 
     if (campaign._id) {
-      validateActivateCampaing({
+      const { isValid } = await validateActivateCampaing({
         _id: campaign._id,
         guideName: campaign.guideName,
-        campaign: permlink,
+        permlink,
       });
 
-      return campaign.activationPermlink;
+      if (isValid) {
+        const activationPermlink = `activate-${rewardsPost.parent_author.replace(
+          '.',
+          '-',
+        )}-${generatePermlink()}`;
+
+        const commentOp = [
+          'comment',
+          {
+            ...rewardsPost,
+            author: campaign.guideName,
+            permlink: activationPermlink,
+            title: `Activate giveaways campaign`,
+            body: createBody(campaign),
+            json_metadata: JSON.stringify({
+              waivioRewards: { type: 'activateCampaign', campaignId: campaign._id },
+            }),
+          },
+        ];
+
+        steemConnectAPI.broadcast([commentOp]);
+
+        return activationPermlink;
+      }
+
+      return '';
     }
   }
 
-  return Promise.resolve(null);
+  return '';
 };
 
 export function createPost(postData, beneficiaries, isReview, campaign, giveawayData) {
@@ -380,7 +413,11 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
     }
     const reservation_permlink = get(campaign, 'reservation_permlink');
     const permlink = await getPermLink;
-    const campaignActivationPermlink = await createGiveawayCamp(permlink, giveawayData);
+    const campaignActivationPermlink = await createGiveawayCamp(
+      permlink,
+      giveawayData,
+      steemConnectAPI,
+    );
 
     const metaData = {
       ...jsonMetadata,
@@ -396,7 +433,6 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
     dispatch({ type: CREATE_POST_START });
-
 
     const result = await broadcastComment(
       steemConnectAPI,

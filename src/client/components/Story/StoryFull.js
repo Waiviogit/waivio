@@ -27,6 +27,7 @@ import {
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import withAuthActions from '../../auth/withAuthActions';
+import GiveawayBlockPreview from '../../post/Giveaway/GiveawayPreviewBlock/GiveawayBlockPreview';
 import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
@@ -595,7 +596,6 @@ class StoryFull extends React.Component {
               }
             />
           ))}
-
         <Collapse defaultActiveKey={typeof document !== 'undefined' ? ['1'] : ['1', '2']}>
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
@@ -663,6 +663,15 @@ class StoryFull extends React.Component {
             </Collapse.Panel>
           )}
         </Collapse>
+        {post.giveaway && (
+          <GiveawayBlockPreview
+            formData={{
+              ...post.giveaway,
+              giveawayRequirements: Object.keys(post.giveaway?.giveawayRequirements),
+            }}
+            isEditable={false}
+          />
+        )}
         <StoryFooter
           isRecipe={isRecipe}
           isThread={isThread}
