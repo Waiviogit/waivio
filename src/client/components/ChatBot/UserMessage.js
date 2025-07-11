@@ -5,7 +5,7 @@ import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
 import { linkifyText } from '../../../common/helpers/parser';
 
-const UserMessage = ({ text, lastMessageRef }) => {
+const UserMessage = React.memo(({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
 
   return (
@@ -16,7 +16,7 @@ const UserMessage = ({ text, lastMessageRef }) => {
       </div>
     </>
   );
-};
+});
 
 UserMessage.propTypes = {
   text: PropTypes.string.isRequired,

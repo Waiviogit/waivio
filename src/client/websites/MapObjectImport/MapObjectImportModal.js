@@ -25,7 +25,7 @@ import '../WebsiteWelcomeModal/WebsiteWelcomeModal.less';
 import FirstPage from './FirstPage';
 import ModalFooter from './ModalFooter';
 import SecondPage from './SecondPage';
-import { restaurantGoogleTypes } from '../../components/Maps/mapHelpers';
+import { placeGoogleTypes, restaurantGoogleTypes } from '../../components/Maps/mapHelpers';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
@@ -78,6 +78,9 @@ const MapObjectImportModal = ({
   const isRestaurant = object =>
     object?.googleTypes?.some(t => restaurantGoogleTypes.includes(t)) ||
     object?.types?.some(t => restaurantGoogleTypes.includes(t));
+  const isPlace = object =>
+    object?.googleTypes?.some(t => placeGoogleTypes.includes(t)) ||
+    object?.types?.some(t => placeGoogleTypes.includes(t));
   const businessTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
   const restaurantTags = tagsList?.map(t => ({ key: 'Cuisine', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);
@@ -125,6 +128,7 @@ const MapObjectImportModal = ({
       dispatch(
         prepareAndImportObjects(
           isRestaurant,
+          isPlace,
           isEditor,
           isComment,
           parentPost,

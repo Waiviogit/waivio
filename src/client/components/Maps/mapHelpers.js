@@ -85,6 +85,119 @@ export const getCurrentScreenSize = isDesktopModalShow => {
     return 600;
   }
 };
+
+export const formBusinessObjects = ({ object, waivio_tags, listAssociations }) => ({
+  name: object.displayName.text,
+  googleTypes: object.types,
+  address: object.formattedAddress,
+  ...(object.editorialSummary && {
+    descriptions: [object.editorialSummary.text],
+  }),
+  ...(object.location && {
+    latitude: object.location.latitude,
+    longitude: object.location.longitude,
+  }),
+  ...(object.regularOpeningHours && {
+    workingHours: object.regularOpeningHours.weekdayDescriptions.join(',\n'),
+  }),
+  ...(object.websiteUri && { websites: [object.websiteUri] }),
+  ...(object.internationalPhoneNumber && {
+    phone: object.internationalPhoneNumber,
+  }),
+  ...(object.rating && {
+    features: [
+      {
+        key: 'Overall Rating',
+        value: [object.rating],
+      },
+    ],
+  }),
+  companyIds: [{ companyIdType: 'googleMaps', companyId: object.id }],
+  ...(object.reviews?.length && {
+    reviews: object.reviews.map(el => el?.text?.text).filter(el => !!el),
+  }),
+  waivio_tags,
+  listAssociations,
+});
+
+export const getVotingInfo = async (isGuest, authUserName, setUsersState) => {
+  if (isGuest) {
+    const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
+
+    setUsersState({ guestMana: guestUserMana.result });
+  } else {
+    const [acc] = await dHive.database.getAccounts([authUserName]);
+    const rc = await dHive.rc.getRCMana(authUserName, acc);
+    const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
+    const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
+    const resourceCredits = rc.percentage * 0.01 || 0;
+
+    setUsersState({
+      waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
+      resourceCredits,
+    });
+  }
+};
+
+export const handleArrayToFile = array => {
+  const jsonData = JSON.stringify(array);
+
+  return new Blob([jsonData], { type: 'application/json' });
+
+  // return new File([fileBlob], "data.json", {type: 'application/json'});
+};
+export const restaurantGoogleTypes = [
+  'restaurant',
+  'cafe',
+  'bar',
+  'bakery',
+  'pub',
+  'bistro',
+  'coffee_shop',
+  'diner',
+  'tavern',
+  'cocktail_lounge',
+];
+export const placeGoogleTypes = [
+  'airport',
+  'amusement_park',
+  'aquarium',
+  'art_gallery',
+  'bowling_alley',
+  'bus_station',
+  'campground',
+  'cemetery',
+  'church',
+  'city_hall',
+  'courthouse',
+  'embassy',
+  'fire_station',
+  'hindu_temple',
+  'hospital',
+  'library',
+  'light_rail_station',
+  'local_government_office',
+  'mosque',
+  'movie_theater',
+  'museum',
+  'night_club',
+  'park',
+  'parking',
+  'police',
+  'post_office',
+  'primary_school',
+  'school',
+  'secondary_school',
+  'stadium',
+  'subway_station',
+  'tourist_attraction',
+  'train_station',
+  'transit_station',
+  'university',
+  'synagogue',
+  'rv_park',
+  'zoo',
+];
 export const supportedGoogleTypes = [
   { label: 'Accounting', value: 'accounting' },
   { label: 'Airport', value: 'airport' },
@@ -182,77 +295,4 @@ export const supportedGoogleTypes = [
   { label: 'University', value: 'university' },
   { label: 'Veterinary care', value: 'veterinary_care' },
   { label: 'Zoo', value: 'zoo' },
-];
-
-export const formBusinessObjects = ({ object, waivio_tags, listAssociations }) => ({
-  name: object.displayName.text,
-  googleTypes: object.types,
-  address: object.formattedAddress,
-  ...(object.editorialSummary && {
-    descriptions: [object.editorialSummary.text],
-  }),
-  ...(object.location && {
-    latitude: object.location.latitude,
-    longitude: object.location.longitude,
-  }),
-  ...(object.regularOpeningHours && {
-    workingHours: object.regularOpeningHours.weekdayDescriptions.join(',\n'),
-  }),
-  ...(object.websiteUri && { websites: [object.websiteUri] }),
-  ...(object.internationalPhoneNumber && {
-    phone: object.internationalPhoneNumber,
-  }),
-  ...(object.rating && {
-    features: [
-      {
-        key: 'Overall Rating',
-        value: [object.rating],
-      },
-    ],
-  }),
-  companyIds: [{ companyIdType: 'googleMaps', companyId: object.id }],
-  ...(object.reviews?.length && {
-    reviews: object.reviews.map(el => el?.text?.text).filter(el => !!el),
-  }),
-  waivio_tags,
-  listAssociations,
-});
-
-export const getVotingInfo = async (isGuest, authUserName, setUsersState) => {
-  if (isGuest) {
-    const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
-
-    setUsersState({ guestMana: guestUserMana.result });
-  } else {
-    const [acc] = await dHive.database.getAccounts([authUserName]);
-    const rc = await dHive.rc.getRCMana(authUserName, acc);
-    const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
-    const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
-    const resourceCredits = rc.percentage * 0.01 || 0;
-
-    setUsersState({
-      waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
-      resourceCredits,
-    });
-  }
-};
-
-export const handleArrayToFile = array => {
-  const jsonData = JSON.stringify(array);
-
-  return new Blob([jsonData], { type: 'application/json' });
-
-  // return new File([fileBlob], "data.json", {type: 'application/json'});
-};
-export const restaurantGoogleTypes = [
-  'restaurant',
-  'cafe',
-  'bar',
-  'bakery',
-  'pub',
-  'bistro',
-  'coffee_shop',
-  'diner',
-  'tavern',
-  'cocktail_lounge',
 ];

@@ -89,7 +89,10 @@ const ChatWindow = ({ className, hideChat, open }) => {
     }
   };
 
-  const setInputData = e => setMessage(e.target.value);
+  const setInputData = e => {
+    e.preventDefault();
+    setMessage(e.target.value);
+  };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
     setMessage('');
@@ -118,7 +121,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [chatMessages, loading]);
+  }, [chatMessages.length, loading]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -184,18 +187,17 @@ const ChatWindow = ({ className, hideChat, open }) => {
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+    const handleFocus = () => {
+      setTimeout(() => {
+        if (textArea) {
+          textArea.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    };
 
-    if (textArea) {
-      const handleFocus = () => {
-        setTimeout(() => {
-          if (textAreaRef.current) textAreaRef.current.scrollIntoView({ behavior: 'smooth' });
-        }, 300);
-      };
+    textArea.addEventListener('focus', handleFocus);
 
-      textArea.addEventListener('focus', handleFocus);
-
-      return () => textArea.removeEventListener('focus', handleFocus);
-    }
+    return () => textArea.removeEventListener('focus', handleFocus);
   }, []);
 
   // eslint-disable-next-line consistent-return
@@ -312,10 +314,11 @@ const ChatWindow = ({ className, hideChat, open }) => {
             {!isEmpty(chatMessages) &&
               chatMessages.map((mes, index) => {
                 const text = mes.text.replace(/\n\n/g, '\n');
+                const key = mes.id || `${mes.role}-${index}`;
 
                 return mes.role === 'human' ? (
                   <UserMessage
-                    key={mes.text}
+                    key={key}
                     text={text}
                     lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
                   />
@@ -323,7 +326,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
                   <AssistantMessage
                     siteImage={siteImage}
                     siteName={siteName}
-                    key={mes.text}
+                    key={key}
                     text={text}
                     loading={false}
                     lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
@@ -345,7 +348,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
           <Input.TextArea
             placeholder="Type your question here..."
             value={message}
-            onInput={setInputData}
+            onChange={setInputData}
             onKeyDown={handleKeyDown}
             className="chat-input"
             autoSize={{ minRows: 1, maxRows: 5 }}
