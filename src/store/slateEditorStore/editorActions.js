@@ -309,7 +309,7 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
       },
       frequencyAssign: 0,
       app: appName,
-      expiredAt: giveawayData.expiry,
+      expiredAt: giveawayData.expiredAt,
       currency: giveawayData.currency,
       timezone: giveawayData.timezone,
       payoutToken: 'WAIV',
