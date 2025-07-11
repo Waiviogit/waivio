@@ -58,6 +58,7 @@ const ObjectCardView = ({
   const isSocial = useSelector(getIsSocial);
   const prise = withRewards ? null : wObject.price;
   const isUser = wObject.object_type === 'user';
+  const isPostType = wObject.object_type === 'post';
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -76,6 +77,10 @@ const ObjectCardView = ({
 
   if (isUser) {
     pathName = `/@${objName}`;
+  }
+
+  if (isPostType) {
+    pathName = `/@${wObject.author}/${wObject.author_permlink}`;
   }
 
   useEffect(() => {

@@ -199,7 +199,7 @@ class PostPreviewModal extends Component {
             )}
             <h1 className="StoryFull__title preview">{titleValue}</h1>
             <BodyContainer full body={body} isPostPreviewModal />
-            <GiveawayBlockPreview formData={giveawayData} isEditable={false} />
+            {giveawayData && <GiveawayBlockPreview formData={giveawayData} isEditable={false} />}
             <TagsSelector
               className="post-preview-topics"
               disabled={isPublishing}
