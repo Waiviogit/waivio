@@ -270,12 +270,13 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export const createGiveawayCamp = async (permlink, giveawayData, steemConnectAPI) => {
+export const createGiveawayCamp = async (permlink, title, giveawayData, steemConnectAPI) => {
   if (giveawayData) {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
 
     const k = {
       guideName: giveawayData.guideName,
+      giveawayPostTitle: title,
       requiredObject: `@${giveawayData.guideName}`,
       objects: [`@${giveawayData.guideName}`],
       name: giveawayData.name,
@@ -311,6 +312,7 @@ export const createGiveawayCamp = async (permlink, giveawayData, steemConnectAPI
       app: appName,
       expiredAt: moment(giveawayData.expiry),
       currency: giveawayData.currency,
+      timezone: giveawayData.timezone,
       payoutToken: 'WAIV',
       qualifiedPayoutToken: true,
       reach: 'global',
@@ -415,6 +417,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
     const permlink = await getPermLink;
     const campaignActivationPermlink = await createGiveawayCamp(
       permlink,
+      title,
       giveawayData,
       steemConnectAPI,
     );
