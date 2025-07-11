@@ -442,7 +442,7 @@ class StoryFull extends React.Component {
             </a>
           </h3>
         )}
-        {(moderateAds || intensiveAds) && <GoogleAds />}
+        {(moderateAds || intensiveAds) && <GoogleAds inPost />}
         {post && (
           <div className="StoryFull__header">
             <Link to={`/@${authorName}`}>

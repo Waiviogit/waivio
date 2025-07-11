@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, map, truncate } from 'lodash';
+import { isEmpty, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
@@ -22,6 +22,8 @@ import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 import ListDescription from '../ListDescription/ListDescription';
 import useQuery from '../../../hooks/useQuery';
+import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
@@ -29,6 +31,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const listType = wobject?.object_type === 'list';
   const query = useQuery();
   const { name } = useParams();
+  const adSenseSettings = useSelector(getSettingsAds);
+  const minimalAds = adSenseSettings?.level === 'minimal';
+  const moderateAds = adSenseSettings?.level === 'moderate';
+  const intensiveAds = adSenseSettings?.level === 'intensive';
 
   let breadcrumbsFromQuery = query.get('breadcrumbs');
 
@@ -120,21 +126,52 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       );
     }
 
+    const injectAds = (items, getRowFn, AdComponent) => {
+      const result = [];
+      const rows = [];
+
+      // Group items into rows of 5
+      for (let i = 0; i < items.length; i += 4) {
+        rows.push(items.slice(i, i + 4));
+      }
+
+      rows.forEach((row, rowIndex) => {
+        const rowElements = [...row.map(getRowFn)];
+
+        const shouldInjectAd = (moderateAds && rowIndex % 2 === 1) || intensiveAds;
+
+        if (shouldInjectAd) {
+          const adPosition = Math.floor(Math.random() * (rowElements.length + 1));
+
+          rowElements.splice(
+            adPosition,
+            0,
+            // eslint-disable-next-line react/no-array-index-key
+            <AdComponent key={`ad-${rowIndex}-${adPosition}`} />,
+          );
+        }
+
+        result.push(...rowElements);
+      });
+
+      return result;
+    };
+
+    const adComponent = () => <GoogleAds />;
+
     if (isEmpty(wobject?.sortCustom?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
       const itemsProducts = listItems.filter(item => item.object_type !== 'list');
 
       return (
         <div>
-          <div className="Checklist__list">{itemsListType.map(item => getListRow(item))}</div>
-          <div className="Checklist__list">{itemsProducts.map(item => getListRow(item))}</div>
+          <div className="Checklist__list">{injectAds(itemsListType, getListRow, adComponent)}</div>
+          <div className="Checklist__list">{injectAds(itemsProducts, getListRow, adComponent)}</div>
         </div>
       );
     }
 
-    return (
-      <div className="Checklist__list">{map(listItems, listItem => getListRow(listItem))}</div>
-    );
+    return <div className="Checklist__list">{injectAds(listItems, getListRow, adComponent)}</div>;
   };
 
   return (
@@ -150,6 +187,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
+      {(minimalAds || moderateAds || intensiveAds) && <GoogleAds />}
     </div>
   );
 };

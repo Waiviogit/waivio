@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
 const parseInsTagAttributes = str => {
@@ -30,7 +31,7 @@ const parseInsTagAttributes = str => {
   return attrs;
 };
 
-const GoogleAds = () => {
+const GoogleAds = ({ inPost = false, inFeed = false }) => {
   const adRef = useRef(null);
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -89,12 +90,22 @@ const GoogleAds = () => {
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
   return (
-    <div style={{ minWidth: '250px', minHeight: '100px' }}>
+    <div
+      style={{
+        minWidth: '250px',
+        minHeight: '100px',
+        ...(inPost && { maxHeight: '100px' }),
+        ...(inFeed && { minHeight: '250px' }),
+      }}
+    >
       <ins {...insAttributes} {...(isLocalhost ? { 'data-adtest': 'on' } : {})} ref={adRef} />
     </div>
   );
 };
 
-GoogleAds.propTypes = {};
+GoogleAds.propTypes = {
+  inPost: PropTypes.bool,
+  inFeed: PropTypes.bool,
+};
 
 export default GoogleAds;
