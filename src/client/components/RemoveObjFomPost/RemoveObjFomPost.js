@@ -71,7 +71,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
           <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
             <span>{getObjectName(obj)}</span>
 
-            {rejectedList.includes(obj.author_permlink) ? (
+            {rejectedList.includes(obj?.author_permlink) ? (
               <span>removed</span>
             ) : (
               <Button type="primary" onClick={() => deletePostFromObj(obj)}>

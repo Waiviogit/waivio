@@ -24,7 +24,9 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     );
 
   const renderUserRequirements = () => {
-    if (eligible === 'all') {
+    const j = !(minExpertise || minFollowers || minPosts);
+
+    if (eligible === 'all' || j) {
       return (
         <div className="GiveawayPreviewBlock__item">
           <Checkbox checked disabled />

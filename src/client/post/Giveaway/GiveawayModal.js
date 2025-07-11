@@ -1,7 +1,8 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
-import moment from 'moment/moment';
+import moment from 'moment-timezone';
+
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
@@ -83,6 +84,22 @@ const GiveawayModal = ({
     });
   };
 
+  const getTimezoneOptions = () =>
+    moment.tz.names().map(name => {
+      const offset = moment.tz(name).utcOffset();
+      const sign = offset >= 0 ? '+' : '-';
+      const hours = Math.floor(Math.abs(offset) / 60)
+        .toString()
+        .padStart(2, '0');
+      const minutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
+      const gmt = `GMT${sign}${hours}:${minutes}`;
+
+      return {
+        label: `(${gmt}) ${name}`,
+        value: name,
+      };
+    });
+
   return (
     <React.Fragment>
       {showPreview ? (
@@ -148,28 +165,47 @@ const GiveawayModal = ({
                 </Select>,
               )}
             </FormItem>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <FormItem label="Expiry date" style={{ width: '50%' }}>
+                {getFieldDecorator('expiry', {
+                  rules: [{ required: true, message: 'Expiry date is required.' }],
+                })(
+                  <DatePicker
+                    disabledDate={currDate => {
+                      const tomorrow = moment()
+                        // .add(1, 'days')
+                        .startOf('day');
+                      const maxDate = moment()
+                        .add(30, 'days')
+                        .endOf('day');
 
-            <FormItem label="Expiry date">
-              {getFieldDecorator('expiry', {
-                rules: [{ required: true, message: 'Expiry date is required.' }],
-              })(
-                <DatePicker
-                  disabledDate={currDate => {
-                    const tomorrow = moment()
-                      .add(1, 'days')
-                      .startOf('day');
-                    const maxDate = moment()
-                      .add(30, 'days')
-                      .endOf('day');
-
-                    return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
-                  }}
-                  showTime
-                  format="YYYY-MM-DD hh:mm A"
-                  style={{ width: '100%' }}
-                />,
-              )}
-            </FormItem>
+                      return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
+                    }}
+                    showTime
+                    format="YYYY-MM-DD hh:mm A"
+                    style={{ width: '100%', marginRight: '10px' }}
+                  />,
+                )}
+              </FormItem>
+              <Form.Item label="Time zone" style={{ width: '50%' }}>
+                {getFieldDecorator('timezone', {
+                  initialValue: moment.tz.guess(), // автоматично визначає зону користувача
+                  rules: [{ required: true, message: 'Please select a timezone' }],
+                })(
+                  <Select
+                    showSearch
+                    optionFilterProp="label"
+                    style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
+                  >
+                    {getTimezoneOptions().map(tz => (
+                      <Select.Option key={tz.value} value={tz.value} label={tz.label}>
+                        {tz.label}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                )}
+              </Form.Item>
+            </div>
 
             <FormItem label="Giveaway requirements">
               {getFieldDecorator('giveawayRequirements', {
@@ -232,7 +268,18 @@ const GiveawayModal = ({
             <FormItem label="Commissions to Waivio and partners">
               {getFieldDecorator('commission', {
                 initialValue: 5,
-                rules: [{ required: true, message: 'Minimum commission of 5% is required.' }],
+                rules: [
+                  {
+                    required: true,
+                    validator: (_, value, callback) => {
+                      if (value < 5) {
+                        callback('Minimum commission of 5% is required.');
+                      } else {
+                        callback();
+                      }
+                    },
+                  },
+                ],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
                 <InputNumber
