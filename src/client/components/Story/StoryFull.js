@@ -596,6 +596,24 @@ class StoryFull extends React.Component {
               }
             />
           ))}
+        {post.giveaway && (
+          <GiveawayBlockPreview
+            formData={{
+              ...post.giveaway,
+              giveawayRequirements: Object.keys(post.giveaway?.giveawayRequirements).reduce(
+                (acc, curr) => {
+                  if (post.giveaway?.giveawayRequirements[curr]) {
+                    return [...acc, curr];
+                  }
+
+                  return acc;
+                },
+                [],
+              ),
+            }}
+            isEditable={false}
+          />
+        )}
         <Collapse defaultActiveKey={typeof document !== 'undefined' ? ['1'] : ['1', '2']}>
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
@@ -670,15 +688,6 @@ class StoryFull extends React.Component {
             </Collapse.Panel>
           )}
         </Collapse>
-        {post.giveaway && (
-          <GiveawayBlockPreview
-            formData={{
-              ...post.giveaway,
-              giveawayRequirements: Object.keys(post.giveaway?.giveawayRequirements),
-            }}
-            isEditable={false}
-          />
-        )}
         <StoryFooter
           isRecipe={isRecipe}
           isThread={isThread}
