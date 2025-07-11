@@ -1,8 +1,9 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
-import moment from 'moment-timezone';
-
+import { DateTime } from 'luxon';
+import timezones from 'timezones-list';
+import moment from 'moment/moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
@@ -77,28 +78,22 @@ const GiveawayModal = ({
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
+        const expiryString = moment(values.expiry).format('YYYY-MM-DD hh:mm A');
+
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
-        saveData({ ...values, guideName: user.name, currency: currency.type });
+
+        saveData({
+          ...values,
+          guideName: user.name,
+          currency: currency.type,
+          expiry: DateTime.fromFormat(expiryString, 'yyyy-MM-dd hh:mm a', { zone: values.timezone })
+            .toUTC()
+            .toISO(),
+        });
       }
     });
   };
-
-  const getTimezoneOptions = () =>
-    moment.tz.names().map(name => {
-      const offset = moment.tz(name).utcOffset();
-      const sign = offset >= 0 ? '+' : '-';
-      const hours = Math.floor(Math.abs(offset) / 60)
-        .toString()
-        .padStart(2, '0');
-      const minutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
-      const gmt = `GMT${sign}${hours}:${minutes}`;
-
-      return {
-        label: `(${gmt}) ${name}`,
-        value: name,
-      };
-    });
 
   return (
     <React.Fragment>
@@ -189,7 +184,7 @@ const GiveawayModal = ({
               </FormItem>
               <Form.Item label="Time zone" style={{ width: '50%' }}>
                 {getFieldDecorator('timezone', {
-                  initialValue: moment.tz.guess(), // автоматично визначає зону користувача
+                  initialValue: DateTime.local().zoneName, // автоматично визначає зону користувача
                   rules: [{ required: true, message: 'Please select a timezone' }],
                 })(
                   <Select
@@ -197,8 +192,8 @@ const GiveawayModal = ({
                     optionFilterProp="label"
                     style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
                   >
-                    {getTimezoneOptions().map(tz => (
-                      <Select.Option key={tz.value} value={tz.value} label={tz.label}>
+                    {timezones.map(tz => (
+                      <Select.Option key={tz.tzCode} value={tz.tzCode} label={tz.label}>
                         {tz.label}
                       </Select.Option>
                     ))}
