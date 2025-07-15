@@ -31,7 +31,6 @@ export const prepareObjects = async (
   isPlace,
   restaurantTags,
   businessTags,
-  placeTags,
   listAssociations,
   userName,
 ) => {
