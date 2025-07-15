@@ -15,11 +15,14 @@ import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import FavoritesSideNav from '../../components/Favorites/FavoritesSideNav';
 import AdminSidenav from '../../components/Navigation/AdminSidenav/AdminSidenav';
+import useAdLevelData from '../../../hooks/useAdsense';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 const LeftSidebar = () => {
   const isWidget =
     typeof location !== 'undefined' && new URLSearchParams(location.search).get('display');
   const isSocial = useSelector(getIsSocial);
+  const { minimal, intensive, moderate } = useAdLevelData();
 
   return (
     !isWidget && (
@@ -32,6 +35,7 @@ const LeftSidebar = () => {
             <div>
               <DepartmentsWobject />
               <WobjectShopFilter />
+              {(minimal || moderate || intensive) && <GoogleAds inFeed />}
             </div>
           )}
         />
@@ -43,6 +47,7 @@ const LeftSidebar = () => {
             <div>
               <DepartmentsUser isSocial />
               <UserFilters />
+              {(minimal || moderate || intensive) && <GoogleAds inFeed />}
             </div>
           )}
         />{' '}
@@ -52,6 +57,7 @@ const LeftSidebar = () => {
             <div>
               <DepartmentsUser isSocial />
               <UserFilters />
+              {(minimal || moderate || intensive) && <GoogleAds inFeed />}
             </div>
           )}
         />

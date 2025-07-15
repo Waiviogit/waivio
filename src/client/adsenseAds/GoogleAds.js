@@ -31,7 +31,7 @@ const parseInsTagAttributes = str => {
   return attrs;
 };
 
-const GoogleAds = ({ inPost = false, inFeed = false }) => {
+const GoogleAds = ({ inPost = false, inFeed = false, inShop = false }) => {
   const adRef = useRef(null);
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -95,6 +95,7 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
         minHeight: '100px',
         marginBottom: '5px',
         ...(inPost && { maxHeight: '100px' }),
+        ...(inShop && { width: 'calc((100% - 40px) / 5)', minWidth: '100px' }),
         ...(inFeed && { minHeight: '250px' }),
       }}
     >
@@ -106,6 +107,7 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
 GoogleAds.propTypes = {
   inPost: PropTypes.bool,
   inFeed: PropTypes.bool,
+  inShop: PropTypes.bool,
 };
 
 export default GoogleAds;
