@@ -22,8 +22,8 @@ import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 import ListDescription from '../ListDescription/ListDescription';
 import useQuery from '../../../hooks/useQuery';
-import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
 import GoogleAds from '../../adsenseAds/GoogleAds';
+import useAdLevelData from '../../../hooks/useAdsense';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
@@ -31,10 +31,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const listType = wobject?.object_type === 'list';
   const query = useQuery();
   const { name } = useParams();
-  const adSenseSettings = useSelector(getSettingsAds);
-  const minimalAds = adSenseSettings?.level === 'minimal';
-  const moderateAds = adSenseSettings?.level === 'moderate';
-  const intensiveAds = adSenseSettings?.level === 'intensive';
+  const { minimal, intensive, moderate } = useAdLevelData();
 
   let breadcrumbsFromQuery = query.get('breadcrumbs');
 
@@ -138,7 +135,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       rows.forEach((row, rowIndex) => {
         const rowElements = [...row.map(getRowFn)];
 
-        const shouldInjectAd = (moderateAds && rowIndex % 2 === 1) || intensiveAds;
+        const shouldInjectAd = (moderate && rowIndex % 2 === 1) || intensive;
 
         if (shouldInjectAd) {
           const adPosition = Math.floor(Math.random() * (rowElements.length + 1));
@@ -187,7 +184,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
-      {(minimalAds || moderateAds || intensiveAds) && <GoogleAds />}
+      {(minimal || moderate || intensive) && <GoogleAds />}
     </div>
   );
 };

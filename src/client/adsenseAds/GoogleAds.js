@@ -46,7 +46,6 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
   }
 
   // eslint-disable-next-line no-console
-  console.log(insAttributes, 'insAttributes');
   useEffect(() => {
     const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current) {
@@ -94,6 +93,7 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
       style={{
         minWidth: '250px',
         minHeight: '100px',
+        marginBottom: '5px',
         ...(inPost && { maxHeight: '100px' }),
         ...(inFeed && { minHeight: '250px' }),
       }}

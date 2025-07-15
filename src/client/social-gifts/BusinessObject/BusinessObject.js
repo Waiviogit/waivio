@@ -67,6 +67,8 @@ import { enrichMenuItems } from '../SocialProduct/SocialProduct';
 import Options from '../../object/Options/Options';
 import Department from '../../object/Department/Department';
 import ProductId from '../../app/Sidebar/ProductId';
+import useAdLevelData from '../../../hooks/useAdsense';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 const BusinessObject = ({
   userName,
@@ -101,6 +103,7 @@ const BusinessObject = ({
   const [loading, setIsLoading] = useState(true);
   const [mapObjPermlink, setMapObjPermlink] = useState('');
   const [hoveredOption, setHoveredOption] = useState({});
+  const { minimal, intensive, moderate } = useAdLevelData();
   const departments = get(wobject, 'departments');
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const serviceObj = ['service'].includes(wobject.object_type);
@@ -472,6 +475,7 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
+            {intensive && <GoogleAds />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
@@ -484,6 +488,7 @@ const BusinessObject = ({
                 />
               </div>
             )}
+            {(minimal || moderate || intensive) && <GoogleAds inPost />}
             {!isEmpty(menuItem) && (
               <SocialMenuItems
                 menuItem={menuItem}

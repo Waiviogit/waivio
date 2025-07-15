@@ -4,16 +4,14 @@ import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj } from './helpers';
 import GoogleAds from '../../adsenseAds/GoogleAds';
-import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
-import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
 
 import './FeedMasonry.less';
+import useAdLevelData from '../../../hooks/useAdsense';
 
 const FeedMasonry = ({
   loadMore,
@@ -27,8 +25,7 @@ const FeedMasonry = ({
   isReviewsPage,
   className,
 }) => {
-  const adSenseSettings = useSelector(getSettingsAds);
-  const adFrequency = adIntensityLevels?.find(l => l.key === adSenseSettings?.level)?.frequency;
+  const { frequency } = useAdLevelData();
 
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
@@ -72,7 +69,7 @@ const FeedMasonry = ({
               </div>,
             );
 
-            if ((index + 1) % adFrequency === 0) {
+            if ((index + 1) % frequency === 0) {
               elements.push(
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={`google-ad-${index}`}>
