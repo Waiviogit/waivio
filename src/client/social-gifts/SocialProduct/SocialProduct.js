@@ -89,6 +89,8 @@ import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
 import './SocialProduct.less';
 import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
+import useAdLevelData from '../../../hooks/useAdsense';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 const limit = 30;
 
@@ -159,6 +161,7 @@ const SocialProduct = ({
   const [references, setReferences] = useState([]);
   const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(false);
+  const { minimal, intensive, moderate } = useAdLevelData();
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const isProduct = wobject.object_type === 'product';
@@ -637,7 +640,7 @@ const SocialProduct = ({
                 ) && (
                   <div className="SocialProduct__paddingBottom">
                     <div className="SocialProduct__subtitle">
-                      <FormattedMessage id="Affiliate_Link" defaultMessage="Affiliate Link" />:
+                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                     </div>
                     <div className="SocialProduct__affiliateContainer">
                       {affiliateLinks
@@ -661,6 +664,7 @@ const SocialProduct = ({
                     <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
                 )}
+              {intensive && <GoogleAds />}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
@@ -680,6 +684,7 @@ const SocialProduct = ({
                 />
               </div>
             )}
+            {(minimal || moderate || intensive) && <GoogleAds inPost />}
             {recipePost && isRecipe && !showPostModal && (
               <div className={'SocialProduct__postWrapper PageContent social'}>
                 <RecipePost signature={signature} recipePost={recipePost} />
@@ -718,6 +723,7 @@ const SocialProduct = ({
                 parent={parent}
               />
             )}
+            {intensive && <GoogleAds />}
             <ObjectsSlider
               objects={addOns}
               title={intl.formatMessage({
