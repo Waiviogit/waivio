@@ -1,8 +1,9 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
-import moment from 'moment-timezone';
-
+// import { DateTime } from 'luxon';
+// import timezones from 'timezones-list';
+import moment from 'moment/moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
@@ -26,6 +27,7 @@ const GiveawayModal = ({
   getTokenBalanceAction,
   isEdit,
   saveData,
+  initData,
 }) => {
   const [filtered, setFiltered] = useState(false);
   const [isOpenGiveAwayModal, setIsiOpenGiveAwayModal] = React.useState(false);
@@ -45,6 +47,8 @@ const GiveawayModal = ({
   const onClose = () => {
     setIsiOpenGiveAwayModal(false);
     resetFields();
+    if (initData?.eligible === 'all' || !initData.eligible) setFiltered(false);
+    else setFiltered(true);
   };
 
   const onDelete = () => {
@@ -77,28 +81,25 @@ const GiveawayModal = ({
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
+        // const expiryString = moment(values.expiry).format('YYYY-MM-DD hh:mm A');
+
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
-        saveData({ ...values, guideName: user.name, currency: currency.type });
+
+        saveData({
+          ...values,
+          guideName: user.name,
+          currency: currency.type,
+          expiredAt: moment(values.expiry),
+          // expiredAt: DateTime.fromFormat(expiryString, 'yyyy-MM-dd hh:mm a', {
+          //   zone: values.timezone,
+          // })
+          //   .toUTC()
+          //   .toISO(),
+        });
       }
     });
   };
-
-  const getTimezoneOptions = () =>
-    moment.tz.names().map(name => {
-      const offset = moment.tz(name).utcOffset();
-      const sign = offset >= 0 ? '+' : '-';
-      const hours = Math.floor(Math.abs(offset) / 60)
-        .toString()
-        .padStart(2, '0');
-      const minutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
-      const gmt = `GMT${sign}${hours}:${minutes}`;
-
-      return {
-        label: `(${gmt}) ${name}`,
-        value: name,
-      };
-    });
 
   return (
     <React.Fragment>
@@ -119,11 +120,13 @@ const GiveawayModal = ({
           <Form onSubmit={handleSubmit} layout="vertical">
             <FormItem label="Name">
               {getFieldDecorator('name', {
+                initialValue: initData?.name,
                 rules: [{ required: true, message: 'Campaign name is required.' }],
               })(<Input placeholder="Enter campaign name" />)}
             </FormItem>
             <FormItem label="Reward (per winner, USD)">
               {getFieldDecorator('reward', {
+                initialValue: initData?.reward,
                 rules: [
                   { required: true, message: 'Reward is required.' },
                   {
@@ -143,7 +146,7 @@ const GiveawayModal = ({
             </FormItem>
             <FormItem label="Number of winners">
               {getFieldDecorator('winners', {
-                initialValue: 1,
+                initialValue: initData?.winners || 1,
                 rules: [{ required: true }, { validator: validateWinnersQuantity }],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
@@ -168,6 +171,7 @@ const GiveawayModal = ({
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <FormItem label="Expiry date" style={{ width: '50%' }}>
                 {getFieldDecorator('expiry', {
+                  initialValue: initData?.expiry,
                   rules: [{ required: true, message: 'Expiry date is required.' }],
                 })(
                   <DatePicker
@@ -187,29 +191,35 @@ const GiveawayModal = ({
                   />,
                 )}
               </FormItem>
-              <Form.Item label="Time zone" style={{ width: '50%' }}>
-                {getFieldDecorator('timezone', {
-                  initialValue: moment.tz.guess(), // автоматично визначає зону користувача
-                  rules: [{ required: true, message: 'Please select a timezone' }],
-                })(
-                  <Select
-                    showSearch
-                    optionFilterProp="label"
-                    style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
-                  >
-                    {getTimezoneOptions().map(tz => (
-                      <Select.Option key={tz.value} value={tz.value} label={tz.label}>
-                        {tz.label}
-                      </Select.Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
+              {/* <Form.Item label="Time zone" style={{ width: '50%' }}> */}
+              {/*   {getFieldDecorator('timezone', { */}
+              {/*     initialValue: initData?.timezone || DateTime.local().zoneName, // автоматично визначає зону користувача */}
+              {/*     rules: [{ required: true, message: 'Please select a timezone' }], */}
+              {/*   })( */}
+              {/*     <Select */}
+              {/*       showSearch */}
+              {/*       optionFilterProp="label" */}
+              {/*       style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }} */}
+              {/*     > */}
+              {/*       {timezones.map(tz => ( */}
+              {/*         <Select.Option key={tz.tzCode} value={tz.tzCode} label={tz.label}> */}
+              {/*           {tz.label} */}
+              {/*         </Select.Option> */}
+              {/*       ))} */}
+              {/*     </Select>, */}
+              {/*   )} */}
+              {/* </Form.Item> */}
             </div>
 
             <FormItem label="Giveaway requirements">
               {getFieldDecorator('giveawayRequirements', {
-                initialValue: ['likePost', 'comment', 'tag', 'reblog', 'follow'],
+                initialValue: initData?.giveawayRequirements || [
+                  'likePost',
+                  'comment',
+                  'tag',
+                  'reblog',
+                  'follow',
+                ],
                 rules: [
                   {
                     validator: (_, value, callback) => {
@@ -234,7 +244,7 @@ const GiveawayModal = ({
 
             <FormItem label="Eligible users">
               {getFieldDecorator('eligible', {
-                initialValue: filtered ? 'filtered' : 'all',
+                initialValue: initData?.eligible || 'all',
               })(
                 <RadioGroup onChange={e => setFiltered(e.target.value === 'filtered')}>
                   <Radio value="all">All users</Radio>
@@ -246,19 +256,19 @@ const GiveawayModal = ({
             {filtered && (
               <>
                 <FormItem label="Minimum Waivio expertise (optional)">
-                  {getFieldDecorator('minExpertise', { initialValue: 0 })(
+                  {getFieldDecorator('minExpertise', { initialValue: initData?.minExpertise || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
 
                 <FormItem label="Minimum number of followers (optional)">
-                  {getFieldDecorator('minFollowers', { initialValue: 0 })(
+                  {getFieldDecorator('minFollowers', { initialValue: initData?.minFollowers || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
 
                 <FormItem label="Minimum number of posts (optional)">
-                  {getFieldDecorator('minPosts', { initialValue: 0 })(
+                  {getFieldDecorator('minPosts', { initialValue: initData?.minPosts || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
@@ -267,7 +277,7 @@ const GiveawayModal = ({
 
             <FormItem label="Commissions to Waivio and partners">
               {getFieldDecorator('commission', {
-                initialValue: 5,
+                initialValue: initData?.commission || 5,
                 rules: [
                   {
                     required: true,
@@ -348,10 +358,15 @@ GiveawayModal.propTypes = {
     rate: PropTypes.string,
   }),
   currencyInfo: PropTypes.shape(),
+  initData: PropTypes.shape(),
   rateInUsd: PropTypes.string,
   getTokenBalanceAction: PropTypes.func,
   saveData: PropTypes.func,
   isEdit: PropTypes.bool,
+};
+
+GiveawayModal.defaultProps = {
+  initData: {},
 };
 
 export default injectIntl(

@@ -1,5 +1,4 @@
 /* eslint-disable arrow-body-style */
-import moment from 'moment';
 import { batch } from 'react-redux';
 import { message } from 'antd';
 import assert from 'assert';
@@ -310,7 +309,7 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
       },
       frequencyAssign: 0,
       app: appName,
-      expiredAt: moment(giveawayData.expiry),
+      expiredAt: giveawayData.expiredAt,
       currency: giveawayData.currency,
       timezone: giveawayData.timezone,
       payoutToken: 'WAIV',

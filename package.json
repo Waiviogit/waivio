@@ -98,7 +98,6 @@
     "lightrpc": "0.0.1",
     "lodash": "^4.0.0",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.6.0",
     "multicoin-address-validator": "^0.5.11",
     "pigeon-maps": "^0.21.3",
     "pigeon-overlay": "^0.2.3",
