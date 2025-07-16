@@ -138,6 +138,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
 
                 const copy = [...originalWobjects];
                 const adIndex = Math.floor(Math.random() * Math.min(5, copy.length + 1));
+
                 copy.splice(
                   adIndex,
                   0,

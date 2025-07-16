@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
 import { Carousel, Icon } from 'antd';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
 import { isTabletOrMobile } from '../socialProductHelper';
 import useAdLevelData from '../../../../hooks/useAdsense';
 import GoogleAds from '../../../adsenseAds/GoogleAds';
+import { getSettingsAds } from '../../../../store/websiteStore/websiteSelectors';
 
 export const injectAdsIntoItems = (items, renderAd, everyN = 5) =>
   items.flatMap((item, index) => {
@@ -23,9 +25,9 @@ const ObjectsSlider = ({ title, objects, name }) => {
   const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const { frequency } = useAdLevelData();
-
+  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   const processedItems = useMemo(() => {
-    if (!['similar', 'related'].includes(name) || !frequency) {
+    if (!['similar', 'related'].includes(name) || !frequency || isEmpty(unitCode)) {
       return objects.map((item, index) => (
         <ShopObjectCard key={item.author_permlink || index} wObject={item} isSocialProduct />
       ));
