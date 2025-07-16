@@ -158,6 +158,7 @@ const WithdrawModal = props => {
 
   // eslint-disable-next-line consistent-return
   const handleWithdraw = async () => {
+    setLoading(true);
     let json = null;
     const isHbd = pair.to_coin_symbol === 'HBD';
     const address = isHbd ? userName : walletAddress;
@@ -171,7 +172,24 @@ const WithdrawModal = props => {
       };
 
       if (isGuest) {
-        return withdrawGuest({ account: userName, data });
+        try {
+          const res = await withdrawGuest({ account: userName, data });
+
+          if (res.message) {
+            message.error(res.message);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            handleCloseModal();
+            message.success('Your transaction is on the way!');
+          }
+
+          return res;
+        } catch (err) {
+          setLoading(false);
+
+          message.error('Something went wrong');
+        }
       }
       const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
 
@@ -244,6 +262,7 @@ const WithdrawModal = props => {
           )}`,
           '_blank',
         );
+      setLoading(false);
 
       return handleCloseModal();
     }
@@ -308,6 +327,7 @@ const WithdrawModal = props => {
             onClick={handleWithdraw}
             loading={loading}
             disabled={
+              loading ||
               !fromAmount ||
               !toAmount ||
               isError ||

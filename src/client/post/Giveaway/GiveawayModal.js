@@ -112,7 +112,7 @@ const GiveawayModal = ({
         />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
-          Add giveaway
+          Add giveaway BETA
         </Button>
       )}
       {
