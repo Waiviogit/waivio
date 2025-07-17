@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
@@ -26,8 +26,14 @@ const FeedMasonry = ({
   isReviewsPage,
   className,
 }) => {
+  const [unavailableTikTokPosts, setUnavailableTikTokPosts] = useState([]);
   const { frequency } = useAdLevelData();
   const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
+
+  const markTiktokUnavailable = permlink => {
+    setUnavailableTikTokPosts(prev => [...prev, permlink]);
+  };
+
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
     if (isEmpty(posts))
@@ -55,6 +61,8 @@ const FeedMasonry = ({
           {posts?.flatMap((post, index) => {
             const elements = [];
 
+            if (unavailableTikTokPosts.includes(post.permlink)) return elements;
+
             const urlPreview = isEmpty(previews)
               ? ''
               : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
@@ -66,6 +74,7 @@ const FeedMasonry = ({
                 preview={urlPreview}
                 photoQuantity={2}
                 post={post}
+                markTiktokUnavailable={markTiktokUnavailable}
               />,
             );
 
@@ -73,7 +82,7 @@ const FeedMasonry = ({
               elements.push(
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={`google-ad-${index}`}>
-                  <GoogleAds inFeed />{' '}
+                  <GoogleAds inFeed />
                 </div>,
               );
             }
