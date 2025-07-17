@@ -21,10 +21,12 @@ import {
 } from 'lodash';
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
+import { rewardsPost, createBody } from '../../client/newRewards/ManageCampaingsTab/constants';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
 import { createPermlink } from '../../client/vendor/steemitHelpers';
+import * as apiConfig from '../../waivioApi/config.json';
 import {
   safeDraftAction,
   deleteDraft,
@@ -50,6 +52,8 @@ import {
   getObjectInfo,
   getObjectsByIds,
   getObjPermlinkByCompanyId,
+  createNewCampaing,
+  validateActivateCampaing,
 } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
@@ -65,7 +69,12 @@ import {
   getEditorSlate,
   getLastSelection,
 } from './editorSelectors';
-import { getAppendData, getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import {
+  getAppendData,
+  getObjectName,
+  getObjectType,
+  generatePermlink,
+} from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { Entity } from '../../client/components/EditorExtended';
 import { extractLinks } from '../../common/helpers/parser';
@@ -260,7 +269,97 @@ const broadcastComment = (
   return steemConnectAPI.broadcast(operations, isReview);
 };
 
-export function createPost(postData, beneficiaries, isReview, campaign) {
+export const createGiveawayCamp = async (permlink, title, giveawayData, steemConnectAPI) => {
+  if (giveawayData) {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
+
+    const k = {
+      guideName: giveawayData.guideName,
+      giveawayPostTitle: title,
+      requiredObject: `@${giveawayData.guideName}`,
+      objects: [`@${giveawayData.guideName}`],
+      name: giveawayData.name,
+      type: 'giveaways',
+      budget: giveawayData.reward * giveawayData.winners,
+      reward: Number(giveawayData.reward),
+      countReservationDays: 1,
+      commissionAgreement: giveawayData.commission / 100,
+      giveawayRequirements: giveawayData.giveawayRequirements.reduce(
+        (acc, curr) => {
+          acc[curr] = true;
+
+          return acc;
+        },
+        {
+          follow: false,
+          likePost: false,
+          comment: false,
+          tagInComment: false,
+          reblog: false,
+        },
+      ),
+      requirements: {
+        minPhotos: 0,
+        receiptPhoto: true,
+      },
+      userRequirements: {
+        minPosts: Number(giveawayData.minPosts) || 0,
+        minFollowers: Number(giveawayData.minFollowers) || 0,
+        minExpertise: Number(giveawayData.minExpertise) || 0,
+      },
+      frequencyAssign: 0,
+      app: appName,
+      expiredAt: giveawayData.expiredAt,
+      currency: giveawayData.currency,
+      timezone: giveawayData.timezone,
+      payoutToken: 'WAIV',
+      qualifiedPayoutToken: true,
+      reach: 'global',
+      giveawayPermlink: permlink,
+    };
+
+    const campaign = await createNewCampaing(k, giveawayData.guideName);
+
+    if (campaign._id) {
+      const { isValid } = await validateActivateCampaing({
+        _id: campaign._id,
+        guideName: campaign.guideName,
+        permlink,
+      });
+
+      if (isValid) {
+        const activationPermlink = `activate-${rewardsPost.parent_author.replace(
+          '.',
+          '-',
+        )}-${generatePermlink()}`;
+
+        const commentOp = [
+          'comment',
+          {
+            ...rewardsPost,
+            author: campaign.guideName,
+            permlink: activationPermlink,
+            title: `Activate giveaways campaign`,
+            body: createBody(campaign),
+            json_metadata: JSON.stringify({
+              waivioRewards: { type: 'activateCampaign', campaignId: campaign._id },
+            }),
+          },
+        ];
+
+        steemConnectAPI.broadcast([commentOp]);
+
+        return activationPermlink;
+      }
+
+      return '';
+    }
+  }
+
+  return '';
+};
+
+export function createPost(postData, beneficiaries, isReview, campaign, giveawayData) {
   requiredFields.forEach(field => {
     assert(postData[field] != null, `Developer Error: Missing required field ${field}`);
   });
@@ -272,7 +371,6 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const locale = getLocale(state);
     const follower = getAuthenticatedUserName(state);
-
     const {
       parentAuthor,
       parentPermlink,
@@ -314,20 +412,29 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 
       if (daysOld < 30) referral = refCookie;
     }
+    const reservation_permlink = get(campaign, 'reservation_permlink');
+    const permlink = await getPermLink;
+    const campaignActivationPermlink = await createGiveawayCamp(
+      permlink,
+      title,
+      giveawayData,
+      steemConnectAPI,
+    );
 
     const metaData = {
       ...jsonMetadata,
-      ...(get(campaign, 'reservation_permlink') && {
-        reservation_permlink: get(campaign, 'reservation_permlink'),
-      }),
+      ...(reservation_permlink
+        ? {
+            reservation_permlink,
+          }
+        : {}),
+      ...(campaignActivationPermlink ? { campaignActivationPermlink } : {}),
       ...(isReview && campaign ? { campaignId: campaign._id } : {}),
       ...(isUpdating ? {} : { host }),
     };
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
     dispatch({ type: CREATE_POST_START });
-
-    const permlink = await getPermLink;
 
     const result = await broadcastComment(
       steemConnectAPI,
@@ -726,6 +833,7 @@ export const selectObjectFromSearch = (selectedObject, editor, match) => dispatc
 
 export const prepareAndImportObjects = (
   isRestaurant,
+  isPlace,
   isEditor,
   isComment,
   parentPost,
@@ -746,13 +854,21 @@ export const prepareAndImportObjects = (
     objects,
     checkedIds,
     isRestaurant,
+    isPlace,
     restaurantTags,
     businessTags,
     listAssociations,
     userName,
   ).then(async processedObjects => {
     if (isEditor) {
-      const type = isRestaurant(processedObjects[0]) ? 'restaurant' : 'business';
+      let type = 'business';
+
+      if (isRestaurant(processedObjects[0])) {
+        type = 'restaurant';
+      } else if (isPlace(processedObjects[0])) {
+        type = 'place';
+      }
+
       const selectedType = objTypes[type];
       const objData = {
         ...processedObjects[0],
@@ -778,6 +894,7 @@ export const prepareAndImportObjects = (
         importData(
           processedObjects,
           isRestaurant,
+          isPlace,
           userName,
           locale,
           isEditor,
@@ -831,6 +948,7 @@ export const prepareAndImportObjects = (
                 importData(
                   processedObjects,
                   isRestaurant,
+                  isPlace,
                   userName,
                   locale,
                   isEditor,
@@ -849,6 +967,7 @@ export const prepareAndImportObjects = (
       importData(
         processedObjects,
         isRestaurant,
+        isPlace,
         userName,
         locale,
         isEditor,

@@ -27,11 +27,11 @@ const Proposition = ({
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
 
-  if (!proposition?.object && !proposition?.user) return null;
+  if (!proposition?.object && !proposition?.user && proposition?.type !== 'giveaways') return null;
 
   let mainItem = proposition.object;
 
-  if (proposition.user || !proposition.object?.object_type) {
+  if ((proposition.user || !proposition.object?.object_type) && proposition?.type !== 'giveaways') {
     const user = proposition.user || proposition.object;
     const profile = user?.posting_json_metadata
       ? parseJSON(user.posting_json_metadata)?.profile
@@ -43,6 +43,17 @@ const Proposition = ({
       avatar: user.profile_image,
       description: profile?.about,
       author_permlink: user.name,
+    };
+  }
+
+  if (proposition?.type === 'giveaways') {
+    mainItem = {
+      name: proposition?.giveawayPostTitle || proposition?.name,
+      object_type: 'post',
+      author: proposition?.guideName,
+      avatar: '',
+      description: '',
+      author_permlink: proposition?.giveawayPermlink,
     };
   }
   const [openDetails, setOpenDitails] = useState(false);
@@ -117,6 +128,10 @@ Proposition.propTypes = {
   proposition: PropTypes.shape({
     rewardInUSD: PropTypes.number,
     guideName: PropTypes.string,
+    giveawayPermlink: PropTypes.string,
+    giveawayPostTitle: PropTypes.string,
+    type: PropTypes.string,
+    name: PropTypes.string,
     reviewStatus: PropTypes.string,
     reserved: PropTypes.bool,
     commentsCount: PropTypes.number,

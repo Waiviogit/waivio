@@ -44,6 +44,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const bothStatus = isUser && isSponsor;
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
   const isMentions = proposition?.type === 'mentions';
+  const isGiveaways = proposition?.type === 'giveaways';
 
   useEffect(() => {
     if (isVisiblePopover && !bothStatus) {
@@ -177,7 +178,13 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const openReview = useMemo(
     () => (
       <PopoverMenuItem key={'open_review'}>
-        <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>
+        <Link
+          to={
+            isGiveaways
+              ? `/@${proposition?.reviewPermlink}`
+              : `/@${proposition?.userName}/${proposition?.reviewPermlink}`
+          }
+        >
           {intl.formatMessage({ id: 'open_review', defaultMessage: 'Open review' })}
         </Link>
       </PopoverMenuItem>
@@ -409,19 +416,24 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
       }
 
       case 'completed': {
-        const mainList = isMentions ? [openReview, report] : [viewReservation, openReview, report];
+        const mainList =
+          isMentions || isGiveaways ? [openReview, report] : [viewReservation, openReview, report];
 
-        return isSponsor ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList] : mainList;
+        if (isGiveaways) return [...mainList, muteUser, ...toolList];
+
+        return isSponsor && !isGiveaways
+          ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
+          : mainList;
       }
       case 'rejected':
-        if (isMentions) return isSponsor ? [reinstate, ...toolList] : [];
+        if (isMentions || isGiveaways) return isSponsor ? [reinstate, ...toolList] : [];
 
         return isSponsor
           ? [viewReservation, rejectionNote, reinstate, ...toolList]
           : [viewReservation, rejectionNote];
       case 'unassigned':
       case 'expired': {
-        const mainList = isMentions ? [] : [viewReservation];
+        const mainList = isMentions || isGiveaways ? [] : [viewReservation];
 
         if (bothStatus || isUser) return mainList;
 
@@ -476,7 +488,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         visible={openRejectCapm}
         campaigns={[{ ...proposition, name: proposition.campaignName }]}
         linkedObj={
-          proposition?.object.author_permlink !== proposition?.requiredObject?.author_permlink
+          proposition?.object?.author_permlink !== proposition?.requiredObject?.author_permlink
             ? [proposition?.requiredObject, proposition?.object]
             : [proposition?.object]
         }

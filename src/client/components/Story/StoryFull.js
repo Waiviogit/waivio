@@ -27,6 +27,7 @@ import {
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import withAuthActions from '../../auth/withAuthActions';
+import GiveawayBlockPreview from '../../post/Giveaway/GiveawayPreviewBlock/GiveawayBlockPreview';
 import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
@@ -51,16 +52,27 @@ import InstacartWidget from '../../widgets/InstacartWidget';
 import './StoryFull.less';
 import AppendModal from '../../object/AppendModal/AppendModal';
 import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
-import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
 import GoogleAds from '../../adsenseAds/GoogleAds';
+import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
+import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
 
 @injectIntl
 @withRouter
 @withAuthActions
 @connect(
-  state => ({
-    adSenseSettings: getSettingsAds(state),
-  }),
+  state => {
+    const settings = getSettingsAds(state);
+    const level = settings?.level || '';
+    const frequency = adIntensityLevels.find(l => l.key === level)?.frequency ?? null;
+
+    return {
+      adLevel: level,
+      adFrequency: frequency,
+      minimal: level === 'minimal',
+      moderate: level === 'moderate',
+      intensive: level === 'intensive',
+    };
+  },
   {
     muteAuthorPost,
   },
@@ -72,7 +84,6 @@ class StoryFull extends React.Component {
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    adSenseSettings: PropTypes.shape(),
     defaultVotePercent: PropTypes.number,
     onActionInitiated: PropTypes.func.isRequired,
     muteAuthorPost: PropTypes.func.isRequired,
@@ -87,6 +98,8 @@ class StoryFull extends React.Component {
     isRecipe: PropTypes.bool,
     ownPost: PropTypes.bool,
     sliderMode: PropTypes.bool,
+    moderate: PropTypes.bool,
+    intensive: PropTypes.bool,
     onFollowClick: PropTypes.func,
     onSaveClick: PropTypes.func,
     onReportClick: PropTypes.func,
@@ -294,10 +307,9 @@ class StoryFull extends React.Component {
       handleEditThread,
       closeEditThread,
       newBody,
-      adSenseSettings,
+      moderate,
+      intensive,
     } = this.props;
-    const moderateAds = adSenseSettings?.level === 'moderate';
-    const intensiveAds = adSenseSettings?.level === 'intensive';
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -441,7 +453,7 @@ class StoryFull extends React.Component {
             </a>
           </h3>
         )}
-        {(moderateAds || intensiveAds) && <GoogleAds />}
+        {(moderate || intensive) && <GoogleAds inPost />}
         {post && (
           <div className="StoryFull__header">
             <Link to={`/@${authorName}`}>
@@ -595,7 +607,24 @@ class StoryFull extends React.Component {
               }
             />
           ))}
+        {post.giveaway && (
+          <GiveawayBlockPreview
+            formData={{
+              ...post.giveaway,
+              giveawayRequirements: Object.keys(post.giveaway?.giveawayRequirements).reduce(
+                (acc, curr) => {
+                  if (post.giveaway?.giveawayRequirements[curr]) {
+                    return [...acc, curr];
+                  }
 
+                  return acc;
+                },
+                [],
+              ),
+            }}
+            isEditable={false}
+          />
+        )}
         <Collapse defaultActiveKey={typeof document !== 'undefined' ? ['1'] : ['1', '2']}>
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel

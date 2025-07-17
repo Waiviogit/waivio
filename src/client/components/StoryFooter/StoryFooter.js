@@ -16,17 +16,30 @@ import {
 import withAuthActions from '../../auth/withAuthActions';
 import MuteModal from '../../widgets/MuteModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-
-import './StoryFooter.less';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
+import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
+import './StoryFooter.less';
 
 @withAuthActions
 @connect(
-  state => ({
-    isGuest: isGuestUser(state),
-    userName: getAuthenticatedUserName(state),
-    adSenseSettings: getSettingsAds(state),
-  }),
+  state => {
+    const settings = getSettingsAds(state);
+    const isGuest = isGuestUser(state);
+    const userName = getAuthenticatedUserName(state);
+    const level = settings?.level || '';
+    const frequency = adIntensityLevels.find(l => l.key === level)?.frequency ?? null;
+
+    return {
+      adLevel: level,
+      adFrequency: frequency,
+      minimal: level === 'minimal',
+      moderate: level === 'moderate',
+      intensive: level === 'intensive',
+      isGuest,
+      userName,
+    };
+  },
   {
     getSocialInfoPostAction: getSocialInfoPost,
     handleHidePost,
@@ -37,10 +50,12 @@ class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
-    // adSenseSettings: PropTypes.shape(),
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
+    minimal: PropTypes.bool,
+    moderate: PropTypes.bool,
+    intensive: PropTypes.bool,
     sliderMode: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
@@ -224,12 +239,10 @@ class StoryFooter extends React.Component {
       editThread,
       closeEditThread,
       isRecipe,
-      // adSenseSettings,
+      minimal,
+      intensive,
+      moderate,
     } = this.props;
-
-    //  const minimalAds = adSenseSettings?.level === 'minimal';
-    // const moderateAds = adSenseSettings?.level === 'moderate';
-    // const intensiveAds = adSenseSettings?.level === 'intensive';
 
     return (
       <div className="StoryFooter">
@@ -275,8 +288,7 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {/* {(moderateAds||minimalAds ||intensiveAds) && */}
-        {/*  singlePostVew && <GooglePostAds isMultiplex={intensiveAds} />} */}
+        {(moderate || minimal || intensive) && singlePostVew && <GoogleAds />}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
@@ -285,7 +297,7 @@ class StoryFooter extends React.Component {
             isRecipe={isRecipe}
           />
         )}
-        {/* {intensiveAds &&<GooglePostAds isHorisontal/>} */}
+        {intensive && singlePostVew && <GoogleAds inPost />}
         <MuteModal
           item={post}
           type={'post'}

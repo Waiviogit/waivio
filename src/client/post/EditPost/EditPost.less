@@ -14,15 +14,16 @@
   &__giveaway {
     border-color: var(--website-color);
     color: var(--website-color);
-    transition: 0.3s;
+    transition: 0.2s;
     width: 100%;
-    margin-top: 5px;
-    font-weight: 600;
-    height: 35px;
+    margin-top: 10px;
+    font-weight: 500;
+    height: 40px;
 
     &:hover {
-      background-color: var(--website-hover-color);
-      color: @white !important;
+      border-color: var(--website-color);
+      color: var(--website-color);
+      box-shadow: 0 0 4px 0 var(--website-color) !important;
     }
   }
 }
@@ -78,4 +79,22 @@
 
 .has-error .ant-form-explain {
   margin-bottom: 2px;
+}
+
+.ant-input-number-focused {
+  border-color: var(--website-color);
+  box-shadow: 0 0 4px 0 var(--website-color);
+}
+
+.ant-btn {
+  &:focus {
+    color: rgba(0, 0, 0, 0.65);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+    border: 1px solid;
+    border-color: #e9e7e7 !important;
+  }
+
+  &:hover {
+    border-color: var(--website-color) !important;
+  }
 }

@@ -1,6 +1,8 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
+// import { DateTime } from 'luxon';
+// import timezones from 'timezones-list';
 import moment from 'moment/moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
@@ -24,6 +26,8 @@ const GiveawayModal = ({
   rateInUsd,
   getTokenBalanceAction,
   isEdit,
+  saveData,
+  initData,
 }) => {
   const [filtered, setFiltered] = useState(false);
   const [isOpenGiveAwayModal, setIsiOpenGiveAwayModal] = React.useState(false);
@@ -43,6 +47,8 @@ const GiveawayModal = ({
   const onClose = () => {
     setIsiOpenGiveAwayModal(false);
     resetFields();
+    if (initData?.eligible === 'all' || !initData.eligible) setFiltered(false);
+    else setFiltered(true);
   };
 
   const onDelete = () => {
@@ -55,6 +61,7 @@ const GiveawayModal = ({
     const winners = getFieldValue('winners');
 
     if (winners * value > budget) return callback('Rewards more than user balance.');
+    if (value * currency.rate < 0.5) return callback('Minimum reward of $0.5 is required.');
     callback();
   };
 
@@ -72,10 +79,24 @@ const GiveawayModal = ({
 
   const handleSubmit = e => {
     e.preventDefault();
-    validateFields(err => {
+    validateFields((err, values) => {
       if (!err) {
+        // const expiryString = moment(values.expiry).format('YYYY-MM-DD hh:mm A');
+
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
+
+        saveData({
+          ...values,
+          guideName: user.name,
+          currency: currency.type,
+          expiredAt: moment(values.expiry),
+          // expiredAt: DateTime.fromFormat(expiryString, 'yyyy-MM-dd hh:mm a', {
+          //   zone: values.timezone,
+          // })
+          //   .toUTC()
+          //   .toISO(),
+        });
       }
     });
   };
@@ -91,7 +112,7 @@ const GiveawayModal = ({
         />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
-          Add giveaway
+          Add giveaway (BETA)
         </Button>
       )}
       {
@@ -99,11 +120,13 @@ const GiveawayModal = ({
           <Form onSubmit={handleSubmit} layout="vertical">
             <FormItem label="Name">
               {getFieldDecorator('name', {
+                initialValue: initData?.name,
                 rules: [{ required: true, message: 'Campaign name is required.' }],
               })(<Input placeholder="Enter campaign name" />)}
             </FormItem>
             <FormItem label="Reward (per winner, USD)">
               {getFieldDecorator('reward', {
+                initialValue: initData?.reward,
                 rules: [
                   { required: true, message: 'Reward is required.' },
                   {
@@ -123,7 +146,7 @@ const GiveawayModal = ({
             </FormItem>
             <FormItem label="Number of winners">
               {getFieldDecorator('winners', {
-                initialValue: 1,
+                initialValue: initData?.winners || 1,
                 rules: [{ required: true }, { validator: validateWinnersQuantity }],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
@@ -145,32 +168,58 @@ const GiveawayModal = ({
                 </Select>,
               )}
             </FormItem>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <FormItem label="Expiry date" style={{ width: '50%' }}>
+                {getFieldDecorator('expiry', {
+                  initialValue: initData?.expiry,
+                  rules: [{ required: true, message: 'Expiry date is required.' }],
+                })(
+                  <DatePicker
+                    disabledDate={currDate => {
+                      const tomorrow = moment()
+                        // .add(1, 'days')
+                        .startOf('day');
+                      const maxDate = moment()
+                        .add(30, 'days')
+                        .endOf('day');
 
-            <FormItem label="Expiry date">
-              {getFieldDecorator('expiry', {
-                rules: [{ required: true, message: 'Expiry date is required.' }],
-              })(
-                <DatePicker
-                  disabledDate={currDate => {
-                    const tomorrow = moment()
-                      .add(1, 'days')
-                      .startOf('day');
-                    const maxDate = moment()
-                      .add(30, 'days')
-                      .endOf('day');
-
-                    return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
-                  }}
-                  showTime
-                  format="YYYY-MM-DD hh:mm A"
-                  style={{ width: '100%' }}
-                />,
-              )}
-            </FormItem>
+                      return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
+                    }}
+                    showTime
+                    format="YYYY-MM-DD hh:mm A"
+                    style={{ width: '100%', marginRight: '10px' }}
+                  />,
+                )}
+              </FormItem>
+              {/* <Form.Item label="Time zone" style={{ width: '50%' }}> */}
+              {/*   {getFieldDecorator('timezone', { */}
+              {/*     initialValue: initData?.timezone || DateTime.local().zoneName, // автоматично визначає зону користувача */}
+              {/*     rules: [{ required: true, message: 'Please select a timezone' }], */}
+              {/*   })( */}
+              {/*     <Select */}
+              {/*       showSearch */}
+              {/*       optionFilterProp="label" */}
+              {/*       style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }} */}
+              {/*     > */}
+              {/*       {timezones.map(tz => ( */}
+              {/*         <Select.Option key={tz.tzCode} value={tz.tzCode} label={tz.label}> */}
+              {/*           {tz.label} */}
+              {/*         </Select.Option> */}
+              {/*       ))} */}
+              {/*     </Select>, */}
+              {/*   )} */}
+              {/* </Form.Item> */}
+            </div>
 
             <FormItem label="Giveaway requirements">
               {getFieldDecorator('giveawayRequirements', {
-                initialValue: ['likePost', 'comment', 'tag', 'reblog', 'follow'],
+                initialValue: initData?.giveawayRequirements || [
+                  'likePost',
+                  'comment',
+                  'tag',
+                  'reblog',
+                  'follow',
+                ],
                 rules: [
                   {
                     validator: (_, value, callback) => {
@@ -195,7 +244,7 @@ const GiveawayModal = ({
 
             <FormItem label="Eligible users">
               {getFieldDecorator('eligible', {
-                initialValue: filtered ? 'filtered' : 'all',
+                initialValue: initData?.eligible || 'all',
               })(
                 <RadioGroup onChange={e => setFiltered(e.target.value === 'filtered')}>
                   <Radio value="all">All users</Radio>
@@ -207,19 +256,19 @@ const GiveawayModal = ({
             {filtered && (
               <>
                 <FormItem label="Minimum Waivio expertise (optional)">
-                  {getFieldDecorator('minExpertise', { initialValue: 0 })(
+                  {getFieldDecorator('minExpertise', { initialValue: initData?.minExpertise || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
 
                 <FormItem label="Minimum number of followers (optional)">
-                  {getFieldDecorator('minFollowers', { initialValue: 0 })(
+                  {getFieldDecorator('minFollowers', { initialValue: initData?.minFollowers || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
 
                 <FormItem label="Minimum number of posts (optional)">
-                  {getFieldDecorator('minPosts', { initialValue: 0 })(
+                  {getFieldDecorator('minPosts', { initialValue: initData?.minPosts || 0 })(
                     <InputNumber style={{ width: '100%' }} />,
                   )}
                 </FormItem>
@@ -228,9 +277,18 @@ const GiveawayModal = ({
 
             <FormItem label="Commissions to Waivio and partners">
               {getFieldDecorator('commission', {
-                initialValue: 5,
+                initialValue: initData?.commission || 5,
                 rules: [
-                  { required: true, message: 'Accepting the Terms and Conditions is required.' },
+                  {
+                    required: true,
+                    validator: (_, value, callback) => {
+                      if (value < 5) {
+                        callback('Minimum commission of 5% is required.');
+                      } else {
+                        callback();
+                      }
+                    },
+                  },
                 ],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
@@ -300,9 +358,15 @@ GiveawayModal.propTypes = {
     rate: PropTypes.string,
   }),
   currencyInfo: PropTypes.shape(),
+  initData: PropTypes.shape(),
   rateInUsd: PropTypes.string,
   getTokenBalanceAction: PropTypes.func,
+  saveData: PropTypes.func,
   isEdit: PropTypes.bool,
+};
+
+GiveawayModal.defaultProps = {
+  initData: {},
 };
 
 export default injectIntl(
