@@ -29,7 +29,7 @@ import { sendTiktokPriview } from '../../../waivioApi/ApiClient';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { setAuthorityForObject } from '../../../store/appendStore/appendActions';
 
-const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
+const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnavailable }) => {
   const imagePath = post?.imagePath;
   const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
@@ -68,7 +68,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
     pendingVote && (pendingVote.weight > 0 || (pendingVote.weight === 0 && isLiked));
 
   const [thumbnail, setThumbnail] = useState(preview);
-  const [isTiktokUnavailable, setIsTiktokUnavailable] = useState(false);
+  const [tiktokFailed, setTiktokFailed] = useState(false);
 
   const handleLike = () => {
     const authorName = post.guestInfo ? post.root_author : post.author;
@@ -82,30 +82,32 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   };
 
   useEffect(() => {
-    if (isTiktok && !previewLoading) {
-      if (!preview || !thumbnail) {
-        fetch(
-          `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
-            /\?.*/,
-            '',
-          )}`,
-        )
-          .then(data => data.json())
-          .then(data => {
-            if (data?.thumbnail_url) {
-              setThumbnail(data.thumbnail_url);
-              sendTiktokPriview(embeds[0].url, data.thumbnail_url);
-            } else {
-              setIsTiktokUnavailable(true);
-            }
-          })
-          .catch(() => setIsTiktokUnavailable(true));
-      }
+    if (isTiktok && !previewLoading && !preview && !thumbnail) {
+      fetch(
+        `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
+          /\?.*/,
+          '',
+        )}`,
+      )
+        .then(data => data.json())
+        .then(data => {
+          if (data?.thumbnail_url) {
+            setThumbnail(data.thumbnail_url);
+            sendTiktokPriview(embeds[0].url, data.thumbnail_url);
+          } else {
+            setTiktokFailed(true);
+            markTiktokUnavailable?.(post.permlink);
+          }
+        })
+        .catch(() => {
+          setTiktokFailed(true);
+          markTiktokUnavailable?.(post.permlink);
+        });
     }
   }, []);
 
   if (withoutImage && isEmpty(embeds)) return null;
-  if (isTiktok && !(thumbnail || preview) && !isTiktokUnavailable) return null;
+  if (isTiktok && !(thumbnail || preview) && tiktokFailed) return null;
 
   const handleShowPostModal = e => {
     e.preventDefault();
@@ -173,16 +175,8 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               'FeedMasonry__videoContainer--tiktok': isTiktok,
             })}
           >
-            {isTiktokUnavailable ? (
-              <div
-                style={{ height: '350px' }}
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: embeds[0]?.embed }}
-              />
-            ) : (
-              embed && <PostFeedEmbed key="embed" isSocial embed={embed} />
-            )}
-            {!withoutImage && !isTiktokUnavailable && (
+            {embed && <PostFeedEmbed key="embed" isSocial embed={embed} />}
+            {!withoutImage && (
               <img
                 className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
                 src={getProxyImageURL(imagePath[0])}
@@ -193,7 +187,6 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             )}
           </div>
         )}
-
         <div className="FeedMasonry__postInfo">
           <div className="FeedMasonry__titleWrap">
             <a
@@ -266,6 +259,7 @@ FeedItem.propTypes = {
   photoQuantity: PropTypes.number,
   preview: PropTypes.string,
   isReviewsPage: PropTypes.bool,
+  markTiktokUnavailable: PropTypes.func,
 };
 
 export default FeedItem;
