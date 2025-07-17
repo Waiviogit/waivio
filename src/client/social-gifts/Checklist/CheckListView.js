@@ -154,7 +154,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       return result;
     };
 
-    const adComponent = () => <GoogleAds />;
+    const adComponent = () => <GoogleAds listItem />;
 
     if (isEmpty(wobject?.sortCustom?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
@@ -184,7 +184,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       )}
       {loading ? <Loading /> : getMenuList()}
       {listType && !loading && <ListDescription wobject={wobject} />}
-      {(minimal || moderate || intensive) && <GoogleAds />}
+      {(minimal || moderate || intensive) && listType && <GoogleAds inList />}
     </div>
   );
 };
