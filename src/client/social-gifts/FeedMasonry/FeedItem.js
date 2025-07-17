@@ -174,9 +174,9 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             })}
           >
             {isTiktokUnavailable ? (
-              // eslint-disable-next-line react/no-danger
               <div
                 style={{ height: '350px' }}
+                // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: embeds[0]?.embed }}
               />
             ) : (

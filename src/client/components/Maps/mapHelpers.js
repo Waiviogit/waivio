@@ -197,6 +197,7 @@ export const placeGoogleTypes = [
   'movie_theater',
   'museum',
   'national_park',
+  'natural_feature',
   'night_club',
   'observation_deck',
   'opera_house',
