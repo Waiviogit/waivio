@@ -60,14 +60,13 @@ const FeedMasonry = ({
               : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
 
             elements.push(
-              <div key={`${post.author}/${post.permlink}`}>
-                <FeedItem
-                  isReviewsPage={isReviewsPage}
-                  preview={urlPreview}
-                  photoQuantity={2}
-                  post={post}
-                />
-              </div>,
+              <FeedItem
+                key={`${post.author}/${post.permlink}`}
+                isReviewsPage={isReviewsPage}
+                preview={urlPreview}
+                photoQuantity={2}
+                post={post}
+              />,
             );
 
             if ((index + 1) % frequency === 0 && !isEmpty(unitCode) && !isReviewsPage) {

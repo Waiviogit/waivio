@@ -7,8 +7,8 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Icon, Tooltip } from 'antd';
-
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getProxyImageURL } from '../../../common/helpers/image';
 import {
   getPinnedPostsUrls,
@@ -34,42 +34,48 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const is3speak = embeds[0]?.provider_name === '3Speak';
+  const isTiktok = embeds[0]?.provider_name === 'TikTok';
   const withoutImage = is3speak ? imagePath.length === 1 || isEmpty(imagePath) : isEmpty(imagePath);
+
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const user = useSelector(getAuthenticatedUser);
   const isAuthUser = useSelector(getIsAuthenticated);
-  const defaultVotePersent = useSelector(getVotePercent);
+  const defaultVotePercent = useSelector(getVotePercent);
   const wobject = useSelector(getObject);
   const userVotingPower = useSelector(getVotePercent);
   const pinnedPostsUrls = useSelector(getPinnedPostsUrls);
   const previewLoading = useSelector(getPreviewLoadingFromState);
   const pendingVote = useSelector(getPendingLikes)[post.id];
   const currentUserPin = pinnedPostsUrls.includes(post.url);
+
   const tooltipTitle = (
     <FormattedMessage
       id={currentUserPin ? 'unpin' : 'pin'}
       defaultMessage={currentUserPin ? 'Unpin' : 'Pin'}
     />
   );
+
   const pinClassName =
     post?.pin || (has(post, 'currentUserPin') && !post.currentUserPin)
       ? 'pin-grey'
       : 'pin-outlined';
+
   const isLiked = getUpvotes(post.active_votes).some(
     vote => vote.voter === user.name && !vote.fake,
   );
   const pendingLike =
     pendingVote && (pendingVote.weight > 0 || (pendingVote.weight === 0 && isLiked));
 
-  const isTiktok = embeds[0]?.provider_name === 'TikTok';
   const [thumbnail, setThumbnail] = useState(preview);
+  const [isTiktokUnavailable, setIsTiktokUnavailable] = useState(false);
 
   const handleLike = () => {
     const authorName = post.guestInfo ? post.root_author : post.author;
 
-    dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
+    dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePercent));
   };
+
   const pinPost = () => {
     dispatch(setAuthorityForObject(wobject, match));
     dispatch(handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower));
@@ -86,35 +92,39 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
         )
           .then(data => data.json())
           .then(data => {
-            setThumbnail(data.thumbnail_url);
-            sendTiktokPriview(embeds[0].url, data.thumbnail_url);
-          });
+            if (data?.thumbnail_url) {
+              setThumbnail(data.thumbnail_url);
+              sendTiktokPriview(embeds[0].url, data.thumbnail_url);
+            } else {
+              setIsTiktokUnavailable(true);
+            }
+          })
+          .catch(() => setIsTiktokUnavailable(true));
       }
     }
   }, []);
 
   if (withoutImage && isEmpty(embeds)) return null;
-  if (isTiktok && !(thumbnail || preview)) return null;
+  if (isTiktok && !(thumbnail || preview) && !isTiktokUnavailable) return null;
 
   const handleShowPostModal = e => {
     e.preventDefault();
-
-    if (typeof window !== 'undefined' && window?.gtag)
+    if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'view_post', { debug_mode: false });
+    }
     dispatch(showPostModal(post));
   };
+
   const likesCount = getUpvotes(post.active_votes).length;
+
   let embed = embeds[0];
 
   if (isTiktok) {
-    embed = { ...embeds[0], thumbnail: preview || thumbnail };
+    embed = { ...embed, thumbnail: preview || thumbnail };
   }
 
   if (is3speak) {
-    embed = {
-      ...embeds[0],
-      thumbnail: imagePath[0],
-    };
+    embed = { ...embed, thumbnail: imagePath[0] };
   }
 
   return (
@@ -134,11 +144,11 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
           />
         </Tooltip>
       )}
-      <div className={'FeedMasonry__item'}>
+      <div className="FeedMasonry__item">
         {isEmpty(embeds) ? (
           <div className="FeedMasonry__imgWrap">
             {take(imagePath, photoQuantity)?.map((image, index) => {
-              if (image === '') return null;
+              if (!image) return null;
 
               return (
                 <CustomImage
@@ -163,8 +173,16 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               'FeedMasonry__videoContainer--tiktok': isTiktok,
             })}
           >
-            {embed && <PostFeedEmbed key="embed" isSocial embed={embed} />}
-            {!withoutImage && (
+            {isTiktokUnavailable ? (
+              // eslint-disable-next-line react/no-danger
+              <div
+                style={{ height: '350px' }}
+                dangerouslySetInnerHTML={{ __html: embeds[0]?.embed }}
+              />
+            ) : (
+              embed && <PostFeedEmbed key="embed" isSocial embed={embed} />
+            )}
+            {!withoutImage && !isTiktokUnavailable && (
               <img
                 className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
                 src={getProxyImageURL(imagePath[0])}
@@ -175,7 +193,8 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             )}
           </div>
         )}
-        <div className={'FeedMasonry__postInfo'}>
+
+        <div className="FeedMasonry__postInfo">
           <div className="FeedMasonry__titleWrap">
             <a
               className="FeedMasonry__title"
@@ -187,7 +206,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               {truncate(post?.title, {
                 length: isMobile() ? 70 : 80,
                 separator: '...',
-              })}{' '}
+              })}
             </a>
           </div>
           <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
@@ -205,7 +224,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
                     'iconfont--withMyLike': isLiked,
                   })}
                 />
-              )}{' '}
+              )}
               {Boolean(likesCount) && <span>{likesCount}</span>}
             </span>
             {Boolean(post.children) && (
