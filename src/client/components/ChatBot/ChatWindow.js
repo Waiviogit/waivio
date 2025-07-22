@@ -178,9 +178,9 @@ const ChatWindow = ({ className, hideChat, open }) => {
     if (textArea) {
       const handleTouchMove = e => e.stopPropagation();
 
-      textArea.addEventListener('touchmove', handleTouchMove, { passive: false });
+      textArea?.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-      return () => textArea.removeEventListener('touchmove', handleTouchMove);
+      return () => textArea?.removeEventListener('touchmove', handleTouchMove);
     }
   }, []);
 
@@ -190,14 +190,14 @@ const ChatWindow = ({ className, hideChat, open }) => {
     const handleFocus = () => {
       setTimeout(() => {
         if (textArea) {
-          textArea.scrollIntoView({ behavior: 'smooth' });
+          textArea?.scrollIntoView({ behavior: 'smooth' });
         }
       }, 300);
     };
 
-    textArea.addEventListener('focus', handleFocus);
+    textArea?.addEventListener('focus', handleFocus);
 
-    return () => textArea.removeEventListener('focus', handleFocus);
+    return () => textArea?.removeEventListener('focus', handleFocus);
   }, []);
 
   // eslint-disable-next-line consistent-return

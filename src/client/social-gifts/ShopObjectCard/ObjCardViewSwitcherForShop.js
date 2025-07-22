@@ -7,14 +7,20 @@ import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 import './ObjCardListViewSwitcherForShop.less';
 
 const ObjCardListViewSwitcherForShop = ({ wobjects, isSocial }) => {
-  if (isSocial)
+  if (isSocial) {
     return (
       <div className="ObjCardListViewSwitcherForShop__departmentsList">
-        {wobjects?.map(wObject => (
-          <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
-        ))}
+        {wobjects?.map((wObject, i) =>
+          React.isValidElement(wObject) ? (
+            // eslint-disable-next-line react/no-array-index-key
+            <React.Fragment key={`ad-${i}`}>{wObject}</React.Fragment>
+          ) : (
+            <ShopObjectCard key={wObject.author_permlink || i} wObject={wObject} />
+          ),
+        )}
       </div>
     );
+  }
 
   return (
     <div>
@@ -26,7 +32,7 @@ const ObjCardListViewSwitcherForShop = ({ wobjects, isSocial }) => {
 };
 
 ObjCardListViewSwitcherForShop.propTypes = {
-  wobjects: PropTypes.arrayOf(),
+  wobjects: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.element])),
   isSocial: PropTypes.bool,
 };
 

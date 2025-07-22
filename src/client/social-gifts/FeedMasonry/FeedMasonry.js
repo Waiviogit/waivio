@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
@@ -10,9 +10,8 @@ import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj } from './helpers';
 import GoogleAds from '../../adsenseAds/GoogleAds';
+import useAdLevelData from '../../../hooks/useAdsense';
 import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
-import { adIntensityLevels } from '../../websites/WebsiteTools/AdSenseAds/AdSenseAds';
-
 import './FeedMasonry.less';
 
 const FeedMasonry = ({
@@ -27,8 +26,13 @@ const FeedMasonry = ({
   isReviewsPage,
   className,
 }) => {
-  const adSenseSettings = useSelector(getSettingsAds);
-  const adFrequency = adIntensityLevels?.find(l => l.key === adSenseSettings?.level)?.frequency;
+  const [unavailableTikTokPosts, setUnavailableTikTokPosts] = useState([]);
+  const { frequency } = useAdLevelData();
+  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
+
+  const markTiktokUnavailable = permlink => {
+    setUnavailableTikTokPosts(prev => [...prev, permlink]);
+  };
 
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
@@ -57,26 +61,28 @@ const FeedMasonry = ({
           {posts?.flatMap((post, index) => {
             const elements = [];
 
+            if (unavailableTikTokPosts.includes(post.permlink)) return elements;
+
             const urlPreview = isEmpty(previews)
               ? ''
               : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
 
             elements.push(
-              <div key={`${post.author}/${post.permlink}`}>
-                <FeedItem
-                  isReviewsPage={isReviewsPage}
-                  preview={urlPreview}
-                  photoQuantity={2}
-                  post={post}
-                />
-              </div>,
+              <FeedItem
+                key={`${post.author}/${post.permlink}`}
+                isReviewsPage={isReviewsPage}
+                preview={urlPreview}
+                photoQuantity={2}
+                post={post}
+                markTiktokUnavailable={markTiktokUnavailable}
+              />,
             );
 
-            if ((index + 1) % adFrequency === 0) {
+            if ((index + 1) % frequency === 0 && !isEmpty(unitCode) && !isReviewsPage) {
               elements.push(
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={`google-ad-${index}`}>
-                  <GoogleAds inFeed />{' '}
+                  <GoogleAds inFeed />
                 </div>,
               );
             }

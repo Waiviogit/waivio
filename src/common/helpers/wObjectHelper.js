@@ -32,7 +32,7 @@ export const isNewInstacartProgram = instacartAff =>
   instacartAff?.link?.includes('instacart-impact');
 
 export const getPreferredInstacartItem = items => {
-  const impactItem = items.find(item => item.link.includes('instacart-impact.com'));
+  const impactItem = items.find(item => item.link.includes('instacart.impact.com'));
 
   if (impactItem) {
     return impactItem;

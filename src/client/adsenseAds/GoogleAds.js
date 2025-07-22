@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { isMobile } from '../../common/helpers/apiHelpers';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 
 const parseInsTagAttributes = str => {
@@ -31,7 +32,13 @@ const parseInsTagAttributes = str => {
   return attrs;
 };
 
-const GoogleAds = ({ inPost = false, inFeed = false }) => {
+const GoogleAds = ({
+  inPost = false,
+  listItem = false,
+  inFeed = false,
+  inShop = false,
+  inList = false,
+}) => {
   const adRef = useRef(null);
   const [visible, setVisible] = useState(true);
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
@@ -46,7 +53,6 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
   }
 
   // eslint-disable-next-line no-console
-  console.log(insAttributes, 'insAttributes');
   useEffect(() => {
     const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current) {
@@ -94,8 +100,19 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
       style={{
         minWidth: '250px',
         minHeight: '100px',
+        marginBottom: '5px',
         ...(inPost && { maxHeight: '100px' }),
-        ...(inFeed && { minHeight: '250px' }),
+        ...(listItem && {
+          width: 'calc((100% - 30px) / 4)',
+          height: 'calc((100vw +33px) / 4)',
+          marginBottom: '10px',
+          marginRight: '10px',
+        }),
+        ...(inShop && { width: 'calc((100% - 40px) / 5)', minWidth: '100px' }),
+        ...(inFeed && { minHeight: '200px' }),
+        ...(inFeed && isMobile() && { maxWidth: '133px' }),
+        ...(inList && { display: 'flex', justifyContent: 'center' }),
+        ...(isLocalhost && { border: '1px solid red' }),
       }}
     >
       <ins {...insAttributes} {...(isLocalhost ? { 'data-adtest': 'on' } : {})} ref={adRef} />
@@ -106,6 +123,9 @@ const GoogleAds = ({ inPost = false, inFeed = false }) => {
 GoogleAds.propTypes = {
   inPost: PropTypes.bool,
   inFeed: PropTypes.bool,
+  inShop: PropTypes.bool,
+  inList: PropTypes.bool,
+  listItem: PropTypes.bool,
 };
 
 export default GoogleAds;

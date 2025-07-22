@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
 import classNames from 'classnames';
-import InfiniteScroll from 'react-infinite-scroller'; // ✅ Fixed typo
+import InfiniteScroll from 'react-infinite-scroller';
+
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import EmptyCampaing from '../../statics/EmptyCampaign';
 import Loading from '../../components/Icon/Loading';
@@ -25,8 +26,10 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 
 import './ShopList.less';
+import useAdLevelData from '../../../hooks/useAdsense';
 
 const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => {
   const query = useQuery();
@@ -38,12 +41,15 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const departments = useSelector(getShopList);
   const hasMore = useSelector(getShopListHasMore);
+  const { intensive, moderate } = useAdLevelData();
   const emptySocialMessage = isRecipe
     ? 'There are no recipes.'
     : 'This shop does not have any products.';
+
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
+
   const department = location.hash
     ? getLastPermlinksFromHash(location.hash)
     : match.params.department;
@@ -115,18 +121,39 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
               'ShopList__departments--isSocial': isSocial,
             })}
           >
-            {departments?.map(dep => {
+            {departments?.map((dep, index) => {
               if (isEmpty(dep.wobjects)) return null;
+
+              const injectAd = intensive || (moderate && index % 2 === 0);
+              const originalWobjects = isMobile() ? take(dep.wobjects, 4) : dep.wobjects;
+
+              const wobjectsWithAd = (() => {
+                if (!injectAd || isEmpty(originalWobjects)) return originalWobjects;
+
+                const alreadyHasAd = originalWobjects.some(
+                  item => React.isValidElement(item) && item.type === GoogleAds,
+                );
+
+                if (alreadyHasAd) return originalWobjects;
+
+                const copy = [...originalWobjects];
+                const adIndex = Math.floor(Math.random() * Math.min(5, copy.length + 1));
+
+                copy.splice(
+                  adIndex,
+                  0,
+                  <GoogleAds key={`ad-${dep.department}-${adIndex}`} inShop />,
+                );
+
+                return copy;
+              })();
 
               return (
                 <div key={dep.department} className="ShopList__departments">
                   <Link to={getPath(dep.department)} className="ShopList__departments-title">
                     {dep.department} <Icon size={12} type="right" />
                   </Link>
-                  <ObjCardListViewSwitcherForShop
-                    isSocial={isSocial}
-                    wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
-                  />
+                  <ObjCardListViewSwitcherForShop isSocial={isSocial} wobjects={wobjectsWithAd} />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
                       {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}

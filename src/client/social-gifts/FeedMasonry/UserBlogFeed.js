@@ -21,7 +21,9 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
-
+import GoogleAds from '../../adsenseAds/GoogleAds';
+import useAdLevelData from '../../../hooks/useAdsense';
+import { getSettingsAds } from '../../../store/websiteStore/websiteSelectors';
 import './FeedMasonry.less';
 
 const limit = 25;
@@ -39,7 +41,8 @@ const UserBlogFeed = ({ user }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
-
+  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
+  const { frequency } = useAdLevelData();
   const title = `Blog`;
   const desc = mainObj?.description || siteName;
   const image = favicon;
@@ -95,44 +98,52 @@ const UserBlogFeed = ({ user }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {firstLoading && previewLoading ? (
         <Loading margin />
-      ) : (
-        !isEmpty(posts) && (
-          <ReduxInfiniteScroll
-            className="Feed"
-            loadMore={loadMore}
-            loader={<Loading />}
-            loadingMore={isFetching || previewLoading}
-            hasMore={hasMore}
-            elementIsScrollable={false}
-            threshold={2500}
+      ) : !isEmpty(posts) ? (
+        <ReduxInfiniteScroll
+          className="Feed"
+          loadMore={loadMore}
+          loader={<Loading />}
+          loadingMore={isFetching || previewLoading}
+          hasMore={hasMore}
+          elementIsScrollable={false}
+          threshold={2500}
+        >
+          <Masonry
+            breakpointCols={breakpointColumnsObj(posts?.length)}
+            className={'FeedContainer FeedMasonry my-masonry-grid'}
+            columnClassName="my-masonry-grid_column"
           >
-            <Masonry
-              breakpointCols={breakpointColumnsObj(posts?.length)}
-              className={'FeedContainer FeedMasonry my-masonry-grid'}
-              columnClassName="my-masonry-grid_column"
-            >
-              {posts?.map(post => {
-                const urlPreview = isEmpty(previews)
-                  ? ''
-                  : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
+            {posts?.flatMap((post, index) => {
+              const urlPreview = isEmpty(previews)
+                ? ''
+                : previews?.find(i => i.url === post?.embeds?.[0]?.url)?.urlPreview;
 
-                return (
-                  <FeedItem
-                    key={`${post.author}/${post?.permlink}`}
-                    preview={urlPreview}
-                    photoQuantity={2}
-                    post={post}
-                  />
+              const elements = [
+                <FeedItem
+                  key={`${post.author}/${post.permlink}`}
+                  preview={urlPreview}
+                  photoQuantity={2}
+                  post={post}
+                />,
+              ];
+
+              if ((index + 1) % frequency === 0 && !isEmpty(unitCode)) {
+                elements.push(
+                  <div key={`google-ad-${index}`}>
+                    <GoogleAds inFeed />
+                  </div>,
                 );
-              })}
-            </Masonry>
-            <PostModal />
-          </ReduxInfiniteScroll>
-        )
-      )}
-      {isEmpty(posts) && (
+              }
+
+              return elements;
+            })}
+          </Masonry>
+          <PostModal />
+        </ReduxInfiniteScroll>
+      ) : (
         <div className="FeedMasonry__emptyFeed">
           <div>
             <FormattedMessage id="no_posts" defaultMessage="There are no posts." />
