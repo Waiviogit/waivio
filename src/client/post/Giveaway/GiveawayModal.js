@@ -18,6 +18,8 @@ import {
 } from '../../../store/walletStore/walletSelectors';
 import GiveawayBlockPreview from './GiveawayPreviewBlock/GiveawayBlockPreview';
 
+import './GiveawayModal.less';
+
 const GiveawayModal = ({
   form,
   user,
@@ -28,10 +30,11 @@ const GiveawayModal = ({
   isEdit,
   saveData,
   initData,
+  showPreviewFrom,
 }) => {
   const [filtered, setFiltered] = useState(false);
   const [isOpenGiveAwayModal, setIsiOpenGiveAwayModal] = React.useState(false);
-  const [showPreview, setShowPreview] = React.useState(false);
+  const [showPreview, setShowPreview] = React.useState(showPreviewFrom);
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
 
@@ -54,6 +57,7 @@ const GiveawayModal = ({
   const onDelete = () => {
     resetFields();
     setShowPreview(false);
+    saveData(null);
   };
 
   // eslint-disable-next-line consistent-return
@@ -116,7 +120,13 @@ const GiveawayModal = ({
         </Button>
       )}
       {
-        <Modal visible={isOpenGiveAwayModal} title={'Giveaway'} onCancel={onClose} footer={null}>
+        <Modal
+          className={'GiveawayModal'}
+          visible={isOpenGiveAwayModal}
+          title={'Giveaway'}
+          onCancel={onClose}
+          footer={null}
+        >
           <Form onSubmit={handleSubmit} layout="vertical">
             <FormItem label="Name">
               {getFieldDecorator('name', {
@@ -186,6 +196,7 @@ const GiveawayModal = ({
                       return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
                     }}
                     showTime
+                    showToday={false}
                     format="YYYY-MM-DD hh:mm A"
                     style={{ width: '100%', marginRight: '10px' }}
                   />,
@@ -216,7 +227,7 @@ const GiveawayModal = ({
                 initialValue: initData?.giveawayRequirements || [
                   'likePost',
                   'comment',
-                  'tag',
+                  'tagInComment',
                   'reblog',
                   'follow',
                 ],
@@ -236,7 +247,7 @@ const GiveawayModal = ({
                   <Checkbox value="follow">Follow the author</Checkbox>
                   <Checkbox value="likePost">Like the post</Checkbox>
                   <Checkbox value="comment">Leave a comment</Checkbox>
-                  <Checkbox value="tag">Tag 2 friends in a comment</Checkbox>
+                  <Checkbox value="tagInComment">Tag 2 friends in a comment</Checkbox>
                   <Checkbox value="reblog">Re-blog the post</Checkbox>
                 </Checkbox.Group>,
               )}
@@ -337,7 +348,7 @@ const GiveawayModal = ({
                   htmlType="submit"
                   block
                 >
-                  Create giveaway
+                  {showPreview ? 'Save' : 'Create giveaway'}
                 </Button>
               </div>
             </FormItem>
@@ -363,6 +374,7 @@ GiveawayModal.propTypes = {
   getTokenBalanceAction: PropTypes.func,
   saveData: PropTypes.func,
   isEdit: PropTypes.bool,
+  showPreviewFrom: PropTypes.bool,
 };
 
 GiveawayModal.defaultProps = {

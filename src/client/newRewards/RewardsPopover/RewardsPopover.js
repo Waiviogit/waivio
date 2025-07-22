@@ -52,7 +52,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         checkUserInBlackList(proposition?.guideName, proposition?.userName).then(res =>
           setInBlackList(res.inBlacklist),
         );
-      if (isUser) {
+      if (isUser && !isGiveaways) {
         checkUserFollowing(
           proposition?.userName,
           [proposition?.guideName],
@@ -419,7 +419,10 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         const mainList =
           isMentions || isGiveaways ? [openReview, report] : [viewReservation, openReview, report];
 
-        if (isGiveaways) return [...mainList, muteUser, ...toolList];
+        if (isGiveaways)
+          return isSponsor
+            ? [...mainList, rejectRewards, muteUser, ...toolList]
+            : [...mainList, muteUser, ...toolList];
 
         return isSponsor && !isGiveaways
           ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]

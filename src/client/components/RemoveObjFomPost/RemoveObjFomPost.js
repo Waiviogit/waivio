@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { Button, Modal } from 'antd';
 import PropTypes from 'prop-types';
@@ -66,20 +67,24 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
             )}
           </div>
         ))}
-        <h4>Remove the post from objects:</h4>
-        {linkedObj.map(obj => (
-          <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
-            <span>{getObjectName(obj)}</span>
+        {isEmpty(linkedObj) && (
+          <React.Fragment>
+            <h4>Remove the post from objects:</h4>
+            {linkedObj.map(obj => (
+              <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
+                <span>{getObjectName(obj)}</span>
 
-            {rejectedList.includes(obj?.author_permlink) ? (
-              <span>removed</span>
-            ) : (
-              <Button type="primary" onClick={() => deletePostFromObj(obj)}>
-                remove
-              </Button>
-            )}
-          </div>
-        ))}
+                {rejectedList.includes(obj?.author_permlink) ? (
+                  <span>removed</span>
+                ) : (
+                  <Button type="primary" onClick={() => deletePostFromObj(obj)}>
+                    remove
+                  </Button>
+                )}
+              </div>
+            ))}
+          </React.Fragment>
+        )}
       </div>
     </Modal>
   );

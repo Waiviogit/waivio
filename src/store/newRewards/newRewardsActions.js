@@ -259,8 +259,9 @@ export const rejectAuthorReview = proposition => (
       }),
     },
   ];
+
   const method = () =>
-    proposition?.type === 'mentions'
+    ['mentions', 'giveaways'].includes(proposition?.type)
       ? steemConnectAPI.rejectMentionRewards(
           authName,
           proposition.userName,
@@ -408,11 +409,7 @@ export const decreaseReward = (proposition, amount, type) => (
   });
 };
 
-export const deactivateCampaing = (item, guideName) => (
-  dispatch,
-  getState,
-  { steemConnectAPI, busyAPI },
-) => {
+export const deactivateCampaing = item => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const authUserName = getAuthenticatedUserName(getState());
   const deactivationPermlink = `deactivate-${rewardsPost.parent_author.replace(
     '.',
@@ -421,12 +418,14 @@ export const deactivateCampaing = (item, guideName) => (
   const commentOp = [
     'comment',
     {
-      parent_author: guideName,
+      parent_author: authUserName,
       parent_permlink: item.activationPermlink,
-      author: guideName,
+      author: authUserName,
       permlink: deactivationPermlink,
       title: 'Unactivate object for rewards',
-      body: `Campaign ${item.name} was inactivated by ${guideName} `,
+      body: `${
+        item.name ? `Campaign ${item.name}` : 'Giveaway'
+      } was inactivated by ${authUserName} `,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'stopCampaign',

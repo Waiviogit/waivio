@@ -24,7 +24,7 @@ const EditPost = props => {
     objPercentage,
   } = props;
   const [isNewReview, setIsNewReview] = React.useState(false);
-  const [giveawayData, setGiveawayData] = React.useState(null);
+  const [giveawayData, setGiveawayData] = React.useState(props.currDraft?.jsonMetadata?.giveaway);
   const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
@@ -144,6 +144,7 @@ const EditPost = props => {
               isEdit={isUpdating}
               saveData={safeGiveawayData}
               initData={giveawayData}
+              showPreviewFrom={!!props.currDraft?.jsonMetadata?.giveaway}
             />
           )}{' '}
           <div className="edit-post__saving-badge">

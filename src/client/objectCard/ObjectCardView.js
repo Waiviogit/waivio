@@ -261,7 +261,7 @@ const ObjectCardView = ({
                 </div>
               )}
           </div>
-          {username && showHeart && !isUser && (
+          {username && showHeart && !isUser && !isPostType && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>
