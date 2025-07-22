@@ -48,6 +48,28 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
+  const getReviewType = () => {
+    switch (sponsor.campaignType) {
+      case 'mentions':
+        return intl.formatMessage({
+          id: 'mention',
+          defaultMessage: `Mention`,
+        });
+
+      case 'giveaways':
+        return intl.formatMessage({
+          id: 'giveaway',
+          defaultMessage: `Giveaway`,
+        });
+
+      default:
+        return intl.formatMessage({
+          id: 'paymentTable_review',
+          defaultMessage: `Review`,
+        });
+    }
+  };
+
   const time = isReports ? moment(sponsor.createdAt).format('h:mm:ss') : '';
   const getOperation = useCallback(() => {
     switch (sponsor.type) {
@@ -117,17 +139,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
       default:
         return (
           <React.Fragment>
-            <span className="PaymentTable__action-item fw6">
-              {sponsor.campaignType !== 'mentions'
-                ? intl.formatMessage({
-                    id: 'paymentTable_review',
-                    defaultMessage: 'Review',
-                  })
-                : intl.formatMessage({
-                    id: 'paymentTable_mention',
-                    defaultMessage: 'Mention',
-                  })}
-            </span>{' '}
+            <span className="PaymentTable__action-item fw6">{getReviewType()}</span>{' '}
             {intl.formatMessage({
               id: 'paymentTable_review_by',
               defaultMessage: 'by',
@@ -145,16 +157,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
 
   const reviewPermlink =
     get(sponsor, ['details', 'review_permlink'], '') || sponsor?.reviewPermlink;
-  const review =
-    sponsor.campaignType === 'mentions'
-      ? intl.formatMessage({
-          id: 'mention',
-          defaultMessage: `Mention`,
-        })
-      : intl.formatMessage({
-          id: 'paymentTable_review',
-          defaultMessage: `Review`,
-        });
+
+  const review = getReviewType();
 
   return (
     <tr>
@@ -168,7 +172,15 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
             <div className="PaymentTable__action-items">
               <div>
                 {reviewPermlink ? (
-                  <Link to={`/@${sponsor.userName}/${reviewPermlink}`}>{review}</Link>
+                  <Link
+                    to={
+                      sponsor.campaignType
+                        ? `/@${reviewPermlink}`
+                        : `/@${sponsor.userName}/${reviewPermlink}`
+                    }
+                  >
+                    {review}
+                  </Link>
                 ) : (
                   review
                 )}
@@ -234,7 +246,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           </p>
         ) : (
           <React.Fragment>
-            {sponsor.campaignType !== 'mentions' && (
+            {sponsor.campaignType === 'reviews' && (
               <p>
                 <Link
                   to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink']) ||

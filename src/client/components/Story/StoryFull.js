@@ -376,7 +376,6 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-
     let content = null;
 
     if (isPostDeleted(post)) {
@@ -611,6 +610,8 @@ class StoryFull extends React.Component {
           <GiveawayBlockPreview
             formData={{
               ...post.giveaway,
+              ...post.giveaway.userRequirements,
+              winners: post.giveaway.budget / post.giveaway.reward,
               giveawayRequirements: Object.keys(post.giveaway?.giveawayRequirements).reduce(
                 (acc, curr) => {
                   if (post.giveaway?.giveawayRequirements[curr]) {

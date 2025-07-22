@@ -40,6 +40,7 @@ import {
   getCurrentCampaignSelector,
   getDraftPostsSelector,
 } from '../draftsStore/draftsSelectors';
+import { deactivateCampaing } from '../newRewards/newRewardsActions';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../searchStore/searchActions';
@@ -118,7 +119,18 @@ export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJEC
 export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
-  { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
+  {
+    id,
+    author,
+    permlink,
+    title,
+    body,
+    json_metadata,
+    parent_author,
+    parent_permlink,
+    reward,
+    giveaway,
+  }, // eslint-disable-line
 ) => (dispatch, getState) => {
   const draftList = getDraftPostsSelector(getState());
   const jsonMetadata = jsonParse(json_metadata);
@@ -127,7 +139,17 @@ export const editPost = (
     body,
     draftId: id,
     isUpdating: true,
-    jsonMetadata,
+    jsonMetadata: {
+      ...jsonMetadata,
+      ...(giveaway
+        ? {
+            giveaway: {
+              ...giveaway,
+              giveawayRequirements: Object.keys(giveaway?.giveawayRequirements),
+            },
+          }
+        : {}),
+    },
     lastUpdated: Date.now(),
     originalBody: body,
     parentAuthor: parent_author,
@@ -459,6 +481,18 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
 
       dispatch({ type: CREATE_POST_ERROR, payload: err });
       dispatch(notify(errorMsg, 'error'));
+
+      if (campaignActivationPermlink)
+        setTimeout(
+          () =>
+            dispatch(
+              deactivateCampaing(
+                { ...campaign, activationPermlink: campaignActivationPermlink },
+                authUser.name,
+              ),
+            ),
+          3000,
+        );
 
       return null;
     });

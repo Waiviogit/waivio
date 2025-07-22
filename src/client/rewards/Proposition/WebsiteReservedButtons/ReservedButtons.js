@@ -17,6 +17,7 @@ const ReservedButtons = props => {
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
   const isMention = props.type === 'mentions';
+  const isGiveaways = props.type === 'giveaways';
 
   const handlePopoverClick = key =>
     props.onActionInitiated(() => {
@@ -37,10 +38,26 @@ const ReservedButtons = props => {
   const handleClickProposButton = () => {
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'click_submit_photos', { debug_mode: false });
-    props.onActionInitiated(async () => {
-      if (!props.inCard) setLoadingButton(true);
-      props.handleReserve(setLoadingButton);
-    });
+    if (isGiveaways) {
+      window.location = props.giveawayUrl;
+    } else {
+      props.onActionInitiated(async () => {
+        if (!props.inCard) setLoadingButton(true);
+        props.handleReserve(setLoadingButton);
+      });
+    }
+  };
+
+  const getButtonLabel = () => {
+    switch (props.type) {
+      case 'mentions':
+        return props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' });
+      case 'giveaways':
+        return props.intl.formatMessage({ id: 'submit_giveaways', defaultMessage: 'Participate' });
+
+      default:
+        return props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' });
+    }
   };
 
   return (
@@ -52,11 +69,9 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        {isMention
-          ? props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' })
-          : props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
+        {getButtonLabel()}
       </Button>
-      {!props.reserved && !isMention && (
+      {!props.reserved && !isMention && !isGiveaways && (
         <Popover
           placement="bottomRight"
           trigger="click"
@@ -100,6 +115,7 @@ ReservedButtons.propTypes = {
   isSocialProduct: PropTypes.bool,
   reservedDays: PropTypes.number,
   type: PropTypes.string,
+  giveawayUrl: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
 
