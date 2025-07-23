@@ -317,13 +317,13 @@ export const reinstateReward = proposition => (
     },
   ];
   const method = () =>
-    proposition.type === 'mentions'
-      ? steemConnectAPI.restoreMentionRewards(
+    proposition.type === 'reviews'
+      ? steemConnectAPI.broadcast([commentOp])
+      : steemConnectAPI.restoreMentionRewards(
           authUserName,
           proposition.userName,
           proposition?.reservationPermlink,
-        )
-      : steemConnectAPI.broadcast([commentOp]);
+        );
 
   return new Promise((resolve, reject) => {
     method()
