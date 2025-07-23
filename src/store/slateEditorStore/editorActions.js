@@ -22,6 +22,7 @@ import {
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
 import { rewardsPost, createBody } from '../../client/newRewards/ManageCampaingsTab/constants';
+import { generateGiveawayMarkdown } from '../../client/rewards/rewardsHelper';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
@@ -406,10 +407,14 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
       jsonMetadata,
     } = postData;
 
-    const newBody =
+    let newBody =
       isReview && campaign
         ? `${body}\n***\n<center>This review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})</center>\n\n`
         : body;
+
+    if (giveawayData) {
+      newBody = `${body}${generateGiveawayMarkdown(giveawayData)}`;
+    }
 
     const url = getCurrentHost(state);
     const match = url?.match(/^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/);
