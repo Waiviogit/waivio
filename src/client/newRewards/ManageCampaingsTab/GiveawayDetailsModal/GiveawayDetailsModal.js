@@ -1,4 +1,5 @@
 import { Modal } from 'antd';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -24,18 +25,21 @@ const GiveawayDetailsModal = ({ visible, proposition, onCancel }) => (
       <strong>Payment currency:</strong> WAIV
     </div>
     <div>
-      <strong>Expiry date:</strong> {proposition?.expiredAt}
+      <strong>Expiry date:</strong>{' '}
+      {moment(proposition?.expiredAt)
+        .local()
+        .format('YYYY-MM-DD hh:mm A')}
     </div>
 
     <div>
       <strong>Giveaway requirements:</strong>
     </div>
     <ul>
-      <li>✅ Follow the author</li>
-      <li>✅ Like the post</li>
-      <li>✅ Leave a comment</li>
-      <li>✅ Tag 2 friends in a comment</li>
-      <li>✅ Re-blog the post</li>
+      {proposition?.giveawayRequirements?.follow && <li>✅ Follow the author</li>}
+      {proposition?.giveawayRequirements?.likePost && <li>✅ Like the post</li>}
+      {proposition?.giveawayRequirements?.comment && <li>✅ Leave a comment</li>}
+      {proposition?.giveawayRequirements?.tagInComment && <li>✅ Tag 2 friends in a comment</li>}
+      {proposition?.giveawayRequirements?.reblog && <li>✅ Re-blog the post</li>}
     </ul>
     <div>
       <strong>Users requirements:</strong>
@@ -76,6 +80,13 @@ GiveawayDetailsModal.propTypes = {
       minPosts: PropTypes.number,
       minFollowers: PropTypes.number,
       minExpertise: PropTypes.number,
+    }),
+    giveawayRequirements: PropTypes.shape({
+      follow: PropTypes.bool,
+      likePost: PropTypes.bool,
+      comment: PropTypes.bool,
+      tagInComment: PropTypes.bool,
+      reblog: PropTypes.bool,
     }),
   }).isRequired,
 };

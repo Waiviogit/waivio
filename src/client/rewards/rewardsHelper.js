@@ -451,6 +451,7 @@ export const handleAddMapCoordinates = coordinates => {
 };
 
 export const generateGiveawayMarkdown = giveawayData => {
+  const winners = giveawayData?.budget / giveawayData?.reward;
   const emojis = {
     follow: '✅ Follow the author',
     likePost: '✅ Like the post',
@@ -482,15 +483,14 @@ export const generateGiveawayMarkdown = giveawayData => {
   return `
 \n***\n
 
-# Join the giveaway for a chance to win $${giveawayData?.reward}!\n\n
-
+## Giveaway time! Your chance to win $${giveawayData?.reward}${
+    winners > 1 ? ` with ${winners} winners` : ''
+  }!\n\n
 **To enter:**
 ${toEnter}
 
-
 **User requirements:**
 ${userRequirements.join('\n') || '✅ Available to everyone'}
-
 
 Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.
 `;

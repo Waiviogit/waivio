@@ -449,6 +449,16 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
     }
   };
 
+  const getLinkedObj = () => {
+    if (proposition?.object) {
+      return proposition?.object?.author_permlink !== proposition?.requiredObject?.author_permlink
+        ? [proposition?.requiredObject, proposition?.object]
+        : [proposition?.object];
+    }
+
+    return [];
+  };
+
   return (
     <React.Fragment>
       <Popover
@@ -490,11 +500,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         onClose={() => setOpenRejectCapm(false)}
         visible={openRejectCapm}
         campaigns={[{ ...proposition, name: proposition.campaignName }]}
-        linkedObj={
-          proposition?.object?.author_permlink !== proposition?.requiredObject?.author_permlink
-            ? [proposition?.requiredObject, proposition?.object]
-            : [proposition?.object]
-        }
+        linkedObj={getLinkedObj()}
         post={proposition}
       />
     </React.Fragment>
