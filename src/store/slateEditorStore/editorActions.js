@@ -460,6 +460,8 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
       ...(isUpdating ? {} : { host }),
     };
 
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
     dispatch({ type: CREATE_POST_START });
 

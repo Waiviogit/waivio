@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import { getCampaingHistoryList } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configHistoryTableHeader } from '../constants/historyTableConfig';
+import GiveawayDetailsModal from './GiveawayDetailsModal/GiveawayDetailsModal';
 
 const HistoryCampaing = ({ guideName, setLoading, loading }) => {
   const [historyList, setHistoryList] = useState();
   const [hasMore, setHasMore] = useState(true);
+  const [showGiveawayDetails, setShowGiveawayDetails] = useState(false);
 
   useEffect(() => {
     if (loading) {
@@ -33,7 +35,15 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
         bodyConfig={historyList}
         showMore={hasMore}
         handleShowMore={handleLoadMore}
+        getCustomLink={(name, item) => <a onClick={() => setShowGiveawayDetails(item)}>{name}</a>}
       />
+      {showGiveawayDetails && (
+        <GiveawayDetailsModal
+          visible={Boolean(showGiveawayDetails)}
+          onCancel={setShowGiveawayDetails}
+          proposition={showGiveawayDetails}
+        />
+      )}
     </div>
   );
 };
