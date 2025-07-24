@@ -47,17 +47,26 @@ const Proposition = ({
   }
 
   if (proposition?.type === 'giveaways') {
+    const user = proposition?.user || proposition?.object;
+    const profile = user?.posting_json_metadata
+      ? parseJSON(user.posting_json_metadata)?.profile
+      : null;
+
     mainItem = {
       name: proposition?.giveawayPostTitle || proposition?.name,
       object_type: 'post',
       author: proposition?.guideName,
-      avatar: '',
-      description: '',
+      avatar: user?.profile_image,
+      description: profile?.about,
       author_permlink: proposition?.giveawayPermlink,
     };
   }
   const [openDetails, setOpenDitails] = useState(false);
-  const onOpenDetailsModal = () => setOpenDitails(true);
+  const onOpenDetailsModal = () => {
+    if (proposition.type === 'giveaways') {
+      window.location = `/@${proposition.guideName}/${proposition.giveawayPermlink}`;
+    } else setOpenDitails(true);
+  };
   const propositionType =
     proposition.reserved || proposition?.reviewStatus === 'assigned' ? 'reserved' : type;
 

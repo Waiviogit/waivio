@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { Button, Modal } from 'antd';
 import PropTypes from 'prop-types';
@@ -13,10 +14,12 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
   const [rejectedList, setRejectedList] = React.useState([]);
   const dispatch = useDispatch();
   const currUser = useSelector(getAuthenticatedUserName);
-  const rejectCampaigns = camp =>
+  const rejectCampaigns = camp => {
+    const campType = camp.type.slice(0, -1);
+
     Modal.confirm({
-      title: `Reject ${camp.type}`,
-      content: `Do you want to reject this ${camp.type}?`,
+      title: `Reject ${campType}`,
+      content: `Do you want to reject this ${campType}?`,
       onOk() {
         return new Promise(resolve => {
           dispatch(rejectAuthorReview({ ...post, ...camp }))
@@ -30,6 +33,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
         });
       },
     });
+  };
 
   const deletePostFromObj = obj =>
     Modal.confirm({
@@ -66,20 +70,24 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
             )}
           </div>
         ))}
-        <h4>Remove the post from objects:</h4>
-        {linkedObj.map(obj => (
-          <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
-            <span>{getObjectName(obj)}</span>
+        {!isEmpty(linkedObj) && (
+          <React.Fragment>
+            <h4>Remove the post from objects:</h4>
+            {linkedObj.map(obj => (
+              <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
+                <span>{getObjectName(obj)}</span>
 
-            {rejectedList.includes(obj?.author_permlink) ? (
-              <span>removed</span>
-            ) : (
-              <Button type="primary" onClick={() => deletePostFromObj(obj)}>
-                remove
-              </Button>
-            )}
-          </div>
-        ))}
+                {rejectedList.includes(obj?.author_permlink) ? (
+                  <span>removed</span>
+                ) : (
+                  <Button type="primary" onClick={() => deletePostFromObj(obj)}>
+                    remove
+                  </Button>
+                )}
+              </div>
+            ))}
+          </React.Fragment>
+        )}
       </div>
     </Modal>
   );

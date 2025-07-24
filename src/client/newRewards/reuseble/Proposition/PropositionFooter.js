@@ -313,6 +313,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               reservedDays={proposition?.countReservationDays}
               inCard
               type={proposition?.type}
+              giveawayUrl={`/@${proposition.guideName}/${proposition.giveawayPermlink}`}
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>
               {intl.formatMessage({ id: 'details', defaultMessage: 'Details' })}{' '}
@@ -352,6 +353,7 @@ PropositionFooter.propTypes = {
     messagesPermlink: PropTypes.string,
     rootName: PropTypes.string,
     guideName: PropTypes.string,
+    giveawayPermlink: PropTypes.string,
     notEligible: PropTypes.bool,
     reserved: PropTypes.bool,
     type: PropTypes.string,

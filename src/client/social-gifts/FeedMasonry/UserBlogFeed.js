@@ -132,7 +132,7 @@ const UserBlogFeed = ({ user }) => {
 
               if ((index + 1) % frequency === 0 && !isEmpty(unitCode)) {
                 elements.push(
-                  <div key={`google-ad-${index}`}>
+                  <div key={`google-ad-${unitCode}`}>
                     <GoogleAds inFeed />
                   </div>,
                 );

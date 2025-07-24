@@ -19,12 +19,14 @@ import Loading from '../../components/Icon/Loading';
 import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { createBody, rewardsPost } from './constants';
+import GiveawayDetailsModal from './GiveawayDetailsModal/GiveawayDetailsModal';
 
 export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const currency = useSelector(getCurrentCurrency);
   const dispatch = useDispatch();
   const [manageList, setManageList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showGiveawayDetails, setShowGiveawayDetails] = useState(false);
   const campaingIsActive = status => ['active', 'reachedLimit'].includes(status);
 
   useEffect(() => {
@@ -170,7 +172,20 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                 )}
               </td>
               <td>
-                <Link to={`/rewards/details/${row._id}`}>{row.name}</Link>
+                {row.type === 'giveaways' ? (
+                  <React.Fragment>
+                    {showGiveawayDetails === row._id && (
+                      <GiveawayDetailsModal
+                        visible={showGiveawayDetails}
+                        onCancel={setShowGiveawayDetails}
+                        proposition={row}
+                      />
+                    )}
+                    <a onClick={() => setShowGiveawayDetails(row._id)}>{row.name}</a>
+                  </React.Fragment>
+                ) : (
+                  <Link to={`/rewards/details/${row._id}`}>{row.name}</Link>
+                )}
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>

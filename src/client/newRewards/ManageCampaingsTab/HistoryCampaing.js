@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import { getCampaingHistoryList } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configHistoryTableHeader } from '../constants/historyTableConfig';
+import GiveawayDetailsModal from './GiveawayDetailsModal/GiveawayDetailsModal';
 
 const HistoryCampaing = ({ guideName, setLoading, loading }) => {
   const [historyList, setHistoryList] = useState();
   const [hasMore, setHasMore] = useState(true);
+  const [showGiveawayDetails, setShowGiveawayDetails] = useState(false);
 
   useEffect(() => {
     if (loading) {
@@ -24,6 +26,12 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
       setHistoryList([...historyList, ...res.campaigns]);
       setHasMore(res.hasMore);
     });
+  const getCustomLink = (name, item) => {
+    if (item?.type === 'giveaways')
+      return <a onClick={() => setShowGiveawayDetails(item)}>{name}</a>;
+
+    return <a href={`/rewards/details/${item._id}`}>{name}</a>;
+  };
 
   return (
     <div>
@@ -33,7 +41,15 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
         bodyConfig={historyList}
         showMore={hasMore}
         handleShowMore={handleLoadMore}
+        getCustomLink={getCustomLink}
       />
+      {showGiveawayDetails && (
+        <GiveawayDetailsModal
+          visible={Boolean(showGiveawayDetails)}
+          onCancel={setShowGiveawayDetails}
+          proposition={showGiveawayDetails}
+        />
+      )}
     </div>
   );
 };

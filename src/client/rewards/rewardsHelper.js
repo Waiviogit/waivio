@@ -449,3 +449,49 @@ export const handleAddMapCoordinates = coordinates => {
     history.pushState('', '', `/?${searchParams.toString()}`);
   }
 };
+
+export const generateGiveawayMarkdown = giveawayData => {
+  const winners = giveawayData?.budget / giveawayData?.reward || giveawayData?.winners;
+  const emojis = {
+    follow: '✅ Follow the author',
+    likePost: '✅ Like the post',
+    comment: '✅ Leave a comment',
+    tag: '✅ Tag a friend in a comment',
+    reblog: '✅ Re-blog the post',
+  };
+
+  const toEnter = giveawayData?.giveawayRequirements
+    .map(key => emojis[key])
+    .filter(Boolean)
+    .join('\n');
+  const userRequirements = [];
+
+  if (
+    giveawayData?.eligibility === 'all' ||
+    !(giveawayData?.minExpertise && giveawayData?.minFollowers && giveawayData?.minPosts)
+  ) {
+    userRequirements.push('✅ Available to everyone');
+  } else {
+    if (giveawayData?.minExpertise > 0)
+      userRequirements.push(`✅ Minimum Waivio expertise: ${giveawayData?.minExpertise}`);
+    if (giveawayData?.minFollowers > 0)
+      userRequirements.push(`✅ Minimum number of followers: ${giveawayData?.minFollowers}`);
+    if (giveawayData?.minPosts > 0)
+      userRequirements.push(`✅ Minimum number of posts: ${giveawayData?.minPosts}`);
+  }
+
+  return `
+\n***\n
+
+## Giveaway time! Your chance to win $${giveawayData?.reward}${
+    winners > 1 ? ` with ${winners} winners` : ''
+  }!\n\n
+**To enter:**
+${toEnter}
+
+**User requirements:**
+${userRequirements.join('\n') || '✅ Available to everyone'}
+
+Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.
+`;
+};

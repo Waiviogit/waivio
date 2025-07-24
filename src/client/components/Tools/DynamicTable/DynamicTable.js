@@ -29,6 +29,7 @@ export const DynamicTable = ({
   showMore,
   handleShowMore,
   disabledLink,
+  getCustomLink,
 }) => {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(null);
@@ -104,6 +105,8 @@ export const DynamicTable = ({
 
       case 'link':
         if (head.hideLink && head.hideLink(item)) return '-';
+        if (getCustomLink)
+          return getCustomLink(head.name || item[head.id] || head?.getName(item), item);
 
         return (
           <Link disabled={disabledLink} to={head.to(item, match)}>
@@ -282,6 +285,7 @@ DynamicTable.propTypes = {
   emptyTitle: PropTypes.string,
   showMore: PropTypes.bool,
   disabledLink: PropTypes.bool,
+  getCustomLink: PropTypes.func,
   buttons: PropTypes.shape({}),
 };
 
@@ -296,6 +300,7 @@ DynamicTable.defaultProps = {
   emptyTitle: '',
   buttons: {},
   showMore: false,
+  customLink: null,
 };
 
 export default injectIntl(DynamicTable);

@@ -16,7 +16,7 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
   } = formData;
 
   const renderRequirement = (label, key) =>
-    giveawayRequirements.includes(key) && (
+    giveawayRequirements?.includes(key) && (
       <div className="GiveawayPreviewBlock__item">
         <Checkbox checked disabled />
         <span>{label}</span>
@@ -24,9 +24,9 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     );
 
   const renderUserRequirements = () => {
-    const j = !(minExpertise || minFollowers || minPosts);
+    const haveUserReq = !(minExpertise && minFollowers && minPosts);
 
-    if (eligible === 'all' || j) {
+    if (eligible === 'all' || haveUserReq) {
       return (
         <div className="GiveawayPreviewBlock__item">
           <Checkbox checked disabled />
@@ -71,7 +71,7 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
           {renderRequirement('Like the post', 'likePost')}
           {renderRequirement('Follow the author', 'follow')}
           {renderRequirement('Leave a comment', 'comment')}
-          {renderRequirement('Tag a friend in a comment', 'tag')}
+          {renderRequirement('Tag 2 friends in a comment', 'tagInComment')}
           {renderRequirement('Re-blog the post', 'reblog')}
         </div>
       </div>
