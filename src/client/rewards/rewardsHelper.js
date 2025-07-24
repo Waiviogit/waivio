@@ -451,7 +451,7 @@ export const handleAddMapCoordinates = coordinates => {
 };
 
 export const generateGiveawayMarkdown = giveawayData => {
-  const winners = giveawayData?.budget / giveawayData?.reward;
+  const winners = giveawayData?.budget / giveawayData?.reward || giveawayData?.winners;
   const emojis = {
     follow: '✅ Follow the author',
     likePost: '✅ Like the post',

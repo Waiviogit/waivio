@@ -26,6 +26,12 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
       setHistoryList([...historyList, ...res.campaigns]);
       setHasMore(res.hasMore);
     });
+  const getCustomLink = (name, item) => {
+    if (item?.type === 'giveaways')
+      return <a onClick={() => setShowGiveawayDetails(item)}>{name}</a>;
+
+    return <a href={`/rewards/details/${item._id}`}>{name}</a>;
+  };
 
   return (
     <div>
@@ -35,7 +41,7 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
         bodyConfig={historyList}
         showMore={hasMore}
         handleShowMore={handleLoadMore}
-        getCustomLink={(name, item) => <a onClick={() => setShowGiveawayDetails(item)}>{name}</a>}
+        getCustomLink={getCustomLink}
       />
       {showGiveawayDetails && (
         <GiveawayDetailsModal
