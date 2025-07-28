@@ -157,7 +157,10 @@ const GiveawayModal = ({
             <FormItem label="Number of winners">
               {getFieldDecorator('winners', {
                 initialValue: initData?.winners || 1,
-                rules: [{ required: true }, { validator: validateWinnersQuantity }],
+                rules: [
+                  { required: true, message: 'Winners are required.' },
+                  { validator: validateWinnersQuantity },
+                ],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
                 <Input

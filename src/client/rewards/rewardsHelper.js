@@ -452,18 +452,12 @@ export const handleAddMapCoordinates = coordinates => {
 
 export const generateGiveawayMarkdown = giveawayData => {
   const winners = giveawayData?.budget / giveawayData?.reward || giveawayData?.winners;
-  const emojis = {
-    follow: '✅ Follow the author',
-    likePost: '✅ Like the post',
-    comment: '✅ Leave a comment',
-    tag: '✅ Tag a friend in a comment',
-    reblog: '✅ Re-blog the post',
-  };
 
-  const toEnter = giveawayData?.giveawayRequirements
-    .map(key => emojis[key])
-    .filter(Boolean)
-    .join('\n');
+  const toEnter = `${giveawayData?.giveawayRequirements.follow ? '✅ Follow the author' : ''}
+  ${giveawayData?.giveawayRequirements.likePost ? '✅ Like the post' : ''}
+  ${giveawayData?.giveawayRequirements.comment ? '✅ Leave a comment' : ''}
+  ${giveawayData?.giveawayRequirements.tagInComment ? '✅ Tag a friend in a comment' : ''}
+  ${giveawayData?.giveawayRequirements.reblog ? '✅ Re-blog the post' : ''}\n`;
   const userRequirements = [];
 
   if (
@@ -489,9 +483,9 @@ export const generateGiveawayMarkdown = giveawayData => {
 **To enter:**
 ${toEnter}
 
-**User requirements:**
+**Eligibility:**
 ${userRequirements.join('\n') || '✅ Available to everyone'}
 
-Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.
+Sponsor reserves the right to refuse payment if activity is suspected to be fraudulent, spam, of low quality, or for any other reason.
 `;
 };
