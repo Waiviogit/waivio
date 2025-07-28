@@ -1,6 +1,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { Alert } from 'antd';
 import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
@@ -74,6 +75,12 @@ const SubmitReviewPublish = ({ intl, reviewData }) => {
         </a>
         ).
       </div>
+      <Alert
+        className={'tc mb2'}
+        message=""
+        description="Avoid using AI-generated content or images from the internet. Submissions containing such material may lead to blacklisting."
+        type="warning"
+      />
     </React.Fragment>
   );
 };
