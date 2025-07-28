@@ -1,0 +1,45 @@
+.google-ads {
+  min-width: 250px;
+  min-height: 100px;
+  margin-bottom: 5px;
+
+  &.in-post {
+    max-height: 100px;
+  }
+
+  &.list-item {
+    width: calc((100% - 30px) / 4);
+    height: calc((100vw + 33px) / 4);
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
+
+  &.in-shop {
+    width: calc((100% - 40px) / 5);
+    min-width: 100px;
+  }
+
+  &.in-feed {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+  }
+
+  &.in-list {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  &.limit-width {
+    max-width: 600px;
+  }
+
+  &.mobile-feed {
+    max-width: 133px;
+  }
+
+  &.localhost {
+    border: 1px solid red;
+  }
+}
