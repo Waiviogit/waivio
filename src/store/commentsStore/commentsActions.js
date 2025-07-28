@@ -238,7 +238,7 @@ export const sendComment = (
   const jsonMetadata = createPostMetadata(
     newBody,
     currCategory,
-    isUpdating && jsonParse(originalComment.json_metadata),
+    isUpdating ? jsonParse(originalComment.json_metadata) : { host: location?.hostname },
   );
 
   if (parentPost.parent_author) {
