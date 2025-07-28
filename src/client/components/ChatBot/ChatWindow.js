@@ -267,8 +267,13 @@ const ChatWindow = ({ className, hideChat, open }) => {
         <div className="chat-header">
           <div className="chat-header-logo-wrap">
             <img className="chat-logo" src={siteImage} alt={siteName} />
-            {(isWaivio || shortSiteName) && (
+            {isWaivio || shortSiteName ? (
               <div className="chat-header-text">{siteName} AI Assistant</div>
+            ) : (
+              <div className="chat-header-text">
+                <p>{siteName}</p>
+                <p> AI Assistant</p>
+              </div>
             )}
           </div>
           <div
