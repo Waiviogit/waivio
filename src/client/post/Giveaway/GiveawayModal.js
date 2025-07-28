@@ -1,8 +1,8 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
-// import { DateTime } from 'luxon';
-// import timezones from 'timezones-list';
+// import timezones from 'timezones.json';
+
 import moment from 'moment/moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
@@ -184,7 +184,11 @@ const GiveawayModal = ({
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <FormItem label="Expiry date" style={{ width: '50%' }}>
                 {getFieldDecorator('expiry', {
-                  initialValue: initData?.expiry,
+                  initialValue:
+                    initData?.expiry ||
+                    moment()
+                      .add(7, 'days')
+                      .endOf('day'),
                   rules: [{ required: true, message: 'Expiry date is required.' }],
                 })(
                   <DatePicker
@@ -207,7 +211,7 @@ const GiveawayModal = ({
               </FormItem>
               {/* <Form.Item label="Time zone" style={{ width: '50%' }}> */}
               {/*   {getFieldDecorator('timezone', { */}
-              {/*     initialValue: initData?.timezone || DateTime.local().zoneName, // автоматично визначає зону користувача */}
+              {/*     initialValue: userTimeZone, // автоматично визначає зону користувача */}
               {/*     rules: [{ required: true, message: 'Please select a timezone' }], */}
               {/*   })( */}
               {/*     <Select */}
@@ -216,8 +220,8 @@ const GiveawayModal = ({
               {/*       style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }} */}
               {/*     > */}
               {/*       {timezones.map(tz => ( */}
-              {/*         <Select.Option key={tz.tzCode} value={tz.tzCode} label={tz.label}> */}
-              {/*           {tz.label} */}
+              {/*         <Select.Option key={tz.text} value={tz.text} label={tz.value}> */}
+              {/*           {tz.value} */}
               {/*         </Select.Option> */}
               {/*       ))} */}
               {/*     </Select>, */}
@@ -227,13 +231,7 @@ const GiveawayModal = ({
 
             <FormItem label="Giveaway requirements">
               {getFieldDecorator('giveawayRequirements', {
-                initialValue: initData?.giveawayRequirements || [
-                  'likePost',
-                  'comment',
-                  'tagInComment',
-                  'reblog',
-                  'follow',
-                ],
+                initialValue: initData?.giveawayRequirements || ['likePost', 'follow'],
                 rules: [
                   {
                     validator: (_, value, callback) => {
