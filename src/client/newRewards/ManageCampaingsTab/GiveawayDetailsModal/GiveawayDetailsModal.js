@@ -42,20 +42,20 @@ const GiveawayDetailsModal = ({ visible, proposition, onCancel }) => (
       {proposition?.giveawayRequirements?.reblog && <li>✅ Re-blog the post</li>}
     </ul>
     <div>
-      <strong>Users requirements:</strong>
+      <strong>Eligibility:</strong>
     </div>
     {proposition?.userRequirements?.minPosts ||
     proposition?.userRequirements?.minFollowers ||
     proposition?.userRequirements?.minPosts ? (
       <ul>
         {proposition?.userRequirements?.minExpertise && (
-          <li>✅ Minimum Expertise: {proposition?.userRequirements?.minExpertise}</li>
+          <li>✅ Minimum Waivio expertise: {proposition?.userRequirements?.minExpertise}</li>
         )}
         {proposition?.userRequirements?.minFollowers && (
-          <li>✅ Minimum followers: {proposition?.userRequirements?.minFollowers}</li>
+          <li>✅ Minimum number of followers: {proposition?.userRequirements?.minFollowers}</li>
         )}
         {proposition?.userRequirements?.minPosts && (
-          <li>✅ Minimum Posts: {proposition?.userRequirements?.minPosts}</li>
+          <li>✅ Minimum number of posts: {proposition?.userRequirements?.minPosts}</li>
         )}
       </ul>
     ) : (

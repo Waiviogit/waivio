@@ -120,18 +120,7 @@ export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJEC
 export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
-  {
-    id,
-    author,
-    permlink,
-    title,
-    body,
-    json_metadata,
-    parent_author,
-    parent_permlink,
-    reward,
-    giveaway,
-  }, // eslint-disable-line
+  { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
 ) => (dispatch, getState) => {
   const draftList = getDraftPostsSelector(getState());
   const jsonMetadata = jsonParse(json_metadata);
@@ -142,14 +131,6 @@ export const editPost = (
     isUpdating: true,
     jsonMetadata: {
       ...jsonMetadata,
-      ...(giveaway
-        ? {
-            giveaway: {
-              ...giveaway,
-              giveawayRequirements: Object.keys(giveaway?.giveawayRequirements),
-            },
-          }
-        : {}),
     },
     lastUpdated: Date.now(),
     originalBody: body,
@@ -295,7 +276,6 @@ const broadcastComment = (
 export const createGiveawayCamp = async (permlink, title, giveawayData, steemConnectAPI) => {
   if (giveawayData) {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-
     const k = {
       guideName: giveawayData.guideName,
       giveawayPostTitle: title,
@@ -306,7 +286,10 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
       budget: giveawayData.reward * giveawayData.winners,
       reward: Number(giveawayData.reward),
       countReservationDays: 1,
-      commissionAgreement: giveawayData.commission / 100,
+      commissionAgreement:
+        typeof giveawayData?.commission === 'number'
+          ? giveawayData?.commission / 100
+          : giveawayData?.commission?.replace('%', '') / 100,
       giveawayRequirements: giveawayData.giveawayRequirements.reduce(
         (acc, curr) => {
           acc[curr] = true;
