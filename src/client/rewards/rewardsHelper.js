@@ -452,12 +452,17 @@ export const handleAddMapCoordinates = coordinates => {
 
 export const generateGiveawayMarkdown = giveawayData => {
   const winners = giveawayData?.budget / giveawayData?.reward || giveawayData?.winners;
+  const requirements = giveawayData?.giveawayRequirements.reduce((acc, curr) => {
+    acc[curr] = true;
 
-  const toEnter = `${giveawayData?.giveawayRequirements.follow ? '✅ Follow the author' : ''}
-  ${giveawayData?.giveawayRequirements.likePost ? '✅ Like the post' : ''}
-  ${giveawayData?.giveawayRequirements.comment ? '✅ Leave a comment' : ''}
-  ${giveawayData?.giveawayRequirements.tagInComment ? '✅ Tag a friend in a comment' : ''}
-  ${giveawayData?.giveawayRequirements.reblog ? '✅ Re-blog the post' : ''}\n`;
+    return acc;
+  }, {});
+
+  const toEnter = `${requirements.follow ? '✅ Follow the author' : ''}
+  ${requirements.likePost ? '✅ Like the post' : ''}
+  ${requirements.comment ? '✅ Leave a comment' : ''}
+  ${requirements.tagInComment ? '✅ Tag a friend in a comment' : ''}
+  ${requirements.reblog ? '✅ Re-blog the post' : ''}\n`;
   const userRequirements = [];
 
   if (
