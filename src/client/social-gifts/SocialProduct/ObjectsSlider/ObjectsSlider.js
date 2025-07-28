@@ -1,46 +1,35 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { useSelector } from 'react-redux';
 import { Carousel, Icon } from 'antd';
+import { useSelector } from 'react-redux';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
 import { isTabletOrMobile } from '../socialProductHelper';
 import useAdLevelData from '../../../../hooks/useAdsense';
 import GoogleAds from '../../../adsenseAds/GoogleAds';
 import { getSettingsAds } from '../../../../store/websiteStore/websiteSelectors';
 
-export const injectAdsIntoItems = (items, renderAd, everyN = 5) =>
-  items.flatMap((item, index) => {
-    const elements = [item];
-
-    if ((index + 1) % everyN === 0 && index !== items.length - 1) {
-      elements.push(renderAd(index));
-    }
-
-    return elements;
-  });
-
 const ObjectsSlider = ({ title, objects, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
-  const { frequency } = useAdLevelData();
-  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
-  const processedItems = useMemo(() => {
-    if (!['similar', 'related'].includes(name) || !frequency || isEmpty(unitCode)) {
-      return objects.map((item, index) => (
-        <ShopObjectCard key={item.author_permlink || index} wObject={item} isSocialProduct />
-      ));
-    }
+  const { frequency = 5 } = useAdLevelData();
 
-    return injectAdsIntoItems(
-      objects.map((item, index) => (
-        <ShopObjectCard key={item.author_permlink || index} wObject={item} isSocialProduct />
-      )),
-      index => <GoogleAds key={`ad-${index}`} />,
-      frequency,
-    );
-  }, [objects, name, frequency]);
+  const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
+
+  const isAdInjectable = name === 'similar' || name === 'related';
+
+  const mixedObjects =
+    isAdInjectable && frequency && unitCode
+      ? objects.reduce((acc, obj, idx) => {
+          if (idx > 0 && idx % frequency === 0) {
+            acc.push({ isAd: true, key: `ad-${idx}` });
+          }
+          acc.push(obj);
+
+          return acc;
+        }, [])
+      : objects;
 
   const carouselSettings = {
     dots: false,
@@ -48,7 +37,7 @@ const ObjectsSlider = ({ title, objects, name }) => {
     lazyLoad: false,
     rows: 1,
     nextArrow:
-      currentSlide >= processedItems.length - slidesToShow ? null : <Icon type="caret-right" />,
+      currentSlide >= mixedObjects.length - slidesToShow ? null : <Icon type="caret-right" />,
     prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
     slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
     swipeToSlide: isTabletOrMobile,
@@ -56,13 +45,25 @@ const ObjectsSlider = ({ title, objects, name }) => {
     slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
   };
 
+  const onSlideChange = (curr, next) => {
+    setCurrentSlide(next);
+  };
+
   return (
-    !isEmpty(processedItems) && (
+    !isEmpty(mixedObjects) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
-          <Carousel {...carouselSettings} beforeChange={(_, next) => setCurrentSlide(next)}>
-            {processedItems}
+          <Carousel {...carouselSettings} beforeChange={onSlideChange}>
+            {mixedObjects.map((item, idx) =>
+              item?.isAd ? (
+                <div key={item.key || `ad-${idx}`}>
+                  <GoogleAds />
+                </div>
+              ) : (
+                <ShopObjectCard key={item.author_permlink || idx} wObject={item} isSocialProduct />
+              ),
+            )}
           </Carousel>
         </div>
       </div>

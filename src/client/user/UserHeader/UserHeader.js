@@ -65,7 +65,10 @@ const UserHeader = ({
   let location = null;
   let website = null;
   let about = null;
-  const lastActive = user.last_activity && intl.formatRelative(user.last_activity);
+  const relativeString = user.last_activity && intl.formatRelative(user.last_activity);
+  const lastActive = relativeString?.includes('in')
+    ? `${relativeString?.replace('in', '').trim()} ago`
+    : relativeString;
 
   const handleMuteCurrUser = () => setVisible(true);
 

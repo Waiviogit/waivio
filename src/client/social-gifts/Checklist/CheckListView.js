@@ -123,7 +123,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       );
     }
 
-    const injectAds = (items, getRowFn, AdComponent) => {
+    const injectAds = (items, getRowFn) => {
       const result = [];
       const rows = [];
 
@@ -144,7 +144,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
             adPosition,
             0,
             // eslint-disable-next-line react/no-array-index-key
-            <AdComponent key={`ad-${rowIndex}-${adPosition}`} />,
+            <GoogleAds listItem key={`ad-${rowIndex}-${adPosition}`} />,
           );
         }
 
@@ -154,21 +154,19 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       return result;
     };
 
-    const adComponent = () => <GoogleAds listItem />;
-
     if (isEmpty(wobject?.sortCustom?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
       const itemsProducts = listItems.filter(item => item.object_type !== 'list');
 
       return (
         <div>
-          <div className="Checklist__list">{injectAds(itemsListType, getListRow, adComponent)}</div>
-          <div className="Checklist__list">{injectAds(itemsProducts, getListRow, adComponent)}</div>
+          <div className="Checklist__list">{injectAds(itemsListType, getListRow)}</div>
+          <div className="Checklist__list">{injectAds(itemsProducts, getListRow)}</div>
         </div>
       );
     }
 
-    return <div className="Checklist__list">{injectAds(listItems, getListRow, adComponent)}</div>;
+    return <div className="Checklist__list">{injectAds(listItems, getListRow)}</div>;
   };
 
   return (
