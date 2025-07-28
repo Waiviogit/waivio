@@ -226,8 +226,6 @@ export default function createSsrHandler(template) {
 
       if (searchBot) await setCachedPage({ page, req });
 
-      console.log('from ssr');
-
       return res.send(page);
     } catch (err) {
       console.error(
