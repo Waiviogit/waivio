@@ -104,12 +104,9 @@ const GoogleAds = ({
       <ins
         {...insAttributes}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        {...(inList
+        {...(listItem
           ? {
-              style: {
-                width: 'calc((100% - 30px) / 4)',
-                height: 'calc((100vw + 90px) / 4)',
-              },
+              className: 'list-item',
             }
           : {})}
         ref={adRef}
