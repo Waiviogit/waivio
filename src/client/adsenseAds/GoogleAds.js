@@ -65,20 +65,17 @@ const GoogleAds = ({
 
           setTimeout(() => {
             const adElement = adRef.current;
+
+            const iframe = adElement?.querySelector('iframe');
             const adStatus = adElement?.getAttribute('data-ad-status');
 
-            // eslint-disable-next-line no-console
-            console.log('Ad status', adStatus);
-            if (
-              adStatus === 'unfilled' ||
-              !adElement?.querySelector('iframe') ||
-              adElement.offsetHeight < 30
-            ) {
+            if (!iframe || adStatus === 'unfilled') {
               setVisible(false);
             }
-          }, 3000);
+          }, 2500);
         } catch (e) {
           console.error('AdSense error', e);
+          setVisible(false); // fallback
         }
       }
     }, 300);
