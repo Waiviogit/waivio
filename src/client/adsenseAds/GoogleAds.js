@@ -73,6 +73,17 @@ const GoogleAds = ({
               setVisible(false);
             }
           }, 2500);
+          setTimeout(() => {
+            document.querySelectorAll('.google-ads').forEach(ad => {
+              const ins = ad.querySelector('ins');
+              const iframe = ins?.querySelector('iframe');
+
+              if (!ins || !iframe) {
+                // eslint-disable-next-line no-param-reassign
+                ad.style.display = 'none';
+              }
+            });
+          }, 2000);
         } catch (e) {
           console.error('AdSense error', e);
           setVisible(false); // fallback
