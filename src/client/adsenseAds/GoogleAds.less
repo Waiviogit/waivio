@@ -3,7 +3,9 @@
   min-height: 100px;
   margin-bottom: 5px;
   &:empty,
-  &:not(:has(ins)) {
+  &:not(:has(ins)),
+  &:has(ins:empty),
+  &:has(ins:not(:has(iframe))) {
     display: none !important;
   }
 
@@ -24,11 +26,9 @@
     justify-content: center;
     align-items: center;
     &:empty,
-    &:not(:has(ins)) {
-      display: none !important;
-    }
-
-    ins:empty {
+    &:not(:has(ins)),
+    &:has(ins:empty),
+    &:has(ins:not(:has(iframe))) {
       display: none !important;
     }
     @media (min-width: 1201px) {
@@ -69,11 +69,9 @@
     min-width: 100px;
 
     &:empty,
-    &:not(:has(ins)) {
-      display: none !important;
-    }
-
-    ins:empty {
+    &:not(:has(ins)),
+    &:has(ins:empty),
+    &:has(ins:not(:has(iframe))) {
       display: none !important;
     }
   }
@@ -102,8 +100,4 @@
   &.localhost {
     border: 1px solid red;
   }
-}
-.google-ads:has(ins:empty),
-.google-ads:has(ins:not(:has(iframe))) {
-  display: none !important;
 }
