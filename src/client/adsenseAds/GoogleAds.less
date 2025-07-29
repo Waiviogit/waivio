@@ -46,11 +46,28 @@
         margin-right: 0;
       }
     }
+    &:empty,
+    &:not(:has(ins)) {
+      display: none !important;
+    }
+
+    ins:empty {
+      display: none !important;
+    }
   }
 
   &.in-shop {
     width: calc((100% - 40px) / 5);
     min-width: 100px;
+
+    &:empty,
+    &:not(:has(ins)) {
+      display: none !important;
+    }
+
+    ins:empty {
+      display: none !important;
+    }
   }
 
   &.in-feed {
