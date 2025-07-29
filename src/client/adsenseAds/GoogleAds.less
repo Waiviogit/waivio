@@ -16,6 +16,9 @@
     border-radius: 4px;
     margin-bottom: 10px;
     margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &.in-shop {
@@ -46,5 +49,13 @@
 
   &.localhost {
     border: 1px solid red;
+  }
+  &:empty,
+  &:not(:has(ins)) {
+    display: none !important;
+  }
+
+  ins:empty {
+    display: none !important;
   }
 }

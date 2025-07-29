@@ -67,12 +67,16 @@ const GoogleAds = ({
             const adElement = adRef.current;
             const adStatus = adElement?.getAttribute('data-ad-status');
 
-            if (adStatus === 'unfilled') {
-              setVisible(false);
-            } else if (!adElement?.querySelector('iframe')) {
+            // eslint-disable-next-line no-console
+            console.log('Ad status', adStatus);
+            if (
+              adStatus === 'unfilled' ||
+              !adElement?.querySelector('iframe') ||
+              adElement.offsetHeight < 30
+            ) {
               setVisible(false);
             }
-          }, 2500);
+          }, 3000);
         } catch (e) {
           console.error('AdSense error', e);
         }
@@ -97,7 +101,12 @@ const GoogleAds = ({
 
   return (
     <div className={wrapperClass}>
-      <ins {...insAttributes} {...(isLocalhost ? { 'data-adtest': 'on' } : {})} ref={adRef} />
+      <ins
+        {...insAttributes}
+        className={classNames('google-ads', { 'in-list': inList })}
+        {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+        ref={adRef}
+      />
     </div>
   );
 };
