@@ -1,13 +1,13 @@
 import { Modal, Button, Checkbox, Form, Input, InputNumber, Select, DatePicker, Radio } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import RadioGroup from 'antd/es/radio/group';
-// import timezones from 'timezones.json';
 
 import moment from 'moment/moment';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import timezones from '../../../common/constants/timezones';
 import { getCurrentCurrencyRate as getCurrentCurrencyRateAct } from '../../../store/appStore/appActions';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
@@ -37,6 +37,7 @@ const GiveawayModal = ({
   const [showPreview, setShowPreview] = React.useState(showPreviewFrom);
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
+  const userTimeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   useEffect(() => {
     if (currency.type && !budget && currencyInfo?.balance) {
@@ -205,24 +206,24 @@ const GiveawayModal = ({
                   />,
                 )}
               </FormItem>
-              {/* <Form.Item label="Time zone" style={{ width: '50%' }}> */}
-              {/*   {getFieldDecorator('timezone', { */}
-              {/*     initialValue: userTimeZone, // автоматично визначає зону користувача */}
-              {/*     rules: [{ required: true, message: 'Please select a timezone' }], */}
-              {/*   })( */}
-              {/*     <Select */}
-              {/*       showSearch */}
-              {/*       optionFilterProp="label" */}
-              {/*       style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }} */}
-              {/*     > */}
-              {/*       {timezones.map(tz => ( */}
-              {/*         <Select.Option key={tz.text} value={tz.text} label={tz.value}> */}
-              {/*           {tz.value} */}
-              {/*         </Select.Option> */}
-              {/*       ))} */}
-              {/*     </Select>, */}
-              {/*   )} */}
-              {/* </Form.Item> */}
+              <Form.Item label="Time zone" style={{ width: '50%' }}>
+                {getFieldDecorator('timezone', {
+                  initialValue: userTimeZone, // автоматично визначає зону користувача
+                  rules: [{ required: true, message: 'Please select a timezone' }],
+                })(
+                  <Select
+                    showSearch
+                    optionFilterProp="label"
+                    style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
+                  >
+                    {timezones.map(tz => (
+                      <Select.Option key={tz?.value} value={tz?.value} label={tz?.label}>
+                        {tz?.label}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                )}
+              </Form.Item>
             </div>
 
             <FormItem label="Giveaway requirements">
