@@ -106,7 +106,7 @@ const GoogleAds = ({
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         {...(inList
           ? {
-              style: { maxWidth: 'calc((100% - 30px) / 4)', maxHeight: 'calc((100vw + 90px) / 4)' },
+              style: { width: 'calc((100% - 30px) / 4)', heigth: 'calc((100vw + 90px) / 4)' },
             }
           : {})}
         ref={adRef}
