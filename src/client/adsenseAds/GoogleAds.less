@@ -23,6 +23,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    &:empty,
+    &:not(:has(ins)) {
+      display: none !important;
+    }
+
+    ins:empty {
+      display: none !important;
+    }
     @media (min-width: 1201px) {
       width: calc((100% - 40px) / 5);
 
@@ -53,14 +61,6 @@
       &:nth-child(2n) {
         margin-right: 0;
       }
-    }
-    &:empty,
-    &:not(:has(ins)) {
-      display: none !important;
-    }
-
-    ins:empty {
-      display: none !important;
     }
   }
 
@@ -102,12 +102,8 @@
   &.localhost {
     border: 1px solid red;
   }
-  &:empty,
-  &:not(:has(ins)) {
-    display: none !important;
-  }
-
-  ins:empty {
-    display: none !important;
-  }
+}
+.google-ads:has(ins:empty),
+.google-ads:has(ins:not(:has(iframe))) {
+  display: none !important;
 }
