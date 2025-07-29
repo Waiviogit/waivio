@@ -103,8 +103,12 @@ const GoogleAds = ({
     <div className={wrapperClass}>
       <ins
         {...insAttributes}
-        className={classNames('google-ads', { 'in-list': inList })}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
+        {...(inList
+          ? {
+              style: { width: 'calc((100% - 30px) / 4)', heigth: 'calc((100vw + 90px) / 4)' },
+            }
+          : {})}
         ref={adRef}
       />
     </div>
