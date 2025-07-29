@@ -38,7 +38,11 @@ export default function renderSsrPage(
     ? `<meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />`
     : googleGSC;
   const verificationTags = verifTags?.join('\n');
-  const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
+  let tag = '';
+
+  if (isWaivio && production) tag = 'G-WRV0RFTWBX';
+  if (googleTag) tag = googleTag;
+
   let googleAnalytics = '';
   if (tag)
     googleAnalytics = `<script async src="https://www.googletagmanager.com/gtag/js?id=${tag}"></script>

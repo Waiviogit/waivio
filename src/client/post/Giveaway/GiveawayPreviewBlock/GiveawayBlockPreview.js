@@ -68,8 +68,8 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
       <div className="GiveawayPreviewBlock__section">
         <strong className="GiveawayPreviewBlock__label">To enter:</strong>
         <div className="GiveawayPreviewBlock__list">
-          {renderRequirement('Like the post', 'likePost')}
           {renderRequirement('Follow the author', 'follow')}
+          {renderRequirement('Like the post', 'likePost')}
           {renderRequirement('Leave a comment', 'comment')}
           {renderRequirement('Tag 2 friends in a comment', 'tagInComment')}
           {renderRequirement('Re-blog the post', 'reblog')}

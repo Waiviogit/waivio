@@ -116,7 +116,7 @@ const GiveawayModal = ({
         />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
-          Add giveaway (BETA)
+          Add giveaway
         </Button>
       )}
       {
@@ -184,11 +184,7 @@ const GiveawayModal = ({
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <FormItem label="Expiry date" style={{ width: '50%' }}>
                 {getFieldDecorator('expiry', {
-                  initialValue:
-                    initData?.expiry ||
-                    moment()
-                      .add(7, 'days')
-                      .endOf('day'),
+                  initialValue: initData?.expiry || moment().add(7, 'days'),
                   rules: [{ required: true, message: 'Expiry date is required.' }],
                 })(
                   <DatePicker
