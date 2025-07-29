@@ -116,7 +116,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken, type }) 
             </span>
           </a>
         </div>
-        {type !== 'mentions' && (
+        {type === 'review' && (
           <div>
             <span className="ReportHeader__campaignInfo-name">
               {intl.formatMessage({
