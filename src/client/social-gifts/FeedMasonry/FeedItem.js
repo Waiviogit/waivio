@@ -36,6 +36,9 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
   const is3speak = embeds[0]?.provider_name === '3Speak';
   const isTiktok = embeds[0]?.provider_name === 'TikTok';
   const withoutImage = is3speak ? imagePath.length === 1 || isEmpty(imagePath) : isEmpty(imagePath);
+  const feedItemClassNames = classNames('FeedMasonry__item', {
+    'FeedMasonry__item--giveaway': post.giveaway,
+  });
 
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -146,7 +149,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
           />
         </Tooltip>
       )}
-      <div className="FeedMasonry__item">
+      <div className={feedItemClassNames}>
         {isEmpty(embeds) ? (
           <div className="FeedMasonry__imgWrap">
             {take(imagePath, photoQuantity)?.map((image, index) => {
@@ -253,6 +256,7 @@ FeedItem.propTypes = {
     imagePath: PropTypes.arrayOf(PropTypes.string),
     embeds: PropTypes.arrayOf(PropTypes.shape({})),
     guestInfo: PropTypes.shape({}),
+    giveaway: PropTypes.shape({}),
     root_author: PropTypes.string,
     id: PropTypes.string,
   }),

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -398,7 +399,12 @@ class Story extends React.Component {
 
     return (
       post.depth >= 0 && (
-        <div className="Story" id={`${author}-${post.permlink}`}>
+        <div
+          className={classNames('Story', {
+            'Story--giveaway': post?.giveaway,
+          })}
+          id={`${author}-${post.permlink}`}
+        >
           <div>{rebloggedUI}</div>
           <div className="Story__content">
             <div className="Story__header">
