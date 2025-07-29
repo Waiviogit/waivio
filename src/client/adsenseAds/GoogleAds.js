@@ -57,7 +57,7 @@ const GoogleAds = ({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (window.adsbygoogle && adRef.current) {
+      if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
@@ -106,7 +106,10 @@ const GoogleAds = ({
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         {...(inList
           ? {
-              style: { width: 'calc((100% - 30px) / 4)', heigth: 'calc((100vw + 90px) / 4)' },
+              style: {
+                width: 'calc((100% - 30px) / 4)',
+                height: 'calc((100vw + 90px) / 4)',
+              },
             }
           : {})}
         ref={adRef}
