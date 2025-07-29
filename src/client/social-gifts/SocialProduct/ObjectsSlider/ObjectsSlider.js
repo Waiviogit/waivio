@@ -57,9 +57,7 @@ const ObjectsSlider = ({ title, objects, name }) => {
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
             {mixedObjects.map((item, idx) =>
               item?.isAd ? (
-                <div key={item.key || `ad-${idx}`}>
-                  <GoogleAds />
-                </div>
+                <GoogleAds inShop key={item.key || `ad-${idx}`} />
               ) : (
                 <ShopObjectCard key={item.author_permlink || idx} wObject={item} isSocialProduct />
               ),
