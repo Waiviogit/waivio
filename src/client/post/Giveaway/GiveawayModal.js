@@ -20,6 +20,17 @@ import GiveawayBlockPreview from './GiveawayPreviewBlock/GiveawayBlockPreview';
 
 import './GiveawayModal.less';
 
+const getGMTZone = () => {
+  const offsetInMinutes = new Date().getTimezoneOffset(); // у хвилинах
+  const offsetInHours = -offsetInMinutes / 60; // у годинах зі знаком
+  const sign = offsetInHours >= 0 ? '+' : '-';
+  const absOffset = Math.abs(offsetInHours);
+  const hours = String(Math.floor(absOffset)).padStart(2, '0');
+  const minutes = String((absOffset % 1) * 60).padStart(2, '0');
+
+  return `GMT${sign}${hours}:${minutes}`;
+};
+
 const GiveawayModal = ({
   form,
   user,
@@ -37,6 +48,7 @@ const GiveawayModal = ({
   const [showPreview, setShowPreview] = React.useState(showPreviewFrom);
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
+
   const userTimeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   useEffect(() => {
@@ -208,7 +220,7 @@ const GiveawayModal = ({
               </FormItem>
               <Form.Item label="Time zone" style={{ width: '50%' }}>
                 {getFieldDecorator('timezone', {
-                  initialValue: userTimeZone, // автоматично визначає зону користувача
+                  initialValue: userTimeZone,
                   rules: [{ required: true, message: 'Please select a timezone' }],
                 })(
                   <Select
@@ -216,7 +228,13 @@ const GiveawayModal = ({
                     optionFilterProp="label"
                     style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
                   >
-                    {timezones.map(tz => (
+                    {[
+                      {
+                        value: userTimeZone,
+                        label: `${getGMTZone()} ${userTimeZone}`,
+                      },
+                      ...timezones,
+                    ].map(tz => (
                       <Select.Option key={tz?.value} value={tz?.value} label={tz?.label}>
                         {tz?.label}
                       </Select.Option>
