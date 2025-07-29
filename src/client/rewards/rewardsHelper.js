@@ -461,7 +461,7 @@ export const generateGiveawayMarkdown = giveawayData => {
   const toEnter = `${requirements.follow ? '✅ Follow the author' : ''}
   ${requirements.likePost ? '✅ Like the post' : ''}
   ${requirements.comment ? '✅ Leave a comment' : ''}
-  ${requirements.tagInComment ? '✅ Tag a friend in a comment' : ''}
+  ${requirements.tagInComment ? '✅ Tag 2 friends in a comment' : ''}
   ${requirements.reblog ? '✅ Re-blog the post' : ''}\n`;
   const userRequirements = [];
 
