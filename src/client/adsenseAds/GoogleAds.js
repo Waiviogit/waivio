@@ -61,12 +61,21 @@ const GoogleAds = ({
         const iframe = ins?.querySelector('iframe');
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
-        // eslint-disable-next-line no-console
-        console.log({ ins, iframe, isInsEmpty });
-
         if (isInsEmpty || !iframe) {
           // eslint-disable-next-line no-param-reassign
           ad.style.display = 'none';
+        }
+      });
+
+      document.querySelectorAll('.slick-slide').forEach(slide => {
+        const ad = slide.querySelector('.google-ads');
+        const ins = ad?.querySelector('ins');
+        const iframe = ins?.querySelector('iframe');
+        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+        if (isInsEmpty || !iframe) {
+          // eslint-disable-next-line no-param-reassign
+          slide.style.display = 'none';
         }
       });
     };
