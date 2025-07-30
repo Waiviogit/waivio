@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import timezones from '../../../common/constants/timezones';
+import timezones, { getCurrUserTimezone } from '../../../common/constants/timezones';
 import { getCurrentCurrencyRate as getCurrentCurrencyRateAct } from '../../../store/appStore/appActions';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
@@ -19,17 +19,6 @@ import {
 import GiveawayBlockPreview from './GiveawayPreviewBlock/GiveawayBlockPreview';
 
 import './GiveawayModal.less';
-
-const getGMTZone = () => {
-  const offsetInMinutes = new Date().getTimezoneOffset(); // у хвилинах
-  const offsetInHours = -offsetInMinutes / 60; // у годинах зі знаком
-  const sign = offsetInHours >= 0 ? '+' : '-';
-  const absOffset = Math.abs(offsetInHours);
-  const hours = String(Math.floor(absOffset)).padStart(2, '0');
-  const minutes = String((absOffset % 1) * 60).padStart(2, '0');
-
-  return `GMT${sign}${hours}:${minutes}`;
-};
 
 const GiveawayModal = ({
   form,
@@ -48,8 +37,8 @@ const GiveawayModal = ({
   const [showPreview, setShowPreview] = React.useState(showPreviewFrom);
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
-
-  const userTimeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const userTimeZone = getCurrUserTimezone();
+  const timeZoneObj = timezones?.find(tz => tz.value === userTimeZone);
 
   useEffect(() => {
     if (currency.type && !budget && currencyInfo?.balance) {
@@ -98,8 +87,6 @@ const GiveawayModal = ({
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
-        // const expiryString = moment(values.expiry).format('YYYY-MM-DD hh:mm A');
-
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
 
@@ -107,12 +94,7 @@ const GiveawayModal = ({
           ...values,
           guideName: user.name,
           currency: currency.type,
-          expiredAt: moment(values.expiry),
-          // expiredAt: DateTime.fromFormat(expiryString, 'yyyy-MM-dd hh:mm a', {
-          //   zone: values.timezone,
-          // })
-          //   .toUTC()
-          //   .toISO(),
+          expiredAt: moment(values.expiry).format('YYYY-MM-DD hh:mm A'),
         });
       }
     });
@@ -194,8 +176,9 @@ const GiveawayModal = ({
                 </Select>,
               )}
             </FormItem>
+            <div className={'GiveawayModal__label ant-col ant-form-item-label'}>Expiry date</div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <FormItem label="Expiry date" style={{ width: '50%' }}>
+              <FormItem label="" style={{ width: '50%' }}>
                 {getFieldDecorator('expiry', {
                   initialValue: initData?.expiry || moment().add(7, 'days'),
                   rules: [{ required: true, message: 'Expiry date is required.' }],
@@ -218,7 +201,7 @@ const GiveawayModal = ({
                   />,
                 )}
               </FormItem>
-              <Form.Item label="Time zone" style={{ width: '50%' }}>
+              <Form.Item label="" style={{ width: '50%' }}>
                 {getFieldDecorator('timezone', {
                   initialValue: userTimeZone,
                   rules: [{ required: true, message: 'Please select a timezone' }],
@@ -227,14 +210,9 @@ const GiveawayModal = ({
                     showSearch
                     optionFilterProp="label"
                     style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
+                    dropdownMatchSelectWidth={false}
                   >
-                    {[
-                      {
-                        value: userTimeZone,
-                        label: `${getGMTZone()} ${userTimeZone}`,
-                      },
-                      ...timezones,
-                    ].map(tz => (
+                    {[timeZoneObj, ...timezones].map(tz => (
                       <Select.Option key={tz?.value} value={tz?.value} label={tz?.label}>
                         {tz?.label}
                       </Select.Option>
