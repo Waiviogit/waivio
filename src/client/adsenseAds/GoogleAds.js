@@ -62,8 +62,7 @@ const GoogleAds = ({
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
         if (isInsEmpty || !iframe) {
-          // eslint-disable-next-line no-param-reassign
-          ad.style.display = 'none';
+          ad.classList.add('hidden-ad');
         }
       });
 
@@ -74,8 +73,7 @@ const GoogleAds = ({
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
         if (isInsEmpty || !iframe) {
-          // eslint-disable-next-line no-param-reassign
-          slide.style.display = 'none';
+          slide.classList.add('hidden-ad');
         }
       });
     };
