@@ -23,7 +23,6 @@ const parseInsTagAttributes = str => {
         .filter(Boolean)
         .map(s => {
           const [k, v] = s.split(':').map(x => x.trim());
-
           const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
           return [camelKey, v];
@@ -56,6 +55,29 @@ const GoogleAds = ({
   }
 
   useEffect(() => {
+    const hideEmptyAds = () => {
+      document.querySelectorAll('.google-ads').forEach(ad => {
+        const ins = ad.querySelector('ins');
+        const iframe = ins?.querySelector('iframe');
+        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+        if (isInsEmpty || !iframe) {
+          ad.classList.add('hidden-ad');
+        }
+      });
+
+      document.querySelectorAll('.slick-slide').forEach(slide => {
+        const ad = slide.querySelector('.google-ads');
+        const ins = ad?.querySelector('ins');
+        const iframe = ins?.querySelector('iframe');
+        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+        if (isInsEmpty || !iframe) {
+          slide.classList.add('hidden-ad');
+        }
+      });
+    };
+
     const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
         try {
@@ -65,25 +87,47 @@ const GoogleAds = ({
 
           setTimeout(() => {
             const adElement = adRef.current;
+            const ins = adElement?.querySelector('ins');
+            const iframe = ins?.querySelector('iframe');
             const adStatus = adElement?.getAttribute('data-ad-status');
 
-            // eslint-disable-next-line no-console
-            console.log('Ad status', adStatus);
-            if (
-              adStatus === 'unfilled' ||
-              !adElement?.querySelector('iframe') ||
-              adElement.offsetHeight < 30
-            ) {
+            const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+            if (isInsEmpty || !iframe || adStatus === 'unfilled') {
               setVisible(false);
             }
-          }, 3000);
+
+            hideEmptyAds();
+          }, 2500);
         } catch (e) {
           console.error('AdSense error', e);
+          setVisible(false);
         }
       }
     }, 300);
 
-    return () => clearTimeout(timer);
+    const resizeHandler = () => {
+      setTimeout(() => {
+        hideEmptyAds();
+      }, 1000);
+    };
+
+    window.addEventListener('resize', resizeHandler);
+
+    const observer = new MutationObserver(() => {
+      hideEmptyAds();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', resizeHandler);
+      observer.disconnect();
+    };
   }, []);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
@@ -104,11 +148,7 @@ const GoogleAds = ({
       <ins
         {...insAttributes}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        {...(listItem
-          ? {
-              className: 'list-item',
-            }
-          : {})}
+        {...(listItem ? { className: 'list-item' } : {})}
         ref={adRef}
       />
     </div>
