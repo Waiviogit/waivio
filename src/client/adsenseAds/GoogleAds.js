@@ -56,6 +56,18 @@ const GoogleAds = ({
   }
 
   useEffect(() => {
+    const hideEmptyAds = () => {
+      document.querySelectorAll('.google-ads').forEach(ad => {
+        const ins = ad.querySelector('ins');
+        const iframe = ins?.querySelector('iframe');
+
+        if (!ins || !iframe) {
+          // eslint-disable-next-line no-param-reassign
+          ad.style.display = 'none';
+        }
+      });
+    };
+
     const timer = setTimeout(() => {
       if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
         try {
@@ -65,31 +77,27 @@ const GoogleAds = ({
 
           setTimeout(() => {
             const adElement = adRef.current;
-
             const iframe = adElement?.querySelector('iframe');
             const adStatus = adElement?.getAttribute('data-ad-status');
 
             if (!iframe || adStatus === 'unfilled') {
               setVisible(false);
             }
-          }, 2500);
-          setTimeout(() => {
-            document.querySelectorAll('.google-ads').forEach(ad => {
-              const ins = ad.querySelector('ins');
-              const iframe = ins?.querySelector('iframe');
 
-              if (!ins || !iframe) {
-                // eslint-disable-next-line no-param-reassign
-                ad.style.display = 'none';
-              }
-            });
-          }, 2000);
+            hideEmptyAds();
+          }, 2500);
         } catch (e) {
           console.error('AdSense error', e);
-          setVisible(false); // fallback
+          setVisible(false);
         }
       }
     }, 300);
+
+    window.addEventListener('resize', () => {
+      setTimeout(() => {
+        hideEmptyAds();
+      }, 1000);
+    });
 
     return () => clearTimeout(timer);
   }, []);
@@ -112,11 +120,7 @@ const GoogleAds = ({
       <ins
         {...insAttributes}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        {...(listItem
-          ? {
-              className: 'list-item',
-            }
-          : {})}
+        {...(listItem ? { className: 'list-item' } : {})}
         ref={adRef}
       />
     </div>
