@@ -62,7 +62,7 @@ const GoogleAds = ({
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
         if (isInsEmpty || !iframe) {
-          ad.classList.add('hidden-ad');
+          ad.remove();
         }
       });
 
@@ -73,7 +73,7 @@ const GoogleAds = ({
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
         if (isInsEmpty || !iframe) {
-          slide.classList.add('hidden-ad');
+          slide.remove();
         }
       });
     };
