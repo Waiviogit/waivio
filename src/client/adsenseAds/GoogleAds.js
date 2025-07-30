@@ -56,24 +56,25 @@ const GoogleAds = ({
 
   useEffect(() => {
     const hideEmptyAds = () => {
+      const slidesToRemove = [];
+
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
         const iframe = ins?.querySelector('iframe');
         const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
         if (isInsEmpty || !iframe) {
-          ad.remove();
+          const slide = ad.closest('.slick-slide');
+
+          if (slide) slidesToRemove.push(slide);
+
+          ad?.remove?.();
         }
       });
 
-      document.querySelectorAll('.slick-slide').forEach(slide => {
-        const ad = slide.querySelector('.google-ads');
-        const ins = ad?.querySelector('ins');
-        const iframe = ins?.querySelector('iframe');
-        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
-
-        if (isInsEmpty || !iframe) {
-          slide.remove();
+      slidesToRemove.forEach(slide => {
+        if (slide?.parentNode?.contains(slide)) {
+          slide?.remove(); // Safe now
         }
       });
     };
