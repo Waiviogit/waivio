@@ -38,7 +38,6 @@ const GiveawayModal = ({
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
   const userTimeZone = getCurrUserTimezone();
-  const timeZoneObj = timezones?.find(tz => tz.value === userTimeZone);
 
   useEffect(() => {
     if (currency.type && !budget && currencyInfo?.balance) {
@@ -212,7 +211,7 @@ const GiveawayModal = ({
                     style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
                     dropdownMatchSelectWidth={false}
                   >
-                    {[timeZoneObj, ...timezones].map(tz => (
+                    {timezones.map(tz => (
                       <Select.Option key={tz?.value} value={tz?.value} label={tz?.label}>
                         {tz?.label}
                       </Select.Option>
