@@ -23,7 +23,6 @@ const parseInsTagAttributes = str => {
         .filter(Boolean)
         .map(s => {
           const [k, v] = s.split(':').map(x => x.trim());
-
           const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
           return [camelKey, v];
@@ -60,8 +59,12 @@ const GoogleAds = ({
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
         const iframe = ins?.querySelector('iframe');
+        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
-        if (!ins || !iframe) {
+        // eslint-disable-next-line no-console
+        console.log({ ins, iframe, isInsEmpty });
+
+        if (isInsEmpty || !iframe) {
           // eslint-disable-next-line no-param-reassign
           ad.style.display = 'none';
         }
@@ -77,10 +80,13 @@ const GoogleAds = ({
 
           setTimeout(() => {
             const adElement = adRef.current;
-            const iframe = adElement?.querySelector('iframe');
+            const ins = adElement?.querySelector('ins');
+            const iframe = ins?.querySelector('iframe');
             const adStatus = adElement?.getAttribute('data-ad-status');
 
-            if (!iframe || adStatus === 'unfilled') {
+            const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+            if (isInsEmpty || !iframe || adStatus === 'unfilled') {
               setVisible(false);
             }
 
@@ -93,13 +99,28 @@ const GoogleAds = ({
       }
     }, 300);
 
-    window.addEventListener('resize', () => {
+    const resizeHandler = () => {
       setTimeout(() => {
         hideEmptyAds();
       }, 1000);
+    };
+
+    window.addEventListener('resize', resizeHandler);
+
+    const observer = new MutationObserver(() => {
+      hideEmptyAds();
     });
 
-    return () => clearTimeout(timer);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', resizeHandler);
+      observer.disconnect();
+    };
   }, []);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
