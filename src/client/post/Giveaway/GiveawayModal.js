@@ -37,7 +37,7 @@ const GiveawayModal = ({
   const [showPreview, setShowPreview] = React.useState(showPreviewFrom);
   const [budget, setBudget] = React.useState(false);
   const { getFieldDecorator, resetFields, validateFields, getFieldsValue, getFieldValue } = form;
-  const userTimeZone = getCurrUserTimezone();
+  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone());
 
   useEffect(() => {
     if (currency.type && !budget && currencyInfo?.balance) {
@@ -202,7 +202,7 @@ const GiveawayModal = ({
               </FormItem>
               <Form.Item label="" style={{ width: '50%' }}>
                 {getFieldDecorator('timezone', {
-                  initialValue: userTimeZone,
+                  initialValue: userTimeZone?.label,
                   rules: [{ required: true, message: 'Please select a timezone' }],
                 })(
                   <Select
@@ -210,9 +210,13 @@ const GiveawayModal = ({
                     optionFilterProp="label"
                     style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
                     dropdownMatchSelectWidth={false}
+                    filterOption={(input, option) =>
+                      option?.props?.label.toLowerCase().includes(input.toLowerCase())
+                    }
+                    onSelect={i => timezones?.find(o => o.label === i)}
                   >
                     {timezones.map(tz => (
-                      <Select.Option key={tz?.value} value={tz?.value} label={tz?.label}>
+                      <Select.Option key={tz?.label} value={tz?.label} label={tz?.label}>
                         {tz?.label}
                       </Select.Option>
                     ))}
@@ -363,7 +367,7 @@ GiveawayModal.propTypes = {
   }),
   currencyInfo: PropTypes.shape(),
   initData: PropTypes.shape(),
-  rateInUsd: PropTypes.string,
+  rateInUsd: PropTypes.number,
   getTokenBalanceAction: PropTypes.func,
   saveData: PropTypes.func,
   isEdit: PropTypes.bool,
