@@ -75,7 +75,10 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
             <h4>Remove the post from objects:</h4>
             {linkedObj.map(obj => (
               <div key={getObjectName(obj)} className={'RemoveObjFomPost__item'}>
-                <span>{getObjectName(obj)}</span>
+                <span>
+                  {obj.object_type === 'hashtag' ? '#' : ''}
+                  {getObjectName(obj)}
+                </span>
 
                 {rejectedList.includes(obj?.author_permlink) ? (
                   <span>removed</span>
