@@ -88,9 +88,9 @@ const GiveawayModal = ({
       if (!err) {
         setShowPreview(true);
         setIsiOpenGiveAwayModal(false);
-
         saveData({
           ...values,
+          timezone: timezones?.find(o => o.label === values.timezone)?.value,
           guideName: user.name,
           currency: currency.type,
           expiredAt: moment(values.expiry).format('YYYY-MM-DD hh:mm A'),
@@ -213,7 +213,6 @@ const GiveawayModal = ({
                     filterOption={(input, option) =>
                       option?.props?.label.toLowerCase().includes(input.toLowerCase())
                     }
-                    onSelect={i => timezones?.find(o => o.label === i)}
                   >
                     {timezones.map(tz => (
                       <Select.Option key={tz?.label} value={tz?.label} label={tz?.label}>
