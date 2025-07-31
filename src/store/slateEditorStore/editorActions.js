@@ -324,41 +324,49 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
       giveawayPermlink: permlink,
     };
 
-    const campaign = await createNewCampaing(k, giveawayData.guideName);
+    try {
+      const campaign = await createNewCampaing(k, giveawayData.guideName);
 
-    if (campaign._id) {
-      const { isValid } = await validateActivateCampaing({
-        _id: campaign._id,
-        guideName: campaign.guideName,
-        permlink,
-      });
+      if (campaign._id) {
+        const { isValid } = await validateActivateCampaing({
+          _id: campaign._id,
+          guideName: campaign.guideName,
+          permlink,
+        });
 
-      if (isValid) {
-        const activationPermlink = `activate-${rewardsPost.parent_author.replace(
-          '.',
-          '-',
-        )}-${generatePermlink()}`;
+        if (isValid) {
+          const activationPermlink = `activate-${rewardsPost.parent_author.replace(
+            '.',
+            '-',
+          )}-${generatePermlink()}`;
 
-        const commentOp = [
-          'comment',
-          {
-            ...rewardsPost,
-            author: campaign.guideName,
-            permlink: activationPermlink,
-            title: `Activate giveaways campaign`,
-            body: createBody(campaign),
-            json_metadata: JSON.stringify({
-              waivioRewards: { type: 'activateCampaign', campaignId: campaign._id },
-            }),
-          },
-        ];
+          const commentOp = [
+            'comment',
+            {
+              ...rewardsPost,
+              author: campaign.guideName,
+              permlink: activationPermlink,
+              title: `Activate giveaways campaign`,
+              body: createBody(campaign),
+              json_metadata: JSON.stringify({
+                waivioRewards: { type: 'activateCampaign', campaignId: campaign._id },
+              }),
+            },
+          ];
 
-        steemConnectAPI.broadcast([commentOp]);
+          steemConnectAPI.broadcast([commentOp]);
 
-        return activationPermlink;
+          return activationPermlink;
+        }
+
+        return '';
       }
+      console.error(campaign);
+      if (campaign?.message) message.error(campaign?.message);
+    } catch (e) {
+      message.error(e?.message);
 
-      return '';
+      console.error(e);
     }
   }
 
