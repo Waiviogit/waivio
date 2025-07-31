@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
 import { isTabletOrMobile } from '../socialProductHelper';
 import useAdLevelData from '../../../../hooks/useAdsense';
-import GoogleAds from '../../../adsenseAds/GoogleAds';
 import { getSettingsAds } from '../../../../store/websiteStore/websiteSelectors';
 
 const ObjectsSlider = ({ title, objects, name }) => {
@@ -55,12 +54,14 @@ const ObjectsSlider = ({ title, objects, name }) => {
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
-            {mixedObjects.map((item, idx) =>
-              item?.isAd ? (
-                <GoogleAds inShop key={item.key || `ad-${idx}`} />
-              ) : (
+            {mixedObjects.map(
+              (item, idx) => (
+                // item?.isAd ? (
+                //   <GoogleAds inShop key={item.key || `ad-${idx}`} />
+                // ) : (
                 <ShopObjectCard key={item.author_permlink || idx} wObject={item} isSocialProduct />
               ),
+              // ),
             )}
           </Carousel>
         </div>

@@ -66,16 +66,16 @@ const GoogleAds = ({
         }
       });
 
-      document.querySelectorAll('.slick-slide').forEach(slide => {
-        const ad = slide.querySelector('.google-ads');
-        const ins = ad?.querySelector('ins');
-        const iframe = ins?.querySelector('iframe');
-        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
-
-        if (isInsEmpty || !iframe) {
-          slide.classList.add('hidden-ad');
-        }
-      });
+      // document.querySelectorAll('.slick-slide').forEach(slide => {
+      //   const ad = slide.querySelector('.google-ads');
+      //   const ins = ad?.querySelector('ins');
+      //   const iframe = ins?.querySelector('iframe');
+      //   const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+      //
+      //   if (isInsEmpty || !iframe) {
+      //     slide.classList.add('hidden-ad');
+      //   }
+      // });
     };
 
     const timer = setTimeout(() => {
