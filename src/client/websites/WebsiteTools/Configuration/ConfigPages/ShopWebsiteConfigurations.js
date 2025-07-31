@@ -382,6 +382,7 @@ const ShopWebsiteConfigurations = ({
           <ImageSetter
             isEditable={['mobileLogo', 'desktopLogo'].includes(modalsState.type)}
             autoFocus
+            isDesktop={['desktopLogo'].includes(modalsState.type)}
             onImageLoaded={modalsState.method}
             isRequired
             isMultiple={false}
