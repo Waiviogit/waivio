@@ -313,8 +313,15 @@
     gap: 50px;
   }
   .message {
-    max-width: 50vw;
+    max-width: 90vw;
+    @media @medium {
+      max-width: 60vw;
+    }
+    &.from-user {
+      max-width: 60vw;
+    }
   }
+
   .chat-header {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;

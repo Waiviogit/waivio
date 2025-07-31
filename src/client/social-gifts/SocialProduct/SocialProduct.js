@@ -664,7 +664,7 @@ const SocialProduct = ({
                     <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
                 )}
-              {intensive && <GoogleAds />}
+              {intensive && <GoogleAds limitWidth />}
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
@@ -723,7 +723,7 @@ const SocialProduct = ({
                 parent={parent}
               />
             )}
-            {intensive && <GoogleAds />}
+            {intensive && <GoogleAds inList />}
             <ObjectsSlider
               objects={addOns}
               title={intl.formatMessage({

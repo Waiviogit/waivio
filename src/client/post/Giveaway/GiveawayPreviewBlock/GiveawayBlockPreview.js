@@ -68,22 +68,21 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
       <div className="GiveawayPreviewBlock__section">
         <strong className="GiveawayPreviewBlock__label">To enter:</strong>
         <div className="GiveawayPreviewBlock__list">
-          {renderRequirement('Like the post', 'likePost')}
           {renderRequirement('Follow the author', 'follow')}
+          {renderRequirement('Like the post', 'likePost')}
           {renderRequirement('Leave a comment', 'comment')}
           {renderRequirement('Tag 2 friends in a comment', 'tagInComment')}
           {renderRequirement('Re-blog the post', 'reblog')}
         </div>
       </div>
-
       <div className="GiveawayPreviewBlock__section">
-        <strong className="GiveawayPreviewBlock__label">User requirements:</strong>
+        <strong className="GiveawayPreviewBlock__label">Eligibility:</strong>
         <div className="GiveawayPreviewBlock__list">{renderUserRequirements()}</div>
       </div>
 
       <p className="GiveawayPreviewBlock__disclaimer">
-        Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent,
-        spam, poorly written or for other reasons.
+        Sponsor reserves the right to refuse payment if activity is suspected to be fraudulent,
+        spam, of low quality, or for any other reason.
       </p>
     </div>
   );

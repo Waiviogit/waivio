@@ -24,7 +24,7 @@ const EditPost = props => {
     objPercentage,
   } = props;
   const [isNewReview, setIsNewReview] = React.useState(false);
-  const [giveawayData, setGiveawayData] = React.useState(props.currDraft?.jsonMetadata?.giveaway);
+  const [giveawayData, setGiveawayData] = React.useState(null);
   const campaignId = props.campaignId || props.currDraft?.jsonMetadata?.campaignId;
 
   React.useEffect(() => {
@@ -45,7 +45,6 @@ const EditPost = props => {
 
   React.useEffect(() => {
     setIsNewReview(!props.draftPosts.some(d => d.draftId === props.draftId));
-
     props.setEditorState(getInitialState(props));
     const editorData = {
       title: get(props.currDraft, 'title', '') || get(props.editor, 'draftContent.title', ''),
@@ -139,7 +138,7 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
-          {!props.isGuest && (
+          {!props.isGuest && !isUpdating && (
             <GiveawayModal
               isEdit={isUpdating}
               saveData={safeGiveawayData}

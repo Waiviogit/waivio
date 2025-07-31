@@ -174,7 +174,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                 {reviewPermlink ? (
                   <Link
                     to={
-                      sponsor.campaignType
+                      sponsor?.reviewPermlink?.includes('/')
                         ? `/@${reviewPermlink}`
                         : `/@${sponsor.userName}/${reviewPermlink}`
                     }

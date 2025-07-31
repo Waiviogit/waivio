@@ -29,7 +29,7 @@ const LikeSection = props => {
   const isGuest = useSelector(isGuestUser);
   const { form, intl, disabled } = props;
 
-  const littleVotePower = inWhiteList ? false : voteWorth < 0.0001;
+  const littleVotePower = inWhiteList || isGuest ? false : voteWorth < 0.0001;
 
   useEffect(() => {
     if (!isGuest) {
@@ -60,7 +60,7 @@ const LikeSection = props => {
 
     setVoteWorth(roundVoteWorth);
     onVotePercentChange(value, roundVoteWorth);
-    if (!isGuest) props.setLittleVotePower(inWhiteList ? false : voteValue < 0.0001);
+    if (!isGuest) props.setLittleVotePower(inWhiteList || isGuest ? false : voteValue < 0.0001);
   };
 
   const changeVotePercent = useCallback(

@@ -21,7 +21,7 @@ const ErrorBoundary = ComposedComponent => {
       error: '',
     };
 
-    componentDidCatch(error) {
+    componentDidCatch(error, info) {
       this.setState({
         hasError: true,
       });
@@ -31,11 +31,27 @@ const ErrorBoundary = ComposedComponent => {
           `wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`,
         );
 
+        const errorReport = JSON.stringify(
+          {
+            message: error?.message || String(error),
+            name: error?.name,
+            stack: error?.stack,
+            componentStack: info?.componentStack,
+            url: location.href,
+            userAgent: navigator.userAgent,
+            timestamp: new Date().toISOString(),
+          },
+          null,
+          2,
+        );
+
+        const errorReportAsCode = `\`\`\`json\n${errorReport}\n\`\`\``;
+
         setTimeout(() => {
           socket.send(
             JSON.stringify({
               method: subscribeTypes.clientError,
-              params: ['user', `Page crashed ${location.href}`, error.stack],
+              params: ['user', `Page crashed, report:\n${errorReportAsCode}`],
             }),
           );
         }, 300);
