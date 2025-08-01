@@ -73,7 +73,8 @@ const CreatePage = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err && available) {
-        createWebsite(values, history).then(() => form.resetFields());
+        createWebsite(values, history);
+        form.resetFields();
       }
     });
   };
