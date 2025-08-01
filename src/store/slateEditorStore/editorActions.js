@@ -120,7 +120,18 @@ export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJEC
 export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
-  { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
+  {
+    id,
+    author,
+    permlink,
+    title,
+    body,
+    json_metadata,
+    parent_author,
+    parent_permlink,
+    reward,
+    giveaway,
+  }, // eslint-disable-line
 ) => (dispatch, getState) => {
   const draftList = getDraftPostsSelector(getState());
   const jsonMetadata = jsonParse(json_metadata);
@@ -131,6 +142,11 @@ export const editPost = (
     isUpdating: true,
     jsonMetadata: {
       ...jsonMetadata,
+      ...(giveaway
+        ? {
+            giveaway: true,
+          }
+        : {}),
     },
     lastUpdated: Date.now(),
     originalBody: body,

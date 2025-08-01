@@ -64,9 +64,10 @@ const GiveawayModal = ({
   // eslint-disable-next-line consistent-return
   const validateRewards = (rule, value, callback) => {
     const winners = getFieldValue('winners');
+    const valueInUsd = value / currency.rate;
 
-    if (winners * value > budget) return callback('Rewards more than user balance.');
-    if (value * currency.rate < 0.5) return callback('Minimum reward of $0.5 is required.');
+    if (winners * valueInUsd > budget) return callback('Rewards more than user balance.');
+    if (valueInUsd < 0.5) return callback('Minimum reward of $0.5 is required.');
     callback();
   };
 
@@ -128,7 +129,7 @@ const GiveawayModal = ({
                 rules: [{ required: true, message: 'Campaign name is required.' }],
               })(<Input placeholder="Enter campaign name" />)}
             </FormItem>
-            <FormItem label="Reward (per winner, USD)">
+            <FormItem label={`Reward (per winner, ${currency?.type})`}>
               {getFieldDecorator('reward', {
                 initialValue: initData?.reward,
                 rules: [
