@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -56,6 +56,8 @@ import { initialColors } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
 import LinkSafetyModal from './widgets/LinkSafetyModal/LinkSafetyModal';
 import CookieNotice from './widgets/CookieNotice/CookieNotice';
+import { getFavoriteObjectTypes } from '../store/favoritesStore/favoritesSelectors';
+import { setFavoriteObjectTypes } from '../store/favoritesStore/favoritesActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 @withRouter
@@ -71,6 +73,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
+    favoriteTypes: getFavoriteObjectTypes(state),
   }),
   {
     login,
@@ -79,6 +82,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getRewardFund,
     busyLogin,
     setUsedLocale,
+    setFavoriteObjectTypes,
     dispatchGetAuthGuestBalance,
     handleRefAuthUser,
     getTokenRates,
@@ -96,6 +100,8 @@ class Wrapper extends React.PureComponent {
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
+    setFavoriteObjectTypes: PropTypes.func,
+    favoriteTypes: PropTypes.arrayOf(),
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
@@ -190,6 +196,7 @@ class Wrapper extends React.PureComponent {
     this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
+    if (isNil(this.props.favoriteTypes)) this.props.setFavoriteObjectTypes(this.props.username);
     if (isWidget) {
       /* Check on new tab from widget:
         the page, when switching to a new tab, should not remain a widget

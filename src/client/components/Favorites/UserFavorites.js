@@ -36,7 +36,7 @@ const UserFavorites = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isEmpty(favoriteObjects?.[objectType]) && !isEmpty(objectTypes))
+    if ((isEmpty(favoriteObjects?.[objectType]) && !isEmpty(objectTypes)) || isNil(objectTypes))
       dispatch(setFavoriteObjects(name, objectType));
   }, [objectType, name]);
 

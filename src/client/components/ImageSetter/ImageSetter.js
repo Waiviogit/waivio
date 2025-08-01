@@ -30,6 +30,7 @@ const ImageSetter = ({
   labeledImage,
   isRequired,
   isTitle,
+  isDesktop = false,
   setEditorState,
   getEditorState,
   addNewBlockAt,
@@ -56,7 +57,7 @@ const ImageSetter = ({
     rotate: 0,
     borderRadius: isUserAvatar ? 50 : 0,
     preview: null,
-    width: 200,
+    width: isDesktop ? 400 : 200,
     height: 200,
   };
 
@@ -499,12 +500,14 @@ ImageSetter.propTypes = {
   isEditable: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
+  isDesktop: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: true,
   defaultImage: '',
   isRequired: false,
+  isDesktop: false,
   isTitle: true,
   setEditorState: () => {},
   clearImage: () => {},
