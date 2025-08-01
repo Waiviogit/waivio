@@ -3214,7 +3214,6 @@ export const validateActivateCampaing = data =>
     method: 'POST',
     body: JSON.stringify(data),
   })
-    .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
