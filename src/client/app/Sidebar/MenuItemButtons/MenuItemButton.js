@@ -13,8 +13,7 @@ const MenuItemButton = ({ item, show }) => {
   const itemBody = parseJSON(item.body);
   const dispatch = useDispatch();
   const webLink = has(itemBody, 'linkToWeb');
-  const isWidget = itemBody.objectType === 'widget';
-  const linkTarget = webLink || isWidget ? '_blank' : '_self';
+  const linkTarget = webLink ? '_blank' : '_self';
   const defaultButtonType = itemBody?.style === 'highlight' ? 'primary' : 'default';
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
@@ -33,7 +32,7 @@ const MenuItemButton = ({ item, show }) => {
           case 'newsfeed':
             return setUrl(`/object/${authorPermlink}/newsfeed/${itemBody.linkToObject}`);
           case 'widget':
-            return setUrl(`/object/${itemBody.linkToObject}`);
+            return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
           case 'map':
             return setUrl(`/object/${authorPermlink}/map#${itemBody.linkToObject}`);
           default:

@@ -34,9 +34,12 @@ const WidgetPage = props => {
 
   if (!has(currentWobject, 'widget')) {
     return (
-      <div role="presentation" className="Threads__row justify-center">
-        <FormattedMessage id="empty_widget" defaultMessage="This widget is empty" />
-      </div>
+      <>
+        {hash && <CatalogBreadcrumb wobject={wobject} intl={props.intl} />}
+        <div role="presentation" className="Threads__row justify-center">
+          <FormattedMessage id="empty_widget" defaultMessage="This widget is empty" />
+        </div>
+      </>
     );
   }
 
