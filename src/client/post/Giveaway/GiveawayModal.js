@@ -27,7 +27,6 @@ const GiveawayModal = ({
   currencyInfo,
   rateInUsd,
   getTokenBalanceAction,
-  isEdit,
   saveData,
   initData,
   showPreviewFrom,
@@ -107,7 +106,7 @@ const GiveawayModal = ({
           formData={getFieldsValue()}
           onEdit={onClickGiveawayButton}
           onDelete={onDelete}
-          isEditable={!isEdit}
+          isEditable
         />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
@@ -370,7 +369,6 @@ GiveawayModal.propTypes = {
   rateInUsd: PropTypes.number,
   getTokenBalanceAction: PropTypes.func,
   saveData: PropTypes.func,
-  isEdit: PropTypes.bool,
   showPreviewFrom: PropTypes.bool,
 };
 
