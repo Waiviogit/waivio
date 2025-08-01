@@ -4,7 +4,7 @@ import * as favoriteActions from './favoritesActions';
 const initialState = {
   categories: [],
   users: [],
-  favoriteObjectTypes: [],
+  favoriteObjectTypes: null,
   favoriteObjects: {},
   loadingObjects: true,
   loadingObjectTypes: true,
