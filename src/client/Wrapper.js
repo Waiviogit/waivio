@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEqual, isNil } from 'lodash';
+import { isEqual } from 'lodash';
 import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -100,8 +100,6 @@ class Wrapper extends React.PureComponent {
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
-    setFavoriteObjectTypes: PropTypes.func,
-    favoriteTypes: PropTypes.arrayOf(),
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
@@ -196,7 +194,6 @@ class Wrapper extends React.PureComponent {
     this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
-    if (isNil(this.props.favoriteTypes)) this.props.setFavoriteObjectTypes(this.props.username);
     if (isWidget) {
       /* Check on new tab from widget:
         the page, when switching to a new tab, should not remain a widget
