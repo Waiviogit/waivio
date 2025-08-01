@@ -1,3 +1,4 @@
+import FormItem from 'antd/es/form/FormItem';
 import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
@@ -61,11 +62,14 @@ const CreateFormRenderer = props => {
     payoutToken,
     reachType,
     agreement,
+    winners,
     qualifiedPayoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
+  const campType = getFieldValue('type');
+  const isGiveaways = ['giveaways_object'].includes(campType)
   const isCreateDublicate =
     get(match, ['params', '0']) === 'createDuplicate' ||
     get(match, ['params', '0']) === 'duplicate';
@@ -81,7 +85,7 @@ const CreateFormRenderer = props => {
     currencyInfo,
     rates,
   );
-  const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
+  const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency, campType);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
   let userBalance = parseFloat(user.balance);
@@ -293,15 +297,16 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__field-caption">{fields.baseCryptocurrency.caption}</div>
         </Form.Item>
 
-        <Form.Item label={fields.budget.label}>
-          {getFieldDecorator(fields.budget.name, {
-            rules: fields.budget.rules,
-            initialValue: budget,
-            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-          })(<Input type="number" disabled={disabled} step={0.1} />)}
-          <div className="CreateReward__field-caption">{fields.budget.caption}</div>
-        </Form.Item>
-
+        {!isGiveaways &&
+          <Form.Item label={fields.budget.label}>
+            {getFieldDecorator(fields.budget.name, {
+              rules: fields.budget.rules,
+              initialValue: budget,
+              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            })(<Input type="number" disabled={disabled} step={0.1} />)}
+            <div className="CreateReward__field-caption">{fields.budget.caption}</div>
+          </Form.Item>
+        }
         <Form.Item label={fields.reward.label}>
           {getFieldDecorator(fields.reward.name, {
             rules: fields.reward.rules,
@@ -314,7 +319,23 @@ const CreateFormRenderer = props => {
               messages.rewardToBudget}
           </span>
         </Form.Item>
-
+        {isGiveaways && (
+          <FormItem label="Number of winners">
+            {getFieldDecorator('winners', {
+              initialValue: winners || 1,
+              rules: fields?.campaignWinners?.rules,
+              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            })(
+              <Input
+                type="number"
+                step={1}
+                min={1}
+                placeholder="Enter amount"
+                style={{ width: '100%' }}
+              />,
+            )}
+          </FormItem>
+        )}
         <Form.Item label={fields.sponsorsList.label}>
           {getFieldDecorator(fields.sponsorsList.name, {
             initialValue: sponsorsList,

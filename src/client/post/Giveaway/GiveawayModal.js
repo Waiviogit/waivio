@@ -107,7 +107,6 @@ const GiveawayModal = ({
           formData={getFieldsValue()}
           onEdit={onClickGiveawayButton}
           onDelete={onDelete}
-          isEditable={!isEdit}
         />
       ) : (
         <Button onClick={onClickGiveawayButton} className={'edit-post__giveaway'} type="default">
