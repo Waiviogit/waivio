@@ -23,7 +23,7 @@ export const buttonsConfig = (intl, setInformationForModal) => ({
   },
   link: item => (
     <a
-      href={`https://hiveonboard.com/create-account?ticket=${item.ticket}&redirect_url=https%3A%2F%2Fwww.waivio.com`}
+      href={`https://hiveonboard.com/create-account?ticket=${item.ticket}&redirect_url=https%3A%2F%2F${location?.hostname}`}
     >
       {intl.formatMessage({
         id: 'apply',
