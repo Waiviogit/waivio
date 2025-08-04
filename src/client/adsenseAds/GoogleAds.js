@@ -58,12 +58,19 @@ const GoogleAds = ({
     const hideEmptyAds = () => {
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
-        const iframe = ins?.querySelector('iframe');
-        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
 
-        if (isInsEmpty || !iframe) {
-          ad.classList.add('hidden-ad');
-        }
+        // const iframe = ins?.querySelector('iframe');
+        // eslint-disable-next-line no-console
+        console.log(ins.childNodes, 'childNodes');
+        // eslint-disable-next-line no-console
+        console.log(ins.innerHTML, 'innerHTML');
+        // eslint-disable-next-line no-console
+        console.log(ins.innerHTML, 'innerHTML');
+        // const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+        //  if (isInsEmpty || !iframe) {
+        // ad.classList.add('hidden-ad');
+        //  }
       });
 
       // document.querySelectorAll('.slick-slide').forEach(slide => {
