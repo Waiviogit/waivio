@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 
-const AvatarComp = ({ link, isBanner }) => (
+const AvatarComp = ({ link, isBanner, isDesktopLogo = false }) => (
   <React.Fragment>
     {link ? (
       <div
@@ -10,7 +10,7 @@ const AvatarComp = ({ link, isBanner }) => (
         style={{
           backgroundImage: `url(${link})`,
           backgroundPosition: `${isBanner ? 'left' : 'center'}`,
-          backgroundSize: 'contain',
+          backgroundSize: isDesktopLogo ? 'cover' : 'contain',
         }}
       />
     ) : (
@@ -33,6 +33,7 @@ const AvatarComp = ({ link, isBanner }) => (
 AvatarComp.propTypes = {
   link: PropTypes.string,
   isBanner: PropTypes.bool,
+  isDesktopLogo: PropTypes.bool,
 };
 
 export default AvatarComp;

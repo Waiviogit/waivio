@@ -172,7 +172,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <AvatarComp link={desktopLogo} />
+                <AvatarComp link={desktopLogo} isDesktopLogo />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({
                     id: 'website_change_logo',
