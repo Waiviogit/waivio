@@ -67,20 +67,35 @@ const ImageSetter = ({
 
   // eslint-disable-next-line consistent-return
   const handleNewImage = async e => {
-    if (
-      !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-    ) {
+    const file = e.target.files[0];
+
+    if (!isValidImage(file, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)) {
       return onImageInvalid(
         MAX_IMG_SIZE[objectFields.background],
         `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
       );
     }
 
-    if (e.target.files[0].type.includes('image/gif')) {
+    if (file.type.includes('image/gif')) {
       handleChangeImage(e);
     } else {
-      await setState({ ...initialState, image: e.target.files[0] });
-      setIsOpen(true);
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      image.onload = async () => {
+        const isLandscape = image.naturalWidth > image.naturalHeight;
+        const updatedInitialState = {
+          ...initialState,
+          image: file,
+          width: isLandscape ? 400 : 200,
+        };
+
+        setState(updatedInitialState);
+        setIsOpen(true);
+        URL.revokeObjectURL(objectUrl); // Clean up
+      };
+
+      image.src = objectUrl;
     }
   };
 
