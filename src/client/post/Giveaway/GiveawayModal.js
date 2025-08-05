@@ -27,7 +27,6 @@ const GiveawayModal = ({
   currencyInfo,
   rateInUsd,
   getTokenBalanceAction,
-  isEdit,
   saveData,
   initData,
   showPreviewFrom,
@@ -369,7 +368,6 @@ GiveawayModal.propTypes = {
   rateInUsd: PropTypes.number,
   getTokenBalanceAction: PropTypes.func,
   saveData: PropTypes.func,
-  isEdit: PropTypes.bool,
   showPreviewFrom: PropTypes.bool,
 };
 

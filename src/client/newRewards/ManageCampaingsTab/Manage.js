@@ -188,7 +188,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                 )}
               </td>
               <td>{row.status}</td>
-              <td>{row.type}</td>
+              <td>{row.type.replace('_', ' ')}</td>
               {!isMobile() && (
                 <React.Fragment>
                   <td>{round(row.budgetUSD * currency.rate, 2)}</td>

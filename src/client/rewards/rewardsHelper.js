@@ -16,6 +16,14 @@ export const rewardPostContainerData = {
   permlink: 'test-post',
 };
 
+export const campaignTypes = {
+  REVIEWS: 'reviews',
+  MENTIONS: 'mentions',
+  GIVEAWAYS: 'giveaways',
+  GIVEAWAYS_OBJECT: 'giveaways_object',
+  CONTESTS_OBJECT: 'contests_object',
+};
+
 export const formatDate = (intl, date) => {
   const dt = new Date(date);
   const day = `0${dt.getDate()}`.slice(-2);

@@ -56,8 +56,25 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
         message: messageFactory('select_campaign_winners', 'Winners are required.'),
       },
       {
-        validator: validators.checkWinners
-      }
+        validator: validators.checkWinners,
+      },
+    ],
+    // caption: messageFactory(
+    //   'specific_campaign_parameters_type',
+    //   'The campaign parameters are specific to the type of campaign',
+    // ),
+  },
+  campaignDurations: {
+    name: 'durations',
+    label: messageFactory('campaign_durations', 'campaignDurations'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_campaign_durations', 'durations are required.'),
+      },
+      {
+        validator: validators.checkWinners,
+      },
     ],
     // caption: messageFactory(
     //   'specific_campaign_parameters_type',
@@ -156,12 +173,14 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
   },
   reward: {
     name: 'reward',
-    label: campaingType === 'giveaways_object' ?
-      messageFactory('reward_per_review_giveaways_object', 'Reward (per winner, {currency})', {
-      currency,
-    }) : messageFactory('reward_per_review_STEEM', 'Reward (per review, {currency})', {
-      currency,
-    }),
+    label:
+      campaingType === 'giveaways_object'
+        ? messageFactory('reward_per_review_giveaways_object', 'Reward (per winner, {currency})', {
+            currency,
+          })
+        : messageFactory('reward_per_review_STEEM', 'Reward (per review, {currency})', {
+            currency,
+          }),
     rules: [
       {
         required: true,
@@ -200,6 +219,15 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
     caption: messageFactory(
       'accumulates_value_of_upvotes_from_registered_upvoting_accounts',
       'Accumulates the value of upvotes from registered upvoting accounts',
+    ),
+  },
+  contestJudges: {
+    name: 'contestJudges',
+    label: messageFactory('contest_judges', 'Contest judges'),
+    placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),
+    caption: messageFactory(
+      'winners_are_based_on_judges_votes',
+      'Winners are based on judges’ votes. If none or tied, random selection applies.',
     ),
   },
   primaryObject: {
