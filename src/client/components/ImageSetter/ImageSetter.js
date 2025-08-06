@@ -60,6 +60,24 @@ const ImageSetter = ({
     width: isDesktop ? 400 : 200,
     height: 200,
   };
+  const getUpdatedInitialState = (imageFile, callback) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(imageFile);
+
+    image.onload = () => {
+      const isLandscape = image.naturalWidth > image.naturalHeight;
+      const updatedInitialState = {
+        ...initialState,
+        image: imageFile,
+        width: isLandscape ? 400 : 200,
+      };
+
+      callback(updatedInitialState);
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    image.src = objectUrl;
+  };
 
   const [state, setState] = useState(initialState);
 
@@ -82,18 +100,10 @@ const ImageSetter = ({
       const image = new Image();
       const objectUrl = URL.createObjectURL(file);
 
-      image.onload = async () => {
-        const isLandscape = image.naturalWidth > image.naturalHeight;
-        const updatedInitialState = {
-          ...initialState,
-          image: file,
-          width: isLandscape ? 400 : 200,
-        };
-
-        setState(updatedInitialState);
+      getUpdatedInitialState(file, newState => {
+        setState(newState);
         setIsOpen(true);
-        URL.revokeObjectURL(objectUrl); // Clean up
-      };
+      });
 
       image.src = objectUrl;
     }
@@ -226,8 +236,10 @@ const ImageSetter = ({
     const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
     if (isEditable) {
-      setState({ ...initialState, image: res });
-      setIsOpen(true);
+      getUpdatedInitialState(res, newState => {
+        setState(newState);
+        setIsOpen(true);
+      });
     } else {
       handleChangeImage({ target: { files: [res] } });
     }

@@ -27,7 +27,7 @@ const AvatarComp = ({ link, isBanner, isDesktopLogo = false }) => {
           style={{
             backgroundImage: `url(${link})`,
             backgroundPosition: isBanner ? 'left' : 'center',
-            backgroundSize: 'cover',
+            backgroundSize: isBanner ? 'contain' : 'cover',
           }}
         />
       ) : (
