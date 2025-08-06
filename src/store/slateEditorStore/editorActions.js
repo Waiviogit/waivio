@@ -45,7 +45,7 @@ import { deactivateCampaing } from '../newRewards/newRewardsActions';
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../searchStore/searchActions';
-import { getCurrentHost, getTranslationByKey } from '../appStore/appSelectors';
+import { getCurrentHost, getTranslationByKey, getCurrentCurrency } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
 import {
@@ -120,7 +120,18 @@ export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJEC
 export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 export const editPost = (
-  { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
+  {
+    id,
+    author,
+    permlink,
+    title,
+    body,
+    json_metadata,
+    parent_author,
+    parent_permlink,
+    reward,
+    giveaway,
+  }, // eslint-disable-line
 ) => (dispatch, getState) => {
   const draftList = getDraftPostsSelector(getState());
   const jsonMetadata = jsonParse(json_metadata);
@@ -131,6 +142,11 @@ export const editPost = (
     isUpdating: true,
     jsonMetadata: {
       ...jsonMetadata,
+      ...(giveaway
+        ? {
+            giveaway: true,
+          }
+        : {}),
     },
     lastUpdated: Date.now(),
     originalBody: body,
@@ -328,13 +344,13 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
       const campaign = await createNewCampaing(k, giveawayData.guideName);
 
       if (campaign._id) {
-        const { isValid } = await validateActivateCampaing({
+        const resp = await validateActivateCampaing({
           _id: campaign._id,
           guideName: campaign.guideName,
           permlink,
         });
 
-        if (isValid) {
+        if (resp.isValid) {
           const activationPermlink = `activate-${rewardsPost.parent_author.replace(
             '.',
             '-',
@@ -357,6 +373,9 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
           steemConnectAPI.broadcast([commentOp]);
 
           return activationPermlink;
+        }
+        if (resp.message) {
+          message.error(resp.message);
         }
 
         return '';
@@ -404,7 +423,9 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
         : body;
 
     if (giveawayData) {
-      newBody = `${body}${generateGiveawayMarkdown(giveawayData)}`;
+      const curr = getCurrentCurrency(state);
+
+      newBody = `${body}${generateGiveawayMarkdown(giveawayData, curr?.type)}`;
     }
 
     const url = getCurrentHost(state);
@@ -454,7 +475,7 @@ export function createPost(postData, beneficiaries, isReview, campaign, giveaway
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
     dispatch({ type: CREATE_POST_START });
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 4000));
 
     const result = await broadcastComment(
       steemConnectAPI,

@@ -5,6 +5,7 @@ import { MESSAGES, GUIDE_HISTORY, HISTORY } from '../../common/constants/rewards
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
 import { getObjectsByIds } from '../../waivioApi/ApiClient';
+import { currencyPrefix } from '../websites/constants/currencyTypes';
 
 const isLocation = typeof location !== 'undefined';
 const isSessionStorage = typeof sessionStorage !== 'undefined';
@@ -450,7 +451,7 @@ export const handleAddMapCoordinates = coordinates => {
   }
 };
 
-export const generateGiveawayMarkdown = giveawayData => {
+export const generateGiveawayMarkdown = (giveawayData, currency) => {
   const winners = giveawayData?.budget / giveawayData?.reward || giveawayData?.winners;
   const requirements = giveawayData?.giveawayRequirements.reduce((acc, curr) => {
     acc[curr] = true;
@@ -482,7 +483,7 @@ export const generateGiveawayMarkdown = giveawayData => {
   return `
 \n***\n
 
-## Giveaway time! Your chance to win $${giveawayData?.reward}${
+## Giveaway time! Your chance to win ${currencyPrefix[currency]}${giveawayData?.reward}${
     winners > 1 ? ` with ${winners} winners` : ''
   }!\n\n
 **To enter:**

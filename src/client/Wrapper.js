@@ -56,6 +56,8 @@ import { initialColors } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
 import LinkSafetyModal from './widgets/LinkSafetyModal/LinkSafetyModal';
 import CookieNotice from './widgets/CookieNotice/CookieNotice';
+import { getFavoriteObjectTypes } from '../store/favoritesStore/favoritesSelectors';
+import { setFavoriteObjectTypes } from '../store/favoritesStore/favoritesActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 @withRouter
@@ -71,6 +73,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isGuest: isGuestUser(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
+    favoriteTypes: getFavoriteObjectTypes(state),
   }),
   {
     login,
@@ -79,6 +82,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getRewardFund,
     busyLogin,
     setUsedLocale,
+    setFavoriteObjectTypes,
     dispatchGetAuthGuestBalance,
     handleRefAuthUser,
     getTokenRates,

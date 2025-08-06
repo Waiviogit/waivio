@@ -58,8 +58,10 @@ const GoogleAds = ({
     const hideEmptyAds = () => {
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
+
         const iframe = ins?.querySelector('iframe');
-        const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+
+        const isInsEmpty = !ins || ins.childNodes.length === 0;
 
         if (isInsEmpty || !iframe) {
           ad.classList.add('hidden-ad');

@@ -241,7 +241,7 @@ const WebsitesConfigurations = ({
                   icon="picture"
                   shape="square"
                   src={desktopLogo}
-                  className="WebsitesConfigurations__avatar"
+                  className="WebsitesConfigurations__avatar-desktop"
                 />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({

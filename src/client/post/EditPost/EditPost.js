@@ -138,7 +138,7 @@ const EditPost = props => {
             handlePasteText={handlePasteText}
             match={props.match}
           />
-          {!props.isGuest && !isUpdating && (
+          {!props.isGuest && !props.currDraft?.jsonMetadata?.giveaway && (
             <GiveawayModal
               isEdit={isUpdating}
               saveData={safeGiveawayData}

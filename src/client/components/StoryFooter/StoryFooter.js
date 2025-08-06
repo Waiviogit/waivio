@@ -288,7 +288,6 @@ class StoryFooter extends React.Component {
             type={sliderType}
           />
         )}
-        {(moderate || minimal || intensive) && singlePostVew && <GoogleAds />}
         {(!singlePostVew || isRecipe) && (
           <Comments
             show={commentsVisible}
@@ -297,7 +296,7 @@ class StoryFooter extends React.Component {
             isRecipe={isRecipe}
           />
         )}
-        {intensive && singlePostVew && <GoogleAds inPost />}
+        {(intensive || moderate || minimal) && singlePostVew && <GoogleAds inPost={minimal} />}
         <MuteModal
           item={post}
           type={'post'}

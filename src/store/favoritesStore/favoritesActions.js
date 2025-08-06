@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { createAction } from 'redux-actions';
 import { getUserFavoriteObjects, getUserFavoritesObjectTypesList } from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
@@ -26,6 +27,7 @@ export const addCategoryFavorite = createAction(ADD_CATEGORY_FAVORITE);
 export const removeCategoryFavorite = createAction(REMOVE_CATEGORY_FAVORITE);
 
 export const setFavoriteObjectTypes = userName => dispatch =>
+  !isEmpty(userName) &&
   dispatch({
     type: SET_FAVORITE_OBJECT_TYPES.ACTION,
     payload: {

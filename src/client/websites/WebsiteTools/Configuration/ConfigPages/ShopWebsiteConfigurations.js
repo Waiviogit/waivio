@@ -172,7 +172,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <AvatarComp link={desktopLogo} />
+                <AvatarComp link={desktopLogo} isDesktopLogo />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({
                     id: 'website_change_logo',
@@ -195,7 +195,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <AvatarComp link={mobileLogo} />
+                <AvatarComp link={mobileLogo} isDesktopLogo />
                 <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
                   {intl.formatMessage({
                     id: 'website_change_logo',
@@ -382,6 +382,7 @@ const ShopWebsiteConfigurations = ({
           <ImageSetter
             isEditable={['mobileLogo', 'desktopLogo'].includes(modalsState.type)}
             autoFocus
+            isDesktop={['desktopLogo'].includes(modalsState.type)}
             onImageLoaded={modalsState.method}
             isRequired
             isMultiple={false}

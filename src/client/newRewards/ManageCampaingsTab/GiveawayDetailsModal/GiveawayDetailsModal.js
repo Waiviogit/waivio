@@ -16,7 +16,7 @@ const GiveawayDetailsModal = ({ visible, proposition, onCancel }) => (
       <strong>Name:</strong> {proposition.name}
     </div>
     <div>
-      <strong>Reward (per winner, USD):</strong> {proposition?.reward}
+      <strong>Reward (per winner, {proposition.currency}):</strong> {proposition?.reward}
     </div>
     <div>
       <strong>Number of winners:</strong> {proposition?.budget / proposition?.reward}
@@ -75,6 +75,7 @@ GiveawayDetailsModal.propTypes = {
     reward: PropTypes.number,
     budget: PropTypes.number,
     expiredAt: PropTypes.string,
+    currency: PropTypes.string,
     timezone: PropTypes.string,
     commissionAgreement: PropTypes.number,
     userRequirements: PropTypes.shape({

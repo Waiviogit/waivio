@@ -1,6 +1,9 @@
 import PropsType from 'prop-types';
 import React from 'react';
 import { Button, Checkbox } from 'antd';
+import { useSelector } from 'react-redux';
+import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
+import { currencyPrefix } from '../../../websites/constants/currencyTypes';
 
 import './GiveawayBlockPreview.less';
 
@@ -14,6 +17,7 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     minFollowers,
     minPosts,
   } = formData;
+  const currency = useSelector(getCurrentCurrency);
 
   const renderRequirement = (label, key) =>
     giveawayRequirements?.includes(key) && (
@@ -53,7 +57,8 @@ const GiveawayBlockPreview = ({ formData, onEdit, isEditable, onDelete }) => {
     <div className="GiveawayPreviewBlock">
       <div className="GiveawayPreviewBlock__header">
         <h3 className="GiveawayPreviewBlock__title">
-          Giveaway time! Your chance to win ${reward}
+          Giveaway time! Your chance to win {currencyPrefix[currency?.type]}
+          {reward}
           {winners > 1 ? ` with ${winners} winners` : ''}!
         </h3>
         {isEditable && (

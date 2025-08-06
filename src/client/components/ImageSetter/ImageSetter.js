@@ -30,6 +30,7 @@ const ImageSetter = ({
   labeledImage,
   isRequired,
   isTitle,
+  isDesktop = false,
   setEditorState,
   getEditorState,
   addNewBlockAt,
@@ -56,8 +57,26 @@ const ImageSetter = ({
     rotate: 0,
     borderRadius: isUserAvatar ? 50 : 0,
     preview: null,
-    width: 200,
+    width: isDesktop ? 400 : 200,
     height: 200,
+  };
+  const getUpdatedInitialState = (imageFile, callback) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(imageFile);
+
+    image.onload = () => {
+      const isLandscape = image.naturalWidth > image.naturalHeight;
+      const updatedInitialState = {
+        ...initialState,
+        image: imageFile,
+        width: isLandscape ? 400 : 200,
+      };
+
+      callback(updatedInitialState);
+      URL.revokeObjectURL(objectUrl);
+    };
+
+    image.src = objectUrl;
   };
 
   const [state, setState] = useState(initialState);
@@ -66,20 +85,27 @@ const ImageSetter = ({
 
   // eslint-disable-next-line consistent-return
   const handleNewImage = async e => {
-    if (
-      !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-    ) {
+    const file = e.target.files[0];
+
+    if (!isValidImage(file, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)) {
       return onImageInvalid(
         MAX_IMG_SIZE[objectFields.background],
         `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
       );
     }
 
-    if (e.target.files[0].type.includes('image/gif')) {
+    if (file.type.includes('image/gif')) {
       handleChangeImage(e);
     } else {
-      await setState({ ...initialState, image: e.target.files[0] });
-      setIsOpen(true);
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      getUpdatedInitialState(file, newState => {
+        setState(newState);
+        setIsOpen(true);
+      });
+
+      image.src = objectUrl;
     }
   };
 
@@ -210,8 +236,10 @@ const ImageSetter = ({
     const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
     if (isEditable) {
-      setState({ ...initialState, image: res });
-      setIsOpen(true);
+      getUpdatedInitialState(res, newState => {
+        setState(newState);
+        setIsOpen(true);
+      });
     } else {
       handleChangeImage({ target: { files: [res] } });
     }
@@ -499,12 +527,14 @@ ImageSetter.propTypes = {
   isEditable: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
+  isDesktop: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: true,
   defaultImage: '',
   isRequired: false,
+  isDesktop: false,
   isTitle: true,
   setEditorState: () => {},
   clearImage: () => {},
