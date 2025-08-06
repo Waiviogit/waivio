@@ -43,11 +43,14 @@ const CreatePage = ({
     ? domainNamesList.filter(host => host.includes(searchString))
     : domainNamesList;
   const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
-
+  const isProd = ['production']?.includes(process.env.NODE_ENV);
   const handleSearchHost = value => setSearchString(value);
 
   useEffect(() => {
     getDomainList();
+    const initialParent = isProd ? 'social.gifts' : 'socialgifts.pp.ua';
+
+    form.setFieldsValue({ parent: initialParent });
 
     return () => resetStatus();
   }, []);
