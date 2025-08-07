@@ -388,7 +388,9 @@ class CreateRewards extends React.Component {
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
       durationDays: +data.durationDays,
-      recurrenceRule: data.recurrenceRule,
+      ...([campaignTypes?.CONTESTS_OBJECT, campaignTypes?.GIVEAWAYS_OBJECT].includes(data.type)
+        ? { recurrenceRule: 'DTSTART:20250805T192928Z\\nRRULE:FREQ=DAILY;COUNT=1' }
+        : {}),
       winnersNumber,
       ...(data.type === campaignTypes?.MENTIONS
         ? { qualifiedPayoutToken: data.qualifiedPayoutToken }

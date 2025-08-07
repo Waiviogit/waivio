@@ -1,4 +1,4 @@
-FROM node:20.19-alpine3.21
+FROM node:20.10-alpine3.18
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -7,7 +7,7 @@ ARG ENV
 
 COPY ./package.json ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn install
 COPY . .
 RUN yarn run build $ENV
 
