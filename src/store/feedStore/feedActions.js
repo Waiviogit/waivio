@@ -8,12 +8,13 @@ import {
 } from '../../common/helpers/stateHelpers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
 import { getBlogFilters, getFeed } from './feedSelectors';
 import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmarksSelectors';
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 import { getAppHost } from '../appStore/appSelectors';
+import { getMetadata } from '../../common/helpers/postingMetadata';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
@@ -119,6 +120,7 @@ export const getUserProfileBlogPosts = (
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
+  const user = getAuthenticatedUser(state);
   const follower = getAuthenticatedUserName(state);
 
   const tagsCondition = queryTags || getBlogFilters(state);
@@ -130,19 +132,60 @@ export const getUserProfileBlogPosts = (
 
     if (!userBlogPosts.length) return Promise.resolve(null);
   }
+  const pinnedPermlink =
+    user && user.posting_json_metadata && user.posting_json_metadata !== ''
+      ? getMetadata(user)?.profile?.pinned
+      : '';
+
+  const postRequest = pinnedPermlink
+    ? fetch('https://api.hive.blog/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: 7,
+          jsonrpc: '2.0',
+          method: 'bridge.get_post',
+          params: {
+            author: userName,
+            permlink: pinnedPermlink,
+            observer: userName,
+          },
+        }),
+      })
+        .then(res => res.json())
+        .then(res => res?.result)
+        .catch(() => null)
+    : Promise.resolve(null);
+
+  const feedRequest = ApiClient.getUserProfileBlog(
+    userName,
+    follower,
+    {
+      limit,
+      skip: userBlogPosts.length,
+    },
+    locale,
+    tagsCondition,
+  );
 
   return dispatch({
     type: initialLoad ? GET_FEED_CONTENT_BY_BLOG.ACTION : GET_MORE_FEED_CONTENT_BY_BLOG.ACTION,
-    payload: ApiClient.getUserProfileBlog(
-      userName,
-      follower,
-      {
-        limit,
-        skip: userBlogPosts.length,
-      },
-      locale,
-      tagsCondition,
-    ),
+    payload: Promise.all([postRequest, feedRequest]).then(([featuredPost, blogFeed]) => {
+      if (featuredPost && Array.isArray(blogFeed?.posts)) {
+        const filteredPosts = blogFeed.posts.filter(
+          post => !(post.author === featuredPost.author && post.permlink === featuredPost.permlink),
+        );
+
+        const posts = [{ ...featuredPost, userPin: true }, ...filteredPosts];
+
+        return {
+          hasMore: blogFeed?.hasMore,
+          posts,
+        };
+      }
+
+      return blogFeed;
+    }),
     meta: {
       sortBy: 'blog',
       category: userName,
