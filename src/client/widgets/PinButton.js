@@ -1,10 +1,15 @@
 import React from 'react';
 import { Tooltip } from 'antd';
+import { injectIntl } from 'react-intl';
+import Cookie from 'js-cookie';
+import { useDispatch } from 'react-redux';
 import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
+import { unpinUserPost } from '../../store/postsStore/postActions';
 
 const PinButton = ({
   tooltipTitle,
+  intl,
   currentUserPin,
   pinClassName,
   handlePinPost,
@@ -16,8 +21,14 @@ const PinButton = ({
   userVotingPower,
   isUserPin,
 }) => {
+  const dispatch = useDispatch();
+  const hiveAuth = Cookie.get('auth');
   const pinPost = () => {
-    if (!isUserPin) handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+    if (isUserPin) {
+      dispatch(unpinUserPost(user, hiveAuth, intl));
+    } else {
+      handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+    }
   };
 
   return (
@@ -41,6 +52,7 @@ PinButton.propTypes = {
   post: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   pinnedPostsUrls: PropTypes.arrayOf().isRequired,
   tooltipTitle: PropTypes.string.isRequired,
   userVotingPower: PropTypes.number.isRequired,
@@ -51,4 +63,4 @@ PinButton.propTypes = {
   handlePinPost: PropTypes.func.isRequired,
 };
 
-export default PinButton;
+export default injectIntl(PinButton);

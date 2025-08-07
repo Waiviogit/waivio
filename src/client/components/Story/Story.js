@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import Cookie from 'js-cookie';
 import {
   injectIntl,
   FormattedMessage,
@@ -347,8 +348,10 @@ class Story extends React.Component {
       userVotingPower,
     } = this.props;
     const { editThread } = this.state;
-    const isObjectPage = (isObjectReviewTab(wobject, match) || post.userPin) && isAuthUser;
-    const currentUserPin = pinnedPostsUrls.includes(post.url) || post.userPin;
+    const pinUrl = Cookie.get('userPin');
+    const isObjectPage =
+      (isObjectReviewTab(wobject, match) || post.permlink === pinUrl) && isAuthUser;
+    const currentUserPin = pinnedPostsUrls.includes(post.url) || post.permlink === pinUrl;
     const tooltipTitle = (
       <FormattedMessage
         id={currentUserPin ? 'unpin' : 'pin'}
@@ -446,7 +449,7 @@ class Story extends React.Component {
                     </div>
                     {isObjectPage && (
                       <PinButton
-                        isUserPin={post?.userPin}
+                        isUserPin={pinUrl}
                         tooltipTitle={tooltipTitle}
                         handlePinPost={handlePinPost}
                         userVotingPower={userVotingPower}
