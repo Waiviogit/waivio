@@ -1,8 +1,8 @@
-import Cookie from 'js-cookie';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Icon, Modal, message } from 'antd';
+import Cookie from 'js-cookie';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, isNil, has } from 'lodash';
 import { ReactSVG } from 'react-svg';
@@ -66,6 +66,7 @@ const PostPopoverMenu = ({
   const [loadingType, setLoadingType] = useState('');
   const locale = useSelector(getUsedLocale);
   const hiveAuth = Cookie.get('auth');
+  const userPin = Cookie.get('userPin');
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -119,8 +120,10 @@ const PostPopoverMenu = ({
             : {};
 
         if (isUnpin) {
+          Cookie.remove('userPin');
           delete profile.pinned;
         } else {
+          Cookie.set('userPin', post.permlink);
           profile.pinned = post.permlink;
         }
 
@@ -345,7 +348,7 @@ const PostPopoverMenu = ({
       <PopoverMenuItem
         key="pin-user"
         disabled={loading}
-        invisible={!userPage || has(post, 'userPin')}
+        invisible={!userPage || post.permlink === userPin}
       >
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
@@ -355,7 +358,7 @@ const PostPopoverMenu = ({
       <PopoverMenuItem
         key="unpin-user"
         disabled={loading}
-        invisible={!userPage || !has(post, 'userPin')}
+        invisible={!userPage || post.permlink !== userPin}
       >
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
