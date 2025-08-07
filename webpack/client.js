@@ -50,8 +50,28 @@ module.exports = function createConfig(env = 'dev') {
       rules: [
         {
           test: MATCH_JS,
-          exclude: /node_modules/,
+          exclude: /node_modules\/(?!(react-draggable|@react-page)\/).*/,
           loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                targets: {
+                  browsers: ['last 2 versions', 'ie >= 11']
+                }
+              }],
+              '@babel/preset-react'
+            ],
+            plugins: [
+              'react-hot-loader/babel',
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-runtime',
+              '@babel/plugin-proposal-optional-chaining',
+              '@babel/plugin-proposal-nullish-coalescing-operator',
+              'lodash',
+              ['import', { libraryName: 'antd', style: true }]
+            ]
+          }
         },
         {
           test: MATCH_FONTS,

@@ -215,7 +215,7 @@ const CommentForm = props => {
           setBody('');
           setHTML('');
           resetEditorState(editor);
-          props.setImportObject({});
+          // props.setImportObject({});
         }
         setLoading(false);
       });
