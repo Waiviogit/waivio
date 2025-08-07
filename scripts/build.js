@@ -35,17 +35,20 @@ async function main() {
         reject(err);
         return;
       }
-      
+
       if (stats.hasErrors()) {
-        console.error('Client build errors:', stats.toString({
-          colors: true,
-          chunks: false,
-          children: false,
-        }));
+        console.error(
+          'Client build errors:',
+          stats.toString({
+            colors: true,
+            chunks: false,
+            children: false,
+          }),
+        );
         reject(new Error('Client build failed with errors'));
         return;
       }
-      
+
       console.log('Client build completed successfully');
       resolve();
     });
@@ -59,17 +62,20 @@ async function main() {
         reject(err);
         return;
       }
-      
+
       if (stats.hasErrors()) {
-        console.error('Server build errors:', stats.toString({
-          colors: true,
-          chunks: false,
-          children: false,
-        }));
+        console.error(
+          'Server build errors:',
+          stats.toString({
+            colors: true,
+            chunks: false,
+            children: false,
+          }),
+        );
         reject(new Error('Server build failed with errors'));
         return;
       }
-      
+
       console.log('Server build completed successfully');
       resolve();
     });
