@@ -176,7 +176,7 @@ export const getUserProfileBlogPosts = (
           post => !(post.author === featuredPost.author && post.permlink === featuredPost.permlink),
         );
 
-        const posts = [{ ...featuredPost, userPin: true }, ...filteredPosts];
+        const posts = [{ ...featuredPost }, ...filteredPosts];
 
         return {
           hasMore: blogFeed?.hasMore,
