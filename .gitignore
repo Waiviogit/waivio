@@ -42,6 +42,5 @@ node_modules
 build/
 env
 
-yarn.lock
 /package-lock.json
 .DS_Store
