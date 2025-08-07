@@ -152,6 +152,7 @@
     "remarkable": "1.7.1",
     "reselect": "^4.0.0",
     "resize-observer-polyfill": "^1.4.2",
+    "rrule": "2.6.8",
     "sanitize-html": "1.15.0",
     "secure-random": "^1.1.1",
     "slate": "^0.78.0",

@@ -23,7 +23,11 @@ import {
   getAuthenticatedUserName,
 } from '../../../store/authStore/authSelectors';
 import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
-import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
+import {
+  getMinExpertise,
+  getMinExpertisePrepared,
+  campaignTypes,
+} from '../../rewards/rewardsHelper';
 import { getCurrentCurrency, getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import { getTokenBalance, getTokenRates } from '../../../store/walletStore/walletActions';
 import { parseJSON } from '../../../common/helpers/parseJSON';
@@ -37,6 +41,7 @@ const initialState = {
   reward: null,
   primaryObject: {},
   secondaryObjectsList: [],
+  contestJudgesAccount: [],
   pageObjects: [],
   sponsorsList: [],
   reservationPeriod: 7,
@@ -258,12 +263,17 @@ class CreateRewards extends React.Component {
           campaignType: campaign.type,
           reachType: campaign.reach,
           budget: campaign.budget.toString(),
-          reward: campaign.reward.toString(),
+          reward: campaign.reward ? campaign.reward.toString() : '0',
           primaryObject: values[0],
+          winners: campaign?.winnersNumber,
+          durationDays: campaign?.durationDays,
+          recurrenceRule: campaign?.recurrenceRule,
           secondaryObjectsList: values[1].map(obj => obj),
+          contestJudgesAccount: campaign?.contestJudges.filter(acc => acc === this.props.userName),
           pageObjects: !isEmpty(values[2]) ? values[2] : [],
           sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
+          contestRewards: campaign.contestRewards,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
           minFollowers: campaign.userRequirements.minFollowers,
@@ -312,6 +322,40 @@ class CreateRewards extends React.Component {
       rewardFund,
       rate,
     });
+    let budget = Number(data.budget);
+    let contestRewards = null;
+    let winnersNumber = data?.winnersNumber;
+
+    if (data.type === campaignTypes.CONTESTS_OBJECT) {
+      budget = Number(data.reward1) + Number(data.reward2) + Number(data.reward3);
+      winnersNumber = 1;
+      contestRewards = [
+        {
+          place: 1,
+          reward: Number(data?.reward1),
+        },
+      ];
+
+      if (data.reward2) {
+        winnersNumber = +1;
+        contestRewards.push({
+          place: 2,
+          reward: Number(data?.reward2),
+        });
+      }
+
+      if (data.reward3) {
+        contestRewards.push({
+          place: 3,
+          reward: Number(data?.reward3),
+        });
+        winnersNumber = +1;
+      }
+    }
+
+    if (data.type === campaignTypes.GIVEAWAYS_OBJECT) {
+      budget = data.winnersNumber * data.reward;
+    }
 
     const preparedObject = {
       requiredObject,
@@ -320,8 +364,8 @@ class CreateRewards extends React.Component {
       app: appName,
       type: data.type,
       reach: data.reach,
-      budget: Number(data.budget),
-      reward: Number(data.reward),
+      budget,
+      reward: Number(data.reward) || 0,
       requirements: {
         minPhotos: +data.minPhotos,
         receiptPhoto: data.receiptPhoto,
@@ -343,7 +387,18 @@ class CreateRewards extends React.Component {
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
-      ...(data.type === 'mentions' ? { qualifiedPayoutToken: data.qualifiedPayoutToken } : {}),
+      durationDays: +data.durationDays,
+      recurrenceRule: data.recurrenceRule,
+      winnersNumber,
+      ...(data.type === campaignTypes?.MENTIONS
+        ? { qualifiedPayoutToken: data.qualifiedPayoutToken }
+        : {}),
+      ...(data.type === campaignTypes?.CONTESTS_OBJECT
+        ? {
+            contestRewards,
+            contestJudges: [userName, ...this.state?.contestJudgesAccount],
+          }
+        : {}),
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -430,6 +485,20 @@ class CreateRewards extends React.Component {
 
     removeCompensationAccount: () => {
       this.handleSetState({ compensationAccount: {} }, { compensationAccount: {} });
+    },
+
+    handleSetContestJudges: obj => {
+      this.handleSetState(
+        { contestJudgesAccount: [...this.state.contestJudgesAccount, obj?.account] },
+        { contestJudgesAccount: [...this.state.contestJudgesAccount, obj?.account] },
+      );
+    },
+
+    removeContestJudgesAccount: obj => {
+      this.handleSetState(
+        { contestJudgesAccount: this.state.contestJudgesAccount.filter(f => f !== obj) },
+        { contestJudgesAccount: this.state.contestJudgesAccount.filter(f => f !== obj) },
+      );
     },
 
     handleAddPageObject: obj => {
@@ -564,6 +633,7 @@ class CreateRewards extends React.Component {
       reservationPeriod,
       compensationAccount,
       commissionAgreement,
+      contestJudgesAccount,
       loading,
       parentPermlink,
       targetDays,
@@ -583,6 +653,10 @@ class CreateRewards extends React.Component {
       isDuplicate,
       reachType,
       qualifiedPayoutToken,
+      winners,
+      durationDays,
+      recurrenceRule,
+      contestRewards,
     } = this.state;
 
     return (
@@ -616,11 +690,16 @@ class CreateRewards extends React.Component {
         getFieldDecorator={form.getFieldDecorator}
         getFieldValue={form.getFieldValue}
         commissionAgreement={commissionAgreement}
+        contestJudgesAccount={contestJudgesAccount}
         qualifiedPayoutToken={qualifiedPayoutToken}
         campaignId={campaignId}
         iAgree={iAgree}
         eligibleDays={eligibleDays}
         isDisabled={isDisabled}
+        winners={winners}
+        durationDays={durationDays}
+        recurrenceRule={recurrenceRule}
+        contestRewards={contestRewards}
         isDuplicate={isDuplicate}
         isOpenAddChild={this.state.isOpenAddChild}
         currency={this.state.currency}
