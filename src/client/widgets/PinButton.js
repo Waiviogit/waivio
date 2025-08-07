@@ -14,9 +14,10 @@ const PinButton = ({
   match,
   wobject,
   userVotingPower,
+  isUserPin,
 }) => {
   const pinPost = () => {
-    handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+    if (!isUserPin) handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
   };
 
   return (
@@ -46,6 +47,7 @@ PinButton.propTypes = {
   user: PropTypes.string.isRequired,
   pinClassName: PropTypes.string.isRequired,
   currentUserPin: PropTypes.bool.isRequired,
+  isUserPin: PropTypes.bool,
   handlePinPost: PropTypes.func.isRequired,
 };
 

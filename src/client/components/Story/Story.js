@@ -347,8 +347,8 @@ class Story extends React.Component {
       userVotingPower,
     } = this.props;
     const { editThread } = this.state;
-    const isObjectPage = isObjectReviewTab(wobject, match) && isAuthUser;
-    const currentUserPin = pinnedPostsUrls.includes(post.url);
+    const isObjectPage = (isObjectReviewTab(wobject, match) || post.userPin) && isAuthUser;
+    const currentUserPin = pinnedPostsUrls.includes(post.url) || post.userPin;
     const tooltipTitle = (
       <FormattedMessage
         id={currentUserPin ? 'unpin' : 'pin'}
@@ -446,6 +446,7 @@ class Story extends React.Component {
                     </div>
                     {isObjectPage && (
                       <PinButton
+                        isUserPin={post?.userPin}
                         tooltipTitle={tooltipTitle}
                         handlePinPost={handlePinPost}
                         userVotingPower={userVotingPower}

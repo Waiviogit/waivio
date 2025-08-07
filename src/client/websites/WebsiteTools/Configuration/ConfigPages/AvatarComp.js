@@ -9,6 +9,7 @@ const AvatarComp = ({ link, isBanner, isDesktopLogo = false }) => {
     if (!link || !isDesktopLogo) return;
 
     const img = new Image();
+
     img.src = link;
     img.onload = () => {
       setIsRectangle(img.naturalWidth > img.naturalHeight);
