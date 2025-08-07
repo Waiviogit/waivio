@@ -1,4 +1,4 @@
-export default (messageFactory, validators, userName, currency) => ({
+export default (messageFactory, validators, userName, currency, campaingType) => ({
   campaignName: {
     name: 'campaignName',
     label: messageFactory('campaign_name', 'campaign name'),
@@ -36,11 +36,50 @@ export default (messageFactory, validators, userName, currency) => ({
     options: [
       { message: messageFactory('reviews', 'Reviews'), value: 'reviews' },
       { message: messageFactory('mentions', 'Mentions'), value: 'mentions' },
+      {
+        message: messageFactory('giveaways_object', 'Giveaways'),
+        value: 'giveaways_object',
+      },
+      { message: messageFactory('contests_object', 'Contests'), value: 'contests_object' },
     ],
     caption: messageFactory(
       'specific_campaign_parameters_type',
       'The campaign parameters are specific to the type of campaign',
     ),
+  },
+  campaignWinners: {
+    name: 'winners',
+    label: messageFactory('campaign_winners', 'campaignWinners'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_campaign_winners', 'Winners are required.'),
+      },
+      {
+        validator: validators.checkWinners,
+      },
+    ],
+    // caption: messageFactory(
+    //   'specific_campaign_parameters_type',
+    //   'The campaign parameters are specific to the type of campaign',
+    // ),
+  },
+  campaignDurations: {
+    name: 'durations',
+    label: messageFactory('campaign_durations', 'campaignDurations'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_campaign_durations', 'durations are required.'),
+      },
+      {
+        validator: validators.checkWinners,
+      },
+    ],
+    // caption: messageFactory(
+    //   'specific_campaign_parameters_type',
+    //   'The campaign parameters are specific to the type of campaign',
+    // ),
   },
   campaignTypeItem: {
     name: 'itemType',
@@ -134,9 +173,14 @@ export default (messageFactory, validators, userName, currency) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, {currency})', {
-      currency,
-    }),
+    label:
+      campaingType === 'giveaways_object'
+        ? messageFactory('reward_per_review_giveaways_object', 'Reward (per winner, {currency})', {
+            currency,
+          })
+        : messageFactory('reward_per_review_STEEM', 'Reward (per review, {currency})', {
+            currency,
+          }),
     rules: [
       {
         required: true,
@@ -175,6 +219,15 @@ export default (messageFactory, validators, userName, currency) => ({
     caption: messageFactory(
       'accumulates_value_of_upvotes_from_registered_upvoting_accounts',
       'Accumulates the value of upvotes from registered upvoting accounts',
+    ),
+  },
+  contestJudges: {
+    name: 'contestJudges',
+    label: messageFactory('contest_judges', 'Contest judges'),
+    placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),
+    caption: messageFactory(
+      'winners_are_based_on_judges_votes',
+      'Winners are based on judges’ votes. If none or tied, random selection applies.',
     ),
   },
   primaryObject: {
