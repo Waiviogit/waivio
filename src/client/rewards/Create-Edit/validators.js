@@ -189,6 +189,23 @@ export const validatorsCreator = (
     value && value.match(/^ *$/) !== null ? callback(messages.nameField) : callback();
   },
 
+  checkWinners: async (rule, value, callback) => {
+    const reward = getFieldValue('reward');
+    const rate = await getCurrentCurrencyRate(currency);
+    const isHive = payoutToken === 'HIVE';
+
+    const budget = isHive
+      ? parseFloat(user.balance) * rate[currency]
+      : currencyInfo.balance * rates * rate[currency];
+
+    if (reward * value > budget)
+      return callback(
+        'The total campaign budget exceeds your balance. Consider reducing the number of winners.',
+      );
+
+    return callback();
+  },
+
   compareBudgetValues: async (rule, value, callback) => {
     const rate = await getCurrentCurrencyRate(currency);
     const isHive = payoutToken === 'HIVE';

@@ -1,4 +1,7 @@
+import FormItem from 'antd/es/form/FormItem';
 import React from 'react';
+import { RRule } from 'rrule';
+
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -6,6 +9,7 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { isEmpty, map, get, includes, isNumber } from 'lodash';
 import { Link } from 'react-router-dom';
+import timezones, { getCurrUserTimezone } from '../../../common/constants/timezones';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
@@ -23,6 +27,46 @@ import Loading from '../../components/Icon/Loading';
 import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
+
+const getRecurrenceRuleArray = () => {
+  const today = moment();
+
+  return [
+    {
+      label: 'Does not repeat',
+      value: new RRule({
+        freq: RRule.DAILY,
+        count: 1,
+      }).toString(),
+    },
+    {
+      label: 'Daily',
+      value: new RRule({ freq: RRule.DAILY }).toString(),
+    },
+    {
+      label: `Weekly on ${today.format('dddd')}`,
+      value: new RRule({
+        freq: RRule.WEEKLY,
+        byweekday: RRule[today.format('ddd').toUpperCase()],
+      }).toString(),
+    },
+    {
+      label: `Monthly on the ${today.format('D')}`,
+      value: new RRule({
+        freq: RRule.MONTHLY,
+        bymonthday: today.date(),
+      }).toString(),
+    },
+    {
+      label: `Annually on ${today.format('MMMM D')}`,
+      value: new RRule({
+        freq: RRule.YEARLY,
+        bymonth: today.month() + 1,
+        bymonthday: today.date(),
+      }).toString(),
+    },
+  ];
+};
 
 const CreateFormRenderer = props => {
   const {
@@ -61,11 +105,19 @@ const CreateFormRenderer = props => {
     payoutToken,
     reachType,
     agreement,
+    winners,
+    duration,
     qualifiedPayoutToken,
+    contestJudgesAccount,
+    recurrenceRule,
+    contestRewards,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
+  const campType = getFieldValue('type') || campaignType;
+  const isGiveaways = ['giveaways_object', 'contests_object'].includes(campType);
+  const isContestsObject = campType === 'contests_object';
   const isCreateDublicate =
     get(match, ['params', '0']) === 'createDuplicate' ||
     get(match, ['params', '0']) === 'duplicate';
@@ -81,10 +133,17 @@ const CreateFormRenderer = props => {
     currencyInfo,
     rates,
   );
-  const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
+  const fields = fieldsData(
+    handlers.messageFactory,
+    validators,
+    user.name,
+    props.currency,
+    campType,
+  );
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
   let userBalance = parseFloat(user.balance);
+  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone());
 
   if (payoutToken !== 'HIVE') {
     userBalance = currencyInfo ? currencyInfo?.balance : null;
@@ -112,6 +171,17 @@ const CreateFormRenderer = props => {
         />
       </div>
     ) : null;
+  const renderContestJudges = !isEmpty(contestJudgesAccount)
+    ? map(contestJudgesAccount, usr => (
+        <ReviewItem
+          key={usr}
+          object={usr}
+          loading={loading}
+          removeReviewObject={handlers.removeContestJudgesAccount}
+          isUser
+        />
+      ))
+    : null;
 
   const sponsorsIdsToOmit = !isEmpty(sponsorsList)
     ? map(sponsorsList, obj => obj.account || obj)
@@ -179,6 +249,8 @@ const CreateFormRenderer = props => {
       <span>{fields.createButton.spanText}</span>
     </div>
   );
+
+  const recList = getRecurrenceRuleArray();
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -293,28 +365,155 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__field-caption">{fields.baseCryptocurrency.caption}</div>
         </Form.Item>
 
-        <Form.Item label={fields.budget.label}>
-          {getFieldDecorator(fields.budget.name, {
-            rules: fields.budget.rules,
-            initialValue: budget,
-            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-          })(<Input type="number" disabled={disabled} step={0.1} />)}
-          <div className="CreateReward__field-caption">{fields.budget.caption}</div>
-        </Form.Item>
+        {!isGiveaways && (
+          <Form.Item label={fields.budget.label}>
+            {getFieldDecorator(fields.budget.name, {
+              rules: fields.budget.rules,
+              initialValue: budget,
+              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            })(<Input type="number" disabled={disabled} step={0.1} />)}
+            <div className="CreateReward__field-caption">{fields.budget.caption}</div>
+          </Form.Item>
+        )}
+        {isContestsObject ? (
+          <div>
+            <Form.Item label={`Reward #1 (${props.currency})`}>
+              {getFieldDecorator('reward1', {
+                rules: fields.reward.rules,
+                initialValue: contestRewards[0]?.reward || 0,
+                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+              })(<Input type="number" disabled={disabled} step={0.1} />)}
+              <div className="CreateReward__field-caption">{fields.reward.caption}</div>
+            </Form.Item>{' '}
+            <Form.Item label={`Reward #2 (${props.currency})`}>
+              {getFieldDecorator('reward2', {
+                initialValue: contestRewards[1]?.reward || reward,
+              })(<Input type="number" disabled={disabled} step={0.1} />)}
+              <div className="CreateReward__field-caption">{fields.reward.caption}</div>
+            </Form.Item>{' '}
+            <Form.Item label={`Reward #3 (${props.currency})`}>
+              {getFieldDecorator('reward3', {
+                initialValue: contestRewards[2]?.reward || reward,
+              })(<Input type="number" disabled={disabled} step={0.1} />)}
+              <div className="CreateReward__field-caption">{fields.reward.caption}</div>
+            </Form.Item>
+          </div>
+        ) : (
+          <Form.Item label={fields.reward.label}>
+            {getFieldDecorator(fields.reward.name, {
+              rules: fields.reward.rules,
+              initialValue: reward,
+              validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            })(<Input type="number" disabled={disabled} step={0.1} />)}
+            <div className="CreateReward__field-caption">{fields.reward.caption}</div>
+            <span className="CreateReward__field-exceed ">
+              {Number(getFieldValue('budget')) < Number(getFieldValue('reward')) &&
+                messages.rewardToBudget}
+            </span>
+          </Form.Item>
+        )}
+        {isGiveaways && (
+          <React.Fragment>
+            {!isContestsObject && (
+              <FormItem label="Number of winners">
+                {getFieldDecorator('winnersNumber', {
+                  initialValue: winners || 1,
+                  rules: fields?.campaignWinners?.rules,
+                  validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+                })(
+                  <Input
+                    type="number"
+                    step={1}
+                    min={1}
+                    placeholder="Enter amount"
+                    style={{ width: '100%' }}
+                  />,
+                )}
+              </FormItem>
+            )}
+            <FormItem label="Giveaway duration (days)">
+              {getFieldDecorator('durationDays', {
+                initialValue: duration || 7,
+                rules: [{ required: true }],
+                validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+              })(
+                <Input
+                  type="number"
+                  step={1}
+                  min={1}
+                  placeholder="Enter duration"
+                  style={{ width: '100%' }}
+                />,
+              )}
+            </FormItem>
+            <div className={'GiveawayModal__label ant-col ant-form-item-label'}>
+              Result declaration time:
+            </div>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <FormItem label="" style={{ width: '50%' }}>
+                  {getFieldDecorator('expiry', {
+                    initialValue: moment().add(7, 'days'),
+                    rules: [{ required: true, message: 'Expiry date is required.' }],
+                  })(
+                    <DatePicker
+                      disabledDate={currDate => {
+                        const tomorrow = moment()
+                          // .add(1, 'days')
+                          .startOf('day');
+                        const maxDate = moment()
+                          .add(30, 'days')
+                          .endOf('day');
 
-        <Form.Item label={fields.reward.label}>
-          {getFieldDecorator(fields.reward.name, {
-            rules: fields.reward.rules,
-            initialValue: reward,
-            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
-          })(<Input type="number" disabled={disabled} step={0.1} />)}
-          <div className="CreateReward__field-caption">{fields.reward.caption}</div>
-          <span className="CreateReward__field-exceed ">
-            {Number(getFieldValue('budget')) < Number(getFieldValue('reward')) &&
-              messages.rewardToBudget}
-          </span>
-        </Form.Item>
-
+                        return currDate.isBefore(tomorrow) || currDate.isAfter(maxDate);
+                      }}
+                      showTime
+                      showToday={false}
+                      format="YYYY-MM-DD hh:mm A"
+                      style={{ width: '100%', marginRight: '10px' }}
+                    />,
+                  )}
+                </FormItem>
+                <Form.Item label="" style={{ width: '50%' }}>
+                  {getFieldDecorator('timezone', {
+                    initialValue: userTimeZone?.label,
+                    rules: [{ required: true, message: 'Please select a timezone' }],
+                  })(
+                    <Select
+                      showSearch
+                      optionFilterProp="label"
+                      style={{ width: 'calc(100% - 10px)', marginLeft: '10px' }}
+                      dropdownMatchSelectWidth={false}
+                      filterOption={(input, option) =>
+                        option?.props?.label.toLowerCase().includes(input.toLowerCase())
+                      }
+                    >
+                      {timezones.map(tz => (
+                        <Select.Option key={tz?.label} value={tz?.label} label={tz?.label}>
+                          {tz?.label}
+                        </Select.Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </div>
+              <Form.Item label="">
+                {getFieldDecorator('recurrenceRule', {
+                  initialValue:
+                    recList.find(i => i.value === recurrenceRule)?.value || recList[0]?.value,
+                })(
+                  <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
+                    {recList.map(p => (
+                      <Select.Option key={p?.label} value={p?.value} label={p?.label}>
+                        {p?.label}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                )}
+              </Form.Item>
+            </div>
+          </React.Fragment>
+        )}
         <Form.Item label={fields.sponsorsList.label}>
           {getFieldDecorator(fields.sponsorsList.name, {
             initialValue: sponsorsList,
@@ -333,6 +532,26 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__objects-wrap">{renderSponsorsList}</div>
         </Form.Item>
 
+        {isContestsObject && (
+          <Form.Item label={'Contest judges'}>
+            {getFieldDecorator(
+              'contestJudges',
+              {},
+            )(
+              <SearchUsersAutocomplete
+                allowClear={false}
+                disabled={disabled}
+                handleSelect={handlers.handleSetContestJudges}
+                placeholder={fields.contestJudges.placeholder}
+                style={{ width: '100%' }}
+                autoFocus={false}
+                itemsIdsToOmit={contestJudgesAccount}
+              />,
+            )}
+            <div className="CreateReward__field-caption">{fields.contestJudges.caption}</div>
+            <div className="CreateReward__objects-wrap">{renderContestJudges}</div>
+          </Form.Item>
+        )}
         <Form.Item label={fields.compensationAccount.label}>
           {getFieldDecorator(fields.compensationAccount.name, {
             initialValue: compensationAccount,
@@ -675,10 +894,14 @@ CreateFormRenderer.defaultProps = {
 CreateFormRenderer.propTypes = {
   campaignName: PropTypes.string,
   campaignType: PropTypes.string,
+  recurrenceRule: PropTypes.string,
   budget: PropTypes.number,
   reward: PropTypes.number,
+  winners: PropTypes.number,
+  duration: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
+  contestJudgesAccount: PropTypes.shape(),
   receiptPhoto: PropTypes.bool,
   qualifiedPayoutToken: PropTypes.bool,
   minPhotos: PropTypes.number,
@@ -696,6 +919,7 @@ CreateFormRenderer.propTypes = {
     removeSponsorObject: PropTypes.func.isRequired,
     setPrimaryObject: PropTypes.func.isRequired,
     removePrimaryObject: PropTypes.func.isRequired,
+    handleSetContestJudges: PropTypes.func.isRequired,
     handleAddSecondaryObjectToList: PropTypes.func.isRequired,
     removeSecondaryObject: PropTypes.func.isRequired,
     handleSelectReach: PropTypes.func.isRequired,
@@ -712,9 +936,11 @@ CreateFormRenderer.propTypes = {
     openModalAddChildren: PropTypes.func.isRequired,
     closeModalAddChildren: PropTypes.func.isRequired,
     addAllObjectChildren: PropTypes.func.isRequired,
+    removeContestJudgesAccount: PropTypes.func.isRequired,
   }).isRequired,
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
+  contestRewards: PropTypes.arrayOf(PropTypes.shape()),
   agreement: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.shape()),
   pageObjects: PropTypes.arrayOf(PropTypes.shape()),
