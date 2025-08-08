@@ -380,20 +380,20 @@ const CreateFormRenderer = props => {
             <Form.Item label={`Reward #1 (${props.currency})`}>
               {getFieldDecorator('reward1', {
                 rules: fields.reward.rules,
-                initialValue: contestRewards[0]?.reward || 0,
+                initialValue: contestRewards?.[0]?.reward || 0,
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #2 (${props.currency})`}>
               {getFieldDecorator('reward2', {
-                initialValue: contestRewards[1]?.reward || reward,
+                initialValue: contestRewards?.[1]?.reward || reward,
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #3 (${props.currency})`}>
               {getFieldDecorator('reward3', {
-                initialValue: contestRewards[2]?.reward || reward,
+                initialValue: contestRewards?.[2]?.reward || reward,
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>
@@ -447,7 +447,8 @@ const CreateFormRenderer = props => {
               )}
             </FormItem>
             <div className={'GiveawayModal__label ant-col ant-form-item-label'}>
-              Result declaration time:
+              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+              <label className={'ant-form-item-required'}>Result declaration time</label>
             </div>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
