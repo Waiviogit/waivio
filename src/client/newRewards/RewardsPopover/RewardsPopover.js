@@ -16,7 +16,7 @@ import {
 } from '../../../store/newRewards/newRewardsActions';
 import Report from '../../rewards/Report/Report';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { checkUserFollowing, checkUserInBlackList } from '../../../waivioApi/ApiClient';
+import { checkUserFollowing, checkUserInBlackList, getContent } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../../store/userStore/userActions';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 import ids from '../BlackList/constants';
@@ -32,6 +32,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const [mutedAuthor, setMutedAuthort] = useState(false);
   const [hidedPost, setHidedPost] = useState(false);
   const [openRejectCapm, setOpenRejectCapm] = useState(false);
+  const [linkedObjs, setLinkedObjs] = useState([]);
   const [followingObj, setFollowingObj] = useState(false);
   const [followingGuide, setFollowingGuide] = useState(false);
   const [openDecrease, setOpenDecrease] = useState('');
@@ -303,6 +304,9 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           onClick={() => {
             setIsVisiblePopover(false);
             setOpenRejectCapm(true);
+            getContent(proposition.userName, proposition.reviewPermlink).then(p =>
+              setLinkedObjs(p.wobjects),
+            );
           }}
         >
           {intl.formatMessage({ id: 'reject_review', defaultMessage: 'Reject review' })}
@@ -449,15 +453,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
     }
   };
 
-  const getLinkedObj = () => {
-    if (proposition?.object) {
-      return proposition?.object?.author_permlink !== proposition?.requiredObject?.author_permlink
-        ? [proposition?.requiredObject, proposition?.object]
-        : [proposition?.object];
-    }
-
-    return [];
-  };
+  // const getLinkedObj = () => {
+  //   if (proposition?.object) {
+  //     return proposition?.object?.author_permlink !== proposition?.requiredObject?.author_permlink
+  //       ? [proposition?.requiredObject, proposition?.object]
+  //       : [proposition?.object];
+  //   }
+  //
+  //   return [];
+  // };
 
   return (
     <React.Fragment>
@@ -500,7 +504,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
         onClose={() => setOpenRejectCapm(false)}
         visible={openRejectCapm}
         campaigns={[{ ...proposition, name: proposition.campaignName }]}
-        linkedObj={getLinkedObj()}
+        linkedObj={linkedObjs}
         post={proposition}
       />
     </React.Fragment>
