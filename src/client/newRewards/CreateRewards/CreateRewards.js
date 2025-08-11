@@ -704,6 +704,7 @@ class CreateRewards extends React.Component {
         isOpenAddChild={this.state.isOpenAddChild}
         currency={this.state.currency}
         payoutToken={this.state.payoutToken}
+        locale={this.props.locale}
       />
     );
   }

@@ -30,6 +30,23 @@ const { Option } = Select;
 
 const getRecurrenceRuleArray = () => {
   const today = moment();
+  const day = today.format('D');
+  const nth = d => {
+    const dString = String(d);
+    const last = +dString.slice(-2);
+
+    if (last > 3 && last < 21) return 'th';
+    switch (last % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
 
   return [
     {
@@ -44,21 +61,21 @@ const getRecurrenceRuleArray = () => {
       value: new RRule({ freq: RRule.DAILY }).toString(),
     },
     {
-      label: `Weekly on ${today.format('dddd')}`,
+      label: `Weekly on ${today.format('dddd')}s`,
       value: new RRule({
         freq: RRule.WEEKLY,
         byweekday: RRule[today.format('ddd').toUpperCase()],
       }).toString(),
     },
     {
-      label: `Monthly on the ${today.format('D')}`,
+      label: `Monthly on the ${day}${nth(day)}`,
       value: new RRule({
         freq: RRule.MONTHLY,
         bymonthday: today.date(),
       }).toString(),
     },
     {
-      label: `Annually on ${today.format('MMMM D')}`,
+      label: `Annually on ${today.format('MMMM')} ${day}${nth(day)}`,
       value: new RRule({
         freq: RRule.YEARLY,
         bymonth: today.month() + 1,
@@ -111,6 +128,7 @@ const CreateFormRenderer = props => {
     contestJudgesAccount,
     recurrenceRule,
     contestRewards,
+    locale,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -250,7 +268,7 @@ const CreateFormRenderer = props => {
     </div>
   );
 
-  const recList = getRecurrenceRuleArray();
+  const recList = getRecurrenceRuleArray(locale);
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -955,6 +973,7 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
+  locale: PropTypes.string,
   isDisabled: PropTypes.bool,
   isOpenAddChild: PropTypes.bool,
   match: PropTypes.shape().isRequired,
