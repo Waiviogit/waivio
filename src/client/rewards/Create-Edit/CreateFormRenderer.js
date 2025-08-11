@@ -1,6 +1,6 @@
 import FormItem from 'antd/es/form/FormItem';
 import React from 'react';
-// import { RRule } from 'rrule';
+import { RRule } from 'rrule';
 
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
@@ -28,45 +28,45 @@ import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
 
-// const getRecurrenceRuleArray = () => {
-//   const today = moment();
-//
-//   return [
-//     {
-//       label: 'Does not repeat',
-//       value: new RRule({
-//         freq: RRule.DAILY,
-//         count: 1,
-//       }).toString(),
-//     },
-//     {
-//       label: 'Daily',
-//       value: new RRule({ freq: RRule.DAILY }).toString(),
-//     },
-//     {
-//       label: `Weekly on ${today.format('dddd')}`,
-//       value: new RRule({
-//         freq: RRule.WEEKLY,
-//         byweekday: RRule[today.format('ddd').toUpperCase()],
-//       }).toString(),
-//     },
-//     {
-//       label: `Monthly on the ${today.format('D')}`,
-//       value: new RRule({
-//         freq: RRule.MONTHLY,
-//         bymonthday: today.date(),
-//       }).toString(),
-//     },
-//     {
-//       label: `Annually on ${today.format('MMMM D')}`,
-//       value: new RRule({
-//         freq: RRule.YEARLY,
-//         bymonth: today.month() + 1,
-//         bymonthday: today.date(),
-//       }).toString(),
-//     },
-//   ];
-// };
+const getRecurrenceRuleArray = () => {
+  const today = moment();
+
+  return [
+    {
+      label: 'Does not repeat',
+      value: new RRule({
+        freq: RRule.DAILY,
+        count: 1,
+      }).toString(),
+    },
+    {
+      label: 'Daily',
+      value: new RRule({ freq: RRule.DAILY }).toString(),
+    },
+    {
+      label: `Weekly on ${today.format('dddd')}`,
+      value: new RRule({
+        freq: RRule.WEEKLY,
+        byweekday: RRule[today.format('ddd').toUpperCase()],
+      }).toString(),
+    },
+    {
+      label: `Monthly on the ${today.format('D')}`,
+      value: new RRule({
+        freq: RRule.MONTHLY,
+        bymonthday: today.date(),
+      }).toString(),
+    },
+    {
+      label: `Annually on ${today.format('MMMM D')}`,
+      value: new RRule({
+        freq: RRule.YEARLY,
+        bymonth: today.month() + 1,
+        bymonthday: today.date(),
+      }).toString(),
+    },
+  ];
+};
 
 const CreateFormRenderer = props => {
   const {
@@ -109,7 +109,7 @@ const CreateFormRenderer = props => {
     duration,
     qualifiedPayoutToken,
     contestJudgesAccount,
-    // recurrenceRule,
+    recurrenceRule,
     contestRewards,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
@@ -250,7 +250,7 @@ const CreateFormRenderer = props => {
     </div>
   );
 
-  // const recList = getRecurrenceRuleArray();
+  const recList = getRecurrenceRuleArray();
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -380,20 +380,20 @@ const CreateFormRenderer = props => {
             <Form.Item label={`Reward #1 (${props.currency})`}>
               {getFieldDecorator('reward1', {
                 rules: fields.reward.rules,
-                initialValue: contestRewards[0]?.reward || 0,
+                initialValue: contestRewards?.[0]?.reward || 0,
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #2 (${props.currency})`}>
               {getFieldDecorator('reward2', {
-                initialValue: contestRewards[1]?.reward || reward,
+                initialValue: contestRewards?.[1]?.reward || reward,
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #3 (${props.currency})`}>
               {getFieldDecorator('reward3', {
-                initialValue: contestRewards[2]?.reward || reward,
+                initialValue: contestRewards?.[2]?.reward || reward,
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>
@@ -447,7 +447,8 @@ const CreateFormRenderer = props => {
               )}
             </FormItem>
             <div className={'GiveawayModal__label ant-col ant-form-item-label'}>
-              Result declaration time:
+              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+              <label className={'ant-form-item-required'}>Result declaration time</label>
             </div>
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -497,20 +498,20 @@ const CreateFormRenderer = props => {
                   )}
                 </Form.Item>
               </div>
-              {/* <Form.Item label=""> */}
-              {/*   {getFieldDecorator('recurrenceRule', { */}
-              {/*     initialValue: */}
-              {/*       recList.find(i => i.value === recurrenceRule)?.value || recList[0]?.value, */}
-              {/*   })( */}
-              {/*     <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}> */}
-              {/*       {recList.map(p => ( */}
-              {/*         <Select.Option key={p?.label} value={p?.value} label={p?.label}> */}
-              {/*           {p?.label} */}
-              {/*         </Select.Option> */}
-              {/*       ))} */}
-              {/*     </Select>, */}
-              {/*   )} */}
-              {/* </Form.Item> */}
+              <Form.Item label="">
+                {getFieldDecorator('recurrenceRule', {
+                  initialValue:
+                    recList.find(i => i.value === recurrenceRule)?.value || recList[0]?.value,
+                })(
+                  <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
+                    {recList.map(p => (
+                      <Select.Option key={p?.label} value={p?.value} label={p?.label}>
+                        {p?.label}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                )}
+              </Form.Item>
             </div>
           </React.Fragment>
         )}
@@ -894,7 +895,7 @@ CreateFormRenderer.defaultProps = {
 CreateFormRenderer.propTypes = {
   campaignName: PropTypes.string,
   campaignType: PropTypes.string,
-  // recurrenceRule: PropTypes.string,
+  recurrenceRule: PropTypes.string,
   budget: PropTypes.number,
   reward: PropTypes.number,
   winners: PropTypes.number,
