@@ -23,15 +23,14 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         error: action.payload.message,
-        loading: false,
+        addingAppend: false,
       };
 
     case appendActions.APPEND_WAIVIO_OBJECT.START:
       return {
         ...state,
-        loading: true,
+        addingAppend: true,
         error: null,
-        fields: [],
       };
 
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
@@ -41,6 +40,7 @@ export default (state = defaultState, action) => {
         hasMore: action.payload.hasMore,
         error: null,
         loading: false,
+        addingAppend: false,
       };
     }
     case appendActions.SET_OBJECT_IN_AUTHORITY: {

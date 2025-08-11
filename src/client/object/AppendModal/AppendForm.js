@@ -291,7 +291,6 @@ class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
-    this.getMenuItem();
     if (this.props.sliderMode && !this.state.sliderVisible) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));

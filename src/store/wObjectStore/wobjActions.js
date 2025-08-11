@@ -440,3 +440,9 @@ export const getRelatedWobjects = objPermlink => (dispatch, getState) => {
     });
   }
 };
+
+export const RESET_OBJ_STATE = '@wobj/RESET_OBJ_STATE';
+
+export const resetObjState = () => ({
+  type: RESET_OBJ_STATE,
+});
