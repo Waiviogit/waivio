@@ -19,15 +19,19 @@ const PinButton = ({
   match,
   wobject,
   userVotingPower,
+  disabled = false,
   isUserPin = false,
 }) => {
   const dispatch = useDispatch();
   const hiveAuth = Cookie.get('auth');
+
   const pinPost = () => {
-    if (isUserPin) {
-      dispatch(unpinUserPost(user, hiveAuth, intl));
-    } else {
-      handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+    if (!disabled) {
+      if (isUserPin) {
+        dispatch(unpinUserPost(user, hiveAuth, intl));
+      } else {
+        handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower);
+      }
     }
   };
 
@@ -37,6 +41,7 @@ const PinButton = ({
       title={tooltipTitle}
       overlayClassName="HeartButtonContainer"
       overlayStyle={{ top: '10px' }}
+      disabled={disabled}
     >
       <ReactSVG
         className={currentUserPin ? 'pin-website-color' : pinClassName}
@@ -61,6 +66,7 @@ PinButton.propTypes = {
   pinClassName: PropTypes.string.isRequired,
   currentUserPin: PropTypes.bool.isRequired,
   isUserPin: PropTypes.bool,
+  disabled: PropTypes.bool,
   handlePinPost: PropTypes.func.isRequired,
 };
 

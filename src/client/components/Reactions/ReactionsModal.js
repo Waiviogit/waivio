@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import Cookie from 'js-cookie';
 import { FormattedNumber } from 'react-intl';
 import { get } from 'lodash';
 import { Tabs, Modal } from 'antd';
@@ -34,10 +35,14 @@ const ReactionsModal = ({
   const waivPayout = comment?.total_rewards_WAIV
     ? get(comment, 'total_rewards_WAIV', 0) * rates
     : get(comment, 'total_payout_WAIV', 0) * rates;
+  const userPin = Cookie.get('userPin');
 
   useEffect(() => {
-    if (comment && visible && !initialUpVotes)
-      getCommentReactions(comment.author, comment.permlink).then(r => {
+    if ((comment && visible && !initialUpVotes) || userPin)
+      getCommentReactions(
+        comment?.author || post?.author,
+        comment?.permlink || post?.permlink,
+      ).then(r => {
         const ups = [];
         const downs = [];
 
@@ -55,18 +60,19 @@ const ReactionsModal = ({
       });
   }, [visible, comment?.url]);
 
-  const upVotesWithPayout = initialUpVotes
-    ? upVotes
-    : upVotes.map(v => {
-        const rewardBalance = parseFloat(rewardFund.reward_balance.replace(' HIVE', ''));
-        const recentClaims = parseFloat(rewardFund.recent_claims);
-        const payout = (v.rshares / recentClaims) * rewardBalance * rate;
+  const upVotesWithPayout =
+    initialUpVotes && !userPin
+      ? upVotes
+      : upVotes.map(v => {
+          const rewardBalance = parseFloat(rewardFund.reward_balance.replace(' HIVE', ''));
+          const recentClaims = parseFloat(rewardFund.recent_claims);
+          const payout = (v.rshares / recentClaims) * rewardBalance * rate;
 
-        return {
-          ...v,
-          payout: isFullParams ? payout + waivPayout / upVotes.length : 0,
-        };
-      });
+          return {
+            ...v,
+            payout: isFullParams ? payout + waivPayout / upVotes.length : 0,
+          };
+        });
 
   const handleModalClose = () => {
     setTabKey('1');
