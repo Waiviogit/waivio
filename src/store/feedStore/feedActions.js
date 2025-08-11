@@ -8,13 +8,14 @@ import {
 } from '../../common/helpers/stateHelpers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLastPostId, getPosts } from '../postsStore/postsSelectors';
 import { getBlogFilters, getFeed } from './feedSelectors';
 import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmarksSelectors';
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 import { getAppHost } from '../appStore/appSelectors';
 import { getMetadata } from '../../common/helpers/postingMetadata';
+import { getUser } from '../usersStore/usersSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
@@ -120,7 +121,7 @@ export const getUserProfileBlogPosts = (
   let userBlogPosts = [];
   const state = getState();
   const locale = getLocale(state);
-  const user = getAuthenticatedUser(state);
+  const user = getUser(state, userName);
   const follower = getAuthenticatedUserName(state);
 
   const tagsCondition = queryTags || getBlogFilters(state);
