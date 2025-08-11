@@ -365,13 +365,21 @@ const PostPopoverMenu = ({
           <FormattedMessage id="unpin_from_blog" defaultMessage="Unpin from blog" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="pin"
+        disabled={loading}
+        invisible={hidePinRemove || post.currentUserPin}
+      >
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="remove"
+        disabled={loading || disableRemove}
+        invisible={hidePinRemove || !post.currentUserPin}
+      >
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />

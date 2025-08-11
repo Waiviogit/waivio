@@ -203,6 +203,7 @@ export default class Buttons extends React.Component {
       closeEditThread,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
+
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
 
@@ -309,6 +310,7 @@ export default class Buttons extends React.Component {
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
           initialUpVotes={upVotes}
+          post={this.props.post}
           // comment={this.props.post}
           initialDownVotes={downVotes}
           onClose={this.handleCloseReactions}
