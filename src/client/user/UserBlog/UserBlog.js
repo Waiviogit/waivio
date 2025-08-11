@@ -4,6 +4,7 @@ import { useParams, withRouter } from 'react-router';
 import { isEmpty, get } from 'lodash';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import Cookie from 'js-cookie';
 import { getMetadata } from '../../../common/helpers/postingMetadata';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 
@@ -64,6 +65,11 @@ const UserBlog = props => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
+    const postingJsonMetadata = get(user, 'posting_json_metadata', {});
+
+    if (postingJsonMetadata?.profile?.pinned) {
+      Cookie.set('userPin', profile?.pinned);
+    }
     getUsersMentionCampaign(name).then(res => {
       setMentions(res);
     });

@@ -63,11 +63,31 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(props.post.author, props.post.permlink, 0, '', false, match.params[0]);
+      props.voteAppends(
+        props.post.author,
+        props.post.permlink,
+        0,
+        '',
+        false,
+        match.params[0],
+        null,
+        false,
+        true,
+      );
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(props.post.author, props.post.permlink, weight, '', false, match.params[0]);
+      props.voteAppends(
+        props.post.author,
+        props.post.permlink,
+        weight,
+        '',
+        false,
+        match.params[0],
+        null,
+        false,
+        true,
+      );
     }
   };
 
@@ -96,7 +116,17 @@ const AppendCard = props => {
               ?.result;
     }
 
-    props.voteAppends(post.author, post.permlink, voteWeight, '', false, match.params[0]);
+    props.voteAppends(
+      post.author,
+      post.permlink,
+      voteWeight,
+      '',
+      false,
+      match.params[0],
+      null,
+      false,
+      true,
+    );
   };
 
   const handleCommentsClick = e => {

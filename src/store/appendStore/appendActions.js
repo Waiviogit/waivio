@@ -86,7 +86,6 @@ export const getChangedWobjectField = (
   const isGuest = isGuestUser(state);
   // const updatePosts = ['pin'].includes(fieldName);
   const fieldType = isNew ? fieldName : type;
-
   const subscribeCallback = () =>
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
@@ -110,16 +109,6 @@ export const getChangedWobjectField = (
       },
       meta: { isNew },
     });
-  // const updatePostCallback = () => {
-  //   dispatch(
-  //     getObjectPosts({
-  //       username: authorPermlink,
-  //       object: authorPermlink,
-  //     }),
-  //   ).then(() => subscribeCallback());
-  //
-  //   if (typeof window !== 'undefined') window.scrollTo(0, 0);
-  // };
 
   if (isGuest) {
     setTimeout(() => {
@@ -127,9 +116,17 @@ export const getChangedWobjectField = (
       subscribeCallback();
     }, 10000);
   } else {
+    let sendReq = true;
+    const timeoutId = setTimeout(() => {
+      if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+      subscribeCallback();
+      sendReq = false;
+    }, 12000);
+
     busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
     busyAPI.instance.subscribe((datad, j) => {
-      if (j?.success && j?.permlink === id && j.parser === 'main') {
+      if (j?.success && j?.permlink === id && j.parser === 'main' && sendReq) {
+        clearTimeout(timeoutId);
         if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
         subscribeCallback();
       }
@@ -198,6 +195,7 @@ export const voteAppends = (
           if (!hideMessageFields) {
             message.success('Please wait, we are processing your update');
           }
+
           dispatch(
             getChangedWobjectField(
               wobj.author_permlink,

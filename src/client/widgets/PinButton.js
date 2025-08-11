@@ -19,7 +19,7 @@ const PinButton = ({
   match,
   wobject,
   userVotingPower,
-  isUserPin,
+  isUserPin = false,
 }) => {
   const dispatch = useDispatch();
   const hiveAuth = Cookie.get('auth');
@@ -43,6 +43,7 @@ const PinButton = ({
         wrapper="span"
         src="/images/icons/pin-outlined.svg"
         onClick={pinPost}
+        style={{ cursor: 'pointer' }}
       />
     </Tooltip>
   );

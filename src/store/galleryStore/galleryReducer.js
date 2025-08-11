@@ -1,3 +1,5 @@
+import { RESET_OBJ_STATE } from '../wObjectStore/wobjActions';
+import { initialState } from '../wObjectStore/wobjectReducer';
 import * as galleryActions from './galleryActions';
 
 const defaultState = {
@@ -90,6 +92,10 @@ export default (state = defaultState, action) => {
         relatedAlbum: {},
       };
     }
+
+    case RESET_OBJ_STATE:
+      return initialState;
+
     default:
       return state;
   }
