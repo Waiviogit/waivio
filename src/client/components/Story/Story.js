@@ -350,7 +350,7 @@ class Story extends React.Component {
     const { editThread } = this.state;
     const pinUrl = Cookie.get('userPin');
     const isObjectPage =
-      (isObjectReviewTab(wobject, match) || post.permlink === pinUrl) && isAuthUser;
+      (isObjectReviewTab(wobject, match) && isAuthUser) || post.permlink === pinUrl;
     const currentUserPin = pinnedPostsUrls.includes(post.url) || post.permlink === pinUrl;
     const tooltipTitle = (
       <FormattedMessage

@@ -4,6 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { get, isEmpty, isNil } from 'lodash';
+import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
@@ -104,6 +105,28 @@ const User = props => {
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
   const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
 
+  useEffect(() => {
+    let profile = {};
+
+    try {
+      const postingJsonMetadata = get(user, 'posting_json_metadata', '');
+
+      if (postingJsonMetadata) {
+        const parsed = JSON.parse(postingJsonMetadata);
+
+        profile = parsed?.profile || {};
+      }
+    } catch (err) {
+      console.warn('Invalid posting_json_metadata:', err);
+    }
+
+    if (user && profile?.pinned) {
+      Cookie.set('userPin', profile.pinned);
+    } else {
+      Cookie.remove('userPin');
+    }
+  }, [user, user.name]);
+
   useEffect(
     () => () => () => {
       props.resetBreadCrumb();
@@ -118,7 +141,7 @@ const User = props => {
 
     if (user.name !== name) {
       props.getUserAccount(name).then(res => {
-        props.getInfoForSideBar(name, res.las);
+        props.getInfoForSideBar(name, res.lastActivity);
         props.getTokenBalance('WAIV', name);
       });
     }

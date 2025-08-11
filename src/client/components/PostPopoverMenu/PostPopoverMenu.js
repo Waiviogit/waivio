@@ -360,7 +360,7 @@ const PostPopoverMenu = ({
         disabled={loading}
         invisible={!userPage || post.permlink !== userPin}
       >
-        <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="unpin_from_blog" defaultMessage="Unpin from blog" />
         </span>
@@ -400,13 +400,21 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="pin"
+        disabled={loading}
+        invisible={hidePinRemove || post.currentUserPin}
+      >
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="remove"
+        disabled={loading || disableRemove}
+        invisible={hidePinRemove || !post.currentUserPin}
+      >
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -628,6 +636,7 @@ PostPopoverMenu.propTypes = {
     net_rshares: PropTypes.number,
     children: PropTypes.number,
     youFollows: PropTypes.bool,
+    currentUserPin: PropTypes.bool,
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
     pin: PropTypes.bool,
