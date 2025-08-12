@@ -458,7 +458,7 @@ class Story extends React.Component {
                         pinnedPostsUrls={pinnedPostsUrls}
                         match={match}
                         currentUserPin={currentUserPin}
-                        disabled={!isAuthUser || !post.author === user.name}
+                        disabled={!isAuthUser || post.author !== user.name}
                         user={user}
                         post={post}
                         pinClassName={pinClassName}
