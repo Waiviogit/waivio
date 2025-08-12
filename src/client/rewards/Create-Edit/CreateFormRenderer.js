@@ -30,6 +30,23 @@ const { Option } = Select;
 
 const getRecurrenceRuleArray = () => {
   const today = moment();
+  const day = today.format('D');
+  const nth = d => {
+    const dString = String(d);
+    const last = +dString.slice(-2);
+
+    if (last > 3 && last < 21) return 'th';
+    switch (last % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
 
   return [
     {
@@ -44,21 +61,21 @@ const getRecurrenceRuleArray = () => {
       value: new RRule({ freq: RRule.DAILY }).toString(),
     },
     {
-      label: `Weekly on ${today.format('dddd')}`,
+      label: `Weekly on ${today.format('dddd')}s`,
       value: new RRule({
         freq: RRule.WEEKLY,
         byweekday: RRule[today.format('ddd').toUpperCase()],
       }).toString(),
     },
     {
-      label: `Monthly on the ${today.format('D')}`,
+      label: `Monthly on the ${day}${nth(day)}`,
       value: new RRule({
         freq: RRule.MONTHLY,
         bymonthday: today.date(),
       }).toString(),
     },
     {
-      label: `Annually on ${today.format('MMMM D')}`,
+      label: `Annually on ${today.format('MMMM')} ${day}${nth(day)}`,
       value: new RRule({
         freq: RRule.YEARLY,
         bymonth: today.month() + 1,
@@ -111,6 +128,7 @@ const CreateFormRenderer = props => {
     contestJudgesAccount,
     recurrenceRule,
     contestRewards,
+    locale,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -250,7 +268,7 @@ const CreateFormRenderer = props => {
     </div>
   );
 
-  const recList = getRecurrenceRuleArray();
+  const recList = getRecurrenceRuleArray(locale);
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -380,20 +398,20 @@ const CreateFormRenderer = props => {
             <Form.Item label={`Reward #1 (${props.currency})`}>
               {getFieldDecorator('reward1', {
                 rules: fields.reward.rules,
-                initialValue: contestRewards?.[0]?.reward || 0,
+                initialValue: String(contestRewards?.[0]?.reward || 0),
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #2 (${props.currency})`}>
               {getFieldDecorator('reward2', {
-                initialValue: contestRewards?.[1]?.reward || reward,
+                initialValue: String(contestRewards?.[1]?.reward || 0),
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #3 (${props.currency})`}>
               {getFieldDecorator('reward3', {
-                initialValue: contestRewards?.[2]?.reward || reward,
+                initialValue: String(contestRewards?.[2]?.reward || 0),
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>
@@ -451,7 +469,7 @@ const CreateFormRenderer = props => {
               <label className={'ant-form-item-required'}>Result declaration time</label>
             </div>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
                   {getFieldDecorator('expiry', {
                     initialValue: moment().add(7, 'days'),
@@ -955,6 +973,7 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
+  locale: PropTypes.string,
   isDisabled: PropTypes.bool,
   isOpenAddChild: PropTypes.bool,
   match: PropTypes.shape().isRequired,

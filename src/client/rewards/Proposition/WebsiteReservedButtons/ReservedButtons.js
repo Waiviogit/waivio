@@ -17,7 +17,7 @@ const ReservedButtons = props => {
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
   const isMention = props.type === 'mentions';
-  const isGiveaways = props.type === 'giveaways';
+  const isGiveaways = ['giveaways', 'giveaways_object'].includes(props.type);
 
   const handlePopoverClick = key =>
     props.onActionInitiated(() => {
@@ -38,7 +38,7 @@ const ReservedButtons = props => {
   const handleClickProposButton = () => {
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'click_submit_photos', { debug_mode: false });
-    if (isGiveaways) {
+    if (props.type === 'giveaways') {
       window.location = props.giveawayUrl;
     } else {
       props.onActionInitiated(async () => {
@@ -53,6 +53,7 @@ const ReservedButtons = props => {
       case 'mentions':
         return props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' });
       case 'giveaways':
+      case 'giveaways_object':
         return props.intl.formatMessage({ id: 'submit_giveaways', defaultMessage: 'Participate' });
 
       default:

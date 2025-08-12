@@ -16,6 +16,7 @@ const RewardsHeader = ({ proposition, intl }) => {
           </React.Fragment>
         );
       case 'giveaways':
+      case 'giveaways_object':
         const winners = proposition.budget / proposition.reward;
 
         return (

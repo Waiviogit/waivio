@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { getCampaignType } from '../../rewards/rewardsHelper';
 
 import { manageTableHeaderConfig } from '../constants/manageTableConfig';
 import {
@@ -102,24 +103,28 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
     const title = isActive
       ? intl.formatMessage({
           id: `deactivate_campaign_${item.type}`,
-          defaultMessage: `Deactivate ${item.type} campaign`,
+          defaultMessage: `Deactivate ${getCampaignType(item.type)} campaign`,
         })
       : intl.formatMessage({
           id: `activate_campaign_${item.type}`,
-          defaultMessage: `Activate ${item.type} campaign`,
+          defaultMessage: `Activate ${getCampaignType(item.type)} campaign`,
         });
     const content = isActive
       ? intl.formatMessage(
           {
             id: `campaign_stopped_${item.type}`,
-            defaultMessage: `The terms and conditions of the ${item.type} campaign {name} will be stopped on Hive blockchain`,
+            defaultMessage: `The terms and conditions of the ${getCampaignType(
+              item.type,
+            )} campaign {name} will be stopped on Hive blockchain`,
           },
           { name: item.name },
         )
       : intl.formatMessage(
           {
             id: `campaign_published_${item.type}`,
-            defaultMessage: `The terms and conditions of the ${item.type} campaign {name} will be published on Hive blockchain`,
+            defaultMessage: `The terms and conditions of the ${getCampaignType(
+              item.type,
+            )} campaign {name} will be published on Hive blockchain`,
           },
           { name: item.name },
         );
@@ -188,7 +193,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                 )}
               </td>
               <td>{row.status}</td>
-              <td>{row.type.replace('_', ' ')}</td>
+              <td>{getCampaignType(row.type)}</td>
               {!isMobile() && (
                 <React.Fragment>
                   <td>{round(row.budgetUSD * currency.rate, 2)}</td>
