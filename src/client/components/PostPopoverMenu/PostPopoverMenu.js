@@ -16,6 +16,7 @@ import { isPostCashout } from '../../vendor/steemitHelpers';
 import {
   getSocialInfoPost as getSocialInfoPostAction,
   handleHidePost,
+  handlePinPost,
   handleRemovePost,
 } from '../../../store/postsStore/postActions';
 import {
@@ -30,13 +31,15 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
+import { getIsEditMode, getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import RemoveObjFomPost from '../RemoveObjFomPost/RemoveObjFomPost';
 
 import './PostPopoverMenu.less';
 import { getMetadata } from '../../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../../common/constants/accountHistory';
 import { updateAuthProfile } from '../../../store/authStore/authActions';
+import { getPinnedPostsUrls } from '../../../store/feedStore/feedSelectors';
+import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
 
 const PostPopoverMenu = ({
   pendingFlag,
@@ -65,6 +68,9 @@ const PostPopoverMenu = ({
   const [inBlackList, setInBlackList] = useState(post.blacklisted);
   const [loadingType, setLoadingType] = useState('');
   const locale = useSelector(getUsedLocale);
+  const wobject = useSelector(getObject);
+  const userVotingPower = useSelector(getVotePercent);
+  const pinnedPostsUrls = useSelector(getPinnedPostsUrls);
   const hiveAuth = Cookie.get('auth');
   const userPin = Cookie.get('userPin');
   const history = useHistory();
@@ -110,6 +116,10 @@ const PostPopoverMenu = ({
     switch (currKey) {
       case 'delete':
         return setIsOpen(true);
+      case 'unpin':
+        return dispatch(
+          handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower),
+        );
       case 'pin-user':
       case 'unpin-user': {
         const isUnpin = currKey === 'unpin-user';
@@ -365,13 +375,31 @@ const PostPopoverMenu = ({
           <FormattedMessage id="unpin_from_blog" defaultMessage="Unpin from blog" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="unpin"
+        disabled={loading}
+        invisible={hidePinRemove || !post.currentUserPin}
+      >
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
+        <span className="ml1">
+          <FormattedMessage id="unpin" defaultMessage="Unpin" />
+        </span>
+      </PopoverMenuItem>,
+      <PopoverMenuItem
+        key="pin"
+        disabled={loading}
+        invisible={hidePinRemove || post.currentUserPin}
+      >
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
+      <PopoverMenuItem
+        key="remove"
+        disabled={loading || disableRemove}
+        invisible={hidePinRemove || !post.currentUserPin}
+      >
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -408,6 +436,16 @@ const PostPopoverMenu = ({
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+        </span>
+      </PopoverMenuItem>,
+      <PopoverMenuItem
+        key="unpin"
+        disabled={loading}
+        invisible={hidePinRemove || !post.currentUserPin}
+      >
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
+        <span className="ml1">
+          <FormattedMessage id="unpin" defaultMessage="Unpin" />
         </span>
       </PopoverMenuItem>,
       <PopoverMenuItem
