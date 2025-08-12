@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { getCampaingHistoryList } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
+import { getCampaignType } from '../../rewards/rewardsHelper';
 import { configHistoryTableHeader } from '../constants/historyTableConfig';
 import GiveawayDetailsModal from './GiveawayDetailsModal/GiveawayDetailsModal';
 
@@ -42,6 +43,7 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
         showMore={hasMore}
         handleShowMore={handleLoadMore}
         getCustomLink={getCustomLink}
+        buttons={{ type: item => getCampaignType(item.type) }}
       />
       {showGiveawayDetails && (
         <GiveawayDetailsModal

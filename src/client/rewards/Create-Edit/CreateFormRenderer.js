@@ -398,20 +398,20 @@ const CreateFormRenderer = props => {
             <Form.Item label={`Reward #1 (${props.currency})`}>
               {getFieldDecorator('reward1', {
                 rules: fields.reward.rules,
-                initialValue: contestRewards?.[0]?.reward || 0,
+                initialValue: String(contestRewards?.[0]?.reward || 0),
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #2 (${props.currency})`}>
               {getFieldDecorator('reward2', {
-                initialValue: contestRewards?.[1]?.reward || reward,
+                initialValue: String(contestRewards?.[1]?.reward || 0),
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>{' '}
             <Form.Item label={`Reward #3 (${props.currency})`}>
               {getFieldDecorator('reward3', {
-                initialValue: contestRewards?.[2]?.reward || reward,
+                initialValue: String(contestRewards?.[2]?.reward || 0),
               })(<Input type="number" disabled={disabled} step={0.1} />)}
               <div className="CreateReward__field-caption">{fields.reward.caption}</div>
             </Form.Item>
@@ -469,7 +469,7 @@ const CreateFormRenderer = props => {
               <label className={'ant-form-item-required'}>Result declaration time</label>
             </div>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
                   {getFieldDecorator('expiry', {
                     initialValue: moment().add(7, 'days'),

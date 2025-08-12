@@ -108,7 +108,7 @@ const DetailsModalBody = ({
               <Checkbox checked={requirements?.notBlacklisted} disabled />
               <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
                 {intl.formatMessage({
-                  id: 'rewards_details_account_not_blacklisted',
+                  id: `rewards_details_account_not_blacklisted`,
                   defaultMessage: 'User account is not blacklisted by',
                 })}{' '}
                 <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>{' '}
@@ -143,7 +143,10 @@ const DetailsModalBody = ({
         </div>
         <div className="DetailsModal__text mv3">
           {intl.formatMessage({
-            id: 'rewards_details_review_eligible_award',
+            id:
+              proposition?.type === 'reviews'
+                ? 'rewards_details_review_eligible_award'
+                : 'post_details_review_eligible_award',
             defaultMessage:
               'For the review to be eligible for the award, all the following requirements must be met',
           })}
@@ -253,6 +256,29 @@ const DetailsModalBody = ({
             </li>
           )}
         </ol>
+        {proposition?.type === 'giveaways_object' ? (
+          <div className="DetailsModal__text mv3">
+            {intl.formatMessage({
+              id: 'rewards_details_sponsor_reserves_payment_giveaways_object',
+              defaultMessage:
+                'Sponsor reserves the right to refuse the payment if post is suspected to be fraudulent, spam, poorly written or for other reasons.',
+            })}
+          </div>
+        ) : (
+          <div className="DetailsModal__text mv3">
+            {isMentions
+              ? intl.formatMessage({
+                  id: 'rewards_details_sponsor_reserves_payment_mentions',
+                  defaultMessage:
+                    'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.',
+                })
+              : intl.formatMessage({
+                  id: 'rewards_details_sponsor_reserves_payment',
+                  defaultMessage:
+                    'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
+                })}
+          </div>
+        )}
         <div className="DetailsModal__text mv3">
           {isMentions
             ? intl.formatMessage({

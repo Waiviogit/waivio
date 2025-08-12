@@ -269,7 +269,9 @@ class CreateRewards extends React.Component {
           durationDays: campaign?.durationDays,
           recurrenceRule: campaign?.recurrenceRule,
           secondaryObjectsList: values[1].map(obj => obj),
-          contestJudgesAccount: campaign?.contestJudges.filter(acc => acc === this.props.userName),
+          contestJudgesAccount: campaign?.contestJudges
+            ? campaign?.contestJudges?.filter(acc => acc !== this.props.userName)
+            : undefined,
           pageObjects: !isEmpty(values[2]) ? values[2] : [],
           sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
