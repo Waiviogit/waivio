@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { campaignTypes, getCampaignType } from '../../rewards/rewardsHelper';
 
 const SubmitReviewPublish = ({ intl, reviewData }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -18,10 +19,10 @@ const SubmitReviewPublish = ({ intl, reviewData }) => {
           })}
         </span>
         &nbsp;
-        {reviewData?.type === 'mentions' ? (
+        {reviewData?.type !== campaignTypes.REVIEWS ? (
           intl.formatMessage({
-            id: `mentions_lowercase`,
-            defaultMessage: 'the mentions',
+            id: `${reviewData?.type}_lowercase`,
+            defaultMessage: `the ${getCampaignType(reviewData?.type)}`,
           })
         ) : (
           <a
