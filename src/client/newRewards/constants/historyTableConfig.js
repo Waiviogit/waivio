@@ -37,6 +37,7 @@ export const configHistoryTableHeader = [
       id: 'type',
       defaultMessage: 'Type',
     },
+    onlyButton: true,
     hideForMobile: true,
   },
   {

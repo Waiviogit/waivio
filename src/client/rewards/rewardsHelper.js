@@ -503,3 +503,17 @@ ${userRequirements.join('\n') || '✅ Available to everyone'}
 Sponsor reserves the right to refuse payment if activity is suspected to be fraudulent, spam, of low quality, or for any other reason.
 `;
 };
+
+export const getCampaignType = type => {
+  switch (type) {
+    case 'giveaways':
+      return 'post-giveaways';
+    case 'giveaways_object':
+      return 'giveaways';
+    case 'contests_object':
+      return 'contests';
+
+    default:
+      return type;
+  }
+};

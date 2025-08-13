@@ -269,7 +269,9 @@ class CreateRewards extends React.Component {
           durationDays: campaign?.durationDays,
           recurrenceRule: campaign?.recurrenceRule,
           secondaryObjectsList: values[1].map(obj => obj),
-          contestJudgesAccount: campaign?.contestJudges.filter(acc => acc === this.props.userName),
+          contestJudgesAccount: campaign?.contestJudges
+            ? campaign?.contestJudges?.filter(acc => acc !== this.props.userName)
+            : undefined,
           pageObjects: !isEmpty(values[2]) ? values[2] : [],
           sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
@@ -280,7 +282,11 @@ class CreateRewards extends React.Component {
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservationTimetable,
           minPhotos: campaign.requirements.minPhotos,
-          ...(campaign.type === 'mentions'
+          ...([
+            campaignTypes.MENTIONS,
+            campaignTypes.CONTESTS_OBJECT,
+            campaignTypes.GIVEAWAYS_OBJECT,
+          ].includes(campaign.type)
             ? { qualifiedPayoutToken: campaign.qualifiedPayoutToken }
             : {}),
           description: campaign.description,
@@ -704,6 +710,7 @@ class CreateRewards extends React.Component {
         isOpenAddChild={this.state.isOpenAddChild}
         currency={this.state.currency}
         payoutToken={this.state.payoutToken}
+        locale={this.props.locale}
       />
     );
   }
