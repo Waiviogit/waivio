@@ -10,7 +10,7 @@
   "cancel": "Cancel",
   "filter_giveaways_object": "giveaways",
   "filter_giveaways": "post-giveaways",
-  "filter_contests_object": "contests-object",
+  "filter_contests_object": "contests",
   "match_bots_tags_auth_text": "The Tags bot requires authorization to upvote data updates on your behalf",
   "paid_waiv": "Paid (WAIV)",
   "post_details_review_eligible_award": "For the post to be eligible for the award, all the following requirements must be met",

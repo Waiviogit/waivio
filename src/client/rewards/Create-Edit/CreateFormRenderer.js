@@ -335,7 +335,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignReach.name, {
             rules: fields.campaignReach.rules,
             validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
-            initialValue: reachType,
+            initialValue: reachType || 'global',
           })(
             <Select
               placeholder={fields.campaignReach.select}
@@ -530,6 +530,10 @@ const CreateFormRenderer = props => {
                     ))}
                   </Select>,
                 )}
+                <div className="CreateReward__field-caption">
+                  The first campaign cycle ends on this date. If repetition is selected, the
+                  campaign will repeat according to the chosen options until the expiry date.
+                </div>
               </Form.Item>
             </div>
           </React.Fragment>
@@ -821,7 +825,12 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.expiredAt.label}>
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,
-            initialValue: expiredAt || moment().add(2, 'days'),
+            initialValue:
+              expiredAt ||
+              moment().add(
+                [campaignTypes.MENTIONS, campaignTypes.REVIEWS].includes(campType) ? 2 : 8,
+                'days',
+              ),
           })(
             <DatePicker
               allowClear={false}
@@ -884,7 +893,7 @@ CreateFormRenderer.defaultProps = {
   parentPermlink: '',
   campaignName: '',
   campaignType: null,
-  qualifiedPayoutToken: false,
+  qualifiedPayoutToken: true,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,

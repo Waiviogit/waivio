@@ -596,7 +596,7 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
     const linkedObjects = getLinkedObjects(state);
-    const method = campaignType === 'mentions' ? getMentionCampaign : getCampaign;
+    const method = campaignType === campaignType.REVIEWS ? getCampaign : getMentionCampaign;
 
     return method(authUserName, campaignId, secondaryItem)
       .then(campaign => {

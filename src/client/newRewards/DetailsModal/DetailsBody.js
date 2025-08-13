@@ -8,7 +8,8 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import { getMinExpertise } from '../../rewards/rewardsHelper';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { getMinExpertise, campaignTypes } from '../../rewards/rewardsHelper';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
@@ -30,7 +31,8 @@ const DetailsModalBody = ({
     rewardFundRewardBalance: rewardFund.reward_balance,
     rate,
   });
-  const isMentions = proposition?.type === 'mentions';
+  const isMentions = proposition?.type === campaignTypes?.MENTIONS;
+  const isContests = campaignTypes.CONTESTS_OBJECT === proposition.type;
   const showQualifiedInfo = proposition?.qualifiedPayoutToken && proposition?.type !== 'reviews';
 
   return (
@@ -52,36 +54,42 @@ const DetailsModalBody = ({
             })}
           </div>
           <div className="DetailsModal__criteria-wrap">
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.expertise} disabled />
-              <div className={getClassForCurrCreteria(requirements?.expertise)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_waivio_expertise',
-                  defaultMessage: 'Minimum Waivio expertise',
-                })}
-                : {minExpertise}
+            {Boolean(minExpertise) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.expertise} disabled />
+                <div className={getClassForCurrCreteria(requirements?.expertise)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_waivio_expertise',
+                    defaultMessage: 'Minimum Waivio expertise',
+                  })}
+                  : {minExpertise}
+                </div>
               </div>
-            </div>
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.followers} disabled />
-              <div className={getClassForCurrCreteria(requirements?.followers)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_number_followers',
-                  defaultMessage: 'Minimum number of followers',
-                })}
-                : {proposition?.userRequirements?.minFollowers}
+            )}
+            {Boolean(proposition?.userRequirements?.minFollowers) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.followers} disabled />
+                <div className={getClassForCurrCreteria(requirements?.followers)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_number_followers',
+                    defaultMessage: 'Minimum number of followers',
+                  })}
+                  : {proposition?.userRequirements?.minFollowers}
+                </div>
               </div>
-            </div>
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.posts} disabled />
-              <div className={getClassForCurrCreteria(requirements?.posts)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_number_posts',
-                  defaultMessage: 'Minimum number of posts',
-                })}
-                : {proposition?.userRequirements?.minPosts}
+            )}
+            {Boolean(proposition?.userRequirements?.minPosts) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.posts} disabled />
+                <div className={getClassForCurrCreteria(requirements?.posts)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_number_posts',
+                    defaultMessage: 'Minimum number of posts',
+                  })}
+                  : {proposition?.userRequirements?.minPosts}
+                </div>
               </div>
-            </div>
+            )}
             {!!proposition?.frequencyAssign && (
               <div className="DetailsModal__criteria-row">
                 <Checkbox checked={requirements?.frequency} disabled />
@@ -256,7 +264,7 @@ const DetailsModalBody = ({
             </li>
           )}
         </ol>
-        {proposition?.type === 'giveaways_object' ? (
+        {proposition?.type === campaignTypes?.GIVEAWAYS_OBJECT ? (
           <div className="DetailsModal__text mv3">
             {intl.formatMessage({
               id: 'rewards_details_sponsor_reserves_payment_giveaways_object',
@@ -282,9 +290,33 @@ const DetailsModalBody = ({
       </div>
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="DetailsModal__text fw6 mv3">
-            {intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}:
+          <div
+            className={classNames({
+              mv3: isContests,
+            })}
+          >
+            <div
+              className={classNames('DetailsModal__text fw6 ', {
+                mv3: !isContests,
+                'DetailsModal__text--marginBottom': isContests,
+              })}
+            >
+              {isContests
+                ? intl.formatMessage({ id: 'rewards_details_rewards', defaultMessage: 'Rewards' })
+                : intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}
+              :
+            </div>
+            {isContests && (
+              <div>
+                {proposition?.contestRewards?.map(reward => (
+                  <div className="DetailsModal__text fw6" key={reward?.place}>
+                    Place #{reward?.place}: <USDDisplay value={reward?.rewardInUSD} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+
           <span>
             {intl.formatMessage({
               id: 'the_amount_of_the_rewards',
@@ -398,6 +430,7 @@ DetailsModalBody.propTypes = {
     defaultShowLink: PropTypes.string,
     agreementObjects: PropTypes.arrayOf(PropTypes.string),
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
+    contestRewards: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
       minPhotos: PropTypes.number,

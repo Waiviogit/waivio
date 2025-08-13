@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { has, noop } from 'lodash';
 import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import { campaignTypes } from '../../../rewards/rewardsHelper';
 import RewardsHeader from '../RewardsHeader';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import DetailsModal from '../../DetailsModal/DetailsModal';
@@ -27,11 +28,15 @@ const Proposition = ({
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
 
-  if (!proposition?.object && !proposition?.user && proposition?.type !== 'giveaways') return null;
+  if (!proposition?.object && !proposition?.user && proposition?.type !== campaignTypes.GIVEAWAYS)
+    return null;
 
   let mainItem = proposition.object;
 
-  if ((proposition.user || !proposition.object?.object_type) && proposition?.type !== 'giveaways') {
+  if (
+    (proposition.user || !proposition.object?.object_type) &&
+    proposition?.type !== campaignTypes.GIVEAWAYS
+  ) {
     const user = proposition.user || proposition.object;
     const profile = user?.posting_json_metadata
       ? parseJSON(user.posting_json_metadata)?.profile
@@ -74,6 +79,10 @@ const Proposition = ({
     'Proposition-new--hovered': hovered,
   });
   const handleReserveForPopup = () => dispatch(reserveProposition(proposition, authUserName));
+  const rewardPrice =
+    proposition.type === campaignTypes.CONTESTS_OBJECT
+      ? proposition?.contestRewards?.[0]?.rewardInUSD
+      : proposition.rewardInUSD;
 
   return (
     <>
@@ -97,7 +106,7 @@ const Proposition = ({
             socialMap={socialMap}
             wObject={mainItem}
             withRewards
-            rewardPrice={proposition.rewardInUSD}
+            rewardPrice={rewardPrice}
             payoutToken={proposition.payoutToken}
             isReserved={propositionType === 'reserved'}
             handleReportClick={handleReportClick}
@@ -152,6 +161,11 @@ Proposition.propTypes = {
       author_permlink: PropTypes.string,
       object_type: PropTypes.string,
     }),
+    contestRewards: PropTypes.arrayOf(
+      PropTypes.shape({
+        rewardInUSD: PropTypes.string,
+      }),
+    ),
     user: PropTypes.shape({
       posting_json_metadata: PropTypes.string,
       name: PropTypes.string,
