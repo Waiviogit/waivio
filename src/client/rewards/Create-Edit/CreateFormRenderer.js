@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import timezones, { getCurrUserTimezone } from '../../../common/constants/timezones';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import { campaignTypes } from '../rewardsHelper';
 import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ReviewItem from './ReviewItem';
@@ -785,7 +786,11 @@ const CreateFormRenderer = props => {
           })(<Input.TextArea disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
-        {getFieldValue('type') === 'mentions' && (
+        {[
+          campaignTypes.MENTIONS,
+          campaignTypes.CONTESTS_OBJECT,
+          campaignTypes.GIVEAWAYS_OBJECT,
+        ].includes(getFieldValue('type')) && (
           <Form.Item>
             {getFieldDecorator(fields.checkboxOnly.name, {
               valuePropName: 'checked',
@@ -879,7 +884,7 @@ CreateFormRenderer.defaultProps = {
   parentPermlink: '',
   campaignName: '',
   campaignType: null,
-  qualifiedPayoutToken: true,
+  qualifiedPayoutToken: false,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,
