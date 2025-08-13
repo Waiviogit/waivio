@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { map, reduce, get, isEmpty } from 'lodash';
 import moment from 'moment';
 
-import { convertDigits, formatDate } from '../../rewardsHelper';
+import { convertDigits, formatDate, campaignTypes } from '../../rewardsHelper';
 import Report from '../../Report/Report';
 import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
@@ -50,16 +50,28 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     100}%)`;
   const getReviewType = () => {
     switch (sponsor.campaignType) {
-      case 'mentions':
+      case campaignTypes.MENTIONS:
         return intl.formatMessage({
           id: 'mention',
           defaultMessage: `Mention`,
         });
 
-      case 'giveaways':
+      case campaignTypes.GIVEAWAYS:
+        return intl.formatMessage({
+          id: 'giveaway_post',
+          defaultMessage: `Post-giveaway`,
+        });
+
+      case campaignTypes.GIVEAWAYS_OBJECT:
         return intl.formatMessage({
           id: 'giveaway',
           defaultMessage: `Giveaway`,
+        });
+
+      case campaignTypes.CONTESTS_OBJECT:
+        return intl.formatMessage({
+          id: 'contests',
+          defaultMessage: `Contests`,
         });
 
       default:

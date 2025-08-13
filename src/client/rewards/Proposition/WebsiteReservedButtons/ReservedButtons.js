@@ -10,14 +10,13 @@ import PopoverMenu from '../../../components/PopoverMenu/PopoverMenu';
 import PopoverMenuItem from '../../../components/PopoverMenu/PopoverMenuItem';
 
 import './WebsiteReservedButtons.less';
+import { campaignTypes } from '../../rewardsHelper';
 
 const ReservedButtons = props => {
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
-  const isMention = props.type === 'mentions';
-  const isGiveaways = ['giveaways', 'giveaways_object'].includes(props.type);
 
   const handlePopoverClick = key =>
     props.onActionInitiated(() => {
@@ -50,10 +49,11 @@ const ReservedButtons = props => {
 
   const getButtonLabel = () => {
     switch (props.type) {
-      case 'mentions':
+      case campaignTypes.MENTIONS:
         return props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' });
-      case 'giveaways':
-      case 'giveaways_object':
+      case campaignTypes.GIVEAWAYS:
+      case campaignTypes.GIVEAWAYS_OBJECT:
+      case campaignTypes.CONTESTS_OBJECT:
         return props.intl.formatMessage({ id: 'submit_giveaways', defaultMessage: 'Participate' });
 
       default:
@@ -72,36 +72,42 @@ const ReservedButtons = props => {
       >
         {getButtonLabel()}
       </Button>
-      {!props.reserved && !isMention && !isGiveaways && (
-        <Popover
-          placement="bottomRight"
-          trigger="click"
-          visible={visiblePopover}
-          onVisibleChange={visible => setVisiblePopover(visible)}
-          content={
-            <React.Fragment>
-              <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-                <PopoverMenuItem key="reserve" disabled={props.disable}>
-                  {!props.isSocialProduct && <Icon type="user" />}{' '}
-                  {props.intl.formatMessage({
-                    id: 'reserve_the_rewards_for',
-                    defaultMessage: 'Reserve the reward for',
-                  })}{' '}
-                  <span>
-                    <span style={{ color: 'black' }}>
-                      {props.reservedDays}{' '}
-                      {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
+      {!props.reserved &&
+        ![
+          campaignTypes.MENTIONS,
+          campaignTypes.GIVEAWAYS,
+          campaignTypes.GIVEAWAYS_OBJECT,
+          campaignTypes.CONTESTS_OBJECT,
+        ].includes(props.type) && (
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            visible={visiblePopover}
+            onVisibleChange={visible => setVisiblePopover(visible)}
+            content={
+              <React.Fragment>
+                <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                  <PopoverMenuItem key="reserve" disabled={props.disable}>
+                    {!props.isSocialProduct && <Icon type="user" />}{' '}
+                    {props.intl.formatMessage({
+                      id: 'reserve_the_rewards_for',
+                      defaultMessage: 'Reserve the reward for',
+                    })}{' '}
+                    <span>
+                      <span style={{ color: 'black' }}>
+                        {props.reservedDays}{' '}
+                        {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
+                      </span>
+                      {loading && <Icon type="loading" />}
                     </span>
-                    {loading && <Icon type="loading" />}
-                  </span>
-                </PopoverMenuItem>
-              </PopoverMenu>
-            </React.Fragment>
-          }
-        >
-          <i className="Buttons__post-menu iconfont icon-more" />
-        </Popover>
-      )}
+                  </PopoverMenuItem>
+                </PopoverMenu>
+              </React.Fragment>
+            }
+          >
+            <i className="Buttons__post-menu iconfont icon-more" />
+          </Popover>
+        )}
     </div>
   );
 };
