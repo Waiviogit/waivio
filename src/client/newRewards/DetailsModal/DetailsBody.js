@@ -279,19 +279,6 @@ const DetailsModalBody = ({
                 })}
           </div>
         )}
-        <div className="DetailsModal__text mv3">
-          {isMentions
-            ? intl.formatMessage({
-                id: 'rewards_details_sponsor_reserves_payment_mentions',
-                defaultMessage:
-                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.',
-              })
-            : intl.formatMessage({
-                id: 'rewards_details_sponsor_reserves_payment',
-                defaultMessage:
-                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
-              })}
-        </div>
       </div>
       {!proposition?.reserved && (
         <React.Fragment>

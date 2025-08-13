@@ -282,7 +282,11 @@ class CreateRewards extends React.Component {
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservationTimetable,
           minPhotos: campaign.requirements.minPhotos,
-          ...(campaign.type === 'mentions'
+          ...([
+            campaignTypes.MENTIONS,
+            campaignTypes.CONTESTS_OBJECT,
+            campaignTypes.GIVEAWAYS_OBJECT,
+          ].includes(campaign.type)
             ? { qualifiedPayoutToken: campaign.qualifiedPayoutToken }
             : {}),
           description: campaign.description,
