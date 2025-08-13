@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Icon, Input, message as antdMessage, Tooltip } from 'antd';
+import { Drawer, Icon, Input, message as antdMessage, Modal, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,17 +30,25 @@ import {
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import './ChatWindow.less';
+import ImageSetter from '../ImageSetter/ImageSetter';
+
+import { getLastSelection } from '../../../store/slateEditorStore/editorSelectors';
 
 const CHAT_ID = 'chatId';
 
-const ChatWindow = ({ className, hideChat, open }) => {
+const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOkayBtn, setIsOkayBtn] = useState(false);
+  const [currentImage, setCurrentImage] = useState([]);
 
   const dispatch = useDispatch();
+  const lastSelection = useSelector(getLastSelection);
   const config = useSelector(getWebsiteConfiguration);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
@@ -61,6 +69,28 @@ const ChatWindow = ({ className, hideChat, open }) => {
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
+
+  const onClick = () => {
+    setIsModal(true);
+    setIsOpen(false);
+  };
+
+  const handleOnOk = () => {
+    setMessage(currentImage?.map(i => i?.src)?.join(' '));
+    setIsOkayBtn(true);
+    setIsOpen(true);
+    setIsModal(false);
+    setIsLoading(false);
+  };
+
+  const handleOpenModal = () => {
+    setIsModal(!isModal);
+    setIsOkayBtn(false);
+  };
+
+  const onLoadingImage = value => setLoading(value);
+
+  const getImages = image => setCurrentImage(image);
 
   const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
@@ -350,6 +380,22 @@ const ChatWindow = ({ className, hideChat, open }) => {
         </div>
 
         <div className="chat-footer">
+          <button
+            onClick={onClick}
+            className={'md-sb-button-plus md-add-button md-add-button--comments'}
+            type="button"
+          >
+            <Icon
+              type="plus-circle"
+              style={{
+                fontSize: '26px',
+                marginLeft: '16px',
+                marginRight: '4px',
+                background: 'white',
+                borderRadius: '50%',
+              }}
+            />
+          </button>
           <Input.TextArea
             placeholder="Type your question here..."
             value={message}
@@ -367,6 +413,23 @@ const ChatWindow = ({ className, hideChat, open }) => {
             <img src="/images/icons/send.svg" alt="send" />
           </span>
         </div>
+        <Modal
+          wrapClassName="Settings__modal"
+          onCancel={handleOpenModal}
+          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
+          cancelButtonProps={{ disabled: isLoading }}
+          visible={isModal}
+          onOk={handleOnOk}
+        >
+          <ImageSetter
+            onImageLoaded={getImages}
+            onLoadingImage={onLoadingImage}
+            isEditor={false}
+            isOkayBtn={isOkayBtn}
+            isModal={isModal}
+            lastSelection={lastSelection}
+          />
+        </Modal>
       </div>
     </>
   );
@@ -382,6 +445,7 @@ const ChatWindow = ({ className, hideChat, open }) => {
 
 ChatWindow.propTypes = {
   hideChat: PropTypes.func.isRequired,
+  setIsOpen: PropTypes.func.isRequired,
   className: PropTypes.string,
   open: PropTypes.bool,
 };
