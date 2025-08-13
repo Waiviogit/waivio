@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSocial, getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import withAuthActions from '../../auth/withAuthActions';
-import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
+import { clearAllSessionProposition, campaignTypes } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
@@ -118,7 +118,7 @@ const DetailsModal = ({
       proposition?.type
     }&secondaryItem=${object?.author_permlink || objects}`;
 
-    if (!proposition?.reserved && proposition?.type !== 'mentions') {
+    if (!proposition?.reserved && proposition?.type === campaignTypes.REVIEWS) {
       return dispatch(reserveProposition(proposition, userName))
         .then(() => {
           const urlConfig = {
@@ -133,6 +133,7 @@ const DetailsModal = ({
           if (cb) cb(false);
         });
     }
+
     const urlConfig = {
       pathname: '/editor',
       search,

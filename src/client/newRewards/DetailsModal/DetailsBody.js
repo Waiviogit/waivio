@@ -8,7 +8,8 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import { getMinExpertise } from '../../rewards/rewardsHelper';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { getMinExpertise, campaignTypes } from '../../rewards/rewardsHelper';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
@@ -30,7 +31,8 @@ const DetailsModalBody = ({
     rewardFundRewardBalance: rewardFund.reward_balance,
     rate,
   });
-  const isMentions = proposition?.type === 'mentions';
+  const isMentions = proposition?.type === campaignTypes?.MENTIONS;
+  const isCotests = campaignTypes.CONTESTS_OBJECT === proposition.type;
   const showQualifiedInfo = proposition?.qualifiedPayoutToken && proposition?.type !== 'reviews';
 
   return (
@@ -256,7 +258,7 @@ const DetailsModalBody = ({
             </li>
           )}
         </ol>
-        {proposition?.type === 'giveaways_object' ? (
+        {proposition?.type === campaignTypes?.GIVEAWAYS_OBJECT ? (
           <div className="DetailsModal__text mv3">
             {intl.formatMessage({
               id: 'rewards_details_sponsor_reserves_payment_giveaways_object',
@@ -283,8 +285,20 @@ const DetailsModalBody = ({
       {!proposition?.reserved && (
         <React.Fragment>
           <div className="DetailsModal__text fw6 mv3">
-            {intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}:
+            {isCotests
+              ? intl.formatMessage({ id: 'rewards_details_rewards', defaultMessage: 'Rewards' })
+              : intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}
+            :
           </div>
+          {isCotests && (
+            <div>
+              {[1, 2, 3].map((reward, i) => (
+                <div className="DetailsModal__text fw6 mv3" key={reward}>
+                  Place #{i}: <USDDisplay value={reward} />
+                </div>
+              ))}
+            </div>
+          )}
           <span>
             {intl.formatMessage({
               id: 'the_amount_of_the_rewards',

@@ -884,7 +884,7 @@ CreateFormRenderer.defaultProps = {
   parentPermlink: '',
   campaignName: '',
   campaignType: null,
-  qualifiedPayoutToken: false,
+  qualifiedPayoutToken: true,
   budget: 0,
   reward: 0,
   reservationPeriod: 7,
