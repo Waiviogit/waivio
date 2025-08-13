@@ -20,6 +20,10 @@ export const linkifyText = text => {
               trailingPunctuation = '.';
             }
 
+            if (p2.includes('waivio.nyc3.digitaloceanspaces.com')) {
+              return `![${p1}](${p2})${trailingPunctuation}`;
+            }
+
             return `[${p1}](${p2})${trailingPunctuation}`;
           }),
         );
@@ -34,6 +38,10 @@ export const linkifyText = text => {
               trailingPunctuation = '.';
             }
 
+            if (url.includes('waivio.nyc3.digitaloceanspaces.com')) {
+              return `![](${url})${trailingPunctuation}`;
+            }
+
             return `<${url}>${trailingPunctuation}`;
           }),
         );
@@ -43,6 +51,7 @@ export const linkifyText = text => {
     }, [])
     .join('');
 };
+
 export function getFromMetadata(jsonMetadata, key) {
   const metadata = attempt(parseJSON, jsonMetadata);
 
