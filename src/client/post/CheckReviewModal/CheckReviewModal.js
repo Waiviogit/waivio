@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
 import { photosInPostRegex } from '../../../common/helpers/regexHelpers';
+import { campaignTypes } from '../../rewards/rewardsHelper';
 import SubmitReviewPublish from './SubmitReviewPublish';
 import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 
@@ -28,8 +29,8 @@ const CheckReviewModal = ({
   const withoutSecondary = primaryObject.author_permlink === secondaryObject?.author_permlink;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= reviewData.requirements.minPhotos;
   const hasWaivioTag = postBody?.includes('#waivio') || tags?.includes('waivio');
-  const isMention = reviewData?.type === 'mentions';
-  const meetsWaivioTagReq = isMention && hasWaivioTag;
+  const isReview = reviewData?.type === campaignTypes.REVIEWS;
+  const meetsWaivioTagReq = !isReview && hasWaivioTag;
   const hasReceipt =
     size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
@@ -53,7 +54,7 @@ const CheckReviewModal = ({
     hasReceipt &&
     hasObject(secondaryObject) &&
     hasObject(primaryObject) &&
-    (!reviewData?.qualifiedPayoutToken || meetsWaivioTagReq || !isMention) ? (
+    (!reviewData?.qualifiedPayoutToken || meetsWaivioTagReq || isReview) ? (
       <React.Fragment>
         <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">
@@ -118,7 +119,7 @@ const CheckReviewModal = ({
             })}{' '}
             {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
           </div>
-          {isMention && reviewData?.qualifiedPayoutToken && (
+          {!isReview && reviewData?.qualifiedPayoutToken && (
             <div className="check-review-modal__list-item">
               {getIcon(meetsWaivioTagReq)}
               #waivio
