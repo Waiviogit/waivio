@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Icon, message as antdMessage, Modal, Tooltip } from 'antd';
+import { Drawer, Icon, message as antdMessage, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,26 +30,20 @@ import {
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import './ChatWindow.less';
-import ImageSetter from '../ImageSetter/ImageSetter';
 
-import { getLastSelection } from '../../../store/slateEditorStore/editorSelectors';
 import QuickCommentEditor from '../Comments/QuickCommentEditor';
 
 const CHAT_ID = 'chatId';
 
-const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
+const ChatWindow = ({ className, hideChat, open }) => {
   const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const [message, setMessage] = useState('');
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isModal, setIsModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOkayBtn, setIsOkayBtn] = useState(false);
-  const [currentImage, setCurrentImage] = useState([]);
-
+  const [openPlus, setOpenPlus] = useState(false);
   const dispatch = useDispatch();
-  const lastSelection = useSelector(getLastSelection);
   const config = useSelector(getWebsiteConfiguration);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
@@ -71,6 +65,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
 
+  // eslint-disable-next-line no-console
+  console.log(uploadedImages);
   const valueToString = value => {
     if (!value || !Array.isArray(value.children)) return '';
 
@@ -87,23 +83,6 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       .filter(Boolean)
       .join('\n');
   };
-
-  const handleOnOk = () => {
-    setMessage(currentImage?.map(i => i?.src)?.join(' '));
-    setIsOkayBtn(true);
-    setIsOpen(true);
-    setIsModal(false);
-    setIsLoading(false);
-  };
-
-  const handleOpenModal = () => {
-    setIsModal(!isModal);
-    setIsOkayBtn(false);
-  };
-
-  const onLoadingImage = value => setLoading(value);
-
-  const getImages = image => setCurrentImage(image);
 
   const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
@@ -279,7 +258,24 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleQuickMessageClick = mess => {
-    setMessage(`${mess.text}:\n`);
+    const newValue = {
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ text: `${mess.text}: ` }],
+        },
+      ],
+      operations: [],
+      selection: {
+        anchor: { path: [0, 0], offset: mess.text.length + 2 },
+        focus: { path: [0, 0], offset: mess.text.length + 2 },
+      },
+      marks: null,
+      history: { undos: [], redos: [] },
+    };
+
+    setMessage(newValue);
+
     setTimeout(() => {
       if (textAreaRef.current) {
         textAreaRef.current.focus();
@@ -308,7 +304,10 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         className={`ChatWindow ${className} ${isMobile() ? 'smooth-height' : ''} ${
           isFullScreen ? 'fullscreen' : ''
         }`}
-        style={isMobile() ? { height: `${height}px` } : {}}
+        style={{
+          ...(isMobile() ? { height: `${height}px` } : {}),
+          ...(openPlus ? { zIndex: 900 } : {}),
+        }}
       >
         <div className="chat-header">
           <div className="chat-header-logo-wrap">
@@ -399,33 +398,18 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           <QuickCommentEditor
             isAiChat
             parentPost={{}}
+            setUploadedImages={setUploadedImages}
             onChange={setInputData}
             username={authUser}
             onSubmit={() => sendMessage(message)}
             isLoading={false}
-            inputValue={message}
+            inputValue={typeof message === 'string' ? message : valueToString(message)}
             submitted={false}
             placeholder={'Type your question here...'}
             onKeyDown={handleKeyDown}
+            setOpenPlus={setOpenPlus}
           />
         </div>
-        <Modal
-          wrapClassName="Settings__modal"
-          onCancel={handleOpenModal}
-          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
-          cancelButtonProps={{ disabled: isLoading }}
-          visible={isModal}
-          onOk={handleOnOk}
-        >
-          <ImageSetter
-            onImageLoaded={getImages}
-            onLoadingImage={onLoadingImage}
-            isEditor={false}
-            isOkayBtn={isOkayBtn}
-            isModal={isModal}
-            lastSelection={lastSelection}
-          />
-        </Modal>
       </div>
     </>
   );
@@ -441,7 +425,6 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
 ChatWindow.propTypes = {
   hideChat: PropTypes.func.isRequired,
-  setIsOpen: PropTypes.func.isRequired,
   className: PropTypes.string,
   open: PropTypes.bool,
 };

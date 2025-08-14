@@ -15,7 +15,7 @@ import { SIDE_BUTTONS_AI_CHAT, SIDE_BUTTONS_SLATE } from '../model/content';
 import './addbutton.less';
 
 const AddButtonSlate = props => {
-  const { editorNode, isComment, initialPosTop, ADD_BTN_DIF, parentPost } = props;
+  const { editorNode, isComment, initialPosTop, ADD_BTN_DIF, parentPost, setOpenPlus } = props;
   const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
@@ -73,17 +73,22 @@ const AddButtonSlate = props => {
 
   const toggleToolbar = () => {
     setOpen(!isOpen);
+    setOpenPlus(!isOpen);
     if (isOpen) sideControl.current = null;
   };
 
   const handleClose = () => {
     setOpen(false);
+    setOpenPlus(false);
     sideControl.current = null;
     ReactEditor.focus(editor);
   };
 
   useEffect(() => {
-    if (props.isClearSearchObjects) setOpen(false);
+    if (props.isClearSearchObjects) {
+      setOpen(false);
+      setOpenPlus(false);
+    }
   }, [props.isClearSearchObjects]);
   const buttonClassList = classNames('md-sb-button-plus md-add-button', {
     'md-open-button': isOpen,
@@ -165,6 +170,7 @@ AddButtonSlate.propTypes = {
     }),
   ),
   handleHashtag: PropTypes.func,
+  setOpenPlus: PropTypes.func,
   isClearSearchObjects: PropTypes.bool,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,

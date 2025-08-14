@@ -177,20 +177,22 @@ const QuickCommentEditor = props => {
     setIsShowEditorSearch(value);
   };
 
-  const { isLoading, isAuth, intl, inputValue } = props;
+  const { isLoading, isAuth, intl, inputValue, isAiChat, setUploadedImages } = props;
 
   return (
     <div className="QuickComment">
-      {isAuth && (
+      {(isAuth || isAiChat) && (
         <>
           <EditorSlate
             small
             isComment
             isQuickComment
             editorEnabled
-            isAiChat={props.isAiChat}
+            isAiChat={isAiChat}
+            setUploadedImages={setUploadedImages}
             onSubmit={props.onSubmit}
             onChange={handleMsgChange}
+            setOpenPlus={props.setOpenPlus}
             minHeight="auto"
             initialPosTopBtn="-14px"
             placeholder={
@@ -238,6 +240,8 @@ QuickCommentEditor.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   onChange: PropTypes.func,
+  setOpenPlus: PropTypes.func,
+  setUploadedImages: PropTypes.func,
   isAuth: PropTypes.bool,
   setCursorCoordinates: PropTypes.func,
   setImportObject: PropTypes.func,

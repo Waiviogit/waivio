@@ -109,6 +109,7 @@ const EditorSlate = props => {
     isLoading,
     isAiChat,
     onSubmit,
+    setUploadedImages,
   } = props;
   const params = useParams();
   const query = useQuery();
@@ -188,6 +189,7 @@ const EditorSlate = props => {
 
     // image of uploading from editor not removed in feeds without that hack
     Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+    setUploadedImages(uploadedImages);
   };
 
   // Drug and drop method
@@ -231,6 +233,7 @@ const EditorSlate = props => {
 
       Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
     });
+    setUploadedImages(uploadedImages);
 
     return true;
   };
@@ -543,6 +546,7 @@ const EditorSlate = props => {
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
+            setOpenPlus={props.setOpenPlus}
             isAiChat={isAiChat}
             setLastSelection={onSelect}
             parentPost={parentPost}
@@ -586,6 +590,8 @@ EditorSlate.propTypes = {
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   onFocus: PropTypes.func,
+  setOpenPlus: PropTypes.func,
+  setUploadedImages: PropTypes.func,
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,

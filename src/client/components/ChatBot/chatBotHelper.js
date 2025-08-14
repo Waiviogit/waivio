@@ -10,6 +10,7 @@ export const quickMessages = (siteName, currHost, name) => {
     },
     { text: 'Proofread the following post', label: 'Proofread' },
     { text: 'Translate to English', label: 'Translate' },
+    { text: '/imagine', label: 'Image' },
   ];
 };
 
