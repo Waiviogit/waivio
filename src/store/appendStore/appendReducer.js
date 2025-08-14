@@ -5,6 +5,7 @@ const defaultState = {
   loading: false,
   error: null,
   hasMore: true,
+  addingAppend: false,
   authorityList: {},
 };
 
@@ -71,7 +72,7 @@ export default (state = defaultState, action) => {
       const fields = [...state.fields];
 
       if (action.meta.isNew) {
-        return state;
+        return { ...state, fields: [field, ...state.fields], loading: false, addingAppend: false };
       }
 
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);

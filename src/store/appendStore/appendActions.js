@@ -75,6 +75,7 @@ export const getChangedWobjectField = (
   author,
   permlink,
   isNew = false,
+  // eslint-disable-next-line no-unused-vars
   type = '',
   appendObj,
   isUpdatesPage,
@@ -85,7 +86,7 @@ export const getChangedWobjectField = (
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   // const updatePosts = ['pin'].includes(fieldName);
-  const fieldType = isNew ? fieldName : type;
+  // const fieldType = isNew ? fieldName : type;
   const subscribeCallback = () =>
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
@@ -112,22 +113,14 @@ export const getChangedWobjectField = (
 
   if (isGuest) {
     setTimeout(() => {
-      if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+      // if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
       subscribeCallback();
     }, 10000);
   } else {
-    let sendReq = true;
-    const timeoutId = setTimeout(() => {
-      if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
-      subscribeCallback();
-      sendReq = false;
-    }, 12000);
-
     busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
     busyAPI.instance.subscribe((datad, j) => {
-      if (j?.success && j?.permlink === id && j.parser === 'main' && sendReq) {
-        clearTimeout(timeoutId);
-        if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+      if (j?.success && j?.permlink === id && j.parser === 'main') {
+        // if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
         subscribeCallback();
       }
     });
