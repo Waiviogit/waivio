@@ -307,13 +307,27 @@ const DetailsModalBody = ({
               :
             </div>
             {isContests && (
-              <div>
-                {proposition?.contestRewards?.map(reward => (
-                  <div className="DetailsModal__text fw6" key={reward?.place}>
-                    Place #{reward?.place}: <USDDisplay value={reward?.rewardInUSD} />
-                  </div>
-                ))}
-              </div>
+              <React.Fragment>
+                <div>
+                  {proposition?.contestRewards?.map(reward => (
+                    <div className="DetailsModal__text fw6" key={reward?.place}>
+                      Place #{reward?.place}: <USDDisplay value={reward?.rewardInUSD} />
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className={classNames({
+                    mv3: isContests,
+                  })}
+                >
+                  Contest judges (
+                  {proposition.contestJudges.map((judges, i, arr) =>
+                    arr?.length > 1 && arr?.length - 1 !== i ? `${judges}, ` : judges,
+                  )}
+                  ) will review posts and cast their votes. Once the campaign ends, winners will be
+                  selected based on the judges&#39; votes.
+                </div>
+              </React.Fragment>
             )}
           </div>
 
@@ -422,6 +436,7 @@ DetailsModalBody.propTypes = {
     user: PropTypes.shape({
       name: PropTypes.string,
     }),
+    contestJudges: PropTypes.arrayOf(PropTypes.string),
     description: PropTypes.string,
     reserved: PropTypes.bool,
     qualifiedPayoutToken: PropTypes.bool,

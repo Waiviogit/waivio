@@ -306,20 +306,24 @@ export const createGiveawayCamp = async (permlink, title, giveawayData, steemCon
         typeof giveawayData?.commission === 'number'
           ? giveawayData?.commission / 100
           : giveawayData?.commission?.replace('%', '') / 100,
-      giveawayRequirements: giveawayData.giveawayRequirements.reduce(
-        (acc, curr) => {
-          acc[curr] = true;
+      ...(giveawayData.giveawayRequirements
+        ? {
+            giveawayRequirements: giveawayData.giveawayRequirements.reduce(
+              (acc, curr) => {
+                acc[curr] = true;
 
-          return acc;
-        },
-        {
-          follow: false,
-          likePost: false,
-          comment: false,
-          tagInComment: false,
-          reblog: false,
-        },
-      ),
+                return acc;
+              },
+              {
+                follow: false,
+                likePost: false,
+                comment: false,
+                tagInComment: false,
+                reblog: false,
+              },
+            ),
+          }
+        : {}),
       requirements: {
         minPhotos: 0,
         receiptPhoto: true,

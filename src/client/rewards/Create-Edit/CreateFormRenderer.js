@@ -1,5 +1,5 @@
 import FormItem from 'antd/es/form/FormItem';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { RRule } from 'rrule';
 
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
@@ -29,8 +29,8 @@ import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
 
-const getRecurrenceRuleArray = () => {
-  const today = moment();
+const getRecurrenceRuleArray = data => {
+  const today = moment(data);
   const day = today.format('D');
   const nth = d => {
     const dString = String(d);
@@ -129,7 +129,6 @@ const CreateFormRenderer = props => {
     contestJudgesAccount,
     recurrenceRule,
     contestRewards,
-    locale,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -269,7 +268,10 @@ const CreateFormRenderer = props => {
     </div>
   );
 
-  const recList = getRecurrenceRuleArray(locale);
+  const recList = useMemo(() => getRecurrenceRuleArray(getFieldValue('declarationTime')), [
+    getRecurrenceRuleArray,
+    getFieldValue('declarationTime'),
+  ]);
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -472,7 +474,7 @@ const CreateFormRenderer = props => {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
-                  {getFieldDecorator('expiry', {
+                  {getFieldDecorator('declarationTime', {
                     initialValue: moment().add(7, 'days'),
                     rules: [{ required: true, message: 'Expiry date is required.' }],
                   })(
@@ -828,7 +830,7 @@ const CreateFormRenderer = props => {
             initialValue:
               expiredAt ||
               moment().add(
-                [campaignTypes.MENTIONS, campaignTypes.REVIEWS].includes(campType) ? 2 : 8,
+                [campaignTypes.MENTIONS, campaignTypes.REVIEWS].includes(campType) ? 2 : 7,
                 'days',
               ),
           })(
@@ -987,7 +989,6 @@ CreateFormRenderer.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
-  locale: PropTypes.string,
   isDisabled: PropTypes.bool,
   isOpenAddChild: PropTypes.bool,
   match: PropTypes.shape().isRequired,
