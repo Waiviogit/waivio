@@ -29,7 +29,10 @@ const RewardsHeader = ({ proposition, intl }) => {
 
       case campaignTypes.CONTESTS_OBJECT:
         return (
-          <React.Fragment>Contest time! Your chance to win ${proposition.reward}</React.Fragment>
+          <React.Fragment>
+            Contest time! Your chance to win $
+            {round(proposition?.contestRewards?.[0]?.rewardInUSD, 2)}
+          </React.Fragment>
         );
 
       default:
@@ -77,6 +80,11 @@ RewardsHeader.propTypes = {
     type: PropTypes.string,
     totalPayed: PropTypes.string,
     payoutToken: PropTypes.string,
+    contestRewards: PropTypes.arrayOf(
+      PropTypes.shape({
+        rewardInUSD: PropTypes.string,
+      }),
+    ),
     requirements: PropTypes.shape({
       minPhotos: PropTypes.number,
     }),

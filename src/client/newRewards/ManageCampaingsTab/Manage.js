@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { getCampaignType } from '../../rewards/rewardsHelper';
+import { getCampaignType, campaignTypes } from '../../rewards/rewardsHelper';
 
 import { manageTableHeaderConfig } from '../constants/manageTableConfig';
 import {
@@ -177,7 +177,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                 )}
               </td>
               <td>
-                {row.type === 'giveaways' ? (
+                {row.type === campaignTypes.GIVEAWAYS ? (
                   <React.Fragment>
                     {showGiveawayDetails === row._id && (
                       <GiveawayDetailsModal
@@ -197,7 +197,11 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
               {!isMobile() && (
                 <React.Fragment>
                   <td>{round(row.budgetUSD * currency.rate, 2)}</td>
-                  <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
+                  <td>
+                    {campaignTypes.CONTESTS_OBJECT
+                      ? round(row.budgetUSD * currency.rate, 2)
+                      : round(row.rewardInUSD * currency.rate, 2)}
+                  </td>
                   <td>
                     <Link to={`/rewards/reservations?statuses=assigned&campaignNames=${row.name}`}>
                       {row.reserved || null}

@@ -342,7 +342,7 @@ class CreateRewards extends React.Component {
         },
       ];
 
-      if (data.reward2) {
+      if (Number(data.reward2)) {
         winnersNumber = +1;
         contestRewards.push({
           place: 2,
@@ -350,7 +350,7 @@ class CreateRewards extends React.Component {
         });
       }
 
-      if (data.reward3) {
+      if (Number(data.reward3)) {
         contestRewards.push({
           place: 3,
           reward: Number(data?.reward3),
