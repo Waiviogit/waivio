@@ -48,12 +48,14 @@ const CreatePage = ({
 
   useEffect(() => {
     getDomainList();
-    const initialParent = isProd ? 'social.gifts' : 'socialgifts.pp.ua';
-
-    form.setFieldsValue({ parent: initialParent });
 
     return () => resetStatus();
   }, []);
+  useEffect(() => {
+    const initialParent = isProd ? 'social.gifts' : 'socialgifts.pp.ua';
+
+    form.setFieldsValue({ parent: initialParent });
+  }, [tab]);
 
   const domainStatus = useCallback(
     debounce(

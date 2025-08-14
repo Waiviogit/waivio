@@ -187,6 +187,7 @@ export const DynamicTable = ({
         let button = get(buttons, head.id);
 
         if (typeof button === 'function') button = button(item);
+        if (head?.onlyButton) return <p>{button}</p>;
 
         return (
           <React.Fragment>

@@ -49,6 +49,7 @@ import {
   setEditMode,
   resetWobjectExpertise,
   setAuthors,
+  resetObjState,
 } from '../../../store/wObjectStore/wobjActions';
 import {
   addAlbumToStore,
@@ -92,6 +93,7 @@ class WobjectContainer extends React.PureComponent {
     ) {
       const element = document.getElementById('standard-instacart-widget-v1');
 
+      this.props.resetObjState();
       if (element) element.remove();
 
       this.getWobjInfo();
@@ -319,6 +321,7 @@ WobjectContainer.propTypes = {
   getObjectFollowers: PropTypes.func.isRequired,
   getRelatedWobjects: PropTypes.func.isRequired,
   setStoreActiveOption: PropTypes.func.isRequired,
+  resetObjState: PropTypes.func.isRequired,
 };
 
 WobjectContainer.fetchData = async ({ store, match }) => {
@@ -434,6 +437,7 @@ const mapDispatchToProps = {
   resetBreadCrumb,
   resetWobjectExpertise,
   getCoordinates,
+  resetObjState,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WobjectContainer));

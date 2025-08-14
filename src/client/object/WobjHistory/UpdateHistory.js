@@ -13,8 +13,10 @@ import {
   getAppendHasMore,
   getAppendList,
   getIsAppendLoading,
+  getIsAddingAppendLoading,
 } from '../../../store/appendStore/appendSelectors';
 import Loading from '../../components/Icon/Loading';
+import StoryLoading from '../../components/Story/StoryLoading';
 import AppendCard from '../AppendCard/AppendCard';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import WobjHistory from './WobjHistory';
@@ -25,6 +27,7 @@ const UpdateHistory = () => {
   const updatesList = useSelector(getAppendList);
   const appendLoading = useSelector(getIsAppendLoading);
   const appendHasMore = useSelector(getAppendHasMore);
+  const isAddingAppendLoading = useSelector(getIsAddingAppendLoading);
   const { name, 0: field } = useParams();
   const [sort, setSort] = useState('createdAt');
   const [locale, setLocale] = useState();
@@ -56,7 +59,7 @@ const UpdateHistory = () => {
   return (
     <React.Fragment>
       <WobjHistory setSort={setSort} sort={sort} locale={locale} setLocale={setLocale} />
-      {updatesList?.length ? (
+      {updatesList?.length || isAddingAppendLoading ? (
         <ReduxInfiniteScroll
           loadMore={handleLoadMore}
           loader={<Loading />}
@@ -65,6 +68,7 @@ const UpdateHistory = () => {
           elementIsScrollable={false}
           threshold={500}
         >
+          {isAddingAppendLoading && <StoryLoading />}
           {updates?.map(post => (
             <AppendCard key={post.permlink} post={post} />
           ))}

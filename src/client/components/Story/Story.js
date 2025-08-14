@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import Cookie from 'js-cookie';
 import {
   injectIntl,
   FormattedMessage,
@@ -347,8 +348,11 @@ class Story extends React.Component {
       userVotingPower,
     } = this.props;
     const { editThread } = this.state;
-    const isObjectPage = isObjectReviewTab(wobject, match) && isAuthUser;
-    const currentUserPin = pinnedPostsUrls.includes(post.url);
+    const pinUrl = Cookie.get('userPin');
+    const isObjectPage =
+      (isObjectReviewTab(wobject, match) && isAuthUser) || post.permlink === pinUrl;
+    const currentUserPin =
+      pinnedPostsUrls.includes(post.url) || (post.permlink === pinUrl && post.author === user.name);
     const tooltipTitle = (
       <FormattedMessage
         id={currentUserPin ? 'unpin' : 'pin'}
@@ -356,7 +360,7 @@ class Story extends React.Component {
       />
     );
     const pinClassName =
-      post?.pin || (has(post, 'currentUserPin') && !post.currentUserPin)
+      post?.pin || pinUrl || (has(post, 'currentUserPin') && !post.currentUserPin)
         ? 'pin-grey'
         : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
@@ -446,6 +450,7 @@ class Story extends React.Component {
                     </div>
                     {isObjectPage && (
                       <PinButton
+                        isUserPin={pinUrl}
                         tooltipTitle={tooltipTitle}
                         handlePinPost={handlePinPost}
                         userVotingPower={userVotingPower}
@@ -453,6 +458,7 @@ class Story extends React.Component {
                         pinnedPostsUrls={pinnedPostsUrls}
                         match={match}
                         currentUserPin={currentUserPin}
+                        disabled={!isAuthUser || post.author !== user.name}
                         user={user}
                         post={post}
                         pinClassName={pinClassName}

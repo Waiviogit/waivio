@@ -8,7 +8,8 @@ import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import { getMinExpertise } from '../../rewards/rewardsHelper';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { getMinExpertise, campaignTypes } from '../../rewards/rewardsHelper';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
@@ -30,7 +31,8 @@ const DetailsModalBody = ({
     rewardFundRewardBalance: rewardFund.reward_balance,
     rate,
   });
-  const isMentions = proposition?.type === 'mentions';
+  const isMentions = proposition?.type === campaignTypes?.MENTIONS;
+  const isContests = campaignTypes.CONTESTS_OBJECT === proposition.type;
   const showQualifiedInfo = proposition?.qualifiedPayoutToken && proposition?.type !== 'reviews';
 
   return (
@@ -52,36 +54,42 @@ const DetailsModalBody = ({
             })}
           </div>
           <div className="DetailsModal__criteria-wrap">
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.expertise} disabled />
-              <div className={getClassForCurrCreteria(requirements?.expertise)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_waivio_expertise',
-                  defaultMessage: 'Minimum Waivio expertise',
-                })}
-                : {minExpertise}
+            {Boolean(minExpertise) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.expertise} disabled />
+                <div className={getClassForCurrCreteria(requirements?.expertise)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_waivio_expertise',
+                    defaultMessage: 'Minimum Waivio expertise',
+                  })}
+                  : {minExpertise}
+                </div>
               </div>
-            </div>
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.followers} disabled />
-              <div className={getClassForCurrCreteria(requirements?.followers)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_number_followers',
-                  defaultMessage: 'Minimum number of followers',
-                })}
-                : {proposition?.userRequirements?.minFollowers}
+            )}
+            {Boolean(proposition?.userRequirements?.minFollowers) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.followers} disabled />
+                <div className={getClassForCurrCreteria(requirements?.followers)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_number_followers',
+                    defaultMessage: 'Minimum number of followers',
+                  })}
+                  : {proposition?.userRequirements?.minFollowers}
+                </div>
               </div>
-            </div>
-            <div className="DetailsModal__criteria-row">
-              <Checkbox checked={requirements?.posts} disabled />
-              <div className={getClassForCurrCreteria(requirements?.posts)}>
-                {intl.formatMessage({
-                  id: 'rewards_details_minimum_number_posts',
-                  defaultMessage: 'Minimum number of posts',
-                })}
-                : {proposition?.userRequirements?.minPosts}
+            )}
+            {Boolean(proposition?.userRequirements?.minPosts) && (
+              <div className="DetailsModal__criteria-row">
+                <Checkbox checked={requirements?.posts} disabled />
+                <div className={getClassForCurrCreteria(requirements?.posts)}>
+                  {intl.formatMessage({
+                    id: 'rewards_details_minimum_number_posts',
+                    defaultMessage: 'Minimum number of posts',
+                  })}
+                  : {proposition?.userRequirements?.minPosts}
+                </div>
               </div>
-            </div>
+            )}
             {!!proposition?.frequencyAssign && (
               <div className="DetailsModal__criteria-row">
                 <Checkbox checked={requirements?.frequency} disabled />
@@ -108,7 +116,7 @@ const DetailsModalBody = ({
               <Checkbox checked={requirements?.notBlacklisted} disabled />
               <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
                 {intl.formatMessage({
-                  id: 'rewards_details_account_not_blacklisted',
+                  id: `rewards_details_account_not_blacklisted`,
                   defaultMessage: 'User account is not blacklisted by',
                 })}{' '}
                 <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>{' '}
@@ -143,7 +151,10 @@ const DetailsModalBody = ({
         </div>
         <div className="DetailsModal__text mv3">
           {intl.formatMessage({
-            id: 'rewards_details_review_eligible_award',
+            id:
+              proposition?.type === 'reviews'
+                ? 'rewards_details_review_eligible_award'
+                : 'post_details_review_eligible_award',
             defaultMessage:
               'For the review to be eligible for the award, all the following requirements must be met',
           })}
@@ -253,25 +264,75 @@ const DetailsModalBody = ({
             </li>
           )}
         </ol>
-        <div className="DetailsModal__text mv3">
-          {isMentions
-            ? intl.formatMessage({
-                id: 'rewards_details_sponsor_reserves_payment_mentions',
-                defaultMessage:
-                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.',
-              })
-            : intl.formatMessage({
-                id: 'rewards_details_sponsor_reserves_payment',
-                defaultMessage:
-                  'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
-              })}
-        </div>
+        {proposition?.type === campaignTypes?.GIVEAWAYS_OBJECT ? (
+          <div className="DetailsModal__text mv3">
+            {intl.formatMessage({
+              id: 'rewards_details_sponsor_reserves_payment_giveaways_object',
+              defaultMessage:
+                'Sponsor reserves the right to refuse the payment if post is suspected to be fraudulent, spam, poorly written or for other reasons.',
+            })}
+          </div>
+        ) : (
+          <div className="DetailsModal__text mv3">
+            {isMentions
+              ? intl.formatMessage({
+                  id: 'rewards_details_sponsor_reserves_payment_mentions',
+                  defaultMessage:
+                    'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons.',
+                })
+              : intl.formatMessage({
+                  id: 'rewards_details_sponsor_reserves_payment',
+                  defaultMessage:
+                    'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
+                })}
+          </div>
+        )}
       </div>
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="DetailsModal__text fw6 mv3">
-            {intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}:
+          <div
+            className={classNames({
+              mv3: isContests,
+            })}
+          >
+            <div
+              className={classNames('DetailsModal__text fw6 ', {
+                mv3: !isContests,
+                'DetailsModal__text--marginBottom': isContests,
+              })}
+            >
+              {isContests
+                ? intl.formatMessage({ id: 'rewards_details_rewards', defaultMessage: 'Rewards' })
+                : intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}
+              :
+            </div>
+            {isContests && (
+              <React.Fragment>
+                <div>
+                  {proposition?.contestRewards?.map(reward => (
+                    <div className="DetailsModal__text fw6" key={reward?.place}>
+                      Place #{reward?.place}: <USDDisplay value={reward?.rewardInUSD} />
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className={classNames({
+                    mv3: isContests,
+                  })}
+                >
+                  Contest judges (
+                  {proposition.contestJudges.map((judges, i, arr) => (
+                    <Link key={judges} to={`/@${judges}`}>
+                      @{arr?.length > 1 && arr?.length - 1 !== i ? `${judges}, ` : judges}
+                    </Link>
+                  ))}
+                  ) will review posts and cast their votes. Once the campaign ends, winners will be
+                  selected based on the judges&#39; votes.
+                </div>
+              </React.Fragment>
+            )}
           </div>
+
           <span>
             {intl.formatMessage({
               id: 'the_amount_of_the_rewards',
@@ -377,6 +438,7 @@ DetailsModalBody.propTypes = {
     user: PropTypes.shape({
       name: PropTypes.string,
     }),
+    contestJudges: PropTypes.arrayOf(PropTypes.string),
     description: PropTypes.string,
     reserved: PropTypes.bool,
     qualifiedPayoutToken: PropTypes.bool,
@@ -385,6 +447,7 @@ DetailsModalBody.propTypes = {
     defaultShowLink: PropTypes.string,
     agreementObjects: PropTypes.arrayOf(PropTypes.string),
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
+    contestRewards: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
       minPhotos: PropTypes.number,

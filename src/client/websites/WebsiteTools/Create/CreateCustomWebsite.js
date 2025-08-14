@@ -20,6 +20,7 @@ const CreateCustomWebsite = ({
   availableStatus,
   statusMessageClassList,
 }) => {
+  const idProd = ['production']?.includes(process.env.NODE_ENV);
   const history = useHistory();
   const handleSubmit = e => {
     e.preventDefault();
@@ -69,6 +70,7 @@ const CreateCustomWebsite = ({
                   id: 'select_template',
                   defaultMessage: 'Select  template:',
                 })}
+                defaultValue={idProd ? 'social.gifts' : 'socialgifts.pp.ua'}
               >
                 {showingParentList.map(domain => (
                   <Select.Option key={domain} value={domain}>

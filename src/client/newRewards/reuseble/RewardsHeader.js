@@ -4,24 +4,34 @@ import PropTypes from 'prop-types';
 import { round } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { campaignTypes } from '../../rewards/rewardsHelper';
 
 const RewardsHeader = ({ proposition, intl }) => {
   const getTitle = () => {
     switch (proposition?.type) {
-      case 'mentions':
+      case campaignTypes.MENTIONS:
         return (
           <React.Fragment>
             Mention {proposition?.user?.name || getObjectName(proposition.object)}{' '}
             {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
           </React.Fragment>
         );
-      case 'giveaways':
+      case campaignTypes.GIVEAWAYS:
+      case campaignTypes.GIVEAWAYS_OBJECT:
         const winners = proposition.budget / proposition.reward;
 
         return (
           <React.Fragment>
             Giveaway time! Your chance to win ${proposition.reward}
             {winners ? `with ${winners} winners` : ''}!
+          </React.Fragment>
+        );
+
+      case campaignTypes.CONTESTS_OBJECT:
+        return (
+          <React.Fragment>
+            Contest time! Your chance to win $
+            {round(proposition?.contestRewards?.[0]?.rewardInUSD, 2)}
           </React.Fragment>
         );
 
@@ -70,6 +80,11 @@ RewardsHeader.propTypes = {
     type: PropTypes.string,
     totalPayed: PropTypes.string,
     payoutToken: PropTypes.string,
+    contestRewards: PropTypes.arrayOf(
+      PropTypes.shape({
+        rewardInUSD: PropTypes.string,
+      }),
+    ),
     requirements: PropTypes.shape({
       minPhotos: PropTypes.number,
     }),

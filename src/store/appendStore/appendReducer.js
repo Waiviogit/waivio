@@ -5,6 +5,7 @@ const defaultState = {
   loading: false,
   error: null,
   hasMore: true,
+  addingAppend: false,
   authorityList: {},
 };
 
@@ -23,15 +24,14 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         error: action.payload.message,
-        loading: false,
+        addingAppend: false,
       };
 
     case appendActions.APPEND_WAIVIO_OBJECT.START:
       return {
         ...state,
-        loading: true,
+        addingAppend: true,
         error: null,
-        fields: [],
       };
 
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
@@ -41,6 +41,7 @@ export default (state = defaultState, action) => {
         hasMore: action.payload.hasMore,
         error: null,
         loading: false,
+        addingAppend: false,
       };
     }
     case appendActions.SET_OBJECT_IN_AUTHORITY: {
@@ -71,7 +72,7 @@ export default (state = defaultState, action) => {
       const fields = [...state.fields];
 
       if (action.meta.isNew) {
-        return state;
+        return { ...state, fields: [field, ...state.fields], loading: false, addingAppend: false };
       }
 
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);

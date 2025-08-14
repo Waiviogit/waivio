@@ -32,6 +32,7 @@ import {
   SET_EDIT_MODE,
   SET_LINK_SAFETY,
   RESET_LINK_SAFETY,
+  RESET_OBJ_STATE,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -637,6 +638,9 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         ...action.payload,
       };
+
+    case RESET_OBJ_STATE:
+      return initialState;
 
     default: {
       return state;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Select, Input, Button, message } from 'antd';
@@ -197,6 +197,10 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         })}
         autoSize={{ minRows: 2 }}
       />
+      <p>
+        Add to display this type across all site pages. See setup{' '}
+        <Link to="/object/nvo-adsense-display-ad-unit-guide">details</Link>.
+      </p>
       {showDisplayUnitCodeError && (
         <div className="AdSenseAds__error">
           {' '}

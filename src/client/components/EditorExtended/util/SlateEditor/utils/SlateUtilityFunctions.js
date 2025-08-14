@@ -159,3 +159,20 @@ export const resetEditorState = editor => {
     },
   });
 };
+export const resetEditorStateExtended = editor => {
+  if (!editor) return;
+
+  const start = Editor.start(editor, []);
+  const end = Editor.end(editor, []);
+
+  Transforms.delete(editor, {
+    at: { anchor: start, focus: end },
+  });
+
+  if (editor.children.length === 0) {
+    Transforms.insertNodes(editor, {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    });
+  }
+};

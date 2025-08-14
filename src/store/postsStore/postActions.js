@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { isEmpty, some } from 'lodash';
+import Cookie from 'js-cookie';
 import { setGoogleTagEvent } from '../../common/helpers';
 import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -28,6 +29,10 @@ import {
 import { getAuthorityList } from '../appendStore/appendSelectors';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import { FAKE_COMMENT_SUCCESS } from '../commentsStore/commentsActions';
+import { getMetadata } from '../../common/helpers/postingMetadata';
+import api from '../../client/steemConnectAPI';
+import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
+import { updateAuthProfile } from '../authStore/authActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -219,6 +224,61 @@ export const reblogPost = (postId, userName) => dispatch =>
 
 export const FOLLOWING_POST_AUTHOR = createAsyncActionType('FOLLOWING_POST_AUTHOR');
 
+export const unpinUserPost = (user, hiveAuth, intl) => dispatch => {
+  const profile =
+    user?.posting_json_metadata && user?.posting_json_metadata !== ''
+      ? getMetadata(user)?.profile || {}
+      : {};
+
+  delete profile.pinned;
+  Cookie.remove('userPin');
+  const postingMeta = { profile };
+  const operation = [
+    'account_update2',
+    {
+      account: user.name,
+      json_metadata: '',
+      posting_json_metadata: JSON.stringify(postingMeta),
+      extensions: [],
+    },
+  ];
+
+  if (hiveAuth) {
+    const brodc = () => api.broadcast([operation], null, 'posting');
+
+    brodc()
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'unpin_success',
+            defaultMessage: 'Post has been unpinned successfully',
+          }),
+        );
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'transaction_fail',
+            defaultMessage: 'Transaction failed',
+          }),
+        );
+      });
+  } else {
+    const profileDateEncoded = [
+      ACCOUNT_UPDATE,
+      {
+        account: user.name,
+        extensions: [],
+        json_metadata: '',
+        posting_json_metadata: JSON.stringify({
+          profile: { ...profile },
+        }),
+      },
+    ];
+
+    dispatch(updateAuthProfile(user.name, profileDateEncoded, history, intl));
+  }
+};
 export const handlePinPost = (
   post,
   pinnedPostsUrls,
