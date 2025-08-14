@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Icon, Input, message as antdMessage, Modal, Tooltip } from 'antd';
+import { Drawer, Icon, message as antdMessage, Modal, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,6 +33,7 @@ import './ChatWindow.less';
 import ImageSetter from '../ImageSetter/ImageSetter';
 
 import { getLastSelection } from '../../../store/slateEditorStore/editorSelectors';
+import QuickCommentEditor from '../Comments/QuickCommentEditor';
 
 const CHAT_ID = 'chatId';
 
@@ -70,9 +71,21 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
 
-  const onClick = () => {
-    setIsModal(true);
-    setIsOpen(false);
+  const valueToString = value => {
+    if (!value || !Array.isArray(value.children)) return '';
+
+    return value.children
+      .map(node => {
+        if (node.type === 'image') {
+          return node.url;
+        } else if (node.children) {
+          return node.children.map(n => n.text).join('');
+        }
+
+        return '';
+      })
+      .filter(Boolean)
+      .join('\n');
   };
 
   const handleOnOk = () => {
@@ -98,30 +111,33 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const question = typeof mess === 'string' ? mess : message;
+    const question = typeof mess === 'string' ? mess : valueToString(mess);
+
+    if (isEmpty(question) || loading) return;
+
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
     if (isEmpty(chatId)) Cookie.set(CHAT_ID, id);
-    if (!isEmpty(question) && !loading) {
-      dispatch(setChatBotMessage(newMessage));
-      setMessage('');
-      setLoading(true);
-      sendChatBotQuestion(question, id, authUser).then(res => {
-        const resutText =
-          res.message || isEmpty(res.result.kwargs.content)
-            ? 'Sorry, an error has occurred.'
-            : res.result.kwargs.content;
 
-        dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
-        setLoading(false);
-      });
-    }
+    dispatch(setChatBotMessage(newMessage));
+    setMessage('');
+    setLoading(true);
+
+    sendChatBotQuestion(question, id, authUser).then(res => {
+      const resutText =
+        res.message || isEmpty(res.result.kwargs.content)
+          ? 'Sorry, an error has occurred.'
+          : res.result.kwargs.content;
+
+      dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
+      setLoading(false);
+    });
   };
 
   const setInputData = e => {
-    e.preventDefault();
-    setMessage(e.target.value);
+    // e.preventDefault();
+    setMessage(e);
   };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
@@ -380,38 +396,18 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         </div>
 
         <div className="chat-footer">
-          <button
-            onClick={onClick}
-            className={'md-sb-button-plus md-add-button md-add-button--comments'}
-            type="button"
-          >
-            <Icon
-              type="plus-circle"
-              style={{
-                fontSize: '26px',
-                marginLeft: '16px',
-                marginRight: '4px',
-                background: 'white',
-                borderRadius: '50%',
-              }}
-            />
-          </button>
-          <Input.TextArea
-            placeholder="Type your question here..."
-            value={message}
+          <QuickCommentEditor
+            isAiChat
+            parentPost={{}}
             onChange={setInputData}
+            username={authUser}
+            onSubmit={() => sendMessage(message)}
+            isLoading={false}
+            inputValue={message}
+            submitted={false}
+            placeholder={'Type your question here...'}
             onKeyDown={handleKeyDown}
-            className="chat-input"
-            autoSize={{ minRows: 1, maxRows: 5 }}
-            ref={textAreaRef}
           />
-          <span
-            role="presentation"
-            onClick={() => sendMessage()}
-            className="QuickComment__send-comment"
-          >
-            <img src="/images/icons/send.svg" alt="send" />
-          </span>
         </div>
         <Modal
           wrapClassName="Settings__modal"

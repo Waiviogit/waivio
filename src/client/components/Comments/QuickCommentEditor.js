@@ -13,7 +13,10 @@ import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
-import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+import {
+  resetEditorState,
+  resetEditorStateExtended,
+} from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { getSelection, getSelectionRect } from '../EditorExtended/util';
 import {
   setCursorCoordinates,
@@ -65,11 +68,18 @@ const QuickCommentEditor = props => {
     } else if (commentMsg) {
       const bodyWithSignature = props.isEdit ? commentMsg : `${commentMsg}${signature}`;
 
-      props.onSubmit(props.parentPost, bodyWithSignature).then(() => {
+      if (props.isAiChat) {
+        props.onSubmit(commentMsg);
         setCommentMsg('');
-        resetEditorState(editorRef.current);
+        resetEditorStateExtended(editorRef.current);
         props.setImportObject({});
-      });
+      } else {
+        props.onSubmit(props.parentPost, bodyWithSignature).then(() => {
+          setCommentMsg('');
+          resetEditorState(editorRef.current);
+          props.setImportObject({});
+        });
+      }
     }
   };
 
@@ -141,6 +151,7 @@ const QuickCommentEditor = props => {
   };
 
   const handleMsgChange = body => {
+    if (props.isAiChat) props.onChange(body);
     const newCommentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
 
     setCommentMsg(newCommentMsg);
@@ -177,13 +188,18 @@ const QuickCommentEditor = props => {
             isComment
             isQuickComment
             editorEnabled
+            isAiChat={props.isAiChat}
+            onSubmit={props.onSubmit}
             onChange={handleMsgChange}
             minHeight="auto"
             initialPosTopBtn="-14px"
-            placeholder={intl.formatMessage({
-              id: 'write_comment',
-              defaultMessage: 'Write your comment...',
-            })}
+            placeholder={
+              props.placeholder ||
+              intl.formatMessage({
+                id: 'write_comment',
+                defaultMessage: 'Write your comment...',
+              })
+            }
             parentPost={props.parentPost}
             handleObjectSelect={handleObjectSelect}
             setEditorCb={setEditor}
@@ -215,10 +231,13 @@ QuickCommentEditor.propTypes = {
   parentPost: PropTypes.shape().isRequired,
   importObj: PropTypes.shape(),
   signature: PropTypes.string,
+  placeholder: PropTypes.string,
   isLoading: PropTypes.bool,
   isEdit: PropTypes.bool,
+  isAiChat: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
   isAuth: PropTypes.bool,
   setCursorCoordinates: PropTypes.func,
   setImportObject: PropTypes.func,
