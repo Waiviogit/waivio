@@ -321,9 +321,11 @@ const DetailsModalBody = ({
                   })}
                 >
                   Contest judges (
-                  {proposition.contestJudges.map((judges, i, arr) =>
-                    arr?.length > 1 && arr?.length - 1 !== i ? `${judges}, ` : judges,
-                  )}
+                  {proposition.contestJudges.map((judges, i, arr) => (
+                    <Link key={judges} to={`/@${judges}`}>
+                      @{arr?.length > 1 && arr?.length - 1 !== i ? `${judges}, ` : judges}
+                    </Link>
+                  ))}
                   ) will review posts and cast their votes. Once the campaign ends, winners will be
                   selected based on the judges&#39; votes.
                 </div>

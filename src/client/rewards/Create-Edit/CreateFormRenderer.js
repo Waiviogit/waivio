@@ -55,17 +55,19 @@ const getRecurrenceRuleArray = data => {
       value: new RRule({
         freq: RRule.DAILY,
         count: 1,
+        dtstart: today.toDate(),
       }).toString(),
     },
     {
       label: 'Daily',
-      value: new RRule({ freq: RRule.DAILY }).toString(),
+      value: new RRule({ freq: RRule.DAILY, dtstart: today.toDate() }).toString(),
     },
     {
       label: `Weekly on ${today.format('dddd')}s`,
       value: new RRule({
         freq: RRule.WEEKLY,
         byweekday: RRule[today.format('ddd').toUpperCase()],
+        dtstart: today.toDate(),
       }).toString(),
     },
     {
@@ -73,6 +75,7 @@ const getRecurrenceRuleArray = data => {
       value: new RRule({
         freq: RRule.MONTHLY,
         bymonthday: today.date(),
+        dtstart: today.toDate(),
       }).toString(),
     },
     {
@@ -81,6 +84,7 @@ const getRecurrenceRuleArray = data => {
         freq: RRule.YEARLY,
         bymonth: today.month() + 1,
         bymonthday: today.date(),
+        dtstart: today.toDate(),
       }).toString(),
     },
   ];

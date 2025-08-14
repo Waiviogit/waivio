@@ -37,10 +37,10 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
       { message: messageFactory('reviews', 'Reviews'), value: 'reviews' },
       { message: messageFactory('mentions', 'Mentions'), value: 'mentions' },
       {
-        message: messageFactory('giveaways_object', 'Giveaways'),
+        message: messageFactory('giveaways_object', 'Giveaways (BETA)'),
         value: 'giveaways_object',
       },
-      { message: messageFactory('contests_object', 'Contests'), value: 'contests_object' },
+      { message: messageFactory('contests_object', 'Contests (BETA)'), value: 'contests_object' },
     ],
     caption: messageFactory(
       'specific_campaign_parameters_type',
