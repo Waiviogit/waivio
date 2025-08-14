@@ -1,6 +1,5 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
-
 .ant-drawer.ant-drawer-bottom.ant-drawer-open {
   z-index: @ant-message-z-index;
   height: 100%;
@@ -68,19 +67,15 @@
     margin-bottom: 15px;
     max-width: -webkit-fill-available;
     max-width: 100%;
-    max-height: 300px;
-  }
-  .QuickComment {
-    .md-side-toolbar .act-buttons-group {
-      margin-top: -80px;
-    }
-    .md-sb-button.action-btn > .btn-icon_photo {
-      margin-bottom: 1px;
-    }
   }
   .QuickComment__send-comment {
     z-index: @ant-message-z-index;
-    bottom: -6px;
+    bottom: 20px;
+    right: 25px;
+    img {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
   }
   .info-paragraph {
     text-align: center;
@@ -211,6 +206,7 @@
   }
 
   .chat-footer {
+    display: flex;
     padding: 10px;
     border: 1px solid @white-gainsboro;
 
