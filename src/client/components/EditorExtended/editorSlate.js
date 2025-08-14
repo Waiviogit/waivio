@@ -46,7 +46,6 @@ import {
   focusEditorToStart,
   removeAllInlineFormats,
   resetEditorState,
-  resetEditorStateExtended,
   toggleBlock,
   toggleMark,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
@@ -107,8 +106,6 @@ const EditorSlate = props => {
     parentPost,
     startToSearching,
     isLoading,
-    isAiChat,
-    onSubmit,
   } = props;
   const params = useParams();
   const query = useQuery();
@@ -350,16 +347,6 @@ const EditorSlate = props => {
     }
 
     if (event.key === 'Enter') {
-      if (isAiChat) {
-        event.preventDefault();
-        onSubmit();
-
-        resetEditorStateExtended(editor);
-
-        // eslint-disable-next-line consistent-return
-        return;
-      }
-
       removeAllInlineFormats(editor);
 
       if (['listItem'].includes(selectedElement.type) && selectedElement.children[0].text === '') {
@@ -543,7 +530,6 @@ const EditorSlate = props => {
             style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
-            isAiChat={isAiChat}
             setLastSelection={onSelect}
             parentPost={parentPost}
             editor={editor}
@@ -579,7 +565,6 @@ EditorSlate.propTypes = {
   match: PropTypes.shape(),
   onChange: PropTypes.func.isRequired,
   setLastSelection: PropTypes.func,
-  onSubmit: PropTypes.func,
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
@@ -590,7 +575,6 @@ EditorSlate.propTypes = {
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
   isMainEditor: PropTypes.bool,
-  isAiChat: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
   isNewReview: PropTypes.bool,

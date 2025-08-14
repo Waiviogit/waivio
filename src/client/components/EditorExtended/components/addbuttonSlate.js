@@ -10,7 +10,7 @@ import { isAndroidDevice } from '../../../../common/helpers/apiHelpers';
 import { setLastSelection } from '../../../../store/slateEditorStore/editorActions';
 import { getLastSelection } from '../../../../store/slateEditorStore/editorSelectors';
 
-import { SIDE_BUTTONS_AI_CHAT, SIDE_BUTTONS_SLATE } from '../model/content';
+import { SIDE_BUTTONS_SLATE } from '../model/content';
 
 import './addbutton.less';
 
@@ -90,7 +90,6 @@ const AddButtonSlate = props => {
     'md-add-button--comments': props.isComment,
     'md-add-button--commentsEdit': props.isCommentEdit,
   });
-  const buttons = props.isAiChat ? SIDE_BUTTONS_AI_CHAT : SIDE_BUTTONS_SLATE;
 
   return (
     <div className="md-side-toolbar" style={{ top: initialPosTop }} ref={nodeRef}>
@@ -109,7 +108,7 @@ const AddButtonSlate = props => {
               {props.intl.formatMessage({ id: 'insert_btn', defaultMessage: 'Insert' })}
             </div>
             <div className="act-buttons-grid">
-              {buttons.map(button => {
+              {SIDE_BUTTONS_SLATE.map(button => {
                 const Button = button.component;
                 const extraProps = button.props ? button.props : {};
 
@@ -171,7 +170,6 @@ AddButtonSlate.propTypes = {
   }).isRequired,
   editorNode: PropTypes.instanceOf().isRequired,
   isComment: PropTypes.bool,
-  isAiChat: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   initialPosTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   size: PropTypes.number,

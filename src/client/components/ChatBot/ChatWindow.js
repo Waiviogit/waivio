@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Icon, message as antdMessage, Modal, Tooltip } from 'antd';
+import { Drawer, Icon, Input, message as antdMessage, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,26 +30,17 @@ import {
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import './ChatWindow.less';
-import ImageSetter from '../ImageSetter/ImageSetter';
-
-import { getLastSelection } from '../../../store/slateEditorStore/editorSelectors';
-import QuickCommentEditor from '../Comments/QuickCommentEditor';
 
 const CHAT_ID = 'chatId';
 
-const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
+const ChatWindow = ({ className, hideChat, open }) => {
   const [aiExpiredDate, setAiExpiredDate] = useState(Cookie.get('aiExpiredDate'));
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [height, setHeight] = useState('100%');
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isModal, setIsModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOkayBtn, setIsOkayBtn] = useState(false);
-  const [currentImage, setCurrentImage] = useState([]);
 
   const dispatch = useDispatch();
-  const lastSelection = useSelector(getLastSelection);
   const config = useSelector(getWebsiteConfiguration);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
@@ -71,73 +62,36 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
 
-  const valueToString = value => {
-    if (!value || !Array.isArray(value.children)) return '';
-
-    return value.children
-      .map(node => {
-        if (node.type === 'image') {
-          return node.url;
-        } else if (node.children) {
-          return node.children.map(n => n.text).join('');
-        }
-
-        return '';
-      })
-      .filter(Boolean)
-      .join('\n');
-  };
-
-  const handleOnOk = () => {
-    setMessage(currentImage?.map(i => i?.src)?.join(' '));
-    setIsOkayBtn(true);
-    setIsOpen(true);
-    setIsModal(false);
-    setIsLoading(false);
-  };
-
-  const handleOpenModal = () => {
-    setIsModal(!isModal);
-    setIsOkayBtn(false);
-  };
-
-  const onLoadingImage = value => setLoading(value);
-
-  const getImages = image => setCurrentImage(image);
-
   const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
   };
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const question = typeof mess === 'string' ? mess : valueToString(mess);
-
-    if (isEmpty(question) || loading) return;
-
+    const question = typeof mess === 'string' ? mess : message;
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
     if (isEmpty(chatId)) Cookie.set(CHAT_ID, id);
+    if (!isEmpty(question) && !loading) {
+      dispatch(setChatBotMessage(newMessage));
+      setMessage('');
+      setLoading(true);
+      sendChatBotQuestion(question, id, authUser).then(res => {
+        const resutText =
+          res.message || isEmpty(res.result.kwargs.content)
+            ? 'Sorry, an error has occurred.'
+            : res.result.kwargs.content;
 
-    dispatch(setChatBotMessage(newMessage));
-    setMessage('');
-    setLoading(true);
-
-    sendChatBotQuestion(question, id, authUser).then(res => {
-      const resutText =
-        res.message || isEmpty(res.result.kwargs.content)
-          ? 'Sorry, an error has occurred.'
-          : res.result.kwargs.content;
-
-      dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
-      setLoading(false);
-    });
+        dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
+        setLoading(false);
+      });
+    }
   };
 
   const setInputData = e => {
-    // e.preventDefault();
-    setMessage(e);
+    e.preventDefault();
+    setMessage(e.target.value);
   };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
@@ -396,36 +350,23 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         </div>
 
         <div className="chat-footer">
-          <QuickCommentEditor
-            isAiChat
-            parentPost={{}}
+          <Input.TextArea
+            placeholder="Type your question here..."
+            value={message}
             onChange={setInputData}
-            username={authUser}
-            onSubmit={() => sendMessage(message)}
-            isLoading={false}
-            inputValue={message}
-            submitted={false}
-            placeholder={'Type your question here...'}
             onKeyDown={handleKeyDown}
+            className="chat-input"
+            autoSize={{ minRows: 1, maxRows: 5 }}
+            ref={textAreaRef}
           />
+          <span
+            role="presentation"
+            onClick={() => sendMessage()}
+            className="QuickComment__send-comment"
+          >
+            <img src="/images/icons/send.svg" alt="send" />
+          </span>
         </div>
-        <Modal
-          wrapClassName="Settings__modal"
-          onCancel={handleOpenModal}
-          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
-          cancelButtonProps={{ disabled: isLoading }}
-          visible={isModal}
-          onOk={handleOnOk}
-        >
-          <ImageSetter
-            onImageLoaded={getImages}
-            onLoadingImage={onLoadingImage}
-            isEditor={false}
-            isOkayBtn={isOkayBtn}
-            isModal={isModal}
-            lastSelection={lastSelection}
-          />
-        </Modal>
       </div>
     </>
   );
@@ -441,7 +382,6 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
 ChatWindow.propTypes = {
   hideChat: PropTypes.func.isRequired,
-  setIsOpen: PropTypes.func.isRequired,
   className: PropTypes.string,
   open: PropTypes.bool,
 };
