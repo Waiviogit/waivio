@@ -27,6 +27,7 @@ export default function BBackTop({ className, isModal }) {
         <ChatWindow
           className={isOpen ? 'open' : 'closed'}
           open={isOpen}
+          setIsOpen={setIsOpen}
           hideChat={() => setIsOpen(false)}
         />
       </>

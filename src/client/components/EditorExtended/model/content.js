@@ -69,6 +69,12 @@ export const SIDE_BUTTONS_SLATE = [
     component: NearbyButton,
   },
 ];
+export const SIDE_BUTTONS_AI_CHAT = [
+  {
+    title: 'Image',
+    component: ImageButtonSlate,
+  },
+];
 
 const createEditorState = (content = null, decorators = defaultDecorators) => {
   let initialEditorState = {};
