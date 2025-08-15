@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil, map } from 'lodash';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -76,21 +76,33 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
-    setMessage(currentImage?.map(i => i?.src)?.join(' '));
     setIsOkayBtn(true);
     setIsOpen(true);
     setIsModal(false);
     setIsLoading(false);
+    focusInput();
   };
 
   const handleOpenModal = () => {
     setIsModal(!isModal);
     setIsOkayBtn(false);
   };
+  const focusInput = () => {
+    setTimeout(() => {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+        const length = textAreaRef.current.resizableTextArea.textArea.value.length;
 
+        textAreaRef.current.resizableTextArea.textArea.setSelectionRange(length, length);
+      }
+    }, 0);
+  };
   const onLoadingImage = value => setLoading(value);
 
-  const getImages = image => setCurrentImage(image);
+  const getImages = image => {
+    setCurrentImage(image);
+    setMessage('/imagine \n ');
+  };
 
   const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
@@ -98,7 +110,9 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const question = typeof mess === 'string' ? mess : message;
+    const imageList = currentImage?.map(i => i?.src)?.join(' ');
+    const question =
+      typeof mess === 'string' ? `${mess}\n ${imageList}` : `${message}\n ${imageList}`;
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
@@ -106,8 +120,10 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     if (!isEmpty(question) && !loading) {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
+      setCurrentImage([]);
       setLoading(true);
-      sendChatBotQuestion(question, id, authUser).then(res => {
+      const images = currentImage?.map(i => i?.src);
+      sendChatBotQuestion(question, id, authUser, images).then(res => {
         const resutText =
           res.message || isEmpty(res.result.kwargs.content)
             ? 'Sorry, an error has occurred.'
@@ -247,7 +263,11 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       };
     }
   }, []);
+  const handleRemoveImage = imageDetail => {
+    const filteredImages = currentImage.filter(f => f.id !== imageDetail.id);
 
+    setCurrentImage(filteredImages);
+  };
   const onReloadClick = () => {
     isNil(aiExpiredDate) || aiExpiredDate < Date.now()
       ? updateAIKnowledge(authUser, currHost).then(r => {
@@ -263,15 +283,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleQuickMessageClick = mess => {
-    setMessage(`${mess.text}:\n`);
-    setTimeout(() => {
-      if (textAreaRef.current) {
-        textAreaRef.current.focus();
-        const length = textAreaRef.current.resizableTextArea.textArea.value.length;
-
-        textAreaRef.current.resizableTextArea.textArea.setSelectionRange(length, length);
-      }
-    }, 0);
+    setMessage(`${mess.text}\n`);
+    focusInput();
   };
 
   const reloadBtn = (
@@ -378,7 +391,24 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
             )}
           </div>
         </div>
-
+        {!isEmpty(currentImage) && (
+          <div className="ImageSetter">
+            <div className="image-box">
+              {map(currentImage, image => (
+                <div className="image-box__preview" key={image.id}>
+                  <div
+                    className="image-box__remove"
+                    onClick={() => handleRemoveImage(image)}
+                    role="presentation"
+                  >
+                    <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+                  </div>
+                  <img src={image.src} height="86" alt={image.src} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="chat-footer">
           <button
             onClick={onClick}
