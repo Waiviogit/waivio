@@ -32,6 +32,7 @@ const ImageSetter = ({
   isTitle,
   isDesktop = false,
   isConfig = false,
+  isAiChat = false,
   setEditorState,
   getEditorState,
   addNewBlockAt,
@@ -50,6 +51,9 @@ const ImageSetter = ({
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const shouldShowUpload = isAiChat
+    ? currentImages.length <= 2
+    : isMultiple || !currentImages.length;
   const initialState = {
     image: '',
     allowZoomOut: true,
@@ -416,7 +420,7 @@ const ImageSetter = ({
       </div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
-          {map(currentImages, image => (
+          {map(isAiChat ? currentImages?.slice(0, 2) : currentImages, image => (
             <div className="image-box__preview" key={image.id}>
               <div
                 className="image-box__remove"
@@ -429,7 +433,7 @@ const ImageSetter = ({
             </div>
           ))}
           {isLoadingImage &&
-            map(fileImages, () => (
+            map(isAiChat ? fileImages?.slice(0, 2) : fileImages, () => (
               <div key={`${fileImages.size}/${fileImages.name}`} className="image-box__preview">
                 <div className="image-box__preview-loader">
                   <Icon type="loading" />
@@ -438,7 +442,7 @@ const ImageSetter = ({
             ))}
         </div>
       )}
-      {(isMultiple || !currentImages.length) && !isOpen && (
+      {shouldShowUpload && !isOpen && (
         <div className="image-upload">
           <input
             id="inputfile"
@@ -515,6 +519,7 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
+  isAiChat: PropTypes.bool,
   setEditorState: PropTypes.func,
   getEditorState: PropTypes.func,
   addNewBlockAt: PropTypes.func,

@@ -86,6 +86,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const handleOpenModal = () => {
     setIsModal(!isModal);
     setIsOkayBtn(false);
+    setIsOpen(!open);
   };
   const focusInput = () => {
     setTimeout(() => {
@@ -100,7 +101,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const onLoadingImage = value => setLoading(value);
 
   const getImages = image => {
-    setCurrentImage(image);
+    setCurrentImage([...currentImage, ...image?.slice(0, 2)]);
     setMessage('/imagine \n ');
   };
 
@@ -123,6 +124,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       setCurrentImage([]);
       setLoading(true);
       const images = currentImage?.map(i => i?.src);
+
       sendChatBotQuestion(question, id, authUser, images).then(res => {
         const resutText =
           res.message || isEmpty(res.result.kwargs.content)
@@ -300,12 +302,20 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const content = (
     <>
-      <div className={isFullScreen ? 'ChatWindow fullscreen-wrapper' : ''} />
+      <div
+        className={isFullScreen ? 'ChatWindow fullscreen-wrapper' : ''}
+        style={{
+          ...(isFullScreen && isModal ? { display: 'none' } : {}),
+        }}
+      />
       <div
         className={`ChatWindow ${className} ${isMobile() ? 'smooth-height' : ''} ${
           isFullScreen ? 'fullscreen' : ''
         }`}
-        style={isMobile() ? { height: `${height}px` } : {}}
+        style={{
+          ...(isMobile() ? { height: `${height}px` } : {}),
+          ...(isFullScreen && isModal ? { display: 'none' } : {}),
+        }}
       >
         <div className="chat-header">
           <div className="chat-header-logo-wrap">
@@ -445,6 +455,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         </div>
         <Modal
           wrapClassName="Settings__modal"
+          style={{ zIndex: 2500 }}
           onCancel={handleOpenModal}
           okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
           cancelButtonProps={{ disabled: isLoading }}
@@ -452,6 +463,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           onOk={handleOnOk}
         >
           <ImageSetter
+            isAiChat
             onImageLoaded={getImages}
             onLoadingImage={onLoadingImage}
             isEditor={false}
