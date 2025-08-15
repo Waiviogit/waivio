@@ -396,7 +396,11 @@ class CreateRewards extends React.Component {
       durationDays: +data.durationDays,
       recurrenceRule: data.recurrenceRule,
       winnersNumber,
-      ...(data.type === campaignTypes?.MENTIONS
+      ...([
+        campaignTypes?.MENTIONS,
+        campaignTypes.CONTESTS_OBJECT,
+        campaignTypes.GIVEAWAYS_OBJECT,
+      ].includes(data.type)
         ? { qualifiedPayoutToken: data.qualifiedPayoutToken }
         : {}),
       ...(data.type === campaignTypes?.CONTESTS_OBJECT

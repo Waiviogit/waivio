@@ -31,6 +31,7 @@ const ImageSetter = ({
   isRequired,
   isTitle,
   isDesktop = false,
+  isConfig = false,
   setEditorState,
   getEditorState,
   addNewBlockAt,
@@ -65,7 +66,7 @@ const ImageSetter = ({
     const objectUrl = URL.createObjectURL(imageFile);
 
     image.onload = () => {
-      const isLandscape = image.naturalWidth > image.naturalHeight;
+      const isLandscape = image.naturalWidth > image.naturalHeight && isConfig;
       const updatedInitialState = {
         ...initialState,
         image: imageFile,
@@ -522,6 +523,7 @@ ImageSetter.propTypes = {
   labeledImage: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
+  isConfig: PropTypes.bool,
   autoFocus: PropTypes.bool,
   isUserAvatar: PropTypes.bool,
   isEditable: PropTypes.bool,
