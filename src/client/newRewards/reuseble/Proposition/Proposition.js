@@ -27,16 +27,15 @@ const Proposition = ({
 }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGiveaways = [campaignTypes.GIVEAWAYS, campaignTypes.GIVEAWAYS_OBJECT].includes(
+    proposition?.type,
+  );
 
-  if (!proposition?.object && !proposition?.user && proposition?.type !== campaignTypes.GIVEAWAYS)
-    return null;
+  if (!proposition?.object && !proposition?.user && !isGiveaways) return null;
 
   let mainItem = proposition.object;
 
-  if (
-    (proposition.user || !proposition.object?.object_type) &&
-    proposition?.type !== campaignTypes.GIVEAWAYS
-  ) {
+  if ((proposition.user || !proposition.object?.object_type) && !isGiveaways) {
     const user = proposition.user || proposition.object;
     const profile = user?.posting_json_metadata
       ? parseJSON(user.posting_json_metadata)?.profile
@@ -51,7 +50,16 @@ const Proposition = ({
     };
   }
 
-  if (proposition?.type === 'giveaways') {
+  if (proposition?.type === campaignTypes.GIVEAWAYS_OBJECT) {
+    mainItem = {
+      // name: proposition?.giveawayPostTitle || proposition?.name,
+      object_type: 'object',
+      author: proposition?.guideName,
+      ...proposition.requiredObject,
+    };
+  }
+
+  if (proposition?.type === campaignTypes.GIVEAWAYS) {
     const user = proposition?.user || proposition?.object;
     const profile = user?.posting_json_metadata
       ? parseJSON(user.posting_json_metadata)?.profile
@@ -62,13 +70,13 @@ const Proposition = ({
       object_type: 'post',
       author: proposition?.guideName,
       avatar: user?.profile_image,
-      description: profile?.about,
+      description: profile?.requiredObject.default_name,
       author_permlink: proposition?.giveawayPermlink,
     };
   }
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => {
-    if (proposition.type === 'giveaways') {
+    if (isGiveaways) {
       window.location = `/@${proposition.guideName}/${proposition.giveawayPermlink}`;
     } else setOpenDitails(true);
   };

@@ -128,7 +128,7 @@ const CreateFormRenderer = props => {
     reachType,
     agreement,
     winners,
-    duration,
+    durationDays,
     qualifiedPayoutToken,
     contestJudgesAccount,
     recurrenceRule,
@@ -276,6 +276,9 @@ const CreateFormRenderer = props => {
     getRecurrenceRuleArray,
     getFieldValue('declarationTime'),
   ]);
+  const declarationTime = recurrenceRule
+    ? moment(RRule.fromString(recurrenceRule).options.dtstart)
+    : moment().add(7, 'days');
 
   if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
@@ -458,7 +461,7 @@ const CreateFormRenderer = props => {
             )}
             <FormItem label="Giveaway duration (days)">
               {getFieldDecorator('durationDays', {
-                initialValue: duration || 7,
+                initialValue: String(durationDays || 7),
                 rules: [{ required: true }],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
@@ -479,7 +482,7 @@ const CreateFormRenderer = props => {
               <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
                   {getFieldDecorator('declarationTime', {
-                    initialValue: moment().add(7, 'days'),
+                    initialValue: declarationTime,
                     rules: [{ required: true, message: 'Expiry date is required.' }],
                   })(
                     <DatePicker
@@ -524,18 +527,20 @@ const CreateFormRenderer = props => {
                 </Form.Item>
               </div>
               <Form.Item label="">
-                {getFieldDecorator('recurrenceRule', {
-                  initialValue:
-                    recList.find(i => i.value === recurrenceRule)?.value || recList[0]?.value,
-                })(
-                  <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
-                    {recList.map(p => (
-                      <Select.Option key={p?.label} value={p?.value} label={p?.label}>
-                        {p?.label}
-                      </Select.Option>
-                    ))}
-                  </Select>,
-                )}
+                {declarationTime &&
+                  getFieldDecorator('recurrenceRule', {
+                    initialValue: recurrenceRule
+                      ? recList.find(i => i.value === recurrenceRule)?.value
+                      : recList[0]?.value,
+                  })(
+                    <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
+                      {recList.map(p => (
+                        <Select.Option key={p?.label} value={p?.value} label={p?.label}>
+                          {p?.label}
+                        </Select.Option>
+                      ))}
+                    </Select>,
+                  )}
                 <div className="CreateReward__field-caption">
                   The first campaign cycle ends on this date. If repetition is selected, the
                   campaign will repeat according to the chosen options until the expiry date.
@@ -937,7 +942,7 @@ CreateFormRenderer.propTypes = {
   budget: PropTypes.number,
   reward: PropTypes.number,
   winners: PropTypes.number,
-  duration: PropTypes.number,
+  durationDays: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
   contestJudgesAccount: PropTypes.shape(),
