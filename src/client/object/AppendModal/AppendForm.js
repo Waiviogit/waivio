@@ -1889,13 +1889,13 @@ class AppendForm extends Component {
           this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
       );
     }
-    if (currentField === objectFields.options) {
-      return filtered.some(
-        f =>
-          this.getCurrentObjectBody(currentField).category === parseJSON(f.body).category &&
-          this.getCurrentObjectBody(currentField).value === parseJSON(f.body).value,
-      );
-    }
+    // if (currentField === objectFields.options) {
+    //   return filtered.some(
+    //     f =>
+    //       this.getCurrentObjectBody(currentField).category === parseJSON(f.body).category &&
+    //       this.getCurrentObjectBody(currentField).value === parseJSON(f.body).value,
+    //   );
+    // }
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
