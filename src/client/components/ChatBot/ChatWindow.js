@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Drawer, Icon, message as antdMessage, Modal, Tooltip } from 'antd';
+import { Drawer, Icon, Input, message as antdMessage, Modal, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil, map } from 'lodash';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -33,7 +33,6 @@ import './ChatWindow.less';
 import ImageSetter from '../ImageSetter/ImageSetter';
 
 import { getLastSelection } from '../../../store/slateEditorStore/editorSelectors';
-import QuickCommentEditor from '../Comments/QuickCommentEditor';
 
 const CHAT_ID = 'chatId';
 
@@ -71,39 +70,39 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
 
-  const valueToString = value => {
-    if (!value || !Array.isArray(value.children)) return '';
-
-    return value.children
-      .map(node => {
-        if (node.type === 'image') {
-          return node.url;
-        } else if (node.children) {
-          return node.children.map(n => n.text).join('');
-        }
-
-        return '';
-      })
-      .filter(Boolean)
-      .join('\n');
+  const onClick = () => {
+    setIsModal(true);
+    setIsOpen(false);
   };
 
   const handleOnOk = () => {
-    setMessage(currentImage?.map(i => i?.src)?.join(' '));
     setIsOkayBtn(true);
     setIsOpen(true);
     setIsModal(false);
     setIsLoading(false);
+    focusInput();
   };
 
   const handleOpenModal = () => {
     setIsModal(!isModal);
     setIsOkayBtn(false);
   };
+  const focusInput = () => {
+    setTimeout(() => {
+      if (textAreaRef.current) {
+        textAreaRef.current.focus();
+        const length = textAreaRef.current.resizableTextArea.textArea.value.length;
 
+        textAreaRef.current.resizableTextArea.textArea.setSelectionRange(length, length);
+      }
+    }, 0);
+  };
   const onLoadingImage = value => setLoading(value);
 
-  const getImages = image => setCurrentImage(image);
+  const getImages = image => {
+    setCurrentImage(image);
+    setMessage('/imagine \n ');
+  };
 
   const toggleFullScreen = () => {
     setIsFullScreen(prev => !prev);
@@ -111,33 +110,34 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const question = typeof mess === 'string' ? mess : valueToString(mess);
-
-    if (isEmpty(question) || loading) return;
-
+    const imageList = currentImage?.map(i => i?.src)?.join(' ');
+    const question =
+      typeof mess === 'string' ? `${mess}\n ${imageList}` : `${message}\n ${imageList}`;
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
     if (isEmpty(chatId)) Cookie.set(CHAT_ID, id);
+    if (!isEmpty(question) && !loading) {
+      dispatch(setChatBotMessage(newMessage));
+      setMessage('');
+      setCurrentImage([]);
+      setLoading(true);
+      const images = currentImage?.map(i => i?.src);
+      sendChatBotQuestion(question, id, authUser, images).then(res => {
+        const resutText =
+          res.message || isEmpty(res.result.kwargs.content)
+            ? 'Sorry, an error has occurred.'
+            : res.result.kwargs.content;
 
-    dispatch(setChatBotMessage(newMessage));
-    setMessage('');
-    setLoading(true);
-
-    sendChatBotQuestion(question, id, authUser).then(res => {
-      const resutText =
-        res.message || isEmpty(res.result.kwargs.content)
-          ? 'Sorry, an error has occurred.'
-          : res.result.kwargs.content;
-
-      dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
-      setLoading(false);
-    });
+        dispatch(setChatBotMessage({ text: resutText, role: 'ai' }));
+        setLoading(false);
+      });
+    }
   };
 
   const setInputData = e => {
-    // e.preventDefault();
-    setMessage(e);
+    e.preventDefault();
+    setMessage(e.target.value);
   };
   const clearChatMessages = () => {
     Cookie.remove(CHAT_ID);
@@ -263,7 +263,11 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       };
     }
   }, []);
+  const handleRemoveImage = imageDetail => {
+    const filteredImages = currentImage.filter(f => f.id !== imageDetail.id);
 
+    setCurrentImage(filteredImages);
+  };
   const onReloadClick = () => {
     isNil(aiExpiredDate) || aiExpiredDate < Date.now()
       ? updateAIKnowledge(authUser, currHost).then(r => {
@@ -279,15 +283,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleQuickMessageClick = mess => {
-    setMessage(`${mess.text}:\n`);
-    setTimeout(() => {
-      if (textAreaRef.current) {
-        textAreaRef.current.focus();
-        const length = textAreaRef.current.resizableTextArea.textArea.value.length;
-
-        textAreaRef.current.resizableTextArea.textArea.setSelectionRange(length, length);
-      }
-    }, 0);
+    setMessage(`${mess.text}\n`);
+    focusInput();
   };
 
   const reloadBtn = (
@@ -394,20 +391,57 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
             )}
           </div>
         </div>
-
+        {!isEmpty(currentImage) && (
+          <div className="ImageSetter">
+            <div className="image-box">
+              {map(currentImage, image => (
+                <div className="image-box__preview" key={image.id}>
+                  <div
+                    className="image-box__remove"
+                    onClick={() => handleRemoveImage(image)}
+                    role="presentation"
+                  >
+                    <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+                  </div>
+                  <img src={image.src} height="86" alt={image.src} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="chat-footer">
-          <QuickCommentEditor
-            isAiChat
-            parentPost={{}}
+          <button
+            onClick={onClick}
+            className={'md-sb-button-plus md-add-button md-add-button--comments'}
+            type="button"
+          >
+            <Icon
+              type="plus-circle"
+              style={{
+                fontSize: '26px',
+                marginLeft: '16px',
+                marginRight: '4px',
+                background: 'white',
+                borderRadius: '50%',
+              }}
+            />
+          </button>
+          <Input.TextArea
+            placeholder="Type your question here..."
+            value={message}
             onChange={setInputData}
-            username={authUser}
-            onSubmit={() => sendMessage(message)}
-            isLoading={false}
-            inputValue={message}
-            submitted={false}
-            placeholder={'Type your question here...'}
             onKeyDown={handleKeyDown}
+            className="chat-input"
+            autoSize={{ minRows: 1, maxRows: 5 }}
+            ref={textAreaRef}
           />
+          <span
+            role="presentation"
+            onClick={() => sendMessage()}
+            className="QuickComment__send-comment"
+          >
+            <img src="/images/icons/send.svg" alt="send" />
+          </span>
         </div>
         <Modal
           wrapClassName="Settings__modal"

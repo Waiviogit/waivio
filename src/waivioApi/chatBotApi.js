@@ -22,7 +22,7 @@ export const getChatBotHistory = async id => {
     .catch(e => e);
 };
 
-export const sendChatBotQuestion = async (query, id, userName) => {
+export const sendChatBotQuestion = async (query, id, userName, images) => {
   let token = getGuestAccessToken();
   const isGuest = token === 'null' ? false : Boolean(token);
 
@@ -44,6 +44,7 @@ export const sendChatBotQuestion = async (query, id, userName) => {
       userName,
       query,
       id,
+      images,
     }),
   })
     .then(res => res.json())
