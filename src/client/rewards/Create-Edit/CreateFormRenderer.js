@@ -57,10 +57,13 @@ const getRecurrenceRuleArray = data => {
         count: 1,
         dtstart: today.toDate(),
       }).toString(),
+      freq: RRule.DAILY,
+      count: 1,
     },
     {
       label: 'Daily',
       value: new RRule({ freq: RRule.DAILY, dtstart: today.toDate() }).toString(),
+      freq: RRule.DAILY,
     },
     {
       label: `Weekly on ${today.format('dddd')}s`,
@@ -69,6 +72,7 @@ const getRecurrenceRuleArray = data => {
         byweekday: RRule[today.format('ddd').toUpperCase()],
         dtstart: today.toDate(),
       }).toString(),
+      freq: RRule.WEEKLY,
     },
     {
       label: `Monthly on the ${day}${nth(day)}`,
@@ -77,6 +81,7 @@ const getRecurrenceRuleArray = data => {
         bymonthday: today.date(),
         dtstart: today.toDate(),
       }).toString(),
+      freq: RRule.MONTHLY,
     },
     {
       label: `Annually on ${today.format('MMMM')} ${day}${nth(day)}`,
@@ -86,6 +91,7 @@ const getRecurrenceRuleArray = data => {
         bymonthday: today.date(),
         dtstart: today.toDate(),
       }).toString(),
+      freq: RRule.YEARLY,
     },
   ];
 };
@@ -276,11 +282,34 @@ const CreateFormRenderer = props => {
     getRecurrenceRuleArray,
     getFieldValue('declarationTime'),
   ]);
-  const declarationTime = recurrenceRule
-    ? moment(RRule.fromString(recurrenceRule).options.dtstart)
-    : moment().add(7, 'days');
 
-  if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
+  const declarationTime = useMemo(
+    () =>
+      recurrenceRule
+        ? moment(RRule.fromString(recurrenceRule).options.dtstart)
+        : moment().add(7, 'days'),
+    [recurrenceRule],
+  );
+
+  const recuRule = useMemo(() => {
+    if (!recurrenceRule) return recList[0]?.value;
+
+    const parseRule = RRule.fromString(recurrenceRule).options;
+
+    if (parseRule.freq === 1 && parseRule.count) {
+      return recList[0].value;
+    }
+
+    return recList.find(i => {
+      if (parseRule.freq === 1 && !parseRule.count) {
+        return null;
+      }
+
+      return i.freq === parseRule.freq;
+    })?.value;
+  }, [recurrenceRule, recList]);
+
+  if ((!campaignName && (currentItemId || isCreateDublicate)) || loading) return <Loading />;
 
   return (
     <div className="CreateRewardForm">
@@ -455,6 +484,7 @@ const CreateFormRenderer = props => {
                     min={1}
                     placeholder="Enter amount"
                     style={{ width: '100%' }}
+                    disabled={disabled}
                   />,
                 )}
               </FormItem>
@@ -471,6 +501,7 @@ const CreateFormRenderer = props => {
                   min={1}
                   placeholder="Enter duration"
                   style={{ width: '100%' }}
+                  disabled={disabled}
                 />,
               )}
             </FormItem>
@@ -500,6 +531,7 @@ const CreateFormRenderer = props => {
                       showToday={false}
                       format="YYYY-MM-DD hh:mm A"
                       style={{ width: '100%', marginRight: '10px' }}
+                      disabled={disabled}
                     />,
                   )}
                 </FormItem>
@@ -516,6 +548,7 @@ const CreateFormRenderer = props => {
                       filterOption={(input, option) =>
                         option?.props?.label.toLowerCase().includes(input.toLowerCase())
                       }
+                      disabled={disabled}
                     >
                       {timezones.map(tz => (
                         <Select.Option key={tz?.label} value={tz?.label} label={tz?.label}>
@@ -529,11 +562,14 @@ const CreateFormRenderer = props => {
               <Form.Item label="">
                 {declarationTime &&
                   getFieldDecorator('recurrenceRule', {
-                    initialValue: recurrenceRule
-                      ? recList.find(i => i.value === recurrenceRule)?.value
-                      : recList[0]?.value,
+                    initialValue: recuRule,
                   })(
-                    <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
+                    <Select
+                      disabled={disabled}
+                      showSearch
+                      optionFilterProp="label"
+                      dropdownMatchSelectWidth={false}
+                    >
                       {recList.map(p => (
                         <Select.Option key={p?.label} value={p?.value} label={p?.label}>
                           {p?.label}
