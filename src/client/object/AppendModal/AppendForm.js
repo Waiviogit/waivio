@@ -290,6 +290,7 @@ class AppendForm extends Component {
   componentDidMount = () => {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
+
     this.getMenuItem();
 
     if (this.props.sliderMode && !this.state.sliderVisible) {

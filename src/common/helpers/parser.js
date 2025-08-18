@@ -1,10 +1,13 @@
 import { isError, get, attempt, size, unescape } from 'lodash';
 import { parseJSON } from './parseJSON';
 
+export const imageParts = ['waivio.nyc3.digitaloceanspaces.com', '.jpg', '.jpeg', '.png', '.webp'];
+
 export const linkifyText = text => {
   const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
 
+  const isImage = url => imageParts.some(part => url.toLowerCase().includes(part));
   const parts = text.split(/(\[.*?\]\(.*?\))/g);
 
   return parts
@@ -20,7 +23,7 @@ export const linkifyText = text => {
               trailingPunctuation = '.';
             }
 
-            if (p2.includes('waivio.nyc3.digitaloceanspaces.com')) {
+            if (isImage(p2)) {
               return `![${p1}](${p2})${trailingPunctuation}`;
             }
 
@@ -38,7 +41,7 @@ export const linkifyText = text => {
               trailingPunctuation = '.';
             }
 
-            if (url.includes('waivio.nyc3.digitaloceanspaces.com')) {
+            if (isImage(url)) {
               return `![](${url})${trailingPunctuation}`;
             }
 
