@@ -27,9 +27,11 @@ const Proposition = ({
 }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
-  const isGiveaways = [campaignTypes.GIVEAWAYS, campaignTypes.GIVEAWAYS_OBJECT].includes(
-    proposition?.type,
-  );
+  const isGiveaways = [
+    campaignTypes.GIVEAWAYS,
+    campaignTypes.GIVEAWAYS_OBJECT,
+    campaignTypes.CONTESTS_OBJECT,
+  ].includes(proposition?.type);
 
   if (!proposition?.object && !proposition?.user && !isGiveaways) return null;
 
@@ -50,7 +52,10 @@ const Proposition = ({
     };
   }
 
-  if (proposition?.type === campaignTypes.GIVEAWAYS_OBJECT) {
+  if (
+    [campaignTypes.GIVEAWAYS_OBJECT, campaignTypes.CONTESTS_OBJECT].includes(proposition?.type) &&
+    !mainItem
+  ) {
     mainItem = {
       // name: proposition?.giveawayPostTitle || proposition?.name,
       object_type: 'object',
@@ -76,7 +81,7 @@ const Proposition = ({
   }
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => {
-    if (isGiveaways) {
+    if (proposition?.type === campaignTypes.GIVEAWAYS) {
       window.location = `/@${proposition.guideName}/${proposition.giveawayPermlink}`;
     } else setOpenDitails(true);
   };
@@ -121,7 +126,7 @@ const Proposition = ({
             isRejected={isRejected}
             passedParent={
               !has(proposition?.requiredObject, 'author_permlink') ||
-              proposition?.requiredObject?.author_permlink === mainItem.author_permlink
+              proposition?.requiredObject?.author_permlink === mainItem?.author_permlink
                 ? null
                 : proposition?.requiredObject
             }
