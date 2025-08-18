@@ -46,6 +46,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOkayBtn, setIsOkayBtn] = useState(false);
   const [currentImage, setCurrentImage] = useState([]);
+  const [loadedImages, setLoadedImages] = useState([]);
 
   const dispatch = useDispatch();
   const lastSelection = useSelector(getLastSelection);
@@ -76,6 +77,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
+    setCurrentImage([...currentImage, ...loadedImages]);
     setIsOkayBtn(true);
     setIsOpen(true);
     setIsModal(false);
@@ -101,7 +103,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const onLoadingImage = value => setLoading(value);
 
   const getImages = image => {
-    setCurrentImage([...currentImage, ...image?.slice(0, 2)]);
+    setLoadedImages(image?.slice(0, 2));
     setMessage('/imagine \n ');
   };
 
@@ -457,7 +459,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           wrapClassName="Settings__modal"
           style={{ zIndex: 2500 }}
           onCancel={handleOpenModal}
-          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
+          okButtonProps={{ disabled: isLoading || isEmpty(loadedImages) }}
           cancelButtonProps={{ disabled: isLoading }}
           visible={isModal}
           onOk={handleOnOk}
