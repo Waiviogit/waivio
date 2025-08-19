@@ -287,5 +287,6 @@
   "block": "/block",
   "link": "/link",
   "safety": "/safety",
+  "voteField": "/vote-field",
   "safeLinks": "/safe-links"
 }
