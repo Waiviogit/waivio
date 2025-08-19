@@ -5,14 +5,18 @@ export const imageParts = ['waivio.nyc3.digitaloceanspaces.com', '.jpg', '.jpeg'
 
 export const linkifyText = text => {
   const urlRegex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+  const markdownImageRegex = /!\[([^\]]*)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s/$.?#].[^\s]*)\)/g;
 
   const isImage = url => imageParts.some(part => url.toLowerCase().includes(part));
-  const parts = text.split(/(\[.*?\]\(.*?\))/g);
+
+  const parts = text.split(/(!?\[.*?\]\(.*?\))/g);
 
   return parts
     .reduce((acc, part) => {
-      if (markdownLinkRegex.test(part)) {
+      if (markdownImageRegex.test(part)) {
+        acc.push(part);
+      } else if (markdownLinkRegex.test(part)) {
         acc.push(
           part.replace(markdownLinkRegex, (match, p1, p2) => {
             let trailingPunctuation = '';

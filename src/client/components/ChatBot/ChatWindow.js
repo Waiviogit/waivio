@@ -77,6 +77,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
+    setMessage(`/imagine \n  ${message}`);
     setCurrentImage([...currentImage, ...loadedImages]);
     setIsOkayBtn(true);
     setIsOpen(true);
@@ -104,7 +105,6 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const getImages = image => {
     setLoadedImages(image?.slice(0, 2));
-    setMessage('/imagine \n ');
   };
 
   const toggleFullScreen = () => {
@@ -115,7 +115,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     dispatch(setChatBotId());
     const textFromUser = typeof mess === 'string' ? mess : message;
 
-    const imageRegex = /(https?:\/\/[^\s]+(?:waivio\.nyc3\.digitaloceanspaces[^\s]*|\.(?:jpg|jpeg|png|webp)))/i;
+    const imageRegex = /(https?:\/\/[^\s]*waivio\.nyc3\.digitaloceanspaces[^\s]*)|(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|webp))/gi;
+
     const matchedLinks = textFromUser.match(imageRegex) || [];
     const imageList = [...currentImage.map(i => i?.src), ...matchedLinks].slice(0, 2);
     const cleanText = textFromUser.replace(imageRegex, '').trim();
