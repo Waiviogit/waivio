@@ -7,6 +7,7 @@ import { getObjectName, prepareRemoveData } from '../../../common/helpers/wObjec
 import { rejectAuthorReview } from '../../../store/newRewards/newRewardsActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getCampaignType } from '../../rewards/rewardsHelper';
 
 import './RemoveObjFomPost.less';
 
@@ -15,7 +16,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
   const dispatch = useDispatch();
   const currUser = useSelector(getAuthenticatedUserName);
   const rejectCampaigns = camp => {
-    const campType = camp.type.slice(0, -1);
+    const campType = getCampaignType(camp.type);
 
     Modal.confirm({
       title: `Reject ${campType}`,
@@ -56,7 +57,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
   return (
     <Modal visible={visible} onCancel={onClose} footer={null}>
       <div className={'RemoveObjFomPost'}>
-        <h4>Reject review or mentions created for campaigns:</h4>
+        <h4>Reject post created for campaigns:</h4>
         {campaigns.map(camp => (
           <div key={camp.campaignId} className={'RemoveObjFomPost__item'}>
             <span>{camp.name}</span>

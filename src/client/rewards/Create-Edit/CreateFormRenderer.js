@@ -296,17 +296,15 @@ const CreateFormRenderer = props => {
 
     const parseRule = RRule.fromString(recurrenceRule).options;
 
-    if (parseRule.freq === 1 && parseRule.count) {
+    if (parseRule.freq === 3 && parseRule.count) {
       return recList[0].value;
     }
 
-    return recList.find(i => {
-      if (parseRule.freq === 1 && !parseRule.count) {
-        return null;
-      }
+    if (parseRule.freq === 3 && !parseRule.count) {
+      return recList[1].value;
+    }
 
-      return i.freq === parseRule.freq;
-    })?.value;
+    return recList.find(i => i.freq === parseRule.freq)?.value;
   }, [recurrenceRule, recList]);
 
   if ((!campaignName && (currentItemId || isCreateDublicate)) || loading) return <Loading />;
