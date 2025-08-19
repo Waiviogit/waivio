@@ -51,8 +51,9 @@ const ImageSetter = ({
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+
   const shouldShowUpload = isAiChat
-    ? currentImages.length <= 2
+    ? currentImages.length < 2
     : isMultiple || !currentImages.length;
   const initialState = {
     image: '',

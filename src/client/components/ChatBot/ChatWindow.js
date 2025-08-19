@@ -46,6 +46,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOkayBtn, setIsOkayBtn] = useState(false);
   const [currentImage, setCurrentImage] = useState([]);
+  const [loadedImages, setLoadedImages] = useState([]);
 
   const dispatch = useDispatch();
   const lastSelection = useSelector(getLastSelection);
@@ -76,6 +77,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
+    setCurrentImage([...currentImage, ...loadedImages]);
     setIsOkayBtn(true);
     setIsOpen(true);
     setIsModal(false);
@@ -101,7 +103,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const onLoadingImage = value => setLoading(value);
 
   const getImages = image => {
-    setCurrentImage([...currentImage, ...image?.slice(0, 2)]);
+    setLoadedImages(image?.slice(0, 2));
     setMessage('/imagine \n ');
   };
 
@@ -111,21 +113,27 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const sendMessage = mess => {
     dispatch(setChatBotId());
-    const imageList = currentImage?.map(i => i?.src)?.join(' ');
-    const question =
-      typeof mess === 'string' ? `${mess}\n ${imageList}` : `${message}\n ${imageList}`;
+    const textFromUser = typeof mess === 'string' ? mess : message;
+
+    const imageRegex = /(https?:\/\/[^\s]+(?:waivio\.nyc3\.digitaloceanspaces[^\s]*|\.(?:jpg|jpeg|png|webp)))/i;
+    const matchedLinks = textFromUser.match(imageRegex) || [];
+    const imageList = [...currentImage.map(i => i?.src), ...matchedLinks].slice(0, 2);
+    const cleanText = textFromUser.replace(imageRegex, '').trim();
+
+    const question = `${cleanText}\n${imageList.join(' ')}`.trim();
+
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
 
     if (isEmpty(chatId)) Cookie.set(CHAT_ID, id);
+
     if (!isEmpty(question) && !loading) {
       dispatch(setChatBotMessage(newMessage));
       setMessage('');
       setCurrentImage([]);
       setLoading(true);
-      const images = currentImage?.map(i => i?.src);
 
-      sendChatBotQuestion(question, id, authUser, images).then(res => {
+      sendChatBotQuestion(question, id, authUser, imageList).then(res => {
         const resutText =
           res.message || isEmpty(res.result.kwargs.content)
             ? 'Sorry, an error has occurred.'
@@ -457,7 +465,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           wrapClassName="Settings__modal"
           style={{ zIndex: 2500 }}
           onCancel={handleOpenModal}
-          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
+          okButtonProps={{ disabled: isLoading || isEmpty(loadedImages) }}
           cancelButtonProps={{ disabled: isLoading }}
           visible={isModal}
           onOk={handleOnOk}
