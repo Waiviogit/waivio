@@ -2717,6 +2717,27 @@ export const likePost = body => {
   );
 };
 
+export const voteUpdatesPost = (wobj, body) => {
+  const guestToken = getGuestAccessToken();
+
+  return (
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobj}${config.voteField}`, {
+      headers: {
+        ...headers,
+        'access-token': guestToken || Cookie.get('access_token'),
+        'waivio-auth': Boolean(guestToken),
+        'hive-auth': Boolean(Cookie.get('auth')),
+      },
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+      // .then(handleErrors)
+      .then(res => res.json())
+      .then(response => response)
+      .catch(e => e)
+  );
+};
+
 export const getHiveDelegate = username =>
   fetch(`${config.apiPrefix}${config.user}/${username}${config.delegation}`, {
     headers,
