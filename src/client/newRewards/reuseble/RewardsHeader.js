@@ -31,7 +31,7 @@ const RewardsHeader = ({ proposition, intl }) => {
         return (
           <React.Fragment>
             Contest time! Your chance to win $
-            {round(proposition?.contestRewards?.[0]?.rewardInUSD, 2)}
+            {round(proposition?.contestRewards?.[0]?.rewardInUSD, 2)}!
           </React.Fragment>
         );
 

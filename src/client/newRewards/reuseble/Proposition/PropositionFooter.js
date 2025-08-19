@@ -23,7 +23,7 @@ import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
 import { getIsSocial, getIsWaivio } from '../../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
-import { getDaysLeftForNew } from '../../../rewards/rewardsHelper';
+import { getDaysLeftForNew, campaignTypes } from '../../../rewards/rewardsHelper';
 import ReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
 
 import './Proposition.less';
@@ -33,7 +33,11 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
-  const isMentions = proposition?.type === 'mentions';
+  const isMentions = [
+    campaignTypes.MENTIONS,
+    campaignTypes.GIVEAWAYS_OBJECT,
+    campaignTypes.CONTESTS_OBJECT,
+  ].includes(proposition?.type);
   const propositionFooterContainerClassList = classnames('Proposition-new__footer-container', {
     'Proposition-new__footer-container--noEligible': proposition.notEligible,
     'Proposition-new__footer-container--reserved': type === 'reserved',
