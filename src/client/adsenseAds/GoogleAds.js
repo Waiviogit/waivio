@@ -58,59 +58,52 @@ const GoogleAds = ({
     const hideEmptyAds = () => {
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
-
         const iframe = ins?.querySelector('iframe');
 
-        const isInsEmpty = !ins || ins.childNodes.length === 0;
+        // only consider truly empty after iframe load attempt
+        const isInsEmpty = !ins || (!iframe && ins.childNodes.length === 0);
 
-        if (isInsEmpty || !iframe) {
+        if (isInsEmpty) {
           ad.classList.add('hidden-ad');
         }
       });
-
-      // document.querySelectorAll('.slick-slide').forEach(slide => {
-      //   const ad = slide.querySelector('.google-ads');
-      //   const ins = ad?.querySelector('ins');
-      //   const iframe = ins?.querySelector('iframe');
-      //   const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
-      //
-      //   if (isInsEmpty || !iframe) {
-      //     slide.classList.add('hidden-ad');
-      //   }
-      // });
     };
 
-    const timer = setTimeout(() => {
+    const tryPushAd = () => {
       if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
           console.log('✅ Adsense pushed');
 
+          // allow more time before checking if filled
           setTimeout(() => {
             const adElement = adRef.current;
             const ins = adElement?.querySelector('ins');
             const iframe = ins?.querySelector('iframe');
             const adStatus = adElement?.getAttribute('data-ad-status');
 
-            const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
+            const isInsEmpty = !ins || (!iframe && ins.innerHTML.trim() === '');
 
-            if (isInsEmpty || !iframe || adStatus === 'unfilled') {
+            if (isInsEmpty || adStatus === 'unfilled') {
               setVisible(false);
             }
 
             hideEmptyAds();
-          }, 2500);
+          }, 4000); // wait longer before marking empty
         } catch (e) {
           console.error('AdSense error', e);
           setVisible(false);
         }
       }
-    }, 300);
+    };
+
+    const timer = setTimeout(tryPushAd, 500);
 
     const resizeHandler = () => {
       setTimeout(() => {
         hideEmptyAds();
+        tryPushAd();
       }, 1000);
     };
 
@@ -149,8 +142,8 @@ const GoogleAds = ({
     <div className={wrapperClass}>
       <ins
         {...insAttributes}
+        className={classNames(insAttributes.className, { 'list-item': listItem })}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        {...(listItem ? { className: 'list-item' } : {})}
         ref={adRef}
       />
     </div>
