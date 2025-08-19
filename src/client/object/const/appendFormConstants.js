@@ -225,9 +225,9 @@ export const fieldsRules = {
         intlMeta: { value: 100 },
       },
     },
-    // {
-    //   validator: true,
-    // },
+    {
+      validator: true,
+    },
   ],
   [optionsFields.value]: [
     {
@@ -253,9 +253,9 @@ export const fieldsRules = {
         intlMeta: { value: 100 },
       },
     },
-    // {
-    //   validator: true,
-    // },
+    {
+      validator: true,
+    },
   ],
   [optionsFields.position]: [
     {
@@ -272,9 +272,9 @@ export const fieldsRules = {
         intlMeta: { value: 100 },
       },
     },
-    // {
-    //   validator: true,
-    // },
+    {
+      validator: true,
+    },
   ],
   [objectFields.affiliateUrlTemplate]: [
     {
@@ -288,13 +288,13 @@ export const fieldsRules = {
       },
     },
   ],
-  [optionsFields.image]: [
+  [objectFields.options]: [
     {
       transform: value => value && value.toLowerCase(),
     },
-    // {
-    //   validator: true,
-    // },
+    {
+      validator: true,
+    },
   ],
   [objectFields.language]: [
     {
