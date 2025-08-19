@@ -19,6 +19,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { checkUserFollowing, checkUserInBlackList, getContent } from '../../../waivioApi/ApiClient';
 import { followUser, unfollowUser } from '../../../store/userStore/userActions';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
+import { campaignTypes } from '../../rewards/rewardsHelper';
 import ids from '../BlackList/constants';
 import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
@@ -44,8 +45,9 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const isUser = authUserName === proposition?.userName;
   const bothStatus = isUser && isSponsor;
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
-  const isMentions = proposition?.type === 'mentions';
-  const isGiveaways = proposition?.type === 'giveaways';
+  const isGiveaways = [campaignTypes.GIVEAWAYS, campaignTypes.CONTESTS_OBJECT].includes(
+    proposition?.type,
+  );
 
   useEffect(() => {
     if (isVisiblePopover && !bothStatus) {
@@ -420,8 +422,14 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
       }
 
       case 'completed': {
-        const mainList =
-          isMentions || isGiveaways ? [openReview, report] : [viewReservation, openReview, report];
+        const mainList = [
+          campaignTypes.CONTESTS_OBJECT,
+          campaignTypes.MENTIONS,
+          campaignTypes.GIVEAWAYS,
+          campaignTypes.GIVEAWAYS_OBJECT,
+        ].includes(proposition?.type)
+          ? [openReview, report]
+          : [viewReservation, openReview, report];
 
         if (isGiveaways)
           return isSponsor
@@ -433,21 +441,41 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           : mainList;
       }
       case 'rejected':
-        if (isMentions || isGiveaways) return isSponsor ? [reinstate, ...toolList] : [];
+        if (
+          [
+            campaignTypes.CONTESTS_OBJECT,
+            campaignTypes.MENTIONS,
+            campaignTypes.GIVEAWAYS,
+            campaignTypes.GIVEAWAYS_OBJECT,
+          ].includes(proposition?.type)
+        )
+          return isSponsor ? [reinstate, ...toolList] : [];
 
         return isSponsor
           ? [viewReservation, rejectionNote, reinstate, ...toolList]
           : [viewReservation, rejectionNote];
       case 'unassigned':
       case 'expired': {
-        const mainList = isMentions || isGiveaways ? [] : [viewReservation];
+        const mainList = [
+          campaignTypes.CONTESTS_OBJECT,
+          campaignTypes.MENTIONS,
+          campaignTypes.GIVEAWAYS,
+          campaignTypes.GIVEAWAYS_OBJECT,
+        ].includes(proposition?.type)
+          ? []
+          : [viewReservation];
 
         if (bothStatus || isUser) return mainList;
 
         return [...mainList, ...toolList];
       }
       default:
-        return isMentions
+        return [
+          campaignTypes.CONTESTS_OBJECT,
+          campaignTypes.MENTIONS,
+          campaignTypes.GIVEAWAYS,
+          campaignTypes.GIVEAWAYS_OBJECT,
+        ].includes(proposition?.type)
           ? [realeaseRewards, ...toolList]
           : [realeaseRewards, viewReservation, ...toolList];
     }

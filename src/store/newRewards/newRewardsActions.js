@@ -6,7 +6,7 @@ import {
   getObjectName,
   getObjectUrlForLink,
 } from '../../common/helpers/wObjectHelper';
-import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
+import { getNewDetailsBody, campaignTypes } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
@@ -261,7 +261,12 @@ export const rejectAuthorReview = proposition => (
   ];
 
   const method = () =>
-    ['mentions', 'giveaways'].includes(proposition?.type)
+    [
+      campaignTypes.MENTIONS,
+      campaignTypes.GIVEAWAYS,
+      campaignTypes.GIVEAWAYS_OBJECT,
+      campaignTypes.CONTESTS_OBJECT,
+    ].includes(proposition?.type)
       ? steemConnectAPI.rejectMentionRewards(
           authName,
           proposition.userName,
