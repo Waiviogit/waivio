@@ -57,16 +57,25 @@ const GoogleAds = ({
   useEffect(() => {
     if (!adRef.current || !window.adsbygoogle) return;
 
-    try {
-      window.adsbygoogle.push({});
-      // eslint-disable-next-line no-console
-      console.log('✅ Adsense pushed');
-    } catch (e) {
-      console.error('AdSense error', e);
-      setVisible(false);
-    }
-
     const ins = adRef.current;
+
+    const pushAd = () => {
+      if (ins.offsetWidth > 0) {
+        try {
+          window.adsbygoogle.push({});
+          // eslint-disable-next-line no-console
+          console.log('✅ Adsense pushed');
+        } catch (e) {
+          console.error('AdSense error', e);
+          setVisible(false);
+        }
+      } else {
+        // Retry after 100ms until width > 0
+        setTimeout(pushAd, 100);
+      }
+    };
+
+    pushAd();
 
     const observer = new MutationObserver(() => {
       const status = ins.getAttribute('data-ad-status');
