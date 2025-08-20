@@ -1908,6 +1908,7 @@ class AppendForm extends Component {
         if (current.options) {
           isSame = isSame && current.options === parsed.image;
         }
+
         return isSame;
       });
 

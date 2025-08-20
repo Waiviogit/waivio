@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 import './GoogleAds.less';
@@ -54,15 +55,28 @@ const GoogleAds = ({
   }
 
   useEffect(() => {
+    // const hideEmptyAds = () => {
+    //   document.querySelectorAll('.google-ads').forEach(ad => {
+    //     const ins = ad.querySelector('ins');
+    //     const iframe = ins?.querySelector('iframe');
+    //     const isInsEmpty = !ins || (!iframe && ins.childNodes.length === 0);
+    //
+    //     if (isInsEmpty) {
+    //       ad.classList.add('hidden-ad');
+    //     }
+    //   });
+    // };
     const hideEmptyAds = () => {
-      document.querySelectorAll('.google-ads').forEach(ad => {
-        const ins = ad.querySelector('ins');
-        const iframe = ins?.querySelector('iframe');
-        const isInsEmpty = !ins || (!iframe && ins.childNodes.length === 0);
+      document.querySelectorAll('.google-ads ins.adsbygoogle').forEach(ins => {
+        const isUnfilled = ins.getAttribute('data-ad-status') === 'unfilled';
 
-        if (isInsEmpty) {
-          ad.classList.add('hidden-ad');
+        if (isUnfilled) {
+          ins.parentElement?.classList.add('hidden-ad');
+        } else {
+          ins.parentElement?.classList.remove('hidden-ad');
         }
+        // eslint-disable-next-line no-console
+        console.log('Ad status:', ins.getAttribute('data-ad-status'));
       });
     };
 
@@ -120,11 +134,8 @@ const GoogleAds = ({
       observer.disconnect();
     };
   }, []);
-  // eslint-disable-next-line no-console
-  console.log(insAttributes, 'insAttributes');
-  // eslint-disable-next-line no-console
-  console.log(visible, 'visible');
-  // if (!visible || !insAttributes || isEmpty(unitCode)) return null;
+
+  if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
   const wrapperClass = classNames('google-ads', {
     'in-post': inPost,
