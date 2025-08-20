@@ -53,7 +53,6 @@ const GoogleAds = ({
   if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
     insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
   }
-
   useEffect(() => {
     if (!adRef.current || !window.adsbygoogle) return;
 
@@ -77,7 +76,7 @@ const GoogleAds = ({
 
     pushAd();
 
-    const observer = new MutationObserver(() => {
+    const interval = setInterval(() => {
       const status = ins.getAttribute('data-ad-status');
 
       if (status === 'unfilled' || !ins.innerHTML.trim()) {
@@ -89,13 +88,13 @@ const GoogleAds = ({
       }
 
       // eslint-disable-next-line no-console
-      console.log('Ad status changed:', status);
-    });
-
-    observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
+      console.log('Ad status checked:', status);
+    }, 500);
 
     // eslint-disable-next-line consistent-return
-    return () => observer.disconnect();
+    return () => {
+      clearInterval(interval);
+    };
   }, [adRef.current]);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
