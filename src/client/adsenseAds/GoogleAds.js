@@ -55,85 +55,39 @@ const GoogleAds = ({
   }
 
   useEffect(() => {
-    // const hideEmptyAds = () => {
-    //   document.querySelectorAll('.google-ads').forEach(ad => {
-    //     const ins = ad.querySelector('ins');
-    //     const iframe = ins?.querySelector('iframe');
-    //     const isInsEmpty = !ins || (!iframe && ins.childNodes.length === 0);
-    //
-    //     if (isInsEmpty) {
-    //       ad.classList.add('hidden-ad');
-    //     }
-    //   });
-    // };
-    const hideEmptyAds = () => {
-      document.querySelectorAll('.google-ads ins.adsbygoogle').forEach(ins => {
-        const isUnfilled = ins.getAttribute('data-ad-status') === 'unfilled';
+    if (!adRef.current || !window.adsbygoogle) return;
 
-        if (isUnfilled) {
-          ins.parentElement?.classList.add('hidden-ad');
-        } else {
-          ins.parentElement?.classList.remove('hidden-ad');
-        }
-        // eslint-disable-next-line no-console
-        console.log('Ad status:', ins.getAttribute('data-ad-status'));
-      });
-    };
+    try {
+      window.adsbygoogle.push({});
+      // eslint-disable-next-line no-console
+      console.log('✅ Adsense pushed');
+    } catch (e) {
+      console.error('AdSense error', e);
+      setVisible(false);
+    }
 
-    const tryPushAd = () => {
-      if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
-        try {
-          window.adsbygoogle.push({});
-          // eslint-disable-next-line no-console
-          console.log('✅ Adsense pushed');
-
-          setTimeout(() => {
-            const adElement = adRef.current;
-            const ins = adElement?.querySelector('ins');
-            const iframe = ins?.querySelector('iframe');
-            const adStatus = adElement?.getAttribute('data-ad-status');
-
-            const isInsEmpty = !ins || (!iframe && ins.innerHTML.trim() === '');
-
-            if (isInsEmpty || adStatus === 'unfilled') {
-              setVisible(false);
-            }
-
-            hideEmptyAds();
-          }, 4000);
-        } catch (e) {
-          console.error('AdSense error', e);
-          setVisible(false);
-        }
-      }
-    };
-
-    const timer = setTimeout(tryPushAd, 500);
-
-    const resizeHandler = () => {
-      setTimeout(() => {
-        hideEmptyAds();
-        tryPushAd();
-      }, 1000);
-    };
-
-    window.addEventListener('resize', resizeHandler);
+    const ins = adRef.current;
 
     const observer = new MutationObserver(() => {
-      hideEmptyAds();
+      const status = ins.getAttribute('data-ad-status');
+
+      if (status === 'unfilled' || !ins.innerHTML.trim()) {
+        setVisible(false);
+        ins.parentElement?.classList.add('hidden-ad');
+      } else {
+        setVisible(true);
+        ins.parentElement?.classList.remove('hidden-ad');
+      }
+
+      // eslint-disable-next-line no-console
+      console.log('Ad status changed:', status);
     });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(ins, { attributes: true, attributeFilter: ['data-ad-status'] });
 
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', resizeHandler);
-      observer.disconnect();
-    };
-  }, []);
+    // eslint-disable-next-line consistent-return
+    return () => observer.disconnect();
+  }, [adRef.current]);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
