@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
@@ -59,8 +58,6 @@ const GoogleAds = ({
       document.querySelectorAll('.google-ads').forEach(ad => {
         const ins = ad.querySelector('ins');
         const iframe = ins?.querySelector('iframe');
-
-        // only consider truly empty after iframe load attempt
         const isInsEmpty = !ins || (!iframe && ins.childNodes.length === 0);
 
         if (isInsEmpty) {
@@ -76,7 +73,6 @@ const GoogleAds = ({
           // eslint-disable-next-line no-console
           console.log('✅ Adsense pushed');
 
-          // allow more time before checking if filled
           setTimeout(() => {
             const adElement = adRef.current;
             const ins = adElement?.querySelector('ins');
@@ -90,7 +86,7 @@ const GoogleAds = ({
             }
 
             hideEmptyAds();
-          }, 4000); // wait longer before marking empty
+          }, 4000);
         } catch (e) {
           console.error('AdSense error', e);
           setVisible(false);
@@ -124,8 +120,11 @@ const GoogleAds = ({
       observer.disconnect();
     };
   }, []);
-
-  if (!visible || !insAttributes || isEmpty(unitCode)) return null;
+  // eslint-disable-next-line no-console
+  console.log(insAttributes, 'insAttributes');
+  // eslint-disable-next-line no-console
+  console.log(visible, 'visible');
+  // if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
   const wrapperClass = classNames('google-ads', {
     'in-post': inPost,
