@@ -108,7 +108,14 @@ class AddItemModal extends Component {
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
         const appendAction = () =>
           dup
-            ? this.props.voteAppends(dup.author, dup.permlink, userUpVotePower, currentUserName)
+            ? this.props.voteAppends(
+                dup.author,
+                dup.permlink,
+                userUpVotePower,
+                currentUserName,
+                true,
+                true,
+              )
             : this.props.appendObject(appendData, {
                 votePercent: isManualSelected
                   ? Number(

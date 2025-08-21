@@ -253,7 +253,7 @@ const Toolbar = props => {
 };
 
 Toolbar.propTypes = {
-  editorNode: PropTypes.node.isRequired,
+  editorNode: PropTypes.node,
   intl: PropTypes.shape().isRequired,
 };
 

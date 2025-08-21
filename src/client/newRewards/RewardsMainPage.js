@@ -63,7 +63,9 @@ const RewardsMainPage = props => {
 };
 
 RewardsMainPage.propTypes = {
-  route: PropTypes.arrayOf({ routes: PropTypes.shape({}) }).isRequired,
+  route: PropTypes.shape({
+    routes: PropTypes.arrayOf(PropTypes.shape({ routes: PropTypes.shape({}) })),
+  }).isRequired,
 };
 
 export default RewardsMainPage;

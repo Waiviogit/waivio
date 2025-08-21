@@ -52,7 +52,7 @@ SocialButtons.propTypes = {
   className: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   lastError: PropTypes.string,
-  setLastError: PropTypes.string,
+  setLastError: PropTypes.func,
 };
 
 SocialButtons.defaultProps = {

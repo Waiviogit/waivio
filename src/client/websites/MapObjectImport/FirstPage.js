@@ -87,7 +87,7 @@ const FirstPage = ({
 );
 
 FirstPage.propTypes = {
-  openModal: PropTypes.func.isRequired,
+  openModal: PropTypes.func,
   setCoordinates: PropTypes.func.isRequired,
   setMarker: PropTypes.func.isRequired,
   onBoundsChanged: PropTypes.func.isRequired,
