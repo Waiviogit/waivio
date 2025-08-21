@@ -269,6 +269,7 @@ class AppendForm extends Component {
     currentTags: [],
     fileList: [],
     currentAlbum: '',
+    errorText: '',
     currentImages: [],
     selectedUserBlog: [],
     selectedUsers: [],
@@ -1891,13 +1892,29 @@ class AppendForm extends Component {
           this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
       );
     }
-    // if (currentField === objectFields.options) {
-    //   return filtered.some(
-    //     f =>
-    //       this.getCurrentObjectBody(currentField).category === parseJSON(f.body).category &&
-    //       this.getCurrentObjectBody(currentField).value === parseJSON(f.body).value,
-    //   );
-    // }
+
+    if (currentField === objectFields.options) {
+      const current = this.getCurrentObjectBody(currentField);
+
+      const isDuplicate = filtered.some(f => {
+        const parsed = parseJSON(f.body);
+
+        let isSame = current.category === parsed.category && current.value === parsed.value;
+
+        if (current.position) {
+          isSame = isSame && current.position === parsed.position;
+        }
+
+        if (current.options) {
+          isSame = isSame && current.options === parsed.image;
+        }
+
+        return isSame;
+      });
+
+      this.setState({ errorText: isDuplicate ? 'The field with this value already exists' : '' });
+    }
+
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
@@ -1943,9 +1960,9 @@ class AppendForm extends Component {
     const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
     const formFields = form.getFieldsValue();
-    const isDuplicated = formFields[rule.field]
-      ? this.isDuplicate(currentLocale, currentField)
-      : false;
+    const isDuplicated =
+      (currentField === objectFields.options || formFields[rule.field]) &&
+      this.isDuplicate(currentLocale, currentField);
 
     if (currentField === objectFields.productWeight || currentField === objectFields.dimensions) {
       if (value > 9007199254740991) {
@@ -2033,13 +2050,14 @@ class AppendForm extends Component {
   onLoadingImage = value => this.setState({ isLoadingImage: value });
 
   getImages = image => {
-    const { getFieldValue } = this.props.form;
+    const { getFieldValue, validateFields } = this.props.form;
     const currentField = getFieldValue('currentField');
 
     if (image.length) {
       currentField === objectFields.productId
         ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: image[0].src })
         : this.props.form.setFieldsValue({ [currentField]: image[0].src });
+      if (currentField === objectFields.options) validateFields([currentField]);
     } else {
       currentField === objectFields.productId
         ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: '' })
@@ -3388,7 +3406,7 @@ class AppendForm extends Component {
             <div className="image-wrapper">
               <Form.Item>
                 {getFieldDecorator(objectFields.options, {
-                  // rules: this.getFieldRules(objectFields.productIdImage),
+                  rules: this.getFieldRules(objectFields.options),
                 })(
                   <ImageSetter
                     onImageLoaded={this.getImages}
@@ -3405,6 +3423,12 @@ class AppendForm extends Component {
                 defaultMessage="Image is optional, it will be resized to fit into a square."
               />
             </p>
+            {!isEmpty(this.state.errorText) && (
+              <>
+                <br />
+                <p className={'error-text text-start'}>{this.state.errorText}</p>
+              </>
+            )}
           </React.Fragment>
         );
       }
@@ -4553,7 +4577,7 @@ class AppendForm extends Component {
     const r = form.getFieldsError(errorObjectFields[currentField]);
     const isError = errorObjectFields[currentField]?.some(i => r[i]);
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { loading } = this.state;
+    const { loading, errorText } = this.state;
     const isCustomSortingList =
       hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;
@@ -4636,7 +4660,7 @@ class AppendForm extends Component {
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           selectWobj={this.props.wObject}
-          disabled={this.isSubmitButtonDisabled() || isError}
+          disabled={this.isSubmitButtonDisabled() || isError || !isEmpty(errorText)}
         />
       </Form>
     );

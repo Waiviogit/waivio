@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Drawer, Icon, Input, message as antdMessage, Modal, Tooltip } from 'antd';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
+import fetch from 'isomorphic-fetch';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty, isNil, map } from 'lodash';
@@ -77,7 +78,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
-    setMessage(`/imagine \n  ${message}`);
+    setMessage(message?.includes('/imagine') ? message : `/imagine \n  ${message}`);
     setCurrentImage([...currentImage, ...loadedImages]);
     setIsOkayBtn(true);
     setIsOpen(true);
@@ -274,6 +275,91 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       };
     }
   }, []);
+
+  const handleImageUpload = (blob, linkMethod = false) => {
+    antdMessage.info('Uploading image');
+
+    const formData = new FormData();
+    const currentMethod = linkMethod ? 'imageUrl' : 'file';
+
+    formData.append(currentMethod, blob);
+
+    const currentLocation = window && window.location.hostname;
+
+    let url;
+
+    if (currentLocation === 'waiviodev.com') {
+      url = `https://waiviodev.com/api/image`;
+    } else if (currentLocation === 'waivio') {
+      url = `https://waivio.com/api/image`;
+    } else {
+      url = `https://www.waivio.com/api/image`;
+    }
+
+    return fetch(url, {
+      body: formData,
+      method: 'POST',
+    })
+      .then(res => res.json())
+      .then(res => {
+        setCurrentImage([...currentImage, { src: res.image }]);
+        setMessage(message?.includes('/imagine') ? message : `/imagine\n ${message}`);
+      })
+      .catch(() => {
+        antdMessage.error("Couldn't upload image");
+      });
+  };
+
+  useEffect(() => {
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (!textArea) return;
+
+    const handlePaste = async e => {
+      const clipboardItems = await navigator.clipboard.read().catch(() => []);
+
+      if (!clipboardItems.length) return;
+
+      const item = clipboardItems[0];
+
+      if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+        const type = item.types.includes('image/png') ? 'image/png' : 'image/jpeg';
+        const blob = await item.getType(type);
+
+        handleImageUpload(blob);
+
+        e.preventDefault();
+
+        return;
+      }
+
+      if (item.types.includes('text/html')) {
+        const htmlBlob = await item.getType('text/html');
+        const htmlText = await htmlBlob.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+        const img = doc.querySelector('img');
+
+        if (img?.src) {
+          if (img.src.startsWith('blob:')) {
+            // 🔑 fetch and recreate a stable URL
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+
+            handleImageUpload(blob);
+          }
+
+          e.preventDefault();
+        }
+      }
+    };
+
+    textArea.addEventListener('paste', handlePaste);
+
+    // eslint-disable-next-line consistent-return
+    return () => textArea.removeEventListener('paste', handlePaste);
+  }, [textAreaRef, setCurrentImage]);
+
   const handleRemoveImage = imageDetail => {
     const filteredImages = currentImage.filter(f => f.id !== imageDetail.id);
 
