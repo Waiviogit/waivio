@@ -172,8 +172,8 @@ export const Leaf = ({ attributes, children, leaf }) => {
 };
 
 Leaf.propTypes = {
-  leaf: PropTypes.shape().isRequired,
-  element: PropTypes.shape().isRequired,
-  attributes: PropTypes.shape().isRequired,
-  children: PropTypes.node.isRequired,
+  leaf: PropTypes.shape(),
+  element: PropTypes.shape(),
+  attributes: PropTypes.shape(),
+  children: PropTypes.node,
 };

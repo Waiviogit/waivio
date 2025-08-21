@@ -99,7 +99,7 @@ const TableToolbar = props => {
 
 TableToolbar.propTypes = {
   editor: PropTypes.shape().isRequired,
-  editorNode: PropTypes.node.isRequired,
+  editorNode: PropTypes.node,
   intl: PropTypes.shape().isRequired,
 };
 

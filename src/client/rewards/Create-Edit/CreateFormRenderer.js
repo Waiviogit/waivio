@@ -1,14 +1,15 @@
 import FormItem from 'antd/es/form/FormItem';
 import React, { useMemo } from 'react';
 import { RRule } from 'rrule';
-
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import moment from 'moment';
+import * as momentTZ from 'moment-timezone';
+import * as moment from 'moment';
 import { useSelector } from 'react-redux';
 import { isEmpty, map, get, includes, isNumber } from 'lodash';
 import { Link } from 'react-router-dom';
+
 import timezones, { getCurrUserTimezone } from '../../../common/constants/timezones';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -29,8 +30,15 @@ import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
 
-const getRecurrenceRuleArray = data => {
-  const today = moment(data);
+const getRecurrenceRuleArray = (data, timezone) => {
+  const dataToString = moment(data).format('YYYY-MM-DD HH:mm:ss');
+  const tz = timezones.find(z => z.label === timezone)?.value;
+  const today = moment(dataToString);
+  const dtstart = momentTZ
+    .tz(dataToString, tz)
+    .utc()
+    .toDate();
+
   const day = today.format('D');
   const nth = d => {
     const dString = String(d);
@@ -55,28 +63,33 @@ const getRecurrenceRuleArray = data => {
       value: new RRule({
         freq: RRule.DAILY,
         count: 1,
-        dtstart: today.toDate(),
+        dtstart,
       }).toString(),
+      freq: RRule.DAILY,
+      count: 1,
     },
     {
       label: 'Daily',
-      value: new RRule({ freq: RRule.DAILY, dtstart: today.toDate() }).toString(),
+      value: new RRule({ freq: RRule.DAILY, dtstart }).toString(),
+      freq: RRule.DAILY,
     },
     {
       label: `Weekly on ${today.format('dddd')}s`,
       value: new RRule({
         freq: RRule.WEEKLY,
         byweekday: RRule[today.format('ddd').toUpperCase()],
-        dtstart: today.toDate(),
+        dtstart,
       }).toString(),
+      freq: RRule.WEEKLY,
     },
     {
       label: `Monthly on the ${day}${nth(day)}`,
       value: new RRule({
         freq: RRule.MONTHLY,
         bymonthday: today.date(),
-        dtstart: today.toDate(),
+        dtstart,
       }).toString(),
+      freq: RRule.MONTHLY,
     },
     {
       label: `Annually on ${today.format('MMMM')} ${day}${nth(day)}`,
@@ -84,8 +97,9 @@ const getRecurrenceRuleArray = data => {
         freq: RRule.YEARLY,
         bymonth: today.month() + 1,
         bymonthday: today.date(),
-        dtstart: today.toDate(),
+        dtstart,
       }).toString(),
+      freq: RRule.YEARLY,
     },
   ];
 };
@@ -128,7 +142,7 @@ const CreateFormRenderer = props => {
     reachType,
     agreement,
     winners,
-    duration,
+    durationDays,
     qualifiedPayoutToken,
     contestJudgesAccount,
     recurrenceRule,
@@ -272,12 +286,36 @@ const CreateFormRenderer = props => {
     </div>
   );
 
-  const recList = useMemo(() => getRecurrenceRuleArray(getFieldValue('declarationTime')), [
-    getRecurrenceRuleArray,
-    getFieldValue('declarationTime'),
-  ]);
+  const recList = useMemo(
+    () => getRecurrenceRuleArray(getFieldValue('declarationTime'), getFieldValue('timezone')),
+    [getRecurrenceRuleArray, getFieldValue('declarationTime'), getFieldValue('timezone')],
+  );
 
-  if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
+  const declarationTime = useMemo(
+    () =>
+      recurrenceRule
+        ? moment(RRule.fromString(recurrenceRule).options.dtstart)
+        : moment().add(7, 'days'),
+    [recurrenceRule],
+  );
+
+  const recuRule = useMemo(() => {
+    if (!recurrenceRule) return recList[0]?.value;
+
+    const parseRule = RRule.fromString(recurrenceRule).options;
+
+    if (parseRule.freq === 3 && parseRule.count) {
+      return recList[0].value;
+    }
+
+    if (parseRule.freq === 3 && !parseRule.count) {
+      return recList[1].value;
+    }
+
+    return recList.find(i => i.freq === parseRule.freq)?.value;
+  }, [recurrenceRule, recList]);
+
+  if ((!campaignName && (currentItemId || isCreateDublicate)) || loading) return <Loading />;
 
   return (
     <div className="CreateRewardForm">
@@ -452,13 +490,14 @@ const CreateFormRenderer = props => {
                     min={1}
                     placeholder="Enter amount"
                     style={{ width: '100%' }}
+                    disabled={disabled}
                   />,
                 )}
               </FormItem>
             )}
             <FormItem label="Giveaway duration (days)">
               {getFieldDecorator('durationDays', {
-                initialValue: duration || 7,
+                initialValue: String(durationDays || 7),
                 rules: [{ required: true }],
                 validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
               })(
@@ -468,6 +507,7 @@ const CreateFormRenderer = props => {
                   min={1}
                   placeholder="Enter duration"
                   style={{ width: '100%' }}
+                  disabled={disabled}
                 />,
               )}
             </FormItem>
@@ -479,7 +519,7 @@ const CreateFormRenderer = props => {
               <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
                   {getFieldDecorator('declarationTime', {
-                    initialValue: moment().add(7, 'days'),
+                    initialValue: declarationTime,
                     rules: [{ required: true, message: 'Expiry date is required.' }],
                   })(
                     <DatePicker
@@ -497,6 +537,7 @@ const CreateFormRenderer = props => {
                       showToday={false}
                       format="YYYY-MM-DD hh:mm A"
                       style={{ width: '100%', marginRight: '10px' }}
+                      disabled={disabled}
                     />,
                   )}
                 </FormItem>
@@ -513,6 +554,7 @@ const CreateFormRenderer = props => {
                       filterOption={(input, option) =>
                         option?.props?.label.toLowerCase().includes(input.toLowerCase())
                       }
+                      disabled={disabled}
                     >
                       {timezones.map(tz => (
                         <Select.Option key={tz?.label} value={tz?.label} label={tz?.label}>
@@ -524,18 +566,23 @@ const CreateFormRenderer = props => {
                 </Form.Item>
               </div>
               <Form.Item label="">
-                {getFieldDecorator('recurrenceRule', {
-                  initialValue:
-                    recList.find(i => i.value === recurrenceRule)?.value || recList[0]?.value,
-                })(
-                  <Select showSearch optionFilterProp="label" dropdownMatchSelectWidth={false}>
-                    {recList.map(p => (
-                      <Select.Option key={p?.label} value={p?.value} label={p?.label}>
-                        {p?.label}
-                      </Select.Option>
-                    ))}
-                  </Select>,
-                )}
+                {declarationTime &&
+                  getFieldDecorator('recurrenceRule', {
+                    initialValue: recuRule,
+                  })(
+                    <Select
+                      disabled={disabled}
+                      showSearch
+                      optionFilterProp="label"
+                      dropdownMatchSelectWidth={false}
+                    >
+                      {recList.map(p => (
+                        <Select.Option key={p?.label} value={p?.value} label={p?.label}>
+                          {p?.label}
+                        </Select.Option>
+                      ))}
+                    </Select>,
+                  )}
                 <div className="CreateReward__field-caption">
                   The first campaign cycle ends on this date. If repetition is selected, the
                   campaign will repeat according to the chosen options until the expiry date.
@@ -806,7 +853,7 @@ const CreateFormRenderer = props => {
               valuePropName: 'checked',
               initialValue: qualifiedPayoutToken,
             })(
-              <Checkbox defaultChecked disabled={disabled}>
+              <Checkbox disabled={disabled}>
                 <span className="CreateReward__item-title" style={{ color: '#000' }}>
                   {fields.checkboxOnly.textBeforeLink}
                 </span>
@@ -937,10 +984,10 @@ CreateFormRenderer.propTypes = {
   budget: PropTypes.number,
   reward: PropTypes.number,
   winners: PropTypes.number,
-  duration: PropTypes.number,
+  durationDays: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
-  contestJudgesAccount: PropTypes.shape(),
+  contestJudgesAccount: PropTypes.arrayOf(PropTypes.string),
   receiptPhoto: PropTypes.bool,
   qualifiedPayoutToken: PropTypes.bool,
   minPhotos: PropTypes.number,
@@ -980,7 +1027,7 @@ CreateFormRenderer.propTypes = {
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
   contestRewards: PropTypes.arrayOf(PropTypes.shape()),
-  agreement: PropTypes.arrayOf(PropTypes.shape()),
+  agreement: PropTypes.shape(),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.shape()),
   pageObjects: PropTypes.arrayOf(PropTypes.shape()),
   compensationAccount: PropTypes.shape(),
@@ -988,8 +1035,8 @@ CreateFormRenderer.propTypes = {
   loading: PropTypes.bool.isRequired,
   parentPermlink: PropTypes.string,
   currency: PropTypes.string.isRequired,
-  reachType: PropTypes.string.isRequired,
-  payoutToken: PropTypes.string.isRequired,
+  reachType: PropTypes.string,
+  payoutToken: PropTypes.string,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,

@@ -30,7 +30,11 @@ const ImageSetter = ({
   labeledImage,
   isRequired,
   isTitle,
+  form,
+  isOptions = false,
   isDesktop = false,
+  isConfig = false,
+  isAiChat = false,
   setEditorState,
   getEditorState,
   addNewBlockAt,
@@ -49,6 +53,10 @@ const ImageSetter = ({
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  const shouldShowUpload = isAiChat
+    ? currentImages.length < 2
+    : isMultiple || !currentImages.length;
   const initialState = {
     image: '',
     allowZoomOut: true,
@@ -65,7 +73,7 @@ const ImageSetter = ({
     const objectUrl = URL.createObjectURL(imageFile);
 
     image.onload = () => {
-      const isLandscape = image.naturalWidth > image.naturalHeight;
+      const isLandscape = image.naturalWidth > image.naturalHeight && isConfig;
       const updatedInitialState = {
         ...initialState,
         image: imageFile,
@@ -347,7 +355,12 @@ const ImageSetter = ({
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
 
     setCurrentImages(filteredImages);
-
+    if (isOptions) {
+      form.setFieldsValue({
+        [objectFields.options]: undefined,
+      });
+      form.validateFields([objectFields.options]);
+    }
     if (getEditorState) {
       const contentState = getEditorState().getCurrentContent();
       const allBlocks = contentState.getBlockMap();
@@ -415,7 +428,7 @@ const ImageSetter = ({
       </div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
-          {map(currentImages, image => (
+          {map(isAiChat ? currentImages?.slice(0, 2) : currentImages, image => (
             <div className="image-box__preview" key={image.id}>
               <div
                 className="image-box__remove"
@@ -428,7 +441,7 @@ const ImageSetter = ({
             </div>
           ))}
           {isLoadingImage &&
-            map(fileImages, () => (
+            map(isAiChat ? fileImages?.slice(0, 2) : fileImages, () => (
               <div key={`${fileImages.size}/${fileImages.name}`} className="image-box__preview">
                 <div className="image-box__preview-loader">
                   <Icon type="loading" />
@@ -437,7 +450,7 @@ const ImageSetter = ({
             ))}
         </div>
       )}
-      {(isMultiple || !currentImages.length) && !isOpen && (
+      {shouldShowUpload && !isOpen && (
         <div className="image-upload">
           <input
             id="inputfile"
@@ -506,6 +519,7 @@ const ImageSetter = ({
 
 ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
+  form: PropTypes.shape(),
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
   onLoadingImage: PropTypes.func,
@@ -514,7 +528,9 @@ ImageSetter.propTypes = {
   defaultImage: PropTypes.string,
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
+  isAiChat: PropTypes.bool,
   setEditorState: PropTypes.func,
+
   getEditorState: PropTypes.func,
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
@@ -522,7 +538,9 @@ ImageSetter.propTypes = {
   labeledImage: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
+  isConfig: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  isOptions: PropTypes.bool,
   isUserAvatar: PropTypes.bool,
   isEditable: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),

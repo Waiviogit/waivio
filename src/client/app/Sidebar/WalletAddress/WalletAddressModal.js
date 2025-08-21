@@ -136,7 +136,7 @@ WalletAddressModal.propTypes = {
   address: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   symbol: PropTypes.string.isRequired,
-  setOpenModal: PropTypes.func.isRequired,
+  setOpenModal: PropTypes.func,
   openModal: PropTypes.bool.isRequired,
 };
 

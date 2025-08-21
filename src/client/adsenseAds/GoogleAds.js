@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import { getSettingsAds } from '../../store/websiteStore/websiteSelectors';
 import './GoogleAds.less';
@@ -53,84 +53,49 @@ const GoogleAds = ({
   if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
     insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
   }
-
   useEffect(() => {
-    const hideEmptyAds = () => {
-      document.querySelectorAll('.google-ads').forEach(ad => {
-        const ins = ad.querySelector('ins');
+    if (!adRef.current || !window.adsbygoogle) return;
 
-        const iframe = ins?.querySelector('iframe');
+    const ins = adRef.current;
 
-        const isInsEmpty = !ins || ins.childNodes.length === 0;
-
-        if (isInsEmpty || !iframe) {
-          ad.classList.add('hidden-ad');
-        }
-      });
-
-      // document.querySelectorAll('.slick-slide').forEach(slide => {
-      //   const ad = slide.querySelector('.google-ads');
-      //   const ins = ad?.querySelector('ins');
-      //   const iframe = ins?.querySelector('iframe');
-      //   const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
-      //
-      //   if (isInsEmpty || !iframe) {
-      //     slide.classList.add('hidden-ad');
-      //   }
-      // });
-    };
-
-    const timer = setTimeout(() => {
-      if (window.adsbygoogle && adRef.current && adRef.current.offsetWidth > 0) {
+    const pushAd = () => {
+      if (ins.offsetWidth > 0) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
           console.log('✅ Adsense pushed');
-
-          setTimeout(() => {
-            const adElement = adRef.current;
-            const ins = adElement?.querySelector('ins');
-            const iframe = ins?.querySelector('iframe');
-            const adStatus = adElement?.getAttribute('data-ad-status');
-
-            const isInsEmpty = !ins || ins.childNodes.length === 0 || ins.innerHTML.trim() === '';
-
-            if (isInsEmpty || !iframe || adStatus === 'unfilled') {
-              setVisible(false);
-            }
-
-            hideEmptyAds();
-          }, 2500);
         } catch (e) {
           console.error('AdSense error', e);
           setVisible(false);
         }
+      } else {
+        // Retry after 100ms until width > 0
+        setTimeout(pushAd, 100);
       }
-    }, 300);
-
-    const resizeHandler = () => {
-      setTimeout(() => {
-        hideEmptyAds();
-      }, 1000);
     };
 
-    window.addEventListener('resize', resizeHandler);
+    pushAd();
 
-    const observer = new MutationObserver(() => {
-      hideEmptyAds();
-    });
+    const interval = setInterval(() => {
+      const status = ins.getAttribute('data-ad-status');
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+      if (status === 'unfilled' || !ins.innerHTML.trim()) {
+        setVisible(false);
+        ins.parentElement?.classList.add('hidden-ad');
+      } else {
+        setVisible(true);
+        ins.parentElement?.classList.remove('hidden-ad');
+      }
 
+      // eslint-disable-next-line no-console
+      console.log('Ad status checked:', status);
+    }, 500);
+
+    // eslint-disable-next-line consistent-return
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', resizeHandler);
-      observer.disconnect();
+      clearInterval(interval);
     };
-  }, []);
+  }, [adRef.current]);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
@@ -149,8 +114,8 @@ const GoogleAds = ({
     <div className={wrapperClass}>
       <ins
         {...insAttributes}
+        className={classNames(insAttributes.className, { 'list-item': listItem })}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
-        {...(listItem ? { className: 'list-item' } : {})}
         ref={adRef}
       />
     </div>

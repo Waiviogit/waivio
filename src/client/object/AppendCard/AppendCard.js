@@ -63,31 +63,11 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(
-        props.post.author,
-        props.post.permlink,
-        0,
-        '',
-        false,
-        match.params[0],
-        null,
-        false,
-        true,
-      );
+      props.voteAppends(props.post.author, props.post.permlink, 0, '', false, true);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(
-        props.post.author,
-        props.post.permlink,
-        weight,
-        '',
-        false,
-        match.params[0],
-        null,
-        false,
-        true,
-      );
+      props.voteAppends(props.post.author, props.post.permlink, weight, '', false, true);
     }
   };
 
@@ -116,17 +96,7 @@ const AppendCard = props => {
               ?.result;
     }
 
-    props.voteAppends(
-      post.author,
-      post.permlink,
-      voteWeight,
-      '',
-      false,
-      match.params[0],
-      null,
-      false,
-      true,
-    );
+    props.voteAppends(post.author, post.permlink, voteWeight, '', false, true);
   };
 
   const handleCommentsClick = e => {
@@ -141,17 +111,7 @@ const AppendCard = props => {
 
   const handleLikeConfirm = () => {
     showSlider(false);
-    props.voteAppends(
-      props.post.author,
-      props.post.permlink,
-      sliderValue * 100,
-      '',
-      false,
-      match.params[0],
-      null,
-      false,
-      true,
-    );
+    props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100, '', false, true);
   };
 
   return (

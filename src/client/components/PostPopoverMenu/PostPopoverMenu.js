@@ -653,7 +653,7 @@ PostPopoverMenu.propTypes = {
     guestInfo: PropTypes.shape({
       userId: PropTypes.string,
     }),
-    campaigns: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    campaigns: PropTypes.arrayOf(PropTypes.shape({})),
     wobjects: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     author: PropTypes.string,
     body: PropTypes.string,

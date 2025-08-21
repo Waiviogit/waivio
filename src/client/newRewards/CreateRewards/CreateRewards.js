@@ -330,7 +330,7 @@ class CreateRewards extends React.Component {
     });
     let budget = Number(data.budget);
     let contestRewards = null;
-    let winnersNumber = data?.winnersNumber;
+    let winnersNumber = Number(data?.winnersNumber);
 
     if (data.type === campaignTypes.CONTESTS_OBJECT) {
       budget = Number(data.reward1) + Number(data.reward2) + Number(data.reward3);
@@ -393,10 +393,14 @@ class CreateRewards extends React.Component {
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
-      durationDays: +data.durationDays,
+      ...(data.durationDays ? { durationDays: +data.durationDays } : {}),
+      ...(winnersNumber ? { winnersNumber } : {}),
       recurrenceRule: data.recurrenceRule,
-      winnersNumber,
-      ...(data.type === campaignTypes?.MENTIONS
+      ...([
+        campaignTypes?.MENTIONS,
+        campaignTypes.CONTESTS_OBJECT,
+        campaignTypes.GIVEAWAYS_OBJECT,
+      ].includes(data.type)
         ? { qualifiedPayoutToken: data.qualifiedPayoutToken }
         : {}),
       ...(data.type === campaignTypes?.CONTESTS_OBJECT

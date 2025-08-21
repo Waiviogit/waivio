@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 import {
   getAuthorityFields,
   getChangedField,
@@ -87,7 +88,7 @@ export const getChangedWobjectField = (
   const isGuest = isGuestUser(state);
   // const updatePosts = ['pin'].includes(fieldName);
   // const fieldType = isNew ? fieldName : type;
-  const subscribeCallback = () =>
+  const subscribeCallback = () => {
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
@@ -110,6 +111,7 @@ export const getChangedWobjectField = (
       },
       meta: { isNew },
     });
+  };
 
   if (isGuest) {
     setTimeout(() => {
@@ -127,6 +129,41 @@ export const getChangedWobjectField = (
   }
 };
 
+export const getChangedWobjectFieldWithoutSoket = (
+  authorPermlink,
+  fieldName,
+  author,
+  permlink,
+  isNew = false,
+) => async (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const voter = getAuthenticatedUserName(state);
+
+  dispatch({
+    type: GET_CHANGED_WOBJECT_FIELD.ACTION,
+    payload: {
+      promise: getChangedField(authorPermlink, fieldName, author, permlink, locale, voter)
+        .then(res => {
+          dispatch({
+            type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
+            payload: res,
+            meta: { isNew },
+          });
+
+          return res;
+        })
+        .catch(() => {
+          // message.error('An error has occurred, please reload the page');
+          dispatch({
+            type: GET_CHANGED_WOBJECT_FIELD.ERROR,
+          });
+        }),
+    },
+    meta: { isNew },
+  });
+};
+
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');
 
 export const voteAppends = (
@@ -135,9 +172,6 @@ export const voteAppends = (
   weight = 10000,
   name = '',
   isNew = false,
-  type,
-  appendObj,
-  isUpdatesPage,
   isObjectPage,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -150,7 +184,6 @@ export const voteAppends = (
   const hideMessageFields = ['authority', 'pin'].includes(fieldName);
 
   if (!getIsAuthenticated(state)) return null;
-
   dispatch({
     type: VOTE_APPEND.START,
     payload: {
@@ -159,63 +192,101 @@ export const voteAppends = (
     },
   });
 
-  return steemConnectAPI
-    .vote(voter, author, permlink, weight)
-    .then(res => {
-      if (!hideMessageFields) {
-        message.success('Please wait, we are processing your update');
-      }
+  return (
+    steemConnectAPI
+      .vote(voter, author, permlink, weight)
+      // eslint-disable-next-line consistent-return
+      .then(async data => {
+        if (data.error) throw new Error();
 
-      isObjectPage &&
-        dispatch(
-          getChangedWobjectField(
-            wobj.author_permlink,
-            fieldName,
-            author,
-            permlink,
-            isNew,
-            type,
-            appendObj,
-            isUpdatesPage,
-            res.id || res?.result?.id,
-          ),
-        );
-    })
-    .catch(() =>
-      steemConnectAPI
-        .appendVote(voter, isGuest, author, permlink, weight)
-        .then(res => {
-          if (!hideMessageFields) {
-            message.success('Please wait, we are processing your update');
+        return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+          voter,
+          author,
+          permlink,
+          weight,
+        }).then(res => {
+          if (res.message) {
+            message.error(res.message);
+
+            return dispatch({
+              type: VOTE_APPEND.ERROR,
+              meta: { postId: post.id, voter, weight },
+            });
           }
 
-          dispatch(
-            getChangedWobjectField(
-              wobj.author_permlink,
-              fieldName,
+          isObjectPage &&
+            dispatch(
+              getChangedWobjectFieldWithoutSoket(
+                wobj.author_permlink,
+                fieldName,
+                author,
+                permlink,
+                isNew,
+              ),
+            );
+
+          return dispatch({
+            type: VOTE_APPEND.SUCCESS,
+            payload: res,
+            meta: { post, voter, weight },
+          });
+        });
+      })
+      .catch(e => {
+        steemConnectAPI
+          .appendVote(voter, isGuest, author, permlink, weight)
+          .then(res => {
+            if (!hideMessageFields) {
+              message.success('Please wait, we are processing your update');
+            }
+
+            return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+              voter,
               author,
               permlink,
-              isNew,
-              type,
-              appendObj,
-              isUpdatesPage,
-              res.id || res.result.id,
-            ),
-          );
-        })
-        .catch(e => {
-          dispatch({
-            type: VOTE_APPEND.ERROR,
-            payload: {
-              post,
-              permlink,
-            },
-          });
-          message.error(e.error_description);
+              weight,
+            }).then(response => {
+              if (res.message) {
+                message.error(response.message);
 
-          return e;
-        }),
-    );
+                return dispatch({
+                  type: VOTE_APPEND.ERROR,
+                  meta: { post, voter, weight },
+                });
+              }
+
+              isObjectPage &&
+                dispatch(
+                  getChangedWobjectFieldWithoutSoket(
+                    wobj.author_permlink,
+                    fieldName,
+                    author,
+                    permlink,
+                    isNew,
+                  ),
+                );
+
+              return dispatch({
+                type: VOTE_APPEND.SUCCESS,
+                payload: res,
+                meta: { postId: post.id, voter, weight },
+              });
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: VOTE_APPEND.ERROR,
+              payload: {
+                post,
+                permlink,
+              },
+            });
+            message.error(e.error_description);
+
+            return err;
+          });
+      })
+  );
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
@@ -420,9 +491,6 @@ const followAndLikeAfterCreateAppend = (
           data.votePower || 10000,
           data.field.name,
           true,
-          type,
-          appendObj,
-          isUpdatesPage,
           isObjectPage,
         ),
       );

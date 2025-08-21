@@ -380,6 +380,7 @@ const ShopWebsiteConfigurations = ({
       >
         {!isEmpty(modalsState) && (
           <ImageSetter
+            isConfig
             isEditable={['mobileLogo', 'desktopLogo'].includes(modalsState.type)}
             autoFocus
             isDesktop={['desktopLogo'].includes(modalsState.type)}

@@ -352,9 +352,7 @@ export const handlePinPost = (
                 )
               )?.result;
       }
-      dispatch(
-        voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false, 'pin'),
-      );
+      dispatch(voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false));
     }
   } else if (currUpdate.message) {
     dispatch(setObjectinAuthority(wobject.author_permlink));
@@ -377,17 +375,7 @@ export const handlePinPost = (
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
     getAuthority(false);
     dispatch(
-      voteAppends(
-        currUpdate.author,
-        currUpdate.permlink,
-        userVotingPower,
-        'pin',
-        false,
-        'pin',
-        null,
-        false,
-        true,
-      ),
+      voteAppends(currUpdate.author, currUpdate.permlink, userVotingPower, 'pin', false, true),
     );
   }
 };
