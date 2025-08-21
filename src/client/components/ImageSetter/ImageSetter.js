@@ -30,6 +30,8 @@ const ImageSetter = ({
   labeledImage,
   isRequired,
   isTitle,
+  form,
+  isOptions = false,
   isDesktop = false,
   isConfig = false,
   isAiChat = false,
@@ -353,7 +355,12 @@ const ImageSetter = ({
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
 
     setCurrentImages(filteredImages);
-
+    if (isOptions) {
+      form.setFieldsValue({
+        [objectFields.options]: undefined,
+      });
+      form.validateFields([objectFields.options]);
+    }
     if (getEditorState) {
       const contentState = getEditorState().getCurrentContent();
       const allBlocks = contentState.getBlockMap();
@@ -512,6 +519,7 @@ const ImageSetter = ({
 
 ImageSetter.propTypes = {
   intl: PropTypes.shape().isRequired,
+  form: PropTypes.shape(),
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
   onLoadingImage: PropTypes.func,
@@ -522,6 +530,7 @@ ImageSetter.propTypes = {
   isTitle: PropTypes.bool,
   isAiChat: PropTypes.bool,
   setEditorState: PropTypes.func,
+
   getEditorState: PropTypes.func,
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
@@ -531,6 +540,7 @@ ImageSetter.propTypes = {
   isOkayBtn: PropTypes.bool,
   isConfig: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  isOptions: PropTypes.bool,
   isUserAvatar: PropTypes.bool,
   isEditable: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
