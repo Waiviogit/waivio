@@ -1899,15 +1899,19 @@ class AppendForm extends Component {
       const isDuplicate = filtered.some(f => {
         const parsed = parseJSON(f.body);
 
-        let isSame = current.category === parsed.category && current.value === parsed.value;
+        const isSame =
+          current.category === parsed.category &&
+          current.value === parsed.value &&
+          current.position === parsed.position &&
+          current.options === parsed.image;
 
-        if (current.position) {
-          isSame = isSame && current.position === parsed.position;
-        }
-
-        if (current.options) {
-          isSame = isSame && current.options === parsed.image;
-        }
+        // if (current.position) {
+        //   isSame = isSame && current.position === parsed.position;
+        // }
+        //
+        // if (current.options) {
+        //   isSame = isSame && current.options === parsed.image;
+        // }
 
         return isSame;
       });
@@ -3409,6 +3413,8 @@ class AppendForm extends Component {
                   rules: this.getFieldRules(objectFields.options),
                 })(
                   <ImageSetter
+                    isOptions
+                    form={this.props.form}
                     onImageLoaded={this.getImages}
                     onLoadingImage={this.onLoadingImage}
                     labeledImage={'imageSetter_add_image'}
