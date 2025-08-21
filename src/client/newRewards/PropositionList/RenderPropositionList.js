@@ -232,8 +232,12 @@ RenderPropositionList.propTypes = {
   withoutFilters: PropTypes.bool,
   withoutSort: PropTypes.bool,
   withMap: PropTypes.bool,
-  customFilterConfig: PropTypes.shape({}).isRequired,
-  customSortConfig: PropTypes.arrayOf({}).isRequired,
+  customFilterConfig: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  customSortConfig: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+    }),
+  ).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,

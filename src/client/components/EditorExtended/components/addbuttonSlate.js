@@ -147,7 +147,7 @@ const AddButtonSlate = props => {
 };
 
 AddButtonSlate.propTypes = {
-  getEditorState: PropTypes.func.isRequired,
+  getEditorState: PropTypes.func,
   setEditorState: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
@@ -168,7 +168,7 @@ AddButtonSlate.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
-  editorNode: PropTypes.instanceOf().isRequired,
+  editorNode: PropTypes.instanceOf(),
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   initialPosTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

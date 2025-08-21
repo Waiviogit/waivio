@@ -77,7 +77,7 @@ const MapControllers = React.memo(props => {
 MapControllers.propTypes = {
   incrementZoom: PropTypes.func,
   decrementZoom: PropTypes.func,
-  showImport: PropTypes.func,
+  showImport: PropTypes.bool,
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
   showImportBtn: PropTypes.bool,
@@ -88,7 +88,7 @@ MapControllers.propTypes = {
   isAdmin: PropTypes.bool,
   settings: PropTypes.shape(),
   successCallback: PropTypes.func.isRequired,
-  openModal: PropTypes.func.isRequired,
+  openModal: PropTypes.func,
   rejectCallback: PropTypes.func.isRequired,
 };
 

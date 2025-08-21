@@ -173,7 +173,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
           >
             {rewards?.map(cap => (
               <Campaing
-                key={cap?._id}
+                key={cap?.guideName + cap?.lastCreated}
                 campain={{ ...cap, rewardInUSD: cap?.rewardInUSD || cap?.payout }}
               />
             ))}

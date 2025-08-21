@@ -37,7 +37,7 @@ const objectSearchInput = props => {
 
 objectSearchInput.propTypes = {
   handleObjectSelect: PropTypes.func.isRequired,
-  handleHashtag: PropTypes.func.isRequired,
+  handleHashtag: PropTypes.func,
   match: PropTypes.shape({
     params: PropTypes.shape({
       0: PropTypes.string,

@@ -68,7 +68,7 @@ class Story extends React.Component {
     handlePinPost: PropTypes.func,
     editThread: PropTypes.func,
     buildPost: PropTypes.func,
-    pinnedPostsUrls: PropTypes.arrayOf(),
+    pinnedPostsUrls: PropTypes.arrayOf(PropTypes.shape({})),
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,

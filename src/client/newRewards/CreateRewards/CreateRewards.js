@@ -394,8 +394,8 @@ class CreateRewards extends React.Component {
       frequencyAssign: +data.eligibleDays,
       countReservationDays: +data.reservationPeriod,
       ...(data.durationDays ? { durationDays: +data.durationDays } : {}),
+      ...(winnersNumber ? { winnersNumber } : {}),
       recurrenceRule: data.recurrenceRule,
-      winnersNumber,
       ...([
         campaignTypes?.MENTIONS,
         campaignTypes.CONTESTS_OBJECT,

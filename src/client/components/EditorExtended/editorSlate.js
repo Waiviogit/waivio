@@ -523,7 +523,7 @@ const EditorSlate = props => {
             onFocus={handleFocus}
             onBlur={() => {}}
             spellCheck={false}
-            autoCorrect={false}
+            autoCorrect={'off'}
             onPaste={e => {
               handlePastedFiles(e);
             }}
@@ -567,7 +567,7 @@ EditorSlate.propTypes = {
   setLastSelection: PropTypes.func,
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
-  handleHashtag: PropTypes.func.isRequired,
+  handleHashtag: PropTypes.func,
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   onFocus: PropTypes.func,

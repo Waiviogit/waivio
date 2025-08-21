@@ -173,104 +173,121 @@ export const voteAppends = (
   name = '',
   isNew = false,
   isObjectPage,
-) => async (dispatch, getState, { steemConnectAPI }) => {
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
-
-  if (!getIsAuthenticated(state)) return null;
-
   const fields = getAppendList(state);
-  const post = fields?.find(f => f.permlink === permlink) || null;
+  const isGuest = isGuestUser(state);
+  const post = fields?.find(field => field.permlink === permlink) || null;
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
-
-  const fieldName = name || post?.name;
+  const fieldName = name || post.name;
   const hideMessageFields = ['authority', 'pin'].includes(fieldName);
-  const metaBase = { postId: post?.id, voter, weight };
 
-  const dispatchStart = () =>
-    dispatch({
-      type: VOTE_APPEND.START,
-      payload: { post, permlink },
-    });
+  if (!getIsAuthenticated(state)) return null;
+  dispatch({
+    type: VOTE_APPEND.START,
+    payload: {
+      post,
+      permlink,
+    },
+  });
 
-  const applyFieldChangeIfNeeded = () => {
-    if (isObjectPage) {
-      dispatch(
-        getChangedWobjectFieldWithoutSoket(
-          wobj.author_permlink,
-          fieldName,
+  return (
+    steemConnectAPI
+      .vote(voter, author, permlink, weight)
+      // eslint-disable-next-line consistent-return
+      .then(async data => {
+        if (data.error) throw new Error();
+
+        return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+          voter,
           author,
           permlink,
-          isNew,
-        ),
-      );
-    }
-  };
+          weight,
+        }).then(res => {
+          if (res.message) {
+            message.error(res.message);
 
-  const postVoteUpdates = async () => {
-    const response = await ApiClient.voteUpdatesPost(wobj.author_permlink, {
-      voter,
-      author,
-      permlink,
-      weight,
-    });
+            return dispatch({
+              type: VOTE_APPEND.ERROR,
+              meta: { postId: post.id, voter, weight },
+            });
+          }
 
-    if (response?.message) {
-      message.error(response.message);
-      dispatch({ type: VOTE_APPEND.ERROR, meta: metaBase });
+          isObjectPage &&
+            dispatch(
+              getChangedWobjectFieldWithoutSoket(
+                wobj.author_permlink,
+                fieldName,
+                author,
+                permlink,
+                isNew,
+              ),
+            );
 
-      return null;
-    }
+          return dispatch({
+            type: VOTE_APPEND.SUCCESS,
+            payload: res,
+            meta: { post, voter, weight },
+          });
+        });
+      })
+      .catch(e => {
+        steemConnectAPI
+          .appendVote(voter, isGuest, author, permlink, weight)
+          .then(res => {
+            if (!hideMessageFields) {
+              message.success('Please wait, we are processing your update');
+            }
 
-    applyFieldChangeIfNeeded();
+            return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+              voter,
+              author,
+              permlink,
+              weight,
+            }).then(response => {
+              if (res.message) {
+                message.error(response.message);
 
-    dispatch({
-      type: VOTE_APPEND.SUCCESS,
-      payload: response,
-      meta: { post, voter, weight },
-    });
+                return dispatch({
+                  type: VOTE_APPEND.ERROR,
+                  meta: { post, voter, weight },
+                });
+              }
 
-    return response;
-  };
+              isObjectPage &&
+                dispatch(
+                  getChangedWobjectFieldWithoutSoket(
+                    wobj.author_permlink,
+                    fieldName,
+                    author,
+                    permlink,
+                    isNew,
+                  ),
+                );
 
-  try {
-    dispatchStart();
+              return dispatch({
+                type: VOTE_APPEND.SUCCESS,
+                payload: res,
+                meta: { postId: post.id, voter, weight },
+              });
+            });
+          })
+          .catch(err => {
+            dispatch({
+              type: VOTE_APPEND.ERROR,
+              payload: {
+                post,
+                permlink,
+              },
+            });
+            message.error(e.error_description);
 
-    const scVote = await steemConnectAPI.vote(voter, author, permlink, weight);
-
-    if (scVote?.error) throw new Error(scVote.error_description || 'Vote failed');
-
-    return await postVoteUpdates();
-  } catch (primaryErr) {
-    try {
-      const isGuest = isGuestUser(state);
-
-      await steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight);
-
-      if (!hideMessageFields) {
-        message.success('Please wait, we are processing your update');
-      }
-
-      return await postVoteUpdates();
-    } catch (fallbackErr) {
-      dispatch({
-        type: VOTE_APPEND.ERROR,
-        payload: { post, permlink },
-        meta: metaBase,
-      });
-
-      const desc =
-        fallbackErr?.error_description ||
-        primaryErr?.message ||
-        'Something went wrong while voting';
-
-      message.error(desc);
-
-      return null;
-    }
-  }
+            return err;
+          });
+      })
+  );
 };
-
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
 export const authorityVoteAppend = (author, authorPermlink, permlink, weight, isObjectPage) => (
@@ -474,9 +491,6 @@ const followAndLikeAfterCreateAppend = (
           data.votePower || 10000,
           data.field.name,
           true,
-          type,
-          appendObj,
-          isUpdatesPage,
           isObjectPage,
         ),
       );

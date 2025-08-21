@@ -30,10 +30,19 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, c
   };
 
   useEffect(() => {
+    let mounted = true;
+
     getFilters().then(res => {
-      setFilter(res);
+      if (mounted) {
+        setFilter(res);
+      }
     });
+
     setFiltersFromQuery();
+
+    return () => {
+      mounted = false; // cleanup
+    };
   }, [history.location.pathname]);
 
   useEffect(() => {
