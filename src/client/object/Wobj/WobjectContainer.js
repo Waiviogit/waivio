@@ -58,7 +58,7 @@ import {
   getRelatedAlbum,
   resetGallery,
 } from '../../../store/galleryStore/galleryActions';
-import { getUpdates } from '../../../store/appendStore/appendActions';
+import { getUpdates, setAbortController } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 import {
@@ -80,15 +80,21 @@ class WobjectContainer extends React.PureComponent {
       clickCount: 0,
       instacardAff: null,
     };
+    this.abortController = new AbortController();
   }
 
   componentDidMount() {
     this.getWobjInfo();
+    // Set the initial abort controller in the store
+    this.props.setAbortController(this.abortController);
   }
 
   componentWillUpdate(nextProps) {
     if (nextProps.match.params.name !== this.props.match.params.name) {
       if (this.props.controller) this.props.controller.abort();
+      if (this.abortController) this.abortController.abort();
+      this.abortController = new AbortController();
+      this.props.setAbortController(this.abortController);
     }
   }
 
@@ -103,6 +109,16 @@ class WobjectContainer extends React.PureComponent {
       if (element) element.remove();
 
       this.getWobjInfo();
+
+      // If locale changed but wobject name didn't, we still need to update the controller
+      if (
+        prevProps.locale !== this.props.locale &&
+        prevProps.match.params.name === this.props.match.params.name
+      ) {
+        if (this.abortController) this.abortController.abort();
+        this.abortController = new AbortController();
+        this.props.setAbortController(this.abortController);
+      }
     }
 
     if (prevProps.showPostModal !== this.props.showPostModal) {
@@ -130,7 +146,9 @@ class WobjectContainer extends React.PureComponent {
     this.props.setEditMode(false);
     const element = document.getElementById('standard-instacart-widget-v1');
 
+    // Abort all pending requests
     if (this.props.controller) this.props.controller.abort();
+    if (this.abortController) this.abortController.abort();
     if (element) element.remove();
   }
 
@@ -289,6 +307,7 @@ class WobjectContainer extends React.PureComponent {
         toggleViewEditMode={toggleViewEditMode}
         weightValue={this.props.weightValue}
         showPostModal={this.props.showPostModal}
+        abortController={this.abortController}
       />
     );
   }
@@ -329,6 +348,7 @@ WobjectContainer.propTypes = {
   getObjectFollowers: PropTypes.func.isRequired,
   getRelatedWobjects: PropTypes.func.isRequired,
   setStoreActiveOption: PropTypes.func.isRequired,
+  setAbortController: PropTypes.func.isRequired,
   resetObjState: PropTypes.func.isRequired,
 };
 
@@ -447,6 +467,7 @@ const mapDispatchToProps = {
   resetWobjectExpertise,
   getCoordinates,
   resetObjState,
+  setAbortController,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WobjectContainer));

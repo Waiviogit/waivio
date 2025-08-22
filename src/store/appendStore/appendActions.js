@@ -96,15 +96,8 @@ export const getChangedWobjectField = (
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
   const abortController = getAbortController(state);
+
   const subscribeCallback = () => {
-    const currController = new AbortController();
-
-    if (isNew) {
-      if (abortController) abortController.abort();
-
-      dispatch(setAbortController(currController));
-    }
-
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
@@ -115,7 +108,7 @@ export const getChangedWobjectField = (
           permlink,
           locale,
           voter,
-          currController,
+          abortController,
         )
           .then(res => {
             dispatch({
@@ -159,11 +152,11 @@ export const getChangedWobjectFieldWithoutSoket = (
   author,
   permlink,
   isNew = false,
+  abortController,
 ) => async (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
-  const abortController = getAbortController(state);
 
   dispatch({
     type: GET_CHANGED_WOBJECT_FIELD.ACTION,
@@ -207,6 +200,7 @@ export const voteAppends = (
   name = '',
   isNew = false,
   isObjectPage,
+  abortController,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
@@ -216,9 +210,14 @@ export const voteAppends = (
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
   const hideMessageFields = ['authority', 'pin'].includes(fieldName);
-  const abortController = getAbortController(state);
 
   if (!getIsAuthenticated(state)) return null;
+
+  // Check if the request has been aborted
+  if (abortController && abortController.signal.aborted) {
+    return Promise.reject(new Error('Request aborted'));
+  }
+
   dispatch({
     type: VOTE_APPEND.START,
     payload: {
@@ -226,109 +225,113 @@ export const voteAppends = (
       permlink,
     },
   });
-  const currController = new AbortController();
 
-  if (isNew) {
-    if (abortController) abortController.abort();
+  // Create a promise that rejects when aborted
+  const abortPromise = new Promise((_, reject) => {
+    if (abortController) {
+      abortController.signal.addEventListener('abort', () => {
+        reject(new Error('Request aborted'));
+      });
+    }
+  });
 
-    dispatch(setAbortController(currController));
-  }
+  const votePromise = steemConnectAPI
+    .vote(voter, author, permlink, weight)
+    // eslint-disable-next-line consistent-return
+    .then(async data => {
+      if (data.error) throw new Error();
 
-  return (
-    steemConnectAPI
-      .vote(voter, author, permlink, weight)
-      // eslint-disable-next-line consistent-return
-      .then(async data => {
-        if (data.error) throw new Error();
-
-        return ApiClient.voteUpdatesPost(wobj.author_permlink, {
-          voter,
-          author,
-          permlink,
-          weight,
-        }).then(res => {
-          if (res.message) {
-            message.error(res.message);
-
-            return dispatch({
-              type: VOTE_APPEND.ERROR,
-              meta: { postId: post.id, voter, weight },
-            });
-          }
-
-          isObjectPage &&
-            dispatch(
-              getChangedWobjectFieldWithoutSoket(
-                wobj.author_permlink,
-                fieldName,
-                author,
-                permlink,
-                isNew,
-              ),
-            );
+      return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+        voter,
+        author,
+        permlink,
+        weight,
+      }).then(res => {
+        if (res.message) {
+          message.error(res.message);
 
           return dispatch({
-            type: VOTE_APPEND.SUCCESS,
-            payload: res,
-            meta: { post, voter, weight },
+            type: VOTE_APPEND.ERROR,
+            meta: { postId: post.id, voter, weight },
           });
-        });
-      })
-      .catch(e => {
-        steemConnectAPI
-          .appendVote(voter, isGuest, author, permlink, weight)
-          .then(res => {
-            if (!hideMessageFields) {
-              message.success('Please wait, we are processing your update');
-            }
+        }
 
-            return ApiClient.voteUpdatesPost(wobj.author_permlink, {
-              voter,
+        isObjectPage &&
+          dispatch(
+            getChangedWobjectFieldWithoutSoket(
+              wobj.author_permlink,
+              fieldName,
               author,
               permlink,
-              weight,
-            }).then(response => {
-              if (res.message) {
-                message.error(response.message);
+              isNew,
+              abortController,
+            ),
+          );
 
-                return dispatch({
-                  type: VOTE_APPEND.ERROR,
-                  meta: { post, voter, weight },
-                });
-              }
+        return dispatch({
+          type: VOTE_APPEND.SUCCESS,
+          payload: res,
+          meta: { post, voter, weight },
+        });
+      });
+    })
+    .catch(e => {
+      steemConnectAPI
+        .appendVote(voter, isGuest, author, permlink, weight)
+        .then(res => {
+          if (!hideMessageFields) {
+            message.success('Please wait, we are processing your update');
+          }
 
-              isObjectPage &&
-                dispatch(
-                  getChangedWobjectFieldWithoutSoket(
-                    wobj.author_permlink,
-                    fieldName,
-                    author,
-                    permlink,
-                    isNew,
-                  ),
-                );
+          return ApiClient.voteUpdatesPost(wobj.author_permlink, {
+            voter,
+            author,
+            permlink,
+            weight,
+          }).then(response => {
+            if (res.message) {
+              message.error(response.message);
 
               return dispatch({
-                type: VOTE_APPEND.SUCCESS,
-                payload: res,
-                meta: { postId: post.id, voter, weight },
+                type: VOTE_APPEND.ERROR,
+                meta: { post, voter, weight },
               });
-            });
-          })
-          .catch(err => {
-            dispatch({
-              type: VOTE_APPEND.ERROR,
-              payload: {
-                post,
-                permlink,
-              },
-            });
-            message.error(e.error_description);
+            }
 
-            return err;
+            isObjectPage &&
+              dispatch(
+                getChangedWobjectFieldWithoutSoket(
+                  wobj.author_permlink,
+                  fieldName,
+                  author,
+                  permlink,
+                  isNew,
+                ),
+              );
+
+            return dispatch({
+              type: VOTE_APPEND.SUCCESS,
+              payload: res,
+              meta: { postId: post.id, voter, weight },
+            });
           });
-      })
-  );
+        })
+        .catch(err => {
+          dispatch({
+            type: VOTE_APPEND.ERROR,
+            payload: {
+              post,
+              permlink,
+            },
+          });
+          message.error(e.error_description);
+
+          return err;
+        });
+    });
+
+  // Race between the vote promise and abort promise
+  return Promise.race([votePromise, abortPromise]);
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
@@ -510,6 +513,7 @@ const followAndLikeAfterCreateAppend = (
   isObjectPage,
   isUpdatesPage,
   appendObj,
+  controller,
 ) => (dispatch, getState) => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
   const state = getState();
@@ -534,6 +538,7 @@ const followAndLikeAfterCreateAppend = (
           data.field.name,
           true,
           isObjectPage,
+          controller,
         ),
       );
     }
@@ -578,6 +583,12 @@ export const appendObject = (
   });
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+  const abortController = getAbortController(state);
+  const currController = new AbortController();
+
+  if (abortController) abortController.abort();
+
+  dispatch(setAbortController(currController));
 
   return postAppendWaivioObject({ ...postData, votePower: undefined, isLike: undefined })
     .then(async res => {
@@ -591,6 +602,7 @@ export const appendObject = (
             isObjectPage,
             isUpdatesPage,
             true,
+            currController,
           ),
         );
 
