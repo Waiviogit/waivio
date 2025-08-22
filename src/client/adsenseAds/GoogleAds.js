@@ -54,47 +54,50 @@ const GoogleAds = ({
     insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
   }
   useEffect(() => {
-    if (!adRef.current || !window.adsbygoogle) return;
+    const timer = setTimeout(() => {
+      const ins = adRef.current;
 
-    const ins = adRef.current;
-
-    const pushAd = () => {
-      if (ins.offsetWidth > 0) {
+      if (window.adsbygoogle && adRef.current) {
         try {
           window.adsbygoogle.push({});
           // eslint-disable-next-line no-console
           console.log('✅ Adsense pushed');
+
+          setTimeout(() => {
+            const adElement = adRef.current;
+            const adStatus = adElement?.getAttribute('data-ad-status');
+
+            if (adStatus === 'unfilled' || !ins.innerHTML.trim()) {
+              setVisible(false);
+              ins.parentElement?.classList.add('hidden-ad');
+            } else if (adStatus === 'filled') {
+              // eslint-disable-next-line no-console
+              console.log('✅ Ad filled');
+              setVisible(true);
+              ins.parentElement?.classList.remove('hidden-ad');
+            } else {
+              // eslint-disable-next-line no-console
+              console.log(adStatus, '❓ Ad status');
+              const iframe = adElement?.querySelector('iframe');
+
+              if (!iframe) {
+                // eslint-disable-next-line no-console
+                console.log('⚠️ No iframe found — hiding ad block');
+                setVisible(false);
+              }
+              const status = ins.getAttribute('data-ad-status');
+
+              // eslint-disable-next-line no-console
+              console.log('Ad status checked:', status);
+            }
+          }, 2500);
         } catch (e) {
-          console.error('AdSense error', e);
-          setVisible(false);
+          console.error('❌ AdSense error', e);
         }
-      } else {
-        // Retry after 100ms until width > 0
-        setTimeout(pushAd, 100);
       }
-    };
+    }, 300);
 
-    pushAd();
-
-    const interval = setInterval(() => {
-      const status = ins.getAttribute('data-ad-status');
-
-      if (status === 'unfilled' || !ins.innerHTML.trim()) {
-        setVisible(false);
-        ins.parentElement?.classList.add('hidden-ad');
-      } else {
-        setVisible(true);
-        ins.parentElement?.classList.remove('hidden-ad');
-      }
-
-      // eslint-disable-next-line no-console
-      console.log('Ad status checked:', status);
-    }, 500);
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearTimeout(timer);
   }, [adRef.current]);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
