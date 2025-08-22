@@ -1119,7 +1119,7 @@ class AppendForm extends Component {
       if (currentField === objectFields.avatar) {
         fieldsObject = {
           ...fieldsObject,
-          id: this.props.albums?.find(album => album.body === 'Photos').id,
+          id: this.props.albums?.find(album => album.body === 'Photos')?.id,
         };
       }
       if (currentField === objectFields.affiliateButton) {

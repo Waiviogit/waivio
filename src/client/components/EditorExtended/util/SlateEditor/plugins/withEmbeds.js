@@ -207,6 +207,29 @@ const withEmbeds = cb => editor => {
     }
 
     const text = data.getData('text/plain');
+
+    if (text && /^https?:\/\/\S+$/.test(text.trim())) {
+      let node;
+
+      if (text.includes('youtube.com') || text.includes('youtu.be')) {
+        node = {
+          type: 'video',
+          url: text.trim(),
+          children: [{ text: '' }],
+        };
+      } else {
+        node = {
+          type: 'link',
+          url: text.trim(),
+          children: [{ text: text.trim() }],
+        };
+      }
+
+      Transforms.insertNodes(editor, node);
+
+      return;
+    }
+
     const isMarkdown = /[*_#>`-]/.test(text) || text.includes('\n');
 
     if (isMarkdown) {

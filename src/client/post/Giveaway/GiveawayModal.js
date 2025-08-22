@@ -362,7 +362,7 @@ GiveawayModal.propTypes = {
   }),
   currency: PropTypes.shape({
     type: PropTypes.string,
-    rate: PropTypes.string,
+    rate: PropTypes.number,
   }),
   currencyInfo: PropTypes.shape(),
   initData: PropTypes.shape(),

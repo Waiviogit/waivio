@@ -11,4 +11,6 @@ export const getAppendHasMore = createSelector([appendState], state => state.has
 
 export const getAppendList = createSelector([appendState], state => state.fields);
 
+export const getAbortController = createSelector([appendState], state => state.controller);
+
 export const getAuthorityList = createSelector([appendState], state => state.authorityList);

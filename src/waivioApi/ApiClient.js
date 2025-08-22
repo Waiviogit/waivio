@@ -179,7 +179,7 @@ export const getObjectsByIds = ({
     .then(res => res.json())
     .catch(error => []);
 
-export const getObject = (authorPermlink, user, locale, host) => {
+export const getObject = (authorPermlink, user, locale, host, abortController) => {
   const queryString = user ? `?user=${user}` : '';
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${queryString}`, {
@@ -189,6 +189,7 @@ export const getObject = (authorPermlink, user, locale, host) => {
       follower: user,
       locale,
       ...addAppHost(host),
+      ...(abortController && { signal: abortController.signal }),
     },
   })
     .then(res => Promise.resolve(res.json()))
@@ -1491,7 +1492,15 @@ export const getTransferDetails = withdrawId =>
     method: 'GET',
   }).then(res => res.json());
 
-export const getChangedField = (authorPermlink, fieldName, author, permlink, locale, authUser) =>
+export const getChangedField = (
+  authorPermlink,
+  fieldName,
+  author,
+  permlink,
+  locale,
+  authUser,
+  abortController,
+) =>
   fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
     {
@@ -1502,6 +1511,7 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
         follower: authUser,
       },
       method: 'GET',
+      ...(abortController && { signal: abortController.signal }),
     },
   )
     .then(res => res.json())

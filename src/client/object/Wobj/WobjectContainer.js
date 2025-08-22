@@ -14,7 +14,7 @@ import { getCoordinates } from '../../../store/userStore/userActions';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
-import { getAppendList } from '../../../store/appendStore/appendSelectors';
+import { getAppendList, getAbortController } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
   getIsEditMode,
@@ -86,6 +86,12 @@ class WobjectContainer extends React.PureComponent {
     this.getWobjInfo();
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.match.params.name !== this.props.match.params.name) {
+      if (this.props.controller) this.props.controller.abort();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (
       prevProps.match.params.name !== this.props.match.params.name ||
@@ -124,6 +130,7 @@ class WobjectContainer extends React.PureComponent {
     this.props.setEditMode(false);
     const element = document.getElementById('standard-instacart-widget-v1');
 
+    if (this.props.controller) this.props.controller.abort();
     if (element) element.remove();
   }
 
@@ -248,9 +255,9 @@ class WobjectContainer extends React.PureComponent {
           !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
         !this.props.isSocial
       ) {
-        this.props.getAlbums(name);
         this.props.getRelatedAlbum(name);
       }
+      this.props.getAlbums(name);
     });
   };
 
@@ -292,6 +299,7 @@ WobjectContainer.propTypes = {
   authenticatedUserName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
+  controller: PropTypes.shape(),
   location: PropTypes.shape({
     hash: PropTypes.string,
   }).isRequired,
@@ -415,6 +423,7 @@ const mapStateToProps = state => ({
   weightValue: getWeightValue(state, getObjectState(state).weight),
   currHost: getCurrentHost(state),
   isEdit: getIsEditMode(state),
+  controller: getAbortController(state),
 });
 
 const mapDispatchToProps = {

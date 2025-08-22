@@ -18,7 +18,7 @@ import {
 } from '../authStore/authSelectors';
 
 import { getLocale, getVotePercent } from '../settingsStore/settingsSelectors';
-import { getAppendList, getAuthorityList } from './appendSelectors';
+import { getAppendList, getAuthorityList, getAbortController } from './appendSelectors';
 import {
   SET_AFFILIATE_OBJECTS,
   setAffiliateObjects,
@@ -45,6 +45,15 @@ export const RESET_UPDATES_LIST = '@append/RESET_UPDATES_LIST';
 export const resetUpdateList = () => dispatch => {
   dispatch({
     type: RESET_UPDATES_LIST,
+  });
+};
+
+export const SET_ABORT_CONTROLLER = '@append/SET_ABORT_CONTROLLER';
+
+export const setAbortController = controller => dispatch => {
+  dispatch({
+    type: SET_ABORT_CONTROLLER,
+    payload: controller,
   });
 };
 
@@ -86,13 +95,28 @@ export const getChangedWobjectField = (
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
-  // const updatePosts = ['pin'].includes(fieldName);
-  // const fieldType = isNew ? fieldName : type;
+  const abortController = getAbortController(state);
   const subscribeCallback = () => {
+    const currController = new AbortController();
+
+    if (isNew) {
+      if (abortController) abortController.abort();
+
+      dispatch(setAbortController(currController));
+    }
+
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale, voter)
+        promise: getChangedField(
+          authorPermlink,
+          fieldName,
+          author,
+          permlink,
+          locale,
+          voter,
+          currController,
+        )
           .then(res => {
             dispatch({
               type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
@@ -139,11 +163,20 @@ export const getChangedWobjectFieldWithoutSoket = (
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+  const abortController = getAbortController(state);
 
   dispatch({
     type: GET_CHANGED_WOBJECT_FIELD.ACTION,
     payload: {
-      promise: getChangedField(authorPermlink, fieldName, author, permlink, locale, voter)
+      promise: getChangedField(
+        authorPermlink,
+        fieldName,
+        author,
+        permlink,
+        locale,
+        voter,
+        abortController,
+      )
         .then(res => {
           dispatch({
             type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
@@ -158,6 +191,7 @@ export const getChangedWobjectFieldWithoutSoket = (
           dispatch({
             type: GET_CHANGED_WOBJECT_FIELD.ERROR,
           });
+          dispatch(setAbortController(null));
         }),
     },
     meta: { isNew },
@@ -182,6 +216,7 @@ export const voteAppends = (
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
   const hideMessageFields = ['authority', 'pin'].includes(fieldName);
+  const abortController = getAbortController(state);
 
   if (!getIsAuthenticated(state)) return null;
   dispatch({
@@ -191,6 +226,13 @@ export const voteAppends = (
       permlink,
     },
   });
+  const currController = new AbortController();
+
+  if (isNew) {
+    if (abortController) abortController.abort();
+
+    dispatch(setAbortController(currController));
+  }
 
   return (
     steemConnectAPI
