@@ -14,6 +14,7 @@ import {
   getAppendList,
   getIsAppendLoading,
   getIsAddingAppendLoading,
+  getAbortController,
 } from '../../../store/appendStore/appendSelectors';
 import Loading from '../../components/Icon/Loading';
 import StoryLoading from '../../components/Story/StoryLoading';
@@ -27,6 +28,7 @@ const UpdateHistory = () => {
   const updatesList = useSelector(getAppendList);
   const appendLoading = useSelector(getIsAppendLoading);
   const appendHasMore = useSelector(getAppendHasMore);
+  const abortController = useSelector(getAbortController);
   const isAddingAppendLoading = useSelector(getIsAddingAppendLoading);
   const { name, 0: field } = useParams();
   const [sort, setSort] = useState('createdAt');
@@ -47,6 +49,7 @@ const UpdateHistory = () => {
   }, [field]);
 
   useEffect(() => {
+    if (abortController) abortController.abort();
     dispatch(getUpdates(name, updateFieldName, sort, locale));
   }, [name, field, sort, locale]);
 
@@ -70,7 +73,7 @@ const UpdateHistory = () => {
         >
           {isAddingAppendLoading && <StoryLoading />}
           {updates?.map(post => (
-            <AppendCard key={post.permlink} post={post} />
+            <AppendCard key={post.permlink} post={post} abortController={abortController} />
           ))}
         </ReduxInfiniteScroll>
       ) : (
