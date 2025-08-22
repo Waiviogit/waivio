@@ -87,7 +87,7 @@ const draftsReducer = (state = initialState, action) => {
           ...state,
           currentDraft: null,
           linkedObjects: [],
-          objectPercent: [],
+          objectPercent: {},
         };
 
       return {
@@ -95,7 +95,7 @@ const draftsReducer = (state = initialState, action) => {
         currentDraft: action.payload,
         campaign: null,
         linkedObjects: [],
-        objectPercent: [],
+        objectPercent: {},
       };
     }
 
@@ -143,7 +143,7 @@ const draftsReducer = (state = initialState, action) => {
       return {
         ...state,
         linkedObjects: [],
-        objectPercent: [],
+        objectPercent: {},
       };
     }
 

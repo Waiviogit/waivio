@@ -30,7 +30,6 @@ const Toolbar = props => {
   const [isOpen, setOpen] = useState(false);
   const refToolbar = useRef(null);
   const lastSelectionRef = useRef(null);
-
   const { selection } = editor;
 
   useEffect(() => {
@@ -253,7 +252,8 @@ const Toolbar = props => {
 };
 
 Toolbar.propTypes = {
-  editorNode: PropTypes.node,
+  // eslint-disable-next-line react/forbid-prop-types
+  editorNode: PropTypes.any,
   intl: PropTypes.shape().isRequired,
 };
 
