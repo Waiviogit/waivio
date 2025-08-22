@@ -12,7 +12,12 @@
   //ins:empty {
   //  display: none !important;
   //}
-
+  ins {
+    display: block !important;
+    width: 100% !important; /* force width */
+    min-width: 250px; /* safeguard */
+    min-height: 100px; /* safeguard */
+  }
   &.in-post {
     max-height: 100px;
   }
