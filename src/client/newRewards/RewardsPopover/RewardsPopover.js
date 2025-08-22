@@ -548,7 +548,9 @@ RewardsPopover.propTypes = {
     reviewStatus: PropTypes.string,
     reviewPermlink: PropTypes.string,
     rejectionPermlink: PropTypes.string,
-    requiredObject: PropTypes.string,
+    requiredObject: PropTypes.shape({
+      author_permlink: PropTypes.string,
+    }),
     guideName: PropTypes.string,
     type: PropTypes.string,
     muted: PropTypes.bool,

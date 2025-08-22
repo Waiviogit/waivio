@@ -78,7 +78,7 @@ RewardsHeader.propTypes = {
     reward: PropTypes.number,
     budget: PropTypes.number,
     type: PropTypes.string,
-    totalPayed: PropTypes.string,
+    totalPayed: PropTypes.number,
     payoutToken: PropTypes.string,
     contestRewards: PropTypes.arrayOf(
       PropTypes.shape({
