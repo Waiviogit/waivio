@@ -29,7 +29,7 @@ const RecipePost = ({
   isAuth,
 }) => {
   const match = useRouteMatch();
-  const currentUserPin = pinnedPostsUrls.includes(recipePost.url);
+  const currentUserPin = pinnedPostsUrls?.includes(recipePost.url);
   const tooltipTitle = (
     <FormattedMessage
       id={currentUserPin ? 'unpin' : 'pin'}
