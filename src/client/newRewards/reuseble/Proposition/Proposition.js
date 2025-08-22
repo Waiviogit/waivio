@@ -75,7 +75,7 @@ const Proposition = ({
       object_type: 'post',
       author: proposition?.guideName,
       avatar: user?.profile_image,
-      description: profile?.requiredObject.default_name,
+      description: profile?.requiredObject?.default_name,
       author_permlink: proposition?.giveawayPermlink,
     };
   }
