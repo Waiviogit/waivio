@@ -354,6 +354,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           if (img.src.startsWith('blob:')) {
             const response = await fetch(img.src);
             const blob = await response.blob();
+
             pasteImageAndText(blob);
           }
 
