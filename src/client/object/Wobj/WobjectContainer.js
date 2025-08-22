@@ -255,9 +255,9 @@ class WobjectContainer extends React.PureComponent {
           !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
         !this.props.isSocial
       ) {
-        this.props.getAlbums(name);
         this.props.getRelatedAlbum(name);
       }
+      this.props.getAlbums(name);
     });
   };
 
