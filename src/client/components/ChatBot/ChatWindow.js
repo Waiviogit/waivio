@@ -303,11 +303,21 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       .then(res => res.json())
       .then(res => {
         setCurrentImage([...currentImage, { src: res.image }]);
-        setMessage(message?.includes('/imagine') ? message : `/imagine\n ${message}`);
       })
       .catch(() => {
         antdMessage.error("Couldn't upload image");
       });
+  };
+
+  const pasteImageAndText = blob => {
+    handleImageUpload(blob);
+    setMessage(prev => {
+      if (!prev || prev.trim() === '') {
+        return '/imagine ';
+      }
+
+      return prev.includes('/imagine') ? prev : `/imagine ${prev}`;
+    });
   };
 
   useEffect(() => {
@@ -326,7 +336,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         const type = item.types.includes('image/png') ? 'image/png' : 'image/jpeg';
         const blob = await item.getType(type);
 
-        handleImageUpload(blob);
+        pasteImageAndText(blob);
 
         e.preventDefault();
 
@@ -342,11 +352,9 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
         if (img?.src) {
           if (img.src.startsWith('blob:')) {
-            // 🔑 fetch and recreate a stable URL
             const response = await fetch(img.src);
             const blob = await response.blob();
-
-            handleImageUpload(blob);
+            pasteImageAndText(blob);
           }
 
           e.preventDefault();

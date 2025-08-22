@@ -24,13 +24,15 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
   const { name } = useParams();
   const appUrl = useSelector(getAppUrl);
   const description = wobject?.description;
-  const allPhotos = albums
+  const safeAlbums = albums || [];
+  const allPhotos = safeAlbums
     ?.flatMap(alb => alb?.items)
     ?.sort((a, b) => (a.name === 'avatar') - (b.name === 'avatar'));
+
   const pics = [...allPhotos, ...get(relatedAlbum, 'items', [])];
   const picturesToSort = pics?.length > 15 ? pics.slice(0, 15) : pics;
   const pictures = picturesToSort?.sort((a, b) => b.weight - a.weight);
-  const album = [...albums, relatedAlbum]?.find(alb =>
+  const album = [...safeAlbums, relatedAlbum]?.find(alb =>
     alb?.items?.some(pic => pic.body === pics[photoIndex]?.body),
   );
 
@@ -89,7 +91,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
         <LightboxWithAppendForm
           wobject={wobject}
           album={album}
-          albums={albums}
+          albums={safeAlbums}
           pics={pictures}
           photoIndex={photoIndex}
           onCloseRequest={() => setIsOpen(false)}
