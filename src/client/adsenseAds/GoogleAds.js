@@ -24,6 +24,7 @@ const parseInsTagAttributes = str => {
         .map(s => {
           const [k, v] = s.split(':').map(x => x.trim());
           const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+
           return [camelKey, v];
         }),
     );
@@ -57,40 +58,39 @@ const GoogleAds = ({
     const ins = adRef.current;
 
     const timer = setTimeout(() => {
-      if (ins.offsetWidth > 0)
-        try {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-          // eslint-disable-next-line no-console
-          console.log('✅ Adsense pushed');
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        // eslint-disable-next-line no-console
+        console.log('✅ Adsense pushed');
 
-          setTimeout(() => {
-            const adStatus = ins?.getAttribute('data-ad-status');
+        setTimeout(() => {
+          const adStatus = ins?.getAttribute('data-ad-status');
 
-            if (adStatus === 'unfilled' || !ins.innerHTML.trim()) {
+          if (adStatus === 'unfilled' || !ins.innerHTML.trim()) {
+            setVisible(false);
+            ins.parentElement?.classList.add('hidden-ad');
+            // eslint-disable-next-line no-console
+            console.log(' Ad hidden');
+          } else if (adStatus === 'filled') {
+            // eslint-disable-next-line no-console
+            console.log('✅ Ad filled');
+            setVisible(true);
+            ins.parentElement?.classList.remove('hidden-ad');
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(adStatus, '❓ Ad status');
+            const iframe = ins?.querySelector('iframe');
+
+            if (!iframe) {
+              // eslint-disable-next-line no-console
+              console.log('⚠️ No iframe found — hiding ad block');
               setVisible(false);
-              ins.parentElement?.classList.add('hidden-ad');
-              // eslint-disable-next-line no-console
-              console.log(' Ad hidden');
-            } else if (adStatus === 'filled') {
-              // eslint-disable-next-line no-console
-              console.log('✅ Ad filled');
-              setVisible(true);
-              ins.parentElement?.classList.remove('hidden-ad');
-            } else {
-              // eslint-disable-next-line no-console
-              console.log(adStatus, '❓ Ad status');
-              const iframe = ins?.querySelector('iframe');
-
-              if (!iframe) {
-                // eslint-disable-next-line no-console
-                console.log('⚠️ No iframe found — hiding ad block');
-                setVisible(false);
-              }
             }
-          }, 2500);
-        } catch (e) {
-          console.error('❌ AdSense error', e);
-        }
+          }
+        }, 2500);
+      } catch (e) {
+        console.error('❌ AdSense error', e);
+      }
     }, 300);
 
     // eslint-disable-next-line consistent-return
