@@ -6,7 +6,7 @@ import AsyncVideo from '../../../../vendor/asyncVideo';
 
 import './video.less';
 
-const Video = ({ url }) => {
+const Video = ({ url, children }) => {
   if (isOdysee(url)) {
     return <AsyncVideo url={url} />;
   }
@@ -29,6 +29,7 @@ const Video = ({ url }) => {
           frameBorder="0"
           allowFullScreen
         />
+        <span style={{ display: 'none' }}>{children}</span>
       </div>
     );
   }
@@ -38,6 +39,7 @@ const Video = ({ url }) => {
 
 Video.propTypes = {
   url: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Video;

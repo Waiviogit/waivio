@@ -220,7 +220,7 @@ EditPost.propTypes = {
   intl: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  objPercentage: PropTypes.arrayOf(PropTypes.shape()),
+  objPercentage: PropTypes.shape(),
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
@@ -242,7 +242,7 @@ EditPost.propTypes = {
   isGuest: PropTypes.bool,
   beneficiaries: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
-  campaign: PropTypes.shape().isRequired,
+  campaign: PropTypes.shape(),
   match: PropTypes.shape().isRequired,
   editor: PropTypes.shape().isRequired,
   currDraft: PropTypes.shape(),

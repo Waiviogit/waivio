@@ -83,7 +83,7 @@ export const Element = props => {
     case 'video':
       const url = props?.element?.url || '';
 
-      return <Video url={url} />;
+      return <Video url={url} {...props} />;
 
     case 'code':
       return (
