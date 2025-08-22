@@ -1,3 +1,4 @@
+import { GET_OBJECT } from '../wObjectStore/wobjectsActions';
 import * as appendActions from './appendActions';
 import { GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 
@@ -6,6 +7,7 @@ const defaultState = {
   error: null,
   hasMore: true,
   addingAppend: false,
+  controller: null,
   authorityList: {},
 };
 
@@ -67,12 +69,25 @@ export default (state = defaultState, action) => {
       };
     }
 
+    case GET_OBJECT: {
+      return {
+        ...state,
+        controller: null,
+      };
+    }
+
     case GET_CHANGED_WOBJECT_UPDATE.SUCCESS: {
       const { field } = action.payload;
       const fields = [...state.fields];
 
       if (action.meta.isNew) {
-        return { ...state, fields: [field, ...state.fields], loading: false, addingAppend: false };
+        return {
+          ...state,
+          fields: [field, ...state.fields],
+          controller: null,
+          loading: false,
+          addingAppend: false,
+        };
       }
 
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);
@@ -136,6 +151,13 @@ export default (state = defaultState, action) => {
 
     case appendActions.RESET_UPDATES_LIST: {
       return defaultState;
+    }
+
+    case appendActions.SET_ABORT_CONTROLLER: {
+      return {
+        ...state,
+        controller: action.payload,
+      };
     }
 
     case appendActions.VOTE_APPEND.ERROR:

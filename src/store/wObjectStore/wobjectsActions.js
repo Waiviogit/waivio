@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash';
 import { parseWobjectField } from '../../common/helpers/wObjectHelper';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getAbortController } from '../appendStore/appendSelectors';
 import { getAlbums } from '../galleryStore/galleryActions';
 import { getObjectPermlink } from '../../client/vendor/steemitHelpers';
 import { followObject, voteObject } from './wobjActions';
@@ -40,10 +41,11 @@ export const getObject = authorPermlink => (dispatch, getState) => {
   const usedLocale = getLocale(state);
   const appHost = getAppHost(state);
   const user = getAuthenticatedUserName(state);
+  const abortController = getAbortController(state);
 
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, user, usedLocale, appHost)
+    payload: ApiClient.getObject(authorPermlink, user, usedLocale, appHost, abortController)
       .then(res => res)
       .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
   });
