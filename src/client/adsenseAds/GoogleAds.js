@@ -24,6 +24,7 @@ const parseInsTagAttributes = str => {
         .map(s => {
           const [k, v] = s.split(':').map(x => x.trim());
           const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+
           return [camelKey, v];
         }),
     );
