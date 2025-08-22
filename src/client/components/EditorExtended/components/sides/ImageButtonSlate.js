@@ -10,7 +10,7 @@ import ImageSetter from '../../../ImageSetter/ImageSetterSlate';
 class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    lastSelection: PropTypes.shape().isRequired,
+    lastSelection: PropTypes.shape(),
     close: PropTypes.func.isRequired,
   };
 

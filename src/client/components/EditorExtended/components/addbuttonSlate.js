@@ -148,7 +148,7 @@ const AddButtonSlate = props => {
 
 AddButtonSlate.propTypes = {
   getEditorState: PropTypes.func,
-  setEditorState: PropTypes.func.isRequired,
+  setEditorState: PropTypes.func,
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
   parentPost: PropTypes.shape({
@@ -168,7 +168,8 @@ AddButtonSlate.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
-  editorNode: PropTypes.instanceOf(),
+  // eslint-disable-next-line react/forbid-prop-types
+  editorNode: PropTypes.any,
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   initialPosTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
