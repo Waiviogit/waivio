@@ -24,7 +24,6 @@ const parseInsTagAttributes = str => {
         .map(s => {
           const [k, v] = s.split(':').map(x => x.trim());
           const camelKey = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-
           return [camelKey, v];
         }),
     );
@@ -50,55 +49,52 @@ const GoogleAds = ({
 
   let insAttributes = {};
 
-  if (Array.isArray(insTagMatch) && insTagMatch?.[0]) {
-    insAttributes = parseInsTagAttributes(insTagMatch?.[0]);
+  if (Array.isArray(insTagMatch) && insTagMatch[0]) {
+    insAttributes = parseInsTagAttributes(insTagMatch[0]);
   }
+
   useEffect(() => {
+    const ins = adRef.current;
+
     const timer = setTimeout(() => {
-      const ins = adRef.current;
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        // eslint-disable-next-line no-console
+        console.log('✅ Adsense pushed');
 
-      if (window.adsbygoogle && adRef.current) {
-        try {
-          window.adsbygoogle.push({});
-          // eslint-disable-next-line no-console
-          console.log('✅ Adsense pushed');
+        setTimeout(() => {
+          const adStatus = ins?.getAttribute('data-ad-status');
 
-          setTimeout(() => {
-            const adElement = adRef.current;
-            const adStatus = adElement?.getAttribute('data-ad-status');
+          if (adStatus === 'unfilled' || !ins.innerHTML.trim()) {
+            setVisible(false);
+            ins.parentElement?.classList.add('hidden-ad');
+            // eslint-disable-next-line no-console
+            console.log(' Ad hidden');
+          } else if (adStatus === 'filled') {
+            // eslint-disable-next-line no-console
+            console.log('✅ Ad filled');
+            setVisible(true);
+            ins.parentElement?.classList.remove('hidden-ad');
+          } else {
+            // eslint-disable-next-line no-console
+            console.log(adStatus, '❓ Ad status');
+            const iframe = ins?.querySelector('iframe');
 
-            if (adStatus === 'unfilled' || !ins.innerHTML.trim()) {
+            if (!iframe) {
+              // eslint-disable-next-line no-console
+              console.log('⚠️ No iframe found — hiding ad block');
               setVisible(false);
-              ins.parentElement?.classList.add('hidden-ad');
-            } else if (adStatus === 'filled') {
-              // eslint-disable-next-line no-console
-              console.log('✅ Ad filled');
-              setVisible(true);
-              ins.parentElement?.classList.remove('hidden-ad');
-            } else {
-              // eslint-disable-next-line no-console
-              console.log(adStatus, '❓ Ad status');
-              const iframe = adElement?.querySelector('iframe');
-
-              if (!iframe) {
-                // eslint-disable-next-line no-console
-                console.log('⚠️ No iframe found — hiding ad block');
-                setVisible(false);
-              }
-              const status = ins.getAttribute('data-ad-status');
-
-              // eslint-disable-next-line no-console
-              console.log('Ad status checked:', status);
             }
-          }, 2500);
-        } catch (e) {
-          console.error('❌ AdSense error', e);
-        }
+          }
+        }, 2500);
+      } catch (e) {
+        console.error('❌ AdSense error', e);
       }
     }, 300);
 
+    // eslint-disable-next-line consistent-return
     return () => clearTimeout(timer);
-  }, [adRef.current]);
+  }, []);
 
   if (!visible || !insAttributes || isEmpty(unitCode)) return null;
 
