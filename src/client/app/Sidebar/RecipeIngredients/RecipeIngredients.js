@@ -50,7 +50,7 @@ const RecipeIngredients = ({ ingredients, isEditMode, isSocial }) => {
 };
 
 RecipeIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf().isRequired,
+  ingredients: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isEditMode: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
 };

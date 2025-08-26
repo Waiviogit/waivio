@@ -182,7 +182,7 @@ const PicturesSlider = ({
 };
 
 PicturesSlider.propTypes = {
-  albums: PropTypes.arrayOf(),
+  albums: PropTypes.arrayOf(PropTypes.shape()),
   currentWobj: PropTypes.shape(),
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),

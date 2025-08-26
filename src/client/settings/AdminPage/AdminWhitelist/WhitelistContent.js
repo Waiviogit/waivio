@@ -102,7 +102,7 @@ WhitelistContent.propTypes = {
   intl: PropTypes.shape().isRequired,
   buttonTitle: PropTypes.string,
   title: PropTypes.string.isRequired,
-  userList: PropTypes.arrayOf().isRequired,
+  userList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   caption: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   ids: PropTypes.shape({

@@ -13,7 +13,7 @@ class Album extends React.Component {
     getMoreRelatedAlbum: PropTypes.func,
     permlink: PropTypes.string.isRequired,
     wobject: PropTypes.shape(),
-    albums: PropTypes.arrayOf(),
+    albums: PropTypes.arrayOf(PropTypes.shape()),
   };
   static defaultProps = {
     album: {},

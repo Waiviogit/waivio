@@ -145,7 +145,7 @@ CreateWebsite.propTypes = {
   template: PropTypes.string,
   handleSubmit: PropTypes.func,
   domainStatus: PropTypes.string,
-  showingParentList: PropTypes.arrayOf(),
+  showingParentList: PropTypes.arrayOf(PropTypes.shape()),
   statusMessageClassList: PropTypes.string,
   handleSearchHost: PropTypes.func,
   onSelect: PropTypes.func,

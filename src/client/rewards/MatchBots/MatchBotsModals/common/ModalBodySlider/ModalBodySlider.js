@@ -49,8 +49,8 @@ const ModalBodySlider = ({
 
 ModalBodySlider.propTypes = {
   marks: PropTypes.shape(),
-  selectOptions: PropTypes.arrayOf(),
-  currency: PropTypes.arrayOf(),
+  selectOptions: PropTypes.arrayOf(PropTypes.shape()),
+  currency: PropTypes.arrayOf(PropTypes.shape()),
   sliderValue: PropTypes.number,
   handleChangeSlider: PropTypes.func,
   handleChangeCurrency: PropTypes.func,

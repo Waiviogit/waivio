@@ -76,7 +76,7 @@ const MapTagsForm = props => (
 
 MapTagsForm.propTypes = {
   intl: PropTypes.shape(),
-  allowList: PropTypes.arrayOf(),
+  allowList: PropTypes.arrayOf(PropTypes.shape()),
   handleAddObjectToRule: PropTypes.func,
   deleteRuleItem: PropTypes.func,
   currObjId: PropTypes.string,

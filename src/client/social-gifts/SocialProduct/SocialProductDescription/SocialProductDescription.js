@@ -143,6 +143,6 @@ SocialProductDescription.propTypes = {
   description: PropTypes.string,
   objectType: PropTypes.string,
   authorPermlink: PropTypes.string,
-  pictures: PropTypes.arrayOf(),
+  pictures: PropTypes.arrayOf(PropTypes.shape()),
 };
 export default SocialProductDescription;

@@ -176,7 +176,7 @@ OptionItemView.propTypes = {
   optionsBack: PropTypes.shape(),
   ownOptions: PropTypes.shape(),
   isSocialProduct: PropTypes.bool,
-  option: PropTypes.arrayOf().isRequired,
+  option: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,
 };

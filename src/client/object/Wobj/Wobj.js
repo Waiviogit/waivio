@@ -240,7 +240,7 @@ Wobj.propTypes = {
   showPostModal: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
-  weightValue: PropTypes.number.isRequired,
+  weightValue: PropTypes.number,
 };
 
 Wobj.defaultProps = {

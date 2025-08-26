@@ -69,7 +69,7 @@ const SocialMenuItems = ({
 };
 
 SocialMenuItems.propTypes = {
-  menuItem: PropTypes.arrayOf(),
+  menuItem: PropTypes.arrayOf(PropTypes.shape()),
   customVisibility: PropTypes.arrayOf(),
   sortExclude: PropTypes.arrayOf(),
   customSort: PropTypes.arrayOf(),

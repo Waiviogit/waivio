@@ -184,7 +184,7 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
 CommentCard.propTypes = {
   comment: PropTypes.shape({
     body: PropTypes.string,
-    active_votes: PropTypes.arrayOf(),
+    active_votes: PropTypes.arrayOf(PropTypes.shape({})),
     author: PropTypes.string,
     json_metadata: PropTypes.string,
     created: PropTypes.string,

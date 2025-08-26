@@ -100,7 +100,7 @@ const AddressHoursDetails = ({
 AddressHoursDetails.propTypes = {
   address: PropTypes.string,
   map: PropTypes.shape(),
-  companyId: PropTypes.arrayOf(),
+  companyId: PropTypes.arrayOf(PropTypes.shape()),
   wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   workTime: PropTypes.string,

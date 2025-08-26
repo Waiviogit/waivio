@@ -74,7 +74,7 @@ const RecipePost = ({
 RecipePost.propTypes = {
   recipePost: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
-  pinnedPostsUrls: PropTypes.arrayOf().isRequired,
+  pinnedPostsUrls: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   signature: PropTypes.string.isRequired,
   handlePinRecipePost: PropTypes.func.isRequired,
   isAuth: PropTypes.bool.isRequired,

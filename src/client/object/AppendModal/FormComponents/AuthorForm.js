@@ -87,7 +87,7 @@ AuthorForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   selectedObject: PropTypes.shape().isRequired,
-  wobjAuthors: PropTypes.arrayOf().isRequired,
+  wobjAuthors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   intl: PropTypes.shape().isRequired,
 };
 export default injectIntl(AuthorForm);

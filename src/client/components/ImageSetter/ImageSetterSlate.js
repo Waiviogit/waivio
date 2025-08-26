@@ -418,7 +418,7 @@ ImageSetter.propTypes = {
   setEditorState: PropTypes.func,
   getEditorState: PropTypes.func,
   isOkayBtn: PropTypes.bool,
-  imagesList: PropTypes.arrayOf(),
+  imagesList: PropTypes.arrayOf(PropTypes.shape()),
   isModal: PropTypes.bool,
   isEditor: PropTypes.bool,
 };

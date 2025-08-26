@@ -53,7 +53,7 @@ const FavoritesMobileSidenav = ({ objectTypes, setVisible, visible, intl }) => {
 
 FavoritesMobileSidenav.propTypes = {
   setVisible: PropTypes.func,
-  objectTypes: PropTypes.arrayOf(),
+  objectTypes: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape(),
   visible: PropTypes.bool,
 };

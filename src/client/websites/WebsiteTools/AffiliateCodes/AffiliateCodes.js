@@ -235,7 +235,7 @@ AffiliateCodes.propTypes = {
   form: PropTypes.shape(),
   user: PropTypes.shape(),
   appendWobject: PropTypes.func,
-  affiliateObjects: PropTypes.arrayOf(),
+  affiliateObjects: PropTypes.arrayOf(PropTypes.shape()),
   voteAppend: PropTypes.func,
   setAffiliateObjs: PropTypes.func,
   resetAffiliateObjs: PropTypes.func,

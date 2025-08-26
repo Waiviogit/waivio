@@ -192,10 +192,10 @@ ShopFilterForm.propTypes = {
   handleRemoveTag: PropTypes.func.isRequired,
   handleChangeDepartmentValue: PropTypes.func.isRequired,
   onAddDepartmentSection: PropTypes.func.isRequired,
-  typeList: PropTypes.arrayOf().isRequired,
-  tags: PropTypes.arrayOf().isRequired,
-  newRuleBlockArray: PropTypes.arrayOf().isRequired,
-  departmentsArray: PropTypes.arrayOf().isRequired,
-  authoritiesList: PropTypes.arrayOf().isRequired,
+  typeList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  newRuleBlockArray: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  departmentsArray: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  authoritiesList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 export default injectIntl(ShopFilterForm);
