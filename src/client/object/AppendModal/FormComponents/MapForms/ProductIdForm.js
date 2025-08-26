@@ -16,6 +16,7 @@ const ProductIdForm = ({
   onLoadingImage,
   getImages,
   setFieldsValue,
+  form,
 }) => (
   <React.Fragment>
     <Form.Item>
@@ -74,6 +75,9 @@ const ProductIdForm = ({
           rules: getFieldRules(objectFields.productIdImage),
         })(
           <ImageSetter
+            shouldValidate
+            field={objectFields.productIdImage}
+            form={form}
             onImageLoaded={getImages}
             onLoadingImage={onLoadingImage}
             labeledImage={'product_id_image'}
@@ -101,6 +105,7 @@ ProductIdForm.propTypes = {
   isSomeValue: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
+  form: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(ProductIdForm);

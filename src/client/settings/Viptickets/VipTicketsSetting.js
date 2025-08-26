@@ -281,8 +281,8 @@ VipTicketsSetting.propTypes = {
   showMoreActiveTickets: PropTypes.bool.isRequired,
   visibleTransfer: PropTypes.bool.isRequired,
   showMoreConsumedTickets: PropTypes.bool.isRequired,
-  consumedTickets: PropTypes.arrayOf().isRequired,
-  activeTickets: PropTypes.arrayOf().isRequired,
+  consumedTickets: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  activeTickets: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   rates: PropTypes.shape({
     WAIV: PropTypes.number,
     HIVE: PropTypes.number,

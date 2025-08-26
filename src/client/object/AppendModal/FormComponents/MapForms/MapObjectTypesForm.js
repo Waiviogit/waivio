@@ -77,8 +77,8 @@ const MapObjectTypesForm = props => {
 };
 
 MapObjectTypesForm.propTypes = {
-  typeList: PropTypes.arrayOf(),
-  intl: PropTypes.arrayOf(),
+  typeList: PropTypes.arrayOf(PropTypes.shape()),
+  intl: PropTypes.arrayOf(PropTypes.shape()),
   handleRemoveObjectFromTypeList: PropTypes.func,
   handleAddTypeTypeList: PropTypes.func,
 };

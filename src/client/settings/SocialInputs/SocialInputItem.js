@@ -144,7 +144,7 @@ SocialInputItem.propTypes = {
   profile: PropTypes.shape().isRequired,
   metadata: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  errors: PropTypes.arrayOf().isRequired,
+  errors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   setErrors: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,

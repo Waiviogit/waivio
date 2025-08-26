@@ -55,7 +55,7 @@ const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
 
 DepartmentItem.propTypes = {
   wobject: PropTypes.shape().isRequired,
-  department: PropTypes.arrayOf().isRequired,
+  department: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   id: PropTypes.string.isRequired,
   isSocialGifts: PropTypes.bool,
 };

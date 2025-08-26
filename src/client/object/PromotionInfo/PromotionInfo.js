@@ -30,7 +30,7 @@ const PromotionInfo = ({ promotion }) =>
   ));
 
 PromotionInfo.propTypes = {
-  promotion: PropTypes.arrayOf().isRequired,
+  promotion: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default PromotionInfo;

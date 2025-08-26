@@ -16,6 +16,6 @@ const MapObjectTypes = ({ types }) => (
 );
 
 MapObjectTypes.propTypes = {
-  types: PropTypes.arrayOf().isRequired,
+  types: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 export default MapObjectTypes;

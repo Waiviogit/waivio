@@ -167,7 +167,7 @@ DnDList.propTypes = {
     }),
   ).isRequired,
   accentColor: PropTypes.string,
-  sortCustom: PropTypes.arrayOf(),
+  sortCustom: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func,
   wobjType: PropTypes.string,
   screenSize: PropTypes.string,

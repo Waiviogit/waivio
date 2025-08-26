@@ -34,7 +34,7 @@ const OptionItemEdit = ({ option, wobject }) => (
 
 OptionItemEdit.propTypes = {
   wobject: PropTypes.shape().isRequired,
-  option: PropTypes.arrayOf().isRequired,
+  option: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default OptionItemEdit;

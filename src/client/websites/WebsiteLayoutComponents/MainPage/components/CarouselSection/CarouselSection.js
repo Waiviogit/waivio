@@ -63,7 +63,7 @@ const CarouselSection = props => {
 };
 
 CarouselSection.propTypes = {
-  restaurants: PropTypes.arrayOf().isRequired,
+  restaurants: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getRestaurants: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };

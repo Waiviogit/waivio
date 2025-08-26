@@ -31,7 +31,7 @@ ObjectReferenceItem.propTypes = {
   wobject: PropTypes.shape().isRequired,
   isCenterContent: PropTypes.bool.isRequired,
   refType: PropTypes.string,
-  objects: PropTypes.arrayOf().isRequired,
+  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default ObjectReferenceItem;

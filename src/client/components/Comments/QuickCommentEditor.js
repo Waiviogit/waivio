@@ -212,7 +212,7 @@ const QuickCommentEditor = props => {
 };
 
 QuickCommentEditor.propTypes = {
-  parentPost: PropTypes.shape().isRequired,
+  parentPost: PropTypes.shape(),
   importObj: PropTypes.shape(),
   signature: PropTypes.string,
   isLoading: PropTypes.bool,

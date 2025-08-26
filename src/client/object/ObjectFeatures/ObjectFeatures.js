@@ -63,7 +63,7 @@ const ObjectFeatures = ({ features, isEditMode, wobjPermlink, isSocialGifts }) =
 };
 
 ObjectFeatures.propTypes = {
-  features: PropTypes.arrayOf().isRequired,
+  features: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   wobjPermlink: PropTypes.string.isRequired,
   isEditMode: PropTypes.bool.isRequired,
   isSocialGifts: PropTypes.bool,

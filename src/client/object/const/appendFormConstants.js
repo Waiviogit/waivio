@@ -1019,6 +1019,9 @@ export const fieldsRules = {
         },
       },
     },
+    {
+      validator: true,
+    },
   ],
   [addressFields.address]: [
     {

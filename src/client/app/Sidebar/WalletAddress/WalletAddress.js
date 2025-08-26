@@ -12,7 +12,7 @@ const WalletAddress = ({ walletAddress, isSocial }) => (
 );
 
 WalletAddress.propTypes = {
-  walletAddress: PropTypes.arrayOf(),
+  walletAddress: PropTypes.arrayOf(PropTypes.shape({})),
   isSocial: PropTypes.bool,
 };
 

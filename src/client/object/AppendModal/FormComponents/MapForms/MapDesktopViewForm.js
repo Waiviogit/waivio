@@ -215,7 +215,7 @@ const MapDesktopViewForm = props => {
 };
 
 MapDesktopViewForm.propTypes = {
-  wobjects: PropTypes.arrayOf(),
+  wobjects: PropTypes.arrayOf(PropTypes.shape()),
   config: PropTypes.shape(),
   match: PropTypes.shape(),
   userLocation: PropTypes.shape(),

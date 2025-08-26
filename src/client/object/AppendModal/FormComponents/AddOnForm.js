@@ -64,7 +64,7 @@ AddOnForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  wobjAddOn: PropTypes.arrayOf().isRequired,
+  wobjAddOn: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default injectIntl(AddOnForm);

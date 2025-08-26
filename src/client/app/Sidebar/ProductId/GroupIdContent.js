@@ -28,7 +28,7 @@ const GroupIdContent = ({ groupId, authorPermlink, isSocialGifts, intl }) => {
 
 GroupIdContent.propTypes = {
   authorPermlink: PropTypes.string.isRequired,
-  groupId: PropTypes.arrayOf(),
+  groupId: PropTypes.arrayOf(PropTypes.string),
   isSocialGifts: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
