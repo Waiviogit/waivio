@@ -73,7 +73,7 @@ const SavingsProgressModal = ({
 };
 
 SavingsProgressModal.propTypes = {
-  savingsInfo: PropTypes.arrayOf().isRequired,
+  savingsInfo: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   symbol: PropTypes.string,
   isAuth: PropTypes.bool,
   authUserPage: PropTypes.bool,

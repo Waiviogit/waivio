@@ -319,7 +319,7 @@ ManageWebsite.propTypes = {
       memo: PropTypes.string,
     }),
   }).isRequired,
-  affiliateObjects: PropTypes.arrayOf().isRequired,
+  affiliateObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   activateWebsite: PropTypes.func.isRequired,
   setWebsiteCanonical: PropTypes.func.isRequired,
   suspendWebsite: PropTypes.func.isRequired,

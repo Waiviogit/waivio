@@ -47,8 +47,8 @@ DnDListItem.propTypes = {
     id: PropTypes.string.isRequired,
     checkedItemInList: PropTypes.bool.isRequired,
   }),
-  exclude: PropTypes.arrayOf(),
-  expandedIds: PropTypes.arrayOf(),
+  exclude: PropTypes.arrayOf(PropTypes.shape()),
+  expandedIds: PropTypes.arrayOf(PropTypes.shape()),
   onCheckboxClick: PropTypes.func,
   setOpen: PropTypes.func,
 };

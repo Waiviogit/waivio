@@ -59,7 +59,7 @@ PinButton.propTypes = {
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  pinnedPostsUrls: PropTypes.arrayOf().isRequired,
+  pinnedPostsUrls: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   tooltipTitle: PropTypes.string.isRequired,
   userVotingPower: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,

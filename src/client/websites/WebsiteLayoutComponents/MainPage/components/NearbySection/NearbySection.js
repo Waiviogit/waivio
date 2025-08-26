@@ -36,7 +36,7 @@ const NearbySection = props => {
 };
 
 NearbySection.propTypes = {
-  nearbyFood: PropTypes.arrayOf().isRequired,
+  nearbyFood: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getNearbyFood: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };

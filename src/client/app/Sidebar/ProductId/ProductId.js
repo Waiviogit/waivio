@@ -88,10 +88,10 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts, intl
 };
 
 ProductId.propTypes = {
-  productIdBody: PropTypes.arrayOf(),
+  productIdBody: PropTypes.arrayOf(PropTypes.shape({})),
   isSocialGifts: PropTypes.bool,
   authorPermlink: PropTypes.string.isRequired,
-  groupId: PropTypes.arrayOf(),
+  groupId: PropTypes.arrayOf(PropTypes.string),
   intl: PropTypes.shape().isRequired,
 };
 

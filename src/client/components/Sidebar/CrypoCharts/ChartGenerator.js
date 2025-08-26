@@ -63,7 +63,7 @@ const ChartGenerator = props => {
 };
 
 ChartGenerator.propTypes = {
-  prices: PropTypes.arrayOf().isRequired,
+  prices: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   width: PropTypes.string.isRequired,
   locale: PropTypes.string.isRequired,
 };

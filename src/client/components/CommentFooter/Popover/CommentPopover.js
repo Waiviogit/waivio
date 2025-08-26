@@ -85,7 +85,7 @@ const CommentPopover = ({ comment, children, handlePopoverClick, own }) => {
 
 CommentPopover.propTypes = {
   comment: PropTypes.shape({
-    active_votes: PropTypes.arrayOf(),
+    active_votes: PropTypes.arrayOf(PropTypes.shape()),
     author: PropTypes.string,
     isHide: PropTypes.bool,
     pendingDisLike: PropTypes.bool,

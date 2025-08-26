@@ -142,7 +142,7 @@ WobjHistory.propTypes = {
   setSort: PropTypes.func.isRequired,
   setLocale: PropTypes.func.isRequired,
   sort: PropTypes.string.isRequired,
-  locale: PropTypes.string.isRequired,
+  locale: PropTypes.string,
 };
 
 WobjHistory.defaultProps = {

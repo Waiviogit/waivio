@@ -267,8 +267,8 @@ const ModalFirstScreen = props => {
 ModalFirstScreen.propTypes = {
   selectedDish: PropTypes.shape().isRequired,
   selectedRestaurant: PropTypes.shape().isRequired,
-  dishes: PropTypes.arrayOf().isRequired,
-  eligible: PropTypes.arrayOf().isRequired,
+  dishes: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  eligible: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   resetDish: PropTypes.func.isRequired,
   getEligibleRewardsList: PropTypes.func.isRequired,
   setSelectedRestaurant: PropTypes.func.isRequired,

@@ -57,8 +57,8 @@ const DnDItems = ({ sortedTabs, filters, changeTabFilters, setSortedTabs }) => {
 };
 
 DnDItems.propTypes = {
-  sortedTabs: PropTypes.arrayOf().isRequired,
-  filters: PropTypes.arrayOf().isRequired,
+  sortedTabs: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  filters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   changeTabFilters: PropTypes.func.isRequired,
   setSortedTabs: PropTypes.func.isRequired,
 };

@@ -106,7 +106,7 @@ ProgressModalBody.propTypes = {
   setShowCancelWithdrawSavings: PropTypes.func,
   setCurrPowerDown: PropTypes.func,
   setCurrWithdrawSaving: PropTypes.func,
-  marks: PropTypes.arrayOf(),
+  marks: PropTypes.arrayOf(PropTypes.shape()),
   info: PropTypes.shape(),
 };
 ProgressModalBody.defaultProps = { showCancelBtn: true };

@@ -543,7 +543,7 @@ ImageSetter.propTypes = {
   isOptions: PropTypes.bool,
   isUserAvatar: PropTypes.bool,
   isEditable: PropTypes.bool,
-  imagesList: PropTypes.arrayOf(),
+  imagesList: PropTypes.arrayOf(PropTypes.shape()),
   isModal: PropTypes.bool,
   isDesktop: PropTypes.bool,
 };

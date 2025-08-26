@@ -55,7 +55,7 @@ RecipeDetails.propTypes = {
   recipeIngredients: PropTypes.shape(),
   wobject: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
-  productIdBody: PropTypes.arrayOf(),
+  productIdBody: PropTypes.arrayOf(PropTypes.shape()),
   departments: PropTypes.arrayOf(),
   isEditMode: PropTypes.bool.isRequired,
 };
