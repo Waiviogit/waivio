@@ -4,6 +4,7 @@ import Cookie from 'js-cookie';
 import { setGoogleTagEvent } from '../../common/helpers';
 import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { setCurrentShownPost } from '../appStore/appActions';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
@@ -59,6 +60,7 @@ export const getContent = (author, permlink, afterLike, isComment = false) => (
         if (res.id === 0) throw new Error('There is no such post');
         if (res.message) throw new Error(res.message);
 
+        dispatch(setCurrentShownPost(res));
         const embed = getVideoForPreview(res)[0];
         let videoPreview = embed?.thumbnail;
 
