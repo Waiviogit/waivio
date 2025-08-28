@@ -76,7 +76,7 @@ const routes = {
           component: Views.AllProposition,
         },
         {
-          path: '/(global|local)/eligible/:requiredObject?',
+          path: '/(global|local|judges)/eligible/:requiredObject?',
           exact: true,
           component: Views.EligibleProposition,
         },
@@ -94,6 +94,11 @@ const routes = {
           path: '/receivable',
           exact: true,
           component: Views.Receivables,
+        },
+        {
+          path: '/judges',
+          exact: true,
+          component: Views.Judges,
         },
         {
           path: '/payable/@:userName',

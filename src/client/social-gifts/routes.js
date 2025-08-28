@@ -423,7 +423,7 @@ const routes = () => ({
       component: RewardsMainPage,
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
-        `/rewards/(local|global)/(all|eligible)?/:requiredObject?`,
+        `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject?`,
         `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
@@ -464,6 +464,11 @@ const routes = () => ({
           path: '/receivable',
           exact: true,
           component: Views.Receivables,
+        },
+        {
+          path: '/judges',
+          exact: true,
+          component: Views.Judges,
         },
         {
           path: '/payable/@:userName',
