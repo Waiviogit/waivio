@@ -1,3 +1,5 @@
+import { wrapWithParagraph } from './paragraph';
+
 export const createImageNode = (alt, { url, width = 200, height = 200 }) => ({
   type: 'image',
   alt,
@@ -36,3 +38,13 @@ export const createCodeBlock = () => ({
   children: [{ text: '' }],
   lang: 'javascript',
 });
+
+// Функція для вставки картинки без створення параграфу попереду
+export const insertImageWithoutParagraph = (editor, imageNode) =>
+  // Вставляємо тільки картинку без додаткових параграфів
+  [imageNode];
+
+// Функція для вставки картинки з параграфом попереду (оригінальна поведінка)
+export const insertImageWithParagraph = (editor, imageNode) =>
+  // Вставляємо картинку з параграфом попереду
+  [wrapWithParagraph([imageNode]), createEmptyNode()];

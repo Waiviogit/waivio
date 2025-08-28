@@ -117,8 +117,8 @@ const Toolbar = props => {
       <div
         className={className}
         style={{
-          top: `${refToolbar.current?.style.top}`,
-          left: `${refToolbar.current?.style.left}`,
+          top: refToolbar.current?.style?.top || '0px',
+          left: refToolbar.current?.style?.left || '0px',
         }}
       >
         <div
@@ -127,7 +127,14 @@ const Toolbar = props => {
         >
           <Input
             className="md-url-input"
-            onKeyDown={() => {}}
+            onKeyDown={e => {
+              // Закриваємо поле при натисканні Escape
+              if (e.key === 'Escape') {
+                setShowLinkInput(false);
+                setUrlInputValue('');
+                ReactEditor.focus(editor);
+              }
+            }}
             onChange={handleLinkInput}
             placeholder={intl.formatMessage({
               id: 'toolbar_link',
@@ -135,6 +142,7 @@ const Toolbar = props => {
             })}
             value={urlInputValue}
             onPressEnter={setLink}
+            autoFocus
           />
           <Button
             type="primary"

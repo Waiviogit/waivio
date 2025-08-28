@@ -213,11 +213,6 @@ export const voteAppends = (
 
   if (!getIsAuthenticated(state)) return null;
 
-  // Check if the request has been aborted
-  if (abortController && abortController.signal.aborted) {
-    return Promise.reject(new Error('Request aborted'));
-  }
-
   dispatch({
     type: VOTE_APPEND.START,
     payload: {
@@ -239,6 +234,9 @@ export const voteAppends = (
     .vote(voter, author, permlink, weight)
     // eslint-disable-next-line consistent-return
     .then(async data => {
+      if (abortController && abortController.signal.aborted) {
+        return Promise.reject(new Error('Request aborted'));
+      }
       if (data.error) throw new Error();
 
       return ApiClient.voteUpdatesPost(wobj.author_permlink, {
@@ -279,6 +277,9 @@ export const voteAppends = (
       steemConnectAPI
         .appendVote(voter, isGuest, author, permlink, weight)
         .then(res => {
+          if (abortController && abortController.signal.aborted) {
+            return Promise.reject(new Error('Request aborted'));
+          }
           if (!hideMessageFields) {
             message.success('Please wait, we are processing your update');
           }
@@ -324,7 +325,8 @@ export const voteAppends = (
               permlink,
             },
           });
-          message.error(e.error_description);
+
+          if (e.error_description) message.error(e.error_description);
 
           return err;
         });

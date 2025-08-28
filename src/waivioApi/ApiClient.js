@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
 import store from 'store';
+import { campaignTypes } from '../client/rewards/rewardsHelper';
 
 import config from './routes';
 import { getValidTokenData } from '../common/helpers/getToken';
@@ -416,8 +417,8 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
-
-  return fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
+  const link = permlink.includes(author) ? permlink : `${author}/${permlink}`;
+  return fetch(`${config.apiPrefix}${config.post}/${link}`, {
     headers: { ...headers, app: config.appName, locale },
     method: 'GET',
   })
@@ -3472,7 +3473,7 @@ export const getCampaign = (user, id) =>
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(response => response)
+    .then(response => ({ ...response, type: campaignTypes.REVIEWS }))
     .catch(e => e);
 
 // avarage

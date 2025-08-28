@@ -22,7 +22,7 @@ import {
 import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
 import { rewardsPost, createBody } from '../../client/newRewards/ManageCampaingsTab/constants';
-import { generateGiveawayMarkdown } from '../../client/rewards/rewardsHelper';
+import { generateGiveawayMarkdown, campaignTypes } from '../../client/rewards/rewardsHelper';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
 import { jsonParse } from '../../common/helpers/formatter';
 import { rewardsValues } from '../../common/constants/rewards';
@@ -600,7 +600,7 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
     const state = getState();
     const authUserName = getAuthenticatedUserName(state);
     const linkedObjects = getLinkedObjects(state);
-    const method = campaignType === campaignType.REVIEWS ? getCampaign : getMentionCampaign;
+    const method = campaignType === campaignTypes.REVIEWS ? getCampaign : getMentionCampaign;
 
     return method(authUserName, campaignId, secondaryItem)
       .then(campaign => {

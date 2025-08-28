@@ -18,7 +18,10 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { createEmptyNode, createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
+import {
+  createImageNode,
+  insertImageWithoutParagraph,
+} from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
 import './ImageSetter.less';
@@ -152,7 +155,7 @@ const ImageSetter = ({
 
           Transforms.insertNodes(
             editor,
-            [createImageNode(newImage.name, { url }), createEmptyNode()],
+            insertImageWithoutParagraph(editor, createImageNode(newImage.name, { url })),
             isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
           );
           ReactEditor.focus(editor);

@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Form, message } from 'antd';
+import timezones from '../../../common/constants/timezones';
 import {
   createNewCampaing,
   getAuthorsChildWobjects,
@@ -279,6 +280,7 @@ class CreateRewards extends React.Component {
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
           minFollowers: campaign.userRequirements.minFollowers,
+          timezone: campaign.timezone,
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservationTimetable,
           minPhotos: campaign.requirements.minPhotos,
@@ -370,6 +372,9 @@ class CreateRewards extends React.Component {
       app: appName,
       type: data.type,
       reach: data.reach,
+      ...(data.timezone
+        ? { timezone: timezones?.find(o => o.label === data.timezone)?.value }
+        : {}),
       budget,
       reward: Number(data.reward) || 0,
       requirements: {
@@ -667,6 +672,7 @@ class CreateRewards extends React.Component {
       durationDays,
       recurrenceRule,
       contestRewards,
+      timezone,
     } = this.state;
 
     return (
@@ -674,6 +680,7 @@ class CreateRewards extends React.Component {
         match={match}
         handlers={this.handlers}
         campaignName={campaignName}
+        timezone={timezone}
         campaignType={campaignType}
         reachType={reachType}
         budget={budget}

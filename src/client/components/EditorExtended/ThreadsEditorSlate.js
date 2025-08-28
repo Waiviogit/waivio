@@ -6,7 +6,7 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Transforms, Node, Range } from 'slate';
+import { createEditor, Transforms, Node, Range, Path, Editor } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -25,8 +25,11 @@ import AddButtonSlate from './components/addbuttonSlate';
 import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
-import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-import createParagraph, { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import {
+  createEmptyNode,
+  createImageNode,
+  insertImageWithoutParagraph,
+} from './util/SlateEditor/utils/embed';
 import withLists from './util/SlateEditor/plugins/withLists';
 import {
   focusEditorToEnd,
@@ -140,7 +143,8 @@ const ThreadsEditorSlate = props => {
     });
 
     // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
+    // Використовуємо insertImageWithoutParagraph для вставки без параграфу
+    Transforms.insertNodes(editor, insertImageWithoutParagraph(editor, imageBlock));
   };
 
   // Drug and drop method
@@ -214,6 +218,134 @@ const ThreadsEditorSlate = props => {
         return true;
       }
     }
+
+    if (event.key === 'Backspace') {
+      // Handle Backspace key to prevent unwanted image selection
+      // and provide better navigation behavior
+      const { path, offset } = selection.anchor;
+      const selectedElementPath = path.slice(0, -1);
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+      const prevPath = selectedElementPath.every(p => !p)
+        ? [0]
+        : Path.previous(selectedElementPath);
+      const nextPath = Path.next(selectedElementPath);
+      const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+
+      // Handle case when deleting empty paragraph before image
+      if (
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === '' &&
+        ['image', 'video'].includes(nextNode?.type) &&
+        !offset // cursor is at the beginning of the paragraph
+      ) {
+        event.preventDefault();
+
+        // Remove the empty paragraph
+        Transforms.removeNodes(editor, { at: selectedElementPath });
+
+        // Find the previous non-image node to move to
+        let prevNonImagePath = prevPath;
+        let prevNonImageNode = prevNode;
+
+        while (
+          prevNonImagePath &&
+          prevNonImagePath[0] > 0 &&
+          prevNonImageNode &&
+          ['image', 'video'].includes(prevNonImageNode.type)
+        ) {
+          prevNonImagePath = Path.previous(prevNonImagePath);
+          [prevNonImageNode] = Node.has(editor, prevNonImagePath)
+            ? Editor.node(editor, prevNonImagePath)
+            : [null];
+        }
+
+        if (
+          prevNonImagePath &&
+          prevNonImageNode &&
+          !['image', 'video'].includes(prevNonImageNode.type)
+        ) {
+          // Move to the end of the previous non-image node
+          const endPoint = Editor.end(editor, prevNonImagePath);
+
+          Transforms.select(editor, endPoint);
+        } else {
+          // If no previous non-image node found, move to the beginning
+          Transforms.select(editor, Editor.start(editor, []));
+        }
+
+        return true;
+      }
+
+      // Handle general case of deleting empty paragraph
+      if (
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === '' &&
+        !offset // cursor is at the beginning of the paragraph
+      ) {
+        // If there's a previous node, remove empty paragraph and move to the end of previous node
+        if (prevNode && !['image', 'video'].includes(prevNode.type)) {
+          event.preventDefault();
+
+          // Remove the empty paragraph
+          Transforms.removeNodes(editor, { at: selectedElementPath });
+
+          // Move to the end of the previous node
+          const endPoint = Editor.end(editor, prevPath);
+
+          Transforms.select(editor, endPoint);
+
+          return true;
+        }
+
+        // If we're at the beginning and there's no previous node, do nothing
+        if (path[0] === 0) {
+          event.preventDefault();
+
+          return true;
+        }
+
+        // If the previous node is an image/video, remove empty paragraph and find previous non-image node
+        if (prevNode && ['image', 'video'].includes(prevNode.type)) {
+          event.preventDefault();
+
+          // Remove the empty paragraph
+          Transforms.removeNodes(editor, { at: selectedElementPath });
+
+          // Find the previous non-image node
+          let prevNonImagePath = prevPath;
+          let prevNonImageNode = prevNode;
+
+          while (
+            prevNonImagePath &&
+            prevNonImagePath[0] > 0 &&
+            prevNonImageNode &&
+            ['image', 'video'].includes(prevNonImageNode.type)
+          ) {
+            prevNonImagePath = Path.previous(prevNonImagePath);
+            [prevNonImageNode] = Node.has(editor, prevNonImagePath)
+              ? Editor.node(editor, prevNonImagePath)
+              : [null];
+          }
+
+          if (
+            prevNonImagePath &&
+            prevNonImageNode &&
+            !['image', 'video'].includes(prevNonImageNode.type)
+          ) {
+            const endPoint = Editor.end(editor, prevNonImagePath);
+
+            Transforms.select(editor, endPoint);
+          } else {
+            // If no previous non-image node found, move to the beginning
+            Transforms.select(editor, Editor.start(editor, []));
+          }
+
+          return true;
+        }
+      }
+    }
+
     if (event.keyCode === 32) {
       removeAllInlineFormats(editor);
 
