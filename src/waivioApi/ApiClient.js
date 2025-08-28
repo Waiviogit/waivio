@@ -1169,6 +1169,36 @@ export const getGuestAvatarUrl = (username, url, intl) => {
     });
 };
 
+export const enhanceAvatarImage = async (imageUrl, objectPermlink) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  const formData = new FormData();
+  formData.append('imageUrl', imageUrl);
+  formData.append('objectPermlink', objectPermlink);
+  formData.append('enhancementType', 'resolution');
+
+  return fetch(`${config.apiPrefix}${config.enhanceAvatar}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+      return response;
+    })
+    .catch(err => {
+      console.error('Avatar enhancement error:', err);
+      return { success: false, message: 'Failed to enhance avatar' };
+    });
+};
+
 // eslint-disable-next-line camelcase
 export const updateGuestProfile = async (username, json_metadata) => {
   const body = {
@@ -5134,11 +5164,14 @@ export const getSafeLinks = () =>
     .then(r => r)
     .catch(e => e);
 
-export const getJudgeRewardsMain = userName =>
-  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getJudgeRewardsMain = (userName, skip, limit = 20) =>
+  fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);

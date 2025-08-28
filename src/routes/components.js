@@ -22,7 +22,6 @@ export default {
     import('../client/newRewards/SponsorsMatchBots/SponsorsMatchBots'),
   ),
   Receivables: loableComponent(import('../client/newRewards/Debts/Receivables')),
-  Judges: loableComponent(import('../client/newRewards/Judges/Judges')),
   ReceivablesListByUser: loableComponent(
     import('../client/newRewards/Debts/ReceivablesListByUser'),
   ),

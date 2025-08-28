@@ -61,7 +61,7 @@ const routes = {
           component: Views.RewardsManage,
         },
         {
-          path: '/(global|local)',
+          path: '/(global|local|judges)',
           exact: true,
           component: LocalRewardsList,
         },
@@ -94,11 +94,6 @@ const routes = {
           path: '/receivable',
           exact: true,
           component: Views.Receivables,
-        },
-        {
-          path: '/judges',
-          exact: true,
-          component: Views.Judges,
         },
         {
           path: '/payable/@:userName',
