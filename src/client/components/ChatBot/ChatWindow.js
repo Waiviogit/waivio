@@ -3,9 +3,13 @@ import { Drawer, Icon, Input, message as antdMessage, Modal, Tooltip } from 'ant
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
 import fetch from 'isomorphic-fetch';
+import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty, isNil, map } from 'lodash';
+import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
+import useQuery from '../../../hooks/useQuery';
+import { getDraftPostsSelector } from '../../../store/draftsStore/draftsSelectors';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -27,6 +31,7 @@ import {
   getIsWaivio,
   getUserAdministrator,
   getWebsiteConfiguration,
+  getCurrentShownPost,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -48,7 +53,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const [isOkayBtn, setIsOkayBtn] = useState(false);
   const [currentImage, setCurrentImage] = useState([]);
   const [loadedImages, setLoadedImages] = useState([]);
-
+  const currentShownPost = useSelector(getCurrentShownPost);
   const dispatch = useDispatch();
   const lastSelection = useSelector(getLastSelection);
   const config = useSelector(getWebsiteConfiguration);
@@ -58,6 +63,12 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const isWaivio = useSelector(getIsWaivio);
   const authUser = useSelector(getAuthenticatedUserName);
   const host = useSelector(getHostAddress);
+  const history = useHistory();
+  const query = useQuery();
+  const isEditor = history?.location?.pathname?.includes('/editor');
+  const draftId = getCurrentDraftId(query.get('draft'));
+  const draftList = useSelector(getDraftPostsSelector);
+  const currDraft = draftList.find(d => d.draftId === draftId);
   const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
   const textAreaRef = useRef(null);
@@ -71,6 +82,14 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
+  let currentPageContent = '';
+
+  if (isEditor) {
+    currentPageContent = `${currDraft?.title} ${currDraft?.body}`;
+  }
+  if (currentShownPost && !isEditor) {
+    currentPageContent = `${currentShownPost?.title} ${currentShownPost?.body}`;
+  }
 
   const onClick = () => {
     setIsModal(true);
@@ -135,7 +154,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       setCurrentImage([]);
       setLoading(true);
 
-      sendChatBotQuestion(question, id, authUser, imageList).then(res => {
+      sendChatBotQuestion(question, id, authUser, imageList, currentPageContent).then(res => {
         const resutText =
           res.message || isEmpty(res.result.kwargs.content)
             ? 'Sorry, an error has occurred.'

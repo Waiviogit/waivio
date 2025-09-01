@@ -29,7 +29,7 @@ const ObjectSearchItem = ({ wobj, isWebsite }) => {
 ObjectSearchItem.propTypes = {
   wobj: PropTypes.shape({
     object_type: PropTypes.string,
-    parent: PropTypes.shape({}),
+    parent: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }).isRequired,
   isWebsite: PropTypes.bool,
 };

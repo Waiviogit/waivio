@@ -22,7 +22,7 @@ export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
     albums: PropTypes.arrayOf(PropTypes.shape({})),
-    relatedAlbum: PropTypes.func,
+    relatedAlbum: PropTypes.shape({}),
     size: PropTypes.number,
     accessExtend: PropTypes.bool,
   };

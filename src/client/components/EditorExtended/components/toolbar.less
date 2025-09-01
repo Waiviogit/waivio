@@ -78,9 +78,25 @@
   &.md-editor-toolbar--linkinput {
     animation: pop-downwards 200ms forwards linear;
     background: @white;
-    width: 96.5% !important;
-    margin-left: 12px;
+    width: auto !important;
+    min-width: 300px;
+    max-width: 90vw;
+    margin-left: 0;
     height: 36px;
+    border: 1px solid @border-color-base;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+
+    // Кращий responsive дизайн
+    @media (max-width: 768px) {
+      min-width: 280px;
+      max-width: calc(100vw - 40px);
+    }
+
+    @media (max-width: 480px) {
+      min-width: 250px;
+      max-width: calc(100vw - 20px);
+    }
   }
 
   .md-url-input {

@@ -9,8 +9,79 @@
   position: absolute;
   z-index: 1;
   top: -1px;
-  transition: all 0.1s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   left: 0;
+
+  // iOS-specific improvements
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  // Ensure proper touch handling on iOS
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  // Prevent iOS zoom on double tap
+  touch-action: manipulation;
+
+  // Force hardware acceleration on iOS
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+
+  // Ensure smooth animations on iOS
+  will-change: transform, top;
+
+  // Better positioning on iOS
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+
+  // iOS-specific positioning fixes
+  &[data-ios-device='true'] {
+    // Prevent iOS from hiding the button
+    -webkit-overflow-scrolling: touch;
+    overflow: visible;
+
+    // Ensure button stays within viewport
+    max-height: 100vh;
+    max-width: 100vw;
+
+    // Better touch area
+    min-height: 44px;
+    min-width: 44px;
+
+    // iOS-specific animation improvements
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+    // Prevent iOS from interfering with positioning
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  // iOS-specific visibility debugging
+  &[data-button-visible='false'] {
+    opacity: 0.5;
+    background: rgba(255, 0, 0, 0.1);
+
+    &::before {
+      content: '⚠️ Button Hidden';
+      position: absolute;
+      top: -20px;
+      left: 0;
+      font-size: 10px;
+      color: red;
+      background: white;
+      padding: 2px 4px;
+      border: 1px solid red;
+      border-radius: 2px;
+      z-index: 9999;
+    }
+  }
 
   .act-buttons-grid {
     display: grid;
@@ -272,8 +343,34 @@
   transition: all 0.2s ease;
   font-weight: 500;
 
+  // iOS-specific improvements
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+
+  // Ensure proper touch area on iOS
+  min-height: 44px;
+  min-width: 44px;
+  padding: 7px;
+
+  // Prevent iOS zoom
+  touch-action: manipulation;
+
+  // Force hardware acceleration
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
   &:focus {
     outline: none;
+  }
+
+  // Improve touch feedback on iOS
+  &:active {
+    -webkit-transform: scale(0.95) translateZ(0);
+    transform: scale(0.95) translateZ(0);
   }
 }
 
@@ -290,6 +387,7 @@
 
   &.md-open-button {
     transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
   }
 }
 

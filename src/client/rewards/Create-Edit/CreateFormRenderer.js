@@ -147,6 +147,7 @@ const CreateFormRenderer = props => {
     contestJudgesAccount,
     recurrenceRule,
     contestRewards,
+    timezone,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -179,7 +180,8 @@ const CreateFormRenderer = props => {
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
   let userBalance = parseFloat(user.balance);
-  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone());
+
+  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone(timezone));
 
   if (payoutToken !== 'HIVE') {
     userBalance = currencyInfo ? currencyInfo?.balance : null;
@@ -1036,6 +1038,7 @@ CreateFormRenderer.propTypes = {
   parentPermlink: PropTypes.string,
   currency: PropTypes.string.isRequired,
   reachType: PropTypes.string,
+  timezone: PropTypes.string,
   payoutToken: PropTypes.string,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
