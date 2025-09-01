@@ -63,6 +63,16 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const history = useHistory();
   const match = useRouteMatch();
   const isLocation = match.params[0] === 'local';
+  const isJudges = match.params[0] === 'judges';
+  let title;
+
+  if (isJudges) {
+    title = intl.formatMessage({ id: 'judges', defaultMessage: 'Judges' });
+  } else if (isLocation) {
+    title = intl.formatMessage({ id: 'local_rewards', defaultMessage: 'Local rewards' });
+  } else {
+    title = intl.formatMessage({ id: 'global_rewards', defaultMessage: 'Global rewards' });
+  }
   const onClose = () => setVisible(false);
   const clearMapInfo = () => {
     query.delete('area');
@@ -143,12 +153,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
     <div className="RewardLists">
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
-        <h2 className="RewardLists__title">
-          {isLocation
-            ? intl.formatMessage({ id: 'local', defaultMessage: 'Local' })
-            : intl.formatMessage({ id: 'global', defaultMessage: 'Global' })}{' '}
-          {intl.formatMessage({ id: 'rewards', defaultMessage: 'rewards' })}
-        </h2>
+        <h2 className="RewardLists__title">{title}</h2>
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (

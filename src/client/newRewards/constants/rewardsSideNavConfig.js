@@ -33,6 +33,12 @@ export const rewardsSettings = {
       defaultMessage: 'History',
       forAuth: true,
     },
+    {
+      to: '/rewards/judges',
+      id: 'judges',
+      defaultMessage: 'Judges',
+      forAuth: true,
+    },
   ],
 };
 
