@@ -142,14 +142,12 @@ const ThreadsEditorSlate = props => {
       }`,
     });
 
-    // image of uploading from editor not removed in feeds without that hack
-    // Видаляємо поточний параграф тільки якщо він порожній та вставляємо картинку з новим параграфом після
     const { selection } = editor;
+
     if (selection) {
       const selectedElementPath = selection.anchor.path.slice(0, -1);
       const selectedElement = Node.descendant(editor, selectedElementPath);
 
-      // Видаляємо параграф тільки якщо він порожній (не містить тексту)
       if (
         selectedElement &&
         selectedElement.type === 'paragraph' &&
@@ -162,7 +160,6 @@ const ThreadsEditorSlate = props => {
     Transforms.insertNodes(editor, insertImageReplaceParagraph(editor, imageBlock));
   };
 
-  // Drug and drop method
   const handleDroppedFiles = async event => {
     message.info(
       intl.formatMessage({
@@ -202,13 +199,12 @@ const ThreadsEditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      // Видаляємо поточний параграф тільки якщо він порожній та вставляємо картинку з новим параграфом після
       const { selection } = editor;
+
       if (selection) {
         const selectedElementPath = selection.anchor.path.slice(0, -1);
         const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        // Видаляємо параграф тільки якщо він порожній (не містить тексту)
         if (
           selectedElement &&
           selectedElement.type === 'paragraph' &&
@@ -229,7 +225,6 @@ const ThreadsEditorSlate = props => {
     const { selection } = editor;
 
     if (event.key === 'Delete') {
-      // Handle Delete key for empty paragraphs before images
       const { path, offset } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
       const selectedElement = Node.descendant(editor, selectedElementPath);
@@ -245,14 +240,10 @@ const ThreadsEditorSlate = props => {
         selectedElement.children?.[0]?.text === '' &&
         ['image', 'video'].includes(nextNode?.type)
       ) {
-        // When deleting empty paragraph before image, remove the empty paragraph
-        // and move the image up, then position cursor appropriately
         event.preventDefault();
 
-        // Remove the empty paragraph
         Transforms.removeNodes(editor, { at: selectedElementPath });
 
-        // Find the previous non-image node to position cursor
         let prevNonImagePath = prevPath;
         let prevNonImageNode = prevNode;
 
@@ -275,45 +266,37 @@ const ThreadsEditorSlate = props => {
         ) {
           Transforms.select(editor, Editor.end(editor, prevNonImagePath));
         } else {
-          // If no previous non-image node found, move to the beginning
           Transforms.select(editor, Editor.start(editor, []));
         }
 
         return true;
       }
 
-      // Handle general case of deleting empty paragraph
       if (
         selectedElement.type === 'paragraph' &&
         selectedElement.children?.[0]?.text === '' &&
-        !offset // cursor is at the beginning of the paragraph
+        !offset
       ) {
-        // If there's a previous node, remove empty paragraph and move to the end of previous node
         if (prevNode && !['image', 'video'].includes(prevNode.type)) {
           event.preventDefault();
 
-          // Remove the empty paragraph
           Transforms.removeNodes(editor, { at: selectedElementPath });
           Transforms.select(editor, Editor.end(editor, prevPath));
 
           return true;
         }
 
-        // If we're at the beginning and there's no previous node, do nothing
         if (path[0] === 0) {
           event.preventDefault();
 
           return true;
         }
 
-        // If the previous node is an image/video, remove empty paragraph and find previous non-image node
         if (prevNode && ['image', 'video'].includes(prevNode.type)) {
           event.preventDefault();
 
-          // Remove the empty paragraph
           Transforms.removeNodes(editor, { at: selectedElementPath });
 
-          // Find the previous non-image node
           let prevNonImagePath = prevPath;
           let prevNonImageNode = prevNode;
 
@@ -336,7 +319,6 @@ const ThreadsEditorSlate = props => {
           ) {
             Transforms.select(editor, Editor.end(editor, prevNonImagePath));
           } else {
-            // If no previous non-image node found, move to the beginning
             Transforms.select(editor, Editor.start(editor, []));
           }
 
@@ -368,8 +350,6 @@ const ThreadsEditorSlate = props => {
     }
 
     if (event.key === 'Backspace') {
-      // Handle Backspace key to prevent unwanted image selection
-      // and provide better navigation behavior
       const { path, offset } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
       const selectedElement = Node.descendant(editor, selectedElementPath);
@@ -380,19 +360,14 @@ const ThreadsEditorSlate = props => {
       const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
       const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-      // Handle case when deleting empty paragraph before image
       if (
         selectedElement.type === 'paragraph' &&
         selectedElement.children?.[0]?.text === '' &&
         ['image', 'video'].includes(nextNode?.type) &&
-        !offset // cursor is at the beginning of the paragraph
+        !offset
       ) {
         event.preventDefault();
-
-        // Remove the empty paragraph
         Transforms.removeNodes(editor, { at: selectedElementPath });
-
-        // Find the previous non-image node to move to
         let prevNonImagePath = prevPath;
         let prevNonImageNode = prevNode;
 
@@ -413,32 +388,26 @@ const ThreadsEditorSlate = props => {
           prevNonImageNode &&
           !['image', 'video'].includes(prevNonImageNode.type)
         ) {
-          // Move to the end of the previous non-image node
           const endPoint = Editor.end(editor, prevNonImagePath);
 
           Transforms.select(editor, endPoint);
         } else {
-          // If no previous non-image node found, move to the beginning
           Transforms.select(editor, Editor.start(editor, []));
         }
 
         return true;
       }
 
-      // Handle general case of deleting empty paragraph
       if (
         selectedElement.type === 'paragraph' &&
         selectedElement.children?.[0]?.text === '' &&
-        !offset // cursor is at the beginning of the paragraph
+        !offset
       ) {
-        // If there's a previous node, remove empty paragraph and move to the end of previous node
         if (prevNode && !['image', 'video'].includes(prevNode.type)) {
           event.preventDefault();
 
-          // Remove the empty paragraph
           Transforms.removeNodes(editor, { at: selectedElementPath });
 
-          // Move to the end of the previous node
           const endPoint = Editor.end(editor, prevPath);
 
           Transforms.select(editor, endPoint);
@@ -446,21 +415,17 @@ const ThreadsEditorSlate = props => {
           return true;
         }
 
-        // If we're at the beginning and there's no previous node, do nothing
         if (path[0] === 0) {
           event.preventDefault();
 
           return true;
         }
 
-        // If the previous node is an image/video, remove empty paragraph and find previous non-image node
         if (prevNode && ['image', 'video'].includes(prevNode.type)) {
           event.preventDefault();
 
-          // Remove the empty paragraph
           Transforms.removeNodes(editor, { at: selectedElementPath });
 
-          // Find the previous non-image node
           let prevNonImagePath = prevPath;
           let prevNonImageNode = prevNode;
 
@@ -485,7 +450,6 @@ const ThreadsEditorSlate = props => {
 
             Transforms.select(editor, endPoint);
           } else {
-            // If no previous non-image node found, move to the beginning
             Transforms.select(editor, Editor.start(editor, []));
           }
 
