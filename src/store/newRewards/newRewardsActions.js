@@ -20,7 +20,11 @@ import { jsonParse } from '../../common/helpers/formatter';
 import { getSelectedDish, getSelectedRestaurant } from '../quickRewards/quickRewardsSelectors';
 import { rewardsPost } from '../../client/newRewards/ManageCampaingsTab/constants';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { getAllRewardList, getEligibleRewardList } from '../../waivioApi/ApiClient';
+import {
+  getAllRewardList,
+  getEligibleRewardList,
+  getJudgeRewardsMain,
+} from '../../waivioApi/ApiClient';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,
@@ -750,22 +754,45 @@ export const sendCommentForMentions = (proposition, body, isUpdating = false, or
 
 export const GET_REWARDS_LIST = createAsyncActionType('GET_REWARDS_LIST');
 
-export const getRewardsList = (showAll, query, sort, type) => (dispatch, getState) =>
-  dispatch({
+export const getRewardsList = (showAll, query, sort, type) => (dispatch, getState) => {
+  const authUserName = getAuthenticatedUserName(getState());
+  const skip = 0;
+
+  let payload;
+
+  if (type === 'judges') {
+    payload = getJudgeRewardsMain(authUserName, skip, query);
+  } else if (showAll) {
+    payload = getAllRewardList(skip, query, sort, type);
+  } else {
+    payload = getEligibleRewardList(authUserName, skip, query, sort, type);
+  }
+
+  return dispatch({
     type: GET_REWARDS_LIST.ACTION,
-    payload: showAll
-      ? getAllRewardList(0, query, sort, type)
-      : getEligibleRewardList(getAuthenticatedUserName(getState()), 0, query, sort, type),
+    payload,
   });
+};
 
 export const GET_MORE_REWARDS_LIST = createAsyncActionType('GET_MORE_REWARDS_LIST');
 
-export const getMoreRewardsList = (showAll, skip, query, sort, type) => (dispatch, getState) =>
-  dispatch({
+export const getMoreRewardsList = (showAll, skip, query, sort, type) => (dispatch, getState) => {
+  const authUserName = getAuthenticatedUserName(getState());
+
+  let payload;
+
+  if (type === 'judges') {
+    payload = getJudgeRewardsMain(authUserName, skip);
+  } else if (showAll) {
+    payload = getAllRewardList(skip, query, sort, type);
+  } else {
+    payload = getEligibleRewardList(authUserName, skip, query, sort, type);
+  }
+
+  return dispatch({
     type: GET_MORE_REWARDS_LIST.ACTION,
-    payload: showAll
-      ? getAllRewardList(skip, query, sort, type)
-      : getEligibleRewardList(getAuthenticatedUserName(getState()), skip, query, sort, type),
+    payload,
   });
+};
 
 export default null;

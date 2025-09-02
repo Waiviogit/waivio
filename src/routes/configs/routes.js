@@ -48,7 +48,7 @@ const routes = {
       component: RewardsMainPage,
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
-        `/rewards/(local|global)/(all|eligible)?/:requiredObject?`,
+        `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject?`,
         `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
@@ -61,7 +61,7 @@ const routes = {
           component: Views.RewardsManage,
         },
         {
-          path: '/(global|local)',
+          path: '/(global|local|judges)',
           exact: true,
           component: LocalRewardsList,
         },
@@ -76,7 +76,7 @@ const routes = {
           component: Views.AllProposition,
         },
         {
-          path: '/(global|local)/eligible/:requiredObject?',
+          path: '/(global|local|judges)/eligible/:requiredObject?',
           exact: true,
           component: Views.EligibleProposition,
         },
@@ -84,6 +84,11 @@ const routes = {
           path: '/reserved',
           exact: true,
           component: Views.ReservedProposition,
+        },
+        {
+          path: '/judge-posts',
+          exact: true,
+          component: Views.JudgePosts,
         },
         {
           path: '/payable',

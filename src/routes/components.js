@@ -15,6 +15,7 @@ export default {
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
+  JudgePosts: loableComponent(import('../client/newRewards/JudgePosts/JudgePosts')),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
   BlackList: loableComponent(import('../client/newRewards/BlackList/BlackList')),
   ReportsNew: loableComponent(import('../client/newRewards/Reports/Reports')),
