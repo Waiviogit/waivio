@@ -286,7 +286,6 @@ const EditorSlate = props => {
     const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
     const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-    Editor.end(editor, selectedElementPath);
     if (event.key === 'Delete') {
       if (
         selectedElement.type === 'paragraph' &&
@@ -321,6 +320,18 @@ const EditorSlate = props => {
         } else {
           Transforms.select(editor, Editor.start(editor, []));
         }
+
+        return true;
+      }
+
+      if (
+        selectedElement.type === 'paragraph' &&
+        offset === selectedElement.children[0]?.text?.length &&
+        ['image', 'video'].includes(nextNode?.type)
+      ) {
+        event.preventDefault();
+
+        Transforms.select(editor, Editor.range(editor, nextPath));
 
         return true;
       }

@@ -35,6 +35,7 @@ const Toolbar = props => {
   useEffect(() => {
     if (isShowLinkInput) {
       setShowLinkInput(false);
+      setUrlInputValue('');
 
       return setOpen(false);
     }
@@ -132,7 +133,6 @@ const Toolbar = props => {
           <Input
             className="md-url-input"
             onKeyDown={e => {
-              // Закриваємо поле при натисканні Escape
               if (e.key === 'Escape') {
                 setShowLinkInput(false);
                 setUrlInputValue('');
@@ -146,6 +146,7 @@ const Toolbar = props => {
             })}
             value={urlInputValue}
             onPressEnter={setLink}
+            autoFocus
           />
           <Button
             type="primary"

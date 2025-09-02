@@ -66,11 +66,13 @@ const RenderPropositionList = ({
   const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
   const isLocation = match.params[0] === 'local';
+  const isJudges = tab === 'judges';
   const reqObj = requiredObject?.replace('@', '');
 
   const getFilters = () => {
-    if (!withoutFilters)
+    if (!withoutFilters && !isJudges)
       return getPropositionFilters(requiredObject, authUserName, match.params[0]);
+    if (isJudges) return getPropositionFilters(authUserName, requiredObject);
 
     return null;
   };
@@ -150,7 +152,7 @@ const RenderPropositionList = ({
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__page" to={parentLink}>
-            {intl.formatMessage({ id: `${tab}_rewards_new` })}
+            {intl.formatMessage({ id: isJudges ? 'judges' : `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (
             <div className="PropositionList__parent">
@@ -198,7 +200,7 @@ const RenderPropositionList = ({
           </ReduxInfiniteScroll>
         )}
       </div>
-      {!withoutFilters && (
+      {(!withoutFilters || isJudges) && (
         <div className={'PropositionList__left'}>
           {withMap && isLocation && (
             <RewardsMap

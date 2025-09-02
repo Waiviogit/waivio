@@ -36,6 +36,7 @@ const Proposition = ({
   if (!proposition?.object && !proposition?.user && !isGiveaways) return null;
 
   let mainItem = proposition.object;
+  const isJudges = type === 'judges';
 
   if ((proposition.user || !proposition.object?.object_type) && !isGiveaways) {
     const user = proposition.user || proposition.object;
@@ -133,6 +134,7 @@ const Proposition = ({
             rate={proposition.payoutTokenRateUSD}
           />
           <PropositionFooter
+            isJudges={isJudges}
             type={propositionType}
             countReservationDays={proposition?.countReservationDays}
             commentsCount={proposition?.commentsCount}

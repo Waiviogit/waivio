@@ -1170,6 +1170,36 @@ export const getGuestAvatarUrl = (username, url, intl) => {
     });
 };
 
+export const enhanceAvatarImage = async (imageUrl, objectPermlink) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  const formData = new FormData();
+  formData.append('imageUrl', imageUrl);
+  formData.append('objectPermlink', objectPermlink);
+  formData.append('enhancementType', 'resolution');
+
+  return fetch(`${config.apiPrefix}${config.enhanceAvatar}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+      return response;
+    })
+    .catch(err => {
+      console.error('Avatar enhancement error:', err);
+      return { success: false, message: 'Failed to enhance avatar' };
+    });
+};
+
 // eslint-disable-next-line camelcase
 export const updateGuestProfile = async (username, json_metadata) => {
   const body = {
@@ -5135,4 +5165,53 @@ export const getSafeLinks = () =>
     .then(r => r)
     .catch(e => e);
 
+export const getJudgeRewardsMain = (userName, skip, query) =>
+  fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}&${query}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getJudgeRewardsByObject = (requiredObject, userName, skip) =>
+  fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.object}/${requiredObject}?skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getJudgeRewardsFiltersBySponsor = (userName, requiredObject) => {
+  const obj = requiredObject ? `?requiredObject=${requiredObject}` : '';
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.sponsors}${obj}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+export const getJudgesPosts = (judgeName, authorPermlink, skip, limit = 10) =>
+  fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}`, {
+    headers: {
+      ...headers,
+      follower: judgeName,
+    },
+    body: JSON.stringify({ judgeName, authorPermlink, skip, limit }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
 export default null;
