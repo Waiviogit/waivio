@@ -28,7 +28,14 @@ import ReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons
 
 import './Proposition.less';
 
-const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition, intl }) => {
+const PropositionFooter = ({
+  type,
+  openDetailsModal,
+  proposition,
+  getProposition,
+  intl,
+  isJudges = false,
+}) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
@@ -314,6 +321,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
                 return Promise.resolve();
               }}
+              isJudges={isJudges}
               reservedDays={proposition?.countReservationDays}
               inCard
               type={proposition?.type}
@@ -351,6 +359,7 @@ PropositionFooter.propTypes = {
   type: PropTypes.string.isRequired,
   openDetailsModal: PropTypes.func.isRequired,
   getProposition: PropTypes.func,
+  isJudges: PropTypes.bool,
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,

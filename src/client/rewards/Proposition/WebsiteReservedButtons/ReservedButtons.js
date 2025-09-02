@@ -37,6 +37,9 @@ const ReservedButtons = props => {
   const handleClickProposButton = () => {
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'click_submit_photos', { debug_mode: false });
+    if (props.isJudges) {
+      history.push('/rewards/judge-posts');
+    }
     if (props.type === 'giveaways') {
       window.location = props.giveawayUrl;
     } else {
@@ -47,7 +50,8 @@ const ReservedButtons = props => {
     }
   };
 
-  const getButtonLabel = () => {
+  const getButtonLabel = (isJudges = false) => {
+    if (isJudges) return props.intl.formatMessage({ id: 'see_posts', defaultMessage: 'See posts' });
     switch (props.type) {
       case campaignTypes.MENTIONS:
         return props.intl.formatMessage({ id: 'submit_mention', defaultMessage: 'Mention Now!' });
@@ -70,7 +74,7 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        {getButtonLabel()}
+        {getButtonLabel(props.isJudges)}
       </Button>
       {!props.reserved &&
         ![
@@ -117,6 +121,7 @@ ReservedButtons.propTypes = {
   handleReserve: PropTypes.func.isRequired,
   handleReserveForPopover: PropTypes.func.isRequired,
   disable: PropTypes.bool,
+  isJudges: PropTypes.bool,
   reserved: PropTypes.bool,
   inCard: PropTypes.bool,
   isSocialProduct: PropTypes.bool,

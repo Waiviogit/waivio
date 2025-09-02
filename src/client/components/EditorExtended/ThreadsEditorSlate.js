@@ -272,6 +272,20 @@ const ThreadsEditorSlate = props => {
         return true;
       }
 
+      // Handle case when cursor is at the end of a paragraph and next element is image/video
+      if (
+        selectedElement.type === 'paragraph' &&
+        offset === selectedElement.children[0]?.text?.length &&
+        ['image', 'video'].includes(nextNode?.type)
+      ) {
+        event.preventDefault();
+
+        // Select the image/video element first
+        Transforms.select(editor, Editor.range(editor, nextPath));
+
+        return true;
+      }
+
       if (
         selectedElement.type === 'paragraph' &&
         selectedElement.children?.[0]?.text === '' &&
