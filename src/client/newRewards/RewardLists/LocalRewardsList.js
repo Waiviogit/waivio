@@ -21,6 +21,7 @@ import {
   getFiltersForEligibleRewards,
   getMarkersForAll,
   getMarkersForEligible,
+  getJudgeRewardsFiltersBySponsor,
 } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
 import { getCoordinates } from '../../../store/userStore/userActions';
@@ -102,10 +103,15 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
       : dispatch(getRewardsList(showAll, query.toString(), sort, match.params[0]));
   };
 
-  const getFilters = () =>
-    showAll
+  const getFilters = () => {
+    if (isJudges) {
+      return getJudgeRewardsFiltersBySponsor(authUser);
+    }
+
+    return showAll
       ? getFiltersForAllRewards(match.params[0])
       : getFiltersForEligibleRewards(authUser, match.params[0]);
+  };
 
   const getMarkers = (userName, boundsParams) =>
     showAll

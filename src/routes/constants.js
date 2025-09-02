@@ -59,6 +59,7 @@ export default {
       'match-bots-authors',
       'edit',
       'history',
+      'judge-posts',
       'messages',
       'reports',
       'fraud-detection',

@@ -5165,9 +5165,9 @@ export const getSafeLinks = () =>
     .then(r => r)
     .catch(e => e);
 
-export const getJudgeRewardsMain = (userName, skip, limit = 20) =>
+export const getJudgeRewardsMain = (userName, skip, query) =>
   fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}&limit=${limit}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}&${query}`,
     {
       headers,
       method: 'GET',
@@ -5177,4 +5177,41 @@ export const getJudgeRewardsMain = (userName, skip, limit = 20) =>
     .then(res => res)
     .catch(e => e);
 
+export const getJudgeRewardsByObject = (requiredObject, userName, skip) =>
+  fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.object}/${requiredObject}?skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getJudgeRewardsFiltersBySponsor = (userName, requiredObject) => {
+  const obj = requiredObject ? `?requiredObject=${requiredObject}` : '';
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.sponsors}${obj}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+export const getJudgesPosts = (judgeName, authorPermlink, skip, limit = 10) =>
+  fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}`, {
+    headers: {
+      ...headers,
+      follower: judgeName,
+    },
+    body: JSON.stringify({ judgeName, authorPermlink, skip, limit }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
 export default null;

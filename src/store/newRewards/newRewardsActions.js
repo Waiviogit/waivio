@@ -761,7 +761,7 @@ export const getRewardsList = (showAll, query, sort, type) => (dispatch, getStat
   let payload;
 
   if (type === 'judges') {
-    payload = getJudgeRewardsMain(authUserName, skip);
+    payload = getJudgeRewardsMain(authUserName, skip, query);
   } else if (showAll) {
     payload = getAllRewardList(skip, query, sort, type);
   } else {

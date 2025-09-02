@@ -289,5 +289,6 @@
   "safety": "/safety",
   "voteField": "/vote-field",
   "safeLinks": "/safe-links",
-  "judge": "/judge"
+  "judge": "/judge",
+  "judgePosts": "/judge-posts"
 }
