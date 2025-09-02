@@ -33,7 +33,11 @@ const Toolbar = props => {
   const { selection } = editor;
 
   useEffect(() => {
-    if (isShowLinkInput) return setOpen(true);
+    if (isShowLinkInput) {
+      setShowLinkInput(false);
+
+      return setOpen(false);
+    }
 
     if (
       !selection ||
@@ -117,8 +121,8 @@ const Toolbar = props => {
       <div
         className={className}
         style={{
-          top: refToolbar.current?.style?.top || '0px',
-          left: refToolbar.current?.style?.left || '0px',
+          top: `${refToolbar.current?.style.top}`,
+          left: `${refToolbar.current?.style.left}`,
         }}
       >
         <div
@@ -142,7 +146,6 @@ const Toolbar = props => {
             })}
             value={urlInputValue}
             onPressEnter={setLink}
-            autoFocus
           />
           <Button
             type="primary"
