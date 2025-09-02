@@ -31,6 +31,7 @@ import {
   insertImageReplaceParagraph,
 } from './util/SlateEditor/utils/embed';
 import withLists from './util/SlateEditor/plugins/withLists';
+import withEmptyParagraphHandling from './util/SlateEditor/plugins/withEmptyParagraphHandling';
 import {
   focusEditorToEnd,
   removeAllInlineFormats,
@@ -53,6 +54,7 @@ const useEditor = props => {
         createEditor,
         withObjects,
         withLists,
+        withEmptyParagraphHandling,
         withReact,
         withLinks,
         withTables,
@@ -225,105 +227,23 @@ const ThreadsEditorSlate = props => {
     const { selection } = editor;
 
     if (event.key === 'Delete') {
+      // Handle Delete key for empty paragraphs - now handled by withEmptyParagraphHandling plugin
       const { path, offset } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
       const selectedElement = Node.descendant(editor, selectedElementPath);
-      const prevPath = selectedElementPath.every(p => !p)
-        ? [0]
-        : Path.previous(selectedElementPath);
       const nextPath = Path.next(selectedElementPath);
-      const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
       const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
+      // Only handle special cases that the plugin doesn't cover
       if (
         selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
+        offset === selectedElement.children[0]?.text?.length &&
         ['image', 'video'].includes(nextNode?.type)
       ) {
         event.preventDefault();
-
-        Transforms.removeNodes(editor, { at: selectedElementPath });
-
-        let prevNonImagePath = prevPath;
-        let prevNonImageNode = prevNode;
-
-        while (
-          prevNonImagePath &&
-          prevNonImagePath[0] > 0 &&
-          prevNonImageNode &&
-          ['image', 'video'].includes(prevNonImageNode.type)
-        ) {
-          prevNonImagePath = Path.previous(prevNonImagePath);
-          [prevNonImageNode] = Node.has(editor, prevNonImagePath)
-            ? Editor.node(editor, prevNonImagePath)
-            : [null];
-        }
-
-        if (
-          prevNonImagePath &&
-          prevNonImageNode &&
-          !['image', 'video'].includes(prevNonImageNode.type)
-        ) {
-          Transforms.select(editor, Editor.end(editor, prevNonImagePath));
-        } else {
-          Transforms.select(editor, Editor.start(editor, []));
-        }
+        Transforms.select(editor, Editor.range(editor, nextPath));
 
         return true;
-      }
-
-      if (
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
-        !offset
-      ) {
-        if (prevNode && !['image', 'video'].includes(prevNode.type)) {
-          event.preventDefault();
-
-          Transforms.removeNodes(editor, { at: selectedElementPath });
-          Transforms.select(editor, Editor.end(editor, prevPath));
-
-          return true;
-        }
-
-        if (path[0] === 0) {
-          event.preventDefault();
-
-          return true;
-        }
-
-        if (prevNode && ['image', 'video'].includes(prevNode.type)) {
-          event.preventDefault();
-
-          Transforms.removeNodes(editor, { at: selectedElementPath });
-
-          let prevNonImagePath = prevPath;
-          let prevNonImageNode = prevNode;
-
-          while (
-            prevNonImagePath &&
-            prevNonImagePath[0] > 0 &&
-            prevNonImageNode &&
-            ['image', 'video'].includes(prevNonImageNode.type)
-          ) {
-            prevNonImagePath = Path.previous(prevNonImagePath);
-            [prevNonImageNode] = Node.has(editor, prevNonImagePath)
-              ? Editor.node(editor, prevNonImagePath)
-              : [null];
-          }
-
-          if (
-            prevNonImagePath &&
-            prevNonImageNode &&
-            !['image', 'video'].includes(prevNonImageNode.type)
-          ) {
-            Transforms.select(editor, Editor.end(editor, prevNonImagePath));
-          } else {
-            Transforms.select(editor, Editor.start(editor, []));
-          }
-
-          return true;
-        }
       }
     }
 
@@ -346,115 +266,6 @@ const ThreadsEditorSlate = props => {
         editor.insertText('\n');
 
         return true;
-      }
-    }
-
-    if (event.key === 'Backspace') {
-      const { path, offset } = selection.anchor;
-      const selectedElementPath = path.slice(0, -1);
-      const selectedElement = Node.descendant(editor, selectedElementPath);
-      const prevPath = selectedElementPath.every(p => !p)
-        ? [0]
-        : Path.previous(selectedElementPath);
-      const nextPath = Path.next(selectedElementPath);
-      const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
-      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
-
-      if (
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
-        ['image', 'video'].includes(nextNode?.type) &&
-        !offset
-      ) {
-        event.preventDefault();
-        Transforms.removeNodes(editor, { at: selectedElementPath });
-        let prevNonImagePath = prevPath;
-        let prevNonImageNode = prevNode;
-
-        while (
-          prevNonImagePath &&
-          prevNonImagePath[0] > 0 &&
-          prevNonImageNode &&
-          ['image', 'video'].includes(prevNonImageNode.type)
-        ) {
-          prevNonImagePath = Path.previous(prevNonImagePath);
-          [prevNonImageNode] = Node.has(editor, prevNonImagePath)
-            ? Editor.node(editor, prevNonImagePath)
-            : [null];
-        }
-
-        if (
-          prevNonImagePath &&
-          prevNonImageNode &&
-          !['image', 'video'].includes(prevNonImageNode.type)
-        ) {
-          const endPoint = Editor.end(editor, prevNonImagePath);
-
-          Transforms.select(editor, endPoint);
-        } else {
-          Transforms.select(editor, Editor.start(editor, []));
-        }
-
-        return true;
-      }
-
-      if (
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
-        !offset
-      ) {
-        if (prevNode && !['image', 'video'].includes(prevNode.type)) {
-          event.preventDefault();
-
-          Transforms.removeNodes(editor, { at: selectedElementPath });
-
-          const endPoint = Editor.end(editor, prevPath);
-
-          Transforms.select(editor, endPoint);
-
-          return true;
-        }
-
-        if (path[0] === 0) {
-          event.preventDefault();
-
-          return true;
-        }
-
-        if (prevNode && ['image', 'video'].includes(prevNode.type)) {
-          event.preventDefault();
-
-          Transforms.removeNodes(editor, { at: selectedElementPath });
-
-          let prevNonImagePath = prevPath;
-          let prevNonImageNode = prevNode;
-
-          while (
-            prevNonImagePath &&
-            prevNonImagePath[0] > 0 &&
-            prevNonImageNode &&
-            ['image', 'video'].includes(prevNonImageNode.type)
-          ) {
-            prevNonImagePath = Path.previous(prevNonImagePath);
-            [prevNonImageNode] = Node.has(editor, prevNonImagePath)
-              ? Editor.node(editor, prevNonImagePath)
-              : [null];
-          }
-
-          if (
-            prevNonImagePath &&
-            prevNonImageNode &&
-            !['image', 'video'].includes(prevNonImageNode.type)
-          ) {
-            const endPoint = Editor.end(editor, prevNonImagePath);
-
-            Transforms.select(editor, endPoint);
-          } else {
-            Transforms.select(editor, Editor.start(editor, []));
-          }
-
-          return true;
-        }
       }
     }
 
