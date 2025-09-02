@@ -6,8 +6,8 @@ import { Helmet } from 'react-helmet';
 import { get, isEmpty, isNil } from 'lodash';
 import Cookie from 'js-cookie';
 import classNames from 'classnames';
+import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
-import useDecodedParams from '../../hooks/useDecodedParams';
 import useQuery from '../../hooks/useQuery';
 import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
 
@@ -100,7 +100,7 @@ const User = props => {
     helmetIcon,
     siteName,
   } = props;
-  const { 0: tab, name } = useDecodedParams();
+  const { 0: tab, name } = useParams();
   const query = useQuery();
   const favoriteTypes = useSelector(getFavoriteObjectTypes);
   const hasFavorites = !isNil(favoriteTypes) && !isEmpty(favoriteTypes);
