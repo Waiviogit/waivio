@@ -31,7 +31,8 @@ const ImageSetter = ({
   isRequired,
   isTitle,
   form,
-  isOptions = false,
+  field,
+  shouldValidate = false,
   isDesktop = false,
   isConfig = false,
   isAiChat = false,
@@ -355,11 +356,11 @@ const ImageSetter = ({
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
 
     setCurrentImages(filteredImages);
-    if (isOptions) {
+    if (shouldValidate) {
       form.setFieldsValue({
-        [objectFields.options]: undefined,
+        [field]: undefined,
       });
-      form.validateFields([objectFields.options]);
+      form.validateFields([field]);
     }
     if (getEditorState) {
       const contentState = getEditorState().getCurrentContent();
@@ -536,14 +537,15 @@ ImageSetter.propTypes = {
   selection: PropTypes.func,
   clearImage: PropTypes.func,
   labeledImage: PropTypes.string,
+  field: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
   isConfig: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  isOptions: PropTypes.bool,
+  shouldValidate: PropTypes.bool,
   isUserAvatar: PropTypes.bool,
   isEditable: PropTypes.bool,
-  imagesList: PropTypes.arrayOf(),
+  imagesList: PropTypes.arrayOf(PropTypes.shape()),
   isModal: PropTypes.bool,
   isDesktop: PropTypes.bool,
 };

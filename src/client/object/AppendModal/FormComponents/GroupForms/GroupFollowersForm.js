@@ -44,7 +44,7 @@ const GroupFollowersForm = props => (
 
 GroupFollowersForm.propTypes = {
   intl: PropTypes.shape().isRequired,
-  selectedUsers: PropTypes.arrayOf().isRequired,
+  selectedUsers: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handleSelectUsersBlog: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,

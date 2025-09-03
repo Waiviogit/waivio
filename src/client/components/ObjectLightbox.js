@@ -21,8 +21,8 @@ import LightboxWithAppendForm from '../widgets/LightboxTools/LightboxWithAppendF
 export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
-    albums: PropTypes.arrayOf(),
-    relatedAlbum: PropTypes.shape(),
+    albums: PropTypes.arrayOf(PropTypes.shape({})),
+    relatedAlbum: PropTypes.shape({}),
     size: PropTypes.number,
     accessExtend: PropTypes.bool,
   };

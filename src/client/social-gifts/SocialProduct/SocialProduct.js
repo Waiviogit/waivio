@@ -165,14 +165,14 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject.object_type === 'recipe';
   const isProduct = wobject.object_type === 'product';
-  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type || '');
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const sale = get(wobject, 'sale');
   const compareAtPrice = get(wobject, 'compareAtPrice');
   const price = hoveredOption.price || defaultPrice;
-  const cookingTime = wobject.cookingTime;
-  const calories = wobject.calories;
-  const nutrition = wobject.nutrition;
+  const cookingTime = wobject?.cookingTime;
+  const calories = wobject?.calories;
+  const nutrition = wobject?.nutrition;
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
@@ -184,8 +184,10 @@ const SocialProduct = ({
   const ageRange = get(wobject, 'ageRange');
   const language = get(wobject, 'language');
   const wobjTitle = get(wobject, 'title');
-  const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
-  const printLength = wobject.printLength;
+  const publicationDate = wobject.publicationDate
+    ? moment(wobject.publicationDate).format('MMMM DD, YYYY')
+    : null;
+  const printLength = wobject?.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
     isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
@@ -223,14 +225,14 @@ const SocialProduct = ({
     : menuItemsArray
         .filter(
           item =>
-            !sortExclude.includes(item.body) &&
-            !sortExclude.includes(item.author_permlink) &&
-            !sortExclude.includes(item.permlink) &&
-            !sortExclude.includes(item.id),
+            !sortExclude?.includes(item.body) &&
+            !sortExclude?.includes(item.author_permlink) &&
+            !sortExclude?.includes(item.permlink) &&
+            !sortExclude?.includes(item.id),
         )
         .sort((a, b) => {
-          const indexA = customSort.indexOf(a.permlink);
-          const indexB = customSort.indexOf(b.permlink);
+          const indexA = customSort?.indexOf(a.permlink) ?? -1;
+          const indexB = customSort?.indexOf(b.permlink) ?? -1;
 
           return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
         });
@@ -240,7 +242,7 @@ const SocialProduct = ({
   const showGallery =
     !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
   const tagCategoriesForDescr = reduce(
-    wobject.tagCategory,
+    wobject.tagCategory || [],
     (acc, curr) => {
       const currentCategory = !isEmpty(curr.items)
         ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
@@ -256,7 +258,7 @@ const SocialProduct = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['book', 'product'].includes(wobject.object_type)
+  const url = ['book', 'product'].includes(wobject.object_type || '')
     ? `https://${wobject.canonical}/object/${params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
@@ -374,7 +376,7 @@ const SocialProduct = ({
             />
             <meta
               itemProp="priceCurrency"
-              content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'}
+              content={wobject?.price && wobject.price.includes('С$') ? 'CAD' : 'USD'}
             />
             <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
             <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
@@ -463,7 +465,7 @@ const SocialProduct = ({
               <div className="SocialProduct__ratings">
                 {' '}
                 {!isEmpty(wobject.rating) &&
-                  wobject.rating.map(rating => (
+                  wobject.rating?.map(rating => (
                     <div key={rating.permlink} className="SocialProduct__ratings-item">
                       <RatingsWrap
                         isSocialProduct
@@ -547,7 +549,7 @@ const SocialProduct = ({
                 <div className="SocialProduct__ratings">
                   {' '}
                   {!isEmpty(wobject.rating) &&
-                    wobject.rating.map(rating => (
+                    wobject?.rating?.map(rating => (
                       <div key={rating.permlink} className="SocialProduct__ratings-item">
                         <RatingsWrap
                           isSocialProduct
@@ -790,14 +792,14 @@ SocialProduct.propTypes = {
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
   showPostModal: PropTypes.bool,
-  authors: PropTypes.arrayOf(),
-  albums: PropTypes.arrayOf(),
-  addOns: PropTypes.arrayOf(),
+  authors: PropTypes.arrayOf(PropTypes.shape()),
+  albums: PropTypes.arrayOf(PropTypes.shape()),
+  addOns: PropTypes.arrayOf(PropTypes.shape()),
   optionClicked: PropTypes.bool,
   getAddOnsAction: PropTypes.func,
   getSimilarObjectsAction: PropTypes.func,
-  similarObjects: PropTypes.arrayOf(),
-  relatedObjects: PropTypes.arrayOf(),
+  similarObjects: PropTypes.arrayOf(PropTypes.shape()),
+  relatedObjects: PropTypes.arrayOf(PropTypes.shape()),
   getRelatedAction: PropTypes.func,
   helmetIcon: PropTypes.string,
   signature: PropTypes.string,

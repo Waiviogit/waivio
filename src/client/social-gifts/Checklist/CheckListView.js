@@ -195,7 +195,7 @@ CheckListView.propTypes = {
     sortCustom: PropTypes.shape({
       include: PropTypes.arrayOf(PropTypes.string),
     }),
-    listItems: PropTypes.arrayOf(),
+    listItems: PropTypes.arrayOf(PropTypes.shape()),
   }).isRequired,
   listItems: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,

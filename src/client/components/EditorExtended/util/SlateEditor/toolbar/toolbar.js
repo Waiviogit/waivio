@@ -33,7 +33,12 @@ const Toolbar = props => {
   const { selection } = editor;
 
   useEffect(() => {
-    if (isShowLinkInput) return setOpen(true);
+    if (isShowLinkInput) {
+      setShowLinkInput(false);
+      setUrlInputValue('');
+
+      return setOpen(false);
+    }
 
     if (
       !selection ||
@@ -127,7 +132,13 @@ const Toolbar = props => {
         >
           <Input
             className="md-url-input"
-            onKeyDown={() => {}}
+            onKeyDown={e => {
+              if (e.key === 'Escape') {
+                setShowLinkInput(false);
+                setUrlInputValue('');
+                ReactEditor.focus(editor);
+              }
+            }}
             onChange={handleLinkInput}
             placeholder={intl.formatMessage({
               id: 'toolbar_link',
@@ -135,6 +146,7 @@ const Toolbar = props => {
             })}
             value={urlInputValue}
             onPressEnter={setLink}
+            autoFocus
           />
           <Button
             type="primary"

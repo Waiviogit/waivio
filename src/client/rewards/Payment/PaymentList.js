@@ -43,7 +43,7 @@ const PaymentList = props => {
 
 PaymentList.propTypes = {
   debtObjsData: PropTypes.shape().isRequired,
-  renderData: PropTypes.arrayOf().isRequired,
+  renderData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handleLoadingMore: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
   loading: PropTypes.bool,

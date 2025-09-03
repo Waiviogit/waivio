@@ -104,7 +104,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
 };
 
 DescriptionPage.propTypes = {
-  albums: PropTypes.arrayOf(),
+  albums: PropTypes.arrayOf(PropTypes.shape()),
   relatedAlbum: PropTypes.shape(),
 };
 

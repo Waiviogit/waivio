@@ -67,7 +67,7 @@ const ObjectsSlider = ({ title, objects, name }) => {
 };
 
 ObjectsSlider.propTypes = {
-  objects: PropTypes.arrayOf().isRequired,
+  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   title: PropTypes.string,
   name: PropTypes.string,
 };

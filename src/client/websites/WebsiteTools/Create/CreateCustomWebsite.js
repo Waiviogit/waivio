@@ -175,7 +175,7 @@ CreateCustomWebsite.propTypes = {
   loading: PropTypes.bool.isRequired,
   template: PropTypes.string,
   createWebsite: PropTypes.func,
-  showingParentList: PropTypes.arrayOf(),
+  showingParentList: PropTypes.arrayOf(PropTypes.shape()),
   statusMessageClassList: PropTypes.string,
   handleSearchHost: PropTypes.func,
   onSelect: PropTypes.func,

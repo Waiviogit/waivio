@@ -119,6 +119,7 @@ export const ADD_NEW_NOTIFICATION = '@user/ADD_NEW_NOTIFICATION';
 export const addNewNotification = createAction(ADD_NEW_NOTIFICATION);
 
 export const SHOW_POST_MODAL = '@app/SHOW_POST_MODAL';
+export const SET_CURRENT_POST = '@app/SET_CURRENT_POST';
 export const HIDE_POST_MODAL = '@app/HIDE_POST_MODAL';
 
 export const showPostModal = createAction(SHOW_POST_MODAL);
@@ -132,6 +133,11 @@ export const CHANGE_ADMIN_STATUS = '@app/CHANGE_ADMIN_STATUS';
 export const changeAdminStatus = userName => ({
   type: CHANGE_ADMIN_STATUS,
   userName,
+});
+
+export const setCurrentShownPost = post => ({
+  type: SET_CURRENT_POST,
+  payload: post,
 });
 
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');

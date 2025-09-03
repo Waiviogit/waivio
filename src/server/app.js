@@ -9,8 +9,18 @@ import steemAPI from './steemAPI';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
 import { webPage, sitemap } from './seo-service/seoServiceApi';
 import botRateLimit from './middleware/botRateLimit';
+import urlDecodeMiddleware from './middleware/urlDecodeMiddleware';
 import path from 'path';
 import { restartHandler } from '../common/services/errorNotifier';
+
+/**
+ * Helper function to preserve query parameters in redirects
+ * @param {string} url - The original URL
+ * @returns {string} - The query string part of the URL
+ */
+const preserveQueryParams = url => {
+  return url.includes('?') ? url.substring(url.indexOf('?')) : '';
+};
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -28,6 +38,9 @@ const app = express();
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 app.use(cookieParser());
+
+// Add URL decode middleware to handle %40 encoding from external sources like ChatGPT
+app.use(urlDecodeMiddleware);
 
 if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
@@ -52,6 +65,22 @@ app.get('/callback', (req, res) => {
 });
 
 app.get('/i/@:referral', async (req, res) => {
+  try {
+    const { referral } = req.params;
+
+    const accounts = await steemAPI.sendAsync('get_accounts', [[referral]]);
+
+    if (accounts[0]) {
+      res.cookie('referral', referral, { maxAge: 86400 * 30 * 1000 });
+      res.redirect('/');
+    }
+  } catch (err) {
+    res.redirect('/');
+  }
+});
+
+// Handle encoded referral links from external sources like ChatGPT
+app.get('/i/%40:referral', async (req, res) => {
   try {
     const { referral } = req.params;
 
@@ -134,13 +163,45 @@ app.get('/object/:authorPermlink/:menu', ssrHandler);
 app.get('/:category/@:author/:permlink/amp', (req, res) => {
   const { author, permlink } = req.params;
 
-  res.redirect(301, `/@${author}/${permlink}/amp`);
+  // Decode author parameter to handle %40 encoding
+  const decodedAuthor = decodeURIComponent(author);
+
+  // Preserve query parameters
+  const queryString = preserveQueryParams(req.url);
+  const redirectUrl = `/@${decodedAuthor}/${permlink}/amp${queryString}`;
+
+  console.log(`Redirecting category post AMP: ${req.url} -> ${redirectUrl}`);
+
+  res.redirect(301, redirectUrl);
 });
 app.get('/:category/@:author/:permlink', (req, res) => {
   const { author, permlink } = req.params;
 
-  res.redirect(301, `/@${author}/${permlink}`);
+  // Decode author parameter to handle %40 encoding
+  const decodedAuthor = decodeURIComponent(author);
+
+  // Preserve query parameters
+  const queryString = preserveQueryParams(req.url);
+  const redirectUrl = `/@${decodedAuthor}/${permlink}${queryString}`;
+
+  console.log(`Redirecting category post: ${req.url} -> ${redirectUrl}`);
+
+  res.redirect(301, redirectUrl);
 });
+
+// Handle encoded post links from external sources like ChatGPT
+app.get('/%40:author/:permlink', (req, res) => {
+  const { author, permlink } = req.params;
+
+  // Preserve query parameters
+  const queryString = preserveQueryParams(req.url);
+  const redirectUrl = `/@${author}/${permlink}${queryString}`;
+
+  console.log(`Redirecting encoded URL: ${req.url} -> ${redirectUrl}`);
+
+  res.redirect(301, redirectUrl);
+});
+
 app.get('/*', ssrHandler);
 
 export default app;

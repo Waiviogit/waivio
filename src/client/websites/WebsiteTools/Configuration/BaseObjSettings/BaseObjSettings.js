@@ -215,8 +215,8 @@ const BaseObjSettings = ({
 
 BaseObjSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
-  tabsFilter: PropTypes.arrayOf().isRequired,
-  tabsSorting: PropTypes.arrayOf().isRequired,
+  tabsFilter: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  tabsSorting: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   shopSettings: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,

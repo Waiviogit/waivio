@@ -46,7 +46,7 @@ const DistrictSection = props => {
 };
 
 DistrictSection.propTypes = {
-  districts: PropTypes.arrayOf().isRequired,
+  districts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getDistricts: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
 };

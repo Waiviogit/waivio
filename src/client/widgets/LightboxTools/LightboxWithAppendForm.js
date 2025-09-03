@@ -61,7 +61,7 @@ const LightboxWithAppendForm = ({
 };
 
 LightboxWithAppendForm.propTypes = {
-  pics: PropTypes.arrayOf(),
+  pics: PropTypes.arrayOf(PropTypes.shape()),
   wobject: PropTypes.shape(),
   photoIndex: PropTypes.number,
   onMovePrevRequest: PropTypes.func,

@@ -36,3 +36,5 @@ export const createCodeBlock = () => ({
   children: [{ text: '' }],
   lang: 'javascript',
 });
+
+export const insertImageReplaceParagraph = (editor, imageNode) => [imageNode, createEmptyNode()];

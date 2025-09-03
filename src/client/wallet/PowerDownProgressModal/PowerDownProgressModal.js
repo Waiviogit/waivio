@@ -96,7 +96,7 @@ PowerDownProgressModal.propTypes = {
   isAuth: PropTypes.bool,
   authUserPage: PropTypes.bool,
   user: PropTypes.shape(),
-  unstakesTokenInfo: PropTypes.arrayOf(),
+  unstakesTokenInfo: PropTypes.arrayOf(PropTypes.shape()),
   showModal: PropTypes.bool.isRequired,
   maxWeeks: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,

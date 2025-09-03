@@ -74,7 +74,7 @@ const ExpertiseForm = props => (
 
 ExpertiseForm.propTypes = {
   intl: PropTypes.shape().isRequired,
-  allowList: PropTypes.arrayOf().isRequired,
+  allowList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handleAddObjectToRule: PropTypes.func.isRequired,
   deleteRuleItem: PropTypes.func.isRequired,
   currObjId: PropTypes.string.isRequired,

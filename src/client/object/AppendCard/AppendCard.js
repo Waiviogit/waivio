@@ -39,6 +39,7 @@ const AppendCard = props => {
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
   const match = useRouteMatch();
+  const { abortController } = props;
 
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
@@ -63,11 +64,27 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(props.post.author, props.post.permlink, 0, '', false, true);
+      props.voteAppends(
+        props.post.author,
+        props.post.permlink,
+        0,
+        '',
+        false,
+        true,
+        abortController,
+      );
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(props.post.author, props.post.permlink, weight, '', false, true);
+      props.voteAppends(
+        props.post.author,
+        props.post.permlink,
+        weight,
+        '',
+        false,
+        true,
+        abortController,
+      );
     }
   };
 
@@ -96,7 +113,7 @@ const AppendCard = props => {
               ?.result;
     }
 
-    props.voteAppends(post.author, post.permlink, voteWeight, '', false, true);
+    props.voteAppends(post.author, post.permlink, voteWeight, '', false, true, abortController);
   };
 
   const handleCommentsClick = e => {
@@ -111,7 +128,15 @@ const AppendCard = props => {
 
   const handleLikeConfirm = () => {
     showSlider(false);
-    props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100, '', false, true);
+    props.voteAppends(
+      props.post.author,
+      props.post.permlink,
+      sliderValue * 100,
+      '',
+      false,
+      true,
+      abortController,
+    );
   };
 
   return (
@@ -201,6 +226,7 @@ AppendCard.propTypes = {
   user: PropTypes.shape().isRequired,
   sliderMode: PropTypes.bool.isRequired,
   isGuest: PropTypes.bool.isRequired,
+  abortController: PropTypes.shape(),
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,

@@ -38,6 +38,6 @@ const MapObjectTags = ({ tags }) => {
 };
 
 MapObjectTags.propTypes = {
-  tags: PropTypes.arrayOf().isRequired,
+  tags: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 export default MapObjectTags;

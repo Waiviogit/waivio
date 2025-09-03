@@ -83,7 +83,7 @@ const BurgerMenu = ({
 };
 
 BurgerMenu.propTypes = {
-  items: PropTypes.arrayOf(),
+  items: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape(),
   shopSettings: PropTypes.shape(),
   title: PropTypes.string,

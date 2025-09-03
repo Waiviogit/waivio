@@ -59,7 +59,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
       <div className={'RemoveObjFomPost'}>
         <h4>Reject post created for campaigns:</h4>
         {campaigns.map(camp => (
-          <div key={camp.campaignId} className={'RemoveObjFomPost__item'}>
+          <div key={camp.campaignId || camp._id} className={'RemoveObjFomPost__item'}>
             <span>{camp.name}</span>
 
             {rejectedList.includes(camp.campaignId) ? (
@@ -99,10 +99,10 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
 
 RemoveObjFomPost.propTypes = {
   visible: PropTypes.bool,
-  linkedObj: PropTypes.bool,
-  onClose: PropTypes.bool,
-  campaigns: PropTypes.bool,
-  post: PropTypes.bool,
+  linkedObj: PropTypes.arrayOf(PropTypes.shape({})),
+  onClose: PropTypes.func,
+  campaigns: PropTypes.arrayOf(PropTypes.shape({})),
+  post: PropTypes.shape({}),
 };
 
 export default RemoveObjFomPost;

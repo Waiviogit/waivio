@@ -64,7 +64,7 @@ RelatedForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  wobjRelated: PropTypes.arrayOf().isRequired,
+  wobjRelated: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default injectIntl(RelatedForm);

@@ -417,7 +417,7 @@ const DetailsModalBody = ({
 };
 
 DetailsModalBody.propTypes = {
-  agreementObjects: PropTypes.arrayOf().isRequired,
+  agreementObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   requirements: PropTypes.shape({
     expertise: PropTypes.bool,
     followers: PropTypes.bool,

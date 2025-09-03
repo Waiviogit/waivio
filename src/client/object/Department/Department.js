@@ -24,7 +24,7 @@ const Department = ({ wobject, isEditMode, isSocialGifts, isRecipe }) => (
 
 Department.propTypes = {
   wobject: PropTypes.shape().isRequired,
-  departments: PropTypes.arrayOf().isRequired,
+  departments: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isEditMode: PropTypes.bool.isRequired,
   isSocialGifts: PropTypes.bool,
   isRecipe: PropTypes.bool,

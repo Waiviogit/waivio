@@ -419,7 +419,7 @@ MainMap.propTypes = {
   setBoundsParams: PropTypes.func.isRequired,
   infoboxData: PropTypes.shape(),
   setInfoboxData: PropTypes.func.isRequired,
-  area: PropTypes.arrayOf(),
+  area: PropTypes.arrayOf(PropTypes.shape()),
   setArea: PropTypes.func.isRequired,
   showLocation: PropTypes.bool.isRequired,
   isUserMap: PropTypes.bool,

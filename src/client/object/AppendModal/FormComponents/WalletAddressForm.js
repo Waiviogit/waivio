@@ -177,7 +177,7 @@ WalletAddressForm.propTypes = {
   loading: PropTypes.bool.isRequired,
   isInvalid: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
-  selectedUserBlog: PropTypes.oneOfType([PropTypes.shape(), PropTypes.arrayOf()]),
+  selectedUserBlog: PropTypes.oneOfType([PropTypes.shape(), PropTypes.arrayOf(PropTypes.shape())]),
 };
 
 export default WalletAddressForm;

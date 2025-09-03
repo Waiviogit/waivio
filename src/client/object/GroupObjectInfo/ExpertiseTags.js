@@ -37,7 +37,7 @@ const ExpertiseTags = ({ groupExpertise, authorPermlink }) => {
 };
 
 ExpertiseTags.propTypes = {
-  groupExpertise: PropTypes.arrayOf().isRequired,
+  groupExpertise: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   authorPermlink: PropTypes.string.isRequired,
 };
 

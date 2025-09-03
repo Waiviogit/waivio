@@ -5,7 +5,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
+import { Slate, Editable, withReact } from 'slate-react';
 import {
   createEditor,
   Transforms,
@@ -38,9 +38,14 @@ import AddButtonSlate from './components/addbuttonSlate';
 import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
-import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
+import {
+  createEmptyNode,
+  createImageNode,
+  insertImageReplaceParagraph,
+} from './util/SlateEditor/utils/embed';
 import createParagraph from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
+import withEmptyParagraphHandling from './util/SlateEditor/plugins/withEmptyParagraphHandling';
 import {
   focusEditorToEnd,
   focusEditorToStart,
@@ -73,6 +78,7 @@ const useEditor = props => {
         createEditor,
         withObjects,
         withLists,
+        withEmptyParagraphHandling,
         withReact,
         withLinks,
         withTables,
@@ -143,7 +149,6 @@ const EditorSlate = props => {
       return;
     }
 
-    // Only support one image
     if (dT.files > 1) {
       console.error('only support one image');
 
@@ -171,23 +176,34 @@ const EditorSlate = props => {
       uploadedImages.push(newImage);
     };
 
-    // Prepare URL on images
     await encodeImageFileAsURL(image, insertImage);
 
     const currentImage = uploadedImages[0];
 
-    // Add empty block after image
     const imageBlock = createImageNode(currentImage.name, {
       url: `${
         currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
       }`,
     });
 
-    // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+    const { selection } = editor;
+
+    if (selection) {
+      const selectedElementPath = selection.anchor.path.slice(0, -1);
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+
+      if (
+        selectedElement &&
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === ''
+      ) {
+        Transforms.removeNodes(editor, { at: selectedElementPath });
+      }
+    }
+
+    Transforms.insertNodes(editor, insertImageReplaceParagraph(editor, imageBlock));
   };
 
-  // Drug and drop method
   const handleDroppedFiles = async event => {
     message.info(
       intl.formatMessage({
@@ -226,7 +242,22 @@ const EditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock, createEmptyNode()]);
+      const { selection } = editor;
+
+      if (selection) {
+        const selectedElementPath = selection.anchor.path.slice(0, -1);
+        const selectedElement = Node.descendant(editor, selectedElementPath);
+
+        if (
+          selectedElement &&
+          selectedElement.type === 'paragraph' &&
+          selectedElement.children?.[0]?.text === ''
+        ) {
+          Transforms.removeNodes(editor, { at: selectedElementPath });
+        }
+      }
+
+      Transforms.insertNodes(editor, insertImageReplaceParagraph(editor, imageBlock));
     });
 
     return true;
@@ -238,10 +269,6 @@ const EditorSlate = props => {
       if (isHotkey(hotkey, event)) {
         event.preventDefault();
         const format = HOTKEYS[hotkey];
-
-        // if (format === 'table') {
-        //   insertTable(editor);
-        // }
 
         if (['strong', 'italic', 'emphasis', 'underline'].includes(format)) {
           toggleMark(editor, format);
@@ -260,21 +287,18 @@ const EditorSlate = props => {
     const nextPath = Path.next(selectedElementPath);
     const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
     const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
-    const endPoint = Editor.end(editor, selectedElementPath);
 
     if (event.key === 'Delete') {
       if (
-        ElementSlate.isElement(nextNode) &&
-        ['image', 'video'].includes(nextNode.type) &&
-        !['image', 'video'].includes(selectedElement.type)
+        selectedElement.type === 'paragraph' &&
+        offset === selectedElement.children[0]?.text?.length &&
+        ['image', 'video'].includes(nextNode?.type)
       ) {
-        if (endPoint.offset === offset && Range.isCollapsed(editor.selection)) {
-          event.preventDefault();
+        event.preventDefault();
 
-          Transforms.select(editor, Editor.range(editor, nextPath));
+        Transforms.select(editor, Editor.range(editor, nextPath));
 
-          return true;
-        }
+        return true;
       }
     }
 
@@ -323,27 +347,6 @@ const EditorSlate = props => {
           return true;
         }
       }
-
-      if (
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === '' &&
-        ['image', 'video'].includes(nextNode?.type) // Check if the next node is an image
-      ) {
-        Transforms.insertNodes(
-          editor,
-          {
-            type: 'image',
-            url: editor.children[1].url,
-            children: [{ text: '' }], // Image nodes must have children in Slate
-          },
-          { at: selectedElementPath },
-        );
-        Transforms.removeNodes(editor, { at: nextPath });
-        Transforms.select(editor, Editor.range(editor, selectedElementPath));
-        ReactEditor.focus(editor);
-
-        return true;
-      }
     }
 
     if (event.key === 'Enter') {
@@ -369,13 +372,11 @@ const EditorSlate = props => {
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
         event.preventDefault();
-        // Insert a new block after the current block
         Transforms.insertNodes(editor, {
           type: 'paragraph',
           children: [{ text: '' }],
         });
 
-        // Keep the current block styles intact
         Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
 
         return true;

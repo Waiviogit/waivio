@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get, isEmpty } from 'lodash';
+import { connect } from 'react-redux';
 import { ReactSVG } from 'react-svg';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
@@ -12,6 +13,8 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
 } from '../../common/helpers/postHelpers';
+import { setCurrentShownPost } from '../../store/appStore/appActions';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
 import { getFacebookShareURL, getTwitterShareURL } from '../../common/helpers/socialProfiles';
@@ -19,10 +22,20 @@ import BBackTop from '../components/BBackTop';
 
 import './PostModal.less';
 
+@withRouter
+@connect(
+  state => ({
+    username: getAuthenticatedUserName(state),
+  }),
+  {
+    setCurrentShownPost,
+  },
+)
 class PostModal extends React.Component {
   static propTypes = {
     showPostModal: PropTypes.bool.isRequired,
     hidePostModal: PropTypes.func.isRequired,
+    setCurrentShownPost: PropTypes.func,
     currentShownPost: PropTypes.shape(),
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
@@ -111,6 +124,7 @@ class PostModal extends React.Component {
   handleHidePostModal() {
     PostModal.pushURLState('', this.state.previousURL);
     this.props.hidePostModal();
+    this.props.setCurrentShownPost({});
   }
 
   handleShare = shareLink => {

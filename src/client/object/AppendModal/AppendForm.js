@@ -1,3 +1,6 @@
+import { DatePicker, Form, Icon, Input, message, Rate, Select } from 'antd';
+import BigNumber from 'bignumber.js';
+import classNames from 'classnames';
 import {
   each,
   filter,
@@ -14,20 +17,15 @@ import {
   size,
   debounce,
 } from 'lodash';
-import { ReactSVG } from 'react-svg';
-import uuidv4 from 'uuid/v4';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import BigNumber from 'bignumber.js';
 
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { DatePicker, Form, Icon, Input, message, Rate, Select } from 'antd';
-import { fieldsRules } from '../const/appendFormConstants';
-import apiConfig from '../../../waivioApi/config.json';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { ReactSVG } from 'react-svg';
+import uuidv4 from 'uuid/v4';
 import {
   addressFields,
   authorsFields,
@@ -66,12 +64,13 @@ import {
   promotionFields,
   saleFields,
 } from '../../../common/constants/listOfFields';
-import OBJECT_TYPE from '../const/objectTypes';
-import { getSuitableLanguage } from '../../../store/reducers';
-import LANGUAGES from '../../../common/translations/languages';
+import {
+  objectNameValidationRegExp,
+  blogNameValidationRegExp,
+} from '../../../common/constants/validation';
 import { PRIMARY_COLOR } from '../../../common/constants/waivio';
-import { getLanguageText } from '../../../common/translations';
-import MapAppendObject from '../../components/Maps/MapAppendObject';
+import { getDotOrComma } from '../../../common/helpers/AppendFormHelper';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
   generatePermlink,
   getMenuItems,
@@ -93,77 +92,78 @@ import {
   getSortItemListForModal,
   getObjectFieldName,
 } from '../../../common/helpers/wObjectHelper';
+import { getLanguageText } from '../../../common/translations';
+import LANGUAGES from '../../../common/translations/languages';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import { getExposedFieldsByObjType } from '../wObjectHelper';
-import { rateObject } from '../../../store/wObjectStore/wobjActions';
-import SortingList from '../../components/DnDList/DnDList';
-import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
-import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
-import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
-import ObjectCardView from '../../objectCard/ObjectCardView';
-import CreateObject from '../../post/CreateObjectModal/CreateObject';
-import AppendFormFooter from './AppendFormFooter';
-import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import ObjectForm from '../Form/ObjectForm';
-import { getObjectInfo, getObjectsByIds } from '../../../waivioApi/ApiClient';
-import {
-  objectNameValidationRegExp,
-  blogNameValidationRegExp,
-} from '../../../common/constants/validation';
-import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
+import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { getScreenSize, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
+import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
+import { getSuitableLanguage } from '../../../store/reducers';
+import { getVotePercent, getVotingPower } from '../../../store/settingsStore/settingsSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
+import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import {
   getObject,
   getObjectTagCategory,
   getRatingFields,
 } from '../../../store/wObjectStore/wObjectSelectors';
-import { getVotePercent, getVotingPower } from '../../../store/settingsStore/settingsSelectors';
-import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
-import NewsFilterForm from './FormComponents/NewsFilterForm';
-import { getAppendList } from '../../../store/appendStore/appendSelectors';
-import { parseJSON } from '../../../common/helpers/parseJSON';
+import { getObjectInfo, getObjectsByIds } from '../../../waivioApi/ApiClient';
+import apiConfig from '../../../waivioApi/config.json';
 import { baseUrl } from '../../../waivioApi/routes';
-import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
-import ObjectFeaturesForm from './FormComponents/ObjectFeaturesForm';
-import PublisherForm from './FormComponents/PublisherForm';
-import ManufacturerForm from './FormComponents/ManufacturerForm';
-import BrandForm from './FormComponents/BrandForm';
-import MerchantForm from './FormComponents/MerchantForm';
-import AuthorForm from './FormComponents/AuthorForm';
+import SortingList from '../../components/DnDList/DnDList';
+import ListDnD from '../../components/DnDList/ListSortingDnD/ListDnD';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
+import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import MapAppendObject from '../../components/Maps/MapAppendObject';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
-import ShopFilterForm from './FormComponents/ShopFilterForm';
-import MenuItemForm from './FormComponents/MenuItemForm';
-import RelatedForm from './FormComponents/RelatedForm';
-import AddOnForm from './FormComponents/AddOnForm';
-import SimilarForm from './FormComponents/SimilarForm';
-import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
-import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
-import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import CreateObject from '../../post/CreateObjectModal/CreateObject';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
+import { fieldsRules } from '../const/appendFormConstants';
+import OBJECT_TYPE from '../const/objectTypes';
+import ObjectForm from '../Form/ObjectForm';
+import { getExposedFieldsByObjType } from '../wObjectHelper';
+import AppendFormFooter from './AppendFormFooter';
+import { splitIngredients } from './appendFormHelper';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
-import MapObjectsListForm from './FormComponents/MapForms/MapObjectsListForm';
-import MapDesktopViewForm from './FormComponents/MapForms/MapDesktopViewForm';
-import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
-import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
-import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
+import AddOnForm from './FormComponents/AddOnForm';
+import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
+import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
+import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
+import AuthorForm from './FormComponents/AuthorForm';
+import BrandForm from './FormComponents/BrandForm';
+import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DelegationForm from './FormComponents/DelegationForm';
 import './AppendForm.less';
-import WalletAddressForm from './FormComponents/WalletAddressForm';
-import LinkUrlForm from './FormComponents/LinkUrlForm';
-import { splitIngredients } from './appendFormHelper';
+import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
+import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
+import AddUserForm from './FormComponents/GroupForms/AddUserForm';
 import ExpertiseForm from './FormComponents/GroupForms/ExpertiseForm';
 import GroupFollowersForm from './FormComponents/GroupForms/GroupFollowersForm';
-import { getDotOrComma } from '../../../common/helpers/AppendFormHelper';
-import AddUserForm from './FormComponents/GroupForms/AddUserForm';
-import ProductIdForm from './FormComponents/MapForms/ProductIdForm';
-import GroupIdForm from './FormComponents/GroupIdForm';
-import CompanyIdForm from './FormComponents/CompanyIdForm';
-import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
+import GroupIdForm from './FormComponents/GroupIdForm';
+import LinkUrlForm from './FormComponents/LinkUrlForm';
+import ManufacturerForm from './FormComponents/ManufacturerForm';
+import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
+import MapDesktopViewForm from './FormComponents/MapForms/MapDesktopViewForm';
+import MapObjectsListForm from './FormComponents/MapForms/MapObjectsListForm';
+import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
+import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
+import ProductIdForm from './FormComponents/MapForms/ProductIdForm';
+import MenuItemForm from './FormComponents/MenuItemForm';
+import MerchantForm from './FormComponents/MerchantForm';
+import NewsFilterForm from './FormComponents/NewsFilterForm';
+import ObjectFeaturesForm from './FormComponents/ObjectFeaturesForm';
 import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
-import ListDnD from '../../components/DnDList/ListSortingDnD/ListDnD';
+import PublisherForm from './FormComponents/PublisherForm';
+import RelatedForm from './FormComponents/RelatedForm';
 import SaleForm from './FormComponents/SaleForm';
+import ShopFilterForm from './FormComponents/ShopFilterForm';
+import SimilarForm from './FormComponents/SimilarForm';
+import WalletAddressForm from './FormComponents/WalletAddressForm';
 
 @connect(
   state => ({
@@ -1858,8 +1858,6 @@ class AppendForm extends Component {
         objectFields.status,
         objectFields.button,
         objectFields.link,
-        objectFields.companyIdType,
-        objectFields.companyId,
         objectFields.authors,
         objectFields.publisher,
         objectFields.related,
@@ -1887,11 +1885,33 @@ class AppendForm extends Component {
       return filtered.some(f => f.body === currentValue && f.creator === user.name);
     }
     if (currentField === objectFields.productId) {
-      return filtered.some(
-        f =>
-          this.getCurrentObjectBody(currentField).productId === parseJSON(f.body).productId &&
-          this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
-      );
+      const current = this.getCurrentObjectBody(currentField);
+
+      const isDuplicate = filtered.some(f => {
+        const parsed = parseJSON(f.body);
+
+        return (
+          current.productId.trim() === parsed.productId.trim() &&
+          current.productIdType.trim() === parsed.productIdType.trim() &&
+          current.productIdImage === parsed.productIdImage
+        );
+      });
+
+      this.setState({ errorText: isDuplicate ? 'The field with this value already exists' : '' });
+    }
+    if (currentField === objectFields.companyId) {
+      const current = this.getCurrentObjectBody(currentField);
+
+      const isDuplicate = filtered.some(f => {
+        const parsed = parseJSON(f.body);
+
+        return (
+          current.companyId.trim() === parsed.companyId.trim() &&
+          current.companyIdType.trim() === parsed.companyIdType.trim()
+        );
+      });
+
+      this.setState({ errorText: isDuplicate ? 'The field with this value already exists' : '' });
     }
 
     if (currentField === objectFields.options) {
@@ -1900,21 +1920,12 @@ class AppendForm extends Component {
       const isDuplicate = filtered.some(f => {
         const parsed = parseJSON(f.body);
 
-        const isSame =
+        return (
           current.category === parsed.category &&
           current.value === parsed.value &&
           current.position === parsed.position &&
-          current.options === parsed.image;
-
-        // if (current.position) {
-        //   isSame = isSame && current.position === parsed.position;
-        // }
-        //
-        // if (current.options) {
-        //   isSame = isSame && current.options === parsed.image;
-        // }
-
-        return isSame;
+          current.options === parsed.image
+        );
       });
 
       this.setState({ errorText: isDuplicate ? 'The field with this value already exists' : '' });
@@ -1966,7 +1977,8 @@ class AppendForm extends Component {
     const currentLocale = form.getFieldValue('currentLocale');
     const formFields = form.getFieldsValue();
     const isDuplicated =
-      (currentField === objectFields.options || formFields[rule.field]) &&
+      ([objectFields.options, objectFields.productId].includes(currentField) ||
+        formFields[rule.field]) &&
       this.isDuplicate(currentLocale, currentField);
 
     if (currentField === objectFields.productWeight || currentField === objectFields.dimensions) {
@@ -2062,11 +2074,14 @@ class AppendForm extends Component {
       currentField === objectFields.productId
         ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: image[0].src })
         : this.props.form.setFieldsValue({ [currentField]: image[0].src });
-      if (currentField === objectFields.options) validateFields([currentField]);
+      if ([objectFields.options, objectFields.productId].includes(currentField))
+        validateFields([currentField]);
     } else {
       currentField === objectFields.productId
         ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: '' })
         : this.props.form.setFieldsValue({ [currentField]: '' });
+      if ([objectFields.options, objectFields.productId].includes(currentField))
+        validateFields([currentField]);
     }
   };
 
@@ -3260,14 +3275,23 @@ class AppendForm extends Component {
       }
       case objectFields.companyId: {
         return (
-          <CompanyIdForm
-            getFieldDecorator={getFieldDecorator}
-            isBookType={isBookType}
-            setFieldsValue={this.props.form.setFieldsValue}
-            isSomeValue={this.state.isSomeValue}
-            loading={this.state.loading}
-            getFieldRules={this.getFieldRules}
-          />
+          <>
+            {' '}
+            <CompanyIdForm
+              getFieldDecorator={getFieldDecorator}
+              isBookType={isBookType}
+              setFieldsValue={this.props.form.setFieldsValue}
+              isSomeValue={this.state.isSomeValue}
+              loading={this.state.loading}
+              getFieldRules={this.getFieldRules}
+            />
+            {!isEmpty(this.state.errorText) && (
+              <>
+                <br />
+                <p className={'error-text text-start'}>{this.state.errorText}</p>
+              </>
+            )}
+          </>
         );
       }
       case objectFields.affiliateProductIdTypes: {
@@ -3308,15 +3332,24 @@ class AppendForm extends Component {
       }
       case objectFields.productId: {
         return (
-          <ProductIdForm
-            getFieldDecorator={getFieldDecorator}
-            getFieldRules={this.getFieldRules}
-            loading={this.state.loading}
-            onLoadingImage={this.onLoadingImage}
-            isSomeValue={this.state.isSomeValue}
-            getImages={this.getImages}
-            setFieldsValue={this.props.form.setFieldsValue}
-          />
+          <>
+            <ProductIdForm
+              form={this.props.form}
+              getFieldDecorator={getFieldDecorator}
+              getFieldRules={this.getFieldRules}
+              loading={this.state.loading}
+              onLoadingImage={this.onLoadingImage}
+              isSomeValue={this.state.isSomeValue}
+              getImages={this.getImages}
+              setFieldsValue={this.props.form.setFieldsValue}
+            />
+            {!isEmpty(this.state.errorText) && (
+              <>
+                <br />
+                <p className={'error-text text-start'}>{this.state.errorText}</p>
+              </>
+            )}
+          </>
         );
       }
       case objectFields.options: {
@@ -3414,7 +3447,8 @@ class AppendForm extends Component {
                   rules: this.getFieldRules(objectFields.options),
                 })(
                   <ImageSetter
-                    isOptions
+                    shouldValidate
+                    field={objectFields.options}
                     form={this.props.form}
                     onImageLoaded={this.getImages}
                     onLoadingImage={this.onLoadingImage}

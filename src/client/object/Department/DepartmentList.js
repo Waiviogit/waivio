@@ -61,7 +61,7 @@ DepartmentList.propTypes = {
   isEditMode: PropTypes.bool,
   isRecipe: PropTypes.bool,
   wobject: PropTypes.shape().isRequired,
-  departments: PropTypes.arrayOf().isRequired,
+  departments: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default DepartmentList;

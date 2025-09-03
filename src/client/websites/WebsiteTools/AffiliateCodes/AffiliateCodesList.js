@@ -136,7 +136,7 @@ const AffiliateCodesList = ({
 };
 
 AffiliateCodesList.propTypes = {
-  affiliateObjects: PropTypes.arrayOf(),
+  affiliateObjects: PropTypes.arrayOf(PropTypes.shape()),
   user: PropTypes.shape(),
   rejectCode: PropTypes.func,
   getFieldDecorator: PropTypes.func,

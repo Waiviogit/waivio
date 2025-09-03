@@ -6,7 +6,7 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Transforms, Node, Range } from 'slate';
+import { createEditor, Transforms, Node, Range, Path, Editor } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -25,9 +25,13 @@ import AddButtonSlate from './components/addbuttonSlate';
 import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
-import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-import createParagraph, { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import {
+  createEmptyNode,
+  createImageNode,
+  insertImageReplaceParagraph,
+} from './util/SlateEditor/utils/embed';
 import withLists from './util/SlateEditor/plugins/withLists';
+import withEmptyParagraphHandling from './util/SlateEditor/plugins/withEmptyParagraphHandling';
 import {
   focusEditorToEnd,
   removeAllInlineFormats,
@@ -50,9 +54,11 @@ const useEditor = props => {
         createEditor,
         withObjects,
         withLists,
+        withEmptyParagraphHandling,
         withReact,
         withLinks,
         withTables,
+        withEmptyParagraphHandling,
         withEmbeds(props.handlePasteText),
         withHistory,
       )(),
@@ -139,11 +145,24 @@ const ThreadsEditorSlate = props => {
       }`,
     });
 
-    // image of uploading from editor not removed in feeds without that hack
-    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
+    const { selection } = editor;
+
+    if (selection) {
+      const selectedElementPath = selection.anchor.path.slice(0, -1);
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+
+      if (
+        selectedElement &&
+        selectedElement.type === 'paragraph' &&
+        selectedElement.children?.[0]?.text === ''
+      ) {
+        Transforms.removeNodes(editor, { at: selectedElementPath });
+      }
+    }
+
+    Transforms.insertNodes(editor, insertImageReplaceParagraph(editor, imageBlock));
   };
 
-  // Drug and drop method
   const handleDroppedFiles = async event => {
     message.info(
       intl.formatMessage({
@@ -183,7 +202,22 @@ const ThreadsEditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [imageBlock]);
+      const { selection } = editor;
+
+      if (selection) {
+        const selectedElementPath = selection.anchor.path.slice(0, -1);
+        const selectedElement = Node.descendant(editor, selectedElementPath);
+
+        if (
+          selectedElement &&
+          selectedElement.type === 'paragraph' &&
+          selectedElement.children?.[0]?.text === ''
+        ) {
+          Transforms.removeNodes(editor, { at: selectedElementPath });
+        }
+      }
+
+      Transforms.insertNodes(editor, insertImageReplaceParagraph(editor, imageBlock));
     });
 
     return true;
@@ -192,6 +226,27 @@ const ThreadsEditorSlate = props => {
   const handleKeyCommand = event => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { selection } = editor;
+
+    if (event.key === 'Delete') {
+      // Handle Delete key for empty paragraphs - now handled by withEmptyParagraphHandling plugin
+      const { path, offset } = selection.anchor;
+      const selectedElementPath = path.slice(0, -1);
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+      const nextPath = Path.next(selectedElementPath);
+      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+
+      // Only handle special cases that the plugin doesn't cover
+      if (
+        selectedElement.type === 'paragraph' &&
+        offset === selectedElement.children[0]?.text?.length &&
+        ['image', 'video'].includes(nextNode?.type)
+      ) {
+        event.preventDefault();
+        Transforms.select(editor, Editor.range(editor, nextPath));
+
+        return true;
+      }
+    }
 
     if (event.key === 'Enter') {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
@@ -214,6 +269,7 @@ const ThreadsEditorSlate = props => {
         return true;
       }
     }
+
     if (event.keyCode === 32) {
       removeAllInlineFormats(editor);
 

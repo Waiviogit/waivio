@@ -24,7 +24,7 @@ const GroupUsersLayout = ({ title, list }) => {
 };
 
 GroupUsersLayout.propTypes = {
-  list: PropTypes.arrayOf().isRequired,
+  list: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   title: PropTypes.string.isRequired,
 };
 

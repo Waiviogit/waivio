@@ -30,6 +30,35 @@ import ItemTypeSwitcher from '../Mention/ItemTypeSwitcher';
 
 const { Option } = Select;
 
+const convertUTCToTimezone = (utcTime, timezone) => {
+  if (!utcTime || !timezone) return utcTime;
+
+  const tz = timezones.find(z => z.label === timezone)?.value;
+
+  if (!tz) return utcTime;
+
+  return momentTZ.tz(utcTime, 'UTC').tz(tz);
+};
+
+const convertTimezoneToUTC = (localTime, timezone) => {
+  if (!localTime || !timezone) return localTime;
+
+  const tz = timezones.find(z => z.label === timezone)?.value;
+
+  if (!tz) return localTime;
+
+  return momentTZ.tz(localTime, tz).utc();
+};
+
+const useTimezoneConversion = timezone =>
+  useMemo(
+    () => ({
+      toLocal: utcTime => convertUTCToTimezone(utcTime, timezone),
+      toUTC: localTime => convertTimezoneToUTC(localTime, timezone),
+    }),
+    [timezone],
+  );
+
 const getRecurrenceRuleArray = (data, timezone) => {
   const dataToString = moment(data).format('YYYY-MM-DD HH:mm:ss');
   const tz = timezones.find(z => z.label === timezone)?.value;
@@ -147,6 +176,7 @@ const CreateFormRenderer = props => {
     contestJudgesAccount,
     recurrenceRule,
     contestRewards,
+    timezone,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -179,7 +209,9 @@ const CreateFormRenderer = props => {
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
   let userBalance = parseFloat(user.balance);
-  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone());
+
+  const userTimeZone = timezones?.find(o => o.value === getCurrUserTimezone(timezone));
+  const timezoneConversion = useTimezoneConversion(userTimeZone?.label);
 
   if (payoutToken !== 'HIVE') {
     userBalance = currencyInfo ? currencyInfo?.balance : null;
@@ -519,7 +551,9 @@ const CreateFormRenderer = props => {
               <div style={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
                 <FormItem label="" style={{ width: '50%' }}>
                   {getFieldDecorator('declarationTime', {
-                    initialValue: declarationTime,
+                    initialValue: declarationTime
+                      ? timezoneConversion.toLocal(declarationTime)
+                      : null,
                     rules: [{ required: true, message: 'Expiry date is required.' }],
                   })(
                     <DatePicker
@@ -1036,6 +1070,7 @@ CreateFormRenderer.propTypes = {
   parentPermlink: PropTypes.string,
   currency: PropTypes.string.isRequired,
   reachType: PropTypes.string,
+  timezone: PropTypes.string,
   payoutToken: PropTypes.string,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,

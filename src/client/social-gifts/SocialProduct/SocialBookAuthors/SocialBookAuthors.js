@@ -59,7 +59,7 @@ const SocialBookAuthors = ({ authors, intl }) => {
 };
 
 SocialBookAuthors.propTypes = {
-  authors: PropTypes.arrayOf(),
+  authors: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
 };
 export default injectIntl(SocialBookAuthors);

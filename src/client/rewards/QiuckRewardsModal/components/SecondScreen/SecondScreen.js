@@ -66,7 +66,7 @@ ModalSecondScreen.propTypes = {
   selectedDish: PropTypes.shape().isRequired,
   selectedRestaurant: PropTypes.shape().isRequired,
   images: PropTypes.shape().isRequired,
-  topics: PropTypes.arrayOf().isRequired,
+  topics: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setBody: PropTypes.func.isRequired,
   setImages: PropTypes.func.isRequired,
   setTopic: PropTypes.func.isRequired,

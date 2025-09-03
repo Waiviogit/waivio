@@ -7,7 +7,7 @@ import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Transforms, Path } from 'slate';
+import { Transforms, Path, Node } from 'slate';
 import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
@@ -18,7 +18,10 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { createEmptyNode, createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
+import {
+  createImageNode,
+  insertImageReplaceParagraph,
+} from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
 import './ImageSetter.less';
@@ -150,9 +153,26 @@ const ImageSetter = ({
         if (isEditor && newImage) {
           const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
+          // Видаляємо поточний параграф тільки якщо він порожній та вставляємо картинку з новим параграфом після
+          const { selection } = editor;
+
+          if (selection) {
+            const selectedElementPath = selection.anchor.path.slice(0, -1);
+            const selectedElement = Node.descendant(editor, selectedElementPath);
+
+            // Видаляємо параграф тільки якщо він порожній (не містить тексту)
+            if (
+              selectedElement &&
+              selectedElement.type === 'paragraph' &&
+              selectedElement.children?.[0]?.text === ''
+            ) {
+              Transforms.removeNodes(editor, { at: selectedElementPath });
+            }
+          }
+
           Transforms.insertNodes(
             editor,
-            [createImageNode(newImage.name, { url }), createEmptyNode()],
+            insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
             isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
           );
           ReactEditor.focus(editor);
@@ -418,7 +438,7 @@ ImageSetter.propTypes = {
   setEditorState: PropTypes.func,
   getEditorState: PropTypes.func,
   isOkayBtn: PropTypes.bool,
-  imagesList: PropTypes.arrayOf(),
+  imagesList: PropTypes.arrayOf(PropTypes.shape()),
   isModal: PropTypes.bool,
   isEditor: PropTypes.bool,
 };

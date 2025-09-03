@@ -184,10 +184,10 @@ SecondPage.propTypes = {
   setTagsList: PropTypes.func.isRequired,
   setLists: PropTypes.func.isRequired,
   setCheckedIds: PropTypes.func.isRequired,
-  tagsList: PropTypes.arrayOf().isRequired,
-  lists: PropTypes.arrayOf().isRequired,
-  checkedIds: PropTypes.arrayOf().isRequired,
-  objects: PropTypes.arrayOf().isRequired,
+  tagsList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  lists: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  checkedIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isEditor: PropTypes.bool,
 };
 
