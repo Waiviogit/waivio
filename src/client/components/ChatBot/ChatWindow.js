@@ -85,10 +85,15 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   let currentPageContent = '';
 
   if (isEditor) {
-    currentPageContent = `${currDraft?.title} ${currDraft?.body}`;
+    if (!currDraft) {
+      currentPageContent = undefined;
+    }
+    currentPageContent = currDraft ? `${currDraft?.title} ${currDraft?.body}` : undefined;
   }
   if (currentShownPost && !isEditor) {
-    currentPageContent = `${currentShownPost?.title} ${currentShownPost?.body}`;
+    currentPageContent = !isEmpty(currentShownPost)
+      ? `${currentShownPost?.title} ${currentShownPost?.body}`
+      : undefined;
   }
 
   const onClick = () => {
