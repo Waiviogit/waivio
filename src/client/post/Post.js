@@ -6,6 +6,7 @@ import VisibilitySensor from 'react-visibility-sensor';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import formatter from '../../common/helpers/steemitFormatter';
 import { isBannedPost } from '../../common/helpers/postHelpers';
+import { setCurrentShownPost } from '../../store/appStore/appActions';
 import { getSuitableLanguage } from '../../store/reducers';
 import { getContent, getPostsByAuthor } from '../../store/postsStore/postActions';
 import Error404 from '../statics/Error404';
@@ -52,7 +53,7 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
       follower: getAuthenticatedUserName(state),
     };
   },
-  { getContent },
+  { getContent, setCurrentShownPost },
 )
 export default class Post extends React.Component {
   static propTypes = {
@@ -64,6 +65,7 @@ export default class Post extends React.Component {
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getContent: PropTypes.func,
+    setCurrentShownPost: PropTypes.func,
     locale: PropTypes.string,
     follower: PropTypes.string,
   };
@@ -129,6 +131,7 @@ export default class Post extends React.Component {
     if (typeof window !== 'undefined') {
       if (typeof document !== 'undefined') window.document.title = 'Waivio';
     }
+    this.props.setCurrentShownPost({});
   }
 
   handleCommentsVisibility = visible => {

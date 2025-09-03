@@ -102,7 +102,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   };
 
   const handleOnOk = () => {
-    setMessage(message?.includes('/imagine') ? message : `/imagine \n  ${message}`);
+    setMessage(message);
     setCurrentImage([...currentImage, ...loadedImages]);
     setIsOkayBtn(true);
     setIsOpen(true);
@@ -335,13 +335,13 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
   const pasteImageAndText = blob => {
     handleImageUpload(blob);
-    setMessage(prev => {
-      if (!prev || prev.trim() === '') {
-        return '/imagine ';
-      }
-
-      return prev.includes('/imagine') ? prev : `/imagine ${prev}`;
-    });
+    // setMessage(prev => {
+    //   if (!prev || prev.trim() === '') {
+    //     return '/imagine ';
+    //   }
+    //
+    //   return prev.includes('/imagine') ? prev : `/imagine ${prev}`;
+    // });
   };
 
   useEffect(() => {
