@@ -50,7 +50,7 @@ const routes = {
         `/rewards/(details|duplicate|create})/:campaignId?`,
         `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject?`,
         `/rewards/(payable|receivable)/@:userName`,
-        `/rewards/(${URL.NEW_REWARDS.tabs})`,
+        `/rewards/(${URL.NEW_REWARDS.tabs})/:authorPermlink?`,
       ],
       pathScope: '/rewards',
       exact: true,
@@ -87,6 +87,11 @@ const routes = {
         },
         {
           path: '/judge-posts',
+          exact: true,
+          component: Views.JudgePosts,
+        },
+        {
+          path: '/judge-posts/:authorPermlink',
           exact: true,
           component: Views.JudgePosts,
         },

@@ -61,13 +61,18 @@ const RenderPropositionList = ({
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
-  const [sort, setSort] = useState(defaultSort);
+  const [sort, setSort] = useState(isJudges ? 'sponsors' : defaultSort);
   const [visible, setVisible] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
   const isLocation = match.params[0] === 'local';
   const isJudges = tab === 'judges';
   const reqObj = requiredObject?.replace('@', '');
+
+  // For judges, only show sponsors sort option
+  const currentSortConfig = isJudges
+    ? [{ key: 'sponsors', title: 'Sponsors' }]
+    : customSortConfig || sortConfig;
 
   const getFilters = () => {
     if (!withoutFilters && !isJudges)
@@ -170,7 +175,7 @@ const RenderPropositionList = ({
         )}
         {!withoutSort && (
           <SortSelector sort={sort} onChange={setSort}>
-            {customSortConfig.map(item => (
+            {currentSortConfig.map(item => (
               <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
             ))}
           </SortSelector>

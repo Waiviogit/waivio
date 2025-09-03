@@ -57,7 +57,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const [showMap, setShowMap] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [location, setLocation] = useState([]);
-  const [sort, setSort] = useState('default');
+  const [sort, setSort] = useState(isJudges ? 'sponsors' : 'default');
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
   const query = useQuery();
@@ -65,6 +65,9 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const match = useRouteMatch();
   const isLocation = match.params[0] === 'local';
   const isJudges = match.params[0] === 'judges';
+
+  // For judges, only show sponsors sort option
+  const currentSortConfig = isJudges ? [{ key: 'sponsors', title: 'Sponsors' }] : sortConfig;
   let title;
 
   if (isJudges) {
@@ -162,7 +165,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
         <h2 className="RewardLists__title">{title}</h2>
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
-          {sortConfig.map(item => (
+          {currentSortConfig.map(item => (
             <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
           ))}
         </SortSelector>

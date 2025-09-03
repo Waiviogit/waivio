@@ -33,6 +33,7 @@ const PropositionFooter = ({
   openDetailsModal,
   proposition,
   getProposition,
+  permlink,
   intl,
   isJudges = false,
 }) => {
@@ -70,12 +71,12 @@ const PropositionFooter = ({
     if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
-  const getCommentsList = async (editing, permlink, value) => {
+  const getCommentsList = async (editing, perml, value) => {
     setCommentsLoading(true);
     if (editing) {
       setComments(
         comments.reduce((acc, curr) => {
-          if (curr.permlink === permlink) return [...acc, { ...curr, body: value }];
+          if (curr.permlink === perml) return [...acc, { ...curr, body: value }];
 
           return [...acc, curr];
         }, []),
@@ -321,6 +322,7 @@ const PropositionFooter = ({
 
                 return Promise.resolve();
               }}
+              permlink={permlink}
               isJudges={isJudges}
               reservedDays={proposition?.countReservationDays}
               inCard
@@ -357,6 +359,7 @@ const PropositionFooter = ({
 
 PropositionFooter.propTypes = {
   type: PropTypes.string.isRequired,
+  permlink: PropTypes.string,
   openDetailsModal: PropTypes.func.isRequired,
   getProposition: PropTypes.func,
   isJudges: PropTypes.bool,
