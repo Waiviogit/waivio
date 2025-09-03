@@ -58,6 +58,7 @@ const useEditor = props => {
         withReact,
         withLinks,
         withTables,
+        withEmptyParagraphHandling,
         withEmbeds(props.handlePasteText),
         withHistory,
       )(),
