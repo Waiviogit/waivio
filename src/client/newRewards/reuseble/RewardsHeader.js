@@ -23,7 +23,7 @@ const RewardsHeader = ({ proposition, intl }) => {
         return (
           <React.Fragment>
             Giveaway time! Your chance to win ${proposition.reward}
-            {winners ? ` with ${winners} winners` : ''}!
+            {winners > 1 ? ` with ${winners} winners` : ''}!
           </React.Fragment>
         );
 
