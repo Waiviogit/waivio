@@ -31,6 +31,7 @@ import {
   insertImageReplaceParagraph,
 } from './util/SlateEditor/utils/embed';
 import withLists from './util/SlateEditor/plugins/withLists';
+import withEmptyParagraphHandling from './util/SlateEditor/plugins/withEmptyParagraphHandling';
 import {
   focusEditorToEnd,
   removeAllInlineFormats,
@@ -56,6 +57,7 @@ const useEditor = props => {
         withReact,
         withLinks,
         withTables,
+        withEmptyParagraphHandling,
         withEmbeds(props.handlePasteText),
         withHistory,
       )(),
