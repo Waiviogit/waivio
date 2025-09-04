@@ -2070,17 +2070,24 @@ class AppendForm extends Component {
     const currentField = getFieldValue('currentField');
 
     if (image.length) {
-      currentField === objectFields.productId
-        ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: image[0].src })
-        : this.props.form.setFieldsValue({ [currentField]: image[0].src });
-      if ([objectFields.options, objectFields.productId].includes(currentField))
-        validateFields([currentField]);
+      if (currentField === objectFields.productId) {
+        this.props.form.setFieldsValue({
+          [objectFields.productIdImage]: image[0].src,
+        });
+      } else {
+        this.props.form.setFieldsValue({ [currentField]: image[0].src });
+      }
+    } else if (currentField === objectFields.productId) {
+      this.props.form.setFieldsValue({ [objectFields.productIdImage]: '' });
     } else {
-      currentField === objectFields.productId
-        ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: '' })
-        : this.props.form.setFieldsValue({ [currentField]: '' });
-      if ([objectFields.options, objectFields.productId].includes(currentField))
-        validateFields([currentField]);
+      this.props.form.setFieldsValue({ [currentField]: '' });
+    }
+
+    if ([objectFields.options].includes(currentField)) {
+      validateFields([currentField]);
+    }
+    if ([objectFields.productId].includes(currentField)) {
+      validateFields([objectFields.productIdImage]);
     }
   };
 
