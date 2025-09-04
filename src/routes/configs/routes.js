@@ -49,8 +49,9 @@ const routes = {
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
         `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject?`,
+        `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject/posts`,
         `/rewards/(payable|receivable)/@:userName`,
-        `/rewards/(${URL.NEW_REWARDS.tabs})`,
+        `/rewards/(${URL.NEW_REWARDS.tabs})/:authorPermlink?`,
       ],
       pathScope: '/rewards',
       exact: true,
@@ -86,7 +87,7 @@ const routes = {
           component: Views.ReservedProposition,
         },
         {
-          path: '/judge-posts',
+          path: '/(global|local|judges)/eligible/:requiredObject?/posts',
           exact: true,
           component: Views.JudgePosts,
         },

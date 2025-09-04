@@ -14,6 +14,7 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return state[sortBy][category] ? state[sortBy][category].list : [];
     default:
       return [];
@@ -34,6 +35,7 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return (feedState[sortBy][category] && feedState[sortBy][category].isFetching) || false;
     default:
       return false;
@@ -54,6 +56,7 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return (feedState[sortBy][category] && feedState[sortBy][category].isLoaded) || false;
     default:
       return false;
@@ -75,6 +78,7 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].hasMore) || false;
     default:
       return false;
@@ -96,6 +100,7 @@ export const getFeedTagsFilterFromState = (sortBy, listName = 'all', feedState) 
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].tags) || [];
     default:
       return false;
@@ -117,6 +122,7 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     case 'threads':
     case 'mentions':
     case 'objectPosts':
+    case 'judgesPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].failed) || false;
     default:
       return false;

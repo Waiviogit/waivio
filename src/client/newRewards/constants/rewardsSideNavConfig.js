@@ -33,6 +33,44 @@ export const rewardsSettings = {
       defaultMessage: 'History',
       forAuth: true,
     },
+  ],
+};
+
+export const rewardsWithJudgesSettings = {
+  tab: {
+    name: 'rewards',
+    id: 'sideBar_rewards',
+    defaultMessage: 'Rewards:',
+  },
+  settings: [
+    {
+      to: '/rewards/global',
+      id: 'global',
+      defaultMessage: 'Global',
+    },
+    {
+      to: '/rewards/local',
+      id: 'local',
+      defaultMessage: 'Local',
+    },
+    {
+      to: '/rewards/reserved',
+      id: 'reserved',
+      defaultMessage: 'Reserved',
+      forAuth: true,
+    },
+    {
+      to: '/rewards/receivable',
+      id: 'receivable',
+      defaultMessage: 'Receivable',
+      forAuth: true,
+    },
+    {
+      to: '/rewards/history',
+      id: 'history',
+      defaultMessage: 'History',
+      forAuth: true,
+    },
     {
       to: '/rewards/judges',
       id: 'judges',
