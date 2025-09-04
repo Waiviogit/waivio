@@ -49,6 +49,7 @@ const routes = {
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
         `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject?`,
+        `/rewards/(local|global|judges)/(all|eligible)?/:requiredObject/posts`,
         `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})/:authorPermlink?`,
       ],
@@ -86,12 +87,7 @@ const routes = {
           component: Views.ReservedProposition,
         },
         {
-          path: '/judge-posts',
-          exact: true,
-          component: Views.JudgePosts,
-        },
-        {
-          path: '/judge-posts/:authorPermlink',
+          path: '/(global|local|judges)/eligible/:requiredObject?/posts',
           exact: true,
           component: Views.JudgePosts,
         },

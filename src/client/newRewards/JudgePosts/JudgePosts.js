@@ -1,29 +1,35 @@
+import { Modal } from 'antd';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { showPostModal } from '../../../store/appStore/appActions';
-import {
-  resetProfileFilters,
-  getTiktokPreviewAction,
-  getFeedContent,
-  getMoreFeedContent,
-} from '../../../store/feedStore/feedActions';
+import { getFeedContent, getMoreFeedContent } from '../../../store/feedStore/feedActions';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
-  // getFeedFetchedFromState,
 } from '../../../common/helpers/stateHelpers';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
+import { getJudgeRewardsFiltersBySponsor } from '../../../waivioApi/ApiClient';
 
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
+import RewardsFilters from '../Filters/Filters';
+import FiltersForMobile from '../Filters/FiltersForMobile';
+
+const filterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
 
 const JudgePosts = props => {
-  const { authorPermlink } = useParams();
+  const [visible, setVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const { requiredObject } = useParams();
+
+  const onClose = () => setVisible(false);
 
   useEffect(() => {
     if (props.authenticatedUserName) {
@@ -32,10 +38,12 @@ const JudgePosts = props => {
         category: props.authenticatedUserName,
         limit: 10,
         isJudges: true,
-        authorPermlink,
+        authorPermlink: requiredObject,
       });
     }
-  }, [props.authenticatedUserName]);
+  }, [props.authenticatedUserName, requiredObject]);
+
+  const getFilters = () => getJudgeRewardsFiltersBySponsor(props.authenticatedUserName);
 
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
   const isFetching = getFeedLoadingFromState(
@@ -43,7 +51,6 @@ const JudgePosts = props => {
     props.authenticatedUserName,
     props.feed,
   );
-  // const fetched = getFeedFetchedFromState('judgesPosts', props.authenticatedUserName, props.feed);
   const hasMore = getFeedHasMoreFromState('judgesPosts', props.authenticatedUserName, props.feed);
 
   const loadMoreContentAction = () =>
@@ -52,7 +59,7 @@ const JudgePosts = props => {
       category: props.authenticatedUserName,
       limit: 10,
       isJudges: true,
-      authorPermlink,
+      authorPermlink: requiredObject,
     });
 
   if (!props.authenticatedUserName) {
@@ -64,20 +71,52 @@ const JudgePosts = props => {
   }
 
   return (
-    <div className="judge-posts">
-      <h2>Judge Posts</h2>
-      <p>Review posts that require your judgment as a judge.</p>
+    <div className="PropositionList">
+      <div className="PropositionList__feed">
+        <FiltersForMobile setVisible={setVisible} />
+        <div className="PropositionList__breadcrumbs">
+          <div className="PropositionList__page">Judge Posts</div>
+        </div>
+        {!isEmpty(content) && (
+          <p
+            className={'flex justify-end mb2 main-color-button'}
+            onClick={() => setModalVisible(true)}
+          >
+            View all
+          </p>
+        )}
 
-      <Feed
-        content={content}
-        isFetching={isFetching}
-        hasMore={hasMore}
-        loadMoreContent={loadMoreContentAction}
-        showPostModal={props.showPostModal}
-        isGuest={false}
-      />
+        <Feed
+          content={content}
+          isFetching={isFetching}
+          hasMore={hasMore}
+          loadMoreContent={loadMoreContentAction}
+          showPostModal={props.showPostModal}
+          isGuest={false}
+        />
 
-      <PostModal userName={props.authenticatedUserName} />
+        <PostModal userName={props.authenticatedUserName} />
+      </div>
+
+      <div className="PropositionList__left">
+        <RewardsFilters
+          title="Filter rewards"
+          getFilters={getFilters}
+          config={filterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
+      <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} footer={null}>
+        {content?.map(i => (
+          <div key={i}>
+            {' '}
+            <Link key={i} to={`/@${i}`}>
+              {i}
+            </Link>
+          </div>
+        ))}{' '}
+      </Modal>
     </div>
   );
 };
@@ -100,8 +139,6 @@ const mapDispatchToProps = {
   getFeedContent,
   getMoreFeedContent,
   showPostModal,
-  resetProfileFilters,
-  getTiktokPreviewAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JudgePosts);

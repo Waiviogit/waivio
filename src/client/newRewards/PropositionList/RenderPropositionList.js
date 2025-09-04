@@ -31,6 +31,8 @@ const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
+
+const judgeFilterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
 const sortConfig = [
   { key: 'default', title: 'Default' },
   { key: 'payout', title: 'Payout' },
@@ -219,7 +221,7 @@ const RenderPropositionList = ({
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
-            config={customFilterConfig}
+            config={isJudges ? judgeFilterConfig : customFilterConfig}
             visible={visible}
             onClose={onClose}
           />

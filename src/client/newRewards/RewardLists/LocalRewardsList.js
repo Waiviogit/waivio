@@ -39,6 +39,7 @@ const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
+const judgeFilterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
 
 const sortConfig = [
   { key: 'default', title: 'Default' },
@@ -66,7 +67,6 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const isLocation = match.params[0] === 'local';
   const isJudges = match.params[0] === 'judges';
 
-  // For judges, only show sponsors sort option
   const currentSortConfig = isJudges ? [{ key: 'sponsors', title: 'Sponsors' }] : sortConfig;
   let title;
 
@@ -163,6 +163,12 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2 className="RewardLists__title">{title}</h2>
+        {isJudges && (
+          <div>
+            <br />
+            You have been selected as a judge for these campaigns.
+          </div>
+        )}
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {currentSortConfig.map(item => (
@@ -206,25 +212,27 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
-            config={filterConfig}
+            config={isJudges ? judgeFilterConfig : filterConfig}
             visible={visible}
             onClose={onClose}
           >
-            <div className="RewardsFilters__block">
-              <span className="RewardsFilters__subtitle">
-                {intl.formatMessage({
-                  id: 'eligibility',
-                  defaultMessage: 'Eligibility',
-                })}
-                :
-              </span>
-              <div>
-                <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
-                  {' '}
-                  show all rewards
-                </Checkbox>
+            {!isJudges && (
+              <div className="RewardsFilters__block">
+                <span className="RewardsFilters__subtitle">
+                  {intl.formatMessage({
+                    id: 'eligibility',
+                    defaultMessage: 'Eligibility',
+                  })}
+                  :
+                </span>
+                <div>
+                  <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
+                    {' '}
+                    show all rewards
+                  </Checkbox>
+                </div>
               </div>
-            </div>
+            )}
           </RewardsFilters>
         </div>
       )}

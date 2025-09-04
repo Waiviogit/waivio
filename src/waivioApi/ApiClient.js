@@ -5165,9 +5165,11 @@ export const getSafeLinks = () =>
     .then(r => r)
     .catch(e => e);
 
-export const getJudgeRewardsMain = (userName, skip, query) =>
-  fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}&${query}`,
+export const getJudgeRewardsMain = (userName, skip, query) => {
+  console.log(query);
+  const queryParams = query ? `&${query}` : '';
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}${queryParams}`,
     {
       headers,
       method: 'GET',
@@ -5176,6 +5178,7 @@ export const getJudgeRewardsMain = (userName, skip, query) =>
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const getJudgeRewardsByObject = (requiredObject, userName, skip) =>
   fetch(
