@@ -39,6 +39,7 @@ const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
+const judgeFilterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
 
 const sortConfig = [
   { key: 'default', title: 'Default' },
@@ -57,7 +58,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const [showMap, setShowMap] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [location, setLocation] = useState([]);
-  const [sort, setSort] = useState('default');
+  const [sort, setSort] = useState(isJudges ? 'sponsors' : 'default');
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
   const query = useQuery();
@@ -65,6 +66,8 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   const match = useRouteMatch();
   const isLocation = match.params[0] === 'local';
   const isJudges = match.params[0] === 'judges';
+
+  const currentSortConfig = isJudges ? [{ key: 'sponsors', title: 'Sponsors' }] : sortConfig;
   let title;
 
   if (isJudges) {
@@ -160,9 +163,15 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2 className="RewardLists__title">{title}</h2>
+        {isJudges && (
+          <div>
+            <br />
+            You have been selected as a judge for these campaigns.
+          </div>
+        )}
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
-          {sortConfig.map(item => (
+          {currentSortConfig.map(item => (
             <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
           ))}
         </SortSelector>
@@ -203,25 +212,27 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
-            config={filterConfig}
+            config={isJudges ? judgeFilterConfig : filterConfig}
             visible={visible}
             onClose={onClose}
           >
-            <div className="RewardsFilters__block">
-              <span className="RewardsFilters__subtitle">
-                {intl.formatMessage({
-                  id: 'eligibility',
-                  defaultMessage: 'Eligibility',
-                })}
-                :
-              </span>
-              <div>
-                <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
-                  {' '}
-                  show all rewards
-                </Checkbox>
+            {!isJudges && (
+              <div className="RewardsFilters__block">
+                <span className="RewardsFilters__subtitle">
+                  {intl.formatMessage({
+                    id: 'eligibility',
+                    defaultMessage: 'Eligibility',
+                  })}
+                  :
+                </span>
+                <div>
+                  <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
+                    {' '}
+                    show all rewards
+                  </Checkbox>
+                </div>
               </div>
-            </div>
+            )}
           </RewardsFilters>
         </div>
       )}

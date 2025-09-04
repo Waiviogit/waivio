@@ -38,7 +38,7 @@ const ReservedButtons = props => {
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'click_submit_photos', { debug_mode: false });
     if (props.isJudges) {
-      history.push('/rewards/judge-posts');
+      history.push(`/rewards/judges/eligible/${props.permlink}/posts`);
     }
     if (props.type === 'giveaways') {
       window.location = props.giveawayUrl;
@@ -127,6 +127,7 @@ ReservedButtons.propTypes = {
   isSocialProduct: PropTypes.bool,
   reservedDays: PropTypes.number,
   type: PropTypes.string,
+  permlink: PropTypes.string,
   giveawayUrl: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };

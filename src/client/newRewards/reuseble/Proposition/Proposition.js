@@ -134,6 +134,7 @@ const Proposition = ({
             rate={proposition.payoutTokenRateUSD}
           />
           <PropositionFooter
+            permlink={proposition?.requiredObject?.author_permlink}
             isJudges={isJudges}
             type={propositionType}
             countReservationDays={proposition?.countReservationDays}
