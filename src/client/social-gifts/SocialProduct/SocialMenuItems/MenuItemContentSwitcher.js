@@ -5,7 +5,7 @@ import NestedChecklist from '../../Checklist/NestedChecklist';
 const MenuItemContentSwitcher = ({ item }) => {
   const itemBody = JSON.parse(item.body);
 
-  if (['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType)) {
+  if (['page', 'list', 'newsfeed', 'widget'].includes(itemBody?.objectType || '')) {
     return <NestedChecklist permlink={itemBody.linkToObject} />;
   }
 
