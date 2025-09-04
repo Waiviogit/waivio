@@ -431,7 +431,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
                   }
                   if (
-                    ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject.object_type)
+                    ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(
+                      wobject?.object_type || '',
+                    )
                   ) {
                     promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
                   }

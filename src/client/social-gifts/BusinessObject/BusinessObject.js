@@ -105,8 +105,8 @@ const BusinessObject = ({
   const [hoveredOption, setHoveredOption] = useState({});
   const { minimal, intensive, moderate } = useAdLevelData();
   const departments = get(wobject, 'departments');
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const serviceObj = ['service'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'person'].includes(wobject?.object_type || '');
+  const serviceObj = ['service'].includes(wobject?.object_type || '');
   const price = hoveredOption.price || get(wobject, 'price');
   const website = parseWobjectField(wobject, 'website');
   const linkField = parseWobjectField(wobject, 'link');
@@ -167,7 +167,7 @@ const BusinessObject = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['business', 'restaurant', 'place'].includes(wobject.object_type)
+  const url = ['business', 'restaurant', 'place'].includes(wobject?.object_type || '')
     ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
