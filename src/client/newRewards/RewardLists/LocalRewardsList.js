@@ -169,12 +169,14 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
             You have been selected as a judge for these campaigns.
           </div>
         )}
-        <ViewMapButton handleClick={() => setShowMap(true)} />
-        <SortSelector sort={sort} onChange={setSort}>
-          {currentSortConfig.map(item => (
-            <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
-          ))}
-        </SortSelector>
+        {!isJudges && <ViewMapButton handleClick={() => setShowMap(true)} />}
+        {!isJudges && (
+          <SortSelector sort={sort} onChange={setSort}>
+            {currentSortConfig.map(item => (
+              <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
+            ))}
+          </SortSelector>
+        )}
         {isEmpty(rewards) ? (
           <EmptyCampaign
             emptyMessage={intl.formatMessage({

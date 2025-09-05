@@ -36,66 +36,56 @@ export const defaultNodeTypes = {
 function deserializeInlineMarks(node, marks = {}) {
   if (!node) return [];
 
-  // Текст
   if (node.type === 'text') {
     return [{ text: node.value || '', ...marks }];
   }
 
-  // Жирный
   if (node.type === 'strong') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, strong: true }),
     );
   }
 
-  // Курсив
   if (node.type === 'em') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, italic: true }),
     );
   }
 
-  // Зачёркнутый
   if (node.type === 'delete') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, strikethrough: true }),
     );
   }
 
-  // Подчёркнутый
   if (node.type === 'u') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, underline: true }),
     );
   }
 
-  // Код
   if (node.type === 'inlineCode') {
     return node.children.flatMap(child => deserializeInlineMarks(child, { ...marks, code: true }));
   }
 
-  // Надстрочный текст
   if (node.type === 'sup') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, superscript: true }),
     );
   }
 
-  // Подстрочный текст
   if (node.type === 'sub') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, subscript: true }),
     );
   }
 
-  // Подсветка
   if (node.type === 'mark') {
     return node.children.flatMap(child =>
       deserializeInlineMarks(child, { ...marks, highlight: true }),
     );
   }
 
-  // Ссылки
   if (node.type === 'link' && node.url) {
     return [
       {
@@ -106,12 +96,10 @@ function deserializeInlineMarks(node, marks = {}) {
     ];
   }
 
-  // На всякий случай — просто текст, если нет type
   if (!node.type && node.value) {
     return [{ text: node.value, ...marks }];
   }
 
-  // Пропускаем всё остальное
   return [];
 }
 
@@ -206,6 +194,15 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             return {
               type: 'video',
               url: node.url,
+              children: [{ text: '' }],
+            };
+          }
+
+          if (node.children[0].type === 'image') {
+            return {
+              type: 'image',
+              ...node.children[0],
+              href: node.url,
               children: [{ text: '' }],
             };
           }

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Editor, Range, Transforms } from 'slate';
+import { Editor, Range, Transforms, Node } from 'slate';
 import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
@@ -32,6 +32,17 @@ const Toolbar = props => {
   const lastSelectionRef = useRef(null);
   const { selection } = editor;
 
+  // Check if current selection is an image
+  const isImageSelected = () => {
+    if (!selection) return false;
+
+    const { path } = editor.selection.anchor;
+    const selectedElementPath = path.slice(0, -1);
+    const selectedElement = Node.descendant(editor, selectedElementPath);
+
+    return selectedElement.type === 'image';
+  };
+
   useEffect(() => {
     if (isShowLinkInput) {
       setShowLinkInput(false);
@@ -41,10 +52,11 @@ const Toolbar = props => {
     }
 
     if (
-      !selection ||
-      !ReactEditor.isFocused(editor) ||
-      Editor.string(editor, selection) === '' ||
-      Range.isCollapsed(selection)
+      (!selection ||
+        !ReactEditor.isFocused(editor) ||
+        Editor.string(editor, selection) === '' ||
+        Range.isCollapsed(selection)) &&
+      !isImageSelected()
     ) {
       setShowLinkInput(false);
       refToolbar.current?.removeAttribute('style');
@@ -95,11 +107,49 @@ const Toolbar = props => {
     if (!editor.selection && lastSelectionRef.current) {
       Transforms.select(editor, lastSelectionRef.current);
     }
+
+    if (editor.selection) {
+      const [imageNode, imagePath] = Editor.nodes(editor, {
+        at: editor.selection,
+        match: n => n.type === 'image',
+      });
+
+      if (imageNode) {
+        Transforms.setNodes(editor, { href: urlInputValue }, { at: imagePath });
+        setShowLinkInput(false);
+        setUrlInputValue('');
+        ReactEditor.focus(editor);
+
+        return;
+      }
+    }
+
     wrapLink(editor, urlInputValue);
     setShowLinkInput(false);
     setUrlInputValue('');
 
     ReactEditor.focus(editor);
+  };
+
+  const removeLink = e => {
+    e.preventDefault();
+
+    if (!editor.selection && lastSelectionRef.current) {
+      Transforms.select(editor, lastSelectionRef.current);
+    }
+
+    if (editor.selection) {
+      const [imageNode, imagePath] = Editor.nodes(editor, {
+        at: editor.selection,
+        match: n => n.type === 'image',
+      });
+
+      if (imageNode) {
+        Transforms.setNodes(editor, { href: null }, { at: imagePath });
+        setShowLinkInput(false);
+        setUrlInputValue('');
+      }
+    }
   };
 
   const handleClickPrevPage = e => {
@@ -164,91 +214,139 @@ const Toolbar = props => {
   }
 
   const toolbarGroupsFiltered = toolbarGroups.filter(i => i.page === currentPage);
-  const getToolBar = () => (
-    <>
-      {currentPage > 1 && (
-        <span
-          style={{
-            display: 'inline-block',
-            width: '30px',
-            textAlign: 'center',
-            lineHeight: '30px',
-            cursor: 'pointer',
-          }}
-          onMouseDown={handleClickPrevPage}
-        >
-          <img
-            src={'/images/icons/arrow-toolbar.svg'}
+  const getToolBar = () => {
+    if (isImageSelected()) {
+      const [imageNode] = Editor.nodes(editor, {
+        at: editor.selection,
+        match: n => n.type === 'image',
+      });
+
+      if (imageNode[0].href) {
+        return (
+          <div className="md-RichEditor-controls">
+            <span
+              className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
+              role="presentation"
+              onMouseDown={e => e.preventDefault()}
+              onClick={removeLink}
+              aria-label="Remove a link"
+            >
+              <Icon type="disconnect" />
+            </span>
+          </div>
+        );
+      }
+
+      return (
+        <>
+          {' '}
+          <div className="md-RichEditor-controls">
+            <span
+              className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
+              role="presentation"
+              onMouseDown={e => e.preventDefault()}
+              onClick={e => {
+                e.preventDefault();
+                if (editor.selection && ReactEditor.isFocused(editor)) {
+                  lastSelectionRef.current = editor.selection;
+                }
+                setShowLinkInput(prev => !prev);
+              }}
+              aria-label="Add a link"
+            >
+              <Icon type="link" />
+            </span>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {currentPage > 1 && (
+          <span
             style={{
               display: 'inline-block',
-              height: '12px',
-              margin: '0',
+              width: '30px',
+              textAlign: 'center',
+              lineHeight: '30px',
+              cursor: 'pointer',
             }}
-            alt={''}
-          />
-        </span>
-      )}
-      <BlockToolbar
-        editor={editor}
-        buttons={toolbarGroupsFiltered.filter(i => i.type === 'block')}
-      />
-      <InlineToolbar
-        editor={editor}
-        buttons={toolbarGroupsFiltered.filter(i => i.type === 'inline')}
-      />
-      {toolbarGroupsFiltered.map(element => {
-        switch (element.type) {
-          case 'link':
-            return (
-              <div className="md-RichEditor-controls">
-                <span
-                  className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
-                  role="presentation"
-                  onMouseDown={e => e.preventDefault()}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (editor.selection && ReactEditor.isFocused(editor)) {
-                      lastSelectionRef.current = editor.selection;
-                    }
-                    setShowLinkInput(prev => !prev);
-                  }}
-                  aria-label="Add a link"
-                >
-                  <Icon type="link" />
-                </span>
-              </div>
-            );
-          case 'code':
-            return <CodeButton key={element.id} editor={editor} {...element} />;
-          default:
-            return null;
-        }
-      })}
-      {currentPage < TOTAL_PAGE && (
-        <span
-          style={{
-            display: 'inline-block',
-            width: '30px',
-            textAlign: 'center',
-            lineHeight: '30px',
-            cursor: 'pointer',
-          }}
-          onMouseDown={handleClickNextPage}
-        >
-          <img
-            src={'/images/icons/arrow-toolbar.svg'}
+            onMouseDown={handleClickPrevPage}
+          >
+            <img
+              src={'/images/icons/arrow-toolbar.svg'}
+              style={{
+                display: 'inline-block',
+                height: '12px',
+                margin: '0',
+              }}
+              alt={''}
+            />
+          </span>
+        )}
+        <BlockToolbar
+          editor={editor}
+          buttons={toolbarGroupsFiltered.filter(i => i.type === 'block')}
+        />
+        <InlineToolbar
+          editor={editor}
+          buttons={toolbarGroupsFiltered.filter(i => i.type === 'inline')}
+        />
+        {toolbarGroupsFiltered.map(element => {
+          switch (element.type) {
+            case 'link':
+              return (
+                <div className="md-RichEditor-controls">
+                  <span
+                    className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
+                    role="presentation"
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={e => {
+                      e.preventDefault();
+                      if (editor.selection && ReactEditor.isFocused(editor)) {
+                        lastSelectionRef.current = editor.selection;
+                      }
+                      setShowLinkInput(prev => !prev);
+                    }}
+                    aria-label="Add a link"
+                  >
+                    <Icon type="link" />
+                  </span>
+                </div>
+              );
+            case 'code':
+              return <CodeButton key={element.id} editor={editor} {...element} />;
+            default:
+              return null;
+          }
+        })}
+        {currentPage < TOTAL_PAGE && (
+          <span
             style={{
               display: 'inline-block',
-              height: '12px',
-              transform: 'rotate(180deg)',
-              margin: '0',
+              width: '30px',
+              textAlign: 'center',
+              lineHeight: '30px',
+              cursor: 'pointer',
             }}
-            alt={''}
-          />
-        </span>
-      )}
-    </>
-  );
+            onMouseDown={handleClickNextPage}
+          >
+            <img
+              src={'/images/icons/arrow-toolbar.svg'}
+              style={{
+                display: 'inline-block',
+                height: '12px',
+                transform: 'rotate(180deg)',
+                margin: '0',
+              }}
+              alt={''}
+            />
+          </span>
+        )}
+      </>
+    );
+  };
 
   return (
     <>
