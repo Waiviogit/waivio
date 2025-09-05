@@ -365,12 +365,27 @@ export function editorStateToMarkdownSlate(value) {
           url: node.url,
           children: next([{ text: node.hashtag }]),
         }),
-        image: node => ({
-          type: 'image',
-          url: node.url,
-          alt: node.alt || '',
-          title: node.title || '',
-        }),
+        image: node => {
+          const imageNode = {
+            type: 'image',
+            url: node.url,
+            alt: node.alt || '',
+            title: node.title || '',
+          };
+
+          // Перевіряємо, чи є у вузла зображення властивість `href`
+          if (node.href) {
+            // Якщо так, створюємо вузол `link` і вкладаємо в нього вузол `image`
+            return {
+              type: 'link',
+              url: node.href,
+              children: [imageNode],
+            };
+          }
+
+          // Якщо `href` немає, повертаємо тільки вузол `image`
+          return imageNode;
+        },
         table: (node, next) => ({
           type: 'table',
           children: next(node.children),

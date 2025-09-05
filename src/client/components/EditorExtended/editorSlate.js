@@ -29,6 +29,8 @@ import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
 import { getSelection, getSelectionRect } from './util';
 import withEmbeds from './util/SlateEditor/plugins/withEmbeds';
+import withImages from './util/SlateEditor/plugins/withImages';
+import withLinkedImageGuard from './util/SlateEditor/plugins/withLinkedImageGuard';
 import withTables from './util/SlateEditor/plugins/withTable';
 import withLinks from './util/SlateEditor/plugins/withLinks';
 import { Leaf, Element } from './util/SlateEditor/Editor';
@@ -82,6 +84,8 @@ const useEditor = props => {
         withReact,
         withLinks,
         withTables,
+        withImages,
+        withLinkedImageGuard,
         withEmbeds(props.handlePasteText),
         withHistory,
       )(),
