@@ -48,7 +48,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const accessExtend =
     (haveAccess(wobject, username, accessTypesArr[0]) && isAdministrator) ||
     hasDelegation(wobject, username);
-  const editObjTypes = ['list', 'page']?.includes(wobject?.object_type);
+  const editObjTypes = ['list', 'page']?.includes(wobject?.object_type || '');
   const breadbrumbsFromQuery = query.get('breadcrumbs');
   let linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : [wobject.author_permlink];
   const viewUrl = query.get('viewUrl');

@@ -99,7 +99,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const objLink = `/object/${wObject.author_permlink}`;
   const onClick = useCallback(
     e => {
-      const isInstacartButton = e.target.className.includes('instacart');
+      const isInstacartButton = e.target?.className?.includes('instacart');
 
       if (!isInstacartButton) {
         history.push(link);

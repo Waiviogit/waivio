@@ -22,7 +22,7 @@ const ShopMainForWobject = () => {
   const authorPermlink = links[0]?.permlink || objState.author_permlink;
 
   useEffect(() => {
-    if (!['shop', 'list', 'page', 'map', 'newsfeed'].includes(objType) && authorPermlink) {
+    if (!['shop', 'list', 'page', 'map', 'newsfeed'].includes(objType || '') && authorPermlink) {
       dispatch(getObject(authorPermlink));
       dispatch(getAlbums(authorPermlink));
     }

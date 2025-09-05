@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -9,10 +10,11 @@ import {
   matchBotsSettings,
   rewardsSettings,
   refferalsSettings,
+  rewardsWithJudgesSettings,
 } from './constants/rewardsSideNavConfig';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
-import { checkPayblesWarning } from '../../waivioApi/ApiClient';
+import { checkPayblesWarning, getJudgeRewardsMain } from '../../waivioApi/ApiClient';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
@@ -29,6 +31,7 @@ const SideBar = ({ intl }) => {
     refferals: true,
   });
   const [withWarning, setWithWarning] = useState(false);
+  const [showJudges, setShowJudges] = useState(false);
 
   useEffect(() => {
     if (authUserName && !guestUserRegex.test(authUserName)) {
@@ -36,6 +39,9 @@ const SideBar = ({ intl }) => {
         setWithWarning(res.warning);
       });
     }
+    getJudgeRewardsMain(authUserName, 0).then(res => {
+      setShowJudges(!isEmpty(res?.rewards));
+    });
   }, [authUserName]);
 
   const toggleMenuCondition = menuItem => {
@@ -49,7 +55,7 @@ const SideBar = ({ intl }) => {
     <ul className="Sidenav SideBar" style={{ marginTop: '20px' }}>
       <SettingsItem
         condition={menuCondition.rewards}
-        configItem={rewardsSettings}
+        configItem={showJudges ? rewardsWithJudgesSettings : rewardsSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
       {isAuth && isWaivio && (

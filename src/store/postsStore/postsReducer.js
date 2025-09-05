@@ -113,7 +113,9 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_MORE_MENTIONS_CONTENT.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
-    case feedTypes.GET_BOOKMARKS.SUCCESS: {
+    case feedTypes.GET_BOOKMARKS.SUCCESS:
+    case feedTypes.GET_JUDGES_POSTS.SUCCESS:
+    case feedTypes.GET_MORE_JUDGES_POSTS.SUCCESS: {
       const list = {
         ...state.list,
       };
@@ -131,15 +133,11 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       return {
         ...state,
         list,
         postsStates,
-        lastId,
       };
     }
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS: {
