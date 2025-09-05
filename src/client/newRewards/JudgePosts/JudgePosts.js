@@ -2,6 +2,7 @@ import { Modal } from 'antd';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -16,14 +17,19 @@ import {
   getFeedHasMoreFromState,
 } from '../../../common/helpers/stateHelpers';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
-import { getObject } from '../../../waivioApi/ApiClient';
-
+import { getObject, getJudgesPostLinks } from '../../../waivioApi/ApiClient';
+import Loading from '../../components/Icon/Loading';
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
+
+const limit = 10;
 
 const JudgePosts = props => {
   const [parent, setParent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasLinks, setHasLinks] = useState(false);
+  const [links, setLinks] = useState([]);
   const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
 
@@ -38,8 +44,20 @@ const JudgePosts = props => {
       });
     }
     getObject(requiredObject).then(res => setParent(res));
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, 0, limit).then(r => {
+      setLinks(r.posts);
+      setHasLinks(r.hasMore);
+    });
   }, [props.authenticatedUserName, requiredObject]);
 
+  const loadMoreLinks = () => {
+    setLoading(true);
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, links.length, limit).then(r => {
+      setLinks([...links, ...r.posts]);
+      setHasLinks(r.hasMore);
+      setLoading(false);
+    });
+  };
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
   const isFetching = getFeedLoadingFromState(
     'judgesPosts',
@@ -104,17 +122,34 @@ const JudgePosts = props => {
       </div>
 
       <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} footer={null}>
-        <ol className={'ordered-list'}>
-          {' '}
-          {content?.map(i => (
-            <li key={i}>
-              {' '}
-              <a key={i} href={`/@${i}`} target={'_blank'} rel="noreferrer">
-                {i}
-              </a>
-            </li>
-          ))}
-        </ol>{' '}
+        <div>
+          <ol className={'ordered-list'}>
+            {' '}
+            {links?.map(i => (
+              <li key={i}>
+                {' '}
+                <a key={i} href={`/@${i.author}/${i.permlink}`} target={'_blank'} rel="noreferrer">
+                  {`/@${i.author}/${i.permlink}`}
+                </a>
+              </li>
+            ))}
+          </ol>{' '}
+          {hasLinks && (
+            <div>
+              <div
+                className=" mt2 flex justify-center pointer"
+                role="presentation"
+                onClick={loadMoreLinks}
+              >
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <FormattedMessage id="show_more" defaultMessage="show more" />
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   );
