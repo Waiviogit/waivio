@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { showPostModal } from '../../../store/appStore/appActions';
 import { getFeedContent, getMoreFeedContent } from '../../../store/feedStore/feedActions';
@@ -15,21 +16,16 @@ import {
   getFeedHasMoreFromState,
 } from '../../../common/helpers/stateHelpers';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
-import { getJudgeRewardsFiltersBySponsor } from '../../../waivioApi/ApiClient';
+import { getObject } from '../../../waivioApi/ApiClient';
 
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
-import RewardsFilters from '../Filters/Filters';
-import FiltersForMobile from '../Filters/FiltersForMobile';
-
-const filterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
 
 const JudgePosts = props => {
-  const [visible, setVisible] = useState(false);
+  const [parent, setParent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
-
-  const onClose = () => setVisible(false);
 
   useEffect(() => {
     if (props.authenticatedUserName) {
@@ -41,9 +37,8 @@ const JudgePosts = props => {
         authorPermlink: requiredObject,
       });
     }
+    getObject(requiredObject).then(res => setParent(res));
   }, [props.authenticatedUserName, requiredObject]);
-
-  const getFilters = () => getJudgeRewardsFiltersBySponsor(props.authenticatedUserName);
 
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
   const isFetching = getFeedLoadingFromState(
@@ -73,9 +68,19 @@ const JudgePosts = props => {
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
-        <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <div className="PropositionList__page">Judge Posts</div>
+          <Link className="PropositionList__page" to={parentLink}>
+            Judges
+          </Link>
+          {requiredObject && (
+            <div className="PropositionList__parent">
+              <span className="PropositionList__icon">&#62;</span>{' '}
+              <span>{getObjectName(parent)}</span>
+            </div>
+          )}
+          <div className="PropositionList__parent">
+            <span className="PropositionList__icon">&#62;</span> <span>Posts</span>
+          </div>
         </div>
         {!isEmpty(content) && (
           <p
@@ -98,24 +103,18 @@ const JudgePosts = props => {
         <PostModal userName={props.authenticatedUserName} />
       </div>
 
-      <div className="PropositionList__left">
-        <RewardsFilters
-          title="Filter rewards"
-          getFilters={getFilters}
-          config={filterConfig}
-          visible={visible}
-          onClose={onClose}
-        />
-      </div>
       <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} footer={null}>
-        {content?.map(i => (
-          <div key={i}>
-            {' '}
-            <Link key={i} to={`/@${i}`}>
-              {i}
-            </Link>
-          </div>
-        ))}{' '}
+        <ol className={'ordered-list'}>
+          {' '}
+          {content?.map(i => (
+            <li key={i}>
+              {' '}
+              <a key={i} href={`/@${i}`} target={'_blank'} rel="noreferrer">
+                {i}
+              </a>
+            </li>
+          ))}
+        </ol>{' '}
       </Modal>
     </div>
   );

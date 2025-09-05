@@ -75,6 +75,7 @@ export const PATH_NAME_CREATE = '/rewards/create';
 export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
 export const PATH_NAME_MANAGE = '/rewards/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
+export const PATH_NAME_JUDGES = '/rewards/judges';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 
 export const CAMPAIGN_STATUS = {

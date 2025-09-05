@@ -168,7 +168,7 @@ const RenderPropositionList = ({
             </div>
           )}
         </div>
-        <ViewMapButton handleClick={() => setShowMap(true)} />
+        {!isJudges && <ViewMapButton handleClick={() => setShowMap(true)} />}
         {disclaimer && (
           <p className="PropositionList__disclaimer">
             <b>Disclaimer: </b>

@@ -159,6 +159,7 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_JUDGES_POSTS.SUCCESS:
+    case feedTypes.GET_MORE_JUDGES_POSTS.SUCCESS:
       return {
         ...state,
         isFetching: false,
