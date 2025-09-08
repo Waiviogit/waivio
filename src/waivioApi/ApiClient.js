@@ -5218,7 +5218,7 @@ export const getJudgesPosts = (judgeName, authorPermlink, skip, limit = 10) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getJudgesPostLinks = (judgeName, authorPermlink, skip, limit = 10) =>
+export const getJudgesPostLinks = (judgeName, authorPermlink, skip, limit = 50) =>
   fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}${config.links}`, {
     headers: {
       ...headers,

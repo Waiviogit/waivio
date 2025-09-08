@@ -30,7 +30,7 @@ export const pages = {
   },
   judges: {
     regExp: /(^\/rewards\/)(judges)/,
-    id: 'judges',
+    id: 'rewards',
   },
   rewardsCampaigns: {
     regExp: /(^\/rewards\/)(create|manage|reservations|messages|match-bot|black-list|fraud-detection|reports)$/,
