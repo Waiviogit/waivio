@@ -373,9 +373,7 @@ export function editorStateToMarkdownSlate(value) {
             title: node.title || '',
           };
 
-          // Перевіряємо, чи є у вузла зображення властивість `href`
           if (node.href) {
-            // Якщо так, створюємо вузол `link` і вкладаємо в нього вузол `image`
             return {
               type: 'link',
               url: node.href,
@@ -383,7 +381,6 @@ export function editorStateToMarkdownSlate(value) {
             };
           }
 
-          // Якщо `href` немає, повертаємо тільки вузол `image`
           return imageNode;
         },
         table: (node, next) => ({

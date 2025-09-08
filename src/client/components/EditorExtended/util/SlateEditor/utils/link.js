@@ -9,7 +9,7 @@ const createLinkNode = (url, text) => ({
   children: [{ text }],
 });
 
-const normalizeLink = url => {
+export const normalizeLink = url => {
   const lowerUrl = url.toLowerCase();
   let newUrl = url;
 

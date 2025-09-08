@@ -5,11 +5,12 @@ import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import BTooltip from '../../../../BTooltip';
 
 import useTable from '../utils/useTable';
 import defaultToolbarGroups from './toolbarGroups';
 import CodeButton from './codebutton';
-import { wrapLink } from '../utils/link';
+import { wrapLink, normalizeLink } from '../utils/link';
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
 import TableToolbar from './tabletoolbar';
@@ -28,6 +29,7 @@ const Toolbar = props => {
   const [urlInputValue, setUrlInputValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setOpen] = useState(false);
+  const [isOpenImageToolBar, setOpenImageToolBar] = useState(false);
   const refToolbar = useRef(null);
   const lastSelectionRef = useRef(null);
   const { selection } = editor;
@@ -43,6 +45,40 @@ const Toolbar = props => {
     return selectedElement.type === 'image';
   };
 
+  // Position image toolbar above the image
+  const positionImageToolbar = () => {
+    if (!refToolbar.current || !editorNode) return;
+
+    const toolbarNode = refToolbar.current;
+    const editorDomNode = ReactEditor.toDOMNode(editor, editor);
+    const { path } = editor.selection.anchor;
+    const selectedElementPath = path.slice(0, -1);
+    const selectedElement = Node.descendant(editor, selectedElementPath);
+    const imageDomNode = ReactEditor.toDOMNode(editor, selectedElement);
+
+    if (imageDomNode && editorDomNode) {
+      const editorBounds = editorDomNode.getBoundingClientRect();
+      const imageBounds = imageDomNode.getBoundingClientRect();
+      const toolbarBounds = toolbarNode.getBoundingClientRect();
+      const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
+
+      toolbarNode.style.top = `${top}px`;
+      toolbarNode.style.left = `-25px`;
+      toolbarNode.style.position = 'absolute';
+      toolbarNode.style.zIndex = '1000';
+    }
+  };
+
+  useEffect(() => {
+    if (isImageSelected() && selection) {
+      setOpenImageToolBar(true);
+      setTimeout(() => positionImageToolbar(), 0);
+    } else {
+      setOpenImageToolBar(false);
+      refToolbar.current?.removeAttribute('style');
+    }
+  }, [isImageSelected(), selection, editor]);
+
   useEffect(() => {
     if (isShowLinkInput) {
       setShowLinkInput(false);
@@ -52,11 +88,10 @@ const Toolbar = props => {
     }
 
     if (
-      (!selection ||
-        !ReactEditor.isFocused(editor) ||
-        Editor.string(editor, selection) === '' ||
-        Range.isCollapsed(selection)) &&
-      !isImageSelected()
+      !selection ||
+      !ReactEditor.isFocused(editor) ||
+      Editor.string(editor, selection) === '' ||
+      Range.isCollapsed(selection)
     ) {
       setShowLinkInput(false);
       refToolbar.current?.removeAttribute('style');
@@ -68,7 +103,7 @@ const Toolbar = props => {
   }, [editor, selection]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen && !isOpenImageToolBar) return;
     if (typeof window !== 'undefined') {
       const nativeSelection = getSelection(window);
       const selectionBoundary = getSelectionRect(nativeSelection);
@@ -79,23 +114,30 @@ const Toolbar = props => {
 
       const parentBoundary = editorNode.getBoundingClientRect();
       const toolbarBoundary = toolbarNode.getBoundingClientRect();
+      const { path } = editor.selection.anchor;
+      const selectedElementPath = path.slice(0, -1);
+      const selectedElement = Node.descendant(editor, selectedElementPath);
 
-      toolbarNode.style.top = `${selectionBoundary.bottom -
-        verticalPos -
-        parentBoundary.top -
-        5}px`;
+      if (selectedElement.type === 'image') {
+        positionImageToolbar();
+      } else {
+        toolbarNode.style.top = `${selectionBoundary.bottom -
+          verticalPos -
+          parentBoundary.top -
+          5}px`;
 
-      const selectionCenter =
-        selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
-      let left = selectionCenter - toolbarBoundary.width / 2;
-      const screenLeft = parentBoundary.left;
+        const selectionCenter =
+          selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
+        let left = selectionCenter - toolbarBoundary.width / 2;
+        const screenLeft = parentBoundary.left;
 
-      if (screenLeft < 20) {
-        left = -parentBoundary.left;
+        if (screenLeft < 20) {
+          left = -parentBoundary.left;
+        }
+        toolbarNode.style.left = `${left}px`;
       }
-      toolbarNode.style.left = `${left}px`;
     }
-  }, [isOpen]);
+  }, [isOpen, editor.selection]);
 
   const handleLinkInput = e => {
     setUrlInputValue(e.target.value);
@@ -115,10 +157,12 @@ const Toolbar = props => {
       });
 
       if (imageNode) {
-        Transforms.setNodes(editor, { href: urlInputValue }, { at: imagePath });
+        Transforms.setNodes(editor, { href: normalizeLink(urlInputValue) }, { at: imagePath });
         setShowLinkInput(false);
         setUrlInputValue('');
-        ReactEditor.focus(editor);
+        Transforms.select(editor, imagePath);
+
+        setTimeout(() => positionImageToolbar(), 0);
 
         return;
       }
@@ -148,6 +192,9 @@ const Toolbar = props => {
         Transforms.setNodes(editor, { href: null }, { at: imagePath });
         setShowLinkInput(false);
         setUrlInputValue('');
+        Transforms.select(editor, imagePath);
+
+        setTimeout(() => positionImageToolbar(), 0);
       }
     }
   };
@@ -164,7 +211,9 @@ const Toolbar = props => {
 
   if (isShowLinkInput) {
     const isEmptyUrlInput = isEmpty(urlInputValue);
-    let className = `md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`;
+    let className = `md-editor-toolbar${
+      isOpen || isOpenImageToolBar ? ' md-editor-toolbar--isopen' : ''
+    }`;
 
     className += ' md-editor-toolbar--linkinput';
 
@@ -215,24 +264,27 @@ const Toolbar = props => {
 
   const toolbarGroupsFiltered = toolbarGroups.filter(i => i.page === currentPage);
   const getToolBar = () => {
-    if (isImageSelected()) {
+    if (!isOpen && !isOpenImageToolBar) return null;
+
+    if (isOpenImageToolBar) {
       const [imageNode] = Editor.nodes(editor, {
         at: editor.selection,
         match: n => n.type === 'image',
       });
 
-      if (imageNode[0].href) {
+      if (imageNode?.[0]?.href) {
         return (
           <div className="md-RichEditor-controls">
-            <span
-              className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
-              role="presentation"
-              onMouseDown={e => e.preventDefault()}
-              onClick={removeLink}
-              aria-label="Remove a link"
-            >
-              <Icon type="disconnect" />
-            </span>
+            <BTooltip title="Remove image link">
+              <span
+                className="md-RichEditor-styleButton md-RichEditor-linkButton"
+                role="presentation"
+                onMouseDown={e => e.preventDefault()}
+                onClick={removeLink}
+              >
+                <Icon type="disconnect" />
+              </span>
+            </BTooltip>
           </div>
         );
       }
@@ -241,21 +293,22 @@ const Toolbar = props => {
         <>
           {' '}
           <div className="md-RichEditor-controls">
-            <span
-              className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
-              role="presentation"
-              onMouseDown={e => e.preventDefault()}
-              onClick={e => {
-                e.preventDefault();
-                if (editor.selection && ReactEditor.isFocused(editor)) {
-                  lastSelectionRef.current = editor.selection;
-                }
-                setShowLinkInput(prev => !prev);
-              }}
-              aria-label="Add a link"
-            >
-              <Icon type="link" />
-            </span>
+            <BTooltip title="Add image link">
+              <span
+                className="md-RichEditor-styleButton md-RichEditor-linkButton"
+                role="presentation"
+                onMouseDown={e => e.preventDefault()}
+                onClick={e => {
+                  e.preventDefault();
+                  if (editor.selection && ReactEditor.isFocused(editor)) {
+                    lastSelectionRef.current = editor.selection;
+                  }
+                  setShowLinkInput(prev => !prev);
+                }}
+              >
+                <Icon type="link" />
+              </span>
+            </BTooltip>
           </div>
         </>
       );
@@ -353,9 +406,11 @@ const Toolbar = props => {
       {isTable && <TableToolbar editorNode={editorNode} intl={intl} editor={editor} />}
       <div
         ref={refToolbar}
-        className={`md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`}
+        className={`md-editor-toolbar${
+          isOpen || isOpenImageToolBar ? ' md-editor-toolbar--isopen' : ''
+        }`}
       >
-        {isOpen && getToolBar()}
+        {getToolBar()}
       </div>
     </>
   );
