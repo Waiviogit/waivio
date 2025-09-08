@@ -132,7 +132,7 @@ const JudgePosts = props => {
               <li key={i}>
                 {' '}
                 <a key={i} href={`/@${i.author}/${i.permlink}`} target={'_blank'} rel="noreferrer">
-                  {`@${i.author}/${i.permlink}`}
+                  {`${i.author}/${i.permlink}`}
                 </a>
               </li>
             ))}
