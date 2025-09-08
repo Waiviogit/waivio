@@ -9,9 +9,11 @@ import './CookieNotice.less';
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
   const history = useHistory();
-  const cookieKey = `cookie_accepted_${history?.location?.hostname}`;
 
-  const isWaivio = history?.location?.hostname?.includes('waivio');
+  const hostname = typeof window !== 'undefined' ? window?.location?.hostname : 'default';
+  const cookieKey = `cookie_accepted_${hostname}`;
+
+  const isWaivio = hostname.includes('waivio');
   const signInPage = history?.location?.pathname?.includes('sign-in');
   const showNotice = isWaivio || !signInPage;
 
@@ -19,10 +21,11 @@ const CookieNotice = () => {
     if (Cookie.get(cookieKey) !== 'accepted' && showNotice) {
       setVisible(true);
     }
-  }, [cookieKey]);
+  }, [cookieKey, showNotice]);
 
   const handleAccept = () => {
-    Cookie.set(cookieKey, 'accepted');
+    // ✅ set cookie with expiration (e.g., 1 year)
+    Cookie.set(cookieKey, 'accepted', { expires: 365 });
     setVisible(false);
   };
 
