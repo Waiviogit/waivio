@@ -117,7 +117,6 @@ export const getMoreFeedContent = ({
 }) => (dispatch, getState) => {
   const state = getState();
 
-  // If this is a judge request, use getJudgesPosts instead
   if (isJudges) {
     const feed = getFeed(state);
     const feedContent = getFeedFromState('judgesPosts', getAuthenticatedUserName(state), feed);

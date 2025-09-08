@@ -159,7 +159,7 @@ const RenderPropositionList = ({
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__page" to={parentLink}>
-            {intl.formatMessage({ id: isJudges ? 'judges' : `${tab}_rewards_new` })}
+            {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (
             <div className="PropositionList__parent">
@@ -168,7 +168,7 @@ const RenderPropositionList = ({
             </div>
           )}
         </div>
-        <ViewMapButton handleClick={() => setShowMap(true)} />
+        {!isJudges && <ViewMapButton handleClick={() => setShowMap(true)} />}
         {disclaimer && (
           <p className="PropositionList__disclaimer">
             <b>Disclaimer: </b>

@@ -2,9 +2,11 @@ import { Modal } from 'antd';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { showPostModal } from '../../../store/appStore/appActions';
 import { getFeedContent, getMoreFeedContent } from '../../../store/feedStore/feedActions';
@@ -15,36 +17,47 @@ import {
   getFeedHasMoreFromState,
 } from '../../../common/helpers/stateHelpers';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
-import { getJudgeRewardsFiltersBySponsor } from '../../../waivioApi/ApiClient';
-
+import { getObject, getJudgesPostLinks } from '../../../waivioApi/ApiClient';
+import Loading from '../../components/Icon/Loading';
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
-import RewardsFilters from '../Filters/Filters';
-import FiltersForMobile from '../Filters/FiltersForMobile';
 
-const filterConfig = [{ title: 'Sponsors', type: 'sponsors' }];
+const limit = 10;
 
 const JudgePosts = props => {
-  const [visible, setVisible] = useState(false);
+  const [parent, setParent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasLinks, setHasLinks] = useState(false);
+  const [links, setLinks] = useState([]);
+  const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
-
-  const onClose = () => setVisible(false);
 
   useEffect(() => {
     if (props.authenticatedUserName) {
       props.getFeedContent({
         sortBy: 'judgesPosts',
         category: props.authenticatedUserName,
-        limit: 10,
+        limit,
         isJudges: true,
         authorPermlink: requiredObject,
       });
     }
+    getObject(requiredObject).then(res => setParent(res));
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, 0).then(r => {
+      setLinks(r.posts);
+      setHasLinks(r.hasMore);
+    });
   }, [props.authenticatedUserName, requiredObject]);
 
-  const getFilters = () => getJudgeRewardsFiltersBySponsor(props.authenticatedUserName);
-
+  const loadMoreLinks = () => {
+    setLoading(true);
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, links.length).then(r => {
+      setLinks([...links, ...r.posts]);
+      setHasLinks(r.hasMore);
+      setLoading(false);
+    });
+  };
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
   const isFetching = getFeedLoadingFromState(
     'judgesPosts',
@@ -73,9 +86,22 @@ const JudgePosts = props => {
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
-        <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <div className="PropositionList__page">Judge Posts</div>
+          <Link className="PropositionList__page" to={parentLink}>
+            Judges
+          </Link>
+          {requiredObject && (
+            <a
+              className="PropositionList__parent pointer"
+              href={`/rewards/judges/eligible/${requiredObject}`}
+            >
+              <span className="PropositionList__icon">&#62;</span>{' '}
+              <span>{getObjectName(parent)}</span>
+            </a>
+          )}
+          <div className="PropositionList__parent">
+            <span className="PropositionList__icon">&#62;</span> <span>Posts</span>
+          </div>
         </div>
         {!isEmpty(content) && (
           <p
@@ -98,24 +124,35 @@ const JudgePosts = props => {
         <PostModal userName={props.authenticatedUserName} />
       </div>
 
-      <div className="PropositionList__left">
-        <RewardsFilters
-          title="Filter rewards"
-          getFilters={getFilters}
-          config={filterConfig}
-          visible={visible}
-          onClose={onClose}
-        />
-      </div>
       <Modal visible={modalVisible} onCancel={() => setModalVisible(false)} footer={null}>
-        {content?.map(i => (
-          <div key={i}>
+        <div>
+          <ol className={'ordered-list'}>
             {' '}
-            <Link key={i} to={`/@${i}`}>
-              {i}
-            </Link>
-          </div>
-        ))}{' '}
+            {links?.map(i => (
+              <li key={i}>
+                {' '}
+                <a key={i} href={`/@${i.author}/${i.permlink}`} target={'_blank'} rel="noreferrer">
+                  {`@${i.author}/${i.permlink}`}
+                </a>
+              </li>
+            ))}
+          </ol>{' '}
+          {hasLinks && (
+            <div>
+              <div
+                className=" mt2 flex justify-center pointer"
+                role="presentation"
+                onClick={loadMoreLinks}
+              >
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <FormattedMessage id="show_more" defaultMessage="show more" />
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   );

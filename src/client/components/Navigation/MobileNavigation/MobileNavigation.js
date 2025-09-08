@@ -15,6 +15,7 @@ import {
   PATH_NAME_PAYABLES,
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
+  PATH_NAME_JUDGES,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
@@ -27,6 +28,7 @@ const MobileNavigation = ({ location, match }) => {
   useEffect(() => {
     setModalVisibility(false);
   }, [match]);
+
   const authenticated = useSelector(getIsAuthenticated);
   let pageName = '';
   let filterName = 'Menu';
@@ -63,6 +65,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = pages.rewards.id;
       filterName = url.match(pages.rewards.regExp)[2];
       break;
+    case (url.match(pages.judges.regExp) || {}).input:
+      pageName = pages.judges.id;
+      filterName = url.match(pages.judges.regExp)[2];
+      break;
     case (url.match(pages.rewardsCampaigns.regExp) || {}).input:
       pageName = pages.rewardsCampaigns.id;
       filterName = url.match(pages.rewardsCampaigns.regExp)[2];
@@ -95,6 +101,10 @@ const MobileNavigation = ({ location, match }) => {
     case PATH_NAME_PAYABLES:
       pageName = CAMPAIGNS;
       filterName = 'payable';
+      break;
+    case PATH_NAME_JUDGES:
+      pageName = 'rewards';
+      filterName = 'judges';
       break;
     case PATH_NAME_MESSAGES:
       pageName = CAMPAIGNS;
@@ -172,7 +182,6 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'claim_authority';
       break;
-
     case '/tags-bot':
       pageName = 'tools';
       filterName = 'tags_bot';

@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGoogleTagEvent } from '../../../common/helpers';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
@@ -163,18 +164,25 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2 className="RewardLists__title">{title}</h2>
+        {isMobile() && isJudges && (
+          <div className={'PropositionList__breadcrumbs'}>
+            <div className={'PropositionList__page'}>{title}</div>
+          </div>
+        )}
         {isJudges && (
           <div>
-            <br />
+            {!isMobile() && <br />}
             You have been selected as a judge for these campaigns.
           </div>
         )}
-        <ViewMapButton handleClick={() => setShowMap(true)} />
-        <SortSelector sort={sort} onChange={setSort}>
-          {currentSortConfig.map(item => (
-            <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
-          ))}
-        </SortSelector>
+        {!isJudges && <ViewMapButton handleClick={() => setShowMap(true)} />}
+        {!isJudges && (
+          <SortSelector sort={sort} onChange={setSort}>
+            {currentSortConfig.map(item => (
+              <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
+            ))}
+          </SortSelector>
+        )}
         {isEmpty(rewards) ? (
           <EmptyCampaign
             emptyMessage={intl.formatMessage({
