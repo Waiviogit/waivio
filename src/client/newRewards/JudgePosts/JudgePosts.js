@@ -38,13 +38,13 @@ const JudgePosts = props => {
       props.getFeedContent({
         sortBy: 'judgesPosts',
         category: props.authenticatedUserName,
-        limit: 10,
+        limit,
         isJudges: true,
         authorPermlink: requiredObject,
       });
     }
     getObject(requiredObject).then(res => setParent(res));
-    getJudgesPostLinks(props.authenticatedUserName, requiredObject, 0, limit).then(r => {
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, 0).then(r => {
       setLinks(r.posts);
       setHasLinks(r.hasMore);
     });
@@ -52,7 +52,7 @@ const JudgePosts = props => {
 
   const loadMoreLinks = () => {
     setLoading(true);
-    getJudgesPostLinks(props.authenticatedUserName, requiredObject, links.length, limit).then(r => {
+    getJudgesPostLinks(props.authenticatedUserName, requiredObject, links.length).then(r => {
       setLinks([...links, ...r.posts]);
       setHasLinks(r.hasMore);
       setLoading(false);
@@ -91,10 +91,13 @@ const JudgePosts = props => {
             Judges
           </Link>
           {requiredObject && (
-            <div className="PropositionList__parent">
+            <a
+              className="PropositionList__parent pointer"
+              href={`/rewards/judges/eligible/${requiredObject}`}
+            >
               <span className="PropositionList__icon">&#62;</span>{' '}
               <span>{getObjectName(parent)}</span>
-            </div>
+            </a>
           )}
           <div className="PropositionList__parent">
             <span className="PropositionList__icon">&#62;</span> <span>Posts</span>
@@ -129,7 +132,7 @@ const JudgePosts = props => {
               <li key={i}>
                 {' '}
                 <a key={i} href={`/@${i.author}/${i.permlink}`} target={'_blank'} rel="noreferrer">
-                  {`/@${i.author}/${i.permlink}`}
+                  {`@${i.author}/${i.permlink}`}
                 </a>
               </li>
             ))}
