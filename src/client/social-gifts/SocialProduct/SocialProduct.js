@@ -270,6 +270,23 @@ const SocialProduct = ({
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
+  const affiliatLinks = affiliateLinks
+    .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+    .map(affLink => {
+      if (isNewInstacartProgram(affLink)) {
+        return (
+          <InstacartWidget
+            key={affLink.link}
+            wobjPerm={wobject?.author_permlink}
+            instacartAff={affLink}
+          />
+        );
+      }
+
+      if (isOldInstacartProgram(affLink)) return null;
+
+      return <AffiliatLink key={affLink.link} link={affLink} />;
+    });
 
   const showProductDetails =
     !isRecipe &&
@@ -634,7 +651,9 @@ const SocialProduct = ({
                   />
                 </div>
               )}
+
               {!isEmpty(affiliateLinks) &&
+                !affiliatLinks?.every(l => isNil(l)) &&
                 !(
                   affiliateLinks.length === 1 &&
                   instacardAff &&
@@ -644,25 +663,7 @@ const SocialProduct = ({
                     <div className="SocialProduct__subtitle">
                       <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                     </div>
-                    <div className="SocialProduct__affiliateContainer">
-                      {affiliateLinks
-                        .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-                        .map(affLink => {
-                          if (isNewInstacartProgram(affLink)) {
-                            return (
-                              <InstacartWidget
-                                key={affLink.link}
-                                wobjPerm={wobject?.author_permlink}
-                                instacartAff={affLink}
-                              />
-                            );
-                          }
-
-                          if (isOldInstacartProgram(affLink)) return null;
-
-                          return <AffiliatLink key={affLink.link} link={affLink} />;
-                        })}
-                    </div>
+                    <div className="SocialProduct__affiliateContainer">{affiliatLinks}</div>
                     <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
                 )}
