@@ -21,6 +21,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import {
   createImageNode,
   insertImageReplaceParagraph,
+  createEmptyNode,
 } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
@@ -158,24 +159,80 @@ const ImageSetter = ({
 
           if (selection) {
             const selectedElementPath = selection.anchor.path.slice(0, -1);
-            const selectedElement = Node.descendant(editor, selectedElementPath);
 
-            // Видаляємо параграф тільки якщо він порожній (не містить тексту)
-            if (
-              selectedElement &&
-              selectedElement.type === 'paragraph' &&
-              selectedElement.children?.[0]?.text === ''
-            ) {
-              Transforms.removeNodes(editor, { at: selectedElementPath });
+            // Перевіряємо, чи існує елемент за цим шляхом
+            try {
+              const selectedElement = Node.descendant(editor, selectedElementPath);
+
+              // Видаляємо параграф тільки якщо він порожній (не містить тексту)
+              if (
+                selectedElement &&
+                selectedElement.type === 'paragraph' &&
+                selectedElement.children?.[0]?.text === ''
+              ) {
+                Transforms.removeNodes(editor, { at: selectedElementPath });
+              }
+            } catch (error) {
+              // Якщо не можемо знайти елемент, ігноруємо помилку
+              console.warn('Cannot find element at path:', selectedElementPath);
             }
           }
 
-          Transforms.insertNodes(
-            editor,
-            insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-            isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
-          );
-          ReactEditor.focus(editor);
+          // Перевіряємо, чи редактор має валідну структуру перед вставкою
+          if (editor.children && editor.children.length > 0) {
+            const insertOptions = {};
+
+            // Додаємо позицію вставки тільки для Android та якщо lastSelection валідний
+            if (
+              isAndroidDevice() &&
+              lastSelection &&
+              lastSelection.anchor &&
+              lastSelection.anchor.path
+            ) {
+              try {
+                const nextPath = Path.next(lastSelection.anchor.path);
+
+                if (nextPath) {
+                  insertOptions.at = nextPath;
+                }
+              } catch (error) {
+                console.warn('Cannot calculate next path:', error);
+              }
+            }
+
+            try {
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertOptions,
+              );
+            } catch (error) {
+              console.warn('Cannot insert image nodes:', error);
+              // Fallback: вставляємо картинку без заміни параграфа
+              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+            }
+          } else {
+            // Якщо редактор порожній, створюємо базову структуру
+            try {
+              Transforms.insertNodes(editor, [
+                createImageNode(newImage.name, { url }),
+                createEmptyNode(),
+              ]);
+            } catch (error) {
+              console.warn('Cannot insert image into empty editor:', error);
+              // Fallback: просто вставляємо картинку
+              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+            }
+          }
+
+          // Відновлюємо фокус після вставки з затримкою
+          setTimeout(() => {
+            try {
+              ReactEditor.focus(editor);
+            } catch (error) {
+              console.warn('Cannot focus editor after image insertion:', error);
+            }
+          }, 0);
         }
       });
     }
