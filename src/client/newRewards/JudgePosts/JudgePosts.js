@@ -21,6 +21,7 @@ import { getObject, getJudgesPostLinks } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
+import EmptyCampaign from '../../statics/EmptyCampaign';
 
 const limit = 10;
 
@@ -75,14 +76,6 @@ const JudgePosts = props => {
       authorPermlink: requiredObject,
     });
 
-  if (!props.authenticatedUserName) {
-    return (
-      <div className="judge-posts">
-        <div>Please log in to view judge posts.</div>
-      </div>
-    );
-  }
-
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
@@ -111,16 +104,18 @@ const JudgePosts = props => {
             View all
           </p>
         )}
-
-        <Feed
-          content={content}
-          isFetching={isFetching}
-          hasMore={hasMore}
-          loadMoreContent={loadMoreContentAction}
-          showPostModal={props.showPostModal}
-          isGuest={false}
-        />
-
+        {isEmpty(content) ? (
+          <EmptyCampaign emptyMessage={'There are no posts available for this campaign yet.'} />
+        ) : (
+          <Feed
+            content={content}
+            isFetching={isFetching}
+            hasMore={hasMore}
+            loadMoreContent={loadMoreContentAction}
+            showPostModal={props.showPostModal}
+            isGuest={false}
+          />
+        )}
         <PostModal userName={props.authenticatedUserName} />
       </div>
 
