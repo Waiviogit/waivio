@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -268,6 +269,8 @@ class Comments extends React.Component {
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
     const showComments = !isRecipe || (isRecipe && show);
+    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const signature = jsonMetadata?.profile?.signature || null;
 
     return (
       <div className={classNames('Comments', { 'quick-comments': isQuickComments })}>
@@ -298,6 +301,7 @@ class Comments extends React.Component {
                 top
                 parentPost={this.props.parentPost}
                 username={username}
+                signature={signature}
                 onSubmit={this.handleSubmitComment}
                 isLoading={this.state.showCommentFormLoading}
                 inputValue={this.state.commentFormText}
