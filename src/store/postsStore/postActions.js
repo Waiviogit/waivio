@@ -37,6 +37,12 @@ import { updateAuthProfile } from '../authStore/authActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
+export const UPDATE_POST_PIN_STATE = '@post/UPDATE_POST_PIN_STATE';
+
+export const updatePostPinState = (post, isPinned) => ({
+  type: UPDATE_POST_PIN_STATE,
+  payload: { post, isPinned },
+});
 
 export const LIKE_POST = createAsyncActionType('@post/LIKE_POST');
 export const FAKE_REBLOG_POST = '@post/FAKE_REBLOG_POST';
@@ -339,6 +345,7 @@ export const handlePinPost = (
 
   if (pinnedPostsUrls.includes(post.url)) {
     dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
+    dispatch(updatePostPinState(post, false));
     if (post?.currentUserPin) {
       if (isReject) voteWeight = 0;
       else {
@@ -359,6 +366,7 @@ export const handlePinPost = (
   } else if (currUpdate.message) {
     dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+    dispatch(updatePostPinState(post, true));
     const pageContentField = {
       name: objectFields.pin,
       body: `${post.author}/${post.permlink}`,
@@ -375,6 +383,7 @@ export const handlePinPost = (
   } else {
     dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+    dispatch(updatePostPinState(post, true));
     getAuthority(false);
     dispatch(
       voteAppends(currUpdate.author, currUpdate.permlink, userVotingPower, 'pin', false, true),
