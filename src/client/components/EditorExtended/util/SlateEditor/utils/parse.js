@@ -269,6 +269,23 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               ];
             }
 
+            if (child.type === 'image') {
+              return [
+                ...acc,
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'image',
+                      url: child.url,
+                      alt: child.alt,
+                      children: [{ text: '' }],
+                    },
+                  ],
+                },
+              ];
+            }
+
             if (child.type === 'link') {
               return [
                 ...acc,
