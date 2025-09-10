@@ -284,8 +284,8 @@ const EditorSlate = props => {
       }
     }
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
-    const { path, offset } = editor.selection.anchor;
-    const selectedElementPath = path.slice(0, -1);
+    const { path, offset } = editor?.selection?.anchor;
+    const selectedElementPath = path?.slice(0, -1);
     const selectedElement = Node.descendant(editor, selectedElementPath);
     const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
     const nextPath = Path.next(selectedElementPath);

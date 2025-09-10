@@ -135,7 +135,7 @@ class Story extends React.Component {
   getObjectLayout = wobj => (
     <Link
       key={wobj.author_permlink}
-      to={wobj.defaultShowLink}
+      to={wobj.defaultShowLink || `/object/${wobj.author_permlink}`}
       title={`${this.props.intl.formatMessage({
         id: 'related_to_object',
         defaultMessage: 'Related',

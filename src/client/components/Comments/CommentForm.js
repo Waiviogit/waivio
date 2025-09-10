@@ -350,7 +350,7 @@ CommentForm.defaultProps = {
 const mapStateToProps = store => ({
   editor: getEditorSlate(store),
   username: getAuthenticatedUserName(store),
-  signature: getAuthUserSignature(store),
+  signatureAuth: getAuthUserSignature(store),
 });
 
 const mapDispatchToProps = dispatch => ({
