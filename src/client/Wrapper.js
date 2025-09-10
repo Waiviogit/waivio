@@ -17,6 +17,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../store/authStore/authActions';
+import { getUserAccount } from '../store/usersStore/usersActions';
 import { getCoordinates, getNotifications } from '../store/userStore/userActions';
 import {
   getRate,
@@ -90,6 +91,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getSwapEnginRates,
     getCoordinates,
     getGlobalProperties,
+    getUserAccount,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -118,6 +120,7 @@ class Wrapper extends React.PureComponent {
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
     getSwapEnginRates: PropTypes.func,
+    getUserAccount: PropTypes.func,
     isGuest: PropTypes.bool,
   };
 
@@ -193,7 +196,10 @@ class Wrapper extends React.PureComponent {
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
-    if (userName) setSessionData('userName', userName);
+    if (userName) {
+      setSessionData('userName', userName);
+      this.props.getUserAccount(userName);
+    }
     if (isWidget) {
       /* Check on new tab from widget:
         the page, when switching to a new tab, should not remain a widget
