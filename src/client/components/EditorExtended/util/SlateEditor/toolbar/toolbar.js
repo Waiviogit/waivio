@@ -40,9 +40,15 @@ const Toolbar = props => {
 
     const { path } = editor.selection.anchor;
     const selectedElementPath = path.slice(0, -1);
-    const selectedElement = Node.descendant(editor, selectedElementPath);
 
-    return selectedElement.type === 'image';
+    try {
+      if (!Node.has(editor, selectedElementPath)) return false;
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+      return selectedElement.type === 'image';
+    } catch (error) {
+      console.warn('Error checking if image is selected:', error);
+      return false;
+    }
   };
 
   // Position image toolbar above the image
@@ -53,19 +59,25 @@ const Toolbar = props => {
     const editorDomNode = ReactEditor.toDOMNode(editor, editor);
     const { path } = editor.selection.anchor;
     const selectedElementPath = path.slice(0, -1);
-    const selectedElement = Node.descendant(editor, selectedElementPath);
-    const imageDomNode = ReactEditor.toDOMNode(editor, selectedElement);
 
-    if (imageDomNode && editorDomNode) {
-      const editorBounds = editorDomNode.getBoundingClientRect();
-      const imageBounds = imageDomNode.getBoundingClientRect();
-      const toolbarBounds = toolbarNode.getBoundingClientRect();
-      const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
+    try {
+      if (!Node.has(editor, selectedElementPath)) return;
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+      const imageDomNode = ReactEditor.toDOMNode(editor, selectedElement);
 
-      toolbarNode.style.top = `${top}px`;
-      toolbarNode.style.left = `-25px`;
-      toolbarNode.style.position = 'absolute';
-      toolbarNode.style.zIndex = '1000';
+      if (imageDomNode && editorDomNode) {
+        const editorBounds = editorDomNode.getBoundingClientRect();
+        const imageBounds = imageDomNode.getBoundingClientRect();
+        const toolbarBounds = toolbarNode.getBoundingClientRect();
+        const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
+
+        toolbarNode.style.top = `${top}px`;
+        toolbarNode.style.left = `-25px`;
+        toolbarNode.style.position = 'absolute';
+        toolbarNode.style.zIndex = '1000';
+      }
+    } catch (error) {
+      console.warn('Error positioning image toolbar:', error);
     }
   };
 
@@ -149,25 +161,31 @@ const Toolbar = props => {
       const toolbarBoundary = toolbarNode.getBoundingClientRect();
       const { path } = editor?.selection?.anchor;
       const selectedElementPath = path.slice(0, -1);
-      const selectedElement = Node.descendant(editor, selectedElementPath);
 
-      if (selectedElement.type === 'image') {
-        positionImageToolbar();
-      } else {
-        toolbarNode.style.top = `${selectionBoundary.bottom -
-          verticalPos -
-          parentBoundary.top -
-          5}px`;
+      try {
+        if (!Node.has(editor, selectedElementPath)) return;
+        const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        const selectionCenter =
-          selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
-        let left = selectionCenter - toolbarBoundary.width / 2;
-        const screenLeft = parentBoundary.left;
+        if (selectedElement.type === 'image') {
+          positionImageToolbar();
+        } else {
+          toolbarNode.style.top = `${selectionBoundary.bottom -
+            verticalPos -
+            parentBoundary.top -
+            5}px`;
 
-        if (screenLeft < 20) {
-          left = -parentBoundary.left;
+          const selectionCenter =
+            selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
+          let left = selectionCenter - toolbarBoundary.width / 2;
+          const screenLeft = parentBoundary.left;
+
+          if (screenLeft < 20) {
+            left = -parentBoundary.left;
+          }
+          toolbarNode.style.left = `${left}px`;
         }
-        toolbarNode.style.left = `${left}px`;
+      } catch (error) {
+        console.warn('Error positioning toolbar:', error);
       }
     }
   }, [isOpen, editor.selection]);
