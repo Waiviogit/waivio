@@ -495,6 +495,21 @@ const posts = (state = initialState, action) => {
       };
     }
 
+    case postsActions.UPDATE_POST_PIN_STATE: {
+      const key = getPostKey(action.payload.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            currentUserPin: action.payload.isPinned,
+          },
+        },
+      };
+    }
+
     default:
       return state;
   }
