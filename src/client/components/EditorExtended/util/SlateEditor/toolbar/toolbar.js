@@ -81,10 +81,7 @@ const Toolbar = props => {
 
   useEffect(() => {
     if (isShowLinkInput) {
-      setShowLinkInput(false);
-      setUrlInputValue('');
-
-      return setOpen(false);
+      return setOpen(true);
     }
 
     if (
@@ -100,7 +97,43 @@ const Toolbar = props => {
     }
 
     return setOpen(true);
-  }, [editor, selection]);
+  }, [editor, selection, isShowLinkInput]);
+
+  // Close link input when clicking outside or losing focus
+  useEffect(() => {
+    if (!isShowLinkInput) return;
+
+    const handleClickOutside = event => {
+      if (refToolbar.current && !refToolbar.current.contains(event.target)) {
+        setShowLinkInput(false);
+        setUrlInputValue('');
+        ReactEditor.focus(editor);
+      }
+    };
+
+    const handleFocusOut = () => {
+      // Small delay to allow for link input interactions
+      setTimeout(() => {
+        if (!ReactEditor.isFocused(editor)) {
+          setShowLinkInput(false);
+          setUrlInputValue('');
+        }
+      }, 100);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    window.addEventListener('blur', handleFocusOut);
+    document.addEventListener('visibilitychange', handleFocusOut);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      window.removeEventListener('blur', handleFocusOut);
+      document.removeEventListener('visibilitychange', handleFocusOut);
+    };
+  }, [isShowLinkInput, editor]);
 
   useEffect(() => {
     if (!isOpen && !isOpenImageToolBar) return;
@@ -114,7 +147,7 @@ const Toolbar = props => {
 
       const parentBoundary = editorNode.getBoundingClientRect();
       const toolbarBoundary = toolbarNode.getBoundingClientRect();
-      const { path } = editor.selection.anchor;
+      const { path } = editor?.selection?.anchor;
       const selectedElementPath = path.slice(0, -1);
       const selectedElement = Node.descendant(editor, selectedElementPath);
 
@@ -227,7 +260,7 @@ const Toolbar = props => {
       >
         <div
           className="md-RichEditor-controls md-RichEditor-show-link-input"
-          style={{ display: 'flex' }}
+          style={{ display: 'flex', marginLeft: '20px' }}
         >
           <Input
             className="md-url-input"
@@ -237,6 +270,14 @@ const Toolbar = props => {
                 setUrlInputValue('');
                 ReactEditor.focus(editor);
               }
+            }}
+            onBlur={() => {
+              // Small delay to allow for button clicks
+              setTimeout(() => {
+                setShowLinkInput(false);
+                setUrlInputValue('');
+                ReactEditor.focus(editor);
+              }, 150);
             }}
             onChange={handleLinkInput}
             placeholder={intl.formatMessage({
@@ -251,6 +292,7 @@ const Toolbar = props => {
             type="primary"
             htmlType="submit"
             onClick={setLink}
+            onMouseDown={e => e.preventDefault()}
             className="md-url-button"
             style={{ display: 'block' }}
             disabled={isEmptyUrlInput}

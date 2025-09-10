@@ -74,7 +74,6 @@
     "connected-react-router": "^6.5.2",
     "cookie-parser": "^1.4.3",
     "crypto-js": "^4.2.0",
-    "debug": "~2.6.9",
     "diff-match-patch": "^1.0.0",
     "dotenv": "^10.0.0",
     "draft-js": "^0.11.7",
