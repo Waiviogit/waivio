@@ -117,7 +117,9 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
-    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${props.signature}`;
+
+    const sign = isEmpty(markdownBody) ? '' : props.signatureAuth || props.signature;
+    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${sign}`;
 
     if (
       (props.isEdit &&
@@ -326,6 +328,7 @@ CommentForm.propTypes = {
   editor: PropTypes.shape(),
   parentPost: PropTypes.shape(),
   signature: PropTypes.string,
+  signatureAuth: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),

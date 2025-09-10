@@ -44,9 +44,11 @@ const Toolbar = props => {
     try {
       if (!Node.has(editor, selectedElementPath)) return false;
       const selectedElement = Node.descendant(editor, selectedElementPath);
+
       return selectedElement.type === 'image';
     } catch (error) {
       console.warn('Error checking if image is selected:', error);
+
       return false;
     }
   };

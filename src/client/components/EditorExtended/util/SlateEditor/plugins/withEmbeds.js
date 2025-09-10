@@ -49,6 +49,7 @@ const withEmbeds = cb => editor => {
     try {
       if (selection && editor.selection?.anchor?.path) {
         const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
+
         if (Node.has(editor, selectedElementPath)) {
           selectedElement = Node.descendant(editor, selectedElementPath);
           isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
@@ -124,6 +125,7 @@ const withEmbeds = cb => editor => {
       try {
         if (editor.selection?.anchor?.path) {
           const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
+
           if (Node.has(editor, selectedElementPath)) {
             selectedElement = Node.descendant(editor, selectedElementPath);
             isWrapped = selectedElement?.type?.includes(CODE_BLOCK);

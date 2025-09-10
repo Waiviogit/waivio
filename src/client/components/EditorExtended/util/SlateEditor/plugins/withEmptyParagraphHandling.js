@@ -14,6 +14,7 @@ const withEmptyParagraphHandling = editor => {
       try {
         if (!Node.has(editor, selectedElementPath)) {
           deleteBackward(unit);
+
           return;
         }
         const selectedElement = Node.descendant(editor, selectedElementPath);
@@ -80,6 +81,7 @@ const withEmptyParagraphHandling = editor => {
       try {
         if (!Node.has(editor, selectedElementPath)) {
           deleteForward(unit);
+
           return;
         }
         const selectedElement = Node.descendant(editor, selectedElementPath);
