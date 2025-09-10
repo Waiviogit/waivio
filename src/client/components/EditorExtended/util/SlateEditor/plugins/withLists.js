@@ -13,9 +13,11 @@ const withLists = editor => {
           (!Editor.isEditor(n) && Element.isElement(n) && n.type === 'orderedList') ||
           n.type === 'unorderedList',
       });
+
       try {
         if (!Node.has(editor, editor.selection.anchor.path)) {
           deleteBackward(unit);
+
           return;
         }
         const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
@@ -35,6 +37,7 @@ const withLists = editor => {
 
           if (!Node.has(editor, selectedElementPath)) {
             deleteBackward(unit);
+
             return;
           }
           const selectedElement = Node.descendant(editor, selectedElementPath);

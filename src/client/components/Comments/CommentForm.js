@@ -328,6 +328,7 @@ CommentForm.propTypes = {
   editor: PropTypes.shape(),
   parentPost: PropTypes.shape(),
   signature: PropTypes.string,
+  signatureAuth: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
