@@ -395,11 +395,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="remove"
-        disabled={loading || disableRemove}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -448,11 +444,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="unpin" defaultMessage="Unpin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="remove"
-        disabled={loading || disableRemove}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
