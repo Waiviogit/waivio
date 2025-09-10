@@ -194,14 +194,21 @@ const EditorSlate = props => {
 
     if (selection) {
       const selectedElementPath = selection.anchor.path.slice(0, -1);
-      const selectedElement = Node.descendant(editor, selectedElementPath);
 
-      if (
-        selectedElement &&
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === ''
-      ) {
-        Transforms.removeNodes(editor, { at: selectedElementPath });
+      try {
+        if (Node.has(editor, selectedElementPath)) {
+          const selectedElement = Node.descendant(editor, selectedElementPath);
+
+          if (
+            selectedElement &&
+            selectedElement.type === 'paragraph' &&
+            selectedElement.children?.[0]?.text === ''
+          ) {
+            Transforms.removeNodes(editor, { at: selectedElementPath });
+          }
+        }
+      } catch (error) {
+        console.warn('Error in editorSlate insertImage:', error);
       }
     }
 
@@ -250,14 +257,21 @@ const EditorSlate = props => {
 
       if (selection) {
         const selectedElementPath = selection.anchor.path.slice(0, -1);
-        const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        if (
-          selectedElement &&
-          selectedElement.type === 'paragraph' &&
-          selectedElement.children?.[0]?.text === ''
-        ) {
-          Transforms.removeNodes(editor, { at: selectedElementPath });
+        try {
+          if (Node.has(editor, selectedElementPath)) {
+            const selectedElement = Node.descendant(editor, selectedElementPath);
+
+            if (
+              selectedElement &&
+              selectedElement.type === 'paragraph' &&
+              selectedElement.children?.[0]?.text === ''
+            ) {
+              Transforms.removeNodes(editor, { at: selectedElementPath });
+            }
+          }
+        } catch (error) {
+          console.warn('Error in editorSlate handleDroppedFiles:', error);
         }
       }
 
@@ -286,147 +300,162 @@ const EditorSlate = props => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
     const { path, offset } = editor?.selection?.anchor;
     const selectedElementPath = path?.slice(0, -1);
-    const selectedElement = Node.descendant(editor, selectedElementPath);
-    const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
-    const nextPath = Path.next(selectedElementPath);
-    const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
-    const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-    if (event.key === 'Delete') {
-      if (
-        selectedElement.type === 'paragraph' &&
-        offset === selectedElement.children[0]?.text?.length &&
-        ['image', 'video'].includes(nextNode?.type)
-      ) {
-        event.preventDefault();
+    try {
+      if (!Node.has(editor, selectedElementPath)) return false;
+      const selectedElement = Node.descendant(editor, selectedElementPath);
+      const prevPath = selectedElementPath.every(p => !p)
+        ? [0]
+        : Path.previous(selectedElementPath);
+      const nextPath = Path.next(selectedElementPath);
+      const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-        Transforms.select(editor, Editor.range(editor, nextPath));
-
-        return true;
-      }
-    }
-
-    if (event.key === 'Backspace') {
-      const key = path[0] ? path[0] - 1 : path[0];
-      const node = editor.children[key];
-
-      if (
-        ElementSlate.isElement(prevNode) &&
-        ['image', 'video'].includes(prevNode.type) &&
-        !['image', 'video'].includes(selectedElement.type)
-      ) {
-        if (!offset && Range.isCollapsed(editor.selection)) {
+      if (event.key === 'Delete') {
+        if (
+          selectedElement.type === 'paragraph' &&
+          offset === selectedElement.children[0]?.text?.length &&
+          ['image', 'video'].includes(nextNode?.type)
+        ) {
           event.preventDefault();
 
-          Transforms.select(editor, Editor.range(editor, prevPath));
+          Transforms.select(editor, Editor.range(editor, nextPath));
 
           return true;
         }
       }
 
-      if (['unorderedList', 'orderedList'].includes(node.type)) {
-        const [, at] = getParentList(path, editor);
+      if (event.key === 'Backspace') {
+        const key = path[0] ? path[0] - 1 : path[0];
+        const node = editor.children[key];
 
-        if (!isEmpty(at) && node.children.length === 1 && node.children[0].children.length === 1) {
-          Transforms.removeNodes(editor, {
-            at,
-            mode: 'highest',
-          });
-          Transforms.insertNodes(editor, createEmptyNode());
+        if (
+          ElementSlate.isElement(prevNode) &&
+          ['image', 'video'].includes(prevNode.type) &&
+          !['image', 'video'].includes(selectedElement.type)
+        ) {
+          if (!offset && Range.isCollapsed(editor.selection)) {
+            event.preventDefault();
+
+            Transforms.select(editor, Editor.range(editor, prevPath));
+
+            return true;
+          }
         }
 
-        return true;
+        if (['unorderedList', 'orderedList'].includes(node.type)) {
+          const [, at] = getParentList(path, editor);
+
+          if (
+            !isEmpty(at) &&
+            node.children.length === 1 &&
+            node.children[0].children.length === 1
+          ) {
+            Transforms.removeNodes(editor, {
+              at,
+              mode: 'highest',
+            });
+            Transforms.insertNodes(editor, createEmptyNode());
+          }
+
+          return true;
+        }
+
+        if (node.type === 'table') {
+          const [tbl, at] = getParentTable(path, editor);
+
+          if (isSingleEmptyCellTable(editor, tbl)) {
+            Transforms.removeNodes(editor, {
+              at,
+              mode: 'highest',
+            });
+            Transforms.insertNodes(editor, createEmptyNode());
+
+            return true;
+          }
+        }
       }
 
-      if (node.type === 'table') {
-        const [tbl, at] = getParentTable(path, editor);
+      if (event.key === 'Enter') {
+        removeAllInlineFormats(editor);
 
-        if (isSingleEmptyCellTable(editor, tbl)) {
-          Transforms.removeNodes(editor, {
-            at,
-            mode: 'highest',
+        if (
+          ['listItem'].includes(selectedElement.type) &&
+          selectedElement.children[0].text === ''
+        ) {
+          const [list] = getParentList(path, editor);
+
+          event.preventDefault();
+          toggleBlock(editor, list.type);
+          Transforms.setNodes(editor, { type: 'paragraph' });
+        }
+
+        if (['image', 'video'].includes(selectedElement.type)) {
+          event.preventDefault();
+          Transforms.insertNodes(editor, createParagraph(''), {
+            at: selectedElementPath,
           });
-          Transforms.insertNodes(editor, createEmptyNode());
+        }
+
+        if (
+          HEADING_BLOCKS.includes(selectedElement.type) ||
+          (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
+        ) {
+          event.preventDefault();
+          Transforms.insertNodes(editor, {
+            type: 'paragraph',
+            children: [{ text: '' }],
+          });
+
+          Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
+
+          return true;
+        } else if (isSoftNewlineEvent(event)) {
+          event.preventDefault();
+          editor.insertText('\n');
 
           return true;
         }
       }
-    }
 
-    if (event.key === 'Enter') {
-      removeAllInlineFormats(editor);
+      if (event.keyCode === 51) {
+        if (props.openSearchAfterClick) props.openSearchAfterClick();
+        else {
+          const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
+          const nativeSelection = getSelection(window);
+          const selectionBoundary = getSelectionRect(nativeSelection);
 
-      if (['listItem'].includes(selectedElement.type) && selectedElement.children[0].text === '') {
-        const [list] = getParentList(path, editor);
+          props.setCursorCoordinates({
+            selectionBoundary,
+            selectionState: editor.selection,
+            searchString: searchInfo.searchString,
+          });
 
-        event.preventDefault();
-        toggleBlock(editor, list.type);
-        Transforms.setNodes(editor, { type: 'paragraph' });
-      }
-
-      if (['image', 'video'].includes(selectedElement.type)) {
-        event.preventDefault();
-        Transforms.insertNodes(editor, createParagraph(''), {
-          at: selectedElementPath,
-        });
-      }
-
-      if (
-        HEADING_BLOCKS.includes(selectedElement.type) ||
-        (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
-      ) {
-        event.preventDefault();
-        Transforms.insertNodes(editor, {
-          type: 'paragraph',
-          children: [{ text: '' }],
-        });
-
-        Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
-
-        return true;
-      } else if (isSoftNewlineEvent(event)) {
-        event.preventDefault();
-        editor.insertText('\n');
-
-        return true;
-      }
-    }
-
-    if (event.keyCode === 51) {
-      if (props.openSearchAfterClick) props.openSearchAfterClick();
-      else {
-        const searchInfo = checkCursorInSearchSlate(editor, props.isShowEditorSearch);
-        const nativeSelection = getSelection(window);
-        const selectionBoundary = getSelectionRect(nativeSelection);
-
-        props.setCursorCoordinates({
-          selectionBoundary,
-          selectionState: editor.selection,
-          searchString: searchInfo.searchString,
-        });
-
-        props.setShowEditorSearch(true);
-      }
-
-      return true;
-    }
-
-    if (editor.selection && Range.isCollapsed(editor.selection)) {
-      const { nativeEvent } = event;
-
-      if (isKeyHotkey('left', nativeEvent)) {
-        event.preventDefault();
-        Transforms.move(editor, { unit: 'offset', reverse: true });
+          props.setShowEditorSearch(true);
+        }
 
         return true;
       }
 
-      if (isKeyHotkey('right', nativeEvent)) {
-        event.preventDefault();
-        Transforms.move(editor, { unit: 'offset' });
+      if (editor.selection && Range.isCollapsed(editor.selection)) {
+        const { nativeEvent } = event;
 
-        return true;
+        if (isKeyHotkey('left', nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, { unit: 'offset', reverse: true });
+
+          return true;
+        }
+
+        if (isKeyHotkey('right', nativeEvent)) {
+          event.preventDefault();
+          Transforms.move(editor, { unit: 'offset' });
+
+          return true;
+        }
       }
+    } catch (error) {
+      console.warn('Error in editorSlate handleKeyCommand:', error);
     }
 
     return false;
