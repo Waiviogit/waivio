@@ -123,6 +123,9 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
+      const lastId =
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
+
       each(action.payload, post => {
         const key = getPostKey(post);
 
@@ -138,6 +141,7 @@ const posts = (state = initialState, action) => {
         ...state,
         list,
         postsStates,
+        lastId,
       };
     }
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS: {
