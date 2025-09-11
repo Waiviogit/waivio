@@ -17,7 +17,11 @@ import {
   sendCommentForReward,
   sendInitialCommentForMentions,
 } from '../../../../store/newRewards/newRewardsActions';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getAuthUserSignature,
+  getAuthenticatedUser,
+} from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
 import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
@@ -41,6 +45,12 @@ const PropositionFooter = ({
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
+  const signatureAuth = useSelector(getAuthUserSignature);
+  const user = useSelector(getAuthenticatedUser);
+  const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+  const signature = jsonMetadata?.profile?.signature || null;
+  const sign = signatureAuth || signature;
+
   const isMentions = [
     campaignTypes.MENTIONS,
     campaignTypes.GIVEAWAYS_OBJECT,
@@ -253,7 +263,7 @@ const PropositionFooter = ({
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} signature={sign} />
           </React.Fragment>
         );
       case 'history':
@@ -308,7 +318,7 @@ const PropositionFooter = ({
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} signature={sign} />
           </React.Fragment>
         );
 
