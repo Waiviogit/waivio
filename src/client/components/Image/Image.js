@@ -6,7 +6,14 @@ const CustomImage = ({ src, className, onClick, alt }) => {
   const [url, setUrl] = useState(getProxyImageURL(src));
 
   return (
-    <img className={className} onError={() => setUrl(src)} onClick={onClick} alt={alt} src={url} />
+    <img
+      className={className}
+      onError={() => setUrl(src)}
+      onClick={onClick}
+      alt={alt}
+      src={url}
+      data-fallback-src={src}
+    />
   );
 };
 
