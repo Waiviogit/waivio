@@ -153,6 +153,7 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_THREADS_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_MENTIONS_CONTENT.SUCCESS:
+    case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
