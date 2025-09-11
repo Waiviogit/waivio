@@ -289,6 +289,20 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             }
 
             if (child.type === 'link') {
+              if (child.children[0].type === 'image') {
+                return [
+                  ...acc,
+                  { type: 'paragraph', children: [{ text: '' }] },
+                  {
+                    type: 'image',
+                    ...child.children[0],
+                    href: child.url,
+                    children: [{ text: '' }],
+                  },
+                  { type: 'paragraph', children: [{ text: '' }] },
+                ];
+              }
+
               return [
                 ...acc,
                 {

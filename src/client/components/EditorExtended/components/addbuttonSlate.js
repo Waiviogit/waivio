@@ -185,6 +185,7 @@ AddButtonSlate.propTypes = {
 
 AddButtonSlate.defaultProps = {
   focus: () => {},
+  setLastSelection: () => {},
   sideButtons: [],
   withTitleLine: false,
   isClearSearchObjects: false,

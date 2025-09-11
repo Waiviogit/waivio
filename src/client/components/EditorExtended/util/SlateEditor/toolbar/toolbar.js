@@ -74,8 +74,14 @@ const Toolbar = props => {
         const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
         const left = imageBounds.left - imageBounds.width;
 
+        const anchorCenter =
+          imageBounds.left - editorBounds.left + editorDomNode.scrollLeft + imageBounds.width / 2;
+
+        // left для тулбара так, щоб його центр співпав з центром картинки
+        const leftCalc = Math.round(anchorCenter - toolbarBounds.width / 2);
+
         toolbarNode.style.top = `${top}px`;
-        toolbarNode.style.left = left <= 0 ? '-25px' : `${imageBounds.right - imageBounds.width}px`;
+        toolbarNode.style.left = left <= 0 ? '-25px' : `${leftCalc}px`;
         toolbarNode.style.position = 'absolute';
         toolbarNode.style.zIndex = '1000';
       }
