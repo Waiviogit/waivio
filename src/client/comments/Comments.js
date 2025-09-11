@@ -112,6 +112,7 @@ const Comments = props => {
   return (
     rootLevelComments && (
       <CommentsList
+        signature={props.signature}
         isRecipe={isRecipe}
         user={user}
         isGuest={props.isGuest}
@@ -168,6 +169,7 @@ Comments.propTypes = {
   isUpdating: PropTypes.bool,
   isGuest: PropTypes.bool,
   setGuestMana: PropTypes.func,
+  signature: PropTypes.string,
 };
 
 Comments.defaultProps = {

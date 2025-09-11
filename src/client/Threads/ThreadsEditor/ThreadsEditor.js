@@ -16,7 +16,7 @@ import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../../components/EditorExtended/util/SlateEditor/utils/common';
 import ThreadsEditorSlate from '../../components/EditorExtended/ThreadsEditorSlate';
-import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import withAuthActions from '../../auth/withAuthActions';
 import './ThreadsEditor.less';
 
@@ -231,7 +231,6 @@ ThreadsEditor.defaultProps = {
 
 const mapStateToProps = state => ({
   isAuth: getIsAuthenticated(state),
-  signature: getAuthUserSignature(state),
 });
 
 const mapDispatchToProps = dispatch => ({
