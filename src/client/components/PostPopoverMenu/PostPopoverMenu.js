@@ -81,6 +81,7 @@ const PostPopoverMenu = ({
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
     isThread ||
+    !wobjAuthorPermlink ||
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
     (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
