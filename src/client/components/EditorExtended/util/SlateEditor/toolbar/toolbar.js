@@ -72,10 +72,10 @@ const Toolbar = props => {
         const imageBounds = imageDomNode.getBoundingClientRect();
         const toolbarBounds = toolbarNode.getBoundingClientRect();
         const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
-        const left = imageBounds.left - imageBounds.width / 2;
+        const left = imageBounds.left - imageBounds.width;
 
         toolbarNode.style.top = `${top}px`;
-        toolbarNode.style.left = left <= 0 ? '-25px' : `${left - 30}px`;
+        toolbarNode.style.left = left <= 0 ? '-25px' : `${imageBounds.right - imageBounds.width}px`;
         toolbarNode.style.position = 'absolute';
         toolbarNode.style.zIndex = '1000';
       }
@@ -277,11 +277,12 @@ const Toolbar = props => {
         style={{
           top: `${refToolbar.current?.style.top}`,
           left: `${refToolbar.current?.style.left}`,
+          background: 'transparent',
         }}
       >
         <div
           className="md-RichEditor-controls md-RichEditor-show-link-input"
-          style={{ display: 'flex', marginLeft: '20px' }}
+          style={{ display: 'flex', marginLeft: '20px', background: 'transparent' }}
         >
           <Input
             className="md-url-input"
