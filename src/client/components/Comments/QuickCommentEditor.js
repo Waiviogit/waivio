@@ -58,12 +58,14 @@ const QuickCommentEditor = props => {
   const handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
-    const { signature } = props;
+    const { signature, signatureAuth } = props;
 
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {
-      const bodyWithSignature = props.isEdit ? commentMsg : `${commentMsg}${signature}`;
+      const bodyWithSignature = props.isEdit
+        ? commentMsg
+        : `${commentMsg}${signatureAuth || signature}`;
 
       props.onSubmit(props.parentPost, bodyWithSignature).then(() => {
         setCommentMsg('');
@@ -215,6 +217,7 @@ QuickCommentEditor.propTypes = {
   parentPost: PropTypes.shape(),
   importObj: PropTypes.shape(),
   signature: PropTypes.string,
+  signatureAuth: PropTypes.string,
   isLoading: PropTypes.bool,
   isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
@@ -246,7 +249,7 @@ export default injectIntl(
   connect(
     state => ({
       isAuth: getIsAuthenticated(state),
-      signature: getAuthUserSignature(state),
+      signatureAuth: getAuthUserSignature(state),
       importObj: getImportObject(state),
     }),
     mapDispatchToProps,

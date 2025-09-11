@@ -26,6 +26,7 @@ class Comments extends React.Component {
     loaded: PropTypes.bool.isRequired,
     isRecipe: PropTypes.bool,
     username: PropTypes.string,
+    signature: PropTypes.string,
     parentPost: PropTypes.shape(),
     comments: PropTypes.shape(),
     rootLevelComments: PropTypes.arrayOf(PropTypes.shape()),
@@ -355,6 +356,7 @@ class Comments extends React.Component {
           ))}
         {isQuickComments && authenticated && (
           <QuickCommentEditor
+            signature={this.props.signature}
             parentPost={this.props.parentPost}
             username={username}
             onSubmit={this.handleSubmitComment}

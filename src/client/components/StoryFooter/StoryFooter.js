@@ -69,6 +69,7 @@ class StoryFooter extends React.Component {
     muteAuthorPost: PropTypes.func.isRequired,
     isGuest: PropTypes.bool.isRequired,
     userName: PropTypes.string,
+    signature: PropTypes.string,
     getSocialInfoPostAction: PropTypes.func,
     handleEditClick: PropTypes.func.isRequired,
     handleFollowClick: PropTypes.func,
@@ -294,6 +295,7 @@ class StoryFooter extends React.Component {
             isQuickComments={!singlePostVew}
             post={post}
             isRecipe={isRecipe}
+            signature={this.props.signature}
           />
         )}
         {(intensive || moderate || minimal) && singlePostVew && <GoogleAds inPost={minimal} />}

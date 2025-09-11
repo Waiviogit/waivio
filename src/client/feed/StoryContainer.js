@@ -13,7 +13,11 @@ import { reblog } from '../../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../../common/helpers/voteHelpers';
 import { getRewardFund } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  getAuthUserSignature,
+} from '../../store/authStore/authSelectors';
 import { getPendingLikes, getPosts } from '../../store/postsStore/postsSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
@@ -81,6 +85,7 @@ const mapStateToProps = (state, { id, isThread }) => {
     pinnedPostsUrls: getPinnedPostsUrls(state),
     locale: getLocale(state),
     isAuthUser: getIsAuthenticated(state),
+    signatureAuth: getAuthUserSignature(state),
   };
 };
 

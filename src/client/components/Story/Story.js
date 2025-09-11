@@ -47,6 +47,7 @@ class Story extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     userVotingPower: PropTypes.number,
+    signatureAuth: PropTypes.string,
     showNSFWPosts: PropTypes.bool.isRequired,
     pendingLike: PropTypes.bool,
     isThread: PropTypes.bool,
@@ -346,6 +347,7 @@ class Story extends React.Component {
       isAuthUser,
       handlePinPost,
       userVotingPower,
+      signatureAuth,
     } = this.props;
     const { editThread } = this.state;
     const pinUrl = Cookie.get('userPin');
@@ -367,6 +369,9 @@ class Story extends React.Component {
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
+    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const signature = jsonMetadata?.profile?.signature || null;
+    const sign = signatureAuth || signature;
 
     if (isPostDeleted(post)) return <div />;
 
@@ -493,6 +498,7 @@ class Story extends React.Component {
                     isEdit={editThread}
                     inputValue={post.body}
                     parentPost={post}
+                    signature={sign}
                     onSubmit={this.handleEditThread}
                   />
                 </div>
@@ -504,6 +510,7 @@ class Story extends React.Component {
               <StoryFooter
                 user={user}
                 post={post}
+                signature={sign}
                 postState={postState}
                 pendingLike={pendingLike}
                 pendingFlag={pendingFlag}
