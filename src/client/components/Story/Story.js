@@ -28,7 +28,7 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { getObjectName, isObjectReviewTab } from '../../../common/helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
@@ -47,6 +47,7 @@ class Story extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     userVotingPower: PropTypes.number,
+    signatureAuth: PropTypes.string,
     showNSFWPosts: PropTypes.bool.isRequired,
     pendingLike: PropTypes.bool,
     isThread: PropTypes.bool,
@@ -135,7 +136,7 @@ class Story extends React.Component {
   getObjectLayout = wobj => (
     <Link
       key={wobj.author_permlink}
-      to={wobj.defaultShowLink}
+      to={wobj.defaultShowLink || `/object/${wobj.author_permlink}`}
       title={`${this.props.intl.formatMessage({
         id: 'related_to_object',
         defaultMessage: 'Related',
@@ -346,11 +347,12 @@ class Story extends React.Component {
       isAuthUser,
       handlePinPost,
       userVotingPower,
+      signatureAuth,
     } = this.props;
     const { editThread } = this.state;
     const pinUrl = Cookie.get('userPin');
     const isObjectPage =
-      (isObjectReviewTab(wobject, match) && isAuthUser) || post.permlink === pinUrl;
+      (match.params.name === wobject?.author_permlink && isAuthUser) || post.permlink === pinUrl;
     const currentUserPin =
       pinnedPostsUrls.includes(post.url) || (post.permlink === pinUrl && post.author === user.name);
     const tooltipTitle = (
@@ -359,14 +361,20 @@ class Story extends React.Component {
         defaultMessage={currentUserPin ? 'Unpin' : 'Pin'}
       />
     );
+
     const pinClassName =
-      post?.pin || pinUrl || (has(post, 'currentUserPin') && !post.currentUserPin)
+      post?.pin ||
+      (pinUrl && !isObjectPage) ||
+      (has(post, 'currentUserPin') && !post.currentUserPin)
         ? 'pin-grey'
         : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
+    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const signature = jsonMetadata?.profile?.signature || null;
+    const sign = signatureAuth || signature;
 
     if (isPostDeleted(post)) return <div />;
 
@@ -458,7 +466,7 @@ class Story extends React.Component {
                         pinnedPostsUrls={pinnedPostsUrls}
                         match={match}
                         currentUserPin={currentUserPin}
-                        disabled={!isAuthUser || post.author !== user.name}
+                        disabled={!isAuthUser}
                         user={user}
                         post={post}
                         pinClassName={pinClassName}
@@ -493,6 +501,7 @@ class Story extends React.Component {
                     isEdit={editThread}
                     inputValue={post.body}
                     parentPost={post}
+                    signature={sign}
                     onSubmit={this.handleEditThread}
                   />
                 </div>
@@ -504,6 +513,7 @@ class Story extends React.Component {
               <StoryFooter
                 user={user}
                 post={post}
+                signature={sign}
                 postState={postState}
                 pendingLike={pendingLike}
                 pendingFlag={pendingFlag}

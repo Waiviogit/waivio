@@ -365,12 +365,24 @@ export function editorStateToMarkdownSlate(value) {
           url: node.url,
           children: next([{ text: node.hashtag }]),
         }),
-        image: node => ({
-          type: 'image',
-          url: node.url,
-          alt: node.alt || '',
-          title: node.title || '',
-        }),
+        image: node => {
+          const imageNode = {
+            type: 'image',
+            url: node.url,
+            alt: node.alt || '',
+            title: node.title || '',
+          };
+
+          if (node.href) {
+            return {
+              type: 'link',
+              url: node.href,
+              children: [imageNode],
+            };
+          }
+
+          return imageNode;
+        },
         table: (node, next) => ({
           type: 'table',
           children: next(node.children),

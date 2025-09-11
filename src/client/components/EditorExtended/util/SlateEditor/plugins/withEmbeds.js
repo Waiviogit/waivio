@@ -43,9 +43,21 @@ const withEmbeds = cb => editor => {
   editor.normalizeNode = entry => {
     const [node, path] = entry;
 
-    const selectedElement =
-      selection && Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
-    const isWrapped = selectedElement?.type.includes(CODE_BLOCK);
+    let selectedElement = null;
+    let isWrapped = false;
+
+    try {
+      if (selection && editor.selection?.anchor?.path) {
+        const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
+
+        if (Node.has(editor, selectedElementPath)) {
+          selectedElement = Node.descendant(editor, selectedElementPath);
+          isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
+        }
+      }
+    } catch (error) {
+      console.warn('Error in withEmbeds normalizeNode:', error);
+    }
 
     if (Element.isElement(node) && node.type === PARAGRAPH_BLOCK) {
       if (isWrapped) {
@@ -106,8 +118,22 @@ const withEmbeds = cb => editor => {
 
       const parsed = new DOMParser().parseFromString(_html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
-      const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
-      const isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
+
+      let selectedElement = null;
+      let isWrapped = false;
+
+      try {
+        if (editor.selection?.anchor?.path) {
+          const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
+
+          if (Node.has(editor, selectedElementPath)) {
+            selectedElement = Node.descendant(editor, selectedElementPath);
+            isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
+          }
+        }
+      } catch (error) {
+        console.warn('Error in withEmbeds insertData:', error);
+      }
 
       let nodesNormalized = nodes
         .filter(i => i.text !== '\n')

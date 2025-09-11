@@ -152,29 +152,68 @@ const ImageSetter = ({
       currentImages.forEach(newImage => {
         if (isEditor && newImage) {
           const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
-
-          // Видаляємо поточний параграф тільки якщо він порожній та вставляємо картинку з новим параграфом після
           const { selection } = editor;
 
           if (selection) {
-            const selectedElementPath = selection.anchor.path.slice(0, -1);
-            const selectedElement = Node.descendant(editor, selectedElementPath);
+            const selectedElementPath = selection.anchor.path;
 
-            // Видаляємо параграф тільки якщо він порожній (не містить тексту)
-            if (
-              selectedElement &&
-              selectedElement.type === 'paragraph' &&
-              selectedElement.children?.[0]?.text === ''
-            ) {
-              Transforms.removeNodes(editor, { at: selectedElementPath });
+            try {
+              const selectedElement = Node.descendant(editor, selectedElementPath);
+
+              if (
+                selectedElement &&
+                selectedElement.type === 'paragraph' &&
+                selectedElement.children?.[0]?.text === ''
+              ) {
+                Transforms.removeNodes(editor, { at: selectedElementPath });
+              }
+            } catch (error) {
+              console.warn('Cannot find element at path:', selectedElementPath);
             }
           }
 
-          Transforms.insertNodes(
-            editor,
-            insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-            isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
-          );
+          if (editor.children && editor.children.length > 0) {
+            const insertOptions = {};
+
+            if (
+              isAndroidDevice() &&
+              lastSelection &&
+              lastSelection.anchor &&
+              lastSelection.anchor.path
+            ) {
+              const nextPath = Path.next(lastSelection.anchor.path);
+
+              if (nextPath) {
+                insertOptions.at = nextPath;
+              }
+            }
+
+            try {
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertOptions,
+              );
+            } catch (error) {
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
+            }
+          } else {
+            try {
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
+            } catch (error) {
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
+            }
+          }
+
           ReactEditor.focus(editor);
         }
       });
@@ -186,7 +225,7 @@ const ImageSetter = ({
   useEffect(() => {
     addImage();
   }, [isOkayBtn, isModal, lastSelection]);
-  // For image pasted for link
+
   const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
 

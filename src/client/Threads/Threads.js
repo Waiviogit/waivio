@@ -23,6 +23,8 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
+  getAuthenticatedUser,
+  getAuthUserSignature,
 } from '../../store/authStore/authSelectors';
 import Feed from '../feed/Feed';
 import { getUserProfileBlog } from '../../waivioApi/ApiClient';
@@ -42,6 +44,9 @@ const Threads = props => {
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
   const currHost = typeof location !== 'undefined' && location.hostname;
+  const jsonMetadata = !isEmpty(props.user) ? JSON.parse(props.user?.posting_json_metadata) : {};
+  const signature = jsonMetadata?.profile?.signature || null;
+  const sign = props.signatureAuth || signature;
   const initialInputValue = `${
     props.isUser ? `@${name}` : `[#${name}](https://${currHost}/object/${name}) `
   }`;
@@ -77,7 +82,9 @@ const Threads = props => {
         <meta property="og:type" content="article" />
         <meta property="og:description" content={description} />
       </Helmet>
+
       <ThreadsEditor
+        signature={sign}
         isUser={props.isUser}
         name={name}
         loading={loading}
@@ -122,6 +129,7 @@ const Threads = props => {
 
 Threads.propTypes = {
   feed: PropTypes.shape(),
+  user: PropTypes.shape(),
   getThreadsContent: PropTypes.func,
   resetThreads: PropTypes.func,
   getMoreThreadsContent: PropTypes.func,
@@ -130,11 +138,14 @@ Threads.propTypes = {
   isGuest: PropTypes.bool,
   isUser: PropTypes.bool,
   authUserName: PropTypes.string,
+  signatureAuth: PropTypes.string,
 };
 
 export default connect(
   state => ({
     feed: getFeed(state),
+    user: getAuthenticatedUser(state),
+    signatureAuth: getAuthUserSignature(state),
     isGuest: isGuestUser(state),
     isAuth: getIsAuthenticated(state),
     authUserName: getAuthenticatedUserName(state),

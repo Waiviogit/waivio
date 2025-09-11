@@ -14,8 +14,10 @@ const SocialMenuItem = ({ item, isOpen }) => {
   const dispatch = useDispatch();
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
-  const isImageButton = ['image', 'icon'].includes(itemBody.style);
-  const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType);
+  const isImageButton = ['image', 'icon'].includes(itemBody?.style || '');
+  const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(
+    itemBody?.objectType || '',
+  );
   const shopObj = itemBody.objectType === 'shop';
   const historyPushObjType = !isNestedObjType && !webLink && !shopObj;
 

@@ -81,6 +81,7 @@ const PostPopoverMenu = ({
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
     isThread ||
+    !wobjAuthorPermlink ||
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
     (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
@@ -117,6 +118,7 @@ const PostPopoverMenu = ({
       case 'delete':
         return setIsOpen(true);
       case 'unpin':
+      case 'pin-toggle':
         return dispatch(
           handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower),
         );
@@ -375,31 +377,17 @@ const PostPopoverMenu = ({
           <FormattedMessage id="unpin_from_blog" defaultMessage="Unpin from blog" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="unpin"
-        disabled={loading}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
+      <PopoverMenuItem key="pin-toggle" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
-          <FormattedMessage id="unpin" defaultMessage="Unpin" />
+          {post.currentUserPin ? (
+            <FormattedMessage id="unpin" defaultMessage="Unpin" />
+          ) : (
+            <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+          )}
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="pin"
-        disabled={loading}
-        invisible={hidePinRemove || post.currentUserPin}
-      >
-        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
-        <span className="ml1">
-          <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
-        </span>
-      </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="remove"
-        disabled={loading || disableRemove}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -428,31 +416,17 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="pin"
-        disabled={loading}
-        invisible={hidePinRemove || post.currentUserPin}
-      >
+      <PopoverMenuItem key="pin-toggle" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
-          <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+          {post.currentUserPin ? (
+            <FormattedMessage id="unpin" defaultMessage="Unpin" />
+          ) : (
+            <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+          )}
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="unpin"
-        disabled={loading}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
-        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
-        <span className="ml1">
-          <FormattedMessage id="unpin" defaultMessage="Unpin" />
-        </span>
-      </PopoverMenuItem>,
-      <PopoverMenuItem
-        key="remove"
-        disabled={loading || disableRemove}
-        invisible={hidePinRemove || !post.currentUserPin}
-      >
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />

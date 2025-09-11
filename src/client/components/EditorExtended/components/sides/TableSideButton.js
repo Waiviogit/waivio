@@ -30,12 +30,27 @@ const TableSideButton = props => {
   const editor = useSlate();
 
   const onClick = () => {
+    if (!editor.selection) {
+      // If no selection, focus the editor first and try again
+      ReactEditor.focus(editor);
+      setTimeout(() => {
+        if (editor.selection) {
+          onClick();
+        }
+      }, 100);
+
+      return;
+    }
+
     const nextPath = Path.next(editor.selection.anchor.path.slice(0, -1));
 
     insertTable(editor);
 
     setTimeout(() => {
-      Transforms.select(editor, [nextPath[0], 0, 0, 0]);
+      const firstCellPath = [nextPath[0], 0, 0, 0];
+
+      Transforms.select(editor, firstCellPath);
+      Transforms.collapse(editor, { edge: 'end' });
       ReactEditor.focus(editor);
       props.close();
     }, 0);

@@ -113,13 +113,18 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_MORE_MENTIONS_CONTENT.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
-    case feedTypes.GET_BOOKMARKS.SUCCESS: {
+    case feedTypes.GET_BOOKMARKS.SUCCESS:
+    case feedTypes.GET_JUDGES_POSTS.SUCCESS:
+    case feedTypes.GET_MORE_JUDGES_POSTS.SUCCESS: {
       const list = {
         ...state.list,
       };
       const postsStates = {
         ...state.postsStates,
       };
+
+      const lastId =
+        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       each(action.payload, post => {
         const key = getPostKey(post);
@@ -131,9 +136,6 @@ const posts = (state = initialState, action) => {
           failed: false,
         };
       });
-      const lastId =
-        // eslint-disable-next-line no-underscore-dangle
-        action.payload[action.payload.length - 1] && action.payload[action.payload.length - 1]._id;
 
       return {
         ...state,
@@ -494,6 +496,21 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         shortedPosts: [...state.shortedPosts, action.payload],
+      };
+    }
+
+    case postsActions.UPDATE_POST_PIN_STATE: {
+      const key = getPostKey(action.payload.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            currentUserPin: action.payload.isPinned,
+          },
+        },
       };
     }
 

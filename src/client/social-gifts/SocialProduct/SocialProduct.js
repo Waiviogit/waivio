@@ -163,9 +163,9 @@ const SocialProduct = ({
   const [loading, setIsLoading] = useState(false);
   const { minimal, intensive, moderate } = useAdLevelData();
   const affiliateLinks = wobject?.affiliateLinks || [];
-  const isRecipe = wobject.object_type === 'recipe';
-  const isProduct = wobject.object_type === 'product';
-  const referenceWobjType = ['business', 'place', 'person'].includes(wobject.object_type || '');
+  const isRecipe = wobject?.object_type === 'recipe';
+  const isProduct = wobject?.object_type === 'product';
+  const referenceWobjType = ['business', 'place', 'person'].includes(wobject?.object_type || '');
   const defaultPrice = isRecipe ? get(wobject, 'budget') : get(wobject, 'price');
   const sale = get(wobject, 'sale');
   const compareAtPrice = get(wobject, 'compareAtPrice');
@@ -176,7 +176,7 @@ const SocialProduct = ({
   const recipeIngredients = parseWobjectField(wobject, 'recipeIngredients');
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
-  const postsIds = uniq(getFeedFromState('objectPosts', wobject.author_permlink, feed));
+  const postsIds = uniq(getFeedFromState('objectPosts', wobject?.author_permlink, feed));
   const recipePost = postsList[postsIds?.[0]];
   const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
@@ -184,14 +184,14 @@ const SocialProduct = ({
   const ageRange = get(wobject, 'ageRange');
   const language = get(wobject, 'language');
   const wobjTitle = get(wobject, 'title');
-  const publicationDate = wobject.publicationDate
+  const publicationDate = wobject?.publicationDate
     ? moment(wobject.publicationDate).format('MMMM DD, YYYY')
     : null;
   const printLength = wobject?.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
     isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
-  const productAuthors = wobject.authors
+  const productAuthors = wobject?.authors
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
   const departments = get(wobject, 'departments');
@@ -199,15 +199,15 @@ const SocialProduct = ({
   const brand = parseWobjectField(wobject, 'brand');
   const currBrand = isEmpty(brandObject) ? brand : brandObject;
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
-  const groupId = wobject.groupId;
+  const groupId = wobject?.groupId;
   // const menuItems = get(wobject, 'menuItem', []);
   const customSort = get(wobject, 'sortCustom.include', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
   const sortExclude = get(wobject, 'sortCustom.exclude', []);
-  const features = wobject.features
+  const features = wobject?.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
     : [];
-  const productIdBody = wobject.productId
+  const productIdBody = wobject?.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
   const showRecipeFields =
@@ -240,9 +240,9 @@ const SocialProduct = ({
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery =
-    !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
+    !isEmpty(wobject?.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
   const tagCategoriesForDescr = reduce(
-    wobject.tagCategory || [],
+    wobject?.tagCategory || [],
     (acc, curr) => {
       const currentCategory = !isEmpty(curr.items)
         ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
@@ -253,13 +253,13 @@ const SocialProduct = ({
     '',
   );
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
-  const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
+  const desc = `${wobject?.description || ''} ${wobject?.name || ''}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = getTitleForLink(wobject);
-  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['book', 'product'].includes(wobject.object_type || '')
-    ? `https://${wobject.canonical}/object/${params.name}`
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject?.canonical);
+  const url = ['book', 'product'].includes(wobject?.object_type || '')
+    ? `https://${wobject?.canonical}/object/${params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
@@ -270,6 +270,23 @@ const SocialProduct = ({
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
+  const affiliatLinks = affiliateLinks
+    .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+    .map(affLink => {
+      if (isNewInstacartProgram(affLink)) {
+        return (
+          <InstacartWidget
+            key={affLink.link}
+            wobjPerm={wobject?.author_permlink}
+            instacartAff={affLink}
+          />
+        );
+      }
+
+      if (isOldInstacartProgram(affLink)) return null;
+
+      return <AffiliatLink key={affLink.link} link={affLink} />;
+    });
 
   const showProductDetails =
     !isRecipe &&
@@ -283,16 +300,16 @@ const SocialProduct = ({
       !isEmpty(groupId) ||
       !isEmpty(productIdBody) ||
       !isEmpty(language) ||
-      !isEmpty(wobject.publicationDate) ||
+      !isEmpty(wobject?.publicationDate) ||
       !isEmpty(printLength) ||
       !isEmpty(publisher) ||
       !isEmpty(website) ||
       !isEmpty(ageRange));
 
   const getAddOnsSimilarRelatedObjects = () => {
-    getAddOnsAction(wobject.author_permlink, userName, locale, limit);
-    getRelatedAction(wobject.author_permlink, userName, locale, limit);
-    getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
+    getAddOnsAction(wobject?.author_permlink, userName, locale, limit);
+    getRelatedAction(wobject?.author_permlink, userName, locale, limit);
+    getSimilarObjectsAction(wobject?.author_permlink, userName, locale, limit);
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
@@ -301,21 +318,21 @@ const SocialProduct = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-    if (!isEmpty(wobject.author_permlink)) {
-      if (!isEmpty(wobject.menuItem))
+    if (!isEmpty(wobject?.author_permlink)) {
+      if (!isEmpty(wobject?.menuItem))
         enrichMenuItems(wobject.menuItem, locale).then(r => setMenuItemsArray(r));
       isRecipe &&
         getObjectPosts({
-          object: wobject.author_permlink,
-          username: wobject.author_permlink,
+          object: wobject?.author_permlink,
+          username: wobject?.author_permlink,
           limit: 1,
         });
       getAddOnsSimilarRelatedObjects();
       getPublisherManufacturerBrandMerchantObjects();
-      getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
+      getObjectsRewards(wobject?.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
-          authorPermlink: wobject.author_permlink,
+          authorPermlink: wobject?.author_permlink,
           userName,
           locale,
         }).then(res => setReferences(Object.entries(res)));
@@ -325,13 +342,13 @@ const SocialProduct = ({
     return () => {
       setStoreActiveOpt({});
     };
-  }, [wobject.author_permlink]);
+  }, [wobject?.author_permlink]);
 
   useEffect(() => {
     resetOptClicked();
   }, []);
 
-  const bestRating = getRatingForSocial(wobject.rating);
+  const bestRating = getRatingForSocial(wobject?.rating);
   const getMicroSchema = () => {
     if (isRecipe) {
       return (
@@ -340,8 +357,8 @@ const SocialProduct = ({
           <meta itemProp="description" content={description} />
           <meta itemProp="recipeCuisine" content={'International'} />
           <meta itemProp="recipeCategory" content={wobject?.departments?.[0]?.body} />
-          {wobject.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
-          {wobject.calories && (
+          {wobject?.cookingTime && <meta itemProp="cookTime" content={wobject.cookingTime} />}
+          {wobject?.calories && (
             <div itemProp="nutrition" itemScope itemType="https://schema.org/NutritionInformation">
               <meta itemProp="calories" content={wobject.calories} />
             </div>
@@ -443,7 +460,7 @@ const SocialProduct = ({
                     : 'SocialProduct__bookWobjName'
                 }
               >
-                {isRecipe ? <span itemProp="name">{wobject.name}</span> : wobject.name}
+                {isRecipe ? <span itemProp="name">{wobject?.name}</span> : wobject?.name}
               </h1>
             )}
             {isMobile() && !isEmpty(currBrand) && (
@@ -464,15 +481,15 @@ const SocialProduct = ({
             {isMobile() && (
               <div className="SocialProduct__ratings">
                 {' '}
-                {!isEmpty(wobject.rating) &&
-                  wobject.rating?.map(rating => (
+                {!isEmpty(wobject?.rating) &&
+                  wobject?.rating?.map(rating => (
                     <div key={rating.permlink} className="SocialProduct__ratings-item">
                       <RatingsWrap
                         isSocialProduct
                         ratings={[rating]}
                         username={userName}
-                        wobjId={wobject.author_permlink}
-                        wobjName={wobject.name}
+                        wobjId={wobject?.author_permlink}
+                        wobjName={wobject?.name}
                       />
                     </div>
                   ))}
@@ -514,9 +531,9 @@ const SocialProduct = ({
                   }
                 >
                   {!showPostModal && isRecipe ? (
-                    <span itemProp="name">{wobject.name}</span>
+                    <span itemProp="name">{wobject?.name}</span>
                   ) : (
-                    wobject.name
+                    wobject?.name
                   )}
                 </h1>
               )}
@@ -548,15 +565,15 @@ const SocialProduct = ({
               {!isMobile() && (
                 <div className="SocialProduct__ratings">
                   {' '}
-                  {!isEmpty(wobject.rating) &&
+                  {!isEmpty(wobject?.rating) &&
                     wobject?.rating?.map(rating => (
                       <div key={rating.permlink} className="SocialProduct__ratings-item">
                         <RatingsWrap
                           isSocialProduct
                           ratings={[rating]}
                           username={userName}
-                          wobjId={wobject.author_permlink}
-                          wobjName={wobject.name}
+                          wobjId={wobject?.author_permlink}
+                          wobjName={wobject?.name}
                         />
                       </div>
                     ))}
@@ -605,7 +622,7 @@ const SocialProduct = ({
                     isProduct
                     className={'SocialProduct__instacard'}
                     instacartAff={instacardAff}
-                    wobjPerm={wobject.author_permlink}
+                    wobjPerm={wobject?.author_permlink}
                     withDisclamer
                     inlineFlex
                     marginBottom={'5px'}
@@ -634,7 +651,9 @@ const SocialProduct = ({
                   />
                 </div>
               )}
+
               {!isEmpty(affiliateLinks) &&
+                !affiliatLinks?.every(l => isNil(l)) &&
                 !(
                   affiliateLinks.length === 1 &&
                   instacardAff &&
@@ -644,45 +663,27 @@ const SocialProduct = ({
                     <div className="SocialProduct__subtitle">
                       <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
                     </div>
-                    <div className="SocialProduct__affiliateContainer">
-                      {affiliateLinks
-                        .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-                        .map(affLink => {
-                          if (isNewInstacartProgram(affLink)) {
-                            return (
-                              <InstacartWidget
-                                key={affLink.link}
-                                wobjPerm={wobject.author_permlink}
-                                instacartAff={affLink}
-                              />
-                            );
-                          }
-
-                          if (isOldInstacartProgram(affLink)) return null;
-
-                          return <AffiliatLink key={affLink.link} link={affLink} />;
-                        })}
-                    </div>
+                    <div className="SocialProduct__affiliateContainer">{affiliatLinks}</div>
                     <EarnsCommissionsOnPurchases align={'left'} />
                   </div>
                 )}
               {intensive && <GoogleAds limitWidth />}
-              {isEmpty(wobject.preview_gallery) && (
+              {isEmpty(wobject?.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
             </div>
           </div>
           <div className="SocialProduct__column">
-            {!isEmpty(wobject.description) && (
+            {!isEmpty(wobject?.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">
                   {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
                 </div>
                 <SocialProductDescription
-                  objectType={wobject.object_type}
-                  description={wobject.description}
+                  objectType={wobject?.object_type}
+                  description={wobject?.description}
                   pictures={photosAlbum.items}
-                  authorPermlink={wobject.author_permlink}
+                  authorPermlink={wobject?.author_permlink}
                 />
               </div>
             )}
@@ -744,7 +745,7 @@ const SocialProduct = ({
                     isSocialGifts
                     features={features}
                     isEditMode={false}
-                    wobjPermlink={wobject.author_permlink}
+                    wobjPermlink={wobject?.author_permlink}
                   />
                 </div>
               </div>

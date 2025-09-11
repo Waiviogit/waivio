@@ -149,14 +149,21 @@ const ThreadsEditorSlate = props => {
 
     if (selection) {
       const selectedElementPath = selection.anchor.path.slice(0, -1);
-      const selectedElement = Node.descendant(editor, selectedElementPath);
 
-      if (
-        selectedElement &&
-        selectedElement.type === 'paragraph' &&
-        selectedElement.children?.[0]?.text === ''
-      ) {
-        Transforms.removeNodes(editor, { at: selectedElementPath });
+      try {
+        if (Node.has(editor, selectedElementPath)) {
+          const selectedElement = Node.descendant(editor, selectedElementPath);
+
+          if (
+            selectedElement &&
+            selectedElement.type === 'paragraph' &&
+            selectedElement.children?.[0]?.text === ''
+          ) {
+            Transforms.removeNodes(editor, { at: selectedElementPath });
+          }
+        }
+      } catch (error) {
+        console.warn('Error in ThreadsEditorSlate insertImage:', error);
       }
     }
 
@@ -206,14 +213,21 @@ const ThreadsEditorSlate = props => {
 
       if (selection) {
         const selectedElementPath = selection.anchor.path.slice(0, -1);
-        const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        if (
-          selectedElement &&
-          selectedElement.type === 'paragraph' &&
-          selectedElement.children?.[0]?.text === ''
-        ) {
-          Transforms.removeNodes(editor, { at: selectedElementPath });
+        try {
+          if (Node.has(editor, selectedElementPath)) {
+            const selectedElement = Node.descendant(editor, selectedElementPath);
+
+            if (
+              selectedElement &&
+              selectedElement.type === 'paragraph' &&
+              selectedElement.children?.[0]?.text === ''
+            ) {
+              Transforms.removeNodes(editor, { at: selectedElementPath });
+            }
+          }
+        } catch (error) {
+          console.warn('Error in ThreadsEditorSlate handleDroppedFiles:', error);
         }
       }
 
@@ -231,42 +245,54 @@ const ThreadsEditorSlate = props => {
       // Handle Delete key for empty paragraphs - now handled by withEmptyParagraphHandling plugin
       const { path, offset } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
-      const selectedElement = Node.descendant(editor, selectedElementPath);
-      const nextPath = Path.next(selectedElementPath);
-      const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-      // Only handle special cases that the plugin doesn't cover
-      if (
-        selectedElement.type === 'paragraph' &&
-        offset === selectedElement.children[0]?.text?.length &&
-        ['image', 'video'].includes(nextNode?.type)
-      ) {
-        event.preventDefault();
-        Transforms.select(editor, Editor.range(editor, nextPath));
+      try {
+        if (!Node.has(editor, selectedElementPath)) return false;
+        const selectedElement = Node.descendant(editor, selectedElementPath);
+        const nextPath = Path.next(selectedElementPath);
+        const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-        return true;
+        // Only handle special cases that the plugin doesn't cover
+        if (
+          selectedElement.type === 'paragraph' &&
+          offset === selectedElement.children[0]?.text?.length &&
+          ['image', 'video'].includes(nextNode?.type)
+        ) {
+          event.preventDefault();
+          Transforms.select(editor, Editor.range(editor, nextPath));
+
+          return true;
+        }
+      } catch (error) {
+        console.warn('Error in ThreadsEditorSlate handleKeyCommand Delete:', error);
       }
     }
 
     if (event.key === 'Enter') {
-      const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
+      try {
+        if (!Node.has(editor, editor.selection.anchor.path.slice(0, -1))) return false;
+        const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
-      if (
-        HEADING_BLOCKS.includes(selectedElement.type) ||
-        (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
-      ) {
-        const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
+        if (
+          HEADING_BLOCKS.includes(selectedElement.type) ||
+          (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
+        ) {
+          if (!Node.has(editor, editor.selection.anchor.path)) return false;
+          const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
 
-        if (selectedLeaf.text.length === editor.selection.anchor.offset) {
-          setTimeout(() => {
-            Transforms.setNodes(editor, { type: 'paragraph' });
-          }, 0);
+          if (selectedLeaf.text.length === editor.selection.anchor.offset) {
+            setTimeout(() => {
+              Transforms.setNodes(editor, { type: 'paragraph' });
+            }, 0);
+          }
+        } else if (isSoftNewlineEvent(event)) {
+          event.preventDefault();
+          editor.insertText('\n');
+
+          return true;
         }
-      } else if (isSoftNewlineEvent(event)) {
-        event.preventDefault();
-        editor.insertText('\n');
-
-        return true;
+      } catch (error) {
+        console.warn('Error in ThreadsEditorSlate handleKeyCommand Enter:', error);
       }
     }
 

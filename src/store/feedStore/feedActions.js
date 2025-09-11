@@ -61,8 +61,32 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
+export const getFeedContent = ({
+  sortBy,
+  category,
+  limit = 20,
+  isJudges = false,
+  authorPermlink,
+}) => (dispatch, getState) => {
   const state = getState();
+
+  // If this is a judge request, use getJudgesPosts instead
+  if (isJudges) {
+    const follower = getAuthenticatedUserName(state);
+
+    return dispatch({
+      type: GET_JUDGES_POSTS.ACTION,
+      payload: ApiClient.getJudgesPosts(follower, authorPermlink || '', 0, limit).then(
+        r => r.posts,
+      ),
+      meta: {
+        sortBy: 'judgesPosts',
+        category: follower,
+        limit,
+      },
+    });
+  }
+
   const user_languages = getUserLocalesArray(getState);
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
@@ -84,8 +108,38 @@ export const getFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, g
   });
 };
 
-export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
+export const getMoreFeedContent = ({
+  sortBy,
+  category,
+  limit = 20,
+  isJudges = false,
+  authorPermlink,
+}) => (dispatch, getState) => {
   const state = getState();
+
+  if (isJudges) {
+    const feed = getFeed(state);
+    const feedContent = getFeedFromState('judgesPosts', getAuthenticatedUserName(state), feed);
+    const follower = getAuthenticatedUserName(state);
+
+    if (!feedContent.length) return Promise.resolve(null);
+
+    return dispatch({
+      type: GET_MORE_JUDGES_POSTS.ACTION,
+      payload: ApiClient.getJudgesPosts(
+        follower,
+        authorPermlink || '',
+        feedContent.length,
+        limit,
+      ).then(r => r.posts),
+      meta: {
+        sortBy: 'judgesPosts',
+        category: follower,
+        limit,
+      },
+    });
+  }
+
   const feed = getFeed(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
   const user_languages = getUserLocalesArray(getState);
@@ -585,3 +639,32 @@ export const setFirstLoading = payload => ({
   type: SET_FIRST_LOADING,
   payload,
 });
+
+export const GET_JUDGES_POSTS = createAsyncActionType('@feed/GET_JUDGES_POSTS');
+export const GET_MORE_JUDGES_POSTS = createAsyncActionType('@feed/GET_MORE_JUDGES_POSTS');
+
+export const getJudgesPosts = (judgeName, authorPermlink, { limit = 10, initialLoad = true }) => (
+  dispatch,
+  getState,
+) => {
+  let judgesPosts = [];
+  const state = getState();
+
+  if (!initialLoad) {
+    const feed = getFeed(state);
+
+    judgesPosts = getFeedFromState('judgesPosts', judgeName, feed);
+
+    if (!judgesPosts.length) return Promise.resolve(null);
+  }
+
+  return dispatch({
+    type: initialLoad ? GET_JUDGES_POSTS.ACTION : GET_MORE_JUDGES_POSTS.ACTION,
+    payload: ApiClient.getJudgesPosts(judgeName, authorPermlink, judgesPosts.length, limit),
+    meta: {
+      sortBy: 'judgesPosts',
+      category: judgeName,
+      limit,
+    },
+  });
+};

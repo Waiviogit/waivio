@@ -30,7 +30,8 @@ const AddButtonSlate = props => {
 
   useEffect(() => {
     if (!editorNode) return;
-    if (selection && isAndroidDevice()) {
+
+    if (selection) {
       dispatch(setLastSelection(selection));
       props.setLastSelection(selection);
     }
@@ -55,11 +56,12 @@ const AddButtonSlate = props => {
 
           return;
         }
-        if (bound.top > 0) {
+        if (bound?.top > 0) {
           nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-        } else if (bound.top <= 0) {
-          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosOfBtn?.current?.top || '-14px';
+        } else if (bound?.top <= 0) {
+          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosTop || '-14px';
         }
+
         if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
           initialPosOfBtn.current.top = nodeStyle.top;
       }
@@ -79,6 +81,9 @@ const AddButtonSlate = props => {
   const handleClose = () => {
     setOpen(false);
     sideControl.current = null;
+    // Очищуємо lastSelection коли закриваємо модалку
+    dispatch(setLastSelection(null));
+    props.setLastSelection(null);
     ReactEditor.focus(editor);
   };
 
@@ -135,6 +140,7 @@ const AddButtonSlate = props => {
                       isComment={isComment}
                       parentPost={parentPost}
                       lastSelection={lastSect}
+                      editor={editor}
                     />
                   </CSSTransition>
                 );
@@ -179,6 +185,7 @@ AddButtonSlate.propTypes = {
 
 AddButtonSlate.defaultProps = {
   focus: () => {},
+  setLastSelection: () => {},
   sideButtons: [],
   withTitleLine: false,
   isClearSearchObjects: false,

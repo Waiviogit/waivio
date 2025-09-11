@@ -3,6 +3,23 @@ import { Transforms, Editor, Path } from 'slate';
 import { createEmptyNode } from './embed';
 
 export const insertTable = editor => {
+  if (!editor.selection) {
+    // If no selection, insert at the end of the document
+    const endPath = [editor.children.length];
+    const newTable = createTableNode(
+      Array.from({ length: 2 }, () => Array.from({ length: 2 }, () => '')),
+    );
+
+    Transforms.insertNodes(editor, createEmptyNode(editor), {
+      at: endPath,
+    });
+    Transforms.insertNodes(editor, newTable, {
+      at: endPath,
+    });
+
+    return;
+  }
+
   const rows = 2;
   const columns = 2;
   const cellText = Array.from({ length: rows }, () => Array.from({ length: columns }, () => ''));
@@ -28,7 +45,7 @@ const createRow = (cellText, action) => {
 
 const createTableCell = text => ({
   type: 'tableCell',
-  children: [{ type: 'paragraph', children: [{ text: text || '' }] }],
+  children: [{ type: 'paragraph', children: [{ text: text || ' ' }] }],
 });
 
 const createTableNode = cellText => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import formatter from '../../common/helpers/steemitFormatter';
@@ -17,14 +17,17 @@ import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
 import PostRecommendation from '../components/Sidebar/PostRecommendation';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthFetching,
+  getAuthenticatedUser,
+} from '../../store/authStore/authSelectors';
 import {
   getIsPostFailed,
   getIsPostFetching,
   getIsPostLoaded,
   getPostContent,
 } from '../../store/postsStore/postsSelectors';
-import { getUser } from '../../store/usersStore/usersSelectors';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 import { addPayoutForActiveVotes } from '../../common/helpers';
 
@@ -36,6 +39,8 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
     );
     const waivRates = getTokenRatesInUSD(state, 'WAIV');
     const post = getContentOfPost(state);
+    const follower = getAuthenticatedUserName(state);
+    const authUser = getAuthenticatedUser(state);
 
     return {
       content: post
@@ -48,9 +53,9 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
       fetching: getIsPostFetching(state, ownProps.match.params),
       loaded: getIsPostLoaded(state, ownProps.match.params.author, ownProps.match.params.permlink),
       failed: getIsPostFailed(state, ownProps.match.params),
-      user: getUser(state, ownProps.match.params.author),
+      user: authUser,
       locale: getSuitableLanguage(state),
-      follower: getAuthenticatedUserName(state),
+      follower,
     };
   },
   { getContent, setCurrentShownPost },
@@ -167,8 +172,8 @@ export default class Post extends React.Component {
     const { showHiddenPost } = this.state;
     const reputation = loaded ? formatter.reputation(content.author_reputation) : 0;
     const showPost = reputation >= 0 || showHiddenPost;
-
-    const signature = get(user, 'posting_json_metadata.profile.signature', null);
+    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const signature = jsonMetadata?.profile?.signature || null;
 
     const isThread = content && isEmpty(content?.title) && content?.parent_author === 'leothreads';
 

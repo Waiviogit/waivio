@@ -17,7 +17,11 @@ import {
   sendCommentForReward,
   sendInitialCommentForMentions,
 } from '../../../../store/newRewards/newRewardsActions';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getAuthUserSignature,
+  getAuthenticatedUser,
+} from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
 import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
@@ -33,6 +37,7 @@ const PropositionFooter = ({
   openDetailsModal,
   proposition,
   getProposition,
+  permlink,
   intl,
   isJudges = false,
 }) => {
@@ -40,6 +45,12 @@ const PropositionFooter = ({
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
+  const signatureAuth = useSelector(getAuthUserSignature);
+  const user = useSelector(getAuthenticatedUser);
+  const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+  const signature = jsonMetadata?.profile?.signature || null;
+  const sign = signatureAuth || signature;
+
   const isMentions = [
     campaignTypes.MENTIONS,
     campaignTypes.GIVEAWAYS_OBJECT,
@@ -70,12 +81,12 @@ const PropositionFooter = ({
     if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
-  const getCommentsList = async (editing, permlink, value) => {
+  const getCommentsList = async (editing, perml, value) => {
     setCommentsLoading(true);
     if (editing) {
       setComments(
         comments.reduce((acc, curr) => {
-          if (curr.permlink === permlink) return [...acc, { ...curr, body: value }];
+          if (curr.permlink === perml) return [...acc, { ...curr, body: value }];
 
           return [...acc, curr];
         }, []),
@@ -252,7 +263,7 @@ const PropositionFooter = ({
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} signature={sign} />
           </React.Fragment>
         );
       case 'history':
@@ -307,7 +318,7 @@ const PropositionFooter = ({
                   proposition={proposition}
                 />
               ))}
-            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} signature={sign} />
           </React.Fragment>
         );
 
@@ -321,6 +332,7 @@ const PropositionFooter = ({
 
                 return Promise.resolve();
               }}
+              permlink={permlink}
               isJudges={isJudges}
               reservedDays={proposition?.countReservationDays}
               inCard
@@ -357,6 +369,7 @@ const PropositionFooter = ({
 
 PropositionFooter.propTypes = {
   type: PropTypes.string.isRequired,
+  permlink: PropTypes.string,
   openDetailsModal: PropTypes.func.isRequired,
   getProposition: PropTypes.func,
   isJudges: PropTypes.bool,

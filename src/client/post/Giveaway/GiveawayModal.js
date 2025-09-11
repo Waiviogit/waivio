@@ -50,7 +50,7 @@ const GiveawayModal = ({
   const onClose = () => {
     setIsiOpenGiveAwayModal(false);
     resetFields();
-    if (initData?.eligible === 'all' || !initData.eligible) setFiltered(false);
+    if (initData?.eligible === 'all' || !initData?.eligible) setFiltered(false);
     else setFiltered(true);
   };
 

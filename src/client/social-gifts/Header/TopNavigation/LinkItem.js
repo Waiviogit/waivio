@@ -12,7 +12,9 @@ const LinkItem = ({ link, index, intl }) => {
   const dispatch = useDispatch();
   const directObjTypes = ['person'];
 
-  let linkTo = directObjTypes.includes(link.object_type) ? `/object/${link.permlink}` : link.link;
+  let linkTo = directObjTypes.includes(link?.object_type || '')
+    ? `/object/${link.permlink}`
+    : link.link;
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
 
