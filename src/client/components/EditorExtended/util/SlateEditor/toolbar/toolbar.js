@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Editor, Range, Transforms, Node } from 'slate';
+import { Editor, Range, Transforms, Node, Element as ElementSlate } from 'slate';
 import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
@@ -72,7 +72,10 @@ const Toolbar = props => {
         const imageBounds = imageDomNode.getBoundingClientRect();
         const toolbarBounds = toolbarNode.getBoundingClientRect();
         const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
-        const left = imageBounds.left - imageBounds.width;
+        const cellEntry = Editor.above(editor, {
+          at: selection,
+          match: n => ElementSlate.isElement(n) && n.type === 'tableCell',
+        });
 
         const anchorCenter =
           imageBounds.left - editorBounds.left + editorDomNode.scrollLeft + imageBounds.width / 2;
@@ -81,7 +84,7 @@ const Toolbar = props => {
         const leftCalc = Math.round(anchorCenter - toolbarBounds.width / 2);
 
         toolbarNode.style.top = `${top}px`;
-        toolbarNode.style.left = left <= 0 ? '-25px' : `${leftCalc}px`;
+        toolbarNode.style.left = cellEntry ? `${leftCalc + 33}px` : '-25px';
         toolbarNode.style.position = 'absolute';
         toolbarNode.style.zIndex = '1000';
       }
