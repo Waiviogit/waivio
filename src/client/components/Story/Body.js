@@ -181,8 +181,11 @@ const Body = props => {
       Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
         // eslint-disable-next-line no-param-reassign
         imgNode.onerror = () => {
+          // Use data-fallback-src if available, otherwise fall back to alt
+          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+
           // eslint-disable-next-line no-param-reassign
-          imgNode.src = imgNode.alt;
+          imgNode.src = fallbackSrc;
           // eslint-disable-next-line no-param-reassign
           imgNode.alt = '/images/icons/no-image.png';
         };

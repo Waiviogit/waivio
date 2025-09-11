@@ -3,6 +3,7 @@ import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 import CryptoJS from 'crypto-js';
+import { createImageWithCaption } from '../../common/helpers/imageCaption';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -329,6 +330,8 @@ export default ({
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;
+      // Store original URL for fallback
+      atts['data-fallback-src'] = src;
 
       if (isChatBotLink) {
         const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
@@ -336,7 +339,9 @@ export default ({
         return { tagName: 'div', text: aTag };
       }
 
-      return { tagName, attribs: atts };
+      // Create image with caption if alt text is meaningful
+      const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '');
+      return { tagName: 'div', text: imageWithCaption };
     },
     div: (tagName, attribs) => {
       const attys = {};

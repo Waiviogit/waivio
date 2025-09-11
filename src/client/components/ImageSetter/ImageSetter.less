@@ -138,6 +138,21 @@
         font-size: 30px !important;
       }
     }
+
+    &__alt-input {
+      margin-top: 8px;
+      width: 100%;
+
+      .ant-input {
+        font-size: 12px;
+        border-color: @white-gainsboro;
+
+        &:focus {
+          border-color: var(--website-color);
+          box-shadow: 0 0 0 2px rgba(var(--website-hover-color), 0.2);
+        }
+      }
+    }
   }
 
   &__center-text {

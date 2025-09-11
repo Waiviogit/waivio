@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Icon, message } from 'antd';
+import { Icon, message, Input } from 'antd';
 import { map, isEmpty, get, isEqual, isNil, size } from 'lodash';
 import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
@@ -48,6 +48,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const [altTexts, setAltTexts] = useState({});
 
   const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
@@ -145,7 +146,17 @@ const ImageSetter = ({
     }
   }, [currentImages]);
 
-  const clearImageState = () => setCurrentImages([]);
+  const clearImageState = () => {
+    setCurrentImages([]);
+    setAltTexts({});
+  };
+
+  const handleAltTextChange = (imageId, altText) => {
+    setAltTexts(prev => ({
+      ...prev,
+      [imageId]: altText,
+    }));
+  };
 
   const addImage = () => {
     if (isModal && isOkayBtn) {
@@ -188,28 +199,36 @@ const ImageSetter = ({
               }
             }
 
+            const altText = isEditor
+              ? altTexts[newImage.id] || newImage.name || 'image'
+              : newImage.name || 'image';
+
             try {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
                 insertOptions,
               );
             } catch (error) {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
               );
             }
           } else {
+            const altText = isEditor
+              ? altTexts[newImage.id] || newImage.name || 'image'
+              : newImage.name || 'image';
+
             try {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
               );
             } catch (error) {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
               );
             }
           }
@@ -319,6 +338,15 @@ const ImageSetter = ({
 
     setCurrentImages(filteredImages);
 
+    // Remove alt text for deleted image
+    setAltTexts(prev => {
+      const newAltTexts = { ...prev };
+
+      delete newAltTexts[imageDetail.id];
+
+      return newAltTexts;
+    });
+
     if (getEditorState) {
       const contentState = getEditorState().getCurrentContent();
       const allBlocks = contentState.getBlockMap();
@@ -391,7 +419,22 @@ const ImageSetter = ({
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
               </div>
-              <img src={image.src} height="86" alt={image.src} />
+              <img
+                src={image.src}
+                height="86"
+                alt={isEditor ? altTexts[image.id] || image.src : image.src}
+              />
+              <div className="image-box__alt-input">
+                <Input
+                  placeholder={intl.formatMessage({
+                    id: 'imageSetter_alt_text_placeholder',
+                    defaultMessage: 'Alt text (optional)',
+                  })}
+                  value={altTexts[image.id] || ''}
+                  onChange={e => handleAltTextChange(image.id, e.target.value)}
+                  size="small"
+                />
+              </div>
             </div>
           ))}
           {isLoadingImage &&
