@@ -35,7 +35,10 @@ const TableSideButton = props => {
     insertTable(editor);
 
     setTimeout(() => {
-      Transforms.select(editor, [nextPath[0], 0, 0, 0]);
+      const firstCellPath = [nextPath[0], 0, 0, 0];
+
+      Transforms.select(editor, firstCellPath);
+      Transforms.collapse(editor, { edge: 'end' });
       ReactEditor.focus(editor);
       props.close();
     }, 0);

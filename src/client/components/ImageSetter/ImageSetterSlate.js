@@ -21,7 +21,6 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import {
   createImageNode,
   insertImageReplaceParagraph,
-  createEmptyNode,
 } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
@@ -196,16 +195,22 @@ const ImageSetter = ({
                 insertOptions,
               );
             } catch (error) {
-              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             }
           } else {
             try {
-              Transforms.insertNodes(editor, [
-                createImageNode(newImage.name, { url }),
-                createEmptyNode(),
-              ]);
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             } catch (error) {
-              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             }
           }
 
