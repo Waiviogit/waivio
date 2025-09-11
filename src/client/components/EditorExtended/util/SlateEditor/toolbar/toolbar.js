@@ -38,7 +38,7 @@ const Toolbar = props => {
   const isImageSelected = () => {
     if (!selection) return false;
 
-    const { path } = editor.selection.anchor;
+    const { path } = editor?.selection?.anchor;
     const selectedElementPath = path.slice(0, -1);
 
     try {
@@ -72,9 +72,10 @@ const Toolbar = props => {
         const imageBounds = imageDomNode.getBoundingClientRect();
         const toolbarBounds = toolbarNode.getBoundingClientRect();
         const top = imageBounds.top - editorBounds.top - toolbarBounds.height + 52;
+        const left = imageBounds.left - imageBounds.width / 2;
 
         toolbarNode.style.top = `${top}px`;
-        toolbarNode.style.left = `-25px`;
+        toolbarNode.style.left = left <= 0 ? '-25px' : `${left - 30}px`;
         toolbarNode.style.position = 'absolute';
         toolbarNode.style.zIndex = '1000';
       }

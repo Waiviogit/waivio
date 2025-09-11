@@ -44,6 +44,7 @@ import {
   createEmptyNode,
   createImageNode,
   insertImageReplaceParagraph,
+  createImageInParagraph,
 } from './util/SlateEditor/utils/embed';
 import createParagraph from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
@@ -215,7 +216,7 @@ const EditorSlate = props => {
         if (cellEntry) {
           const [, cellPath] = cellEntry;
 
-          Transforms.insertNodes(editor, imageBlock, {
+          Transforms.insertNodes(editor, createImageInParagraph(imageBlock), {
             at: [...cellPath, 0],
           });
 
@@ -312,7 +313,7 @@ const EditorSlate = props => {
           if (cellEntry) {
             const [, cellPath] = cellEntry;
 
-            Transforms.insertNodes(editor, imageBlock, {
+            Transforms.insertNodes(editor, createImageInParagraph(imageBlock), {
               at: [...cellPath, 0],
             });
 

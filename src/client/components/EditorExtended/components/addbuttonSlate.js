@@ -59,8 +59,9 @@ const AddButtonSlate = props => {
         if (bound?.top > 0) {
           nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
         } else if (bound?.top <= 0) {
-          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosOfBtn?.current?.top || '-14px';
+          nodeStyle.top = isAndroidDevice() ? '11px' : initialPosTop || '-14px';
         }
+
         if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
           initialPosOfBtn.current.top = nodeStyle.top;
       }
