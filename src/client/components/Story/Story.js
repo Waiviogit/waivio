@@ -28,7 +28,7 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { getObjectName, isObjectReviewTab } from '../../../common/helpers/wObjectHelper';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
@@ -350,7 +350,7 @@ class Story extends React.Component {
     const { editThread } = this.state;
     const pinUrl = Cookie.get('userPin');
     const isObjectPage =
-      (isObjectReviewTab(wobject, match) && isAuthUser) || post.permlink === pinUrl;
+      (match.params.name === wobject?.author_permlink && isAuthUser) || post.permlink === pinUrl;
     const currentUserPin =
       pinnedPostsUrls.includes(post.url) || (post.permlink === pinUrl && post.author === user.name);
     const tooltipTitle = (
@@ -458,7 +458,7 @@ class Story extends React.Component {
                         pinnedPostsUrls={pinnedPostsUrls}
                         match={match}
                         currentUserPin={currentUserPin}
-                        disabled={!isAuthUser || post.author !== user.name}
+                        disabled={!isAuthUser}
                         user={user}
                         post={post}
                         pinClassName={pinClassName}
