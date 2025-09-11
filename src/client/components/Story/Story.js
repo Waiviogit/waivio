@@ -361,8 +361,11 @@ class Story extends React.Component {
         defaultMessage={currentUserPin ? 'Unpin' : 'Pin'}
       />
     );
+
     const pinClassName =
-      post?.pin || pinUrl || (has(post, 'currentUserPin') && !post.currentUserPin)
+      post?.pin ||
+      (pinUrl && !isObjectPage) ||
+      (has(post, 'currentUserPin') && !post.currentUserPin)
         ? 'pin-grey'
         : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
