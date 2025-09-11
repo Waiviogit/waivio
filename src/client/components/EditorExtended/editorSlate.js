@@ -44,6 +44,7 @@ import {
   createEmptyNode,
   createImageNode,
   insertImageReplaceParagraph,
+  createImageInParagraph,
 } from './util/SlateEditor/utils/embed';
 import createParagraph from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
@@ -192,6 +193,40 @@ const EditorSlate = props => {
 
     const { selection } = editor;
 
+    let isInTable = false;
+
+    if (selection) {
+      const cellEntry = Editor.above(editor, {
+        at: selection,
+        match: n => ElementSlate.isElement(n) && n.type === 'tableCell',
+      });
+
+      if (cellEntry) {
+        isInTable = true;
+      }
+    }
+
+    if (isInTable) {
+      try {
+        const cellEntry = Editor.above(editor, {
+          at: selection,
+          match: n => ElementSlate.isElement(n) && n.type === 'tableCell',
+        });
+
+        if (cellEntry) {
+          const [, cellPath] = cellEntry;
+
+          Transforms.insertNodes(editor, createImageInParagraph(imageBlock), {
+            at: [...cellPath, 0],
+          });
+
+          return;
+        }
+      } catch (error) {
+        console.warn('Paste: Error inserting image in table:', error);
+      }
+    }
+
     if (selection) {
       const selectedElementPath = selection.anchor.path.slice(0, -1);
 
@@ -254,6 +289,40 @@ const EditorSlate = props => {
       });
 
       const { selection } = editor;
+
+      let isInTable = false;
+
+      if (selection) {
+        const cellEntry = Editor.above(editor, {
+          at: selection,
+          match: n => ElementSlate.isElement(n) && n.type === 'tableCell',
+        });
+
+        if (cellEntry) {
+          isInTable = true;
+        }
+      }
+
+      if (isInTable) {
+        try {
+          const cellEntry = Editor.above(editor, {
+            at: selection,
+            match: n => ElementSlate.isElement(n) && n.type === 'tableCell',
+          });
+
+          if (cellEntry) {
+            const [, cellPath] = cellEntry;
+
+            Transforms.insertNodes(editor, createImageInParagraph(imageBlock), {
+              at: [...cellPath, 0],
+            });
+
+            return;
+          }
+        } catch (error) {
+          console.warn('Drop: Error inserting image in table:', error);
+        }
+      }
 
       if (selection) {
         const selectedElementPath = selection.anchor.path.slice(0, -1);

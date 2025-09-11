@@ -275,12 +275,14 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
                 {
                   type: 'paragraph',
                   children: [
+                    { type: 'paragraph', children: [{ text: '' }] },
                     {
                       type: 'image',
                       url: child.url,
                       alt: child.alt,
                       children: [{ text: '' }],
                     },
+                    { type: 'paragraph', children: [{ text: '' }] },
                   ],
                 },
               ];

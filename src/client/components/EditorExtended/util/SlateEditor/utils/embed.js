@@ -38,3 +38,8 @@ export const createCodeBlock = () => ({
 });
 
 export const insertImageReplaceParagraph = (editor, imageNode) => [imageNode, createEmptyNode()];
+
+export const createImageInParagraph = imageNode => ({
+  type: 'paragraph',
+  children: [imageNode],
+});

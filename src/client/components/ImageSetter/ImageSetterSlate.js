@@ -21,7 +21,6 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import {
   createImageNode,
   insertImageReplaceParagraph,
-  createEmptyNode,
 } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
@@ -153,18 +152,14 @@ const ImageSetter = ({
       currentImages.forEach(newImage => {
         if (isEditor && newImage) {
           const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
-
-          // Видаляємо поточний параграф тільки якщо він порожній та вставляємо картинку з новим параграфом після
           const { selection } = editor;
 
           if (selection) {
-            const selectedElementPath = selection.anchor.path.slice(0, -1);
+            const selectedElementPath = selection.anchor.path;
 
-            // Перевіряємо, чи існує елемент за цим шляхом
             try {
               const selectedElement = Node.descendant(editor, selectedElementPath);
 
-              // Видаляємо параграф тільки якщо він порожній (не містить тексту)
               if (
                 selectedElement &&
                 selectedElement.type === 'paragraph' &&
@@ -173,30 +168,23 @@ const ImageSetter = ({
                 Transforms.removeNodes(editor, { at: selectedElementPath });
               }
             } catch (error) {
-              // Якщо не можемо знайти елемент, ігноруємо помилку
               console.warn('Cannot find element at path:', selectedElementPath);
             }
           }
 
-          // Перевіряємо, чи редактор має валідну структуру перед вставкою
           if (editor.children && editor.children.length > 0) {
             const insertOptions = {};
 
-            // Додаємо позицію вставки тільки для Android та якщо lastSelection валідний
             if (
               isAndroidDevice() &&
               lastSelection &&
               lastSelection.anchor &&
               lastSelection.anchor.path
             ) {
-              try {
-                const nextPath = Path.next(lastSelection.anchor.path);
+              const nextPath = Path.next(lastSelection.anchor.path);
 
-                if (nextPath) {
-                  insertOptions.at = nextPath;
-                }
-              } catch (error) {
-                console.warn('Cannot calculate next path:', error);
+              if (nextPath) {
+                insertOptions.at = nextPath;
               }
             }
 
@@ -207,32 +195,26 @@ const ImageSetter = ({
                 insertOptions,
               );
             } catch (error) {
-              console.warn('Cannot insert image nodes:', error);
-              // Fallback: вставляємо картинку без заміни параграфа
-              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             }
           } else {
-            // Якщо редактор порожній, створюємо базову структуру
             try {
-              Transforms.insertNodes(editor, [
-                createImageNode(newImage.name, { url }),
-                createEmptyNode(),
-              ]);
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             } catch (error) {
-              console.warn('Cannot insert image into empty editor:', error);
-              // Fallback: просто вставляємо картинку
-              Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+              Transforms.insertNodes(
+                editor,
+                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
+              );
             }
           }
 
-          // Відновлюємо фокус після вставки з затримкою
-          setTimeout(() => {
-            try {
-              ReactEditor.focus(editor);
-            } catch (error) {
-              console.warn('Cannot focus editor after image insertion:', error);
-            }
-          }, 0);
+          ReactEditor.focus(editor);
         }
       });
     }
@@ -243,7 +225,7 @@ const ImageSetter = ({
   useEffect(() => {
     addImage();
   }, [isOkayBtn, isModal, lastSelection]);
-  // For image pasted for link
+
   const checkImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
 
