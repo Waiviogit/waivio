@@ -17,7 +17,7 @@ const SwitchConfigPage = () => {
     }
   }, []);
 
-  if (socialDomens.some(item => host.includes(item))) return <ShopWebsiteConfigurations />;
+  if (host && socialDomens.some(item => host.includes(item))) return <ShopWebsiteConfigurations />;
 
   return <WebsitesConfigurations />;
 };

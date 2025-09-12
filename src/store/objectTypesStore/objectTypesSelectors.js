@@ -12,7 +12,7 @@ export const getObjectTypesSimpleList = createSelector(
 );
 export const getObjectTypesList = createSelector([getObjectTypesSimpleList], list => {
   // Commented functional for automatic adding of types in the end of objectTypesListSorted object
-  // const objectTypesListNotInOrder = _.filter(state.list, ({name}) => !listOfObjectTypes.includes(name));
+  // const objectTypesListNotInOrder = _.filter(state.list, ({name}) => !listOfObjectTypes?.includes(name));
   const objectTypesListSorted = {};
 
   listOfObjectTypes.forEach(type => {

@@ -63,7 +63,7 @@ export default {
       validator: (rule, value) => {
         const symbol = 1;
 
-        if (value.startsWith('https://') || value.startsWith('http://')) {
+        if (value?.startsWith('https://') || value?.startsWith('http://')) {
           return Promise.reject(
             <FormattedMessage
               id="please_enter_the_domain_withou"

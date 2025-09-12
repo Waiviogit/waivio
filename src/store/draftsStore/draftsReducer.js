@@ -77,7 +77,7 @@ const draftsReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        drafts: state.drafts.filter(draft => !action.meta.ids.includes(draft.draftId)),
+        drafts: state.drafts.filter(draft => !action.meta.ids?.includes(draft.draftId)),
         pendingDrafts: [],
       };
 

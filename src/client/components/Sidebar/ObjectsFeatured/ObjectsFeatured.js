@@ -27,7 +27,7 @@ const ObjectsFeatured = ({ wobject, isCenterContent }) => {
   );
 
   useEffect(() => {
-    if (!isEmpty(wobject.author_permlink) && featuredObjectTypes.includes(wobject.object_type)) {
+    if (!isEmpty(wobject.author_permlink) && featuredObjectTypes?.includes(wobject.object_type)) {
       getFeaturedObjects(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setFeaturedObjects(res.wobjects),
       );

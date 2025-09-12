@@ -16,8 +16,8 @@ export const decodeUrlParam = param => {
     let decoded = decodeURIComponent(param);
 
     // Handle the specific case where @ was encoded as %40
-    if (decoded.startsWith('%40')) {
-      decoded = `@${decoded.substring(3)}`;
+    if (decoded?.startsWith('%40')) {
+      decoded = `@${decoded?.substring(3)}`;
     }
 
     return decoded;
@@ -37,17 +37,17 @@ export const decodeUsername = username => {
   if (!username) return username;
 
   // If it's already properly formatted with @, return as is
-  if (username.startsWith('@')) {
+  if (username?.startsWith('@')) {
     return username;
   }
 
   // If it starts with %40, decode it
-  if (username.startsWith('%40')) {
-    return `@${username.substring(3)}`;
+  if (username?.startsWith('%40')) {
+    return `@${username?.substring(3)}`;
   }
 
   // If it's a plain username without @, add @
-  if (!username.includes('@') && !username.includes('%')) {
+  if (!username?.includes('@') && !username?.includes('%')) {
     return `@${username}`;
   }
 
@@ -80,7 +80,7 @@ export const createUserProfileUrl = username => {
 
   const decodedUsername = decodeUsername(username);
 
-  return decodedUsername.startsWith('@') ? decodedUsername : `@${decodedUsername}`;
+  return decodedUsername?.startsWith('@') ? decodedUsername : `@${decodedUsername}`;
 };
 
 /**

@@ -55,8 +55,8 @@ const mapStateToProps = (state, { id, isThread }) => {
     isReblogged: getRebloggedList(state).includes(post.id),
     isReblogging: getPendingReblogs(state).includes(post.id),
     isSaved: post.guestInfo
-      ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
-      : bookmarks.includes(post.id),
+      ? bookmarks?.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
+      : bookmarks?.includes(post.id),
     isLiked,
     isReported,
   };

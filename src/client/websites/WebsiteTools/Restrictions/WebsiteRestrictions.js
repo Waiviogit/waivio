@@ -56,11 +56,11 @@ export const WebsiteRestrictions = ({
         list.map(user => (
           <div key={user.name} className="WebsiteRestrictions__user">
             <UserCard user={user} alt={<WeightTag weight={user.wobjects_weight} />} withoutLine />
-            {user.blockedBy.includes(authUser) && !withoutButton ? (
+            {user.blockedBy?.includes(authUser) && !withoutButton ? (
               <Action
                 primary
                 onClick={() => handleMuteUser(authUser, user.name, [], host)}
-                loading={unmutedUsers.includes(user.name)}
+                loading={unmutedUsers?.includes(user.name)}
               >
                 {intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' })}
               </Action>

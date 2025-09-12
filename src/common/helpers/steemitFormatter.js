@@ -21,7 +21,7 @@ const createFormatter = api => {
     const sbdOrders = !open_orders
       ? 0
       : open_orders.reduce((o, order) => {
-          if (order.sell_price.base.indexOf('HBD') !== -1) {
+          if (order.sell_price.base?.indexOf('HBD') !== -1) {
             o += order.for_sale;
           }
           return o;
@@ -30,7 +30,7 @@ const createFormatter = api => {
     const steemOrders = !open_orders
       ? 0
       : open_orders.reduce((o, order) => {
-          if (order.sell_price.base.indexOf('HIVE') !== -1) {
+          if (order.sell_price.base?.indexOf('HIVE') !== -1) {
             o += order.for_sale;
           }
           return o;
@@ -142,10 +142,10 @@ const createFormatter = api => {
       if (reputation == null) return reputation;
       reputation = parseInt(reputation);
       let rep = String(reputation);
-      const neg = rep.charAt(0) === '-';
-      rep = neg ? rep.substring(1) : rep;
+      const neg = rep?.charAt(0) === '-';
+      rep = neg ? rep?.substring(1) : rep;
       const str = rep;
-      const leadingDigits = parseInt(str.substring(0, 4));
+      const leadingDigits = parseInt(str?.substring(0, 4));
       const log = Math.log(leadingDigits) / Math.log(10);
       const n = str.length - 1;
       let out = n + (log - parseInt(log));

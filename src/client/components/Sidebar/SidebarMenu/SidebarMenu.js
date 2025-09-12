@@ -44,7 +44,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   const checkIsActive = (match, location) => {
     if (!match) return false;
 
-    return match.url !== '' && location.pathname.includes(match.url);
+    return match.url !== '' && location.pathname?.includes(match.url);
   };
 
   const handleGetObject = (permlink, key) => {

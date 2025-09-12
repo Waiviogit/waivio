@@ -43,7 +43,7 @@ const WobjectShoppingList = ({ isSocial, name }) => {
     <ShopList
       userName={authUserName}
       path={
-        match.url.includes('object-shop')
+        match.url?.includes('object-shop')
           ? `/object-shop/${authorPermlink}`
           : `/object/${authorPermlink}/shop`
       }

@@ -21,7 +21,7 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     if (
       !isEmpty(wobject.author_permlink) &&
-      addOnsRelatedSimilarTypes.includes(wobject.object_type)
+      addOnsRelatedSimilarTypes?.includes(wobject.object_type)
     ) {
       getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setSimilarObjects(res.wobjects || []),

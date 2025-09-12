@@ -60,7 +60,7 @@ const ObjectMenu = props => {
     (props.accessExtend && (props.isWaivio || props.isAdministrator)) || (activeHeart && isTrusty);
   const getItemClasses = key =>
     classNames('ObjectMenu__item', {
-      'ObjectMenu__item--active': key.includes(tab),
+      'ObjectMenu__item--active': key?.includes(tab),
     });
   const createLink = key => `/object/${name}/${key}`;
 

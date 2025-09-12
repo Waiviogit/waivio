@@ -29,7 +29,7 @@ const Feed = ({
     isOwnProfile &&
     !size(content) &&
     !isFetching &&
-    !history.location.pathname.includes('blog')
+    !history.location.pathname?.includes('blog')
   ) {
     return <QuickPostEditor history={history} />;
   }

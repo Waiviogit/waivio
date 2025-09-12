@@ -44,7 +44,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
       ]
         .filter(
           pair =>
-            !pair.from_coin_symbol.startsWith('SWAP') && pair.to_coin_symbol.startsWith('SWAP'),
+            !pair.from_coin_symbol?.startsWith('SWAP') && pair.to_coin_symbol?.startsWith('SWAP'),
         )
         .sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
 
@@ -59,7 +59,8 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
           pair: 'HIVE -> SWAP.HIVE',
         },
       ].filter(
-        pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
+        pair =>
+          pair.from_coin_symbol?.startsWith('SWAP') && !pair.to_coin_symbol?.startsWith('SWAP'),
       );
       const withdrawPairs = await compareTokensList(name, [
         ...(isGuest

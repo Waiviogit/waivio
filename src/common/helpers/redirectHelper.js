@@ -20,7 +20,7 @@ const redirectMap = {
 };
 
 const notFoundRedirectPath = (host = '') => {
-  const domain = Object.keys(redirectMap).find(key => host.includes(key));
+  const domain = Object.keys(redirectMap).find(key => host?.includes(key));
   const redirectUrl = domain ? redirectMap[domain] : baseUrl;
 
   return redirectUrl;

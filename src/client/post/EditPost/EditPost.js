@@ -83,7 +83,7 @@ const EditPost = props => {
   const handleToggleLinkedObject = (objId, isLinked) => {
     const currentObj = find(props.filteredObjectsCards, { author_permlink: objId });
     const switchableObjPermlink = currentObj.author_permlink;
-    const indexSwitchableHashtag = topics.indexOf(switchableObjPermlink);
+    const indexSwitchableHashtag = topics?.indexOf(switchableObjPermlink);
     const updPercentage = {
       ...objPercentage,
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value

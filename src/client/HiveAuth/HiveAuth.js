@@ -110,7 +110,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
         if (result) {
           const accounts = store.get('accounts') || [];
 
-          if (!accounts.includes(username)) store.set('accounts', [username, ...accounts]);
+          if (!accounts?.includes(username)) store.set('accounts', [username, ...accounts]);
           authorizeUserHAS({
             auth: { username },
             cbWait: generateQrCode,

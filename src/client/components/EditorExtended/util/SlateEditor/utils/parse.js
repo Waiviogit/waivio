@@ -182,7 +182,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
     .use(remarkToSlate, {
       overrides: {
         link: (node, next) => {
-          if (node.url.includes('/object/')) {
+          if (node.url?.includes('/object/')) {
             return {
               type: 'object',
               hashtag: node.children[0]?.value,
@@ -400,7 +400,7 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
   const _body = body
     .split('\n\n')
     .map(i => {
-      if (i.includes('\n') && !i.includes('|\n|')) return i.split('\n').join('\n\n');
+      if (i?.includes('\n') && !i?.includes('|\n|')) return i.split('\n').join('\n\n');
 
       return i;
     })

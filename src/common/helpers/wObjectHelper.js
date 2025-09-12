@@ -32,7 +32,7 @@ export const isNewInstacartProgram = instacartAff =>
   instacartAff?.link?.includes('instacart-impact');
 
 export const getPreferredInstacartItem = items => {
-  const impactItem = items.find(item => item.link.includes('instacart.impact.com'));
+  const impactItem = items.find(item => item.link?.includes('instacart.impact.com'));
 
   if (impactItem) {
     return impactItem;
@@ -43,7 +43,7 @@ export const getPreferredInstacartItem = items => {
 
 export const getTitleForLink = (wobj = {}) => {
   if (!wobj?.title) return getObjectName(wobj);
-  if (wobj?.title.includes(`${getObjectName(wobj)} - `)) return wobj?.title;
+  if (wobj?.title?.includes(`${getObjectName(wobj)} - `)) return wobj?.title;
 
   return `${getObjectName(wobj)} - ${wobj?.title || wobj?.description}`;
 };
@@ -358,11 +358,11 @@ export const getSortList = (sortedList = {}, itemsList) => {
 export const getSortItemListForModal = (sortedList, itemsList) => {
   if (isEmpty(sortedList)) return itemsList;
 
-  const exclude = itemsList.filter(list => sortedList?.exclude.includes(list.author_permlink));
+  const exclude = itemsList.filter(list => sortedList?.exclude?.includes(list.author_permlink));
   const withoutSorting = itemsList.filter(
     list =>
-      !sortedList.include.includes(list.author_permlink) &&
-      !sortedList.exclude.includes(list.author_permlink),
+      !sortedList.include?.includes(list.author_permlink) &&
+      !sortedList.exclude?.includes(list.author_permlink),
   );
 
   const customSort = sortedList.include.reduce((acc, item) => {
@@ -582,8 +582,8 @@ export const isObjectReviewTab = (wobject, match) => {
     match.params.name === wobject.author_permlink
   ) {
     return (
-      match.url.endsWith('/about') ||
-      match.url.endsWith('/reviews') ||
+      match.url?.endsWith('/about') ||
+      match.url?.endsWith('/reviews') ||
       match.url === `/object/${wobject.author_permlink}`
     );
   }

@@ -16,7 +16,7 @@ const ObjectDepartmentsWobjList = ({ isSocial }) => {
       user={match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
       path={
-        match.url.includes('object-shop')
+        match.url?.includes('object-shop')
           ? `/object-shop/${match.params.name}`
           : `/object/${match.params.name}/shop`
       }

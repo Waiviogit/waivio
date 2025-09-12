@@ -191,7 +191,7 @@ const UserWalletSummary = ({
     return savingsInfo.reduce((acc, val) => {
       const amount = parseFloat(val.amount);
 
-      return val.amount.includes(symbol) ? acc + amount : acc;
+      return val.amount?.includes(symbol) ? acc + amount : acc;
     }, 0);
   };
 

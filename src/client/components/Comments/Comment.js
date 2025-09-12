@@ -86,8 +86,8 @@ class Comment extends React.Component {
     const { hash } = window && window.location;
     const anchorLink = `#@${comment.author}/${comment.permlink}`;
 
-    if (hash.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {
-      if (hash.endsWith('-edit')) {
+    if (hash?.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {
+      if (hash?.endsWith('-edit')) {
         this.handleEditClick();
       }
     }
@@ -232,7 +232,7 @@ class Comment extends React.Component {
     } = this.props;
     let isGuest = false;
 
-    if (comment.json_metadata.includes('"social":')) {
+    if (comment.json_metadata?.includes('"social":')) {
       const jsonMetadata = parseJSON(comment.json_metadata);
 
       comment.authorGuest = jsonMetadata.comment.userId;
@@ -240,7 +240,7 @@ class Comment extends React.Component {
     }
     const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
-    const anchorLink = `${comment.url.slice(0, comment.url.indexOf('#'))}#${anchorId}`;
+    const anchorLink = `${comment.url.slice(0, comment.url?.indexOf('#'))}#${anchorId}`;
 
     const editable = isGuest ? comment.authorGuest === user.name : comment.author === user.name;
     const commentAuthorReputation = isGuest ? 0 : formatter.reputation(comment.author_reputation);

@@ -32,7 +32,7 @@ const SocialCampaignCard = ({
       : intl.formatMessage({ id: 'rewards_details_earn_up_to', defaultMessage: 'Earn up to' });
   const history = useHistory();
   const query = useQuery();
-  let pathname = history.location.pathname.includes('/rewards/')
+  let pathname = history.location.pathname?.includes('/rewards/')
     ? `${history.location.pathname}/eligible`
     : `/rewards/${proposition.reach?.[0] || 'global'}/all`;
 

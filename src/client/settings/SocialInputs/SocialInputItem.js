@@ -23,7 +23,7 @@ const SocialInputItem = ({
   });
   const walletsIds = socialWallets.map(w => w.id);
   const idsToValidate = walletsIds.filter(w => w !== 'lightningBitcoin');
-  const isWallet = walletsIds.includes(profile.id);
+  const isWallet = walletsIds?.includes(profile.id);
   const invalidText = 'Invalid address';
   const validText = 'Address is valid';
   const addressValue = getFieldValue(profile.id);
@@ -82,7 +82,7 @@ const SocialInputItem = ({
   const handleValidateWalletAddress = value => {
     if (!value) return setIsInvalid();
 
-    if (value && idsToValidate.includes(profile.id)) {
+    if (value && idsToValidate?.includes(profile.id)) {
       const isValid = WAValidator.validate(value, profile.id);
 
       return setIsInvalid(!isValid);
@@ -131,7 +131,7 @@ const SocialInputItem = ({
           />,
         )}
       </Form.Item>
-      {addressValue && !isNil(isInvalid) && idsToValidate.includes(profile.id) && (
+      {addressValue && !isNil(isInvalid) && idsToValidate?.includes(profile.id) && (
         <span className={validateWalletAddressClassList}>
           {isInvalid ? invalidText : validText}
         </span>

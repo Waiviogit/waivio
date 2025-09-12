@@ -34,7 +34,8 @@ class UserMenuWrapper extends React.Component {
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
     const isGuest =
-      match.params.name.startsWith(GUEST_PREFIX) || match.params.name.startsWith(BXY_GUEST_PREFIX);
+      match.params.name?.startsWith(GUEST_PREFIX) ||
+      match.params.name?.startsWith(BXY_GUEST_PREFIX);
 
     return (
       <UserMenu

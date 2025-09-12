@@ -6,7 +6,7 @@ import enUS from 'antd/es/locale/en_US';
 import LANGUAGES from './languages';
 
 export function findLanguage(locale) {
-  return LANGUAGES.find(language => language.variants.indexOf(locale) !== -1) || LANGUAGES[0];
+  return LANGUAGES.find(language => language.variants?.indexOf(locale) !== -1) || LANGUAGES[0];
 }
 
 export function getRequestLocale(locales) {

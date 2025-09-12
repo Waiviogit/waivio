@@ -257,7 +257,7 @@ const WobjectView = ({
           </Affix>
           {wobject.author_permlink && (
             <Affix className={rightSidebarClassList} stickPosition={72}>
-              {match.url.includes('/shop') ? (
+              {match.url?.includes('/shop') ? (
                 !isMobile() && <WobjectShopFilter />
               ) : (
                 <React.Fragment>

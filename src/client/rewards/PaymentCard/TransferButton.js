@@ -11,8 +11,8 @@ import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 const TransferButton = ({ match, intl, payable, name, openTransf, currency }) => {
   const isReceiverGuest = guestUserRegex.test(name);
   const app = WAIVIO_PARENT_PERMLINK;
-  const pathRecivables = match.path.includes('receivable');
-  const pathPaybles = match.path.includes('payable');
+  const pathRecivables = match.path?.includes('receivable');
+  const pathPaybles = match.path?.includes('payable');
   const memo = isReceiverGuest ? 'guestCampaignReward' : 'campaignReward';
 
   return (

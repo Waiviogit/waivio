@@ -99,7 +99,7 @@ const withEmbeds = cb => editor => {
 
   editor.insertData = data => {
     const html = data.getData('text/html');
-    const isBlobImage = html && html.includes('<img src="blob:');
+    const isBlobImage = html && html?.includes('<img src="blob:');
 
     if (html && !isBlobImage) {
       let _html = html;
@@ -237,7 +237,7 @@ const withEmbeds = cb => editor => {
     if (text && /^https?:\/\/\S+$/.test(text.trim())) {
       let node;
 
-      if (text.includes('youtube.com') || text.includes('youtu.be')) {
+      if (text?.includes('youtube.com') || text?.includes('youtu.be')) {
         node = {
           type: 'video',
           url: text.trim(),
@@ -256,7 +256,7 @@ const withEmbeds = cb => editor => {
       return;
     }
 
-    const isMarkdown = /[*_#>`-]/.test(text) || text.includes('\n');
+    const isMarkdown = /[*_#>`-]/.test(text) || text?.includes('\n');
 
     if (isMarkdown) {
       const tree = deserializeToSlate(text);

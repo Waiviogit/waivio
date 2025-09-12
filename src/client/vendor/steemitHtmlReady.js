@@ -123,7 +123,7 @@ function link(state, child) {
 
   if (url) {
     state.links.add(url);
-    if (state.mutate && !url.includes('mailto:') && emailRegex.test(url)) {
+    if (state.mutate && !url?.includes('mailto:') && emailRegex.test(url)) {
       // If this link is not relative, http, or https -- add https.
       if (!/^((#)|(\/(?!\/))|((https?:)?\/\/))/.test(url)) {
         child.setAttribute('href', 'https://' + url);

@@ -164,7 +164,7 @@ const SocialWrapper = props => {
                 return findObj ? [...acc, findObj] : acc;
               }, []);
 
-              if (sortingButton?.[0]?.linkToWeb && !sortingButton?.[0]?.linkToWeb.includes(host))
+              if (sortingButton?.[0]?.linkToWeb && !sortingButton?.[0]?.linkToWeb?.includes(host))
                 window.location.href = sortingButton[0].linkToWeb;
 
               const fullList = [

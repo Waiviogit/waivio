@@ -15,7 +15,7 @@ const UserMenu = props => {
   const showUserShop = isWaivio || isSocial;
 
   const getItemClasses = keys =>
-    classNames('UserMenu__item', { 'UserMenu__item--active': keys.includes(tab) });
+    classNames('UserMenu__item', { 'UserMenu__item--active': keys?.includes(tab) });
 
   return (
     <div className="UserMenu">

@@ -231,11 +231,11 @@ SteemEmbed.get = function(urlCurr, options = {}, mediumSize) {
 const youtubeShortUrlRegex = /^(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})(?:\?.*)?$/;
 
 SteemEmbed.isYoutube = function(url) {
-  let match = url.includes('youtu.be')
+  let match = url?.includes('youtu.be')
     ? url.match(youtubeShortUrlRegex)
     : url.match(VIDEO_MATCH_URL.YOUTUBE);
 
-  if (url.includes('shorts')) {
+  if (url?.includes('shorts')) {
     match = url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS);
   }
   return match ? match[1] : false;
@@ -289,7 +289,7 @@ SteemEmbed.dTube = function(url, id, options) {
 };
 
 SteemEmbed.is3Speak = function(url) {
-  const match = url.includes('3speak.tv/')
+  const match = url?.includes('3speak.tv/')
     ? url.match(VIDEO_MATCH_URL.THREE_SPEAK_TV)
     : url.match(VIDEO_MATCH_URL.THREE_SPEAK);
   return match ? match[2] : false;
@@ -365,7 +365,7 @@ SteemEmbed.tikTok = function(url, id, options) {
     '" src="' +
     TIKTOK_PREFIX +
     id +
-    (`${id}`.includes('?') ? '&' : '?') +
+    (`${id}`?.includes('?') ? '&' : '?') +
     'autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
 };

@@ -56,7 +56,8 @@ const removeQueryParams = url => url.split('?')[0];
 const isPageExistSitemap = async ({ url = '', host }) => {
   if (url === '/') return true;
 
-  const searchPage = url.startsWith('/discover-objects') || url.startsWith('/discover-departments');
+  const searchPage =
+    url?.startsWith('/discover-objects') || url?.startsWith('/discover-departments');
   if (searchPage) return true;
 
   const pathOnly = removeQueryParams(url);
@@ -68,7 +69,7 @@ const isPageExistSitemap = async ({ url = '', host }) => {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
-    const isWaivio = hostname.includes('waivio');
+    const isWaivio = hostname?.includes('waivio');
     const userAgent = req.get('User-Agent');
     const inheritedHost = isInheritedHost(hostname);
 
@@ -77,7 +78,7 @@ export default function createSsrHandler(template) {
       if (redirect) return res.redirect(status, redirectPath);
     }
 
-    if (req.url.includes('/checklist/'))
+    if (req.url?.includes('/checklist/'))
       return res.redirect(301, req.url.replace('/checklist/', '/object/'));
 
     const isUser = !isbot(userAgent);

@@ -393,7 +393,7 @@ const SocialProduct = ({
             />
             <meta
               itemProp="priceCurrency"
-              content={wobject?.price && wobject.price.includes('С$') ? 'CAD' : 'USD'}
+              content={wobject?.price && wobject.price?.includes('С$') ? 'CAD' : 'USD'}
             />
             <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
             <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />

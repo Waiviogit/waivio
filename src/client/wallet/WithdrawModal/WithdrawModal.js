@@ -308,7 +308,7 @@ const WithdrawModal = props => {
     }
   };
   const isHiveCurrency = ['HIVE', 'HBD'].includes(pair?.to_coin_symbol);
-  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(pair?.symbol)
+  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST?.includes(pair?.symbol)
     ? fromAmount * rate[pair?.symbol]
     : fromAmount * rate[pair?.symbol] * rate.HIVE;
 
@@ -408,7 +408,7 @@ const WithdrawModal = props => {
               <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
               <USDDisplay value={estimateValue || 0} />
             </p>
-            {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
+            {showMinWithdraw?.includes(get(pair, 'to_coin_symbol')) && (
               <p>
                 <FormattedMessage
                   id="minimal_withdraw_amount"
@@ -429,7 +429,7 @@ const WithdrawModal = props => {
                 <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
               </h3>
               {/* eslint-disable-next-line no-nested-ternary */}
-              {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
+              {hiveWalletCurrency?.includes(get(pair, 'to_coin_symbol')) ? (
                 isGuest && !hiveBeneficiaryAccount ? (
                   <div>
                     Guests are only allowed to make transfers to their own Hive accounts. This

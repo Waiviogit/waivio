@@ -228,7 +228,7 @@ export const currentWebsiteSettings = (site, parentHost) => {
     },
   ];
 
-  if (socialDomens.some(item => parentHost?.includes(item))) {
+  if (parentHost && socialDomens.some(item => parentHost.includes(item))) {
     items.splice(2, 0, {
       to: `/${site}/affiliate-codes`,
       id: 'affiliate_codes',

@@ -2,8 +2,8 @@ export const validateAffiliateUrl = (rule, url, callback) => {
   const websiteRegex = /^(https?:\/\/)/;
   const validUrl = websiteRegex.test(url);
 
-  const containsProductId = url.includes('PRODUCTID');
-  const containsAffiliateCode = url.includes('AFFILIATECODE');
+  const containsProductId = url?.includes('PRODUCTID');
+  const containsAffiliateCode = url?.includes('AFFILIATECODE');
 
   if (validUrl && containsProductId && containsAffiliateCode) {
     callback();

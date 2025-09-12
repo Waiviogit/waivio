@@ -6,7 +6,7 @@ import { referralDetailContent } from '../ReferralTextHelper';
 
 const ReferralDetailsView = ({ isAuthenticated, data }) => {
   const location = useLocation();
-  const isNewCamp = location.pathname.includes('new');
+  const isNewCamp = location.pathname?.includes('new');
 
   const {
     detailTitle,

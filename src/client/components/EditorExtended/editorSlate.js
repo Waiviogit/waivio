@@ -162,7 +162,7 @@ const EditorSlate = props => {
 
     const image = dT.files[0];
 
-    if (!image || !image.type.includes('image/')) return;
+    if (!image || !image.type?.includes('image/')) return;
 
     message.info(
       intl.formatMessage({
@@ -187,7 +187,7 @@ const EditorSlate = props => {
 
     const imageBlock = createImageNode(currentImage.name, {
       url: `${
-        currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
+        currentImage.src?.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
       }`,
     });
 
@@ -261,7 +261,7 @@ const EditorSlate = props => {
     const files = [...event.dataTransfer.files];
 
     const uploadedImages = [];
-    const filteredFiles = files.filter(file => file.type.indexOf('image/') === 0);
+    const filteredFiles = files.filter(file => file.type?.indexOf('image/') === 0);
 
     const insertImage = (file, fileName = 'image') => {
       const newImage = {
@@ -285,7 +285,7 @@ const EditorSlate = props => {
 
     uploadedImages.forEach(item => {
       const imageBlock = createImageNode(item.name, {
-        url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
+        url: `${item.src?.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
       const { selection } = editor;
@@ -467,7 +467,7 @@ const EditorSlate = props => {
         }
 
         if (
-          HEADING_BLOCKS.includes(selectedElement.type) ||
+          HEADING_BLOCKS?.includes(selectedElement.type) ||
           (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
         ) {
           event.preventDefault();

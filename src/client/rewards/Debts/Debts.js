@@ -33,7 +33,7 @@ const Debts = ({
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
-  const pathPaybles = match.path.includes('payable');
+  const pathPaybles = match.path?.includes('payable');
 
   useEffect(() => {
     dispatch(getTokenBalance('WAIV', authUserName));

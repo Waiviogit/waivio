@@ -181,7 +181,7 @@ const User = props => {
   const title = `${displayedUsername} ${getTitle(tab)}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';
-  const isGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
+  const isGuest = name?.startsWith(GUEST_PREFIX) || name?.startsWith(BXY_GUEST_PREFIX);
   const currentClassName = isOpenWalletTable
     ? 'display-table'
     : classNames('center', { pa3: isAboutPage });

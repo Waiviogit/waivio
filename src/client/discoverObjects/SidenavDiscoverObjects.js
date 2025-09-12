@@ -26,7 +26,8 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
   });
 
   useEffect(() => {
-    const typesCount = Object.values(objectTypes).findIndex(obj => pathname.includes(obj.name)) + 1;
+    const typesCount =
+      Object.values(objectTypes).findIndex(obj => pathname?.includes(obj.name)) + 1;
 
     if (typesCount > typesLimit) {
       const count = ceil(typesCount / 5) * 5;
@@ -86,7 +87,7 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
                   <li key={`${type.author}/${type.permlink}`} className="ttc">
                     <NavLink
                       to={`/discover-objects/${type.name}`}
-                      isActive={() => pathname.includes(type.name)}
+                      isActive={() => pathname?.includes(type.name)}
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
                     >
@@ -148,7 +149,7 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
                 <NavLink
                   to={`/discover`}
                   isActive={() =>
-                    pathname === PATH_NAME_DISCOVER || pathname.includes('/discover/')
+                    pathname === PATH_NAME_DISCOVER || pathname?.includes('/discover/')
                   }
                   className="sidenav-discover-objects__item"
                   activeClassName="Sidenav__item--active"

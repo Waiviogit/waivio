@@ -44,7 +44,7 @@ const HIVE_ENGINE_NODES = [
 ];
 
 const getNewNodeUrl = hostUrl => {
-  const index = hostUrl ? HIVE_ENGINE_NODES.indexOf(hostUrl) : 0;
+  const index = hostUrl ? HIVE_ENGINE_NODES?.indexOf(hostUrl) : 0;
 
   return index === HIVE_ENGINE_NODES.length - 1
     ? HIVE_ENGINE_NODES[0]
@@ -417,7 +417,7 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
-  const link = permlink.includes(author) ? permlink : `${author}/${permlink}`;
+  const link = permlink?.includes(author) ? permlink : `${author}/${permlink}`;
   return fetch(`${config.apiPrefix}${config.post}/${link}`, {
     headers: { ...headers, app: config.appName, locale },
     method: 'GET',

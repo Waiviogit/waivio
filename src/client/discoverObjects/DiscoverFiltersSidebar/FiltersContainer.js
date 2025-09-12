@@ -42,7 +42,7 @@ const FiltersContainer = ({
   }, []);
 
   const handleDisplayFilter = filterName => () => {
-    if (collapsedFilters.includes(filterName)) {
+    if (collapsedFilters?.includes(filterName)) {
       setCollapsed(collapsedFilters.filter(f => f !== filterName));
     } else {
       setCollapsed([...collapsedFilters, filterName]);
@@ -74,7 +74,7 @@ const FiltersContainer = ({
     dispatchShowMoreTags(filterValues.tagCategory, activeObjectTypeName, size(filterValues.tags));
   };
 
-  const isCollapsed = name => collapsedFilters.includes(name);
+  const isCollapsed = name => collapsedFilters?.includes(name);
 
   return (
     <div className="SidebarContentBlock__content">

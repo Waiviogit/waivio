@@ -200,7 +200,7 @@ export const sendPostError = postId => (dispatch, getState, { busyAPI }) => {
   const authUser = getAuthenticatedUserName(state);
   const shortedPosts = state.posts.shortedPosts;
 
-  if (!shortedPosts.includes(postId)) {
+  if (!shortedPosts?.includes(postId)) {
     dispatch({ type: ADD_POST_IN_SHORTED_LIST, payload: postId });
     busyAPI.instance.sendAsync(subscribeTypes.clientError, [authUser, `shortened post ${postId}`]);
   }
@@ -343,7 +343,7 @@ export const handlePinPost = (
     });
   };
 
-  if (pinnedPostsUrls.includes(post.url)) {
+  if (pinnedPostsUrls?.includes(post.url)) {
     dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
     dispatch(updatePostPinState(post, false));
     if (post?.currentUserPin) {

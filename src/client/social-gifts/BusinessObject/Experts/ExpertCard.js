@@ -16,7 +16,7 @@ const ExpertCard = ({ expert }) => {
     ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
   const defaultUrl =
-    expert.name && (expert.name.includes(GUEST_PREFIX) || expert.name.includes(BXY_GUEST_PREFIX))
+    expert.name && (expert.name?.includes(GUEST_PREFIX) || expert.name?.includes(BXY_GUEST_PREFIX))
       ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${expert.name}?${lastAccountUpdate}`
       : `https://images.hive.blog/u/${expert.name}/avatar`;
 
