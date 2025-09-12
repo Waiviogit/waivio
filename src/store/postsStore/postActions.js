@@ -26,6 +26,7 @@ import {
   authorityVoteAppend,
   setObjectinAuthority,
   voteAppends,
+  setAuthorityForObject,
 } from '../appendStore/appendActions';
 import { getAuthorityList } from '../appendStore/appendSelectors';
 import { subscribeTypes } from '../../common/constants/blockTypes';
@@ -316,17 +317,21 @@ export const handlePinPost = (
         p => p.creator === user.name && p.body === 'administrative',
       );
 
-      const voteForAuthority = () =>
-        !activeHeart &&
-        dispatch(
-          authorityVoteAppend(
-            authority?.author,
-            wobject.author_permlink,
-            authority?.permlink,
-            userVotingPower,
-            isObjectPage,
-          ),
-        );
+      const voteForAuthority = () => {
+        if (!activeHeart) {
+          authority
+            ? dispatch(
+                authorityVoteAppend(
+                  authority?.author,
+                  wobject.author_permlink,
+                  authority?.permlink,
+                  userVotingPower,
+                  isObjectPage,
+                ),
+              )
+            : dispatch(setAuthorityForObject(wobject, match));
+        }
+      };
 
       if (newPin) {
         if (
