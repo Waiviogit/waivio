@@ -338,9 +338,9 @@ class StoryFull extends React.Component {
 
     const body = initialPostBody;
 
-    let signedBody = body?.replaceAll('http://', 'https://');
+    const signedBody = body?.replaceAll('http://', 'https://');
 
-    if (signature) signedBody = `${body}<hr>${signature}`;
+    // if (signature) signedBody = `${body}<hr>${signature}`;
 
     let replyUI = null;
 

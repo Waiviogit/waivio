@@ -41,6 +41,7 @@ const Image = ({ attributes, element, children }) => {
               boxShadow: selected && focused && '0 0 3px 3px lightgray',
               textAlign: 'center',
               display: 'inline-block',
+              marginTop: 0,
             }}
           />
           {shouldShowCaption(element.alt, element.url) ? (
