@@ -10,7 +10,7 @@ const EmptyMutedUserProfile = ({ user }) => {
   const authName = useSelector(getAuthenticatedUserName);
   let message = '';
 
-  if ((user.muted && isEmpty(user.mutedBy)) || user.mutedBy.includes(authName))
+  if ((user.muted && isEmpty(user.mutedBy)) || user.mutedBy?.includes(authName))
     message = <div>Muted by you</div>;
   else if (!isEmpty(user.mutedBy)) message = <div>Blocked by a website moderator</div>;
 

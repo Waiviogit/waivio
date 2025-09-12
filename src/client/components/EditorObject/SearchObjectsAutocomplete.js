@@ -107,7 +107,7 @@ const SearchObjectsAutocomplete = props => {
 
     if (searchStr) {
       searchObjectsOptions = searchObjectsResults
-        .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
+        .filter(obj => !itemsIdsToOmit?.includes(obj.author_permlink))
         .map(obj => (
           <AutoComplete.Option
             key={obj.author_permlink}

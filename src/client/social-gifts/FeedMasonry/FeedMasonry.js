@@ -61,7 +61,7 @@ const FeedMasonry = ({
           {posts?.flatMap((post, index) => {
             const elements = [];
 
-            if (unavailableTikTokPosts.includes(post.permlink)) return elements;
+            if (unavailableTikTokPosts?.includes(post.permlink)) return elements;
 
             const urlPreview = isEmpty(previews)
               ? ''

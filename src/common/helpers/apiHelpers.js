@@ -48,7 +48,7 @@ export const getFollowing = async (
     if (res.message) {
       throw new Error(res);
     }
-    let index = startForm ? res.users_follow.indexOf(startForm) : 0;
+    let index = startForm ? res.users_follow?.indexOf(startForm) : 0;
 
     index = index === -1 ? 0 : index;
 

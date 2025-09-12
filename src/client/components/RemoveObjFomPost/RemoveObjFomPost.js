@@ -62,7 +62,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
           <div key={camp.campaignId || camp._id} className={'RemoveObjFomPost__item'}>
             <span>{camp.name}</span>
 
-            {rejectedList.includes(camp.campaignId) ? (
+            {rejectedList?.includes(camp.campaignId) ? (
               <span>rejected</span>
             ) : (
               <Button onClick={() => rejectCampaigns(camp)} type="primary">
@@ -81,7 +81,7 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
                   {getObjectName(obj)}
                 </span>
 
-                {rejectedList.includes(obj?.author_permlink) ? (
+                {rejectedList?.includes(obj?.author_permlink) ? (
                   <span>removed</span>
                 ) : (
                   <Button type="primary" onClick={() => deletePostFromObj(obj)}>

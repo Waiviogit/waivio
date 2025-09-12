@@ -86,7 +86,7 @@ const RenderPropositionList = ({
 
   const getPropositionList = async () => {
     if (reqObj && reqObj !== parent?.author_permlink) {
-      const campParent = requiredObject.includes('@')
+      const campParent = requiredObject?.includes('@')
         ? await getAccount(reqObj)
         : await getObject(requiredObject);
       const campInfo = await getObjectsRewards(requiredObject, authUserName);

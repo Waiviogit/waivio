@@ -32,9 +32,9 @@ export const getSwapList = () => (dispatch, getState) => {
         name,
         uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList]),
       );
-      const fromList = allSymbolList.filter(i => fromSymbolList.includes(i.symbol));
-      const toList = allSymbolList.filter(i => toSymbolList.includes(i.symbol));
-      const toChildList = allSymbolList.filter(i => toSymbolChildList.includes(i.symbol));
+      const fromList = allSymbolList.filter(i => fromSymbolList?.includes(i.symbol));
+      const toList = allSymbolList.filter(i => toSymbolList?.includes(i.symbol));
+      const toChildList = allSymbolList.filter(i => toSymbolChildList?.includes(i.symbol));
       const to = toFromState?.symbol
         ? {
             ...res[from.symbol].find(item => item.symbol === toFromState.symbol),
@@ -45,7 +45,7 @@ export const getSwapList = () => (dispatch, getState) => {
       return {
         list: swapList,
         from:
-          to.symbol === 'WAIV' && swaps.includes(from.symbol)
+          to.symbol === 'WAIV' && swaps?.includes(from.symbol)
             ? {
                 ...allSymbolList.find(item => item.symbol === from.symbol),
                 pair: `WAIV:${from.symbol}`,
@@ -71,7 +71,7 @@ export const setToToken = token => (dispatch, getState) => {
     payload: {
       token,
       tokenFrom:
-        token.symbol === 'WAIV' && swaps.includes(from.symbol)
+        token.symbol === 'WAIV' && swaps?.includes(from.symbol)
           ? { ...from, pair: `WAIV:${from.symbol}` }
           : swapList[token.symbol].find(pair => pair.symbol === from.symbol),
     },

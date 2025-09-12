@@ -343,7 +343,7 @@ export default function websiteReducer(state = initialState, action) {
       const namesToDelete = action.payload;
 
       const updatedTrusties = trusties.map(trusty =>
-        namesToDelete.includes(trusty.name) ? { ...trusty, loading: true } : trusty,
+        namesToDelete?.includes(trusty.name) ? { ...trusty, loading: true } : trusty,
       );
 
       return {
@@ -357,7 +357,7 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
-        trusties: state.trusties.filter(admin => !namesToDelete.includes(admin.name)),
+        trusties: state.trusties.filter(admin => !namesToDelete?.includes(admin.name)),
       };
     }
 

@@ -38,7 +38,7 @@ export const WebsitesAuthorities = ({
   });
 
   const addAdmin = () => {
-    if (authorities.includes(selectUser.name)) {
+    if (authorities?.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
       addWebsiteAuthorities(host, selectUser);

@@ -87,7 +87,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
 
   const getRewardsMethod = async skip => {
     query.delete('showAll');
-    if (isLocation && !history.location.search.includes('area')) {
+    if (isLocation && !history.location.search?.includes('area')) {
       let coordinats = location;
 
       if (isEmpty(coordinats)) {

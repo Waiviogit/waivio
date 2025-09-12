@@ -194,7 +194,7 @@ export const getMoreUserAccountHistory = (
   startDate,
   endDate,
 ) => dispatch => {
-  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
+  const isGuest = username?.startsWith(GUEST_PREFIX) || username?.startsWith(BXY_GUEST_PREFIX);
 
   return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,

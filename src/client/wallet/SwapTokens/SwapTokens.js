@@ -48,7 +48,8 @@ const doubleSwapToWaiv = ['SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH'];
 const SwapTokens = props => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const rates = useSelector(getRatesList);
-  const swapToWaiv = (from, to) => doubleSwapToWaiv.includes(from?.symbol) && to?.symbol === 'WAIV';
+  const swapToWaiv = (from, to) =>
+    doubleSwapToWaiv?.includes(from?.symbol) && to?.symbol === 'WAIV';
 
   const [impact, setImpact] = useState(0);
   const [fromAmount, setFromAmount] = useState(0);
@@ -224,7 +225,7 @@ const SwapTokens = props => {
       handleCloseModal();
     }
   };
-  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(props.from.symbol)
+  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST?.includes(props.from.symbol)
     ? fromAmount * rates[props.from.symbol]
     : fromAmount * rates[props.from.symbol] * props.hiveRateInUsd;
 

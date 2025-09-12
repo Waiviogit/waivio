@@ -53,7 +53,7 @@ export default (state = initialState, action) => {
 
       result?.users?.forEach(user => {
         // eslint-disable-next-line no-param-reassign
-        user.isFollowing = followingUsersList.includes(user.account);
+        user.isFollowing = followingUsersList?.includes(user.account);
       });
 
       return {
@@ -495,7 +495,7 @@ export default (state = initialState, action) => {
         };
       }
 
-      const isChecked = !currentCategory.tags.includes(tag);
+      const isChecked = !currentCategory.tags?.includes(tag);
 
       tagCategories = tagCategories.filter(categ => categ.categoryName !== category);
 

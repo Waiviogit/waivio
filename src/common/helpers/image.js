@@ -42,11 +42,11 @@ export const isValidImage = (file, maxFileSize = MAXIMUM_UPLOAD_SIZE, allowedFor
 };
 
 export const getImagePath = (album, image, type) =>
-  album.body === 'Related' && !album.body.includes('waivio.nyc3.digitaloceanspaces')
+  album.body === 'Related' && !album.body?.includes('waivio.nyc3.digitaloceanspaces')
     ? getProxyImageURL(image, type)
     : image;
 
 export const getImagePathPost = url =>
-  url.includes('nyc3.digitaloceanspaces') ? url : getProxyImageURL(url);
+  url?.includes('nyc3.digitaloceanspaces') ? url : getProxyImageURL(url);
 
 export default null;

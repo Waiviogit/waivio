@@ -103,7 +103,7 @@ const ImageSetter = ({
       );
     }
 
-    if (file.type.includes('image/gif')) {
+    if (file.type?.includes('image/gif')) {
       handleChangeImage(e);
     } else {
       const image = new Image();
@@ -142,7 +142,7 @@ const ImageSetter = ({
                 Block.IMAGE,
                 {
                   src: `${
-                    newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`
+                    newImage.src?.startsWith('http') ? newImage.src : `https://${newImage.src}`
                   }`,
                   alt: newImage.name,
                 },
@@ -203,7 +203,7 @@ const ImageSetter = ({
 
     const types = item.types;
 
-    if (types.includes('text/html')) {
+    if (types?.includes('text/html')) {
       const htmlBlob = await item.getType('text/html');
       const htmlText = await htmlBlob.text();
       const parser = new DOMParser();

@@ -7,7 +7,7 @@ const ObjectFeaturesItem = ({ feature, wobjPermlink, isSocialGifts }) => {
   const toggleShowMore = () => setShowMore(!showMore);
   const stringLengthLimit = 60;
   const isLongValue = feature.value.length > stringLengthLimit;
-  const value = showMore ? feature.value.substring(0, stringLengthLimit) : feature.value;
+  const value = showMore ? feature.value?.substring(0, stringLengthLimit) : feature.value;
   const buttonDescriprion = showMore ? 'more' : 'less';
 
   useEffect(() => {

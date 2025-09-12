@@ -178,12 +178,12 @@ class PostContent extends React.Component {
     const { content } = this.props;
 
     // PostContent renders only when content is loaded so it's good moment to scroll to comments.
-    if (hash.indexOf('comments') !== -1 || /#@[a-zA-Z0-9-.]+\/[a-zA-Z0-9-]+/.test(hash)) {
+    if (hash?.indexOf('comments') !== -1 || /#@[a-zA-Z0-9-.]+\/[a-zA-Z0-9-]+/.test(hash)) {
       if (
         typeof window !== 'undefined' &&
         content.guestInfo &&
         content.guestInfo.userId &&
-        pathname.indexOf(content.guestInfo.userId) === -1
+        pathname?.indexOf(content.guestInfo.userId) === -1
       )
         if (typeof window !== 'undefined')
           window.history.replaceState(
@@ -307,14 +307,14 @@ class PostContent extends React.Component {
     const postMetaData = jsonParse(content.json_metadata);
     const userVote = find(content.active_votes, { voter: user.name }) || {};
     const postState = {
-      isReblogged: reblogList.includes(content.id),
-      isReblogging: pendingReblogs.includes(content.id),
+      isReblogged: reblogList?.includes(content.id),
+      isReblogging: pendingReblogs?.includes(content.id),
       isSaved: content.guestInfo
-        ? bookmarks.includes(`${content.guestInfo.userId}/${content.root_permlink}`)
-        : bookmarks.includes(content.id),
+        ? bookmarks?.includes(`${content.guestInfo.userId}/${content.root_permlink}`)
+        : bookmarks?.includes(content.id),
       isLiked: userVote.percent > 0 && !userVote.fake,
       isReported: userVote.percent < 0,
-      userFollowed: followingList.includes(getAuthorName(content)),
+      userFollowed: followingList?.includes(getAuthorName(content)),
     };
     const isComment = isEmpty(content?.title);
     const pendings = isComment ? commentsPendingLikes : pendingLikes;
@@ -414,7 +414,7 @@ class PostContent extends React.Component {
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}
-          pendingBookmark={pendingBookmarks.includes(content.id)}
+          pendingBookmark={pendingBookmarks?.includes(content.id)}
           rewardFund={rewardFund}
           ownPost={authorName === user.name}
           sliderMode={sliderMode}

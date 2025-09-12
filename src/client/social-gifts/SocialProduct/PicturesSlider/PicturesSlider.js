@@ -38,8 +38,8 @@ const PicturesSlider = ({
 
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
-    setPhotoIndex(pictures.indexOf(pic));
-    isMobile() && slider.current.goTo(pictures.indexOf(pic));
+    setPhotoIndex(pictures?.indexOf(pic));
+    isMobile() && slider.current.goTo(pictures?.indexOf(pic));
   };
   const onSlideChange = (curr, next) => {
     setLastSlideToShow(next + limitToShow - 1);

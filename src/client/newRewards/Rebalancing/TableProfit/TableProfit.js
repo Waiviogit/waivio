@@ -120,7 +120,7 @@ const TableProfit = props => {
               </th>
             ))}
             {table.map(row => {
-              const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(row.token)
+              const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST?.includes(row.token)
                 ? Number(row.current) * rates[row.token]
                 : Number(row.current) * rates[row.token] * hiveRateInUsd;
 

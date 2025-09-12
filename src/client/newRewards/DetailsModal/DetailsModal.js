@@ -69,7 +69,7 @@ const DetailsModal = ({
       getObjectInfo([objects], locale).then(res => setObject(res.wobjects[0]));
     }
     if (stringRequiredObj) {
-      if (proposition?.requiredObject.includes('@')) {
+      if (proposition?.requiredObject?.includes('@')) {
         getUserAccount(proposition?.requiredObject.replace('@', '')).then(res => {
           setRequiredObject(res);
         });

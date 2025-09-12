@@ -55,7 +55,7 @@ const Deposit = props => {
     dispatch(toggleDepositModal());
     dispatch(setDepositeInfo(authUserName, selectPair));
 
-    if (hiveTokens.includes(selectPair.from_coin_symbol)) {
+    if (hiveTokens?.includes(selectPair.from_coin_symbol)) {
       dispatch(openTransfer(selectPair.account, 0, selectPair.from_coin_symbol, selectPair.memo));
     }
   };
@@ -66,7 +66,7 @@ const Deposit = props => {
   };
 
   const okText =
-    selectPair && hiveTokens.includes(selectPair.from_coin_symbol) ? (
+    selectPair && hiveTokens?.includes(selectPair.from_coin_symbol) ? (
       <FormattedMessage id="continue" defaultMessage="Continue" />
     ) : (
       <FormattedMessage id="done" defaultMessage="Done" />

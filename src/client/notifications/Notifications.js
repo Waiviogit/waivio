@@ -74,12 +74,12 @@ class Notifications extends React.Component {
     notifications.forEach(notification => {
       if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
         notification?.hashtags?.forEach(h => {
-          if (!searchArr.includes(h)) {
+          if (!searchArr?.includes(h)) {
             searchArr.push(h);
           }
         });
       } else if (notification.type === notificationConstants.BELL_THREAD) {
-        if (!searchArr.includes(notification.authorPermlink)) {
+        if (!searchArr?.includes(notification.authorPermlink)) {
           searchArr.push(notification.authorPermlink);
           this.getObjectInfoAsync(notification).then(r => {
             this.setState({

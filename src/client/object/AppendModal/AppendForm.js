@@ -316,7 +316,7 @@ class AppendForm extends Component {
         id: item.body || item.author_permlink,
 
         checkedItemInList: !(
-          !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
+          !isEmpty(sortCustom.exclude) && sortCustom.exclude?.includes(item.author_permlink)
         ),
       }));
 
@@ -454,8 +454,9 @@ class AppendForm extends Component {
     const { wObject } = this.props;
     const getItem = item => get(item, 'title', 'News');
     const newsFilterTitles = get(wObject, 'newsFilter', []).map(item => getItem(item));
-    const newsFilterCount = newsFilterTitles.filter(item => !isEmpty(item) && item.includes('News'))
-      .length;
+    const newsFilterCount = newsFilterTitles.filter(
+      item => !isEmpty(item) && item?.includes('News'),
+    ).length;
     const newsFilterTitle = newsFilterCount === 0 ? 'News' : `News ${newsFilterCount}`;
 
     return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
@@ -1490,7 +1491,7 @@ class AppendForm extends Component {
     const deps = [...departmentsArray];
     let currentArray = deps[index];
 
-    if (!currentArray.includes(str)) {
+    if (!currentArray?.includes(str)) {
       currentArray.push(str);
     } else {
       currentArray = currentArray.filter(dep => dep !== str);
@@ -4557,7 +4558,7 @@ class AppendForm extends Component {
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||
-          (!statusWithoutLinkList.includes(getFieldValue(statusFields.title)) &&
+          (!statusWithoutLinkList?.includes(getFieldValue(statusFields.title)) &&
             isEmpty(getFieldValue(statusFields.link)))
         );
       case objectFields.link:

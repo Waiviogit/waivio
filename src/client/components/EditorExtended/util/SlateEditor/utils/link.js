@@ -13,8 +13,8 @@ export const normalizeLink = url => {
   const lowerUrl = url.toLowerCase();
   let newUrl = url;
 
-  if (lowerUrl.indexOf('http') !== 0 && lowerUrl.indexOf('mailto:') !== 0) {
-    if (url.indexOf('@') >= 0) {
+  if (lowerUrl?.indexOf('http') !== 0 && lowerUrl?.indexOf('mailto:') !== 0) {
+    if (url?.indexOf('@') >= 0) {
       newUrl = `mailto:${newUrl}`;
     } else {
       newUrl = `https://${newUrl}`;

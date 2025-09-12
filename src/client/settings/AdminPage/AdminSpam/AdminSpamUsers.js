@@ -33,7 +33,7 @@ const AdminSpamUsers = ({
   const authUserName = useSelector(getAuthenticatedUserName);
 
   const blockUser = () => {
-    if (blockedUsers.includes(user.name)) {
+    if (blockedUsers?.includes(user.name)) {
       blockAdminSpamUser(authUserName, user.name, false).then(() => {
         setBlockedUsers(blockedUsers.filter(u => u !== user.name));
       });
@@ -65,7 +65,7 @@ const AdminSpamUsers = ({
             {!isEmpty(users) ? (
               <div className="WhitelistContent__container" style={{ marginTop: '20px' }}>
                 {map(users, u => {
-                  const isBlocked = blockedUsers.includes(u.name);
+                  const isBlocked = blockedUsers?.includes(u.name);
 
                   return (
                     <BlacklistUser
@@ -134,10 +134,10 @@ const AdminSpamUsers = ({
         okText={'Confirm'}
         open={open}
         onCancel={() => setOpen(false)}
-        title={blockedUsers.includes(user.name) ? `Unblock ${user.name}` : `Block ${user.name}`}
+        title={blockedUsers?.includes(user.name) ? `Unblock ${user.name}` : `Block ${user.name}`}
       >
-        <span className={blockedUsers.includes(user.name) ? 'flex justify-center' : ''}>
-          {blockedUsers.includes(user.name)
+        <span className={blockedUsers?.includes(user.name) ? 'flex justify-center' : ''}>
+          {blockedUsers?.includes(user.name)
             ? 'Are you sure you want to unblock this user?'
             : "Are you sure you want to block this user? Once blocked, the user won't be able to perform any actions. You can unblock them later if needed."}
         </span>

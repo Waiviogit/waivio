@@ -95,7 +95,7 @@ const BaseObjSettings = ({
     const isChecked = event.target.checked;
 
     setFilters(() => {
-      if (!isChecked && !filters.includes(tab)) {
+      if (!isChecked && !filters?.includes(tab)) {
         return [...filters, tab];
       } else if (isChecked) {
         return filters?.filter(filter => filter !== tab);

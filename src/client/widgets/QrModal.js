@@ -17,7 +17,7 @@ const QrModal = ({ visible, intl, setDataScan, handleClose, setScanAmount, setTo
   const handleAccept = () => {
     handleClose(false);
 
-    if (result.includes(':')) {
+    if (result?.includes(':')) {
       const dataArray = result.split(':')[1].split('?');
       const wallet = dataArray[0];
       const query = new URLSearchParams(`?${dataArray[1]}`);

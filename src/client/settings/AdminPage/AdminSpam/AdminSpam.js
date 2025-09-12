@@ -81,7 +81,7 @@ const AdminSpam = () => {
 
       const newlyBlocked = r.result.filter(u => u.blocked).map(u => u.name);
 
-      setBlockedUsers(prev => [...prev, ...newlyBlocked.filter(name => !prev.includes(name))]);
+      setBlockedUsers(prev => [...prev, ...newlyBlocked.filter(name => !prev?.includes(name))]);
     });
   };
 

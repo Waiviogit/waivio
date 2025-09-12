@@ -42,7 +42,7 @@ const CatalogBreadcrumb = ({
 
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
-    let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
+    let currentBreadCrumbs = breadcrumb.filter(el => permlinks?.includes(el.id));
 
     if (currentObjIsListOrPage) currentBreadCrumbs = addParentToBreadCrumbs(currentBreadCrumbs);
 

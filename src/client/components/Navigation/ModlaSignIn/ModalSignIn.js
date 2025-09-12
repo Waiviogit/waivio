@@ -72,7 +72,7 @@ const ModalSignIn = ({
   const colors = useWebsiteColor();
   let callbackURL = `https://${host}/callback`;
 
-  if (host.includes('localhost') && typeof location !== 'undefined') {
+  if (host?.includes('localhost') && typeof location !== 'undefined') {
     callbackURL = `${location.origin}/callback`;
   }
 

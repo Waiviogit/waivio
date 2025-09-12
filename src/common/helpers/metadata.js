@@ -82,13 +82,13 @@ export const deleteDraftMetadata = (draftIds, userName) =>
     .then(metadata =>
       updateUserMetadata(userName, {
         ...metadata,
-        drafts: metadata.drafts.filter(d => !draftIds.includes(d.draftId)),
+        drafts: metadata.drafts.filter(d => !draftIds?.includes(d.draftId)),
       }),
     )
     .then(resp => resp.user_metadata.drafts);
 
 const getUpdatedBookmarks = (bookmarks, postId) =>
-  bookmarks.includes(postId) ? bookmarks.filter(b => b !== postId) : [...bookmarks, postId];
+  bookmarks?.includes(postId) ? bookmarks.filter(b => b !== postId) : [...bookmarks, postId];
 
 export const toggleBookmarkMetadata = (userName, postId) =>
   getMetadata(userName)

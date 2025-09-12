@@ -85,13 +85,13 @@ class UserInfo extends React.Component {
       ? `${relativeString?.replace('in', '').trim()} ago`
       : relativeString;
 
-    if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
+    if (website && website?.indexOf('http://') === -1 && website?.indexOf('https://') === -1) {
       website = `http://${website}`;
     }
     const url = urlParse(website);
     let hostWithoutWWW = url.host;
 
-    if (hostWithoutWWW.indexOf('www.') === 0) {
+    if (hostWithoutWWW?.indexOf('www.') === 0) {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
     const description = `Discover the dynamic profile of ${match.params.name}, a valued member of our community. Dive into their expertise, activity, and engagement, and explore their involvement with various tokens. Uncover insights into their contributions and participation within our platform. Get to know ${match.params.name} better today!`;

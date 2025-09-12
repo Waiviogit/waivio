@@ -37,7 +37,7 @@ export const getFieldsCount = (wObject, fieldName) => {
   return field?.value || 0;
 };
 
-export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
+export const truncate = str => (str && str.length > 255 ? str?.substring(0, 255) : str);
 
 export const shortenDescription = (description, length) => {
   if (isEmpty(description)) return '';
@@ -47,19 +47,19 @@ export const shortenDescription = (description, length) => {
       secondDescrPart: '',
     };
   }
-  const shortened = description.substr(0, length);
-  const lastPeriod = shortened.lastIndexOf('.');
+  const shortened = description?.substr(0, length);
+  const lastPeriod = shortened?.lastIndexOf('.');
 
   if (lastPeriod === -1) {
     return {
       firstDescrPart: shortened,
-      secondDescrPart: description.substring(length),
+      secondDescrPart: description?.substring(length),
     };
   }
 
   return {
-    firstDescrPart: shortened.substring(0, lastPeriod + 1),
-    secondDescrPart: description.substring(lastPeriod + 1).trim(),
+    firstDescrPart: shortened?.substring(0, lastPeriod + 1),
+    secondDescrPart: description?.substring(lastPeriod + 1).trim(),
   };
 };
 export const getProductDescriptionParagraphs = dividedParagraphs =>
@@ -124,7 +124,7 @@ const sortItemsByPromotion = (items, host) =>
 export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null, host) => {
   if (!items || !items.length) return [];
   const sortItemsByPr = sortItemsByPromotion(items, host);
-  const withoutPromotion = items.filter(item => !sortItemsByPr.includes(item));
+  const withoutPromotion = items.filter(item => !sortItemsByPr?.includes(item));
 
   if (!sortByParam || ['recency'].includes(sortByParam))
     return [...sortItemsByPr, ...withoutPromotion];
@@ -159,7 +159,7 @@ export const getWobjectsForMap = objects =>
   filter(objects, wobj => !isEmpty(wobj.map) || !isEmpty(wobj.parent.map));
 
 export const getLink = link => {
-  if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
+  if (link && link?.indexOf('http://') === -1 && link?.indexOf('https://') === -1) {
     return `http://${link}`;
   }
 
@@ -168,7 +168,7 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []).map(field => field.name);
-  const renderedFields = exposedFields.includes('listItem')
+  const renderedFields = exposedFields?.includes('listItem')
     ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
     : exposedFields;
 

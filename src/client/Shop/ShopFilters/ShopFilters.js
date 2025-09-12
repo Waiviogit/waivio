@@ -37,7 +37,7 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) =>
   const setActiveFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilter[type] || [];
 
-    if (filreList.includes(filter)) {
+    if (filreList?.includes(filter)) {
       const filteredList = filreList.filter(name => name !== filter);
 
       if (isEmpty(filteredList)) {

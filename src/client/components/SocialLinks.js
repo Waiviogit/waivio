@@ -22,7 +22,7 @@ const SocialLinks = ({ profile, isSocial }) => {
 
   const filteredProfiles = socialProfiles.filter(
     socialProfile =>
-      union.includes(socialProfile.id) &&
+      union?.includes(socialProfile.id) &&
       profile[socialProfile.id] !== '' &&
       !['bitcoin', 'ethereum'].includes(socialProfile.id),
   );
@@ -40,7 +40,7 @@ const SocialLinks = ({ profile, isSocial }) => {
 
   const availableWallets = [
     ...hiveHbdWallets,
-    ...socialWallets.filter(wallet => wallets.includes(wallet.id) && profile[wallet.id] !== ''),
+    ...socialWallets.filter(wallet => wallets?.includes(wallet.id) && profile[wallet.id] !== ''),
   ];
 
   return (

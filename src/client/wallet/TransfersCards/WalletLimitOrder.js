@@ -12,7 +12,7 @@ const WalletLimitOrder = ({ timestamp, openPays, currentPays, transactionType })
   const currentPaysValue = currentPays.split(' ')[0];
   let price;
 
-  if (currentPays.includes('HIVE')) {
+  if (currentPays?.includes('HIVE')) {
     price = openPaysValue / currentPaysValue;
   } else {
     price = currentPaysValue / openPaysValue;

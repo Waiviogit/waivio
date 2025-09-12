@@ -283,7 +283,7 @@ const ObjectOfTypePage = props => {
                         selectedType={wobject}
                         setLittleVotePower={setLittleVotePower}
                       />
-                      {followingList.includes(wobject.author_permlink) ? null : (
+                      {followingList?.includes(wobject.author_permlink) ? null : (
                         <FollowObjectForm form={form} />
                       )}
                     </div>

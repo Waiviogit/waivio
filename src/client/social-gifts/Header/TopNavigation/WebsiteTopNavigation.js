@@ -96,8 +96,8 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const filteredUserTab = userNav(shopSettings?.value, intl)
     ?.filter(i => !config?.tabsFilter?.includes(i?.id))
     ?.sort((a, b) => {
-      const orderA = sortedTabs.indexOf(a?.id);
-      const orderB = sortedTabs.indexOf(b?.id);
+      const orderA = sortedTabs?.indexOf(a?.id);
+      const orderB = sortedTabs?.indexOf(b?.id);
 
       return orderA - orderB;
     });
@@ -181,7 +181,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                     >
                       {lastItems.map(i => (
                         <PopoverMenuItem
-                          active={history.location.pathname.includes(i.link)}
+                          active={history.location.pathname?.includes(i.link)}
                           key={i.link}
                           data={i.type}
                         >
