@@ -70,7 +70,6 @@ export const getFeedContent = ({
 }) => (dispatch, getState) => {
   const state = getState();
 
-  // If this is a judge request, use getJudgesPosts instead
   if (isJudges) {
     const follower = getAuthenticatedUserName(state);
 
