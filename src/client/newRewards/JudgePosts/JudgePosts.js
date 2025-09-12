@@ -76,6 +76,25 @@ const JudgePosts = props => {
       authorPermlink: requiredObject,
     });
 
+  const renderContent = () => {
+    if (isEmpty(content) && !isFetching) {
+      return <EmptyCampaign emptyMessage="There are no posts available for this campaign yet." />;
+    }
+
+    return isFetching ? (
+      <Loading />
+    ) : (
+      <Feed
+        content={content}
+        isFetching={isFetching}
+        hasMore={hasMore}
+        loadMoreContent={loadMoreContentAction}
+        showPostModal={props.showPostModal}
+        isGuest={false}
+      />
+    );
+  };
+
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
@@ -104,18 +123,8 @@ const JudgePosts = props => {
             View all
           </p>
         )}
-        {isEmpty(content) ? (
-          <EmptyCampaign emptyMessage={'There are no posts available for this campaign yet.'} />
-        ) : (
-          <Feed
-            content={content}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreContentAction}
-            showPostModal={props.showPostModal}
-            isGuest={false}
-          />
-        )}
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {renderContent()}
         <PostModal userName={props.authenticatedUserName} />
       </div>
 
