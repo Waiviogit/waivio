@@ -37,7 +37,7 @@ export const createCommentPermlink = (parentAuthor, parentPermlink) => {
 
   if (permlink.length > 255) {
     // STEEMIT_MAX_PERMLINK_LENGTH
-    permlink = permlink.substring(permlink.length - 255, permlink.length);
+    permlink = permlink?.substring(permlink.length - 255, permlink.length);
   }
   // only letters numbers and dashes shall survive
   permlink = permlink.toLowerCase().replace(/[^a-z0-9-]+/g, '');
@@ -130,7 +130,7 @@ function checkPermLinkLength(permlink) {
   const length = size(permlink);
   if (length > 255) {
     // STEEMIT_MAX_PERMLINK_LENGTH
-    permlink = permlink.substring(length - 255, length);
+    permlink = permlink?.substring(length - 255, length);
   }
   // only letters numbers and dashes shall survive
   permlink = permlink.toLowerCase().replace(/[^a-z0-9-]+/g, '');
@@ -153,7 +153,7 @@ export function createPermlink(title, author, parent_author, parent_permlink, lo
     if (s === '') {
       s = base58.encode(secureRandom.randomBuffer(4));
     }
-    if (author.startsWith(GUEST_PREFIX) || author.startsWith(BXY_GUEST_PREFIX)) {
+    if (author?.startsWith(GUEST_PREFIX) || author?.startsWith(BXY_GUEST_PREFIX)) {
       const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
       permlink = prefix + s;
       return Promise.resolve(checkPermLinkLength(permlink));
@@ -314,14 +314,14 @@ export const roundNumberToThousands = number => {
   if (number >= 1000 && number < 1000000) {
     const fixedNumber = (number / 1000).toFixed(1);
     number = `${
-      fixedNumber.charAt(fixedNumber.length - 1) === '0'
+      fixedNumber?.charAt(fixedNumber.length - 1) === '0'
         ? fixedNumber.slice(0, fixedNumber.length - 2)
         : fixedNumber
     } K`;
   } else if (number >= 1000000) {
     const fixedBillNumber = (number / 1000000).toFixed(2);
     number = `${
-      fixedBillNumber.charAt(fixedBillNumber.length - 1) === '0'
+      fixedBillNumber?.charAt(fixedBillNumber.length - 1) === '0'
         ? fixedBillNumber.slice(0, fixedBillNumber.length - 3)
         : fixedBillNumber
     } M`;

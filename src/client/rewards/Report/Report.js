@@ -21,7 +21,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
   const [reportDetails, setReportDetails] = useState();
   const location = useLocation();
   const dispatch = useDispatch();
-  const oldReward = location.pathname.includes('rewards-old');
+  const oldReward = location.pathname?.includes('rewards-old');
   const payoutToken = oldReward ? 'HIVE' : 'WAIV';
   const currBenefis = useSelector(getBeneficiariesUsers);
 

@@ -21,7 +21,7 @@ export const linkifyText = text => {
           part.replace(markdownLinkRegex, (match, p1, p2) => {
             let trailingPunctuation = '';
 
-            if (p2.endsWith('.')) {
+            if (p2?.endsWith('.')) {
               // eslint-disable-next-line no-param-reassign
               p2 = p2.slice(0, -1);
               trailingPunctuation = '.';
@@ -39,7 +39,7 @@ export const linkifyText = text => {
           part.replace(urlRegex, url => {
             let trailingPunctuation = '';
 
-            if (url.endsWith('.')) {
+            if (url?.endsWith('.')) {
               // eslint-disable-next-line no-param-reassign
               url = url.slice(0, -1);
               trailingPunctuation = '.';

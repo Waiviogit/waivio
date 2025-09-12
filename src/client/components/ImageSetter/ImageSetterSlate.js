@@ -92,7 +92,7 @@ const ImageSetter = ({
     const item = clipboardItems[0];
     const types = item.types;
 
-    if (types.includes('text/html')) {
+    if (types?.includes('text/html')) {
       const htmlBlob = await item.getType('text/html');
       const htmlText = await htmlBlob.text();
       const parser = new DOMParser();
@@ -162,7 +162,7 @@ const ImageSetter = ({
     if (isModal && isOkayBtn) {
       currentImages.forEach(newImage => {
         if (isEditor && newImage) {
-          const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
+          const url = newImage.src?.startsWith('http') ? newImage.src : `https://${newImage.src}`;
           const { selection } = editor;
 
           if (selection) {

@@ -16,8 +16,8 @@ const decodeUrlParam = param => {
     let decoded = decodeURIComponent(param);
 
     // Handle the specific case where @ was encoded as %40
-    if (decoded.startsWith('%40')) {
-      decoded = '@' + decoded.substring(3);
+    if (decoded?.startsWith('%40')) {
+      decoded = '@' + decoded?.substring(3);
     }
 
     return decoded;
@@ -33,12 +33,12 @@ const decodeUrlParam = param => {
 export const urlDecodeMiddleware = (req, res, next) => {
   try {
     // Log original URL for debugging
-    if (req.url.includes('%40')) {
+    if (req.url?.includes('%40')) {
       console.log('URL Decode Middleware: Processing encoded URL:', req.url);
 
       // Log query parameters if they exist
-      if (req.url.includes('?')) {
-        const queryPart = req.url.substring(req.url.indexOf('?'));
+      if (req.url?.includes('?')) {
+        const queryPart = req.url?.substring(req.url?.indexOf('?'));
         console.log('URL Decode Middleware: Query parameters detected:', queryPart);
       }
     }

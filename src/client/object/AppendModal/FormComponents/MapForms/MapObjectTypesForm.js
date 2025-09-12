@@ -9,7 +9,7 @@ import { andLayout } from '../../../../../common/helpers/AppendFormHelper';
 
 const MapObjectTypesForm = props => {
   const [searchString, setSearchString] = useState('');
-  const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
+  const typesList = listOfObjectTypes.filter(type => !props.typeList?.includes(type));
   const handleSelect = value => {
     props.handleAddTypeTypeList(value);
     setSearchString('');

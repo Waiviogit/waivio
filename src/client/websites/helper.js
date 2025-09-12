@@ -98,13 +98,13 @@ export const showGoogleGSCTagError = tag => {
 
   return (
     !isEmpty(tag) &&
-    (!tag.includes('<meta name="google-site-verification"') ||
-      !tag.includes('content="') ||
+    (!tag?.includes('<meta name="google-site-verification"') ||
+      !tag?.includes('content="') ||
       metaTags.length > 1)
   );
 };
 export const showGoogleAdsConfigError = str =>
-  !isEmpty(str) && (!str.includes('gtag') || !str.includes('config'));
+  !isEmpty(str) && (!str?.includes('gtag') || !str?.includes('config'));
 export const showGoogleEventSnippetError = tag => {
   const openingScriptRegex = /<script[^>]*>/g;
   const closingScriptRegex = /<\/script>/g;
@@ -113,7 +113,7 @@ export const showGoogleEventSnippetError = tag => {
 
   return (
     !isEmpty(tag) &&
-    (!tag.includes('gtag_report_conversion') ||
+    (!tag?.includes('gtag_report_conversion') ||
       isNil(openingTangs) ||
       isNil(closingTangs) ||
       openingTangs?.length > 1 ||

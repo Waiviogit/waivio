@@ -22,8 +22,8 @@ export const fontFamilyMap = {
 };
 export const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format);
-  const isList = list_types.includes(format);
-  // const isIndent = alignment.includes(format);
+  const isList = list_types?.includes(format);
+  // const isIndent = alignment?.includes(format);
   // const isAligned = alignment.some(alignmentType => isBlockActive(editor, alignmentType));
   const isCode = format === CODE_BLOCK;
 
@@ -38,7 +38,7 @@ export const toggleBlock = (editor, format) => {
 
   // if (isAligned && isIndent) {
   //   Transforms.unwrapNodes(editor, {
-  //     match: n => alignment.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+  //     match: n => alignment?.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
   //     split: true,
   //   });
   // }
@@ -53,7 +53,7 @@ export const toggleBlock = (editor, format) => {
   // }
 
   Transforms.unwrapNodes(editor, {
-    match: n => list_types.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+    match: n => list_types?.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
     split: true,
   });
 
@@ -92,7 +92,7 @@ export const removeBlockStyles = editor => {
       type: 'paragraph',
     });
     Transforms.unwrapNodes(editor, {
-      match: n => i.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+      match: n => i?.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
       split: true,
     });
   });
@@ -106,7 +106,7 @@ export const toggleMark = (editor, format) => {
     removeBlockStyles(editor);
     const selected = editor.children[selection.anchor.path[0]];
 
-    if (HEADING_BLOCKS.includes(selected.type)) {
+    if (HEADING_BLOCKS?.includes(selected.type)) {
       Transforms.setNodes(editor, {
         type: 'paragraph',
       });

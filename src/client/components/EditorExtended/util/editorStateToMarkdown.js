@@ -89,9 +89,9 @@ const slateListToHtml = node => {
 };
 
 const applyAtomicStyle = (block, entityMap, content) => {
-  if (block.type.indexOf('atomic') === -1) return content;
+  if (block.type?.indexOf('atomic') === -1) return content;
   // strip the test that was added in the media block
-  const strippedContent = content.substring(0, content.length - block.text.length);
+  const strippedContent = content?.substring(0, content.length - block.text.length);
   let type;
   let data;
   let text;
@@ -151,7 +151,7 @@ function fixWhitespacesInsideStyle(text, style) {
   // Text after closing marker
   const post = text.slice(style.range.end);
 
-  const bodyTrimmedStart = style.range.start + body.indexOf(bodyTrimmed);
+  const bodyTrimmedStart = style.range.start + body?.indexOf(bodyTrimmed);
 
   // Text between opening marker and trimmed content (leading spaces)
   const prefix = text.slice(style.range.start, bodyTrimmedStart);

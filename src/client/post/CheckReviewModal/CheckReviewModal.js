@@ -40,12 +40,12 @@ const CheckReviewModal = ({
       const body = postBody.replace(/[*\\<>]/g, '');
       const regex = new RegExp(url);
 
-      return object.url[object.url.length - 1] === '*' ? body.includes(url) : regex.test(body);
+      return object.url[object.url.length - 1] === '*' ? body?.includes(url) : regex.test(body);
     }
 
     return (
       linkedObjects.some(obj => obj.author_permlink === object.author_permlink) ||
-      postBody.includes(`@${object.name}`)
+      postBody?.includes(`@${object.name}`)
     );
   };
 

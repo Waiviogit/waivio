@@ -216,7 +216,7 @@ class CreateRewards extends React.Component {
           }),
         );
 
-        secondaryObjects = userList.filter(user => secondaryItems.users.includes(user.name));
+        secondaryObjects = userList.filter(user => secondaryItems.users?.includes(user.name));
         primaryObject = userList.find(
           user => user.name === campaign.requiredObject.replace('@', ''),
         );

@@ -11,7 +11,7 @@ import './NewsFilterForm.less';
 
 const NewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
-  const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
+  const typesList = listOfObjectTypes.filter(type => !props.typeList?.includes(type));
   const handleSelect = value => {
     props.handleAddTypeToIgnoreTypeList(value);
     setSearchString('');

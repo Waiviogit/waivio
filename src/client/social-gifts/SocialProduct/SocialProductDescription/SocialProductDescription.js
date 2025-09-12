@@ -23,7 +23,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, objec
 
   const onPicClick = (e, pic) => {
     setOpen(true);
-    setPhotoIndex(photos.indexOf(pic));
+    setPhotoIndex(photos?.indexOf(pic));
   };
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink, objec
     const newParagraphs = dividedParagraphs.reduce((acc, paragraph, index) => {
       const prevParagraph = acc[acc.length - 1];
 
-      if (prevParagraph && prevParagraph.includes(paragraph)) {
+      if (prevParagraph && prevParagraph?.includes(paragraph)) {
         return acc;
       }
       if (paragraph.length > 290) {

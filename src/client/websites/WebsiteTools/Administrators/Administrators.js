@@ -41,7 +41,7 @@ export const WebsitesAdministrators = ({
   });
 
   const addAdmin = () => {
-    if (admins.includes(selectUser.name)) {
+    if (admins?.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
       addWebAdmins(host, selectUser);

@@ -15,7 +15,7 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
       <React.Fragment>
         <InterestingObjects />
         <InterestingPeople />
-        {pathname.includes('/favorites') && <EarnsCommissionsOnPurchases />}
+        {pathname?.includes('/favorites') && <EarnsCommissionsOnPurchases />}
       </React.Fragment>
     );
   }
@@ -23,7 +23,7 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
   return (
     <React.Fragment>
       <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />
-      {pathname.includes('/favorites') && <EarnsCommissionsOnPurchases />}
+      {pathname?.includes('/favorites') && <EarnsCommissionsOnPurchases />}
     </React.Fragment>
   );
 };

@@ -209,7 +209,7 @@ export const validatorsCreator = (
   compareBudgetValues: async (rule, value, callback) => {
     const rate = await getCurrentCurrencyRate(currency);
     const isHive = payoutToken === 'HIVE';
-    const dotIndex = value.indexOf('.');
+    const dotIndex = value?.indexOf('.');
     const userUSDBalance = isHive
       ? parseFloat(user.balance) * rate[currency]
       : currencyInfo.balance * rates * rate[currency];
@@ -231,7 +231,7 @@ export const validatorsCreator = (
 
   compareRewardAndBudget: (rule, value, callback) => {
     const isHive = payoutToken === 'HIVE';
-    const dotIndex = value.indexOf('.');
+    const dotIndex = value?.indexOf('.');
 
     if (isHive) {
       if (value > 0 && value < 0.001) callback(messages.rewardsLess);

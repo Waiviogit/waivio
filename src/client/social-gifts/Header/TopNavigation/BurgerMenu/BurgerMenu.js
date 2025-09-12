@@ -52,7 +52,7 @@ const BurgerMenu = ({
               <Link
                 to={i.link}
                 className={
-                  history.location.pathname.includes(i.link)
+                  history.location.pathname?.includes(i.link)
                     ? 'BurgerMenu__item--active'
                     : 'BurgerMenu__item'
                 }

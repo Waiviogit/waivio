@@ -10,16 +10,16 @@ function broadcast(operations, isReview, actionAuthor) {
   let operation;
 
   if (operations[0][0] === 'custom_json') {
-    if (operations[0][1].id.includes('confirm_referral_license')) {
+    if (operations[0][1].id?.includes('confirm_referral_license')) {
       operation = 'confirm_referral_license';
-    } else if (operations[0][1].id.includes('reject_referral_license')) {
+    } else if (operations[0][1].id?.includes('reject_referral_license')) {
       operation = 'reject_referral_license';
-    } else if (operations[0][1].id.includes('add_referral_agent')) {
+    } else if (operations[0][1].id?.includes('add_referral_agent')) {
       operation = 'add_referral_agent';
-    } else if (operations[0][1].json.includes('reblog')) {
+    } else if (operations[0][1].json?.includes('reblog')) {
       operation = `waivio_guest_reblog`;
     } else if (
-      operations[0][1].json.includes('bell_notifications') ||
+      operations[0][1].json?.includes('bell_notifications') ||
       operations[0][1].id === 'bell_notifications'
     ) {
       operation = `waivio_guest_bell`;

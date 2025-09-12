@@ -29,7 +29,7 @@ const SettingsMain = props => {
   const showSettings = useSelector(getShowSettings);
   const host = props.match.params.site;
   const title = host ? `- ${host} ` : '';
-  const isBookmark = props.match.url.includes('bookmarks');
+  const isBookmark = props.match.url?.includes('bookmarks');
   const containerClassList = classNames('container', {
     'feed-layout': isBookmark,
     'settings-layout': !isBookmark,

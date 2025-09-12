@@ -89,13 +89,13 @@ const UserHeader = ({
     }
   }
 
-  if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
+  if (website && website?.indexOf('http://') === -1 && website?.indexOf('https://') === -1) {
     website = `http://${website}`;
   }
   const url = urlParse(website);
   let hostWithoutWWW = url.host;
 
-  if (hostWithoutWWW.indexOf('www.') === 0) {
+  if (hostWithoutWWW?.indexOf('www.') === 0) {
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
 

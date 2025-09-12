@@ -143,7 +143,7 @@ export function createPostMetadata(
 
   // eslint-disable-next-line no-cond-assign
   while ((matches = userRegex.exec(body))) {
-    if (users.indexOf(matches[1]) === -1) {
+    if (users?.indexOf(matches[1]) === -1) {
       users.push(matches[1]);
     }
   }
@@ -419,12 +419,12 @@ export const getImageForPreview = (post, isUpdates = false) => {
     if (
       post.name === objectFields.productId &&
       !isEmpty(post.body) &&
-      post.body.includes('waivio.nyc3.digitaloceanspaces')
+      post.body?.includes('waivio.nyc3.digitaloceanspaces')
     ) {
       imagePath = [parseJSON(post.body)?.productIdImage];
     }
     if ([objectFields.options, objectFields.menuItem].includes(post.name)) {
-      if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
+      if (!isEmpty(post.body) && post.body?.includes('waivio.nyc3.digitaloceanspaces')) {
         imagePath = [parseJSON(post.body)?.image];
       }
     }

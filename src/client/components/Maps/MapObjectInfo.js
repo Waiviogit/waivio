@@ -51,7 +51,7 @@ class MapObjectInfo extends React.Component {
   }
 
   handleClick = () => {
-    if (location.hostname.includes('waivio') && !isEmpty(this.state.infoboxData)) {
+    if (location.hostname?.includes('waivio') && !isEmpty(this.state.infoboxData)) {
       this.setState({ infoboxData: null });
     }
   };

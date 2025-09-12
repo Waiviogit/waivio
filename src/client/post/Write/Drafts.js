@@ -97,8 +97,8 @@ const Drafts = ({ loading, draftPosts, pendingDrafts, getDraftsListAct }) => {
               key={draft.draftId}
               draft={draft}
               id={draft.draftId}
-              selected={selectedDrafts.includes(draft.draftId)}
-              pending={pendingDrafts.includes(draft.draftId)}
+              selected={selectedDrafts?.includes(draft.draftId)}
+              pending={pendingDrafts?.includes(draft.draftId)}
               onCheck={handleCheck}
             />
           ))}

@@ -29,7 +29,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     if (
       !isEmpty(wobject.author_permlink) &&
-      addOnsRelatedSimilarTypes.includes(wobject.object_type)
+      addOnsRelatedSimilarTypes?.includes(wobject.object_type)
     ) {
       getAddOnObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setAddOnObjects(res.wobjects),

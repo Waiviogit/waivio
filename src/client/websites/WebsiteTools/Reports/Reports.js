@@ -10,7 +10,7 @@ const Reports = () => {
   const location = useLocation();
 
   const getActiveTab = () =>
-    location.pathname.includes(tabs.payments) ? tabs.payments : tabs.actions;
+    location.pathname?.includes(tabs.payments) ? tabs.payments : tabs.actions;
 
   return (
     <Tabs className="Wallets" activeKey={getActiveTab()} animated={false}>

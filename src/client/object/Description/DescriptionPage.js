@@ -52,7 +52,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
 
   const onPicClick = (e, pic) => {
     setIsOpen(true);
-    setPhotoIndex(pics.indexOf(pic));
+    setPhotoIndex(pics?.indexOf(pic));
   };
 
   const cleanedDescription = cleanHtmlCommentsAndLines(description);

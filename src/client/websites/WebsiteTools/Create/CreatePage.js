@@ -40,7 +40,7 @@ const CreatePage = ({
 
   const domainNamesList = Object.keys(parentDomain);
   const showingParentList = searchString
-    ? domainNamesList.filter(host => host.includes(searchString))
+    ? domainNamesList.filter(host => host?.includes(searchString))
     : domainNamesList;
   const statusMessageClassList = available ? 'CreateWebsite__available' : 'CreateWebsite__error';
   const isProd = ['production']?.includes(process.env.NODE_ENV);

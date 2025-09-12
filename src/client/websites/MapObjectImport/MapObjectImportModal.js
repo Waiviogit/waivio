@@ -76,11 +76,11 @@ const MapObjectImportModal = ({
   const history = useHistory();
   const { lat, lon } = userLocation;
   const isRestaurant = object =>
-    object?.googleTypes?.some(t => restaurantGoogleTypes.includes(t)) ||
-    object?.types?.some(t => restaurantGoogleTypes.includes(t));
+    object?.googleTypes?.some(t => restaurantGoogleTypes?.includes(t)) ||
+    object?.types?.some(t => restaurantGoogleTypes?.includes(t));
   const isPlace = object =>
-    object?.googleTypes?.some(t => placeGoogleTypes.includes(t)) ||
-    object?.types?.some(t => placeGoogleTypes.includes(t));
+    object?.googleTypes?.some(t => placeGoogleTypes?.includes(t)) ||
+    object?.types?.some(t => placeGoogleTypes?.includes(t));
   const businessTags = tagsList?.map(t => ({ key: 'Pros', value: t.author_permlink }));
   const restaurantTags = tagsList?.map(t => ({ key: 'Cuisine', value: t.author_permlink }));
   const listAssociations = lists?.map(l => l.author_permlink);

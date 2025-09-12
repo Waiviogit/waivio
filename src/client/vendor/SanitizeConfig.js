@@ -101,8 +101,8 @@ export const parseLink = (
   if (
     typeof window === 'undefined' &&
     safeLinks &&
-    !href.startsWith('/') &&
-    !href.startsWith('#') &&
+    !href?.startsWith('/') &&
+    !href?.startsWith('#') &&
     !isHostSafeFrontend(href, safeLinks)
   ) {
     return { tagName: 'div', text: '' };
@@ -129,11 +129,11 @@ export const parseLink = (
       host: linkUrl.host,
       hash: linkUrl.hash,
     });
-    const internalLink = href.indexOf('/') === 0;
+    const internalLink = href?.indexOf('/') === 0;
 
     if (!internalLink) attys.target = '_blank';
     const chatPictures =
-      linkWebsiteUrl.includes('waivio.nyc3.digitaloceanspaces.com') && isChatBotLink;
+      linkWebsiteUrl?.includes('waivio.nyc3.digitaloceanspaces.com') && isChatBotLink;
 
     if (
       !chatPictures &&
@@ -145,7 +145,7 @@ export const parseLink = (
         href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
 
         if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
-          if (location?.hash && !linkUrl.pathname.endsWith('/webpage'))
+          if (location?.hash && !linkUrl.pathname?.endsWith('/webpage'))
             href = href + location?.hash;
 
           if (linkUrl.hash) {
@@ -161,7 +161,7 @@ export const parseLink = (
           const objName = name || linkUrl.pathname.split('/')[2];
 
           const withCrumbs = href?.includes('breadcrumbs');
-          if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
+          if (location?.hash && !linkUrl.pathname?.endsWith('/webpage')) {
             href = `${href}?breadcrumbs=${objName}/${location?.hash.replace('#', '')}`;
           }
 
@@ -221,7 +221,7 @@ const getHostFromUrl = (url = '') => {
 
     const { hostname } = urlObj;
 
-    if (hostname.startsWith('www.')) return hostname.replace('www.', '');
+    if (hostname?.startsWith('www.')) return hostname.replace('www.', '');
     return hostname;
   } catch (error) {
     console.log(`Failed to parse URL: ${url}`, error.message);

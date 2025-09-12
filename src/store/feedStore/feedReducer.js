@@ -358,7 +358,7 @@ const feed = (state = initialState, action) => {
       };
     case feedTypes.SET_PROFILE_FILTERS: {
       const tagConditions = get(state, 'blog.tagConditions', []);
-      const isHas = tagConditions.includes(action.payload);
+      const isHas = tagConditions?.includes(action.payload);
 
       return {
         ...state,

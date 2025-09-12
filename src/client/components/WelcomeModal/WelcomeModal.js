@@ -177,7 +177,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
     fullList.filter(topic => {
       const nameKey = topic.name ? 'name' : 'default_name';
 
-      return listWithCategory.includes(topic[nameKey]);
+      return listWithCategory?.includes(topic[nameKey]);
     });
 
   const topic = [
@@ -242,7 +242,7 @@ const WelcomeModal = ({ isAuthorization, intl, userName, location, isGuest, loca
   ];
 
   const handleCancel = e => {
-    if (e.currentTarget.className.indexOf('close') >= 0) {
+    if (e.currentTarget.className?.indexOf('close') >= 0) {
       setIsOpenTopicsModal(false);
       setIsOpenUsersModal(false);
       dispatch(setUsersStatus());

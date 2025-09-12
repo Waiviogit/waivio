@@ -56,7 +56,7 @@ const HiveEngineSummaryInfo = props => {
   const estAccValue = combinedList.reduce((acc, curr) => {
     const stake = curr.stake || 0;
 
-    const balanceInUsd = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(curr.symbol)
+    const balanceInUsd = HIVE_ENGINE_DEFAULT_SWAP_LIST?.includes(curr.symbol)
       ? (Number(curr.balance) + Number(stake)) * props?.rates?.[curr.symbol]
       : (Number(curr.balance) + Number(stake)) * props?.rates?.[curr.symbol] * props.rates.HIVE;
 

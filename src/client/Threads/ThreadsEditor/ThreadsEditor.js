@@ -53,7 +53,7 @@ const ThreadsEditor = ({
     e.preventDefault();
     e.stopPropagation();
     if (isAuth) {
-      if (!commentMsg.includes(`${isUser ? '@' : '#'}${name}`)) {
+      if (!commentMsg?.includes(`${isUser ? '@' : '#'}${name}`)) {
         setShowError(true);
 
         return;

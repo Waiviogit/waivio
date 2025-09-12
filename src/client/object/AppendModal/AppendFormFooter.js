@@ -28,7 +28,7 @@ const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, selectWobj, d
         selectedType={selectWobj}
         setLittleVotePower={setLittleVotePower}
       />
-      {followingList.includes(wObject.author_permlink) ? null : (
+      {followingList?.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />
       )}
 

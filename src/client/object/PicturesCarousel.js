@@ -25,7 +25,7 @@ const PicturesCarousel = ({ activePicture, pics, wobject, albums, isSocialProduc
 
   const onImgClick = (e, img) => {
     setIsOpen(true);
-    setPhotoIndex(pics.indexOf(img));
+    setPhotoIndex(pics?.indexOf(img));
   };
 
   const album = albums?.find(alb => alb?.items?.some(pic => pic.body === pics[photoIndex]?.body));

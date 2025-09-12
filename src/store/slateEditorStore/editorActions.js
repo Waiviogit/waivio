@@ -764,7 +764,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   const isReview = includes(draftId, 'review');
   const state = getState();
   const linkedObjects = getEditorLinkedObjects(state);
-  const isLinked = string => linkedObjects.some(item => item.defaultShowLink.includes(string));
+  const isLinked = string => linkedObjects.some(item => item.defaultShowLink?.includes(string));
 
   return (
     Object.values(rawContent.entityMap)

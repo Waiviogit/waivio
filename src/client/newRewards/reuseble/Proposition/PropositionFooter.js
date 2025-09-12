@@ -78,7 +78,7 @@ const PropositionFooter = ({
 
   useEffect(() => {
     if (showComment) setShowComment(false);
-    if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
+    if (location.search?.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
   const getCommentsList = async (editing, perml, value) => {

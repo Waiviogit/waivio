@@ -28,7 +28,7 @@ const WaivPriceChart = () => {
   const [currPrice, setCurrPrice] = React.useState(0);
   const [currencyPriceChange, setCurrencyPriceChange] = React.useState(0);
   const isMobl = isMobile();
-  const isYearPeriod = yearsPeriods.includes(type);
+  const isYearPeriod = yearsPeriods?.includes(type);
 
   const getChartsWidth = () => {
     let width = 800;

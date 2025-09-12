@@ -28,7 +28,7 @@ export const isTwitchPlayer = url => VIDEO_MATCH_URL.TWITCH_PLAYER.test(url);
 const isTwitch = url => VIDEO_MATCH_URL.TWITCH.test(url);
 
 export const isYoutube = url =>
-  url.includes('shorts')
+  url?.includes('shorts')
     ? VIDEO_MATCH_URL.YOUTUBE_SHORTS.test(url)
     : VIDEO_MATCH_URL.YOUTUBE.test(url);
 
@@ -53,17 +53,17 @@ export const isPeerTube = url => VIDEO_MATCH_URL.PEERTUBE.test(url);
 export const getIframeContainerClass = (embed, inPost, isSocial) =>
   classNames('PostFeedEmbed__container', {
     'PostFeedEmbed__container-vimeo': embed.provider_name === 'Vimeo',
-    PostFeedEmbed__container_high: embed.url && embed.url.includes('tiktok.com/'),
-    'PostFeedEmbed__container--thin': embed.url.includes('tiktok.com/') && inPost,
-    'PostFeedEmbed__container--shotsPost': embed.url.includes('shorts') && inPost,
-    'PostFeedEmbed__container--shotsSocial': isSocial && embed.url.includes('shorts'),
+    PostFeedEmbed__container_high: embed.url && embed.url?.includes('tiktok.com/'),
+    'PostFeedEmbed__container--thin': embed.url?.includes('tiktok.com/') && inPost,
+    'PostFeedEmbed__container--shotsPost': embed.url?.includes('shorts') && inPost,
+    'PostFeedEmbed__container--shotsSocial': isSocial && embed.url?.includes('shorts'),
     'PostFeedEmbed__container_instagram-reel': VIDEO_MATCH_URL.INSTAGRAM_REEL.test(embed.url),
     PostFeedEmbed__container_instagram: VIDEO_MATCH_URL.INSTAGRAM.test(embed.url),
   });
 
 export const getYoutubeSrc = url => {
   const id =
-    url && url.includes('shorts')
+    url && url?.includes('shorts')
       ? url?.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)[1]
       : url?.match(VIDEO_MATCH_URL.YOUTUBE)[1];
 

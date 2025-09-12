@@ -338,7 +338,7 @@ class ObjectInfo extends React.Component {
     const { wobject, userName, isEditMode, albums, appendAlbum } = this.props;
     const fieldsCount = getFieldsCount(wobject, name);
     const exposedFields = getExposedFieldsByObjType(wobject);
-    const shouldDisplay = exposedFields.includes(name);
+    const shouldDisplay = exposedFields?.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
     return (

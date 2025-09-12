@@ -21,8 +21,8 @@ const WaivioObject = ({ wobj, unfollow, follow }) => {
 
   if (
     websiteLink &&
-    websiteLink.indexOf('http://') === -1 &&
-    websiteLink.indexOf('https://') === -1
+    websiteLink?.indexOf('http://') === -1 &&
+    websiteLink?.indexOf('https://') === -1
   ) {
     websiteLink = `http://${websiteLink}`;
   }

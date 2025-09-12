@@ -52,7 +52,7 @@ const AdminGuests = ({ intl }) => {
 
   const getActiveTab = () => {
     const active = Object.entries(adminGuestTabs).find(([, value]) =>
-      location.pathname.includes(value),
+      location.pathname?.includes(value),
     );
 
     return active ? active[1] : adminGuestTabs.users;
@@ -114,7 +114,7 @@ const AdminGuests = ({ intl }) => {
 
       const newMuted = r.result.filter(u => u.mutedBy?.includes(authUserName)).map(u => u.name);
 
-      setMuted(prev => [...prev, ...newMuted.filter(name => !prev.includes(name))]);
+      setMuted(prev => [...prev, ...newMuted.filter(name => !prev?.includes(name))]);
     });
   };
 
@@ -155,8 +155,8 @@ const AdminGuests = ({ intl }) => {
                               style={{ marginTop: '20px' }}
                             >
                               {map(users, u => {
-                                const isMuted = muted.includes(u.name);
-                                const isInMuted = u.mutedBy.includes(authUserName);
+                                const isMuted = muted?.includes(u.name);
+                                const isInMuted = u.mutedBy?.includes(authUserName);
 
                                 return (
                                   <BlacklistUser
