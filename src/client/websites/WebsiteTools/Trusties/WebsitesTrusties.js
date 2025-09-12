@@ -37,7 +37,7 @@ const WebsitesTrusties = ({
   });
 
   const addAdmin = () => {
-    if (trusties.includes(selectUser.name)) {
+    if (trusties?.includes(selectUser.name)) {
       message.error('This user in admins list');
     } else {
       addWebsiteTrusties(host, selectUser);

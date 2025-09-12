@@ -33,7 +33,7 @@ export default class UserList extends React.Component {
     const defaultPageItems = 10;
     const noOfItemsToShow = defaultPageItems * this.state.page;
     const users = this.state.search
-      ? this.props.users.filter(user => user.indexOf(search) >= 0)
+      ? this.props.users.filter(user => user?.indexOf(search) >= 0)
       : this.props.users;
 
     return (

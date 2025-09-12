@@ -28,7 +28,7 @@ const ObjectsRelated = ({
   useEffect(() => {
     if (
       !isEmpty(currWobject.author_permlink) &&
-      addOnsRelatedSimilarTypes.includes(currWobject.object_type)
+      addOnsRelatedSimilarTypes?.includes(currWobject.object_type)
     ) {
       getRelatedObjectsFromDepartments(
         currWobject.author_permlink,

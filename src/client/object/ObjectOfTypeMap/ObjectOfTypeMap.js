@@ -188,7 +188,7 @@ const ObjectOfTypeMap = props => {
       const longitude = get(parsedMap, 'longitude');
       const isMarked =
         Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
-        props.match.path.includes('rewards');
+        props.match.path?.includes('rewards');
 
       return latitude && longitude ? (
         <CustomMarker

@@ -17,7 +17,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
     ? moment(authenticatedUser.updatedAt || authenticatedUser.last_account_update).unix()
     : '';
 
-  if (username && (username.includes(GUEST_PREFIX) || username.includes(BXY_GUEST_PREFIX))) {
+  if (username && (username?.includes(GUEST_PREFIX) || username?.includes(BXY_GUEST_PREFIX))) {
     return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}?${lastAccountUpdate}`;
   }
 

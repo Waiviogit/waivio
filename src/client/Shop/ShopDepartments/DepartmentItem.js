@@ -37,7 +37,7 @@ const DepartmentItem = ({
   });
   const depNameWithoutNestedClassList = classNames('ShopDepartmentsList__link', {
     'ShopDepartmentsList__link--active':
-      urlDepartment === department.name || categories.includes(department.name),
+      urlDepartment === department.name || categories?.includes(department.name),
   });
   const itemListClassList = classNames('ShopDepartmentsList__list', {
     'ShopDepartmentsList__list--show': showNested,
@@ -60,7 +60,7 @@ const DepartmentItem = ({
   useEffect(() => {
     if (
       (urlDepartment === department.name ||
-        (urlDepartment !== department.name && categories.includes(department.name))) &&
+        (urlDepartment !== department.name && categories?.includes(department.name))) &&
       department.subdirectory &&
       isEmpty(nestedDepartments)
     ) {
@@ -73,7 +73,7 @@ const DepartmentItem = ({
     }
 
     if (
-      (!categories.includes(department.name) && department.name !== urlDepartment) ||
+      (!categories?.includes(department.name) && department.name !== urlDepartment) ||
       !urlDepartment
     ) {
       setShowNested(false);
@@ -105,8 +105,8 @@ const DepartmentItem = ({
   }, [history.location.hash]);
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
-  const renderList = nestedDepartments.some(j => categories.includes(j.name))
-    ? nestedDepartments.filter(perm => categories.includes(perm.name))
+  const renderList = nestedDepartments.some(j => categories?.includes(j.name))
+    ? nestedDepartments.filter(perm => categories?.includes(perm.name))
     : nestedDepartments;
 
   return (

@@ -1,8 +1,8 @@
 const START_WITH_PERCENT = 5;
 
 const getPositions = text => {
-  const imgPos = text.indexOf('<img');
-  const embedPos = text.indexOf('<iframe');
+  const imgPos = text?.indexOf('<img');
+  const embedPos = text?.indexOf('<iframe');
   const percentMultiplier = 100 / text.length;
   const firstEmbed = embedPos !== -1 ? embedPos * percentMultiplier : undefined;
   const firstImage = imgPos !== -1 ? imgPos * percentMultiplier : undefined;
@@ -11,8 +11,8 @@ const getPositions = text => {
 };
 
 const getFirstMediaFromHtml = value => {
-  const indexVideo = value.indexOf('<iframe');
-  const indexImage = value.indexOf('<img');
+  const indexVideo = value?.indexOf('<iframe');
+  const indexImage = value?.indexOf('<img');
 
   if (indexVideo >= 0 && indexImage >= 0) {
     if (indexVideo > indexImage) {
@@ -60,7 +60,7 @@ const isPostWithEmbedBeforeFirstHalf = tagPositions => postWithAnEmbed(tagPositi
 const isPostVideo = (providerName, shouldRenderThumb) => {
   const providerNames = ['YouTube', 'DTube', 'TikTok', '3Speak'];
 
-  return providerNames.includes(providerName) && shouldRenderThumb;
+  return providerNames?.includes(providerName) && shouldRenderThumb;
 };
 
 export {

@@ -11,7 +11,7 @@ import './HiveEngineCurrencyItem.less';
 
 const HiveEngineCurrencyItem = ({ token, rates }) => {
   const stake = token.stake || 0;
-  const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(token.symbol)
+  const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST?.includes(token.symbol)
     ? (Number(token.balance) + Number(stake)) * rates[token.symbol]
     : (Number(token.balance) + Number(stake)) * rates[token.symbol] * rates.HIVE;
   const isSwapSymbol = token.symbol?.includes('SWAP');

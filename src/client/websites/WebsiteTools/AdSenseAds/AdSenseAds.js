@@ -32,11 +32,11 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
 
   const showError =
     !isEmpty(adSense) &&
-    (!adSense.includes('async') ||
-      !adSense.includes('<script') ||
-      !adSense.includes('src="https://pagead2.googlesyndication.com') ||
+    (!adSense?.includes('async') ||
+      !adSense?.includes('<script') ||
+      !adSense?.includes('src="https://pagead2.googlesyndication.com') ||
       scriptTags.length > 1);
-  const showDisplayUnitCodeError = !isEmpty(displayUnitCode) && !displayUnitCode.includes('<ins');
+  const showDisplayUnitCodeError = !isEmpty(displayUnitCode) && !displayUnitCode?.includes('<ins');
   const handleChangeAdSense = e => {
     setAdSense(e.target.value);
   };
@@ -48,10 +48,10 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   };
   const showTextError =
     !isEmpty(txtFile) &&
-    (txtFile.includes('<script') ||
-      txtFile.includes('</script') ||
-      !txtFile.includes('google.com') ||
-      !txtFile.includes('pub'));
+    (txtFile?.includes('<script') ||
+      txtFile?.includes('</script') ||
+      !txtFile?.includes('google.com') ||
+      !txtFile?.includes('pub'));
 
   const disabled = showError && showTextError;
 

@@ -249,7 +249,7 @@ class AddItemModal extends Component {
                 }
               />
 
-              {followingList.includes(wobject.author_permlink) ? null : (
+              {followingList?.includes(wobject.author_permlink) ? null : (
                 <FollowObjectForm loading={isLoading} form={form} />
               )}
 

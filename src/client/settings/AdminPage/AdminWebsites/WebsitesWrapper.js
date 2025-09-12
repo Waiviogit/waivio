@@ -24,7 +24,7 @@ const WebsitesWrapper = () => {
   const location = useLocation();
 
   const getActiveTab = () => {
-    const active = Object.entries(tabs).find(([, value]) => location.pathname.includes(value));
+    const active = Object.entries(tabs).find(([, value]) => location.pathname?.includes(value));
 
     return active ? active[1] : tabs.websites;
   };

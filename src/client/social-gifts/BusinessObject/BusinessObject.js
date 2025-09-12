@@ -124,14 +124,14 @@ const BusinessObject = ({
     : menuItemsArray
         .filter(
           item =>
-            !sortExclude.includes(item.body) &&
-            !sortExclude.includes(item.author_permlink) &&
-            !sortExclude.includes(item.permlink) &&
-            !sortExclude.includes(item.id),
+            !sortExclude?.includes(item.body) &&
+            !sortExclude?.includes(item.author_permlink) &&
+            !sortExclude?.includes(item.permlink) &&
+            !sortExclude?.includes(item.id),
         )
         .sort((a, b) => {
-          const indexA = customSort.indexOf(a.permlink);
-          const indexB = customSort.indexOf(b.permlink);
+          const indexA = customSort?.indexOf(a.permlink);
+          const indexB = customSort?.indexOf(b.permlink);
 
           return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
         });

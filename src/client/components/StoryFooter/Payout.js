@@ -23,8 +23,8 @@ const Payout = React.memo(({ intl, post, isUpdates }) => {
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
   const postTags = get(parseJSON(post.json_metadata), 'tags', []);
   const waivEligible = Array.isArray(postTags)
-    ? postTags.some(tag => WAIVEligibleTags.includes(tag))
-    : WAIVEligibleTags.includes(postTags);
+    ? postTags.some(tag => WAIVEligibleTags?.includes(tag))
+    : WAIVEligibleTags?.includes(postTags);
   const payoutClassList = classNames('Payout', {
     'Payout--waiv': waivEligible,
   });

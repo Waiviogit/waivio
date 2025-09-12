@@ -187,7 +187,7 @@ const WebsitesConfigurations = ({
       const longitude = get(parsedMap, ['longitude']);
       const isMarked =
         Boolean((wobject && wobject.campaigns) || (wobject && !isEmpty(wobject.propositions))) ||
-        match.path.includes('rewards');
+        match.path?.includes('rewards');
 
       return latitude && longitude ? (
         <CustomMarker

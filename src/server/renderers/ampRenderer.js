@@ -34,7 +34,7 @@ function cleanHTML(html) {
     const attribs = elem.attribs;
 
     Object.keys(attribs).forEach(key => {
-      if (allowedIframeAttrs.includes(key)) {
+      if (allowedIframeAttrs?.includes(key)) {
         const value = key === 'src' ? upgradeURL(attribs[key]) : attribs[key];
 
         el.attr(key, value);

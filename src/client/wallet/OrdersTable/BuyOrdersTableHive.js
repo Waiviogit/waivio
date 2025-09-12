@@ -11,7 +11,7 @@ const BuyOrdersTableHive = () => {
   const getMappedArray = async () => {
     const response = await getHiveBookList(name);
     const mappedArray = response
-      .filter(el => el.sell_price.quote.includes('HIVE'))
+      .filter(el => el.sell_price.quote?.includes('HIVE'))
       .sort((a, b) => b.real_price - a.real_price)
       .map(el => ({
         textId: el.id,

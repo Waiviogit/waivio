@@ -52,7 +52,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, c
   const setFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilters[type] || [];
 
-    if (filreList.includes(filter)) {
+    if (filreList?.includes(filter)) {
       const filteredList = filreList.filter(name => name !== filter);
 
       if (isEmpty(filteredList)) {

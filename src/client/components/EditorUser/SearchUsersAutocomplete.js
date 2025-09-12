@@ -111,7 +111,7 @@ class SearchUsersAutocomplete extends React.Component {
 
     const searchUsersOptions = searchString
       ? searchUsersResults
-          .filter(obj => !itemsIdsToOmit.includes(obj.account))
+          .filter(obj => !itemsIdsToOmit?.includes(obj.account))
           .map(obj => (
             <AutoComplete.Option key={obj.account} label={obj.account} className="SearchUser item">
               <div className="SearchUser">

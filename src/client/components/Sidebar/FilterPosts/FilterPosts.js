@@ -45,7 +45,7 @@ const FilterPosts = ({ setProfileFilters, name }) => {
 
   const handleTagSelect = (e, tag) => {
     setProfileFilters(tag.author_permlink);
-    const isHas = filters.includes(tag.author_permlink);
+    const isHas = filters?.includes(tag.author_permlink);
 
     const newFilters = isHas
       ? filters?.filter(t => t !== tag.author_permlink)

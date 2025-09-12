@@ -50,7 +50,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
   const pinnedPostsUrls = useSelector(getPinnedPostsUrls);
   const previewLoading = useSelector(getPreviewLoadingFromState);
   const pendingVote = useSelector(getPendingLikes)[post.id];
-  const currentUserPin = pinnedPostsUrls.includes(post.url);
+  const currentUserPin = pinnedPostsUrls?.includes(post.url);
 
   const tooltipTitle = (
     <FormattedMessage

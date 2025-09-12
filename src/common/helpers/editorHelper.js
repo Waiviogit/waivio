@@ -129,7 +129,7 @@ const findHashtag = (editor, start, word, showSearch) => {
 const findHashtagInChildren = (children, startOffset) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const child of children) {
-    if (child.text && child.text.lastIndexOf('#', startOffset) !== -1) {
+    if (child.text && child.text?.lastIndexOf('#', startOffset) !== -1) {
       return child;
     }
     if (child.children) {
@@ -157,11 +157,11 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange, lastSele
 
     let currItem = null;
 
-    if (list_types.includes(currBlock?.type) || currBlock?.type === 'table') {
+    if (list_types?.includes(currBlock?.type) || currBlock?.type === 'table') {
       currItem = findHashtagInChildren(currBlock.children, start.offset);
     } else {
       currItem = currBlock?.children?.find(
-        child => child.text && child.text.lastIndexOf('#', start.offset) !== -1,
+        child => child.text && child.text?.lastIndexOf('#', start.offset) !== -1,
       );
     }
 
@@ -171,7 +171,7 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange, lastSele
       return { isNeedOpenSearch: false };
     }
 
-    const startPositionOfWord = blockText.lastIndexOf('#', start.offset);
+    const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
     const { searchString, range } = findHashtag(editor, start, '', showSearch) ?? {};
 
     if (searchString && onlyRange) {
@@ -184,7 +184,7 @@ export const checkCursorInSearchSlate = (editor, showSearch, onlyRange, lastSele
 
     if (
       searchString &&
-      blockText.includes(searchString) &&
+      blockText?.includes(searchString) &&
       startPositionOfWord + searchString.length === start.offset
     ) {
       const wordStartPoint = Editor.before(editor, start, { unit: 'word' });
@@ -218,8 +218,8 @@ export const replaceTextOnChange = (editorState, text, selectionState) => {
   const start = selectionState.getStartOffset();
   const blockText = currentContentBlock.getText();
 
-  const startPositionOfWord = blockText.lastIndexOf('#', start);
-  let endPositionOfWord = blockText.indexOf(' ', start);
+  const startPositionOfWord = blockText?.lastIndexOf('#', start);
+  let endPositionOfWord = blockText?.indexOf(' ', start);
 
   if (endPositionOfWord === -1) endPositionOfWord = blockText.length;
 

@@ -12,13 +12,13 @@ const LinkItem = ({ link, index, intl }) => {
   const dispatch = useDispatch();
   const directObjTypes = ['person'];
 
-  let linkTo = directObjTypes.includes(link?.object_type || '')
+  let linkTo = directObjTypes?.includes(link?.object_type || '')
     ? `/object/${link.permlink}`
     : link.link;
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
 
-  if (linkTo.includes('/active-campaigns')) {
+  if (linkTo?.includes('/active-campaigns')) {
     return (
       <a key={link.link} className="WebsiteTopNavigation__link" rel="noreferrer" href={link.link}>
         {getMenuLinkTitle(link, intl, 24)}
@@ -39,7 +39,7 @@ const LinkItem = ({ link, index, intl }) => {
       className="WebsiteTopNavigation__link"
       isActive={() =>
         (index === 0 && history.location.pathname === '/') ||
-        history.location.pathname.includes(linkTo)
+        history.location.pathname?.includes(linkTo)
       }
       activeClassName={'WebsiteTopNavigation__link--active'}
       key={link.link}

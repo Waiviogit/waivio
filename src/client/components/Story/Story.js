@@ -354,7 +354,8 @@ class Story extends React.Component {
     const isObjectPage =
       (match.params.name === wobject?.author_permlink && isAuthUser) || post.permlink === pinUrl;
     const currentUserPin =
-      pinnedPostsUrls.includes(post.url) || (post.permlink === pinUrl && post.author === user.name);
+      pinnedPostsUrls?.includes(post.url) ||
+      (post.permlink === pinUrl && post.author === user.name);
     const tooltipTitle = (
       <FormattedMessage
         id={currentUserPin ? 'unpin' : 'pin'}
@@ -369,7 +370,7 @@ class Story extends React.Component {
         ? 'pin-grey'
         : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
-    const isRebloggedPost = rebloggedUser.includes(user.name);
+    const isRebloggedPost = rebloggedUser?.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
     const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};

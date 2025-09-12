@@ -111,7 +111,7 @@ export default class Buttons extends React.Component {
   shareClick() {
     if (
       this.props.post.reblogged_users &&
-      this.props.post.reblogged_users.includes(this.props.username)
+      this.props.post.reblogged_users?.includes(this.props.username)
     ) {
       return;
     }
@@ -278,7 +278,7 @@ export default class Buttons extends React.Component {
 
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
     const rebloggedClass = classNames({
-      active: post.reblogged_users && post.reblogged_users.includes(username),
+      active: post.reblogged_users && post.reblogged_users?.includes(username),
       Buttons__link: true,
     });
 

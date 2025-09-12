@@ -13,7 +13,7 @@ const CookieNotice = () => {
   const hostname = typeof window !== 'undefined' ? window?.location?.hostname : 'default';
   const cookieKey = `cookie_accepted_${hostname}`;
 
-  const isWaivio = hostname.includes('waivio');
+  const isWaivio = hostname?.includes('waivio');
   const signInPage = history?.location?.pathname?.includes('sign-in');
   const showNotice = isWaivio || !signInPage;
 

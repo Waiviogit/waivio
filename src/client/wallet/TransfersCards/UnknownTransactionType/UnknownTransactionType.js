@@ -16,7 +16,7 @@ const UnknownTransactionType = ({ transaction }) => {
       <div className="UnknownTransactionType__info-container">
         <div className="UnknownTransactionType__info">
           {Object.entries(transaction).map(item => {
-            if (hideFields.includes(item[0]) || !item[1]) return null;
+            if (hideFields?.includes(item[0]) || !item[1]) return null;
 
             return (
               <div key={item[0]}>

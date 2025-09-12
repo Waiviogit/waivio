@@ -125,9 +125,9 @@ const TopNavigation = ({ location: { pathname } }) => {
     pathname === '/' ||
     Object.values(LINKS).some(
       url =>
-        pathname.includes(url) &&
-        !pathname.includes(`/object/`) &&
-        !pathname.includes(`/favorites/`),
+        pathname?.includes(url) &&
+        !pathname?.includes(`/object/`) &&
+        !pathname?.includes(`/favorites/`),
     );
 
   const navItems = [
@@ -135,21 +135,21 @@ const TopNavigation = ({ location: { pathname } }) => {
       to: '/',
       id: 'feed',
       defaultMessage: 'Feed',
-      isActive: pathname === '/' || FEED_URLS.some(url => pathname.includes(url)),
+      isActive: pathname === '/' || FEED_URLS.some(url => pathname?.includes(url)),
       event: 'click_myfeed',
     },
     {
       to: `${LINKS.REWARDS}${rewardsTab}`,
       id: 'earn',
       defaultMessage: 'Earn',
-      isActive: pathname.includes(LINKS.REWARDS),
+      isActive: pathname?.includes(LINKS.REWARDS),
       event: 'click_earn',
     },
     {
       to: LINKS.SHOP,
       id: 'shop',
       defaultMessage: 'Shop',
-      isActive: pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.WEBSITES_SHOPIFY),
+      isActive: pathname?.includes(LINKS.SHOP) && !pathname?.includes(LINKS.WEBSITES_SHOPIFY),
       event: 'click_mainshop',
     },
     !isEmpty(authenticatedUser) && {
@@ -157,15 +157,15 @@ const TopNavigation = ({ location: { pathname } }) => {
       id: 'tools',
       defaultMessage: 'Tools',
       isActive:
-        !pathname.includes(LINKS.REWARDS) &&
-        (TOOLS_URLS.includes(pathname) || WEBSITE_URLS.some(url => pathname.includes(url))),
+        !pathname?.includes(LINKS.REWARDS) &&
+        (TOOLS_URLS?.includes(pathname) || WEBSITE_URLS.some(url => pathname?.includes(url))),
       event: 'click_tools',
     },
     {
       to: LINKS.ABOUT,
       id: 'about',
       defaultMessage: 'About',
-      isActive: pathname.includes(LINKS.ABOUT),
+      isActive: pathname?.includes(LINKS.ABOUT),
       event: 'click_about',
     },
   ].filter(Boolean);

@@ -48,7 +48,7 @@ const DnDList = ({
         return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
       }),
     );
-    setExpand(featuredObjectTypes.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
+    setExpand(featuredObjectTypes?.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
     setInclude(isEmpty(sortCustom) ? listItems.map(item => item.id) : sortCustom.include);
     setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
   }, [listItems.length]);
@@ -57,7 +57,7 @@ const DnDList = ({
     let updatedInclude;
     let updatedExclude;
 
-    if (!exclude.includes(id)) {
+    if (!exclude?.includes(id)) {
       updatedInclude = include.filter(itemId => itemId !== id);
       updatedExclude = [...exclude, id];
     } else {
@@ -79,7 +79,7 @@ const DnDList = ({
   const setOpen = (e, id) => {
     let newExpanded;
 
-    if (expand.includes(id)) {
+    if (expand?.includes(id)) {
       newExpanded = expand.filter(expandedId => expandedId !== id); // remove
     } else {
       newExpanded = [...expand, id]; // add

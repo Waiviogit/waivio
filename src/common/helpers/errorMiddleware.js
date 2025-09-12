@@ -3,12 +3,12 @@ import errors from '../constants/errors';
 import { notify } from '../../client/app/Notification/notificationActions';
 
 export function parseBlockChainError(error) {
-  const errorType = find(errors, e => error.includes(e.fingerprint));
+  const errorType = find(errors, e => error?.includes(e.fingerprint));
 
   if (has(errorType, 'message')) {
     return errorType.message;
   }
-  const idx = error.indexOf(':');
+  const idx = error?.indexOf(':');
 
   if (idx > 0) {
     return error.slice(idx + 1).trim();

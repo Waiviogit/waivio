@@ -194,7 +194,7 @@ const CatalogWrap = props => {
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const status = get(parseWobjectField(listItem, 'status'), 'title');
 
-    if (statusNoVisibleItem.includes(status)) return null;
+    if (statusNoVisibleItem?.includes(status)) return null;
 
     const hash = createNewHash(listItem.author_permlink, location.hash);
     const path = hasType(listItem, 'page') ? `/object/${wobject.author_permlink}/page#${hash}` : '';

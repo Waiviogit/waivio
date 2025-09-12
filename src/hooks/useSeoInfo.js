@@ -9,10 +9,10 @@ const originalWaivioHost = 'www.waivio.com';
 const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
   const { name } = useParams();
-  const isWaivio = appUrl.includes('waivio');
+  const isWaivio = appUrl?.includes('waivio');
   let url = `${appUrl}${location?.pathname}`;
 
-  if (!isWaivio && location?.pathname.includes('/object/')) {
+  if (!isWaivio && location?.pathname?.includes('/object/')) {
     url = `${appUrl}/object/${name}`;
   }
 
@@ -48,7 +48,7 @@ export const useSeoInfoWithAppUrl = (appHost, isChecklist, objectType) => {
 export const getCanonicalHostForPost = metadataHost => {
   const waivioHosts = ['waivio.com', 'waiviodev.com'];
 
-  if (isNil(metadataHost) || waivioHosts.includes(metadataHost)) {
+  if (isNil(metadataHost) || waivioHosts?.includes(metadataHost)) {
     return originalWaivioHost;
   }
 

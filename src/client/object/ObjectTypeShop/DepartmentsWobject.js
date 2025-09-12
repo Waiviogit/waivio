@@ -20,7 +20,7 @@ const DepartmentsWobject = ({ shopFilter, onClose, name }) => {
       getShopDepartments={getShopDepartments}
       onClose={onClose}
       path={
-        match.url.includes('object-shop')
+        match.url?.includes('object-shop')
           ? `/object-shop/${wobjName}`
           : `/object/${match.params.name}/shop`
       }

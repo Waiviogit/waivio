@@ -82,8 +82,8 @@ const PostPopoverMenu = ({
   const hidePinRemove =
     isThread ||
     !wobjAuthorPermlink ||
-    !match.url.includes(`/${wobjAuthorPermlink}`) ||
-    (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
+    !match.url?.includes(`/${wobjAuthorPermlink}`) ||
+    (isSocial && !match.url?.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
 
   const userPage = history?.location?.pathname?.includes('/@');
@@ -108,7 +108,7 @@ const PostPopoverMenu = ({
   const handleSelect = key => {
     let currKey = key;
 
-    if (key.includes('rejectReservation')) {
+    if (key?.includes('rejectReservation')) {
       const parseKey = key.split('/');
 
       currKey = parseKey[0];

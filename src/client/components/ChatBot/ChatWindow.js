@@ -340,7 +340,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     //     return '/imagine ';
     //   }
     //
-    //   return prev.includes('/imagine') ? prev : `/imagine ${prev}`;
+    //   return prev?.includes('/imagine') ? prev : `/imagine ${prev}`;
     // });
   };
 
@@ -356,8 +356,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
 
       const item = clipboardItems[0];
 
-      if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
-        const type = item.types.includes('image/png') ? 'image/png' : 'image/jpeg';
+      if (item.types?.includes('image/png') || item.types?.includes('image/jpeg')) {
+        const type = item.types?.includes('image/png') ? 'image/png' : 'image/jpeg';
         const blob = await item.getType(type);
 
         pasteImageAndText(blob);
@@ -367,7 +367,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         return;
       }
 
-      if (item.types.includes('text/html')) {
+      if (item.types?.includes('text/html')) {
         const htmlBlob = await item.getType('text/html');
         const htmlText = await htmlBlob.text();
         const parser = new DOMParser();
@@ -375,7 +375,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         const img = doc.querySelector('img');
 
         if (img?.src) {
-          if (img.src.startsWith('blob:')) {
+          if (img.src?.startsWith('blob:')) {
             const response = await fetch(img.src);
             const blob = await response.blob();
 

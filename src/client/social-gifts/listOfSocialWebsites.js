@@ -11,8 +11,8 @@ export const notCustomDomains = ['dining', 'waivio', 'webcache.googleusercontent
 
 export const isCustomDomain = hostname =>
   !(
-    socialDomens.some(item => hostname.includes(item)) ||
-    notCustomDomains.some(item => hostname.includes(item))
+    (hostname && socialDomens.some(item => hostname.includes(item))) ||
+    (hostname && notCustomDomains.some(item => hostname.includes(item)))
   );
 
 export default null;

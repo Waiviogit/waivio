@@ -41,7 +41,7 @@ class TagsSelector extends Component {
   }
   deleteTopic(tag) {
     const updatedTopics = this.props.tags.filter(t => t !== tag);
-    const isTagDeleted = this.state.deletedTags.includes(tag);
+    const isTagDeleted = this.state.deletedTags?.includes(tag);
 
     this.setState(prevState => ({
       deletedTags: isTagDeleted ? prevState.deletedTags : [...prevState.deletedTags, tag],
@@ -56,13 +56,13 @@ class TagsSelector extends Component {
 
     if (!currentURL) {
       if (
-        !tags.includes(defaultHashtag) &&
+        !tags?.includes(defaultHashtag) &&
         defaultHashtag &&
-        !deletedTags.includes(defaultHashtag)
+        !deletedTags?.includes(defaultHashtag)
       ) {
         tags.unshift(defaultHashtag);
       }
-      if (!tags.includes('waivio') && !deletedTags.includes('waivio')) {
+      if (!tags?.includes('waivio') && !deletedTags?.includes('waivio')) {
         tags.unshift('waivio');
       }
     }

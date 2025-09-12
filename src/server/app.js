@@ -19,7 +19,7 @@ import { restartHandler } from '../common/services/errorNotifier';
  * @returns {string} - The query string part of the URL
  */
 const preserveQueryParams = url => {
-  return url.includes('?') ? url.substring(url.indexOf('?')) : '';
+  return url?.includes('?') ? url?.substring(url?.indexOf('?')) : '';
 };
 
 const indexPath = `${paths.templates}/index.hbs`;
