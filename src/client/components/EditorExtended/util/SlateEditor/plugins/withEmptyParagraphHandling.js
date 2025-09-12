@@ -30,8 +30,11 @@ const withEmptyParagraphHandling = editor => {
             : Path.previous(selectedElementPath);
           const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
 
-          // If previous node is not an image/video, remove the empty paragraph and keep cursor at the same visual position
-          if (prevNode && !['image', 'video'].includes(prevNode.type)) {
+          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
+          // If previous node is not an image/video and it's not the only paragraph, remove the empty paragraph and keep cursor at the same visual position
+          if (prevNode && !['image', 'video'].includes(prevNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
             // Position cursor at the end of the previous paragraph
@@ -95,8 +98,11 @@ const withEmptyParagraphHandling = editor => {
           const nextPath = Path.next(selectedElementPath);
           const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-          // If next node is an image/video, remove the empty paragraph and keep cursor at the same visual position
-          if (nextNode && ['image', 'video'].includes(nextNode.type)) {
+          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
+          // If next node is an image/video and it's not the only paragraph, remove the empty paragraph and keep cursor at the same visual position
+          if (nextNode && ['image', 'video'].includes(nextNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
             // Position cursor at the beginning of the next paragraph (if any)
