@@ -48,7 +48,7 @@ const Threads = props => {
     !isEmpty(props.user) && !isEmpty(props.user?.posting_json_metadata)
       ? JSON.parse(props.user?.posting_json_metadata)
       : {};
-  const signature = jsonMetadata?.profile?.signature || null;
+  const signature = jsonMetadata?.profile?.signature || '';
   const sign = props.signatureAuth || signature;
   const initialInputValue = `${
     props.isUser ? `@${name}` : `[#${name}](https://${currHost}/object/${name}) `
