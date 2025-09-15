@@ -53,8 +53,11 @@ const Campaing = ({
       : intl.formatMessage({ id: 'rewards_details_earn_up_to', defaultMessage: 'Earn up to' });
   const history = useHistory();
   const query = useQuery();
+  const path = history?.location?.pathname?.includes('/rewards/judges')
+    ? `/rewards/judges/eligible`
+    : `${history.location.pathname}/eligible`;
   let pathname = history.location.pathname?.includes('/rewards/')
-    ? `${history.location.pathname}/eligible`
+    ? path
     : `/rewards/${campain.reach?.[0] || 'global'}/all`;
 
   if (query.get('showAll')) {

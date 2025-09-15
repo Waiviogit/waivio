@@ -147,6 +147,7 @@ const Proposition = ({
       )}
       {openDetails && (
         <DetailsModal
+          isJudges={isJudges}
           isSocialProduct={isSocialProduct}
           proposition={{ ...proposition, reserved: propositionType === 'reserved' }}
           isModalDetailsOpen={openDetails}

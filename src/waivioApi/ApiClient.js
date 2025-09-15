@@ -5209,7 +5209,7 @@ export const getJudgesPosts = (judgeName, authorPermlink, skip, limit = 10) =>
   fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}`, {
     headers: {
       ...headers,
-      // follower: judgeName,
+      follower: judgeName,
     },
     body: JSON.stringify({ judgeName, authorPermlink, skip, limit }),
     method: 'POST',
