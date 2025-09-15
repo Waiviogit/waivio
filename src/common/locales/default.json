@@ -21,6 +21,8 @@
   "continue": "Continue",
   "close": "Close",
   "swap": "Swap",
+  "contests_object_duration": "Contest duration (days)",
+  "giveaways_object_duration": "Giveaway duration (days)",
   "go_back": "Go back",
   "list_empty": "No data",
   "error_fetch_failed": "We couldn't load this feed contents. Check your connection and try again",

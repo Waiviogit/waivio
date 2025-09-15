@@ -527,7 +527,12 @@ const CreateFormRenderer = props => {
                 )}
               </FormItem>
             )}
-            <FormItem label="Giveaway duration (days)">
+            <FormItem
+              label={intl.formatMessage({
+                id: `${campType}_duration`,
+                defaultMessage: 'Giveaway duration (days)',
+              })}
+            >
               {getFieldDecorator('durationDays', {
                 initialValue: String(durationDays || 7),
                 rules: [{ required: true }],

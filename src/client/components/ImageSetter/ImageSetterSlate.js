@@ -20,7 +20,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import {
   createImageNode,
-  insertImageReplaceParagraph,
+  insertImageForImageSetter,
 } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
@@ -183,7 +183,32 @@ const ImageSetter = ({
             }
           }
 
-          if (editor.children && editor.children.length > 0) {
+          const altText = isEditor
+            ? altTexts[newImage.id] || newImage.name || 'image'
+            : newImage.name || 'image';
+
+          // Check if editor has only one empty paragraph (placeholder case)
+          const isOnlyEmptyParagraph =
+            editor.children.length === 1 &&
+            editor.children[0].type === 'paragraph' &&
+            editor.children[0].children?.[0]?.text === '';
+
+          if (isOnlyEmptyParagraph) {
+            // Replace the first paragraph with image and empty paragraph
+            try {
+              Transforms.removeNodes(editor, { at: [0] });
+              Transforms.insertNodes(
+                editor,
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
+                { at: [0] },
+              );
+            } catch (error) {
+              Transforms.insertNodes(
+                editor,
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
+              );
+            }
+          } else if (editor.children && editor.children.length > 0) {
             const insertOptions = {};
 
             if (
@@ -199,36 +224,28 @@ const ImageSetter = ({
               }
             }
 
-            const altText = isEditor
-              ? altTexts[newImage.id] || newImage.name || 'image'
-              : newImage.name || 'image';
-
             try {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
                 insertOptions,
               );
             } catch (error) {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
               );
             }
           } else {
-            const altText = isEditor
-              ? altTexts[newImage.id] || newImage.name || 'image'
-              : newImage.name || 'image';
-
             try {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
               );
             } catch (error) {
               Transforms.insertNodes(
                 editor,
-                insertImageReplaceParagraph(editor, createImageNode(altText, { url })),
+                insertImageForImageSetter(editor, createImageNode(altText, { url })),
               );
             }
           }
