@@ -373,7 +373,10 @@ class Story extends React.Component {
     const isRebloggedPost = rebloggedUser?.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
-    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const jsonMetadata =
+      !isEmpty(user) && !isEmpty(user?.posting_json_metadata)
+        ? JSON.parse(user?.posting_json_metadata)
+        : {};
     const signature = jsonMetadata?.profile?.signature || null;
     const sign = signatureAuth || signature;
 
