@@ -32,6 +32,7 @@ const DetailsModal = ({
   isModalDetailsOpen,
   onActionInitiated,
   intl,
+  isJudges = false,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -122,8 +123,10 @@ const DetailsModal = ({
       return dispatch(reserveProposition(proposition, userName))
         .then(() => {
           const urlConfig = {
-            pathname: '/editor',
-            search,
+            pathname: isJudges
+              ? `/rewards/judges/eligible/${proposition?.requiredObject?.author_permlink}/posts`
+              : '/editor',
+            search: isJudges ? '' : search,
           };
 
           history.push(urlConfig);
@@ -135,8 +138,10 @@ const DetailsModal = ({
     }
 
     const urlConfig = {
-      pathname: '/editor',
-      search,
+      pathname: isJudges
+        ? `/rewards/judges/eligible/${proposition?.requiredObject?.author_permlink}/posts`
+        : '/editor',
+      search: isJudges ? '' : search,
     };
 
     return history.push(urlConfig);
@@ -146,6 +151,7 @@ const DetailsModal = ({
   const reserveButton =
     isWaivio || isSocial ? (
       <ReservedButtons
+        isJudges={isJudges}
         reserved={proposition.reserved}
         handleReserve={onClick}
         disable={disable}
@@ -223,6 +229,7 @@ const DetailsModal = ({
 
 DetailsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
+  isJudges: PropTypes.bool,
   isModalDetailsOpen: PropTypes.bool.isRequired,
   proposition: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,

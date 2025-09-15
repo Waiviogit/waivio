@@ -1,33 +1,111 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
-import { Transforms, Range } from 'slate';
+import React, { useEffect, useRef, useState } from 'react';
+import { Transforms, Range, Editor, Element } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { insertCells, getParentTable } from '../utils/table';
-import { getSelection } from '../../index';
 
 const TableToolbar = props => {
   const { editor, editorNode, intl } = props;
   const tableToolbarRef = useRef(null);
   const { selection } = editor;
+  const [isTableFocused, setIsTableFocused] = useState(false);
+
+  const checkTableFocus = () => {
+    if (!selection) {
+      setIsTableFocused(false);
+
+      return false;
+    }
+
+    try {
+      const [tableNode] = Editor.nodes(editor, {
+        match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
+      });
+
+      const isInTable = !!tableNode;
+
+      setIsTableFocused(isInTable);
+
+      return isInTable;
+    } catch (error) {
+      console.warn('Error checking table focus:', error);
+      setIsTableFocused(false);
+
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (!tableToolbarRef.current || !editorNode) return;
+
+    const isInTable = checkTableFocus();
+
+    if (!isInTable) {
+      tableToolbarRef.current.classList.add('hidden');
+
+      return;
+    }
+
     if (typeof window !== 'undefined') {
       const toolbarNode = tableToolbarRef.current;
-      const nativeSelection = getSelection(window);
-      const nodeFocused = nativeSelection.focusNode;
-      const table = nodeFocused?.parentNode.closest('table');
 
-      if (!table) return;
-      const tableBoundary = table.getBoundingClientRect();
-      const parentBoundary = editorNode.getBoundingClientRect();
-      const left = tableBoundary.left - parentBoundary.left;
+      try {
+        const [tableNode] = Editor.nodes(editor, {
+          match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
+        });
 
-      toolbarNode.style.top = `${tableBoundary.top - parentBoundary.top - 55}px`;
-      toolbarNode.style.left = left;
-      toolbarNode.style.position = 'absolute';
+        if (!tableNode) {
+          toolbarNode.classList.add('hidden');
+
+          return;
+        }
+
+        const tableDomNode = ReactEditor.toDOMNode(editor, tableNode[0]);
+
+        if (!tableDomNode) {
+          toolbarNode.classList.add('hidden');
+
+          return;
+        }
+
+        const tableBoundary = tableDomNode.getBoundingClientRect();
+        const parentBoundary = editorNode.getBoundingClientRect();
+        const left = tableBoundary.left - parentBoundary.left;
+
+        toolbarNode.style.top = `${tableBoundary.top - parentBoundary.top - 55}px`;
+        toolbarNode.style.left = `${left}px`;
+        toolbarNode.style.position = 'absolute';
+        toolbarNode.style.zIndex = '1000';
+        toolbarNode.classList.remove('hidden');
+      } catch (error) {
+        console.warn('Error positioning table toolbar:', error);
+        toolbarNode.classList.add('hidden');
+      }
     }
   }, [editor, selection]);
+
+  useEffect(() => {
+    if (!tableToolbarRef.current || !editorNode || !isTableFocused) return;
+
+    const handleResize = () => {
+      const isInTable = checkTableFocus();
+
+      if (isInTable) {
+        const currentSelection = editor.selection;
+
+        if (currentSelection) {
+          Transforms.select(editor, currentSelection);
+        }
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [editor, editorNode, isTableFocused]);
 
   const handleRemoveTable = e => {
     const [, path] = getParentTable(selection.anchor.path, editor);
@@ -61,7 +139,7 @@ const TableToolbar = props => {
       const [table, path] = getParentTable(selection.anchor.path, editor);
       const [start] = Range.edges(selection);
 
-      handleRemoveTable(); // Assuming this function removes the table structure
+      handleRemoveTable();
       insertCells(editor, table, path, 'columns');
 
       Transforms.select(editor, {

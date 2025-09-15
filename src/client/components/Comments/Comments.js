@@ -270,7 +270,10 @@ class Comments extends React.Component {
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
     const showComments = !isRecipe || (isRecipe && show);
-    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const jsonMetadata =
+      !isEmpty(user) && !isEmpty(user?.posting_json_metadata)
+        ? JSON.parse(user?.posting_json_metadata)
+        : {};
     const signature = jsonMetadata?.profile?.signature || null;
 
     return (

@@ -235,7 +235,20 @@ const Toolbar = props => {
     setShowLinkInput(false);
     setUrlInputValue('');
 
+    // Ensure focus is maintained and table toolbar is repositioned if needed
     ReactEditor.focus(editor);
+
+    // Small delay to allow DOM updates and then trigger table toolbar repositioning
+    setTimeout(() => {
+      if (isTable) {
+        // Force a selection update to trigger table toolbar repositioning
+        const currentSelection = editor.selection;
+
+        if (currentSelection) {
+          Transforms.select(editor, currentSelection);
+        }
+      }
+    }, 50);
   };
 
   const removeLink = e => {
@@ -258,6 +271,26 @@ const Toolbar = props => {
         Transforms.select(editor, imagePath);
 
         setTimeout(() => positionImageToolbar(), 0);
+      } else {
+        // Remove link from text selection
+        Transforms.unwrapNodes(editor, {
+          match: n => !Editor.isEditor(n) && ElementSlate.isElement(n) && n.type === 'link',
+        });
+
+        // Ensure focus is maintained and table toolbar is repositioned if needed
+        ReactEditor.focus(editor);
+
+        // Small delay to allow DOM updates and then trigger table toolbar repositioning
+        setTimeout(() => {
+          if (isTable) {
+            // Force a selection update to trigger table toolbar repositioning
+            const currentSelection = editor.selection;
+
+            if (currentSelection) {
+              Transforms.select(editor, currentSelection);
+            }
+          }
+        }, 50);
       }
     }
   };
