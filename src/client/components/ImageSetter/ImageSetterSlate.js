@@ -7,7 +7,7 @@ import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Transforms, Path, Node } from 'slate';
+import { Transforms, Path, Node, Editor } from 'slate';
 import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
@@ -250,7 +250,27 @@ const ImageSetter = ({
             }
           }
 
-          ReactEditor.focus(editor);
+          // After inserting image, move cursor to the empty paragraph after the image
+          setTimeout(() => {
+            try {
+              // Find the image node that was just inserted
+              const imageNodes = Editor.nodes(editor, {
+                match: n => n.type === 'image',
+              });
+
+              if (imageNodes) {
+                // Move cursor to the end of the editor to be in the empty paragraph
+                const endPoint = Editor.end(editor, []);
+
+                Transforms.select(editor, endPoint);
+              }
+
+              ReactEditor.focus(editor);
+            } catch (error) {
+              // Fallback: just focus the editor
+              ReactEditor.focus(editor);
+            }
+          }, 0);
         }
       });
     }
