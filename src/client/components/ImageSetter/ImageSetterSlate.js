@@ -7,7 +7,7 @@ import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Transforms, Path, Node, Editor } from 'slate';
+import { Transforms, Path } from 'slate';
 import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
@@ -18,10 +18,7 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import {
-  createImageNode,
-  insertImageForImageSetter,
-} from '../EditorExtended/util/SlateEditor/utils/embed';
+import { createImageNode, createEmptyNode } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
 import './ImageSetter.less';
@@ -162,115 +159,14 @@ const ImageSetter = ({
     if (isModal && isOkayBtn) {
       currentImages.forEach(newImage => {
         if (isEditor && newImage) {
-          const url = newImage.src?.startsWith('http') ? newImage.src : `https://${newImage.src}`;
-          const { selection } = editor;
+          const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
-          if (selection) {
-            const selectedElementPath = selection.anchor.path;
-
-            try {
-              const selectedElement = Node.descendant(editor, selectedElementPath);
-
-              if (
-                selectedElement &&
-                selectedElement.type === 'paragraph' &&
-                selectedElement.children?.[0]?.text === ''
-              ) {
-                Transforms.removeNodes(editor, { at: selectedElementPath });
-              }
-            } catch (error) {
-              console.warn('Cannot find element at path:', selectedElementPath);
-            }
-          }
-
-          const altText = isEditor
-            ? altTexts[newImage.id] || newImage.name || 'image'
-            : newImage.name || 'image';
-
-          // Check if editor has only one empty paragraph (placeholder case)
-          const isOnlyEmptyParagraph =
-            editor.children.length === 1 &&
-            editor.children[0].type === 'paragraph' &&
-            editor.children[0].children?.[0]?.text === '';
-
-          if (isOnlyEmptyParagraph) {
-            // Replace the first paragraph with image and empty paragraph
-            try {
-              Transforms.removeNodes(editor, { at: [0] });
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-                { at: [0] },
-              );
-            } catch (error) {
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-              );
-            }
-          } else if (editor.children && editor.children.length > 0) {
-            const insertOptions = {};
-
-            if (
-              isAndroidDevice() &&
-              lastSelection &&
-              lastSelection.anchor &&
-              lastSelection.anchor.path
-            ) {
-              const nextPath = Path.next(lastSelection.anchor.path);
-
-              if (nextPath) {
-                insertOptions.at = nextPath;
-              }
-            }
-
-            try {
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-                insertOptions,
-              );
-            } catch (error) {
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-              );
-            }
-          } else {
-            try {
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-              );
-            } catch (error) {
-              Transforms.insertNodes(
-                editor,
-                insertImageForImageSetter(editor, createImageNode(altText, { url })),
-              );
-            }
-          }
-
-          // After inserting image, move cursor to the empty paragraph after the image
-          setTimeout(() => {
-            try {
-              // Find the image node that was just inserted
-              const imageNodes = Editor.nodes(editor, {
-                match: n => n.type === 'image',
-              });
-
-              if (imageNodes) {
-                // Move cursor to the end of the editor to be in the empty paragraph
-                const endPoint = Editor.end(editor, []);
-
-                Transforms.select(editor, endPoint);
-              }
-
-              ReactEditor.focus(editor);
-            } catch (error) {
-              // Fallback: just focus the editor
-              ReactEditor.focus(editor);
-            }
-          }, 0);
+          Transforms.insertNodes(
+            editor,
+            [createImageNode(newImage.name, { url }), createEmptyNode()],
+            isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
+          );
+          ReactEditor.focus(editor);
         }
       });
     }
