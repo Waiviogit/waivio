@@ -377,7 +377,7 @@ class Story extends React.Component {
       !isEmpty(user) && !isEmpty(user?.posting_json_metadata)
         ? JSON.parse(user?.posting_json_metadata)
         : {};
-    const signature = jsonMetadata?.profile?.signature || null;
+    const signature = jsonMetadata?.profile?.signature || '';
     const sign = signatureAuth || signature;
 
     if (isPostDeleted(post)) return <div />;
