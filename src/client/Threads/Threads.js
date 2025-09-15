@@ -44,7 +44,10 @@ const Threads = props => {
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
   const currHost = typeof location !== 'undefined' && location.hostname;
-  const jsonMetadata = !isEmpty(props.user) ? JSON.parse(props.user?.posting_json_metadata) : {};
+  const jsonMetadata =
+    !isEmpty(props.user) && !isEmpty(props.user?.posting_json_metadata)
+      ? JSON.parse(props.user?.posting_json_metadata)
+      : {};
   const signature = jsonMetadata?.profile?.signature || null;
   const sign = props.signatureAuth || signature;
   const initialInputValue = `${
