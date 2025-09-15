@@ -1,4 +1,9 @@
-import { createImageNode } from '../embed';
+import {
+  createImageNode,
+  insertImageReplaceParagraph,
+  insertImageForImageSetter,
+  createEmptyNode,
+} from '../embed';
 
 describe('Image Insert Functions', () => {
   describe('createImageNode', () => {
@@ -30,6 +35,31 @@ describe('Image Insert Functions', () => {
         height: 300,
         children: [{ text: '' }],
       });
+    });
+  });
+
+  describe('insertImageReplaceParagraph', () => {
+    it('should return array with empty paragraph, image node, and empty paragraph', () => {
+      const mockEditor = {};
+      const imageNode = createImageNode('test image', { url: 'https://example.com/image.jpg' });
+      const result = insertImageReplaceParagraph(mockEditor, imageNode);
+
+      expect(result).toHaveLength(3);
+      expect(result[0]).toEqual(createEmptyNode());
+      expect(result[1]).toEqual(imageNode);
+      expect(result[2]).toEqual(createEmptyNode());
+    });
+  });
+
+  describe('insertImageForImageSetter', () => {
+    it('should return array with image node and empty paragraph', () => {
+      const mockEditor = {};
+      const imageNode = createImageNode('test image', { url: 'https://example.com/image.jpg' });
+      const result = insertImageForImageSetter(mockEditor, imageNode);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual(imageNode);
+      expect(result[1]).toEqual(createEmptyNode());
     });
   });
 });
