@@ -274,7 +274,7 @@ class Comments extends React.Component {
       !isEmpty(user) && !isEmpty(user?.posting_json_metadata)
         ? JSON.parse(user?.posting_json_metadata)
         : {};
-    const signature = jsonMetadata?.profile?.signature || null;
+    const signature = jsonMetadata?.profile?.signature || '';
 
     return (
       <div className={classNames('Comments', { 'quick-comments': isQuickComments })}>
