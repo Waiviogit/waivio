@@ -109,6 +109,12 @@ export function getHtml(
     return `${acc + item}\n\n`;
   }, '');
   parsedBody = remarkable.render(parsedBody);
+  parsedBody = parsedBody.replace(/<a[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi, (match, content) => {
+    const imgWithLinked = content.replace(/<img([^>]*)>/gi, '<img$1 data-linked="1">');
+
+    return `<a${match.match(/<a([^>]*)>/)[1]}>${imgWithLinked}</a>`;
+  });
+
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
@@ -194,6 +200,14 @@ const Body = props => {
           // eslint-disable-next-line no-param-reassign
           imgNode.alt = '/images/icons/no-image.png';
         };
+
+        // Handle chatbot image links
+        if (imgNode.getAttribute('data-chatbot-link')) {
+          // eslint-disable-next-line no-param-reassign
+          imgNode.onclick = () => {
+            window.open(imgNode.src, '_blank', 'noopener,noreferrer');
+          };
+        }
       });
     }
   }, []);
