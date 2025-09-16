@@ -113,6 +113,7 @@ export function getHtml(
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
+  const MD_DATA_IMG = /!\[([^\]]*)\]\(\s*(data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/=]+)\s*\)/gi;
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);
@@ -132,6 +133,10 @@ export function getHtml(
       large: !isMobl,
       safeLinks,
     }),
+  );
+  parsedBody = parsedBody.replace(
+    MD_DATA_IMG,
+    (_, alt, src) => `<img src="${src}" alt="${alt}" data-fallback-src="${src}">`,
   );
 
   if (body.length - parsedBody.length > 1000 && sendPostError) {

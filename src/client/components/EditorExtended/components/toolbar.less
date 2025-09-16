@@ -75,7 +75,8 @@
     height: 35px !important;
   }
 
-  &.md-editor-toolbar--linkinput {
+  &.md-editor-toolbar--linkinput,
+  &.md-editor-toolbar--altinput {
     animation: pop-downwards 200ms forwards linear;
     background: @white;
     width: auto !important;
@@ -85,7 +86,8 @@
     height: 36px;
   }
 
-  .md-url-input {
+  .md-url-input,
+  .md-alt-input {
     box-sizing: border-box;
     border-radius: 4px 0 0 4px;
     display: block;
@@ -110,7 +112,8 @@
     }
   }
 
-  .md-url-button {
+  .md-url-button,
+  .md-alt-button {
     height: 32px;
     border-radius: 0 4px 4px 0;
   }
@@ -171,7 +174,8 @@
     border-right: none;
   }
 
-  .md-RichEditor-linkButton {
+  .md-RichEditor-linkButton,
+  .md-RichEditor-altButton {
     vertical-align: middle;
     color: @white;
     text-decoration: none;
@@ -183,7 +187,10 @@
       position: relative;
     }
 
-    .anticon-link {
+    .anticon-link,
+    .anticon-edit,
+    .anticon-delete,
+    .anticon-font-colors {
       font-size: 13px;
     }
   }
