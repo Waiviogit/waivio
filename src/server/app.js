@@ -1,17 +1,20 @@
 import fs from 'fs';
+import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import Handlebars from 'handlebars';
-import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
 
-const indexPath = `.${paths.templates}/index.hbs`;
+const indexPath = path.resolve(__dirname, '..', '..', 'templates', 'index.hbs');
+console.log('Current working directory:', process.cwd());
+console.log('__dirname:', __dirname);
+console.log('Index path:', indexPath);
 const indexHtml = fs.readFileSync(indexPath, { encoding: 'utf8' });
 const template = Handlebars.compile(indexHtml);
 
-// const ampIndexPath = `${paths.templates}/amp_index.hbs`;
+// const ampIndexPath = path.resolve(__dirname, '..', '..', 'templates', 'amp_index.hbs');
 // const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
 // const ampTemplate = Handlebars.compile(ampIndexHtml);
 
@@ -27,9 +30,9 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 app.use(cookieParser());
 
 if (IS_DEV) {
-  app.use(express.static(paths.publicRuntime(), { index: false }));
+  app.use(express.static(path.resolve(__dirname, '..', '..', 'public'), { index: false }));
 } else {
-  app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
+  app.use(express.static(path.resolve(__dirname, '..', '..', 'build', 'public'), { maxAge: CACHE_AGE, index: false }));
 }
 
 app.get('/callback', (req, res) => {
