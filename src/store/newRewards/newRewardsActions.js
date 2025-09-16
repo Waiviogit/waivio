@@ -26,6 +26,9 @@ import {
   getJudgeRewardsMain,
 } from '../../waivioApi/ApiClient';
 
+export const SET_REQUIRED_OBJECT = 'SET_REQUIRED_OBJECT';
+export const SET_ACTIVATION_PERMLINK = 'SET_ACTIVATION_PERMLINK';
+
 export const reserveProposition = (proposition, username) => async (
   dispatch,
   getState,
@@ -794,5 +797,15 @@ export const getMoreRewardsList = (showAll, skip, query, sort, type) => (dispatc
     payload,
   });
 };
+
+export const setRequiredObject = requiredObject => ({
+  type: SET_REQUIRED_OBJECT,
+  payload: requiredObject,
+});
+
+export const setActivationPermlink = activationPermlink => ({
+  type: SET_ACTIVATION_PERMLINK,
+  payload: activationPermlink,
+});
 
 export default null;
