@@ -285,7 +285,7 @@ export default ({
 
     // style is subject to attack, filtering more below
     td: ['style'],
-    img: ['src', 'alt'],
+    img: ['src', 'alt', 'data-fallback-src', 'data-linked'],
     a: ['href', 'rel', 'target'],
     ol: ['start'],
   },
@@ -333,15 +333,25 @@ export default ({
       // Store original URL for fallback
       atts['data-fallback-src'] = src;
 
+      // If image is inside a link (data-linked="1"), return clean img tag
+      if (attribs['data-linked'] === '1') {
+        return { tagName: 'img', attribs: atts };
+      }
+
+      // For chatbot links, create proper link structure
       if (isChatBotLink) {
-        const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
-        const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
-        return { tagName: 'div', text: aTag };
+        return {
+          tagName: 'img',
+          attribs: {
+            ...atts,
+            'data-chatbot-link': 'true',
+          },
+        };
       }
 
       // Create image with caption if alt text is meaningful
       const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '');
-      return { tagName: 'div', text: imageWithCaption };
+      return { tagName: 'span', text: imageWithCaption };
     },
     div: (tagName, attribs) => {
       const attys = {};
@@ -373,15 +383,29 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(
-      appUrl,
-      location,
-      isPage,
-      isPost,
-      isChatBotLink,
-      baseObj,
-      parsedJsonMetadata,
-      safeLinks,
-    ),
+    a: (tagName, attribs) => {
+      // Handle chatbot image links
+      if (isChatBotLink && attribs['data-chatbot-link']) {
+        return {
+          tagName: 'a',
+          attribs: {
+            href: attribs.src,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
+        };
+      }
+
+      return parseLink(
+        appUrl,
+        location,
+        isPage,
+        isPost,
+        isChatBotLink,
+        baseObj,
+        parsedJsonMetadata,
+        safeLinks,
+      )(tagName, attribs);
+    },
   },
 });

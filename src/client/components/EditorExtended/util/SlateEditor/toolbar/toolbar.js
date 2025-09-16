@@ -5,6 +5,7 @@ import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { shouldShowCaption } from '../../../../../../common/helpers/imageCaption';
 import BTooltip from '../../../../BTooltip';
 
 import useTable from '../utils/useTable';
@@ -499,7 +500,8 @@ const Toolbar = props => {
       });
 
       const hasLink = imageNode?.[0]?.href;
-      const hasAlt = imageNode?.[0]?.alt;
+      const hasAlt =
+        imageNode?.[0]?.alt && shouldShowCaption(imageNode?.[0]?.alt, imageNode?.[0]?.url);
 
       return (
         <div className="md-RichEditor-controls">
@@ -537,23 +539,6 @@ const Toolbar = props => {
           {/* Alt text button */}
           {hasAlt ? (
             <>
-              <BTooltip title="Edit alt text">
-                <span
-                  className="md-RichEditor-styleButton md-RichEditor-altButton"
-                  role="presentation"
-                  onMouseDown={e => e.preventDefault()}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (editor.selection && ReactEditor.isFocused(editor)) {
-                      lastSelectionRef.current = editor.selection;
-                      setAltInputValue(imageNode[0].alt || '');
-                    }
-                    setShowAltInput(prev => !prev);
-                  }}
-                >
-                  <Icon type="edit" />
-                </span>
-              </BTooltip>
               <BTooltip title="Remove alt text">
                 <span
                   className="md-RichEditor-styleButton md-RichEditor-altButton"
@@ -561,7 +546,7 @@ const Toolbar = props => {
                   onMouseDown={e => e.preventDefault()}
                   onClick={removeAlt}
                 >
-                  <Icon type="delete" />
+                  <Icon type="edit" />
                 </span>
               </BTooltip>
             </>
