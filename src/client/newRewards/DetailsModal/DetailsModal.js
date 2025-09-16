@@ -7,6 +7,11 @@ import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSocial, getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getRequiredObject } from '../../../store/newRewards/newRewardsSelectors';
+import {
+  setActivationPermlink,
+  reserveProposition,
+} from '../../../store/newRewards/newRewardsActions';
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition, campaignTypes } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
@@ -19,7 +24,6 @@ import {
   validateEgibilitiesForUser,
 } from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
-import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
 
@@ -55,6 +59,7 @@ const DetailsModal = ({
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
   const locale = useSelector(getUsedLocale);
+  const reduxRequiredObject = useSelector(getRequiredObject);
   const stringRequiredObj =
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
@@ -75,9 +80,9 @@ const DetailsModal = ({
           setRequiredObject(res);
         });
       } else {
-        getObjectInfo([proposition?.requiredObject], locale).then(res =>
-          setRequiredObject(res.wobjects[0]),
-        );
+        getObjectInfo([proposition?.requiredObject], locale).then(res => {
+          setRequiredObject(res.wobjects[0]);
+        });
       }
     } else {
       setRequiredObject(proposition.requiredObject);
@@ -99,6 +104,17 @@ const DetailsModal = ({
   }, [proposition?.activationPermlink, userName]);
 
   const handleClickReserve = cb => {
+    const authorPermlink =
+      reduxRequiredObject ||
+      requiredObject?.author_permlink ||
+      proposition?.requiredObject?.author_permlink;
+
+    if (!authorPermlink) {
+      if (cb) cb(false);
+
+      return;
+    }
+
     let search = requiredObject?.author_permlink
       ? `?object=[${getObjectName(requiredObject).replace('&', '*amp*')}](${
           requiredObject.object_type === 'link'
@@ -120,12 +136,15 @@ const DetailsModal = ({
     }&secondaryItem=${object?.author_permlink || objects}`;
 
     if (!proposition?.reserved && proposition?.type === campaignTypes.REVIEWS) {
+      // eslint-disable-next-line consistent-return
       return dispatch(reserveProposition(proposition, userName))
         .then(() => {
+          if (isJudges && proposition?.activationPermlink) {
+            dispatch(setActivationPermlink(proposition.activationPermlink));
+          }
+
           const urlConfig = {
-            pathname: isJudges
-              ? `/rewards/judges/eligible/${proposition?.requiredObject?.author_permlink}/posts`
-              : '/editor',
+            pathname: isJudges ? `/rewards/judges/eligible/${authorPermlink}/posts` : '/editor',
             search: isJudges ? '' : search,
           };
 
@@ -137,13 +156,16 @@ const DetailsModal = ({
         });
     }
 
+    if (isJudges && proposition?.activationPermlink) {
+      dispatch(setActivationPermlink(proposition.activationPermlink));
+    }
+
     const urlConfig = {
-      pathname: isJudges
-        ? `/rewards/judges/eligible/${proposition?.requiredObject?.author_permlink}/posts`
-        : '/editor',
+      pathname: isJudges ? `/rewards/judges/eligible/${authorPermlink}/posts` : '/editor',
       search: isJudges ? '' : search,
     };
 
+    // eslint-disable-next-line consistent-return
     return history.push(urlConfig);
   };
   const onClick = cb => onActionInitiated(() => handleClickReserve(cb));
@@ -157,6 +179,7 @@ const DetailsModal = ({
         disable={disable}
         reservedDays={proposition?.countReservationDays}
         type={proposition?.type}
+        activationPermlink={proposition?.activationPermlink}
         handleReserveForPopover={() =>
           dispatch(reserveProposition(proposition, userName)).then(res => {
             if (!res.value.error) toggleModal();

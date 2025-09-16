@@ -337,6 +337,7 @@ const PropositionFooter = ({
               reservedDays={proposition?.countReservationDays}
               inCard
               type={proposition?.type}
+              activationPermlink={proposition?.activationPermlink}
               giveawayUrl={`/@${proposition.guideName}/${proposition.giveawayPermlink}`}
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>
@@ -375,6 +376,7 @@ PropositionFooter.propTypes = {
   isJudges: PropTypes.bool,
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
+    activationPermlink: PropTypes.string,
     userName: PropTypes.string,
     messagesPermlink: PropTypes.string,
     rootName: PropTypes.string,

@@ -5205,20 +5205,26 @@ export const getJudgeRewardsFiltersBySponsor = (userName, requiredObject) => {
     .then(res => res)
     .catch(e => e);
 };
-export const getJudgesPosts = (judgeName, authorPermlink, skip, limit = 10) =>
+export const getJudgesPosts = (judgeName, authorPermlink, activationPermlink, skip, limit = 10) =>
   fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}`, {
     headers: {
       ...headers,
       follower: judgeName,
     },
-    body: JSON.stringify({ judgeName, authorPermlink, skip, limit }),
+    body: JSON.stringify({ judgeName, authorPermlink, skip, activationPermlink, limit }),
     method: 'POST',
   })
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
 
-export const getJudgesPostLinks = (judgeName, authorPermlink, skip, limit = 50) =>
+export const getJudgesPostLinks = (
+  judgeName,
+  authorPermlink,
+  activationPermlink,
+  skip,
+  limit = 50,
+) =>
   fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}${config.links}`, {
     headers: {
       ...headers,
