@@ -1,9 +1,16 @@
-import { GET_MORE_REWARDS_LIST, GET_REWARDS_LIST } from './newRewardsActions';
+import {
+  GET_MORE_REWARDS_LIST,
+  GET_REWARDS_LIST,
+  SET_REQUIRED_OBJECT,
+  SET_ACTIVATION_PERMLINK,
+} from './newRewardsActions';
 
 const defaultState = {
   rewards: [],
   hasMore: false,
   loading: false,
+  requiredObject: null,
+  activationPermlink: null,
 };
 
 export default (state = defaultState, action) => {
@@ -38,6 +45,16 @@ export default (state = defaultState, action) => {
         rewards: [...state.rewards, ...action.payload.rewards],
         hasMore: action.payload.hasMore,
         loading: false,
+      };
+    case SET_REQUIRED_OBJECT:
+      return {
+        ...state,
+        requiredObject: action.payload,
+      };
+    case SET_ACTIVATION_PERMLINK:
+      return {
+        ...state,
+        activationPermlink: action.payload,
       };
     default:
       return state;

@@ -67,6 +67,7 @@ export const getFeedContent = ({
   limit = 20,
   isJudges = false,
   authorPermlink,
+  activationPermlink,
 }) => (dispatch, getState) => {
   const state = getState();
 
@@ -75,9 +76,13 @@ export const getFeedContent = ({
 
     return dispatch({
       type: GET_JUDGES_POSTS.ACTION,
-      payload: ApiClient.getJudgesPosts(follower, authorPermlink || '', 0, limit).then(
-        r => r.posts,
-      ),
+      payload: ApiClient.getJudgesPosts(
+        follower,
+        authorPermlink || '',
+        activationPermlink || '',
+        0,
+        limit,
+      ).then(r => r.posts),
       meta: {
         sortBy: 'judgesPosts',
         category: follower,
@@ -113,6 +118,7 @@ export const getMoreFeedContent = ({
   limit = 20,
   isJudges = false,
   authorPermlink,
+  activationPermlink,
 }) => (dispatch, getState) => {
   const state = getState();
 
@@ -128,6 +134,7 @@ export const getMoreFeedContent = ({
       payload: ApiClient.getJudgesPosts(
         follower,
         authorPermlink || '',
+        activationPermlink || '',
         feedContent.length,
         limit,
       ).then(r => r.posts),

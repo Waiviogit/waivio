@@ -438,10 +438,12 @@ export const affiliateCodeVoteAppend = (
   });
 };
 
-export const setAuthorityForObject = (wobject, match, adminAuthority = 'administrative') => (
-  dispatch,
-  getState,
-) => {
+export const setAuthorityForObject = (
+  wobject,
+  match,
+  forceAthority = false,
+  adminAuthority = 'administrative',
+) => (dispatch, getState) => {
   const isObjectPage = match.params.name === wobject.author_permlink;
   const user = getAuthenticatedUser(getState());
   const userUpVotePower = getVotePercent(getState());
@@ -464,7 +466,7 @@ export const setAuthorityForObject = (wobject, match, adminAuthority = 'administ
       .substring(2)}`,
   });
 
-  if (activeHeart) {
+  if (activeHeart && !forceAthority) {
     dispatch(removeObjectFromAuthority(wobject.author_permlink));
   } else {
     dispatch(setObjectinAuthority(wobject.author_permlink));

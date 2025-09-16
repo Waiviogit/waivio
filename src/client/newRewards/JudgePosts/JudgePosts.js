@@ -10,14 +10,26 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { showPostModal } from '../../../store/appStore/appActions';
 import { getFeedContent, getMoreFeedContent } from '../../../store/feedStore/feedActions';
+import {
+  setRequiredObject,
+  setActivationPermlink,
+} from '../../../store/newRewards/newRewardsActions';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../../../common/helpers/stateHelpers';
+import {
+  getRequiredObject,
+  getActivationPermlink,
+} from '../../../store/newRewards/newRewardsSelectors';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
-import { getObject, getJudgesPostLinks } from '../../../waivioApi/ApiClient';
+import {
+  getObject,
+  getJudgesPostLinks,
+  getJudgeRewardsByObject,
+} from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import Feed from '../../feed/Feed';
 import PostModal from '../../post/PostModalContainer';
@@ -33,27 +45,49 @@ const JudgePosts = props => {
   const [links, setLinks] = useState([]);
   const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
+  const { reduxRequiredObject, reduxActivationPermlink } = props;
 
   useEffect(() => {
+    if (requiredObject) {
+      props.setRequiredObject(requiredObject);
+    }
+
+    if (props.authenticatedUserName && requiredObject && !reduxActivationPermlink) {
+      getJudgeRewardsByObject(requiredObject, props.authenticatedUserName, 0)
+        .then(res => {
+          if (res?.rewards && res.rewards.length > 0) {
+            const firstProposition = res.rewards[0];
+
+            if (firstProposition?.activationPermlink) {
+              props.setActivationPermlink(firstProposition.activationPermlink);
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching proposition data:', error);
+        });
+    }
+
     if (props.authenticatedUserName) {
       props.getFeedContent({
         sortBy: 'judgesPosts',
         category: props.authenticatedUserName,
         limit,
         isJudges: true,
-        authorPermlink: requiredObject,
+        authorPermlink: reduxRequiredObject,
+        activationPermlink: reduxActivationPermlink,
       });
     }
-    getObject(requiredObject).then(res => setParent(res));
-    getJudgesPostLinks(props.authenticatedUserName, requiredObject, 0).then(r => {
+    getObject(reduxRequiredObject).then(res => setParent(res));
+    getJudgesPostLinks(props.authenticatedUserName, reduxRequiredObject, 0).then(r => {
       setLinks(r.posts);
       setHasLinks(r.hasMore);
     });
-  }, [props.authenticatedUserName, requiredObject]);
+  }, [props.authenticatedUserName, reduxRequiredObject, reduxActivationPermlink]);
 
   const loadMoreLinks = () => {
     setLoading(true);
-    getJudgesPostLinks(props.authenticatedUserName, requiredObject, links.length).then(r => {
+    getJudgesPostLinks(props.authenticatedUserName, reduxRequiredObject, links.length).then(r => {
       setLinks([...links, ...r.posts]);
       setHasLinks(r.hasMore);
       setLoading(false);
@@ -73,7 +107,8 @@ const JudgePosts = props => {
       category: props.authenticatedUserName,
       limit: 10,
       isJudges: true,
-      authorPermlink: requiredObject,
+      authorPermlink: reduxRequiredObject,
+      activationPermlink: reduxActivationPermlink,
     });
 
   const renderContent = () => {
@@ -164,8 +199,12 @@ const JudgePosts = props => {
 
 JudgePosts.propTypes = {
   getFeedContent: PropTypes.func,
+  setRequiredObject: PropTypes.func,
+  setActivationPermlink: PropTypes.func,
   getMoreFeedContent: PropTypes.func,
   showPostModal: PropTypes.bool,
+  reduxRequiredObject: PropTypes.string,
+  reduxActivationPermlink: PropTypes.string,
   authenticatedUserName: PropTypes.string,
   feed: PropTypes.shape(),
 };
@@ -174,12 +213,16 @@ const mapStateToProps = state => ({
   authenticatedUserName: getAuthenticatedUserName(state),
   feed: getFeed(state),
   posts: getPosts(state),
+  reduxRequiredObject: getRequiredObject(state),
+  reduxActivationPermlink: getActivationPermlink(state),
 });
 
 const mapDispatchToProps = {
   getFeedContent,
   getMoreFeedContent,
   showPostModal,
+  setRequiredObject,
+  setActivationPermlink,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(JudgePosts);
