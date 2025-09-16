@@ -60,7 +60,6 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
 
 const ALIAS = {
   'react-dom': '@hot-loader/react-dom',
-  '@icons': `${paths.public}/images/icons`,
   '@images': `${paths.public}/images`,
 };
 
