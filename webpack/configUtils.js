@@ -1,15 +1,11 @@
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 const paths = require('../scripts/paths');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
-
-const IS_DEV = process.env.NODE_ENV === 'development';
-
 const SERVER_PORT = process.env.PORT || 3000;
 
-const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
+const CONTENT_PORT = SERVER_PORT;
 
 let CALLBACK_HOST_URL = 'www.waivio.com';
 
