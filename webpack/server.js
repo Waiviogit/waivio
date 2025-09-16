@@ -2,12 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
-const StartServerPlugin = require('start-server-webpack-plugin');
+const StartServerPlugin = require('start-server-nestjs-webpack-plugin');
 const paths = require('../scripts/paths');
-const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
+const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN, ALIAS } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const Uglifyjs = require('uglifyjs-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -56,15 +55,39 @@ module.exports = function createConfig(env = 'dev') {
           },
         },
         {
-          test: /\.(png|jpg|gif)$/,
-          loader: 'file-loader',
-          options: {},
+          test: /\.(jpg|png|svg)$/,
+          type: 'asset/inline',
+        },
+        {
+          test: /\.(jpg|png)$/,
+          type: 'asset/resource',
+        },
+        {
+          test: MATCH_CSS_LESS,
+          use: [
+            'isomorphic-style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                url: false,
+              },
+            },
+            {
+              loader: 'less-loader',
+              options: {
+                lessOptions: {
+                  javascriptEnabled: true,
+                },
+              },
+            },
+          ],
         },
       ],
     },
     plugins: [
       DEFINE_PLUGIN,
-      new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
+      new webpack.AutomaticPrefetchPlugin(),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
@@ -77,22 +100,19 @@ module.exports = function createConfig(env = 'dev') {
     config.plugins = [
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.WatchIgnorePlugin([paths.assets]),
-      new HardSourceWebpackPlugin(),
+      new webpack.WatchIgnorePlugin({ paths: [paths.assets] }),
       new StartServerPlugin({
         name: 'server.js',
       }),
-      new Uglifyjs({
-        cache: true,
-        parallel: 4,
-      }),
+      new NodePolyfillPlugin(),
     ];
-    config.resolve = {
-      alias: {
-        'react-dom': '@hot-loader/react-dom',
-      },
-    };
   }
+
+  config.resolve = {
+    alias: {
+      ...ALIAS,
+    },
+  };
 
   return config;
 };

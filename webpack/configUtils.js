@@ -31,12 +31,9 @@ const MATCH_FONTS = /\.(eot|ttf|woff|woff2|svg)(\?.+)?$/;
 const POSTCSS_LOADER = {
   loader: 'postcss-loader',
   options: {
-    ident: 'postcss',
-    plugins: () => [
-      autoprefixer({
-        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
-      }),
-    ],
+    postcssOptions: {
+      plugins: ['postcss-preset-env'],
+    },
   },
 };
 
@@ -61,6 +58,12 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
 
+const ALIAS = {
+  'react-dom': '@hot-loader/react-dom',
+  '@icons': `${paths.public}/images/icons`,
+  '@images': `${paths.public}/images`,
+};
+
 module.exports = {
   SERVER_PORT,
   CONTENT_PORT,
@@ -69,4 +72,5 @@ module.exports = {
   MATCH_FONTS,
   POSTCSS_LOADER,
   DEFINE_PLUGIN,
+  ALIAS,
 };

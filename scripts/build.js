@@ -27,64 +27,9 @@ async function main() {
   const clientCompiler = webpack(createClientConfig('prod'));
   const serverCompiler = webpack(createServerConfig('prod'));
 
-  // Build client first
-  await new Promise((resolve, reject) => {
-    clientCompiler.run((err, stats) => {
-      if (err) {
-        console.error('Client build failed:', err);
-        reject(err);
-        return;
-      }
-
-      if (stats.hasErrors()) {
-        console.error(
-          'Client build errors:',
-          stats.toString({
-            colors: true,
-            chunks: false,
-            children: false,
-          }),
-        );
-        reject(new Error('Client build failed with errors'));
-        return;
-      }
-
-      console.log('Client build completed successfully');
-      resolve();
-    });
+  clientCompiler.run(() => {
+    serverCompiler.run(() => {});
   });
-
-  // Then build server
-  await new Promise((resolve, reject) => {
-    serverCompiler.run((err, stats) => {
-      if (err) {
-        console.error('Server build failed:', err);
-        reject(err);
-        return;
-      }
-
-      if (stats.hasErrors()) {
-        console.error(
-          'Server build errors:',
-          stats.toString({
-            colors: true,
-            chunks: false,
-            children: false,
-          }),
-        );
-        reject(new Error('Server build failed with errors'));
-        return;
-      }
-
-      console.log('Server build completed successfully');
-      resolve();
-    });
-  });
-
-  console.log('Build completed successfully!');
 }
 
-main().catch(err => {
-  console.error('Build failed:', err);
-  process.exit(1);
-});
+main();

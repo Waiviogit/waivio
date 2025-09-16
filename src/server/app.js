@@ -22,7 +22,7 @@ const preserveQueryParams = url => {
   return url?.includes('?') ? url?.substring(url?.indexOf('?')) : '';
 };
 
-const indexPath = `${paths.templates}/index.hbs`;
+const indexPath = path.resolve(__dirname, '..', '..', 'templates', 'index.hbs');
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
 const template = Handlebars.compile(indexHtml);
 

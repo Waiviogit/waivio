@@ -1,12 +1,10 @@
 const webpack = require('webpack');
-const AssetsPlugin = require('assets-webpack-plugin');
 const CSSExtract = require('mini-css-extract-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -15,35 +13,36 @@ const {
   MATCH_FONTS,
   DEFINE_PLUGIN,
   POSTCSS_LOADER,
+  ALIAS,
 } = require('./configUtils');
+const AssetsPlugin = require('assets-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
-  const IS_PROD = env === 'production';
-  const IS_STAGING = env === 'staging';
+  const IS_PROD = !IS_DEV;
   const appPath = IS_DEV ? paths.build : paths.buildPublic;
   const smp = new SpeedMeasurePlugin();
 
   const config = smp.wrap({
     mode: IS_DEV ? 'development' : 'production',
     entry: [paths.client],
-    devtool: IS_DEV ? 'inline-source-map' : '',
+    devtool: IS_DEV ? 'inline-source-map' : false,
     output: {
       path: appPath,
       filename: IS_DEV ? 'bundle.js' : 'bundle-[name].[chunkhash].js',
-      // publicPath: IS_DEV ? `http://192.168.88.56:${CONTENT_PORT}/` : '/',
       publicPath: IS_DEV ? `http://localhost:${CONTENT_PORT}/` : '/',
     },
     context: process.cwd(),
     plugins: [
       DEFINE_PLUGIN,
-      new AssetsPlugin({
-        path: paths.build,
-        filename: 'assets.json',
-      }),
       new WebpackBar({
         name: 'client',
         color: '#f56be2',
+      }),
+      new AssetsPlugin({
+        path: paths.build,
+        filename: 'assets.json',
       }),
     ],
     module: {
@@ -55,12 +54,11 @@ module.exports = function createConfig(env = 'dev') {
         },
         {
           test: MATCH_FONTS,
-          loader: 'url-loader',
+          type: 'asset/resource',
         },
         {
-          test: /\.(png|jpg|gif)$/,
-          loader: 'file-loader',
-          options: {},
+          test: /\.(jpg|png|svg)$/,
+          type: 'asset/inline',
         },
         {
           test: MATCH_CSS_LESS,
@@ -70,14 +68,21 @@ module.exports = function createConfig(env = 'dev') {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
-                minimize: !IS_DEV,
+                url: {
+                  filter: (url, resourcePath) => {
+                    // Skip resolving absolute URLs like /images/.. so they are served from publicPath
+                    return !(url && url.startsWith('/'));
+                  },
+                },
               },
             },
             POSTCSS_LOADER,
             {
               loader: 'less-loader',
               options: {
-                javascriptEnabled: true,
+                lessOptions: {
+                  javascriptEnabled: true,
+                },
               },
             },
           ],
@@ -90,24 +95,26 @@ module.exports = function createConfig(env = 'dev') {
     config.entry = ['webpack-dev-server/client', 'webpack/hot/dev-server', ...config.entry];
     config.plugins = [
       ...config.plugins,
+      new NodePolyfillPlugin(),
       new webpack.HotModuleReplacementPlugin(),
-      new HardSourceWebpackPlugin(),
     ];
     config.optimization = {
       minimize: false,
     };
-    config.resolve = {
-      alias: {
-        'react-dom': '@hot-loader/react-dom',
-      },
-    };
   }
 
-  if (IS_PROD || IS_STAGING) {
+  config.resolve = {
+    alias: {
+      ...ALIAS,
+    },
+  };
+
+  if (IS_PROD) {
     config.plugins = [
       ...config.plugins,
       new webpack.optimize.AggressiveMergingPlugin(),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
+      new NodePolyfillPlugin(),
       new LodashModuleReplacementPlugin({
         collections: true,
         paths: true,
@@ -123,7 +130,6 @@ module.exports = function createConfig(env = 'dev') {
       }),
     ];
     config.optimization = {
-      minimize: IS_PROD,
       splitChunks: {
         chunks: 'initial',
         minSize: 30000,
