@@ -172,7 +172,10 @@ export default class Post extends React.Component {
     const { showHiddenPost } = this.state;
     const reputation = loaded ? formatter.reputation(content.author_reputation) : 0;
     const showPost = reputation >= 0 || showHiddenPost;
-    const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
+    const jsonMetadata =
+      !isEmpty(user) && !isEmpty(user?.posting_json_metadata)
+        ? JSON.parse(user?.posting_json_metadata)
+        : {};
     const signature = jsonMetadata?.profile?.signature || null;
 
     const isThread = content && isEmpty(content?.title) && content?.parent_author === 'leothreads';
