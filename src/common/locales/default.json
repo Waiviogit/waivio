@@ -1451,6 +1451,7 @@
   "empty_page_content": "This page has no content",
   "empty_follow_list": "This list is empty",
   "toolbar_link": "Paste link and press Enter",
+  "toolbar_alt_text": "Enter alt text for image",
   "administrative": "Administrative",
   "ownership": "Ownership",
   "claim_authority": "Claim authority",
