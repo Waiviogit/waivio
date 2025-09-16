@@ -163,7 +163,7 @@ const ImageSetter = ({
 
           Transforms.insertNodes(
             editor,
-            [createImageNode(newImage.name, { url }), createEmptyNode()],
+            [createImageNode(altTexts[newImage.id] || newImage.name, { url }), createEmptyNode()],
             isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
           );
           ReactEditor.focus(editor);
@@ -352,16 +352,23 @@ const ImageSetter = ({
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
               </div>
-              <img
-                src={image.src}
-                height="86"
-                alt={isEditor ? altTexts[image.id] || image.src : image.src}
-              />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <img
+                  src={image.src}
+                  height="100"
+                  alt={isEditor ? altTexts[image.id] || image.src : image.src}
+                />
+              </div>
               <div className="image-box__alt-input">
                 <Input
                   placeholder={intl.formatMessage({
                     id: 'imageSetter_alt_text_placeholder',
-                    defaultMessage: 'Alt text (optional)',
+                    defaultMessage: 'Image text (optional)',
                   })}
                   value={altTexts[image.id] || ''}
                   onChange={e => handleAltTextChange(image.id, e.target.value)}
