@@ -27,6 +27,8 @@ const Toolbar = props => {
   const [toolbarGroups] = useState(defaultToolbarGroups);
   const [isShowLinkInput, setShowLinkInput] = useState(false);
   const [urlInputValue, setUrlInputValue] = useState('');
+  const [isShowAltInput, setShowAltInput] = useState(false);
+  const [altInputValue, setAltInputValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setOpen] = useState(false);
   const [isOpenImageToolBar, setOpenImageToolBar] = useState(false);
@@ -104,7 +106,7 @@ const Toolbar = props => {
   }, [isImageSelected(), selection, editor]);
 
   useEffect(() => {
-    if (isShowLinkInput) {
+    if (isShowLinkInput || isShowAltInput) {
       return setOpen(true);
     }
 
@@ -115,32 +117,37 @@ const Toolbar = props => {
       Range.isCollapsed(selection)
     ) {
       setShowLinkInput(false);
+      setShowAltInput(false);
       refToolbar.current?.removeAttribute('style');
 
       return setOpen(false);
     }
 
     return setOpen(true);
-  }, [editor, selection, isShowLinkInput]);
+  }, [editor, selection, isShowLinkInput, isShowAltInput]);
 
-  // Close link input when clicking outside or losing focus
+  // Close link/alt input when clicking outside or losing focus
   useEffect(() => {
-    if (!isShowLinkInput) return;
+    if (!isShowLinkInput && !isShowAltInput) return;
 
     const handleClickOutside = event => {
       if (refToolbar.current && !refToolbar.current.contains(event.target)) {
         setShowLinkInput(false);
+        setShowAltInput(false);
         setUrlInputValue('');
+        setAltInputValue('');
         ReactEditor.focus(editor);
       }
     };
 
     const handleFocusOut = () => {
-      // Small delay to allow for link input interactions
+      // Small delay to allow for input interactions
       setTimeout(() => {
         if (!ReactEditor.isFocused(editor)) {
           setShowLinkInput(false);
+          setShowAltInput(false);
           setUrlInputValue('');
+          setAltInputValue('');
         }
       }, 100);
     };
@@ -157,7 +164,7 @@ const Toolbar = props => {
       window.removeEventListener('blur', handleFocusOut);
       document.removeEventListener('visibilitychange', handleFocusOut);
     };
-  }, [isShowLinkInput, editor]);
+  }, [isShowLinkInput, isShowAltInput, editor]);
 
   useEffect(() => {
     if (!isOpen && !isOpenImageToolBar) return;
@@ -204,6 +211,10 @@ const Toolbar = props => {
 
   const handleLinkInput = e => {
     setUrlInputValue(e.target.value);
+  };
+
+  const handleAltInput = e => {
+    setAltInputValue(e.target.value);
   };
 
   const setLink = e => {
@@ -295,6 +306,54 @@ const Toolbar = props => {
     }
   };
 
+  const setAlt = e => {
+    e.preventDefault();
+
+    if (!editor.selection && lastSelectionRef.current) {
+      Transforms.select(editor, lastSelectionRef.current);
+    }
+
+    if (editor.selection) {
+      const [imageNode, imagePath] = Editor.nodes(editor, {
+        at: editor.selection,
+        match: n => n.type === 'image',
+      });
+
+      if (imageNode) {
+        Transforms.setNodes(editor, { alt: altInputValue }, { at: imagePath });
+        setShowAltInput(false);
+        setAltInputValue('');
+        Transforms.select(editor, imagePath);
+
+        setTimeout(() => positionImageToolbar(), 0);
+      }
+    }
+  };
+
+  const removeAlt = e => {
+    e.preventDefault();
+
+    if (!editor.selection && lastSelectionRef.current) {
+      Transforms.select(editor, lastSelectionRef.current);
+    }
+
+    if (editor.selection) {
+      const [imageNode, imagePath] = Editor.nodes(editor, {
+        at: editor.selection,
+        match: n => n.type === 'image',
+      });
+
+      if (imageNode) {
+        Transforms.setNodes(editor, { alt: null }, { at: imagePath });
+        setShowAltInput(false);
+        setAltInputValue('');
+        Transforms.select(editor, imagePath);
+
+        setTimeout(() => positionImageToolbar(), 0);
+      }
+    }
+  };
+
   const handleClickPrevPage = e => {
     e.preventDefault();
     setCurrentPage(prev => prev - 1);
@@ -368,6 +427,67 @@ const Toolbar = props => {
     );
   }
 
+  if (isShowAltInput) {
+    let className = `md-editor-toolbar${
+      isOpen || isOpenImageToolBar ? ' md-editor-toolbar--isopen' : ''
+    }`;
+
+    className += ' md-editor-toolbar--altinput';
+
+    return (
+      <div
+        className={className}
+        style={{
+          top: `${refToolbar.current?.style.top}`,
+          left: `${refToolbar.current?.style.left}`,
+          background: 'transparent',
+        }}
+      >
+        <div
+          className="md-RichEditor-controls md-RichEditor-show-alt-input"
+          style={{ display: 'flex', marginLeft: '20px', background: 'transparent' }}
+        >
+          <Input
+            className="md-alt-input"
+            onKeyDown={e => {
+              if (e.key === 'Escape') {
+                setShowAltInput(false);
+                setAltInputValue('');
+                ReactEditor.focus(editor);
+              }
+            }}
+            onBlur={() => {
+              // Small delay to allow for button clicks
+              setTimeout(() => {
+                setShowAltInput(false);
+                setAltInputValue('');
+                ReactEditor.focus(editor);
+              }, 150);
+            }}
+            onChange={handleAltInput}
+            placeholder={intl.formatMessage({
+              id: 'toolbar_alt_text',
+              defaultMessage: 'Enter alt text for image',
+            })}
+            value={altInputValue}
+            onPressEnter={setAlt}
+            autoFocus
+          />
+          <Button
+            type="primary"
+            htmlType="submit"
+            onClick={setAlt}
+            onMouseDown={e => e.preventDefault()}
+            className="md-alt-button"
+            style={{ display: 'block' }}
+          >
+            <FormattedMessage id="enter" defaultMessage="Enter" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const toolbarGroupsFiltered = toolbarGroups.filter(i => i.page === currentPage);
   const getToolBar = () => {
     if (!isOpen && !isOpenImageToolBar) return null;
@@ -378,9 +498,13 @@ const Toolbar = props => {
         match: n => n.type === 'image',
       });
 
-      if (imageNode?.[0]?.href) {
-        return (
-          <div className="md-RichEditor-controls">
+      const hasLink = imageNode?.[0]?.href;
+      const hasAlt = imageNode?.[0]?.alt;
+
+      return (
+        <div className="md-RichEditor-controls">
+          {/* Link button */}
+          {hasLink ? (
             <BTooltip title="Remove image link">
               <span
                 className="md-RichEditor-styleButton md-RichEditor-linkButton"
@@ -391,14 +515,7 @@ const Toolbar = props => {
                 <Icon type="disconnect" />
               </span>
             </BTooltip>
-          </div>
-        );
-      }
-
-      return (
-        <>
-          {' '}
-          <div className="md-RichEditor-controls">
+          ) : (
             <BTooltip title="Add image link">
               <span
                 className="md-RichEditor-styleButton md-RichEditor-linkButton"
@@ -415,8 +532,58 @@ const Toolbar = props => {
                 <Icon type="link" />
               </span>
             </BTooltip>
-          </div>
-        </>
+          )}
+
+          {/* Alt text button */}
+          {hasAlt ? (
+            <>
+              <BTooltip title="Edit alt text">
+                <span
+                  className="md-RichEditor-styleButton md-RichEditor-altButton"
+                  role="presentation"
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={e => {
+                    e.preventDefault();
+                    if (editor.selection && ReactEditor.isFocused(editor)) {
+                      lastSelectionRef.current = editor.selection;
+                      setAltInputValue(imageNode[0].alt || '');
+                    }
+                    setShowAltInput(prev => !prev);
+                  }}
+                >
+                  <Icon type="edit" />
+                </span>
+              </BTooltip>
+              <BTooltip title="Remove alt text">
+                <span
+                  className="md-RichEditor-styleButton md-RichEditor-altButton"
+                  role="presentation"
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={removeAlt}
+                >
+                  <Icon type="delete" />
+                </span>
+              </BTooltip>
+            </>
+          ) : (
+            <BTooltip title="Add alt text">
+              <span
+                className="md-RichEditor-styleButton md-RichEditor-altButton"
+                role="presentation"
+                onMouseDown={e => e.preventDefault()}
+                onClick={e => {
+                  e.preventDefault();
+                  if (editor.selection && ReactEditor.isFocused(editor)) {
+                    lastSelectionRef.current = editor.selection;
+                  }
+                  setShowAltInput(prev => !prev);
+                }}
+              >
+                <Icon type="font-colors" />
+              </span>
+            </BTooltip>
+          )}
+        </div>
       );
     }
 
