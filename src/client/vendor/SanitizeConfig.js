@@ -82,7 +82,7 @@ export const allowedTags = `
     div, iframe, del,
     a, p, b, q, br, ul, li, i, b, ol, img, h1, h2, h3, h4, h5, h6, hr, u,
     blockquote, pre, code, em, strong, center, table, thead, tbody, tr, th, td,
-    strike, sup, sub, details, summary
+    strike, sup, sub, details, summary, figure, figcaption
 `
   .trim()
   .split(/,\s*/);
@@ -288,6 +288,8 @@ export default ({
     img: ['src', 'alt', 'data-fallback-src', 'data-linked'],
     a: ['href', 'rel', 'target'],
     ol: ['start'],
+    figure: ['class', 'style'],
+    figcaption: ['class', 'style'],
   },
   allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['byteball', 'bitcoin']),
   transformTags: {
@@ -351,7 +353,7 @@ export default ({
 
       // Create image with caption if alt text is meaningful
       const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '');
-      return { tagName: 'span', text: imageWithCaption };
+      return { tagName: 'div', text: imageWithCaption };
     },
     div: (tagName, attribs) => {
       const attys = {};
