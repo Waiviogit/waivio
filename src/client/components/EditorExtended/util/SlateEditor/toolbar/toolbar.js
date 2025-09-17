@@ -345,7 +345,7 @@ const Toolbar = props => {
       });
 
       if (imageNode) {
-        Transforms.setNodes(editor, { alt: null }, { at: imagePath });
+        Transforms.setNodes(editor, { alt: imageNode.name }, { at: imagePath });
         setShowAltInput(false);
         setAltInputValue('');
         Transforms.select(editor, imagePath);
@@ -546,7 +546,7 @@ const Toolbar = props => {
                   onMouseDown={e => e.preventDefault()}
                   onClick={removeAlt}
                 >
-                  <Icon type="edit" />
+                  <Icon type="edit" style={{ marginTop: '3px', display: 'inline-block' }} />
                 </span>
               </BTooltip>
             </>
@@ -564,7 +564,7 @@ const Toolbar = props => {
                   setShowAltInput(prev => !prev);
                 }}
               >
-                <Icon type="font-colors" />
+                <Icon type="font-colors" style={{ marginTop: '3px', display: 'inline-block' }} />
               </span>
             </BTooltip>
           )}

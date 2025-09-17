@@ -109,12 +109,11 @@ export function getHtml(
     return `${acc + item}\n\n`;
   }, '');
   parsedBody = remarkable.render(parsedBody);
-  parsedBody = parsedBody.replace(/<a[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi, (match, content) => {
-    const imgWithLinked = content.replace(/<img([^>]*)>/gi, '<img$1 data-linked="1">');
-
-    return `<a${match.match(/<a([^>]*)>/)[1]}>${imgWithLinked}</a>`;
-  });
-
+  parsedBody = parsedBody.replace(
+    /<a[^>]*href="([^"]*)"[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi,
+    (match, href, content) =>
+      content.replace(/<img([^>]*)>/gi, `<img$1 data-linked-url="${href}">`),
+  );
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 

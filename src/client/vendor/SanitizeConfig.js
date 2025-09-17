@@ -3,7 +3,7 @@ import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 import CryptoJS from 'crypto-js';
-import { createImageWithCaption } from '../../common/helpers/imageCaption';
+import { createImageWithCaption, shouldShowCaption } from '../../common/helpers/imageCaption';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -285,8 +285,8 @@ export default ({
 
     // style is subject to attack, filtering more below
     td: ['style'],
-    img: ['src', 'alt', 'data-fallback-src', 'data-linked'],
-    a: ['href', 'rel', 'target'],
+    img: ['src', 'alt', 'data-fallback-src', 'data-linked-url'],
+    a: ['href', 'rel', 'target', 'data-linked-image'],
     ol: ['start'],
     figure: ['class', 'style'],
     figcaption: ['class', 'style'],
@@ -320,7 +320,7 @@ export default ({
     img: (tagName, attribs) => {
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
-      let { src, alt } = attribs;
+      let { src, alt, 'data-linked-url': linkedUrl } = attribs;
       if (!/^(https?:)?\/\//i.test(src)) {
         console.log('Blocked, image tag src does not appear to be a url', tagName, attribs);
         sanitizeErrors.push('An image in this post did not save properly.');
@@ -334,10 +334,12 @@ export default ({
       if (alt && alt !== '') atts.alt = alt;
       // Store original URL for fallback
       atts['data-fallback-src'] = src;
-
-      // If image is inside a link (data-linked="1"), return clean img tag
-      if (attribs['data-linked'] === '1') {
-        return { tagName: 'img', attribs: atts };
+      // Store linked URL if present
+      if (linkedUrl) {
+        return {
+          tagName: 'div',
+          text: createImageWithCaption(atts.src, atts.alt || '', linkedUrl),
+        };
       }
 
       // For chatbot links, create proper link structure
@@ -352,7 +354,7 @@ export default ({
       }
 
       // Create image with caption if alt text is meaningful
-      const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '');
+      const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '', linkedUrl);
       return { tagName: 'div', text: imageWithCaption };
     },
     div: (tagName, attribs) => {
