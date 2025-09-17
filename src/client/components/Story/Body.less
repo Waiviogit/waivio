@@ -330,4 +330,14 @@ div[data-dir='rtl'] .Body {
   }
 }
 
+.StoryFull {
+  .Body {
+    a[target='_blank'] {
+      &::after {
+        content: '';
+      }
+    }
+  }
+}
+
 @import 'Body-nightmode';
