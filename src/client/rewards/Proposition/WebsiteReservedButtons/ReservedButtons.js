@@ -38,7 +38,15 @@ const ReservedButtons = props => {
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'click_submit_photos', { debug_mode: false });
 
-    if (props.type === 'giveaways') {
+    if (props.isJudges) {
+      // Navigate to posts page for judges
+      const postsUrl = `/rewards/judges/eligible/${props.authorPermlink}/posts`;
+      const urlWithActivationPermlink = props.activationPermlink
+        ? `${postsUrl}?activationPermlink=${props.activationPermlink}`
+        : postsUrl;
+
+      history.push(urlWithActivationPermlink);
+    } else if (props.type === 'giveaways') {
       window.location = props.giveawayUrl;
     } else {
       props.onActionInitiated(async () => {
@@ -126,6 +134,8 @@ ReservedButtons.propTypes = {
   reservedDays: PropTypes.number,
   type: PropTypes.string,
   giveawayUrl: PropTypes.string,
+  authorPermlink: PropTypes.string,
+  activationPermlink: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
 

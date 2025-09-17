@@ -343,7 +343,7 @@ export default ({
       }
 
       // For chatbot links, create proper link structure
-      if (isChatBotLink) {
+      if (isChatBotLink && src?.includes('waivio.nyc3.digitaloceanspaces.com')) {
         return {
           tagName: 'img',
           attribs: {
@@ -388,18 +388,6 @@ export default ({
       };
     },
     a: (tagName, attribs) => {
-      // Handle chatbot image links
-      if (isChatBotLink && attribs['data-chatbot-link']) {
-        return {
-          tagName: 'a',
-          attribs: {
-            href: attribs.src,
-            target: '_blank',
-            rel: 'noopener noreferrer',
-          },
-        };
-      }
-
       return parseLink(
         appUrl,
         location,
