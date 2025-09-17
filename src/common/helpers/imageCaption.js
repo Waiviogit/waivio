@@ -22,15 +22,25 @@ export const shouldShowCaption = (alt, src) => {
   return altClean !== baseClean;
 };
 
-export const createImageWithCaption = (src, alt) => {
-  if (shouldShowCaption(alt, src)) {
+export const createImageWithCaption = (src, alt, link) => {
+  const imgAttributes = `src="${src}" alt="${alt}" data-fallback-src="${src}" : ''}`;
+
+  if (shouldShowCaption(alt, src) && link) {
     return `
-      <figure class="md-block-image-figure">
-        <img src="${src}" alt="${alt}" data-fallback-src="${src}" style="display: block; margin: 0 auto;" />
+    <a href="${link}" target="_blank" rel="noopener noreferrer">
+        <img ${imgAttributes} style="display: block; margin: 0 auto;" />
         <figcaption class="md-block-image-caption" style="font-size: 15px; font-style: italic; text-align: center; margin-top: 8px;">${alt}</figcaption>
-      </figure>
-    `;
+
+    </a> 
+`;
   }
 
-  return `<img src="${src}" alt="${alt}" data-fallback-src="${src}" />`;
+  if (shouldShowCaption(alt, src) && !link) {
+    return `
+        <img ${imgAttributes} style="display: block; margin: 0 auto;" />
+        <figcaption class="md-block-image-caption" style="font-size: 15px; font-style: italic; text-align: center; margin-top: 8px;">${alt}</figcaption>
+ `;
+  }
+
+  return `<img ${imgAttributes} style="display: block; margin: 0 auto;" />`;
 };
