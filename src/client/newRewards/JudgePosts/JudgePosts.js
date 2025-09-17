@@ -40,7 +40,6 @@ const limit = 10;
 const JudgePosts = props => {
   const [parent, setParent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [hasLinks, setHasLinks] = useState(false);
   const [links, setLinks] = useState([]);
   const parentLink = `/rewards/judges/`;
@@ -109,10 +108,9 @@ const JudgePosts = props => {
         history.replace(`?${query.toString()}`);
       }
     }
-  }, [reduxActivationPermlink, history]);
+  }, []);
 
   const loadMoreLinks = () => {
-    setLoading(true);
     getJudgesPostLinks(
       props.authenticatedUserName,
       requiredObject,
@@ -121,7 +119,6 @@ const JudgePosts = props => {
     ).then(r => {
       setLinks([...links, ...r.posts]);
       setHasLinks(r.hasMore);
-      setLoading(false);
     });
   };
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
@@ -147,7 +144,7 @@ const JudgePosts = props => {
       return <EmptyCampaign emptyMessage="There are no posts available for this campaign yet." />;
     }
 
-    return isFetching ? (
+    return isFetching && content?.length < limit ? (
       <Loading />
     ) : (
       <Feed
@@ -214,11 +211,7 @@ const JudgePosts = props => {
                 role="presentation"
                 onClick={loadMoreLinks}
               >
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <FormattedMessage id="show_more" defaultMessage="show more" />
-                )}
+                <FormattedMessage id="show_more" defaultMessage="show more" />
               </div>
             </div>
           )}

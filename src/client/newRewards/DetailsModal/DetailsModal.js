@@ -88,7 +88,7 @@ const DetailsModal = ({
       setRequiredObject(proposition.requiredObject);
     }
 
-    if (!proposition?.reserved) {
+    if (!proposition?.reserved && !isJudges) {
       validateEgibilitiesForUser({
         userName,
         activationPermlink: proposition?.activationPermlink,
