@@ -96,6 +96,8 @@ const SocialCampaignCard = ({
                 reservedDays={proposition.countReservationDays}
                 inCard
                 isSocialProduct={isSocialProduct}
+                authorPermlink={proposition?.object?.author_permlink}
+                activationPermlink={proposition?.activationPermlink}
               />
               {proposition.reserved && (
                 <RewardsPopover
