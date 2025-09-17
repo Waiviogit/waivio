@@ -3644,7 +3644,7 @@ export const getObjectsRewards = (requiredObj, userName) => {
       userName ? `?userName=${userName}` : ''
     }`,
     {
-      headers,
+      headers: { ...headers, follower: userName },
       method: 'GET',
     },
   )
@@ -5171,7 +5171,7 @@ export const getJudgeRewardsMain = (userName, skip, query) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}?skip=${skip}${queryParams}`,
     {
-      headers,
+      headers: { ...headers, follower: userName },
       method: 'GET',
     },
   )
@@ -5184,7 +5184,7 @@ export const getJudgeRewardsByObject = (requiredObject, userName, skip) =>
   fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.object}/${requiredObject}?skip=${skip}`,
     {
-      headers,
+      headers: { ...headers, follower: userName },
       method: 'GET',
     },
   )
@@ -5197,7 +5197,7 @@ export const getJudgeRewardsFiltersBySponsor = (userName, requiredObject) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.judge}/${userName}${config.sponsors}${obj}`,
     {
-      headers,
+      headers: { ...headers, follower: userName },
       method: 'GET',
     },
   )
@@ -5226,10 +5226,8 @@ export const getJudgesPostLinks = (
   limit = 50,
 ) =>
   fetch(`${config.apiPrefix}${config.posts}${config.judgePosts}${config.links}`, {
-    headers: {
-      ...headers,
-    },
-    body: JSON.stringify({ judgeName, authorPermlink, skip, limit }),
+    headers: { ...headers, follower: judgeName },
+    body: JSON.stringify({ judgeName, authorPermlink, activationPermlink, skip, limit }),
     method: 'POST',
   })
     .then(handleErrors)

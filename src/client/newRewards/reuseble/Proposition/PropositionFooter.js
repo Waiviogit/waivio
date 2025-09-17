@@ -338,6 +338,7 @@ const PropositionFooter = ({
               inCard
               type={proposition?.type}
               activationPermlink={proposition?.activationPermlink}
+              authorPermlink={proposition?.object?.author_permlink}
               giveawayUrl={`/@${proposition.guideName}/${proposition.giveawayPermlink}`}
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>

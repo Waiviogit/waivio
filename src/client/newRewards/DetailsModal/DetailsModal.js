@@ -180,6 +180,7 @@ const DetailsModal = ({
         reservedDays={proposition?.countReservationDays}
         type={proposition?.type}
         activationPermlink={proposition?.activationPermlink}
+        authorPermlink={proposition?.object?.author_permlink}
         handleReserveForPopover={() =>
           dispatch(reserveProposition(proposition, userName)).then(res => {
             if (!res.value.error) toggleModal();

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -45,11 +45,19 @@ const JudgePosts = props => {
   const [links, setLinks] = useState([]);
   const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
-  const { reduxRequiredObject, reduxActivationPermlink } = props;
+  const history = useHistory();
+  const { reduxActivationPermlink } = props;
 
   useEffect(() => {
     if (requiredObject) {
       props.setRequiredObject(requiredObject);
+    }
+
+    const query = new URLSearchParams(history.location.search);
+    const urlActivationPermlink = query.get('activationPermlink');
+
+    if (urlActivationPermlink && urlActivationPermlink !== reduxActivationPermlink) {
+      props.setActivationPermlink(urlActivationPermlink);
     }
 
     if (props.authenticatedUserName && requiredObject && !reduxActivationPermlink) {
@@ -74,20 +82,43 @@ const JudgePosts = props => {
         category: props.authenticatedUserName,
         limit,
         isJudges: true,
-        authorPermlink: reduxRequiredObject,
-        activationPermlink: reduxActivationPermlink,
+        authorPermlink: requiredObject,
+        activationPermlink: urlActivationPermlink || reduxActivationPermlink,
       });
     }
-    getObject(reduxRequiredObject).then(res => setParent(res));
-    getJudgesPostLinks(props.authenticatedUserName, reduxRequiredObject, 0).then(r => {
+    getObject(requiredObject).then(res => setParent(res));
+    getJudgesPostLinks(
+      props.authenticatedUserName,
+      requiredObject,
+      urlActivationPermlink || reduxActivationPermlink,
+      0,
+    ).then(r => {
       setLinks(r.posts);
       setHasLinks(r.hasMore);
     });
-  }, [props.authenticatedUserName, reduxRequiredObject, reduxActivationPermlink]);
+  }, [props.authenticatedUserName, requiredObject, reduxActivationPermlink]);
+
+  // Update URL when activationPermlink changes
+  useEffect(() => {
+    if (reduxActivationPermlink) {
+      const query = new URLSearchParams(history.location.search);
+      const currentUrlActivationPermlink = query.get('activationPermlink');
+
+      if (currentUrlActivationPermlink !== reduxActivationPermlink) {
+        query.set('activationPermlink', reduxActivationPermlink);
+        history.replace(`?${query.toString()}`);
+      }
+    }
+  }, [reduxActivationPermlink, history]);
 
   const loadMoreLinks = () => {
     setLoading(true);
-    getJudgesPostLinks(props.authenticatedUserName, reduxRequiredObject, links.length).then(r => {
+    getJudgesPostLinks(
+      props.authenticatedUserName,
+      requiredObject,
+      reduxActivationPermlink,
+      links.length,
+    ).then(r => {
       setLinks([...links, ...r.posts]);
       setHasLinks(r.hasMore);
       setLoading(false);
@@ -107,7 +138,7 @@ const JudgePosts = props => {
       category: props.authenticatedUserName,
       limit: 10,
       isJudges: true,
-      authorPermlink: reduxRequiredObject,
+      authorPermlink: requiredObject,
       activationPermlink: reduxActivationPermlink,
     });
 
@@ -203,7 +234,6 @@ JudgePosts.propTypes = {
   setActivationPermlink: PropTypes.func,
   getMoreFeedContent: PropTypes.func,
   showPostModal: PropTypes.bool,
-  reduxRequiredObject: PropTypes.string,
   reduxActivationPermlink: PropTypes.string,
   authenticatedUserName: PropTypes.string,
   feed: PropTypes.shape(),
