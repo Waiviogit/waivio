@@ -65,7 +65,7 @@ const ObjectOfTypePage = props => {
   const imagesArraySize = size(images);
 
   const handleContentClick = e => {
-    if (e.target.tagName === 'IMG' && images) {
+    if (e.target.tagName === 'IMG' && images && !isEditMode) {
       const tags = contentDiv.current?.getElementsByTagName('img');
 
       for (let i = 0; i < tags.length; i += 1) {
