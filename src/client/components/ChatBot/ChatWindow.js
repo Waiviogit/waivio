@@ -10,6 +10,7 @@ import { get, isEmpty, isNil, map } from 'lodash';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import useQuery from '../../../hooks/useQuery';
 import { getDraftPostsSelector } from '../../../store/draftsStore/draftsSelectors';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 import AssistantMessage from './AssistantMessage';
 import UserMessage from './UserMessage';
@@ -32,6 +33,7 @@ import {
   getUserAdministrator,
   getWebsiteConfiguration,
   getCurrentShownPost,
+  getIsSocial,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -61,6 +63,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const desktopLogo = get(config, 'desktopLogo');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
+  const isSocialGifts = useSelector(getIsSocial);
+  const currObj = useSelector(getObject);
   const authUser = useSelector(getAuthenticatedUserName);
   const host = useSelector(getHostAddress);
   const history = useHistory();
@@ -82,18 +86,29 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
+  const isSocialList = currObj && currObj?.object_type === 'list' && isSocialGifts;
   let currentPageContent = '';
 
   if (isEditor) {
     if (!currDraft) {
       currentPageContent = undefined;
     }
-    currentPageContent = currDraft ? `${currDraft?.title} ${currDraft?.body}` : undefined;
+    currentPageContent = currDraft
+      ? `I am writing a post: ${currDraft?.title} ${currDraft?.body}`
+      : undefined;
   }
   if (currentShownPost && !isEditor) {
     currentPageContent = !isEmpty(currentShownPost)
-      ? `${currentShownPost?.title} ${currentShownPost?.body}`
+      ? `I am looking at this post: ${currentShownPost?.title} ${currentShownPost?.body}`
       : undefined;
+  }
+  if (isSocialList) {
+    currentPageContent =
+      !isEmpty(currObj) && !isNil(currObj)
+        ? `I am seeing the catalog ${currObj?.name} with items included: ${currObj?.listItems
+            ?.map(i => i?.name || i?.default_name)
+            ?.join(', ')}.`
+        : undefined;
   }
 
   const onClick = () => {
