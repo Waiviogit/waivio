@@ -199,14 +199,6 @@ const Body = props => {
           // eslint-disable-next-line no-param-reassign
           imgNode.alt = '/images/icons/no-image.png';
         };
-
-        // Handle chatbot image links
-        if (imgNode.getAttribute('data-chatbot-link')) {
-          // eslint-disable-next-line no-param-reassign
-          imgNode.onclick = () => {
-            window.open(imgNode.src, '_blank', 'noopener,noreferrer');
-          };
-        }
       });
     }
   }, []);

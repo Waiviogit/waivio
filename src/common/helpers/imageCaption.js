@@ -35,6 +35,14 @@ export const createImageWithCaption = (src, alt, link) => {
 `;
   }
 
+  if (link) {
+    return `
+    <a href="${link}" target="_blank" rel="noopener noreferrer">
+        <img ${imgAttributes} style="display: block; margin: 0 auto;" />
+    </a> 
+`;
+  }
+
   if (shouldShowCaption(alt, src) && !link) {
     return `
         <img ${imgAttributes} style="display: block; margin: 0 auto;" />

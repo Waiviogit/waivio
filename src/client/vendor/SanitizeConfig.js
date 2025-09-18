@@ -326,31 +326,16 @@ export default ({
         sanitizeErrors.push('An image in this post did not save properly.');
         return { tagName: 'img', attribs: { src: 'brokenimg.jpg' } };
       }
-
-      // replace http:// with // to force https when needed
       src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;
-      // Store original URL for fallback
       atts['data-fallback-src'] = src;
-      // Store linked URL if present
-      if (linkedUrl) {
-        return {
-          tagName: 'div',
-          text: createImageWithCaption(atts.src, atts.alt || '', linkedUrl),
-        };
-      }
 
-      // For chatbot links, create proper link structure
-      if (isChatBotLink && src?.includes('waivio.nyc3.digitaloceanspaces.com')) {
-        return {
-          tagName: 'img',
-          attribs: {
-            ...atts,
-            'data-chatbot-link': 'true',
-          },
-        };
+      if (isChatBotLink) {
+        const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
+        const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
+        return { tagName: 'div', text: aTag };
       }
 
       // Create image with caption if alt text is meaningful
