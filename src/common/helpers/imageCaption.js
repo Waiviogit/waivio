@@ -5,7 +5,7 @@ const hasImageExtension = s => IMG_EXT_RE.test((s || '').toLowerCase());
 export const shouldShowCaption = (alt, src) => {
   const altText = (alt || '').trim();
 
-  if (!altText) return false;
+  if (!altText || alt === src) return false;
   if (hasImageExtension(altText)) return false; // ← головне нове правило
 
   // невеликий fallback, щоб не показувати ім'я файлу без розширення
