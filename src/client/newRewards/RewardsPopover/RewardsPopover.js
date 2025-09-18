@@ -432,7 +432,9 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           : [viewReservation, openReview, report];
 
         if (campaignTypes.CONTESTS_OBJECT === proposition?.type)
-          return isSponsor ? [...mainList, rejectRewards, muteUser] : mainList;
+          return isSponsor
+            ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
+            : mainList;
 
         if (isGiveaways)
           return isSponsor

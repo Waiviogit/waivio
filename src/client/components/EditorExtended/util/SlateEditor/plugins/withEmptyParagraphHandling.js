@@ -30,8 +30,38 @@ const withEmptyParagraphHandling = editor => {
             : Path.previous(selectedElementPath);
           const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
 
-          // If previous node is not an image/video, remove the empty paragraph and keep cursor at the same visual position
-          if (prevNode && !['image', 'video'].includes(prevNode.type)) {
+          // Check if next node is an image/video
+          const nextPath = Path.next(selectedElementPath);
+          const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
+
+          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
+          const isBeforeImage = nextNode && ['image', 'video'].includes(nextNode.type);
+
+          // If we're before an image/video and this is the first paragraph, check if image is already selected
+          if (isBeforeImage && selectedElementPath[0] === 0) {
+            // Check if the image is already selected
+            const isImageSelected =
+              editor.selection &&
+              Range.isExpanded(editor.selection) &&
+              editor.selection.anchor.path[0] === nextPath[0] &&
+              editor.selection.focus.path[0] === nextPath[0];
+
+            if (isImageSelected) {
+              // Image is already selected, remove the empty paragraph
+              Transforms.removeNodes(editor, { at: selectedElementPath });
+
+              return;
+            }
+            // Image is not selected, select it first
+            Transforms.select(editor, Editor.range(editor, nextPath));
+
+            return;
+          }
+
+          // If previous node is not an image/video, it's not the only paragraph, and it's not before an image/video, remove the empty paragraph and keep cursor at the same visual position
+          if (prevNode && !['image', 'video'].includes(prevNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
             // Position cursor at the end of the previous paragraph
@@ -95,8 +125,11 @@ const withEmptyParagraphHandling = editor => {
           const nextPath = Path.next(selectedElementPath);
           const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-          // If next node is an image/video, remove the empty paragraph and keep cursor at the same visual position
-          if (nextNode && ['image', 'video'].includes(nextNode.type)) {
+          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
+          // If next node is an image/video and it's not the only paragraph, remove the empty paragraph and keep cursor at the same visual position
+          if (nextNode && ['image', 'video'].includes(nextNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
             // Position cursor at the beginning of the next paragraph (if any)

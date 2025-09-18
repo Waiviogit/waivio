@@ -41,7 +41,7 @@
   background: @toolbar-color;
   color: @white;
   border-radius: 4px;
-  z-index: 2;
+  z-index: 1000;
   position: absolute;
   transition: all 0.1s ease;
   box-shadow: 0 1px 3px 0 #747171;
@@ -50,6 +50,14 @@
   flex-direction: row;
   padding: 4px;
   font-size: 16px;
+  opacity: 1;
+  visibility: visible;
+
+  &.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 
   .md-block-paragraph {
     margin-top: 10px;

@@ -26,6 +26,7 @@ import {
   authorityVoteAppend,
   setObjectinAuthority,
   voteAppends,
+  setAuthorityForObject,
 } from '../appendStore/appendActions';
 import { getAuthorityList } from '../appendStore/appendSelectors';
 import { subscribeTypes } from '../../common/constants/blockTypes';
@@ -310,23 +311,27 @@ export const handlePinPost = (
   const downVotes = getAppendDownvotes(currUpdate?.active_votes);
   const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
   let voteWeight;
-  const getAuthority = newPin => {
+  const getAuthority = (newPin, forceAuth = false) => {
     getAuthorityFields(wobject.author_permlink).then(postInformation => {
       const authority = postInformation.find(
         p => p.creator === user.name && p.body === 'administrative',
       );
 
-      const voteForAuthority = () =>
-        !activeHeart &&
-        dispatch(
-          authorityVoteAppend(
-            authority?.author,
-            wobject.author_permlink,
-            authority?.permlink,
-            userVotingPower,
-            isObjectPage,
-          ),
-        );
+      const voteForAuthority = () => {
+        if (!activeHeart) {
+          authority
+            ? dispatch(
+                authorityVoteAppend(
+                  authority?.author,
+                  wobject.author_permlink,
+                  authority?.permlink,
+                  userVotingPower,
+                  isObjectPage,
+                ),
+              )
+            : dispatch(setAuthorityForObject(wobject, match, forceAuth));
+        }
+      };
 
       if (newPin) {
         if (
@@ -376,7 +381,7 @@ export const handlePinPost = (
     const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
     const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
 
-    getAuthority(true);
+    getAuthority(true, true);
     dispatch(
       appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
     );
@@ -384,7 +389,7 @@ export const handlePinPost = (
     dispatch(setObjectinAuthority(wobject.author_permlink));
     dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
     dispatch(updatePostPinState(post, true));
-    getAuthority(false);
+    getAuthority(false, true);
     dispatch(
       voteAppends(currUpdate.author, currUpdate.permlink, userVotingPower, 'pin', false, true),
     );

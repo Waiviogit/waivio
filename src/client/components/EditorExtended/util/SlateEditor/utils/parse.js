@@ -273,17 +273,10 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               return [
                 ...acc,
                 {
-                  type: 'paragraph',
-                  children: [
-                    { type: 'paragraph', children: [{ text: '' }] },
-                    {
-                      type: 'image',
-                      url: child.url,
-                      alt: child.alt,
-                      children: [{ text: '' }],
-                    },
-                    { type: 'paragraph', children: [{ text: '' }] },
-                  ],
+                  type: 'image',
+                  url: child.url,
+                  alt: child.alt,
+                  children: [{ text: '' }],
                 },
               ];
             }
@@ -292,7 +285,6 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
               if (child.children[0].type === 'image') {
                 return [
                   ...acc,
-                  { type: 'paragraph', children: [{ text: '' }] },
                   {
                     type: 'image',
                     ...child.children[0],
@@ -395,6 +387,12 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           ...(node.underline && { underline: true }),
           ...(node.children && { children: next(node.children) }),
         }),
+        image: node => ({
+          type: 'image',
+          url: node.url,
+          alt: node.alt,
+          children: [{ text: '' }],
+        }),
       },
     });
   const _body = body
@@ -437,6 +435,9 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
       postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
     }
   });
+
+  if (postParsed?.[0]?.children?.[0]?.type === 'image')
+    postParsed = [{ type: 'paragraph', children: [{ text: '' }] }, ...postParsed];
 
   return postParsed;
 };

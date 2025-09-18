@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObject, getObjectsRewards } from '../../../waivioApi/ApiClient';
@@ -57,6 +58,7 @@ const RenderPropositionList = ({
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const location = useLocation();
   const match = useRouteMatch();
   const [propositions, setPropositions] = useState();
@@ -71,7 +73,6 @@ const RenderPropositionList = ({
   const isJudges = tab === 'judges';
   const reqObj = requiredObject?.replace('@', '');
 
-  // For judges, only show sponsors sort option
   const currentSortConfig = isJudges
     ? [{ key: 'sponsors', title: 'Sponsors' }]
     : customSortConfig || sortConfig;
@@ -88,7 +89,7 @@ const RenderPropositionList = ({
     if (reqObj && reqObj !== parent?.author_permlink) {
       const campParent = requiredObject?.includes('@')
         ? await getAccount(reqObj)
-        : await getObject(requiredObject);
+        : await getObject(requiredObject, authUserName, locale);
       const campInfo = await getObjectsRewards(requiredObject, authUserName);
 
       setParent({ ...campParent, maxReward: campInfo?.main?.maxReward });

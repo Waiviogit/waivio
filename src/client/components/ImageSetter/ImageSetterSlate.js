@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Icon, message } from 'antd';
+import { Icon, message, Input } from 'antd';
 import { map, isEmpty, get, isEqual, isNil, size } from 'lodash';
 import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
-import { Transforms, Path, Node } from 'slate';
+import { Transforms, Path } from 'slate';
 import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
@@ -18,10 +18,7 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import {
-  createImageNode,
-  insertImageReplaceParagraph,
-} from '../EditorExtended/util/SlateEditor/utils/embed';
+import { createImageNode, createEmptyNode } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
 import './ImageSetter.less';
@@ -48,6 +45,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const [altTexts, setAltTexts] = useState({});
 
   const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
@@ -145,75 +143,29 @@ const ImageSetter = ({
     }
   }, [currentImages]);
 
-  const clearImageState = () => setCurrentImages([]);
+  const clearImageState = () => {
+    setCurrentImages([]);
+    setAltTexts({});
+  };
+
+  const handleAltTextChange = (imageId, altText) => {
+    setAltTexts(prev => ({
+      ...prev,
+      [imageId]: altText,
+    }));
+  };
 
   const addImage = () => {
     if (isModal && isOkayBtn) {
       currentImages.forEach(newImage => {
         if (isEditor && newImage) {
-          const url = newImage.src?.startsWith('http') ? newImage.src : `https://${newImage.src}`;
-          const { selection } = editor;
+          const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
-          if (selection) {
-            const selectedElementPath = selection.anchor.path;
-
-            try {
-              const selectedElement = Node.descendant(editor, selectedElementPath);
-
-              if (
-                selectedElement &&
-                selectedElement.type === 'paragraph' &&
-                selectedElement.children?.[0]?.text === ''
-              ) {
-                Transforms.removeNodes(editor, { at: selectedElementPath });
-              }
-            } catch (error) {
-              console.warn('Cannot find element at path:', selectedElementPath);
-            }
-          }
-
-          if (editor.children && editor.children.length > 0) {
-            const insertOptions = {};
-
-            if (
-              isAndroidDevice() &&
-              lastSelection &&
-              lastSelection.anchor &&
-              lastSelection.anchor.path
-            ) {
-              const nextPath = Path.next(lastSelection.anchor.path);
-
-              if (nextPath) {
-                insertOptions.at = nextPath;
-              }
-            }
-
-            try {
-              Transforms.insertNodes(
-                editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-                insertOptions,
-              );
-            } catch (error) {
-              Transforms.insertNodes(
-                editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-              );
-            }
-          } else {
-            try {
-              Transforms.insertNodes(
-                editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-              );
-            } catch (error) {
-              Transforms.insertNodes(
-                editor,
-                insertImageReplaceParagraph(editor, createImageNode(newImage.name, { url })),
-              );
-            }
-          }
-
+          Transforms.insertNodes(
+            editor,
+            [createImageNode(altTexts[newImage.id] || newImage.name, { url }), createEmptyNode()],
+            isAndroidDevice() ? { at: Path.next(lastSelection.anchor.path) || null } : {},
+          );
           ReactEditor.focus(editor);
         }
       });
@@ -319,6 +271,15 @@ const ImageSetter = ({
 
     setCurrentImages(filteredImages);
 
+    // Remove alt text for deleted image
+    setAltTexts(prev => {
+      const newAltTexts = { ...prev };
+
+      delete newAltTexts[imageDetail.id];
+
+      return newAltTexts;
+    });
+
     if (getEditorState) {
       const contentState = getEditorState().getCurrentContent();
       const allBlocks = contentState.getBlockMap();
@@ -391,7 +352,29 @@ const ImageSetter = ({
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
               </div>
-              <img src={image.src} height="86" alt={image.src} />
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <img
+                  src={image.src}
+                  height="100"
+                  alt={isEditor ? altTexts[image.id] || image.src : image.src}
+                />
+              </div>
+              <div className="image-box__alt-input">
+                <Input
+                  placeholder={intl.formatMessage({
+                    id: 'imageSetter_alt_text_placeholder',
+                    defaultMessage: 'Image text (optional)',
+                  })}
+                  value={altTexts[image.id] || ''}
+                  onChange={e => handleAltTextChange(image.id, e.target.value)}
+                  size="small"
+                />
+              </div>
             </div>
           ))}
           {isLoadingImage &&

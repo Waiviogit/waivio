@@ -180,7 +180,7 @@ function proxifyImages(doc) {
     const url = node.getAttribute('src');
 
     node.setAttribute('src', getProxyImageURL(url));
-    node.setAttribute('alt', url);
+    node.setAttribute('data-fallback-src', url);
   });
 }
 

@@ -172,6 +172,12 @@
 
   // Images
 
+  button {
+    img {
+      margin: 20px 0 0;
+    }
+  }
+
   img {
     width: auto;
     max-width: 100%;
@@ -179,7 +185,7 @@
     max-height: none;
     display: flex;
     vertical-align: middle;
-    margin-top: 20px;
+    margin: 20px auto 0;
     padding-right: 0;
   }
 
@@ -319,6 +325,18 @@ div[data-dir='rtl'] .Body {
     tr:nth-child(even) {
       td {
         background-color: @post-table-background-color;
+      }
+    }
+  }
+}
+
+.StoryFull,
+.Comment__content,
+.object-of-type-page {
+  .Body {
+    a[target='_blank'] {
+      &::after {
+        content: '';
       }
     }
   }

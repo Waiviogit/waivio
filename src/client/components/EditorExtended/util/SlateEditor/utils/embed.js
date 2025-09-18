@@ -37,7 +37,17 @@ export const createCodeBlock = () => ({
   lang: 'javascript',
 });
 
-export const insertImageReplaceParagraph = (editor, imageNode) => [imageNode, createEmptyNode()];
+export const insertImageReplaceParagraph = (editor, imageNode) => [
+  createEmptyNode(),
+  imageNode,
+  createEmptyNode(),
+];
+
+export const insertImageForImageSetter = (editor, imageNode) => [
+  createEmptyNode(),
+  imageNode,
+  createEmptyNode(),
+];
 
 export const createImageInParagraph = imageNode => ({
   type: 'paragraph',

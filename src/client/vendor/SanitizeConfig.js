@@ -3,6 +3,7 @@ import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 import CryptoJS from 'crypto-js';
+import { createImageWithCaption, shouldShowCaption } from '../../common/helpers/imageCaption';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -81,7 +82,7 @@ export const allowedTags = `
     div, iframe, del,
     a, p, b, q, br, ul, li, i, b, ol, img, h1, h2, h3, h4, h5, h6, hr, u,
     blockquote, pre, code, em, strong, center, table, thead, tbody, tr, th, td,
-    strike, sup, sub, details, summary
+    strike, sup, sub, details, summary, figure, figcaption
 `
   .trim()
   .split(/,\s*/);
@@ -284,9 +285,11 @@ export default ({
 
     // style is subject to attack, filtering more below
     td: ['style'],
-    img: ['src', 'alt'],
-    a: ['href', 'rel', 'target'],
+    img: ['src', 'alt', 'data-fallback-src', 'data-linked-url'],
+    a: ['href', 'rel', 'target', 'data-linked-image'],
     ol: ['start'],
+    figure: ['class', 'style'],
+    figcaption: ['class', 'style'],
   },
   allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['byteball', 'bitcoin']),
   transformTags: {
@@ -317,18 +320,17 @@ export default ({
     img: (tagName, attribs) => {
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
-      let { src, alt } = attribs;
+      let { src, alt, 'data-linked-url': linkedUrl } = attribs;
       if (!/^(https?:)?\/\//i.test(src)) {
         console.log('Blocked, image tag src does not appear to be a url', tagName, attribs);
         sanitizeErrors.push('An image in this post did not save properly.');
         return { tagName: 'img', attribs: { src: 'brokenimg.jpg' } };
       }
-
-      // replace http:// with // to force https when needed
       src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;
+      atts['data-fallback-src'] = src;
 
       if (isChatBotLink) {
         const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
@@ -336,7 +338,9 @@ export default ({
         return { tagName: 'div', text: aTag };
       }
 
-      return { tagName, attribs: atts };
+      // Create image with caption if alt text is meaningful
+      const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '', linkedUrl);
+      return { tagName: 'div', text: imageWithCaption };
     },
     div: (tagName, attribs) => {
       const attys = {};
@@ -368,15 +372,17 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(
-      appUrl,
-      location,
-      isPage,
-      isPost,
-      isChatBotLink,
-      baseObj,
-      parsedJsonMetadata,
-      safeLinks,
-    ),
+    a: (tagName, attribs) => {
+      return parseLink(
+        appUrl,
+        location,
+        isPage,
+        isPost,
+        isChatBotLink,
+        baseObj,
+        parsedJsonMetadata,
+        safeLinks,
+      )(tagName, attribs);
+    },
   },
 });

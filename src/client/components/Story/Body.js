@@ -109,10 +109,16 @@ export function getHtml(
     return `${acc + item}\n\n`;
   }, '');
   parsedBody = remarkable.render(parsedBody);
+  parsedBody = parsedBody.replace(
+    /<a[^>]*href="([^"]*)"[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi,
+    (match, href, content) =>
+      content.replace(/<img([^>]*)>/gi, `<img$1 data-linked-url="${href}">`),
+  );
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
+  const MD_DATA_IMG = /!\[([^\]]*)\]\(\s*(data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/=]+)\s*\)/gi;
 
   if (options.rewriteLinks) {
     parsedBody = parsedBody.replace(rewriteRegex, (match, p1) => `"${p1 || '/'}"`);
@@ -132,6 +138,10 @@ export function getHtml(
       large: !isMobl,
       safeLinks,
     }),
+  );
+  parsedBody = parsedBody.replace(
+    MD_DATA_IMG,
+    (_, alt, src) => `<img src="${src}" alt="${alt}" data-fallback-src="${src}">`,
   );
 
   if (body.length - parsedBody.length > 1000 && sendPostError) {
@@ -181,8 +191,11 @@ const Body = props => {
       Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
         // eslint-disable-next-line no-param-reassign
         imgNode.onerror = () => {
+          // Use data-fallback-src if available, otherwise fall back to alt
+          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+
           // eslint-disable-next-line no-param-reassign
-          imgNode.src = imgNode.alt;
+          imgNode.src = fallbackSrc;
           // eslint-disable-next-line no-param-reassign
           imgNode.alt = '/images/icons/no-image.png';
         };

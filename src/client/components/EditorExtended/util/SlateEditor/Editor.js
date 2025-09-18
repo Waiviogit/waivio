@@ -77,7 +77,16 @@ export const Element = props => {
     case 'tableRow':
       return <tr {...attributes}>{children}</tr>;
     case 'tableCell':
-      return <td {...attributes}>{children}</td>;
+      return (
+        <td
+          {...attributes}
+          onClick={e => {
+            e.currentTarget.focus();
+          }}
+        >
+          {children}
+        </td>
+      );
     case 'image':
       return <Image {...props} />;
     case 'video':
