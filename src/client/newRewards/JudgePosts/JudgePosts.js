@@ -42,6 +42,7 @@ const JudgePosts = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [hasLinks, setHasLinks] = useState(false);
   const [links, setLinks] = useState([]);
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
   const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
   const history = useHistory();
@@ -76,14 +77,21 @@ const JudgePosts = props => {
     }
 
     if (props.authenticatedUserName) {
-      props.getFeedContent({
-        sortBy: 'judgesPosts',
-        category: props.authenticatedUserName,
-        limit,
-        isJudges: true,
-        authorPermlink: requiredObject,
-        activationPermlink: urlActivationPermlink || reduxActivationPermlink,
-      });
+      props
+        .getFeedContent({
+          sortBy: 'judgesPosts',
+          category: props.authenticatedUserName,
+          limit,
+          isJudges: true,
+          authorPermlink: requiredObject,
+          activationPermlink: urlActivationPermlink || reduxActivationPermlink,
+        })
+        .then(() => {
+          setHasInitiallyLoaded(true);
+        })
+        .catch(() => {
+          setHasInitiallyLoaded(true);
+        });
     }
     getObject(requiredObject).then(res => setParent(res));
     getJudgesPostLinks(
@@ -95,7 +103,7 @@ const JudgePosts = props => {
       setLinks(r.posts);
       setHasLinks(r.hasMore);
     });
-  }, [props.authenticatedUserName, requiredObject, reduxActivationPermlink]);
+  }, [requiredObject]);
 
   // Update URL when activationPermlink changes
   useEffect(() => {
@@ -140,7 +148,7 @@ const JudgePosts = props => {
     });
 
   const renderContent = () => {
-    if (isEmpty(content) && !isFetching) {
+    if (content && isEmpty(content) && !isFetching && hasInitiallyLoaded) {
       return <EmptyCampaign emptyMessage="There are no posts available for this campaign yet." />;
     }
 
