@@ -40,9 +40,9 @@ const limit = 10;
 const JudgePosts = props => {
   const [parent, setParent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [hasLinks, setHasLinks] = useState(false);
   const [links, setLinks] = useState([]);
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
   const parentLink = `/rewards/judges/`;
   const { requiredObject } = useParams();
   const history = useHistory();
@@ -77,14 +77,21 @@ const JudgePosts = props => {
     }
 
     if (props.authenticatedUserName) {
-      props.getFeedContent({
-        sortBy: 'judgesPosts',
-        category: props.authenticatedUserName,
-        limit,
-        isJudges: true,
-        authorPermlink: requiredObject,
-        activationPermlink: urlActivationPermlink || reduxActivationPermlink,
-      });
+      props
+        .getFeedContent({
+          sortBy: 'judgesPosts',
+          category: props.authenticatedUserName,
+          limit,
+          isJudges: true,
+          authorPermlink: requiredObject,
+          activationPermlink: urlActivationPermlink || reduxActivationPermlink,
+        })
+        .then(() => {
+          setHasInitiallyLoaded(true);
+        })
+        .catch(() => {
+          setHasInitiallyLoaded(true);
+        });
     }
     getObject(requiredObject).then(res => setParent(res));
     getJudgesPostLinks(
@@ -96,7 +103,7 @@ const JudgePosts = props => {
       setLinks(r.posts);
       setHasLinks(r.hasMore);
     });
-  }, [props.authenticatedUserName, requiredObject, reduxActivationPermlink]);
+  }, [requiredObject]);
 
   // Update URL when activationPermlink changes
   useEffect(() => {
@@ -109,10 +116,9 @@ const JudgePosts = props => {
         history.replace(`?${query.toString()}`);
       }
     }
-  }, [reduxActivationPermlink, history]);
+  }, []);
 
   const loadMoreLinks = () => {
-    setLoading(true);
     getJudgesPostLinks(
       props.authenticatedUserName,
       requiredObject,
@@ -121,7 +127,6 @@ const JudgePosts = props => {
     ).then(r => {
       setLinks([...links, ...r.posts]);
       setHasLinks(r.hasMore);
-      setLoading(false);
     });
   };
   const content = getFeedFromState('judgesPosts', props.authenticatedUserName, props.feed);
@@ -143,11 +148,11 @@ const JudgePosts = props => {
     });
 
   const renderContent = () => {
-    if (isEmpty(content) && !isFetching) {
+    if (content && isEmpty(content) && !isFetching && hasInitiallyLoaded) {
       return <EmptyCampaign emptyMessage="There are no posts available for this campaign yet." />;
     }
 
-    return isFetching ? (
+    return isFetching && content?.length < limit ? (
       <Loading />
     ) : (
       <Feed
@@ -214,11 +219,7 @@ const JudgePosts = props => {
                 role="presentation"
                 onClick={loadMoreLinks}
               >
-                {loading ? (
-                  <Loading />
-                ) : (
-                  <FormattedMessage id="show_more" defaultMessage="show more" />
-                )}
+                <FormattedMessage id="show_more" defaultMessage="show more" />
               </div>
             </div>
           )}
