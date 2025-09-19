@@ -3858,6 +3858,8 @@ class AppendForm extends Component {
           listItems =
             (itemsInSortingList &&
               itemsInSortingList.map(item => ({
+                weight: item?.weight,
+                createdAt: item?.createdAt,
                 id: item.body || item.author_permlink,
                 checkedItemInList: item.checkedItemInList,
                 name: item.alias || getObjectName(item),
