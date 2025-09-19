@@ -279,6 +279,22 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
+              case notificationConstants.JUDGES_NOTIFICATION:
+                return (
+                  <NotificationTemplate
+                    username={notification.toJudge}
+                    url={`/rewards/judges/eligible/${notification.authorPermlink}`}
+                    id="notification_object_bell_judges"
+                    defaultMessage="You were added as a judge to {objectName}"
+                    values={{
+                      objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
               case notificationConstants.THREAD_AUTHOR_FOLLOWER:
                 const hashtagsArr = !isEmpty(notification?.hashtags)
                   ? notification?.hashtags?.map(h => objNames[h])
