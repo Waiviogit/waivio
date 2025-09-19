@@ -13,6 +13,16 @@
   hyphens: none;
   margin: 4px 0;
 
+  .centre-container {
+    position: relative;
+    width: 100vw;
+    left: -5px;
+
+    @media @small {
+      width: 100%;
+    }
+  }
+
   a[target='_blank'] {
     &::after {
       content: '\e673';
@@ -332,6 +342,7 @@ div[data-dir='rtl'] .Body {
 
 .StoryFull,
 .Comment__content,
+.PageContent,
 .object-of-type-page {
   .Body {
     a[target='_blank'] {

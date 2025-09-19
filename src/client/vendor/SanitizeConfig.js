@@ -3,7 +3,11 @@ import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 import CryptoJS from 'crypto-js';
-import { createImageWithCaption, shouldShowCaption } from '../../common/helpers/imageCaption';
+import {
+  createImageWithCaption,
+  shouldShowCaption,
+  isManualAltText,
+} from '../../common/helpers/imageCaption';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -321,6 +325,7 @@ export default ({
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
       let { src, alt, 'data-linked-url': linkedUrl } = attribs;
+      const className = 'centre-container';
       if (!/^(https?:)?\/\//i.test(src)) {
         console.log('Blocked, image tag src does not appear to be a url', tagName, attribs);
         sanitizeErrors.push('An image in this post did not save properly.');
@@ -329,18 +334,33 @@ export default ({
       src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
-      if (alt && alt !== '') atts.alt = alt;
+      // Додаємо alt тільки якщо він вручну доданий користувачем
+      if (isManualAltText(alt, src)) {
+        atts.alt = alt;
+      }
       atts['data-fallback-src'] = src;
 
       if (isChatBotLink) {
         const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
         const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
-        return { tagName: 'div', text: aTag };
+        return {
+          tagName: 'div',
+          attribs: {
+            class: className,
+          },
+          text: aTag,
+        };
       }
 
       // Create image with caption if alt text is meaningful
       const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '', linkedUrl);
-      return { tagName: 'div', text: imageWithCaption };
+      return {
+        tagName: 'div',
+        attribs: {
+          class: className,
+        },
+        text: imageWithCaption,
+      };
     },
     div: (tagName, attribs) => {
       const attys = {};

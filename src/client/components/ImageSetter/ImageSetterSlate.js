@@ -12,6 +12,7 @@ import { isAndroidDevice } from '../../../common/helpers/apiHelpers';
 
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../../common/helpers/image';
+import { isManualAltText } from '../../../common/helpers/imageCaption';
 import {
   ALLOWED_IMG_FORMATS,
   MAX_IMG_SIZE,
@@ -361,7 +362,11 @@ const ImageSetter = ({
                 <img
                   src={image.src}
                   height="100"
-                  alt={isEditor ? altTexts[image.id] || image.src : image.src}
+                  alt={
+                    isEditor && isManualAltText(altTexts[image.id], image.src)
+                      ? altTexts[image.id]
+                      : ''
+                  }
                 />
               </div>
               <div className="image-box__alt-input">
