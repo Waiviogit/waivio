@@ -6,6 +6,8 @@ import { useHistory } from 'react-router';
 import Cookie from 'js-cookie';
 import './CookieNotice.less';
 
+let globalCookieNoticeVisible = false;
+
 const CookieNotice = () => {
   const [visible, setVisible] = useState(false);
   const history = useHistory();
@@ -18,14 +20,23 @@ const CookieNotice = () => {
   const showNotice = isWaivio || !signInPage;
 
   useEffect(() => {
-    if (Cookie.get(cookieKey) !== 'accepted' && showNotice) {
+    const isCookieAccepted = Cookie.get(cookieKey) === 'accepted';
+
+    if (!isCookieAccepted && showNotice && !globalCookieNoticeVisible) {
+      globalCookieNoticeVisible = true;
       setVisible(true);
     }
-  }, [cookieKey, showNotice]);
+
+    return () => {
+      if (visible) {
+        globalCookieNoticeVisible = false;
+      }
+    };
+  }, [cookieKey, showNotice, visible]);
 
   const handleAccept = () => {
-    // ✅ set cookie with expiration (e.g., 1 year)
     Cookie.set(cookieKey, 'accepted', { expires: 365 });
+    globalCookieNoticeVisible = false;
     setVisible(false);
   };
 
