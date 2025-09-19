@@ -5,11 +5,16 @@
   background: @white;
   border: @base-border;
   border-radius: @border-radius-base;
+
   img {
     cursor: pointer;
     border: 1px solid @white-gainsboro;
     margin: -17px -17px 0;
-    max-width: calc(100% + 34px);
+    max-width: 100%;
+
+    @media @small {
+      max-width: calc(100% + 34px);
+    }
   }
   .md-sb-button.action-btn {
     img {
@@ -25,7 +30,11 @@
   }
 
   &.view-mode {
-    padding: 16px;
+    padding: 5px;
+
+    @media @small {
+      padding: 16px;
+    }
   }
 
   &__header-controls {
