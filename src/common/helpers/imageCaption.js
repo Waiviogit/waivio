@@ -2,25 +2,65 @@ const IMG_EXT_RE = /\.(?:jpe?g|png|webp|gif|bmp|tiff?|heic|heif|svg|avif)(?=($|[
 
 const hasImageExtension = s => IMG_EXT_RE.test((s || '').toLowerCase());
 
-export const shouldShowCaption = (alt, src) => {
+// Функція для визначення, чи є alt текст вручну доданим користувачем
+export const isManualAltText = (alt, src) => {
   const altText = (alt || '').trim();
 
-  if (!altText || alt === src) return false;
-  if (hasImageExtension(altText)) return false; // ← головне нове правило
+  if (!altText) return false;
+  if (alt === src) return false;
+  if (hasImageExtension(altText)) return false;
+  const srcFileName = (src || '').split('/').pop() || '';
+  const srcBaseName = srcFileName.replace(/\.[^.]+$/, '');
 
-  // невеликий fallback, щоб не показувати ім'я файлу без розширення
-  const base = ((src || '').split('/').pop() || '').replace(/\.[^.]+$/, '');
   const altClean = altText
     .toLowerCase()
     .replace(/[_\-.]+/g, ' ')
-    .trim();
-  const baseClean = base
-    .toLowerCase()
-    .replace(/[_\-.]+/g, ' ')
+    .replace(/[^a-z0-9\s]/g, '') // видаляємо всі спеціальні символи
     .trim();
 
-  return altClean !== baseClean;
+  const srcClean = srcBaseName
+    .toLowerCase()
+    .replace(/[_\-.]+/g, ' ')
+    .replace(/[^a-z0-9\s]/g, '') // видаляємо всі спеціальні символи
+    .trim();
+
+  if (altClean === srcClean) return false;
+  if (/^[0-9_\-.]+$/.test(altText)) return false;
+  if (/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(altText)) return false;
+  if (/^[a-f0-9]{32}$/i.test(altText)) return false; // MD5 хеш
+  if (/^[a-f0-9]{40}$/i.test(altText)) return false; // SHA1 хеш
+  if (altText.length < 3) return false;
+  if (/^[a-z0-9]$/i.test(altText)) return false;
+  const commonTempNames = ['image', 'photo', 'img', 'picture', 'pic', 'untitled', 'download'];
+
+  if (commonTempNames.includes(altClean)) return false;
+
+  const fileRelatedWords = [
+    'file',
+    'filename',
+    'document',
+    'attachment',
+    'upload',
+    'download',
+    'screenshot',
+    'snapshot',
+    'temp',
+    'temporary',
+    'cache',
+    'backup',
+  ];
+
+  const altWords = altClean.split(/\s+/);
+  const hasFileRelatedWord = altWords.some(word =>
+    fileRelatedWords.some(fileWord => word.includes(fileWord) || fileWord.includes(word)),
+  );
+
+  if (hasFileRelatedWord) return false;
+
+  return true;
 };
+
+export const shouldShowCaption = (alt, src) => isManualAltText(alt, src);
 
 export const createImageWithCaption = (src, alt, link) => {
   const imgAttributes = `src="${src}" alt="${alt}" data-fallback-src="${src}" : ''}`;

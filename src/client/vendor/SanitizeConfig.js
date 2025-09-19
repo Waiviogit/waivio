@@ -3,7 +3,11 @@ import url from 'url';
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 import CryptoJS from 'crypto-js';
-import { createImageWithCaption, shouldShowCaption } from '../../common/helpers/imageCaption';
+import {
+  createImageWithCaption,
+  shouldShowCaption,
+  isManualAltText,
+} from '../../common/helpers/imageCaption';
 
 /**
  This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -329,7 +333,10 @@ export default ({
       src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
-      if (alt && alt !== '') atts.alt = alt;
+      // Додаємо alt тільки якщо він вручну доданий користувачем
+      if (isManualAltText(alt, src)) {
+        atts.alt = alt;
+      }
       atts['data-fallback-src'] = src;
 
       if (isChatBotLink) {

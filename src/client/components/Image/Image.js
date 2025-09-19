@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { getProxyImageURL } from '../../../common/helpers/image';
+import { isManualAltText } from '../../../common/helpers/imageCaption';
 
 const CustomImage = ({ src, className, onClick, alt }) => {
   const [url, setUrl] = useState(getProxyImageURL(src));
@@ -10,7 +11,7 @@ const CustomImage = ({ src, className, onClick, alt }) => {
       className={className}
       onError={() => setUrl(src)}
       onClick={onClick}
-      alt={alt}
+      alt={isManualAltText(alt, src) ? alt : ''}
       src={url}
       data-fallback-src={src}
     />
