@@ -42,6 +42,7 @@ export const GROUP_ID_UPDATES = 'groupIdUpdates';
 export const GROUP_ID_UPDATES_REJECT = 'groupIdUpdatesReject';
 export const BELL_THREAD = 'bellThread';
 export const THREAD_AUTHOR_FOLLOWER = 'threadAuthorFollower';
+export const JUDGES_NOTIFICATION = 'judgesNotification';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
