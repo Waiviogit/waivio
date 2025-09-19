@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, get, throttle, debounce } from 'lodash';
+import { isEmpty, get, throttle, debounce, has } from 'lodash';
 import { connect } from 'react-redux';
 import { Transforms } from 'slate';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import filesize from 'filesize';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
-import { updateAuthProfile, updateProfile } from '../../store/authStore/authActions';
+import { updateAuthProfile, updateProfile, setSignature } from '../../store/authStore/authActions';
 import { MAXIMUM_UPLOAD_SIZE } from '../../common/helpers/image';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
@@ -22,6 +22,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   isGuestUser,
+  getAuthUserSignature,
 } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import EditorSlate from '../components/EditorExtended/editorSlate';
@@ -48,12 +49,14 @@ const FormItem = Form.Item;
       ...getUser(state, getAuthenticatedUserName(state)),
     },
     isGuest: isGuestUser(state),
+    signature: getAuthUserSignature(state),
   }),
   {
     updateProfile,
     updateAuthProfile,
     setCursorCoordinates,
     searchObjectsAutoCompete,
+    setSignature,
   },
 )
 @Form.create()
@@ -64,6 +67,7 @@ export default class ProfileSettings extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
+    setSignature: PropTypes.func,
     updateAuthProfile: PropTypes.func,
     setCursorCoordinates: PropTypes.func,
     searchObjectsAutoCompete: PropTypes.func,
@@ -152,7 +156,19 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, updateAuthProfile, intl } = this.props;
+    const {
+      form,
+      isGuest,
+      userName,
+      user,
+      // eslint-disable-next-line no-shadow
+      updateProfile,
+      // eslint-disable-next-line no-shadow
+      updateAuthProfile,
+      intl,
+      // eslint-disable-next-line no-shadow
+      setSignature,
+    } = this.props;
     const { avatarImage, coverImage, profileData, bodyHTML } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -168,7 +184,7 @@ export default class ProfileSettings extends React.Component {
             field =>
               form.isFieldTouched(field) ||
               (field === 'profile_image' && isChangedAvatar) ||
-              field === 'signature' ||
+              (field === 'signature' && (form.isFieldTouched('signature') || isChangedSingature)) ||
               (field === 'cover_image' && isChangedCover),
           )
           .reduce((a, b) => {
@@ -183,6 +199,14 @@ export default class ProfileSettings extends React.Component {
               [b]: value,
             };
           }, {});
+
+        if (has(cleanValues, 'signature')) {
+          setSignature(cleanValues.signature || '');
+        } else if (form.isFieldTouched('signature') || isChangedSingature) {
+          const currentSignature = editorStateToMarkdownSlate(this.editor?.children);
+
+          setSignature(currentSignature || '');
+        }
 
         if (isGuest) {
           updateProfile(userName, cleanValues)
