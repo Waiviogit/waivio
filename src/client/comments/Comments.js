@@ -14,6 +14,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
+  getAuthUserSignature,
 } from '../../store/authStore/authSelectors';
 import {
   getComments,
@@ -207,6 +208,7 @@ export default connect(
       defaultVotePercent: getVotePercent(state),
       isGuest: isGuestUser(state),
       userInfo: getUser(state, username),
+      signature: getAuthUserSignature(state),
     };
   },
   dispatch =>
