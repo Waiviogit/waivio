@@ -2,13 +2,15 @@ const IMG_EXT_RE = /\.(?:jpe?g|png|webp|gif|bmp|tiff?|heic|heif|svg|avif)(?=($|[
 
 const hasImageExtension = s => IMG_EXT_RE.test((s || '').toLowerCase());
 
-// Функція для визначення, чи є alt текст вручну доданим користувачем
 export const isManualAltText = (alt, src) => {
   const altText = (alt || '').trim();
 
   if (!altText) return false;
+
   if (alt === src) return false;
+
   if (hasImageExtension(altText)) return false;
+
   const srcFileName = (src || '').split('/').pop() || '';
   const srcBaseName = srcFileName.replace(/\.[^.]+$/, '');
 
@@ -25,12 +27,24 @@ export const isManualAltText = (alt, src) => {
     .trim();
 
   if (altClean === srcClean) return false;
+
   if (/^[0-9_\-.]+$/.test(altText)) return false;
+
   if (/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(altText)) return false;
   if (/^[a-f0-9]{32}$/i.test(altText)) return false; // MD5 хеш
   if (/^[a-f0-9]{40}$/i.test(altText)) return false; // SHA1 хеш
+
   if (altText.length < 3) return false;
+
   if (/^[a-z0-9]$/i.test(altText)) return false;
+
+  const photoByPattern = /^(photo|фото|image|зображення)\s+by\s+/i;
+  const hasUrlPattern = /https?:\/\/[^\s]+/i;
+
+  if (photoByPattern.test(altText) || hasUrlPattern.test(altText)) {
+    return true;
+  }
+
   const commonTempNames = ['image', 'photo', 'img', 'picture', 'pic', 'untitled', 'download'];
 
   if (commonTempNames.includes(altClean)) return false;
