@@ -2,7 +2,10 @@ import React, { useCallback } from 'react';
 import { Transforms } from 'slate';
 import { useSelected, useFocused, ReactEditor, useSlateStatic } from 'slate-react';
 import PropTypes from 'prop-types';
-import { shouldShowCaption } from '../../../../../../../common/helpers/imageCaption';
+import {
+  shouldShowCaption,
+  isManualAltText,
+} from '../../../../../../../common/helpers/imageCaption';
 
 import './image.less';
 
@@ -33,7 +36,7 @@ const Image = ({ attributes, element, children }) => {
       <div contentEditable={false}>
         <figure className="md-block-image-figure">
           <img
-            alt={element.alt || ''}
+            alt={isManualAltText(element.alt, element.url) ? element.alt : ''}
             src={element.url}
             data-fallback-src={element.url}
             draggable={false}
