@@ -318,7 +318,7 @@ export const handlePinPost = (
       );
 
       const voteForAuthority = () => {
-        if (!activeHeart) {
+        if (!activeHeart || forceAuth) {
           authority
             ? dispatch(
                 authorityVoteAppend(
@@ -333,18 +333,7 @@ export const handlePinPost = (
         }
       };
 
-      if (newPin) {
-        if (
-          !isEmpty(postInformation) ||
-          !isEmpty(
-            postInformation.filter(p => p.creator === user.name && p.body === 'administrative'),
-          )
-        ) {
-          voteForAuthority();
-        }
-      } else {
-        voteForAuthority();
-      }
+      voteForAuthority();
     });
   };
 
