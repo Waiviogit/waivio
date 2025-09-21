@@ -66,7 +66,7 @@ const WebsiteSignIn = props => {
     setIsLoading(true);
     setGoogleTagEvent('click_sign_in_google');
 
-    if (response.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
+    if (response?.error || (socialNetwork === 'facebook' && isEmpty(response.id))) {
       setIsLoading(false);
     } else if (response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
@@ -114,7 +114,7 @@ const WebsiteSignIn = props => {
   };
 
   const handleFailure = failResponse => {
-    if (failResponse.error === 'idpiframe_initialization_failed') {
+    if (failResponse?.error === 'idpiframe_initialization_failed') {
       message.error(
         props.intl.formatMessage({
           id: 'sign_in_error_not_cookies',
