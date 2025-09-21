@@ -7,8 +7,8 @@ import { injectIntl } from 'react-intl';
 
 const SocialButtons = ({ responseSocial, className, intl, lastError, setLastError }) => {
   const handleFailure = failResponse => {
-    if (failResponse.error === 'idpiframe_initialization_failed') {
-      setLastError(failResponse.error);
+    if (failResponse?.error === 'idpiframe_initialization_failed') {
+      setLastError(failResponse?.error);
       if (lastError === 'idpiframe_initialization_failed') {
         message.error(
           intl.formatMessage({

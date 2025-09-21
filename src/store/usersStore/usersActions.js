@@ -68,6 +68,8 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
       meta: { username },
     });
   } catch (e) {
+    console.error(e);
+
     return dispatch({
       type: GET_INFO_FOR_SIDEBAR.ERROR,
       payload: {},

@@ -96,7 +96,7 @@ const ModalSignIn = ({
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
 
-    if (response.error || (isEmpty(response.id) && isEmpty(response.googleId))) {
+    if (response?.error || (isEmpty(response?.id) && isEmpty(response?.googleId))) {
       setIsLoading(false);
       setIsShowSignInModal(false);
       setIsModalOpen(false);
