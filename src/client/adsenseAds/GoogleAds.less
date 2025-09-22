@@ -2,21 +2,12 @@
   min-width: 250px;
   min-height: 100px;
   margin-bottom: 5px;
-  //&:empty,
-  //&:not(:has(ins)),
-  //&:has(ins:empty),
-  //&:has(ins:not(:has(iframe))) {
-  //  display: none !important;
-  //}
 
-  //ins:empty {
-  //  display: none !important;
-  //}
   ins {
     display: block !important;
-    width: 100% !important; /* force width */
-    min-width: 250px; /* safeguard */
-    min-height: 100px; /* safeguard */
+    width: 100% !important;
+    min-width: 250px;
+    min-height: 100px;
   }
   &.in-post {
     max-height: 100px;
@@ -30,14 +21,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    //&:empty,
-    //&:not(:has(ins)),
-    //&:has(ins:empty),
-    //&:has(ins:not(:has(iframe))) {
-    //  display: none !important;
-    //}
+
     @media (min-width: 1201px) {
       width: calc((100% - 40px) / 5);
+      max-width: calc((100% - 40px) / 5);
+      height: calc((100vw - 40px) / 5);
+      min-height: calc((100vw - 40px) / 5);
 
       &:nth-child(5n) {
         margin-right: 0;
@@ -46,6 +35,9 @@
 
     @media (max-width: 1200px) and (min-width: 999px) {
       width: calc((100% - 30px) / 4);
+      max-width: calc((100% - 30px) / 4);
+      height: calc((100vw - 30px) / 4);
+      min-height: calc((100vw - 30px) / 4);
 
       &:nth-child(4n) {
         margin-right: 0;
@@ -54,6 +46,9 @@
 
     @media (max-width: 998px) and (min-width: 481px) {
       width: calc((100% - 20px) / 3);
+      max-width: calc((100% - 20px) / 3);
+      height: calc((100vw - 20px) / 3);
+      min-height: calc((100vw - 20px) / 3);
 
       &:nth-child(3n) {
         margin-right: 0;
@@ -62,6 +57,54 @@
 
     @media (max-width: 480px) {
       width: calc((100% - 10px) / 2);
+      max-width: calc((100% - 10px) / 2);
+      height: calc((100vw - 10px) / 2);
+      min-height: calc((100vw - 10px) / 2);
+
+      &:nth-child(2n) {
+        margin-right: 0;
+      }
+    }
+  }
+  &.list-item-products {
+    border: 1px solid #e9e7e7;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    //margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (min-width: 1201px) {
+      width: calc((100% - 40px) / 5);
+      max-width: calc((100% - 40px) / 5);
+
+      &:nth-child(5n) {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 1200px) and (min-width: 999px) {
+      width: calc((100% - 30px) / 4);
+      max-width: calc((100% - 30px) / 4);
+
+      &:nth-child(4n) {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 998px) and (min-width: 481px) {
+      width: calc((100% - 20px) / 3);
+      max-width: calc((100% - 20px) / 3);
+
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      width: calc((100% - 10px) / 2);
+      max-width: calc((100% - 10px) / 2);
 
       &:nth-child(2n) {
         margin-right: 0;
@@ -85,8 +128,8 @@
   &.in-list {
     display: flex;
     justify-content: center;
-    width: 100%;
     justify-self: center;
+    width: max-content;
   }
 
   &.limit-width {
