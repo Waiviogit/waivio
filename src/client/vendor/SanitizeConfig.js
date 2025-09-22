@@ -325,6 +325,7 @@ export default ({
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
       let { src, alt, 'data-linked-url': linkedUrl } = attribs;
+      const className = 'centre-container';
       if (!/^(https?:)?\/\//i.test(src)) {
         console.log('Blocked, image tag src does not appear to be a url', tagName, attribs);
         sanitizeErrors.push('An image in this post did not save properly.');
@@ -342,12 +343,24 @@ export default ({
       if (isChatBotLink) {
         const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
         const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
-        return { tagName: 'div', text: aTag };
+        return {
+          tagName: 'div',
+          attribs: {
+            class: className,
+          },
+          text: aTag,
+        };
       }
 
       // Create image with caption if alt text is meaningful
       const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '', linkedUrl);
-      return { tagName: 'div', text: imageWithCaption };
+      return {
+        tagName: 'div',
+        attribs: {
+          class: className,
+        },
+        text: imageWithCaption,
+      };
     },
     div: (tagName, attribs) => {
       const attys = {};

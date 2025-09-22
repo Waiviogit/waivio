@@ -77,7 +77,7 @@ export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NO
     params,
     hostUrl,
   });
-  if (has(response, 'error')) {
+  if (has(response, 'error') || !response) {
     if (attempts <= 0) return response;
     const newUrl = getNewNodeUrl(hostUrl);
     return engineProxy(params, attempts - 1, newUrl);
@@ -2628,7 +2628,7 @@ export const getHbdConversion = user =>
 
 const hiveEngineContract = async params => {
   return engineProxy(params).then(response => {
-    if (response.error) {
+    if (response?.error) {
       return Promise.reject('Something went wrong. Please reload page');
     }
 
@@ -2811,7 +2811,7 @@ export const getWaivVoteMana = async account => {
     query: { rewardPoolId: WAIVIdPool, account },
   });
 
-  return mana[0];
+  return mana?.[0];
 };
 
 export const getTokensRate = symbols =>

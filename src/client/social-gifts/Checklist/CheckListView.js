@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { isEmpty, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -175,7 +176,11 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   };
 
   return (
-    <div className="Checklist">
+    <div
+      className={classNames('Checklist', {
+        'Checklist--withoutMargin': wobject?.object_type === 'page',
+      })}
+    >
       <div className="Checklist__breadcrumbsContainre">
         {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
         {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
