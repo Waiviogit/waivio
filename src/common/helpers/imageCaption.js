@@ -76,15 +76,14 @@ export const isManualAltText = (alt, src) => {
 
 export const shouldShowCaption = (alt, src) => isManualAltText(alt, src);
 
-export const createImageWithCaption = (src, alt, link) => {
-  const imgAttributes = `src="${src}" alt="${alt}" data-fallback-src="${src}" : ''}`;
+export const createImageWithCaption = (src, alt, link, fallbackSrc) => {
+  const imgAttributes = `src="${src}" alt="${alt}" data-fallback-src="${fallbackSrc || ''}"`;
 
   if (shouldShowCaption(alt, src) && link) {
     return `
     <a href="${link}" target="_blank" rel="noopener noreferrer">
         <img ${imgAttributes} style="display: block; margin: 0 auto;" />
         <figcaption class="md-block-image-caption" style="font-size: 15px; font-style: italic; text-align: center; margin-top: 8px;">${alt}</figcaption>
-
     </a> 
 `;
   }

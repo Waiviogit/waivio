@@ -116,6 +116,11 @@ export const parseLink = (
   href = href.trim();
   const attys = {};
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const simpleImageRegex = /(https?:\/\/[^\s]+?\.(?:jpe?g|png|jpg|gif|webp|svg))/gi;
+
+  if (simpleImageRegex.test(href)) {
+    return {};
+  }
 
   if (emailRegex.test(href)) {
     attys.href = `mailto:${href}`;
@@ -324,7 +329,7 @@ export default ({
     img: (tagName, attribs) => {
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
-      let { src, alt, 'data-linked-url': linkedUrl } = attribs;
+      let { src, alt, 'data-linked-url': linkedUrl, 'data-fallback-src': fallbackSrc } = attribs;
       const className = 'centre-container';
       if (!/^(https?:)?\/\//i.test(src)) {
         console.log('Blocked, image tag src does not appear to be a url', tagName, attribs);
@@ -338,10 +343,11 @@ export default ({
       if (isManualAltText(alt, src)) {
         atts.alt = alt;
       }
-      atts['data-fallback-src'] = src;
 
       if (isChatBotLink) {
-        const imgTag = `<img src="${atts.src}" alt="${atts.alt || ''}">`;
+        const imgTag = `<img src="${
+          atts.src
+        }" data-fallback-src="${fallbackSrc}"  alt="${atts.alt || ''}">`;
         const aTag = `<a href="${atts.src}" target="_blank" style="cursor: pointer">${imgTag}</a>`;
         return {
           tagName: 'div',
@@ -353,7 +359,12 @@ export default ({
       }
 
       // Create image with caption if alt text is meaningful
-      const imageWithCaption = createImageWithCaption(atts.src, atts.alt || '', linkedUrl);
+      const imageWithCaption = createImageWithCaption(
+        atts.src,
+        atts.alt || '',
+        linkedUrl,
+        fallbackSrc,
+      );
       return {
         tagName: 'div',
         attribs: {

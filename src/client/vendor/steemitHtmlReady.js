@@ -190,15 +190,23 @@ function linkifyNode(child, state) {
       ? child?.parentNode.tagName.toLowerCase()
       : child?.parentNode.tagName;
 
-    if (tag === 'code') return;
-    if (tag === 'a') return;
-    if (imageRegex.test(child?.nodeValue)) {
-      const dataWithImg = XMLSerializer.serializeToString(child);
-      const contentWithImg = imagify(dataWithImg);
-      if (contentWithImg !== dataWithImg) {
-        const newChild = DOMParser.parseFromString(`<span>${contentWithImg}</span>`);
-        child?.parentNode.replaceChild(newChild, child);
-        return newChild;
+    // Ігноруємо теги 'code' та 'a'
+    if (tag === 'code' || tag === 'a') return;
+
+    if (child?.nodeValue) {
+      const imageRegex = /(https?:\/\/[^\s]+?\.(?:jpe?g|png|jpg|gif|webp|svg))/gi;
+      const originalValue = child.nodeValue;
+
+      if (imageRegex.test(originalValue)) {
+        const transformedValue = originalValue.replace(
+          imageRegex,
+          match => `<p><img src="${match}"></p>`,
+        );
+        if (transformedValue !== originalValue) {
+          const newChild = DOMParser.parseFromString(`<span>${transformedValue}</span>`);
+          child.parentNode.replaceChild(newChild, child);
+          return newChild;
+        }
       }
     }
 
@@ -217,7 +225,7 @@ function linkifyNode(child, state) {
     );
     if (mutate && content !== data) {
       const newChild = DOMParser.parseFromString(`<span>${content}</span>`);
-      child?.parentNode.replaceChild(newChild, child);
+      child.parentNode.replaceChild(newChild, child);
       return newChild;
     }
   } catch (error) {
