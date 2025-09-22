@@ -20,7 +20,12 @@
     animation: 0s !important;
 
     .Body .centre-container {
-      left: -15px;
+      left: -17px;
+      width: calc(100vw - 14px);
+
+      @media @small {
+        left: auto;
+      }
     }
 
     &.zoom-leave {
