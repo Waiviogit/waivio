@@ -687,7 +687,7 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            {(minimal || moderate || intensive) && <GoogleAds inPost />}
+            {(minimal || moderate || intensive) && <GoogleAds inList />}
             {recipePost && isRecipe && !showPostModal && (
               <div className={'SocialProduct__postWrapper PageContent social'}>
                 <RecipePost signature={signature} recipePost={recipePost} />
