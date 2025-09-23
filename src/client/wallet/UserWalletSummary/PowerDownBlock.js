@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button } from 'antd';
@@ -29,13 +30,19 @@ const PowerDownBlock = ({
           <Loading />
         ) : (
           <span>
-            {getFormattedPendingWithdrawalSP(
-              user,
-              totalVestingShares,
-              totalVestingFundSteem,
-              false,
+            {isNil(user.vesting_withdraw_rate) || isNil(user.to_withdraw) ? (
+              '-'
+            ) : (
+              <>
+                {getFormattedPendingWithdrawalSP(
+                  user,
+                  totalVestingShares,
+                  totalVestingFundSteem,
+                  false,
+                )}
+                {' HP'}
+              </>
             )}
-            {' HP'}
           </span>
         )}
       </div>

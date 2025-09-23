@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import React from 'react';
 import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -131,6 +132,11 @@ const HivePowerBlock = ({
       <FormattedTime value={`${user.next_vesting_withdrawal}Z`} />
     </>
   );
+  const power = formatter.vestToSteem(
+    user.vesting_shares,
+    totalVestingShares,
+    totalVestingFundSteem,
+  );
 
   return (
     <div className="UserWalletSummary__itemWrap">
@@ -144,16 +150,14 @@ const HivePowerBlock = ({
             <Loading />
           ) : (
             <span>
-              <FormattedNumber
-                value={parseFloat(
-                  formatter.vestToSteem(
-                    user.vesting_shares,
-                    totalVestingShares,
-                    totalVestingFundSteem,
-                  ),
-                )}
-              />
-              {' HP'}
+              {isNil(user.vesting_shares) ? (
+                '-'
+              ) : (
+                <>
+                  <FormattedNumber value={parseFloat(power)} />
+                  {' HP'}
+                </>
+              )}
             </span>
           )}
         </div>

@@ -159,10 +159,16 @@ const WAIVWalletSummaryInfo = props => {
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
               <div className={'WalletSummaryInfo__value'}>
-                {formattedNumber(stake + delegationsOut)}
-                {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
-                {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
-                {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                {isNil(stake) || isNaN(stake) ? (
+                  '-'
+                ) : (
+                  <>
+                    {formattedNumber(stake + delegationsOut)}
+                    {/* {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)} */}
+                    {/* {getFormattedTotalDelegated(delegation)}{' '} */}{' '}
+                    {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                  </>
+                )}
               </div>
             </div>
             <div className="WalletSummaryInfo__actions">
@@ -183,8 +189,14 @@ const WAIVWalletSummaryInfo = props => {
                       setPowerDownProgress(true);
                     }}
                   >
-                    {getFormattedPendingWithdrawal(unstake)}{' '}
-                    {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                    {isNil(unstake) ? (
+                      '-'
+                    ) : (
+                      <>
+                        {getFormattedPendingWithdrawal(unstake)}{' '}
+                        {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="WalletSummaryInfo__actions">
@@ -219,8 +231,14 @@ const WAIVWalletSummaryInfo = props => {
                       }
                     }}
                   >
-                    {getFormattedTotalDelegated(delegation, pendingUndelegations)}{' '}
-                    {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                    {isNil(delegation) ? (
+                      '-'
+                    ) : (
+                      <>
+                        {getFormattedTotalDelegated(delegation, pendingUndelegations)}{' '}
+                        {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="WalletSummaryInfo__actions">

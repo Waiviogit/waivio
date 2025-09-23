@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { Button, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import Loading from '../../components/Icon/Loading';
@@ -39,8 +39,15 @@ const RcBlock = ({
               <Loading />
             ) : (
               <span>
-                <FormattedNumber value={totalRc.toFixed(2)} />
-                {'b RC'}
+                {isNil(totalRc) ? (
+                  '-'
+                ) : (
+                  <>
+                    {' '}
+                    <FormattedNumber value={totalRc.toFixed(2)} />
+                    {'b RC'}
+                  </>
+                )}
               </span>
             )}
           </div>
@@ -69,9 +76,15 @@ const RcBlock = ({
                 <Loading />
               ) : (
                 <span>
-                  {delegationsBalance > 0 ? '+' : ''}
-                  <FormattedNumber value={delegationsBalance.toFixed(2)} />
-                  {'b RC'}
+                  {isNil(delegationsBalance) ? (
+                    '-'
+                  ) : (
+                    <>
+                      {delegationsBalance > 0 ? '+' : ''}
+                      <FormattedNumber value={delegationsBalance.toFixed(2)} />
+                      {'b RC'}
+                    </>
+                  )}
                 </span>
               )}
             </div>

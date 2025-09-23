@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Loading from '../../components/Icon/Loading';
@@ -27,8 +27,14 @@ const HiveBlock = ({
           <Loading />
         ) : (
           <span>
-            <FormattedNumber value={user.balance ? parseFloat(user.balance) : 0} />
-            {' HIVE'}
+            {isNil(user.balance) ? (
+              '-'
+            ) : (
+              <>
+                <FormattedNumber value={parseFloat(user.balance)} />
+                {' HIVE'}
+              </>
+            )}
           </span>
         )}
       </div>

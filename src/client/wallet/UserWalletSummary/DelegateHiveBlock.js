@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -13,29 +14,44 @@ const DelegateHiveBlock = ({
   totalVestingShares,
   isAuth,
   totalVestingFundSteem,
-}) => (
-  <div className="UserWalletSummary__itemWrap--no-border last-block">
-    <div className="UserWalletSummary__item">
-      <div className="UserWalletSummary__label power-down">
-        <FormattedMessage id="hive_delegations" defaultMessage="HIVE Delegations" />
+}) => {
+  const formattedTotalDelegatedSP = getFormattedTotalDelegatedSP(
+    user,
+    totalVestingShares,
+    totalVestingFundSteem,
+    false,
+  );
+
+  return (
+    <div className="UserWalletSummary__itemWrap--no-border last-block">
+      <div className="UserWalletSummary__item">
+        <div className="UserWalletSummary__label power-down">
+          <FormattedMessage id="hive_delegations" defaultMessage="HIVE Delegations" />
+        </div>
+        <div className={powerClassList} onClick={openDetailsModal}>
+          {user.fetching || loadingGlobalProperties ? (
+            <Loading />
+          ) : (
+            <span>
+              {isNil(user.received_vesting_shares) || isNil(user.delegated_vesting_shares) ? (
+                '-'
+              ) : (
+                <>
+                  {formattedTotalDelegatedSP}
+                  {' HP'}
+                </>
+              )}
+            </span>
+          )}
+        </div>
       </div>
-      <div className={powerClassList} onClick={openDetailsModal}>
-        {user.fetching || loadingGlobalProperties ? (
-          <Loading />
-        ) : (
-          <span>
-            {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem, false)}
-            {' HP'}
-          </span>
-        )}
+      <div className="UserWalletSummary__actions">
+        <p className="UserWalletSummary__description">Delegations to/from other users</p>
+        {isAuth && <WalletAction mainKey={'manage'} options={['delegate']} mainCurrency={'HP'} />}
       </div>
     </div>
-    <div className="UserWalletSummary__actions">
-      <p className="UserWalletSummary__description">Delegations to/from other users</p>
-      {isAuth && <WalletAction mainKey={'manage'} options={['delegate']} mainCurrency={'HP'} />}
-    </div>
-  </div>
-);
+  );
+};
 
 DelegateHiveBlock.propTypes = {
   totalVestingShares: PropTypes.string,
