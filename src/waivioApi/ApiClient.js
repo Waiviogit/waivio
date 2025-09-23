@@ -77,9 +77,11 @@ export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NO
     params,
     hostUrl,
   });
+
   if (has(response, 'error') || !response) {
     if (attempts <= 0) return response;
     const newUrl = getNewNodeUrl(hostUrl);
+
     return engineProxy(params, attempts - 1, newUrl);
   }
 

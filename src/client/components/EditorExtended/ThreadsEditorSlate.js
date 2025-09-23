@@ -6,7 +6,15 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Transforms, Node, Range, Path, Editor } from 'slate';
+import {
+  createEditor,
+  Transforms,
+  Node,
+  Range,
+  Path,
+  Editor,
+  Element as ElementSlate,
+} from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -46,6 +54,11 @@ import {
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
+import {
+  getParentList,
+  getParentTable,
+  isSingleEmptyCellTable,
+} from './util/SlateEditor/utils/table';
 
 const useEditor = props => {
   const editor = useMemo(
@@ -268,10 +281,62 @@ const ThreadsEditorSlate = props => {
       }
     }
 
+    const { path, offset } = editor?.selection?.anchor;
+    const selectedElementPath = path?.slice(0, -1);
+    const selectedElement = Node.descendant(editor, selectedElementPath);
+    const prevPath = selectedElementPath.every(p => !p) ? [0] : Path.previous(selectedElementPath);
+    const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+
+    if (event.key === 'Backspace') {
+      const key = path[0] ? path[0] - 1 : path[0];
+      const node = editor.children[key];
+
+      if (
+        ElementSlate.isElement(prevNode) &&
+        ['image', 'video'].includes(prevNode.type) &&
+        !['image', 'video'].includes(selectedElement.type)
+      ) {
+        if (!offset && Range.isCollapsed(editor.selection)) {
+          event.preventDefault();
+
+          Transforms.select(editor, Editor.range(editor, prevPath));
+
+          return true;
+        }
+      }
+
+      if (['unorderedList', 'orderedList'].includes(node.type)) {
+        const [, at] = getParentList(path, editor);
+
+        if (!isEmpty(at) && node.children.length === 1 && node.children[0].children.length === 1) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+        }
+
+        return true;
+      }
+
+      if (node.type === 'table') {
+        const [tbl, at] = getParentTable(path, editor);
+
+        if (isSingleEmptyCellTable(editor, tbl)) {
+          Transforms.removeNodes(editor, {
+            at,
+            mode: 'highest',
+          });
+          Transforms.insertNodes(editor, createEmptyNode());
+
+          return true;
+        }
+      }
+    }
+
     if (event.key === 'Enter') {
       try {
         if (!Node.has(editor, editor.selection.anchor.path.slice(0, -1))) return false;
-        const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
         if (
           HEADING_BLOCKS?.includes(selectedElement.type) ||
