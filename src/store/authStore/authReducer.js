@@ -67,6 +67,12 @@ export default (state = initialState, action) => {
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
+        signature:
+          action.payload.userMetaData?.profile?.signature ||
+          (action.payload.account?.posting_json_metadata
+            ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
+            : '') ||
+          state.signature,
       };
     case types.LOGIN_SERVER.SUCCESS:
       if (action.meta && action.meta.refresh) return state;
@@ -85,6 +91,12 @@ export default (state = initialState, action) => {
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
+        signature:
+          action.payload.userMetaData?.profile?.signature ||
+          (action.payload.account?.posting_json_metadata
+            ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
+            : '') ||
+          state.signature,
       };
 
     // eslint-disable-next-line no-lone-blocks
