@@ -13,6 +13,7 @@ import { getDraftPostsSelector } from '../../../store/draftsStore/draftsSelector
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 import AssistantMessage from './AssistantMessage';
+import { defaultQuickMessages, editorQuickMessages, postQuickMessages } from './chatBotHelper';
 import UserMessage from './UserMessage';
 import { getChatBotMessages } from '../../../store/chatBotStore/chatBotSelectors';
 import {
@@ -26,7 +27,6 @@ import {
   sendChatBotQuestion,
   updateAIKnowledge,
 } from '../../../waivioApi/chatBotApi';
-import { quickMessages } from './chatBotHelper';
 import {
   getHostAddress,
   getIsWaivio,
@@ -87,7 +87,10 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
   const isSocialList = currObj && currObj?.object_type === 'list' && isSocialGifts;
+  const isPost = currentShownPost && !isEmpty(currentShownPost) && !isEditor;
   let currentPageContent = '';
+  let headerMessage = 'How can I help you today?';
+  let quickMessages = defaultQuickMessages(siteName, currHost, config?.header?.name);
 
   if (isEditor) {
     if (!currDraft) {
@@ -96,11 +99,15 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     currentPageContent = currDraft
       ? `I am writing a post: ${currDraft?.title || ''} ${currDraft?.body || ''}`
       : undefined;
+    headerMessage = 'Do you need any help with writing a post?';
+    quickMessages = editorQuickMessages();
   }
-  if (currentShownPost && !isEditor) {
+  if (isPost) {
     currentPageContent = !isEmpty(currentShownPost)
       ? `I am looking at this post: ${currentShownPost?.title} ${currentShownPost?.body}`
       : undefined;
+    headerMessage = 'Do you have any questions about this post?';
+    quickMessages = postQuickMessages();
   }
   if (isSocialList) {
     currentPageContent =
@@ -500,10 +507,10 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           {isEmpty(chatMessages) && (
             <>
               <div className="info">
-                <div className="info-paragraph">How can I help you today?</div>
+                <div className="info-paragraph">{headerMessage}</div>
               </div>
-              <div className="options">
-                {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
+              <div className={isPost || isEditor ? 'options-column' : 'options'}>
+                {quickMessages?.map(mess => (
                   <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                     {mess.label}
                   </button>
