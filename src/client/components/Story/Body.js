@@ -151,9 +151,8 @@ export function getHtml(
   if (returnType === 'text') {
     return parsedBody;
   }
-
   parsedBody = parsedBody.replace(/~~~ embed:(\S+) (\S+) (\S+) ~~~/g, (a, embedId, c, url) => {
-    const embed = getEmbed(url);
+    const embed = getEmbed(url.replaceAll('&amp;', '&'));
 
     return ReactDOMServer.renderToString(
       <PostFeedEmbed key={`embed-a-${embedId}`} inPost embed={embed} />,

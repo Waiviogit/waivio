@@ -5,6 +5,7 @@ import { Button, Input, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { isMobileDevice } from '../../../../../../common/helpers/apiHelpers';
 import { shouldShowCaption } from '../../../../../../common/helpers/imageCaption';
 import BTooltip from '../../../../BTooltip';
 
@@ -87,7 +88,9 @@ const Toolbar = props => {
         const leftCalc = Math.round(anchorCenter - toolbarBounds.width / 2);
 
         toolbarNode.style.top = `${top}px`;
-        toolbarNode.style.left = cellEntry ? `${leftCalc + 33}px` : '-25px';
+        if (cellEntry) toolbarNode.style.left = `${leftCalc + 33}px`;
+        else toolbarNode.style.left = isMobileDevice() ? `-10px` : '-25px';
+
         toolbarNode.style.position = 'absolute';
         toolbarNode.style.zIndex = '1000';
       }
