@@ -186,6 +186,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
             ? JSON.parse(account.posting_json_metadata)?.profile?.signature
             : '') ||
           '';
+
         dispatch(setSignature(signature));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
@@ -222,6 +223,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         ? JSON.parse(account.posting_json_metadata)?.profile?.signature
         : '') ||
       '';
+
     dispatch(setSignature(signature));
 
     const appAdmins = await getAppAdmins();
@@ -295,6 +297,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
             ? JSON.parse(account.posting_json_metadata)?.profile?.signature
             : '') ||
           '';
+
         dispatch(setSignature(signature));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings?.locale)));
@@ -367,6 +370,7 @@ export const loginFromServer = cookie => dispatch => {
               ? JSON.parse(account.posting_json_metadata)?.profile?.signature
               : '') ||
             '';
+
           dispatch(setSignature(signature));
 
           resolve({
@@ -421,6 +425,7 @@ export const loginFromServer = cookie => dispatch => {
                 ? JSON.parse(account.posting_json_metadata)?.profile?.signature
                 : '') ||
               '';
+
             dispatch(setSignature(signature));
 
             resolve({
