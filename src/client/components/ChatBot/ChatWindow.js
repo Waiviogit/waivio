@@ -94,7 +94,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       currentPageContent = undefined;
     }
     currentPageContent = currDraft
-      ? `I am writing a post: ${currDraft?.title} ${currDraft?.body}`
+      ? `I am writing a post: ${currDraft?.title || ''} ${currDraft?.body || ''}`
       : undefined;
   }
   if (currentShownPost && !isEditor) {
