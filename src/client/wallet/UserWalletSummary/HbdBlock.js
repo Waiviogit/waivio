@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 import Loading from '../../components/Icon/Loading';
@@ -34,8 +34,14 @@ const HbdBlock = ({
             <Loading />
           ) : (
             <span>
-              <FormattedNumber value={parseFloat(user.hbd_balance)} />
-              {' HBD'}
+              {isNil(user.hbd_balance) ? (
+                '-'
+              ) : (
+                <>
+                  <FormattedNumber value={parseFloat(user.hbd_balance)} />
+                  {' HBD'}
+                </>
+              )}
             </span>
           )}
         </div>

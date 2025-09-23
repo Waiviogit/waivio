@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import React from 'react';
 import { ReactSVG } from 'react-svg';
 import { Button } from 'antd';
@@ -125,7 +126,13 @@ const HbdSavingsBlock = ({
             <Loading />
           ) : (
             <span>
-              <FormattedNumber value={savingsHbdBalance} /> {' HBD'}
+              {isNil(user.savings_hbd_balance) ? (
+                '-'
+              ) : (
+                <>
+                  <FormattedNumber value={savingsHbdBalance} /> {' HBD'}
+                </>
+              )}{' '}
             </span>
           )}
         </div>
