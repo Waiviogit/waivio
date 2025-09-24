@@ -136,6 +136,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   } else if (hiveAuth) {
     Cookie.remove('access_token');
     Cookie.remove('auth');
+    Cookie.remove('currentUser');
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
