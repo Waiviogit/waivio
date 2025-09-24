@@ -79,6 +79,7 @@ export default function usersReducer(state = initialState, action) {
             ...state.users[action.meta.username],
             ...action.payload,
             sideBarLoading: false,
+            engineError: false,
           },
         },
       };
@@ -91,6 +92,7 @@ export default function usersReducer(state = initialState, action) {
           [action.meta.username]: {
             ...state.users[action.meta.username],
             sideBarLoading: true,
+            engineError: false,
           },
         },
       };
@@ -128,6 +130,7 @@ export default function usersReducer(state = initialState, action) {
             last_activity: null,
             totalVotingPowerPrice: null,
             sideBarLoading: false,
+            engineError: true,
           },
         },
       };

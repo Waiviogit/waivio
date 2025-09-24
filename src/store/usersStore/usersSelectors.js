@@ -23,6 +23,8 @@ export const getSideBarLoading = createSelector(getUser, user =>
   get(user, 'sideBarLoading', false),
 );
 
+export const getEngineError = createSelector(getUser, user => get(user, 'engineError', false));
+
 export const getTopExpertsObject = createSelector([usersState], state => state.topExperts);
 
 export const getTopExperts = createSelector([getTopExpertsObject], topExperts => topExperts.list);

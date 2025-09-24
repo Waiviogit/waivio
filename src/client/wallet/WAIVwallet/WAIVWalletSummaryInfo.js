@@ -137,7 +137,13 @@ const WAIVWalletSummaryInfo = props => {
           />
           <div className="WalletSummaryInfo__label">WAIV</div>
           <div className="WalletSummaryInfo__value">
-            {formattedNumber(balance)} {isNil(balance) || isNaN(balance) ? '' : 'WAIV'}
+            {isNil(props.currencyInfo) || isNaN(stake) ? (
+              '-'
+            ) : (
+              <>
+                {formattedNumber(balance)} {isNil(balance) || isNaN(balance) ? '' : 'WAIV'}
+              </>
+            )}
           </div>
         </div>
         <div className="WalletSummaryInfo__actions">
@@ -159,7 +165,7 @@ const WAIVWalletSummaryInfo = props => {
               <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
               <div className="WalletSummaryInfo__label">WAIV Power</div>
               <div className={'WalletSummaryInfo__value'}>
-                {isNil(stake) || isNaN(stake) ? (
+                {isNil(props.currencyInfo) || isNaN(stake) ? (
                   '-'
                 ) : (
                   <>
@@ -189,7 +195,7 @@ const WAIVWalletSummaryInfo = props => {
                       setPowerDownProgress(true);
                     }}
                   >
-                    {isNil(unstake) ? (
+                    {isNil(props.currencyInfo) ? (
                       '-'
                     ) : (
                       <>
@@ -231,7 +237,7 @@ const WAIVWalletSummaryInfo = props => {
                       }
                     }}
                   >
-                    {isNil(delegation) ? (
+                    {isNil(props.currencyInfo) ? (
                       '-'
                     ) : (
                       <>

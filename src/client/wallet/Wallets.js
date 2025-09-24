@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Alert } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { getEngineError } from '../../store/usersStore/usersSelectors';
 
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
@@ -70,6 +71,16 @@ const Wallets = props => {
 
   return (
     <React.Fragment>
+      {props.hasEngineError && (
+        <Alert
+          message="The Hive Engine network is experiencing problems and is not responding. Please try again later."
+          type="error"
+          style={{
+            textAlign: 'center',
+            margin: '5px 5px 20px',
+          }}
+        />
+      )}
       <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
         <Tabs.TabPane
           tab={<Link to={`/@${props.match.params.name}/transfers?type=WAIV`}>WAIV</Link>}
@@ -126,6 +137,7 @@ Wallets.propTypes = {
   getUserTokensBalanceList: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  hasEngineError: PropTypes.bool.isRequired,
   visiblePower: PropTypes.bool.isRequired,
   visibleSwap: PropTypes.bool.isRequired,
   visibleWithdraw: PropTypes.bool.isRequired,
@@ -150,7 +162,7 @@ Wallets.propTypes = {
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     visible: getIsTransferVisible(state),
     visiblePower: getIsPowerUpOrDownVisible(state),
     visibleSwap: getVisibleModal(state),
@@ -161,6 +173,7 @@ export default connect(
     visibleDelegateRc: getDelegateRcModalVisible(state),
     visibleManageRc: getManageRcModalVisible(state),
     authUserName: getAuthenticatedUserName(state),
+    hasEngineError: getEngineError(state, ownProps.match.params.name),
   }),
   {
     setWalletType,
