@@ -15,6 +15,7 @@ import {
   setObjPercent,
   toggleLinkedObj,
   setInitialLinkedObj,
+  safeCurrDraftDataAction,
 } from '../../../store/draftsStore/draftsActions';
 import {
   getDraftPostsSelector,
@@ -229,6 +230,7 @@ const mapDispatchToProps = (dispatch, props) => {
     createPost: (postData, beneficiaries, isReview, campaign, intl) =>
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
     saveDraft: data => dispatch(safeDraftAction(draftId, data)),
+    safeCurrDraftDataAction: data => dispatch(safeCurrDraftDataAction(data)),
     getReviewCheckInfo: (data, intl, campaignType, secondaryItem) =>
       dispatch(getCampaignInfo(data, intl, campaignType, secondaryItem)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),

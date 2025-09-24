@@ -3,6 +3,10 @@ import { createSelector } from 'reselect';
 export const getDraftSelector = state => state.draftsStore;
 
 export const getDraftPostsSelector = createSelector([getDraftSelector], state => state.drafts);
+export const getCurrentDraftDataSelector = createSelector(
+  [getDraftSelector],
+  state => state.currentDraftData,
+);
 export const getDraftLoadingSelector = createSelector([getDraftSelector], state => state.loading);
 export const getPendingDraftSelector = createSelector(
   [getDraftSelector],

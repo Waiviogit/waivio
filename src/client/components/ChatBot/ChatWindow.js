@@ -7,9 +7,7 @@ import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty, isNil, map } from 'lodash';
-import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
-import useQuery from '../../../hooks/useQuery';
-import { getDraftPostsSelector } from '../../../store/draftsStore/draftsSelectors';
+import { getCurrentDraftDataSelector } from '../../../store/draftsStore/draftsSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 import AssistantMessage from './AssistantMessage';
@@ -68,11 +66,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const authUser = useSelector(getAuthenticatedUserName);
   const host = useSelector(getHostAddress);
   const history = useHistory();
-  const query = useQuery();
   const isEditor = history?.location?.pathname?.includes('/editor');
-  const draftId = getCurrentDraftId(query.get('draft'));
-  const draftList = useSelector(getDraftPostsSelector);
-  const currDraft = draftList.find(d => d.draftId === draftId);
+  const currDraft = useSelector(getCurrentDraftDataSelector);
   const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
   const textAreaRef = useRef(null);
@@ -97,7 +92,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       currentPageContent = undefined;
     }
     currentPageContent = currDraft
-      ? `I am writing a post: ${currDraft?.title || ''} ${currDraft?.body || ''}`
+      ? `I am writing a post: ${currDraft?.titleValue || ''} ${currDraft?.content || ''}`
       : undefined;
     headerMessage = 'Do you need any help with writing a post?';
     quickMessages = editorQuickMessages();
