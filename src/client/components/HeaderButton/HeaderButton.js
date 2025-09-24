@@ -11,6 +11,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { ReactEditor } from 'slate-react';
 import { setGoogleTagEvent } from '../../../common/helpers';
+import { initialColors } from '../../websites/constants/colors';
 
 import BTooltip from '../BTooltip';
 import Popover from '../Popover';
@@ -23,11 +24,12 @@ import { logout } from '../../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
 import { setCurrentPage } from '../../../store/appStore/appActions';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getWebsiteColors } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getRewardsTab,
+  getIsAuthenticating,
 } from '../../../store/authStore/authSelectors';
 import {
   getIsLoadingNotifications,
@@ -237,36 +239,48 @@ const HeaderButtons = props => {
 
     return (
       <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
-        <Menu className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="login">
-            <ModalSignIn isSocialGifts={props.isSocialGifts} domain={props.domain} next={next} />
-          </Menu.Item>
-          <Menu.Item key="language">
-            <LanguageSettings />
-          </Menu.Item>
-          {isMobile() && props.isWebsite && (
-            <Menu.Item key="more" className="Topnav__menu--icon">
-              <Popover
-                placement="bottom"
-                trigger="click"
-                visible={popoverVisible}
-                onVisibleChange={handleMoreMenuVisibleChange}
-                overlayStyle={{ position: 'fixed' }}
-                content={
-                  <PopoverMenu onSelect={handleMoreMenuSelect}>
-                    {popoverNotAuthUserItems}
-                  </PopoverMenu>
-                }
-                overlayClassName="Topnav__popover"
-              >
-                <a className="Topnav__link-mt5">
-                  <Icon type="caret-down" />
-                  <Icon type="bars" />
-                </a>
-              </Popover>
+        {props.isAuthenticating ? (
+          <div>
+            <Icon
+              style={{
+                color: props.colors?.mapMarkerBody || initialColors.marker,
+                fontSize: '20px',
+              }}
+              type="loading"
+            />
+          </div>
+        ) : (
+          <Menu className="Topnav__menu-container__menu" mode="horizontal">
+            <Menu.Item key="login">
+              <ModalSignIn isSocialGifts={props.isSocialGifts} domain={props.domain} next={next} />
             </Menu.Item>
-          )}
-        </Menu>
+            <Menu.Item key="language">
+              <LanguageSettings />
+            </Menu.Item>
+            {isMobile() && props.isWebsite && (
+              <Menu.Item key="more" className="Topnav__menu--icon">
+                <Popover
+                  placement="bottom"
+                  trigger="click"
+                  visible={popoverVisible}
+                  onVisibleChange={handleMoreMenuVisibleChange}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <PopoverMenu onSelect={handleMoreMenuSelect}>
+                      {popoverNotAuthUserItems}
+                    </PopoverMenu>
+                  }
+                  overlayClassName="Topnav__popover"
+                >
+                  <a className="Topnav__link-mt5">
+                    <Icon type="caret-down" />
+                    <Icon type="bars" />
+                  </a>
+                </Popover>
+              </Menu.Item>
+            )}
+          </Menu>
+        )}
       </div>
     );
   }
@@ -361,12 +375,16 @@ HeaderButtons.propTypes = {
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,
   isWebsite: PropTypes.bool,
+  isAuthenticating: PropTypes.bool,
   getUserMetadata: PropTypes.func.isRequired,
   setCurrentPage: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  colors: PropTypes.shape({
+    mapMarkerBody: PropTypes.string,
+  }),
   location: PropTypes.shape({
     pathname: PropTypes.string,
   }).isRequired,
@@ -395,6 +413,8 @@ export default connect(
     notifications: getNotifications(state),
     loadingNotifications: getIsLoadingNotifications(state),
     isWaivio: getIsWaivio(state),
+    isAuthenticating: getIsAuthenticating(state),
+    colors: getWebsiteColors(state),
   }),
   {
     getUserMetadata,

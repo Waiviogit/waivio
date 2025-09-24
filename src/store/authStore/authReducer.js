@@ -37,6 +37,7 @@ export default (state = initialState, action) => {
         loaded: false,
         // user: {},
         showSettings: false,
+        isAuthenticating: true,
       };
 
     case types.LOGIN_SUCCESS:
@@ -50,6 +51,7 @@ export default (state = initialState, action) => {
             ...(action.payload.account || state.user),
             ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
           },
+          isAuthenticating: false,
         };
 
       if (action.meta && action.meta.refresh) return state;
@@ -67,6 +69,7 @@ export default (state = initialState, action) => {
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
+        isAuthenticating: false,
         signature:
           action.payload.userMetaData?.profile?.signature ||
           (action.payload.account?.posting_json_metadata
@@ -97,6 +100,7 @@ export default (state = initialState, action) => {
             ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
             : '') ||
           state.signature,
+        isAuthenticating: false,
       };
 
     // eslint-disable-next-line no-lone-blocks
@@ -114,6 +118,7 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loaded: false,
         showSettings: false,
+        isAuthenticating: false,
       };
 
     case types.SHOW_SETTINGS:

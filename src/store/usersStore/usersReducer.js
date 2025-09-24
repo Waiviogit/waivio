@@ -131,6 +131,7 @@ export default function usersReducer(state = initialState, action) {
             totalVotingPowerPrice: null,
             sideBarLoading: false,
             engineError: true,
+            ...action.payload,
           },
         },
       };
