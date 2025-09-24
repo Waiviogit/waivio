@@ -63,6 +63,7 @@ const EditPost = props => {
 
       if (content !== updatedStore.content || titleValue !== updatedStore.titleValue) {
         props.saveDraft(updatedStore);
+        props.safeCurrDraftDataAction(updatedStore);
         props.setUpdatedEditorData(updatedStore);
       }
     }, 500),
@@ -233,6 +234,7 @@ EditPost.propTypes = {
   toggleLinkedObj: PropTypes.func,
   setObjPercent: PropTypes.func,
   saveDraft: PropTypes.func,
+  safeCurrDraftDataAction: PropTypes.func,
   buildPost: PropTypes.func.isRequired,
   leaveEditor: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
@@ -258,6 +260,7 @@ EditPost.defaultProps = {
   imageLoading: false,
   createPost: () => {},
   saveDraft: () => {},
+  safeCurrDraftDataAction: () => {},
   isGuest: false,
   beneficiaries: [],
 };

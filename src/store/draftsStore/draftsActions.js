@@ -45,7 +45,12 @@ export const deleteDraft = ids => (dispatch, getState) => {
 };
 
 export const SAVE_DRAFT = createAsyncActionType('@draftsStore/SAVE_DRAFT');
-
+export const SAVE_CURRENT_DRAFT_DATA = '@draftsStore/SAVE_CURRENT_DRAFT_DATA';
+export const safeCurrDraftDataAction = data => dispatch =>
+  dispatch({
+    type: SAVE_CURRENT_DRAFT_DATA,
+    payload: data,
+  });
 export const safeDraftAction = (draftId, data, { deleteCamp, isEdit } = {}) => (
   dispatch,
   getState,
