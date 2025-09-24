@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import Helmet from 'react-helmet';
 import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
@@ -27,6 +28,7 @@ import './Settings.less';
 
 const SettingsMain = props => {
   const showSettings = useSelector(getShowSettings);
+  const [showSidebar, setShowSideBar] = useState(false);
   const host = props.match.params.site;
   const title = host ? `- ${host} ` : '';
   const isBookmark = props.match.url?.includes('bookmarks');
@@ -39,12 +41,22 @@ const SettingsMain = props => {
     if (!props.auth || (host && !props.isWaivio)) props.history.push('/');
     setGoogleTagEvent('view_tools');
 
-    props.getOwnWebsites().then(({ value }) => {
-      if (host && !some(value, website => website.host === host)) props.history.push('/');
+    props.getOwnWebsites().then(res => {
+      if (res?.value?.message) {
+        message.error(res?.value?.message);
+        window.location.href = '/';
+
+        return res;
+      }
+
+      if (host && !some(res?.value, website => website.host === host))
+        return props.history.push('/');
+
+      return setShowSideBar(true);
     });
   }, [props.auth]);
 
-  if (!showSettings) return <Loading />;
+  if (!showSettings || !showSidebar) return <Loading />;
 
   return (
     <div className="shifted">

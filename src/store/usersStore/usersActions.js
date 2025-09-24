@@ -20,20 +20,14 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
     type: GET_INFO_FOR_SIDEBAR.START,
     meta: { username },
   });
+  let data = {};
+
   try {
-    let lastActivity = lastActiv;
     const [acc] = await dHive.database.getAccounts([username]);
-    const rc = await dHive.rc.getRCMana(username, acc);
     const voting_mana = await dHive.rc.calculateVPMana(acc);
-    const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
-    const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
-    const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
+    const rc = await dHive.rc.getRCMana(username, acc);
 
-    if (isEmpty(lastActiv) || isNil(lastActiv)) {
-      lastActivity = await ApiClient.getUserLastActivity(username, acc);
-    }
-
-    const data = {
+    data = {
       balance: acc?.balance,
       hbd_balance: acc?.hbd_balance,
       savings_balance: acc?.savings_balance,
@@ -52,27 +46,43 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
       withdrawn: acc.withdrawn,
       next_vesting_withdrawal: acc.next_vesting_withdrawal,
     };
+    try {
+      let lastActivity = lastActiv;
+      const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
+      const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
+      const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
 
-    data.rc_percentage = rc.percentage * 0.01 || 0;
-    data.voting_mana = voting_mana.max_mana ? voting_mana.percentage * 0.01 || 0 : 100;
-    data.waivVotingPower = waivPowerMana?.votingPower ? waivPowerMana.votingPower : 100;
-    data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
-    data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
-    data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
-    data.last_activity = lastActivity || acc.created || acc.createdAt;
-    data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
+      if (isEmpty(lastActiv) || isNil(lastActiv)) {
+        lastActivity = await ApiClient.getUserLastActivity(username, acc);
+      }
 
-    return dispatch({
-      type: GET_INFO_FOR_SIDEBAR.SUCCESS,
-      payload: data,
-      meta: { username },
-    });
+      data.rc_percentage = rc.percentage * 0.01 || 0;
+      data.voting_mana = voting_mana.max_mana ? voting_mana.percentage * 0.01 || 0 : 100;
+      data.waivVotingPower = waivPowerMana?.votingPower ? waivPowerMana.votingPower : 100;
+      data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
+      data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
+      data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
+      data.last_activity = lastActivity || acc.created || acc.createdAt;
+      data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
+
+      return dispatch({
+        type: GET_INFO_FOR_SIDEBAR.SUCCESS,
+        payload: data,
+        meta: { username },
+      });
+    } catch (e) {
+      console.error(e);
+
+      return dispatch({
+        type: GET_INFO_FOR_SIDEBAR.ERROR,
+        payload: data,
+        meta: { username },
+      });
+    }
   } catch (e) {
-    console.error(e);
-
     return dispatch({
       type: GET_INFO_FOR_SIDEBAR.ERROR,
-      payload: {},
+      payload: data,
       meta: { username },
     });
   }

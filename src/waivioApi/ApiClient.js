@@ -2631,7 +2631,7 @@ export const getHbdConversion = user =>
 const hiveEngineContract = async params => {
   return engineProxy(params).then(response => {
     if (response?.error) {
-      return Promise.reject('Something went wrong. Please reload page');
+      return Promise.reject(response?.error);
     }
 
     return response;
