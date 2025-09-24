@@ -84,6 +84,13 @@ class ListDnD extends Component {
 
           return dateA - dateB;
         });
+      case 'reverse_recency':
+        return sortedItems.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+
+          return dateB - dateA;
+        });
       case 'rank':
         return sortedItems.sort((a, b) => {
           const rankA = a.weight || 0;
@@ -180,6 +187,9 @@ class ListDnD extends Component {
               <FormattedMessage id="by-name-desc" defaultMessage="Z..A">
                 {msg => msg.toUpperCase()}
               </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="reverse_recency">
+              <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
             </SortSelector.Item>
           </SortSelector>
         </div>

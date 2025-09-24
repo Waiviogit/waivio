@@ -15,14 +15,14 @@ export const defaultQuickMessages = (siteName, currHost, name) => {
 };
 export const postQuickMessages = () => [
   {
-    text: `Summarize this post`,
-    label: `Summarize this post`,
+    text: `Summarize`,
+    label: `Summarize`,
   },
-  { text: 'Translate this post', label: 'Translate this post' },
-  { text: 'Suggest a comment for this post', label: 'Suggest a comment for this post' },
+  { text: 'Translate', label: 'Translate' },
+  { text: 'Suggest a comment', label: 'Suggest a comment' },
   {
-    text: 'Highlight the places mentioned in this post',
-    label: 'Highlight the places mentioned in this post',
+    text: 'Highlight the places mentioned',
+    label: 'Highlight the places mentioned',
   },
 ];
 export const editorQuickMessages = () => [
