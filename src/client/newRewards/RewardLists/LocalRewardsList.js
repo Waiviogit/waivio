@@ -193,7 +193,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
         ) : (
           <ReduxInfiniteScroll
             loadMore={handleLoadingMoreRewardsList}
-            // loader={<Loading />}
+            loader={<Loading />}
             loadingMore={loading}
             hasMore={hasMore}
             elementIsScrollable={false}

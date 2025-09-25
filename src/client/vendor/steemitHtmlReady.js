@@ -105,7 +105,6 @@ function traverse(node, state, depth = 0) {
   if (!node || !node.childNodes || isEmpty(node.childNodes)) return;
   Array.from(node.childNodes).forEach(child => {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
-
     if (tag) state.htmltags.add(tag);
 
     if (tag === 'img') img(state, child);
@@ -190,7 +189,6 @@ function linkifyNode(child, state) {
       ? child?.parentNode.tagName.toLowerCase()
       : child?.parentNode.tagName;
 
-    // Ігноруємо теги 'code' та 'a'
     if (tag === 'code' || tag === 'a') return;
 
     if (child?.nodeValue) {
