@@ -7,11 +7,11 @@ import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty, isNil, map } from 'lodash';
-import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
-import useQuery from '../../../hooks/useQuery';
-import { getDraftPostsSelector } from '../../../store/draftsStore/draftsSelectors';
+import { getCurrentDraftDataSelector } from '../../../store/draftsStore/draftsSelectors';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 import AssistantMessage from './AssistantMessage';
+import { defaultQuickMessages, editorQuickMessages, postQuickMessages } from './chatBotHelper';
 import UserMessage from './UserMessage';
 import { getChatBotMessages } from '../../../store/chatBotStore/chatBotSelectors';
 import {
@@ -25,13 +25,13 @@ import {
   sendChatBotQuestion,
   updateAIKnowledge,
 } from '../../../waivioApi/chatBotApi';
-import { quickMessages } from './chatBotHelper';
 import {
   getHostAddress,
   getIsWaivio,
   getUserAdministrator,
   getWebsiteConfiguration,
   getCurrentShownPost,
+  getIsSocial,
 } from '../../../store/appStore/appSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -61,14 +61,13 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const desktopLogo = get(config, 'desktopLogo');
   const chatMessages = useSelector(getChatBotMessages);
   const isWaivio = useSelector(getIsWaivio);
+  const isSocialGifts = useSelector(getIsSocial);
+  const currObj = useSelector(getObject);
   const authUser = useSelector(getAuthenticatedUserName);
   const host = useSelector(getHostAddress);
   const history = useHistory();
-  const query = useQuery();
   const isEditor = history?.location?.pathname?.includes('/editor');
-  const draftId = getCurrentDraftId(query.get('draft'));
-  const draftList = useSelector(getDraftPostsSelector);
-  const currDraft = draftList.find(d => d.draftId === draftId);
+  const currDraft = useSelector(getCurrentDraftDataSelector);
   const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const chatId = Cookie.get(CHAT_ID);
   const textAreaRef = useRef(null);
@@ -82,18 +81,36 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
   const siteImage = isWaivio
     ? '/images/icons/cryptocurrencies/waiv.png'
     : desktopLogo || mobileLogo;
+  const isSocialList = currObj && currObj?.object_type === 'list' && isSocialGifts;
+  const isPost = currentShownPost && !isEmpty(currentShownPost) && !isEditor;
   let currentPageContent = '';
+  let headerMessage = 'How can I help you today?';
+  let quickMessages = defaultQuickMessages(siteName, currHost, config?.header?.name);
 
   if (isEditor) {
     if (!currDraft) {
       currentPageContent = undefined;
     }
-    currentPageContent = currDraft ? `${currDraft?.title} ${currDraft?.body}` : undefined;
-  }
-  if (currentShownPost && !isEditor) {
-    currentPageContent = !isEmpty(currentShownPost)
-      ? `${currentShownPost?.title} ${currentShownPost?.body}`
+    currentPageContent = currDraft
+      ? `I am writing a post: ${currDraft?.titleValue || ''} ${currDraft?.content || ''}`
       : undefined;
+    headerMessage = 'Do you need any help with writing a post?';
+    quickMessages = editorQuickMessages();
+  }
+  if (isPost) {
+    currentPageContent = !isEmpty(currentShownPost)
+      ? `I am looking at this post: ${currentShownPost?.title} ${currentShownPost?.body}`
+      : undefined;
+    headerMessage = 'Do you have any questions about this post?';
+    quickMessages = postQuickMessages();
+  }
+  if (isSocialList) {
+    currentPageContent =
+      !isEmpty(currObj) && !isNil(currObj)
+        ? `I am seeing the catalog ${currObj?.name} with items included: ${currObj?.listItems
+            ?.map(i => i?.name || i?.default_name)
+            ?.join(', ')}.`
+        : undefined;
   }
 
   const onClick = () => {
@@ -485,10 +502,10 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           {isEmpty(chatMessages) && (
             <>
               <div className="info">
-                <div className="info-paragraph">How can I help you today?</div>
+                <div className="info-paragraph">{headerMessage}</div>
               </div>
-              <div className="options">
-                {quickMessages(siteName, currHost, config?.header?.name).map(mess => (
+              <div className={isPost || isEditor ? 'options-column' : 'options'}>
+                {quickMessages?.map(mess => (
                   <button key={mess.label} onClick={() => handleQuickMessageClick(mess)}>
                     {mess.label}
                   </button>

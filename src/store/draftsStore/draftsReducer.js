@@ -15,6 +15,7 @@ import {
   SET_OBJECT_PERCENT,
   TOGGLE_LINKED_OBJ,
   INITIAL_SET_LINKED_OBJ,
+  SAVE_CURRENT_DRAFT_DATA,
 } from './draftsActions';
 
 const initialState = {
@@ -24,6 +25,7 @@ const initialState = {
   linkedObjects: [],
   objectPercent: {},
   campaign: null,
+  currentDraftData: {},
 };
 
 const draftsReducer = (state = initialState, action) => {
@@ -46,6 +48,12 @@ const draftsReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         drafts: [...action.payload],
+      };
+
+    case SAVE_CURRENT_DRAFT_DATA:
+      return {
+        ...state,
+        currentDraftData: action.payload,
       };
 
     case SET_CAMPAIGN: {

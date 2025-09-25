@@ -43,7 +43,7 @@ WalletSummaryInfo.propTypes = {
 };
 
 WalletSummaryInfo.defaultProps = {
-  estAccValue: 0,
+  estAccValue: '-',
 };
 
 export default withRouter(WalletSummaryInfo);

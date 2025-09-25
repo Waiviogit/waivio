@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import React from 'react';
 import { FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -27,7 +28,13 @@ const HiveEngineCurrencyItem = ({ token, rates }) => {
         <div className="HiveEngineCurrencyItem__info">
           <div className="HiveEngineCurrencyItem__row HiveEngineCurrencyItem__row--paddingBottom">
             <span>
-              {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
+              {isNil(balance) ? (
+                '-'
+              ) : (
+                <>
+                  {token.symbol} (<USDDisplay currencyDisplay="symbol" value={balance} />)
+                </>
+              )}
             </span>
             <span>
               {token.stakingEnabled && (

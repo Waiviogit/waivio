@@ -488,7 +488,7 @@ const BusinessObject = ({
                 />
               </div>
             )}
-            {(minimal || moderate || intensive) && <GoogleAds inPost />}
+            {(minimal || moderate || intensive) && <GoogleAds inList />}
             {!isEmpty(menuItem) && (
               <SocialMenuItems
                 menuItem={menuItem}

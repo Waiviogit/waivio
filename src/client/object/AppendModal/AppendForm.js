@@ -96,7 +96,7 @@ import { getLanguageText } from '../../../common/translations';
 import LANGUAGES from '../../../common/translations/languages';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
-import { getScreenSize, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getScreenSize, getUsedLocale, getAppHost } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
@@ -179,6 +179,7 @@ import WalletAddressForm from './FormComponents/WalletAddressForm';
     albums: getObjectAlbums(state),
     screenSize: getScreenSize(state),
     user: getAuthenticatedUser(state),
+    host: getAppHost(state),
   }),
   {
     appendObject,
@@ -206,6 +207,7 @@ class AppendForm extends Component {
     appendObject: PropTypes.func,
     rateObject: PropTypes.func,
     usedLocale: PropTypes.string,
+    host: PropTypes.string,
     /* passed props */
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
@@ -3859,6 +3861,8 @@ class AppendForm extends Component {
           listItems =
             (itemsInSortingList &&
               itemsInSortingList.map(item => ({
+                weight: item?.weight,
+                addedAt: item?.addedAt,
                 id: item.body || item.author_permlink,
                 checkedItemInList: item.checkedItemInList,
                 name: item.alias || getObjectName(item),
@@ -3936,6 +3940,7 @@ class AppendForm extends Component {
               })(
                 isList ? (
                   <ListDnD
+                    host={this.props.host}
                     listItems={listItems}
                     accentColor={PRIMARY_COLOR}
                     onChange={this.handleChangeSorting}

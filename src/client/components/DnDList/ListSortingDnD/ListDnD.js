@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEqual } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import OBJECT_TYPE from '../../../object/const/objectTypes';
+import SortSelector from '../../SortSelector/SortSelector';
 import '../DnDList.less';
 import ListDnDItem from './ListDnDItem';
 
@@ -52,8 +54,10 @@ class ListDnD extends Component {
     super(props);
     this.state = {
       items: props.listItems,
+      sort: 'custom',
     };
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.handleSortChange = this.handleSortChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -68,6 +72,65 @@ class ListDnD extends Component {
   }
 
   filterItems = items => items.filter(item => item.checkedItemInList);
+
+  sortItems = (items, sortType) => {
+    const sortedItems = [...items];
+
+    switch (sortType) {
+      case 'recency':
+        return sortedItems.sort((a, b) => {
+          const dateA = new Date(a.addedAt || 0);
+          const dateB = new Date(b.addedAt || 0);
+
+          return dateA - dateB;
+        });
+      case 'reverse_recency':
+        return sortedItems.sort((a, b) => {
+          const dateA = new Date(a.addedAt || 0);
+          const dateB = new Date(b.addedAt || 0);
+
+          return dateB - dateA;
+        });
+      case 'rank':
+        return sortedItems.sort((a, b) => {
+          const rankA = a.weight || 0;
+          const rankB = b.weight || 0;
+
+          return rankB - rankA;
+        });
+      case 'by-name-asc':
+        return sortedItems.sort((a, b) => a.name.localeCompare(b.name));
+      case 'by-name-desc':
+        return sortedItems.sort((a, b) => b.name.localeCompare(a.name));
+      default:
+        return sortedItems;
+    }
+  };
+
+  handleSortChange = sortType => {
+    const { items } = this.state;
+    const sortedItems = this.sortItems(items, sortType);
+
+    this.setState({
+      items: sortedItems,
+      sort: sortType,
+    });
+
+    const { onChange, wobjType } = this.props;
+    let itemsList = sortedItems;
+
+    if (wobjType === OBJECT_TYPE.LIST) {
+      itemsList = this.filterItems(sortedItems);
+    }
+
+    onChange({
+      include: itemsList.map(item => item.id),
+      exclude:
+        wobjType === OBJECT_TYPE.LIST
+          ? sortedItems.filter(i => !i.checkedItemInList).map(item => item.id)
+          : [],
+    });
+  };
 
   onDragEnd(result) {
     if (!result.destination) return;
@@ -103,39 +166,66 @@ class ListDnD extends Component {
   };
 
   render() {
+    const { sort } = this.state;
+
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <div className="dnd-list" ref={provided.innerRef}>
-              {this.state.items.map((item, index) => (
-                <Draggable key={item.id} draggableId={item.id} index={index}>
-                  {(druggableProvided, druggableSnapshot) => (
-                    <div
-                      className="dnd-list__item"
-                      ref={druggableProvided.innerRef}
-                      {...druggableProvided.draggableProps}
-                      {...druggableProvided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDraggingOver,
-                        druggableSnapshot.isDragging,
-                        druggableProvided.draggableProps.style,
-                        this.props.accentColor,
-                      )}
-                    >
-                      <ListDnDItem
-                        item={item}
-                        toggleItemInSortingList={this.toggleItemInSortingList}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <div className="dnd-list-container">
+        <div className="dnd-list-header">
+          <SortSelector sort={sort} onChange={this.handleSortChange}>
+            <SortSelector.Item key="recency">
+              <FormattedMessage id="recency" defaultMessage="Recency" />
+            </SortSelector.Item>
+            <SortSelector.Item key="rank">
+              <FormattedMessage id="rank" defaultMessage="Rank" />
+            </SortSelector.Item>
+            <SortSelector.Item key="by-name-asc">
+              <FormattedMessage id="by-name-asc" defaultMessage="A..Z">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="by-name-desc">
+              <FormattedMessage id="by-name-desc" defaultMessage="Z..A">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="reverse_recency">
+              <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
+            </SortSelector.Item>
+          </SortSelector>
+        </div>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <div className="dnd-list" ref={provided.innerRef}>
+                {this.state.items.map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(druggableProvided, druggableSnapshot) => (
+                      <div
+                        className="dnd-list__item"
+                        ref={druggableProvided.innerRef}
+                        {...druggableProvided.draggableProps}
+                        {...druggableProvided.dragHandleProps}
+                        style={getItemStyle(
+                          snapshot.isDraggingOver,
+                          druggableSnapshot.isDragging,
+                          druggableProvided.draggableProps.style,
+                          this.props.accentColor,
+                        )}
+                      >
+                        <ListDnDItem
+                          item={item}
+                          toggleItemInSortingList={this.toggleItemInSortingList}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
     );
   }
 }

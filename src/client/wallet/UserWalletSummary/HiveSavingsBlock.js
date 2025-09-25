@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { Button } from 'antd';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Loading from '../../components/Icon/Loading';
@@ -40,8 +40,14 @@ const HiveSavingsBlock = ({
             <Loading />
           ) : (
             <span>
-              <FormattedNumber value={parseFloat(user.savings_balance)} />
-              {' HIVE'}
+              {isNil(user.savings_balance) ? (
+                '-'
+              ) : (
+                <>
+                  <FormattedNumber value={parseFloat(user.savings_balance)} />
+                  {' HIVE'}
+                </>
+              )}
             </span>
           )}
         </div>

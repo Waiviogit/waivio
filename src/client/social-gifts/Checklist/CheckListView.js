@@ -124,7 +124,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       );
     }
 
-    const injectAds = (items, getRowFn) => {
+    const injectAds = (items, getRowFn, isProducts) => {
       const result = [];
       const rows = [];
 
@@ -144,8 +144,13 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
           rowElements.splice(
             adPosition,
             0,
-            // eslint-disable-next-line react/no-array-index-key
-            <GoogleAds listItem key={`ad-${rowIndex}-${adPosition}`} />,
+
+            <GoogleAds
+              listItem={!isProducts}
+              listItemProducts={isProducts}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`ad-${rowIndex}-${adPosition}`}
+            />,
           );
         }
 
@@ -161,8 +166,8 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
 
       return (
         <div>
-          <div className="Checklist__list">{injectAds(itemsListType, getListRow)}</div>
-          <div className="Checklist__list">{injectAds(itemsProducts, getListRow)}</div>
+          <div className="Checklist__list">{injectAds(itemsListType, getListRow, false)}</div>
+          <div className="Checklist__list">{injectAds(itemsProducts, getListRow, true)}</div>
         </div>
       );
     }

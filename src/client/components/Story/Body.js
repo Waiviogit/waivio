@@ -151,9 +151,8 @@ export function getHtml(
   if (returnType === 'text') {
     return parsedBody;
   }
-
   parsedBody = parsedBody.replace(/~~~ embed:(\S+) (\S+) (\S+) ~~~/g, (a, embedId, c, url) => {
-    const embed = getEmbed(url);
+    const embed = getEmbed(url.replaceAll('&amp;', '&'));
 
     return ReactDOMServer.renderToString(
       <PostFeedEmbed key={`embed-a-${embedId}`} inPost embed={embed} />,
@@ -186,23 +185,74 @@ const Body = props => {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-        // eslint-disable-next-line no-param-reassign
-        imgNode.onerror = () => {
-          // Use data-fallback-src if available, otherwise fall back to alt
-          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+      const setupImageErrorHandlers = () => {
+        Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
+          // Skip if already processed
+          if (imgNode.dataset.processed) return;
 
           // eslint-disable-next-line no-param-reassign
-          imgNode.src = fallbackSrc;
-          // eslint-disable-next-line no-param-reassign
-          imgNode.alt = '/images/icons/no-image.png';
-        };
+          imgNode.onerror = () => {
+            // Use data-fallback-src if available, otherwise fall back to alt
+            const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+
+            // Prevent infinite loop by checking if we already tried the fallback
+            if (fallbackSrc && fallbackSrc !== imgNode.src) {
+              // Force React to recognize the change by removing and re-adding the src
+              // eslint-disable-next-line no-param-reassign
+              imgNode.src = '';
+              // eslint-disable-next-line no-param-reassign
+              imgNode.src = fallbackSrc;
+              // Mark as processed to prevent infinite loops
+              // eslint-disable-next-line no-param-reassign
+              imgNode.dataset.processed = 'true';
+            } else {
+              // Final fallback to no-image
+              // eslint-disable-next-line no-param-reassign
+              imgNode.src = '/images/icons/no-image.png';
+              // eslint-disable-next-line no-param-reassign
+              imgNode.dataset.processed = 'true';
+            }
+          };
+        });
+      };
+
+      // Setup handlers immediately
+      setupImageErrorHandlers();
+
+      // Setup MutationObserver to handle new images added by React
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                if (node.tagName === 'IMG') {
+                  setupImageErrorHandlers();
+                } else if (node.querySelectorAll) {
+                  const images = node.querySelectorAll('img');
+
+                  if (images.length > 0) {
+                    setupImageErrorHandlers();
+                  }
+                }
+              }
+            });
+          }
+        });
       });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+
+      return () => {
+        observer.disconnect();
+      };
     }
   }, []);
-
   const location = useLocation();
   const params = useParams();
   const options = {

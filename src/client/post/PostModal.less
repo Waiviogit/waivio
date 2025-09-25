@@ -15,9 +15,32 @@
   }
 }
 
+.Body table .centre-container {
+  width: 100%;
+
+  img {
+    min-width: 100% !important;
+  }
+}
+
 .PostModal {
   .ant-modal {
     animation: 0s !important;
+
+    .Body table .centre-container {
+      width: 100%;
+      left: auto;
+    }
+
+    .Body .centre-container {
+      left: -17px;
+      width: calc(100vw - 14px);
+
+      @media @small {
+        width: 100%;
+        left: auto;
+      }
+    }
 
     &.zoom-leave {
       display: none;
@@ -25,7 +48,7 @@
   }
 
   .ant-modal-body {
-    padding: 16px !important;
+    padding: 5px !important;
     overflow-x: hidden;
 
     @media @medium {

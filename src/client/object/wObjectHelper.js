@@ -1,4 +1,4 @@
-import { filter, get, has, isEmpty, orderBy, uniqBy } from 'lodash';
+import { filter, get, has, isEmpty, uniqBy } from 'lodash';
 import { getObjectName, getSortList, isList } from '../../common/helpers/wObjectHelper';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
@@ -103,7 +103,7 @@ export const removeEmptyLines = string => {
   return nonEmptyLines?.join('\n');
 };
 
-const sortItemsByPromotion = (items, host) =>
+export const sortItemsByPromotion = (items, host) =>
   items
     .filter(item => item.promotion?.some(promo => promo.body === host))
     .sort((a, b) => {
@@ -124,7 +124,14 @@ const sortItemsByPromotion = (items, host) =>
 export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null, host) => {
   if (!items || !items.length) return [];
   const sortItemsByPr = sortItemsByPromotion(items, host);
-  const withoutPromotion = items.filter(item => !sortItemsByPr?.includes(item));
+  const withoutPromotion = items
+    .filter(item => !sortItemsByPr?.includes(item))
+    .sort((a, b) => {
+      const dateA = new Date(a.addedAt || 0);
+      const dateB = new Date(b.addedAt || 0);
+
+      return dateA - dateB;
+    });
 
   if (!sortByParam || ['recency'].includes(sortByParam))
     return [...sortItemsByPr, ...withoutPromotion];
@@ -134,25 +141,38 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
 
   switch (sortByParam) {
     case 'rank':
-      comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
-      break;
-    case 'by-name-desc':
-      comparator = (a, b) => (getObjectName(a) < getObjectName(b) ? 1 : -1);
+      comparator = (a, b) => {
+        if (b.weight !== a.weight) return b.weight - a.weight;
+
+        return a.name.localeCompare(b.name);
+      };
       break;
     case 'by-name-asc':
-      comparator = (a, b) => (getObjectName(a) > getObjectName(b) ? 1 : -1);
+      comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+      break;
+    case 'by-name-desc':
+      comparator = (a, b) => getObjectName(b).localeCompare(getObjectName(a));
       break;
     default:
+      comparator = () => 0;
       break;
   }
 
-  const sorted = uniqBy(withoutPromotion, 'author_permlink').sort(comparator);
-  const sortedByDate = sorted.every(item => has(item, 'addedAt'))
-    ? orderBy(sorted, ['addedAt'], 'desc')
-    : sorted;
+  const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+    const cmp = comparator(a, b);
+
+    if (cmp !== 0) return cmp;
+
+    if (has(a, 'addedAt') && has(b, 'addedAt')) {
+      return new Date(b.addedAt) - new Date(a.addedAt);
+    }
+
+    return 0;
+  });
+
   const sorting = (a, b) => isList(b) - isList(a);
 
-  return [...sortItemsByPr, ...sortedByDate.sort(sorting)];
+  return [...sortItemsByPr, ...sorted.sort(sorting)];
 };
 
 export const getWobjectsForMap = objects =>

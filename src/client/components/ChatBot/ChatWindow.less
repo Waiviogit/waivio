@@ -204,6 +204,13 @@
     justify-content: space-around;
     margin-bottom: 20px;
   }
+  .options-column {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 20px 20px;
+    gap: 10px;
+    flex-direction: column;
+  }
   .chat-messages {
     margin-top: 10px;
   }
@@ -213,6 +220,18 @@
     color: @black-text-basic;
     border: none;
     padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .options-column button {
+    text-align: left;
+    width: fit-content;
+    max-width: 330px;
+    background-color: @white-gainsboro;
+    color: @black-text-basic;
+    border: none;
+    padding: 5px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: 500;

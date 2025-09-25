@@ -18,6 +18,7 @@ export const getIsLoaded = createSelector([authState], state => state.loaded);
 export const getIsReloading = createSelector([authState], state => state.isReloading);
 
 export const getAuthenticatedUser = createSelector([authState], state => state.user);
+export const getIsAuthenticating = createSelector([authState], state => state.isAuthenticating);
 
 export const getAuthenticatedUserName = createSelector([getAuthenticatedUser], user => user.name);
 

@@ -136,6 +136,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   } else if (hiveAuth) {
     Cookie.remove('access_token');
     Cookie.remove('auth');
+    Cookie.remove('currentUser');
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
@@ -180,7 +181,14 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const appAdmins = await getAppAdmins();
 
         dispatch(changeAdminStatus(hiveAuthData.username));
-        dispatch(setSignature(userMetaData?.profile?.signature || ''));
+        const signature =
+          userMetaData?.profile?.signature ||
+          (account?.posting_json_metadata
+            ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+            : '') ||
+          '';
+
+        dispatch(setSignature(signature));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
 
         Cookie.set('appAdmins', appAdmins);
@@ -210,7 +218,14 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     }
 
     dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
-    dispatch(setSignature(userMetaData?.profile?.signature || ''));
+    const signature =
+      userMetaData?.profile?.signature ||
+      (account?.posting_json_metadata
+        ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+        : '') ||
+      '';
+
+    dispatch(setSignature(signature));
 
     const appAdmins = await getAppAdmins();
 
@@ -277,7 +292,14 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         Cookie.set('appAdmins', appAdmins);
         Cookie.set('currentUser', scUserData.name);
         dispatch(changeAdminStatus(scUserData.name));
-        dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+        const signature =
+          userMetaData?.profile?.signature ||
+          (account?.posting_json_metadata
+            ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+            : '') ||
+          '';
+
+        dispatch(setSignature(signature));
         dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
         dispatch(setUsedLocale(await loadLanguage(userMetaData.settings?.locale)));
 
@@ -343,7 +365,14 @@ export const loginFromServer = cookie => dispatch => {
           const rewardsTab = await getRewardTab(hiveAuthData.username);
 
           // dispatch(changeAdminStatus(hiveAuthData.username));
-          // dispatch(setSignature(userMetaData?.profile?.signature || ''));
+          const signature =
+            userMetaData?.profile?.signature ||
+            (account?.posting_json_metadata
+              ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+              : '') ||
+            '';
+
+          dispatch(setSignature(signature));
 
           resolve({
             account,
@@ -391,7 +420,14 @@ export const loginFromServer = cookie => dispatch => {
             const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
             // dispatch(changeAdminStatus(scUserData.name));
-            // dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+            const signature =
+              userMetaData?.profile?.signature ||
+              (account?.posting_json_metadata
+                ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+                : '') ||
+              '';
+
+            dispatch(setSignature(signature));
 
             resolve({
               ...scUserData,
