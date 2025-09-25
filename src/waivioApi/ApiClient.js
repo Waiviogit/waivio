@@ -4061,6 +4061,7 @@ export const getDepartmentsFeed = (
   department,
   filter,
   path,
+  schema,
   skip,
   limit,
   locale,
@@ -4079,7 +4080,7 @@ export const getDepartmentsFeed = (
       skip,
       limit,
       path,
-      // schema,
+      schema,
     }),
   })
     .then(res => res.json())
