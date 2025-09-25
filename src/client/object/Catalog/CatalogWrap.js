@@ -66,7 +66,7 @@ const CatalogWrap = props => {
   const host = useSelector(getAppHost);
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
 
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
@@ -271,7 +271,7 @@ const CatalogWrap = props => {
               <div className="CatalogWrap__sort">
                 <CatalogSorting
                   sort={sortBy}
-                  currWobject={wobjectNested}
+                  currWobject={isEmpty(wobjectNested) ? obj : wobjectNested}
                   handleSortChange={handleSortChange}
                 />
               </div>

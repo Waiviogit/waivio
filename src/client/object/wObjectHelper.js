@@ -127,10 +127,11 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
   const withoutPromotion = items
     .filter(item => !sortItemsByPr?.includes(item))
     .sort((a, b) => {
-      const dateA = new Date(a.addedAt || 0);
-      const dateB = new Date(b.addedAt || 0);
+      if (!a.addedAt && !b.addedAt) return 0;
+      if (!a.addedAt) return 1;
+      if (!b.addedAt) return -1;
 
-      return dateA - dateB;
+      return new Date(a.addedAt) - new Date(b.addedAt);
     });
 
   if (!sortByParam || ['recency'].includes(sortByParam))
