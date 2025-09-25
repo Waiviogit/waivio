@@ -154,6 +154,25 @@
   }
 }
 
+.RecipePost {
+  .Body.Body--full .PostFeedEmbed__container {
+    iframe {
+      top: 0;
+      left: 0;
+      width: calc(100% + 10px);
+      height: 100%;
+      position: absolute;
+      margin-left: -5px;
+
+      @media @small {
+        left: 0;
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  }
+}
+
 .Body.Body--full .PostFeedEmbed__container_instagram.PostFeedEmbed__container,
 .Body.Body--full .PostFeedEmbed__container_instagram-reel.PostFeedEmbed__container {
   width: 323px;
