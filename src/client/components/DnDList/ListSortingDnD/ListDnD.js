@@ -79,15 +79,15 @@ class ListDnD extends Component {
     switch (sortType) {
       case 'recency':
         return sortedItems.sort((a, b) => {
-          const dateA = new Date(a.createdAt || 0);
-          const dateB = new Date(b.createdAt || 0);
+          const dateA = new Date(a.addedAt || 0);
+          const dateB = new Date(b.addedAt || 0);
 
           return dateA - dateB;
         });
       case 'reverse_recency':
         return sortedItems.sort((a, b) => {
-          const dateA = new Date(a.createdAt || 0);
-          const dateB = new Date(b.createdAt || 0);
+          const dateA = new Date(a.addedAt || 0);
+          const dateB = new Date(b.addedAt || 0);
 
           return dateB - dateA;
         });

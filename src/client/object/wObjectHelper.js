@@ -103,7 +103,7 @@ export const removeEmptyLines = string => {
   return nonEmptyLines?.join('\n');
 };
 
-const sortItemsByPromotion = (items, host) =>
+export const sortItemsByPromotion = (items, host) =>
   items
     .filter(item => item.promotion?.some(promo => promo.body === host))
     .sort((a, b) => {
@@ -124,7 +124,14 @@ const sortItemsByPromotion = (items, host) =>
 export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null, host) => {
   if (!items || !items.length) return [];
   const sortItemsByPr = sortItemsByPromotion(items, host);
-  const withoutPromotion = items.filter(item => !sortItemsByPr?.includes(item));
+  const withoutPromotion = items
+    .filter(item => !sortItemsByPr?.includes(item))
+    .sort((a, b) => {
+      const dateA = new Date(a.addedAt || 0);
+      const dateB = new Date(b.addedAt || 0);
+
+      return dateA - dateB;
+    });
 
   if (!sortByParam || ['recency'].includes(sortByParam))
     return [...sortItemsByPr, ...withoutPromotion];
