@@ -116,7 +116,7 @@ export const parseLink = (
   href = href.trim();
   const attys = {};
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const simpleImageRegex = /(https?:\/\/[^\s]+?\.(?:jpe?g|png|jpg|gif|webp|svg))/gi;
+  const simpleImageRegex = /(https?:\/\/\S+\.(?:jpe?g|png|gif|webp|svg)\b(?:\?[^\s#]*)?(?:#[^\s]*)?)/gi;
 
   if (simpleImageRegex.test(href)) {
     return {};
@@ -203,6 +203,7 @@ export const parseLink = (
 
       attys.target = '';
     }
+
     if (isChatBotLink) attys.target = '_blank';
     attys.href = href;
 
@@ -211,6 +212,7 @@ export const parseLink = (
       attribs: attys,
     };
   } catch (e) {
+    console.log(e);
     return {
       tagName,
       attribs: {},
