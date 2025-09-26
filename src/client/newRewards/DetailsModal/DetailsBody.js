@@ -192,9 +192,19 @@ const DetailsModalBody = ({
           )}
           <li>
             <span className="nowrap">
-              {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
+              {proposition?.object?.object_type === 'hashtag'
+                ? 'Include hashtag '
+                : intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
             </span>
-            {isMentions ? (
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {proposition?.object?.object_type === 'hashtag' ? (
+              <Link
+                className="ml1 DetailsModal__container"
+                to={proposition?.object?.defaultShowLink}
+              >
+                #{proposition?.user ? proposition?.user.name : getObjectName(proposition?.object)}
+              </Link>
+            ) : isMentions ? (
               <a
                 className="ml1 DetailsModal__container"
                 href={
@@ -224,9 +234,19 @@ const DetailsModalBody = ({
           {!withoutSecondary && (
             <li>
               <span className="nowrap">
-                {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
+                {requiredObject?.object_type === 'hashtag'
+                  ? 'Include hashtag '
+                  : intl.formatMessage({
+                      id: 'rewards_details_link_to',
+                      defaultMessage: 'Link to',
+                    })}
               </span>
-              {isMentions ? (
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {requiredObject?.object_type === 'hashtag' ? (
+                <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
+                  #{getObjectName(requiredObject)}
+                </Link>
+              ) : isMentions ? (
                 <a
                   className="ml1 DetailsModal__container"
                   href={
@@ -433,6 +453,7 @@ DetailsModalBody.propTypes = {
     activationPermlink: PropTypes.string,
     requiredObject: PropTypes.shape({
       defaultShowLink: PropTypes.string,
+      object_type: PropTypes.string,
       url: PropTypes.string,
     }),
     user: PropTypes.shape({
@@ -464,6 +485,7 @@ DetailsModalBody.propTypes = {
       }),
       defaultShowLink: PropTypes.string,
       id: PropTypes.string,
+      object_type: PropTypes.string,
       url: PropTypes.string,
     }),
   }).isRequired,

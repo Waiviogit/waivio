@@ -104,20 +104,38 @@ const CheckReviewModal = ({
           {!withoutSecondary && (
             <div className="check-review-modal__list-item">
               {getIcon(hasObject(secondaryObject))}
-              {intl.formatMessage({
-                id: 'rewards_details_link_to',
-                defaultMessage: 'Link to',
-              })}{' '}
-              {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
+              {secondaryObject?.object_type === 'hashtag' ? (
+                <>
+                  Include hashtag{' '}
+                  <a href={getObjectUrlForLink(secondaryObject)}>#{secondaryObject.name}</a>
+                </>
+              ) : (
+                <>
+                  {intl.formatMessage({
+                    id: 'rewards_details_link_to',
+                    defaultMessage: 'Link to',
+                  })}{' '}
+                  {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
+                </>
+              )}
             </div>
           )}
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(primaryObject))}
-            {intl.formatMessage({
-              id: 'rewards_details_link_to',
-              defaultMessage: 'Link to',
-            })}{' '}
-            {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
+            {primaryObject?.object_type === 'hashtag' || primaryObject?.type === 'hashtag' ? (
+              <>
+                Include hashtag{' '}
+                <a href={getObjectUrlForLink(primaryObject)}>#{primaryObject.name}</a>
+              </>
+            ) : (
+              <>
+                {intl.formatMessage({
+                  id: 'rewards_details_link_to',
+                  defaultMessage: 'Link to',
+                })}{' '}
+                {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
+              </>
+            )}
           </div>
           {!isReview && reviewData?.qualifiedPayoutToken && (
             <div className="check-review-modal__list-item">
