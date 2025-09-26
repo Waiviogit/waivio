@@ -5,6 +5,7 @@ import InfiniteSroll from 'react-infinite-scroller';
 import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { getUserShopSchema } from '../../../common/helpers/shopHelper';
 import EmptyCampaign from '../../statics/EmptyCampaign';
 
 import useQuery from '../../../hooks/useQuery';
@@ -29,7 +30,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const location = useLocation();
   const query = useQuery();
   const list = useRef();
-  // const schema = getUserShopSchema(location?.pathname);
+  const schema = getUserShopSchema(location?.pathname);
   const path = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -38,12 +39,18 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
     : match.params.department;
 
   useEffect(() => {
-    getDepartmentsFeed(user, authUser, department, parseQueryForFilters(query), path, 0).then(
-      res => {
-        setDepartmentInfo(res);
-        setLoading(false);
-      },
-    );
+    getDepartmentsFeed(
+      user,
+      authUser,
+      department,
+      parseQueryForFilters(query),
+      path,
+      schema,
+      0,
+    ).then(res => {
+      setDepartmentInfo(res);
+      setLoading(false);
+    });
 
     if (!isMobile() && typeof window !== 'undefined')
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -70,6 +77,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
       parseQueryForFilters(query),
       path,
       departmentInfo.wobjects.length,
+      schema,
       10,
     ).then(res => {
       setDepartmentInfo({

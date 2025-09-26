@@ -16,7 +16,7 @@ const parseInsTagAttributes = str => {
   );
 
   if (attrs.style) {
-    attrs.style = Object.fromEntries(
+    const styleObj = Object.fromEntries(
       attrs.style
         .split(';')
         .map(s => s.trim())
@@ -28,6 +28,11 @@ const parseInsTagAttributes = str => {
           return [camelKey, v];
         }),
     );
+
+    delete styleObj.maxHeight;
+    delete styleObj.maxheight;
+
+    attrs.style = styleObj;
   }
 
   return attrs;
