@@ -64,6 +64,7 @@ const ImageSetter = ({
     position: { x: 0.5, y: 0.5 },
     scale: 1,
     rotate: 0,
+    flipX: false,
     borderRadius: isUserAvatar ? 50 : 0,
     preview: null,
     width: isDesktop ? 400 : 200,
