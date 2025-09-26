@@ -8,6 +8,7 @@ import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import useQuery from '../../hooks/useQuery';
 import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
 
@@ -141,7 +142,7 @@ const User = props => {
 
     if (user.name !== name) {
       props.getUserAccount(name).then(res => {
-        props.getInfoForSideBar(name, res.lastActivity);
+        if (!guestUserRegex.test(name)) props.getInfoForSideBar(name, res.lastActivity);
         props.getTokenBalance('WAIV', name);
       });
     }
