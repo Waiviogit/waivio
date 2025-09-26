@@ -76,8 +76,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
       department,
       parseQueryForFilters(query),
       path,
-      departmentInfo.wobjects.length,
       schema,
+      departmentInfo.wobjects.length,
       10,
     ).then(res => {
       setDepartmentInfo({
