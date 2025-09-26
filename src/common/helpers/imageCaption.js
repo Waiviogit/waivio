@@ -1,3 +1,5 @@
+import { isMobile } from './apiHelpers';
+
 const IMG_EXT_RE = /\.(?:jpe?g|png|webp|gif|bmp|tiff?|heic|heif|svg|avif)(?=($|[?#\s"')]))/i;
 
 const hasImageExtension = s => IMG_EXT_RE.test((s || '').toLowerCase());
@@ -83,7 +85,11 @@ export const createImageWithCaption = (src, alt, link, fallbackSrc) => {
     return `
     <a href="${link}" target="_blank" rel="noopener noreferrer">
         <img ${imgAttributes} style="display: block; margin: 0 auto;" />
-        <figcaption class="md-block-image-caption" style="font-size: 15px; font-style: italic; text-align: center; margin-top: 8px;">${alt}</figcaption>
+        <figcaption class="md-block-image-caption" style="font-size: 15px; width: ${
+          isMobile() ? 'calc(100vw - 20px)' : '100%'
+        };  font-style: italic; text-align: center; margin: ${
+      isMobile() ? '8px auto 0' : '8px 0 0 0'
+    };">${alt}</figcaption>
     </a> 
 `;
   }
@@ -99,7 +105,11 @@ export const createImageWithCaption = (src, alt, link, fallbackSrc) => {
   if (shouldShowCaption(alt, src) && !link) {
     return `
         <img ${imgAttributes} style="display: block; margin: 0 auto;" />
-        <figcaption class="md-block-image-caption" style="font-size: 15px; font-style: italic; text-align: center; margin-top: 8px;">${alt}</figcaption>
+        <figcaption class="md-block-image-caption" style="font-size: 15px; width: ${
+          isMobile() ? 'calc(100vw - 20px)' : '100%'
+        }; font-style: italic; text-align: center; margin: ${
+      isMobile() ? '8px auto 0' : '8px 0 0 0'
+    };">${alt}</figcaption>
  `;
   }
 
