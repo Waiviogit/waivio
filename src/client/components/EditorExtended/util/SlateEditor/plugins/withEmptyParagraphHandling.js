@@ -1,9 +1,15 @@
-import { Editor, Range, Transforms, Node, Path } from 'slate';
+import { Editor, Range, Transforms, Node, Path, Element } from 'slate';
 
 const ZW = /\u200B/g;
 const isParagraph = n => Element.isElement(n) && n.type === 'paragraph';
+const isCodeBlock = n => Element.isElement(n) && n.type === 'code';
 const isVisuallyEmptyParagraph = node =>
   isParagraph(node) &&
+  Node.string(node)
+    .replace(ZW, '')
+    .trim() === '';
+const isVisuallyEmptyCodeBlock = node =>
+  isCodeBlock(node) &&
   Node.string(node)
     .replace(ZW, '')
     .trim() === '';
@@ -20,9 +26,27 @@ const withEmptyParagraphHandling = editor => {
       const selectedElementPath = path.slice(0, -1);
 
       try {
-        if (!Node.has(editor, selectedElementPath)) return deleteBackward(unit);
+        if (!Node.has(editor, selectedElementPath)) {
+          // Reset selection if path is invalid
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+
+          return deleteBackward(unit);
+        }
 
         const selectedElement = Node.descendant(editor, selectedElementPath);
+
+        // Handle empty code blocks - convert to paragraph
+        if (
+          Editor.isStart(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyCodeBlock(selectedElement)
+        ) {
+          Transforms.setNodes(editor, { type: 'paragraph' }, { at: selectedElementPath });
+
+          // eslint-disable-next-line consistent-return
+          return;
+        }
 
         // ⬇️ Курсор саме на початку абзацу, і абзац «візуально порожній»
         if (
@@ -77,6 +101,14 @@ const withEmptyParagraphHandling = editor => {
         }
       } catch (e) {
         console.warn('Error in withEmptyParagraphHandling deleteBackward:', e);
+        // Reset selection if there's an error
+        try {
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+        } catch (resetError) {
+          console.warn('Error resetting selection in deleteBackward:', resetError);
+        }
       }
     }
 
@@ -92,9 +124,27 @@ const withEmptyParagraphHandling = editor => {
       const selectedElementPath = path.slice(0, -1);
 
       try {
-        if (!Node.has(editor, selectedElementPath)) return deleteForward(unit);
+        if (!Node.has(editor, selectedElementPath)) {
+          // Reset selection if path is invalid
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+
+          return deleteForward(unit);
+        }
 
         const selectedElement = Node.descendant(editor, selectedElementPath);
+
+        // Handle empty code blocks - convert to paragraph
+        if (
+          Editor.isEnd(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyCodeBlock(selectedElement)
+        ) {
+          Transforms.setNodes(editor, { type: 'paragraph' }, { at: selectedElementPath });
+
+          // eslint-disable-next-line consistent-return
+          return;
+        }
 
         if (
           Editor.isEnd(editor, selection.anchor, selectedElementPath) &&
@@ -124,6 +174,14 @@ const withEmptyParagraphHandling = editor => {
         }
       } catch (e) {
         console.warn('Error in withEmptyParagraphHandling deleteForward:', e);
+        // Reset selection if there's an error
+        try {
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+        } catch (resetError) {
+          console.warn('Error resetting selection in deleteForward:', resetError);
+        }
       }
     }
 

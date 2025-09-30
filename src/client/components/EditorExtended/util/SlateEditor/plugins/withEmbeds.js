@@ -2,6 +2,11 @@ import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
 import { deserializeToSlate } from '../utils/parse';
+import {
+  safeResetSelection,
+  getSafeSelectedElement,
+  isInsideCodeBlock,
+} from '../utils/safeSelection';
 
 function wrapListItemsInBulletedList(nodes) {
   const result = [];
@@ -35,7 +40,7 @@ function wrapListItemsInBulletedList(nodes) {
 }
 
 const withEmbeds = cb => editor => {
-  const { isVoid, insertData, normalizeNode, selection } = editor;
+  const { isVoid, insertData, normalizeNode } = editor;
 
   /* eslint-disable no-param-reassign */
   editor.isVoid = element => (['video', 'image'].includes(element.type) ? true : isVoid(element));
@@ -47,16 +52,11 @@ const withEmbeds = cb => editor => {
     let isWrapped = false;
 
     try {
-      if (selection && editor.selection?.anchor?.path) {
-        const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
-
-        if (Node.has(editor, selectedElementPath)) {
-          selectedElement = Node.descendant(editor, selectedElementPath);
-          isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
-        }
-      }
+      selectedElement = getSafeSelectedElement(editor);
+      isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
     } catch (error) {
       console.warn('Error in withEmbeds normalizeNode:', error);
+      safeResetSelection(editor);
     }
 
     if (Element.isElement(node) && node.type === PARAGRAPH_BLOCK) {
@@ -77,6 +77,28 @@ const withEmbeds = cb => editor => {
     }
 
     if (Element.isElement(node) && node.type === CODE_BLOCK) {
+      // Check if code block is empty or has only whitespace
+      const isEmpty =
+        node.children.length === 0 ||
+        (node.children.length === 1 &&
+          (node.children[0].text === '' || node.children[0].text.trim() === ''));
+
+      if (isEmpty) {
+        // Convert empty code block to paragraph
+        Transforms.setNodes(editor, { type: PARAGRAPH_BLOCK }, { at: path });
+
+        // Ensure it has a text node
+        if (node.children.length === 0) {
+          Transforms.insertNodes(editor, { text: '' }, { at: [...path, 0] });
+        } else if (node.children[0].text.trim() === '') {
+          // Clear the whitespace-only text
+          Transforms.removeNodes(editor, { at: [...path, 0] });
+          Transforms.insertNodes(editor, { text: '' }, { at: [...path, 0] });
+        }
+
+        return;
+      }
+
       // eslint-disable-next-line no-restricted-syntax
       Transforms.setNodes(
         editor,
@@ -123,17 +145,23 @@ const withEmbeds = cb => editor => {
       let isWrapped = false;
 
       try {
-        if (editor.selection?.anchor?.path) {
-          const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
-
-          if (Node.has(editor, selectedElementPath)) {
-            selectedElement = Node.descendant(editor, selectedElementPath);
-            isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
-          }
-        }
+        selectedElement = getSafeSelectedElement(editor);
+        isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
       } catch (error) {
         console.warn('Error in withEmbeds insertData:', error);
+        safeResetSelection(editor);
       }
+
+      // Check if HTML content looks like code
+      const htmlText = _html.toLowerCase();
+      const isHtmlCodeContent =
+        htmlText.includes('<!doctype') ||
+        htmlText.includes('<html') ||
+        htmlText.includes('<head') ||
+        htmlText.includes('<style') ||
+        htmlText.includes('<script') ||
+        (htmlText.includes('<pre') && htmlText.includes('<code')) ||
+        (htmlText.includes('<code') && !htmlText.includes('</p>'));
 
       let nodesNormalized = nodes
         .filter(i => i.text !== '\n')
@@ -219,17 +247,55 @@ const withEmbeds = cb => editor => {
         ];
       }
 
-      Transforms.insertFragment(
-        editor,
-        !isWrapped
-          ? [
-              {
-                type: PARAGRAPH_BLOCK,
-                children: wrapListItemsInBulletedList(nodesNormalized),
-              },
-            ]
-          : wrapListItemsInBulletedList(nodesNormalized),
-      );
+      if (isHtmlCodeContent && !isWrapped) {
+        // Convert HTML code to code block - preserve the original HTML
+        let textContent = _html;
+
+        // If it's wrapped in pre/code tags, extract the content
+        if (htmlText.includes('<pre') && htmlText.includes('<code')) {
+          const preMatch = _html.match(/<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>/i);
+
+          if (preMatch) {
+            textContent = preMatch[1];
+          }
+        } else if (htmlText.includes('<code')) {
+          const codeMatch = _html.match(/<code[^>]*>([\s\S]*?)<\/code>/i);
+
+          if (codeMatch) {
+            textContent = codeMatch[1];
+          }
+        }
+
+        // Decode HTML entities
+        textContent = textContent
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ')
+          .trim();
+
+        const codeNode = {
+          type: 'code',
+          lang: 'html',
+          children: [{ text: textContent }],
+        };
+
+        Transforms.insertNodes(editor, codeNode);
+      } else {
+        Transforms.insertFragment(
+          editor,
+          !isWrapped
+            ? [
+                {
+                  type: PARAGRAPH_BLOCK,
+                  children: wrapListItemsInBulletedList(nodesNormalized),
+                },
+              ]
+            : wrapListItemsInBulletedList(nodesNormalized),
+        );
+      }
       cb(html);
       if (isWrapped) Transforms.move(editor, { unit: 'offset' });
 
@@ -237,6 +303,16 @@ const withEmbeds = cb => editor => {
     }
 
     const text = data.getData('text/plain');
+
+    // Check if we're inside a code block
+    let isWrapped = false;
+
+    try {
+      isWrapped = isInsideCodeBlock(editor);
+    } catch (error) {
+      console.warn('Error checking code block wrapper:', error);
+      safeResetSelection(editor);
+    }
 
     if (text && /^https?:\/\/\S+$/.test(text.trim())) {
       let node;
@@ -261,6 +337,73 @@ const withEmbeds = cb => editor => {
     }
 
     const isMarkdown = /[*_#>`-]/.test(text) || text?.includes('\n');
+    const isCodeBlock = /^```[\s\S]*?```$/m.test(text) || text?.includes('```');
+
+    // Check if the pasted content looks like HTML/CSS/JS code
+    const isHtmlCode = /<!DOCTYPE html|<html|<head|<body|<style|<script|<div|<span|<p|<h[1-6]|<ul|<ol|<li|<form|<input|<button|<img|<a\s+href/.test(
+      text,
+    );
+    const isCssCode = /@media|@import|@keyframes|:root|\.\w+|#\w+|\w+\s*\{/.test(text);
+    const isJsCode = /function\s+\w+|const\s+\w+|let\s+\w+|var\s+\w+|=>|\.addEventListener|document\.|window\./.test(
+      text,
+    );
+
+    // More sophisticated code detection
+    const hasCodeStructure = text.includes('<') && (text.includes('>') || text.includes('/>'));
+    const hasMultipleLines = text.split('\n').length > 3;
+    const hasIndentation = text.includes('  ') || text.includes('\t');
+    const hasCodePatterns = /[{}();]/.test(text) || /<[^>]*>/.test(text);
+
+    const looksLikeCode =
+      isHtmlCode ||
+      isCssCode ||
+      isJsCode ||
+      (hasCodeStructure && hasMultipleLines && text.length > 100) ||
+      (hasCodePatterns && hasMultipleLines && hasIndentation);
+
+    if (isCodeBlock) {
+      // Handle markdown code block paste
+      const codeMatch = text.match(/^```(\w+)?\n([\s\S]*?)```$/m);
+
+      if (codeMatch) {
+        const [, language, codeContent] = codeMatch;
+        const codeNode = {
+          type: 'code',
+          lang: language || 'javascript',
+          children: [{ text: codeContent.trim() }],
+        };
+
+        Transforms.insertNodes(editor, codeNode);
+
+        return;
+      }
+    }
+
+    if (looksLikeCode && text.length > 50) {
+      // Handle direct code paste - detect language
+      let detectedLang = 'javascript';
+
+      if (isHtmlCode) detectedLang = 'html';
+      else if (isCssCode) detectedLang = 'css';
+      else if (isJsCode) detectedLang = 'javascript';
+
+      const codeNode = {
+        type: 'code',
+        lang: detectedLang,
+        children: [{ text }],
+      };
+
+      Transforms.insertNodes(editor, codeNode);
+
+      return;
+    }
+
+    if (isWrapped && text) {
+      // When inside code block, insert text directly preserving line breaks
+      Transforms.insertText(editor, text);
+
+      return;
+    }
 
     if (isMarkdown) {
       const tree = deserializeToSlate(text);
