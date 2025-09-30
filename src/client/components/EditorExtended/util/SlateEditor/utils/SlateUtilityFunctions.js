@@ -31,6 +31,7 @@ export const toggleBlock = (editor, format) => {
     Transforms.setNodes(editor, {
       type: format,
       lang: 'javascript',
+      meta: '',
     });
 
     return;

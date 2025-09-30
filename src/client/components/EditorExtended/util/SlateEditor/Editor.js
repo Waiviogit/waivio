@@ -96,12 +96,31 @@ export const Element = props => {
 
     case 'code':
       return (
-        <pre className="public-DraftStyleDefault-pre" {...attributes}>
+        <pre
+          className="public-DraftStyleDefault-pre"
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+          }}
+          {...attributes}
+        >
           <code>{children}</code>
         </pre>
       );
     case 'codeBlock':
-      return <pre className="public-DraftStyleDefault-pre">{children}</pre>;
+      return (
+        <pre
+          className="public-DraftStyleDefault-pre"
+          style={{
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+          }}
+        >
+          {children}
+        </pre>
+      );
     case 'object':
       return <ObjectLink {...props} />;
     case 'thematicBreak':
