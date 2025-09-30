@@ -269,7 +269,17 @@ const DetailsModalBody = ({
           )}
           {showQualifiedInfo && (
             <li>
-              <span className="nowrap">Include hashtag #waivio to qualify for WAIV rewards</span>.
+              <span className="nowrap">
+                Include hashtag{' '}
+                <Link
+                  className="ml1 DetailsModal__container"
+                  to={'https://www.waivio.com/object/waivio'}
+                >
+                  #waivio
+                </Link>{' '}
+                to qualify for WAIV rewards
+              </span>
+              .
             </li>
           )}
           {proposition?.description && (

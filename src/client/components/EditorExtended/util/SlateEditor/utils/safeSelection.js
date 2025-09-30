@@ -20,6 +20,7 @@ export const getSafeSelectedElementPath = editor => {
     return selectedElementPath;
   } catch (error) {
     console.warn('Error getting safe selected element path:', error);
+
     return null;
   }
 };
@@ -54,6 +55,7 @@ export const getSafeSelectedElement = editor => {
     return Node.descendant(editor, selectedElementPath);
   } catch (error) {
     console.warn('Error getting safe selected element:', error);
+
     return null;
   }
 };
