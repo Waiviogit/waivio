@@ -194,12 +194,21 @@ function linkifyNode(child, state) {
     if (child?.nodeValue) {
       const imageRegex = /https?:\/\/[^\s"'()<>]+?\.(?:jpe?g|png|jpg|gif|webp|svg)(?:\?[^\s"'()<>]*)?(?:#[^\s"'()<>]*)?(?=$|[\s'")\].,!?;:<>])/gi;
       const originalValue = child.nodeValue;
+
+      const isActualImage = url => {
+        const pathMatch = url.match(/^(https?:\/\/[^?#]+)/);
+        if (!pathMatch) return false;
+        const path = pathMatch[1];
+        return /\.(?:jpe?g|png|jpg|gif|webp|svg)$/i.test(path);
+      };
+
       if (imageRegex.test(originalValue)) {
-        console.log(originalValue);
-        const transformedValue = originalValue.replace(
-          imageRegex,
-          match => `<p><img src="${match}"></p>`,
-        );
+        const transformedValue = originalValue.replace(imageRegex, match => {
+          if (isActualImage(match.trim())) {
+            return `<p><img src="${match}"></p>`;
+          }
+          return match;
+        });
         if (transformedValue !== originalValue) {
           const newChild = DOMParser.parseFromString(`<span>${transformedValue}</span>`);
           child.parentNode.replaceChild(newChild, child);
