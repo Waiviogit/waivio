@@ -107,7 +107,9 @@ const CheckReviewModal = ({
               {secondaryObject?.object_type === 'hashtag' ? (
                 <>
                   Include hashtag{' '}
-                  <a href={getObjectUrlForLink(secondaryObject)}>#{secondaryObject.name}</a>
+                  <a href={getObjectUrlForLink(secondaryObject)}>
+                    #{secondaryObject.name || secondaryObject.default_name}
+                  </a>
                 </>
               ) : (
                 <>
@@ -115,7 +117,11 @@ const CheckReviewModal = ({
                     id: 'rewards_details_link_to',
                     defaultMessage: 'Link to',
                   })}{' '}
-                  {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
+                  {
+                    <a href={getObjectUrlForLink(secondaryObject)}>
+                      {secondaryObject.name || secondaryObject.default_name}
+                    </a>
+                  }
                 </>
               )}
             </div>
@@ -125,7 +131,9 @@ const CheckReviewModal = ({
             {primaryObject?.object_type === 'hashtag' || primaryObject?.type === 'hashtag' ? (
               <>
                 Include hashtag{' '}
-                <a href={getObjectUrlForLink(primaryObject)}>#{primaryObject.name}</a>
+                <a href={getObjectUrlForLink(primaryObject)}>
+                  #{primaryObject.name || primaryObject.default_name}
+                </a>
               </>
             ) : (
               <>
@@ -133,7 +141,11 @@ const CheckReviewModal = ({
                   id: 'rewards_details_link_to',
                   defaultMessage: 'Link to',
                 })}{' '}
-                {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
+                {
+                  <a href={getObjectUrlForLink(primaryObject)}>
+                    {primaryObject.name || primaryObject.name.default_name}
+                  </a>
+                }
               </>
             )}
           </div>
