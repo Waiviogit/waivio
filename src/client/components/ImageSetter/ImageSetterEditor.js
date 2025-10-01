@@ -119,7 +119,7 @@ const ImageSetterEditor = ({
           />
         </div>
         <div className="ImageSetter__rotate">
-          <FormattedMessage id="rotate" defaultMessage="Rotate" />:
+          <FormattedMessage id="edit" defaultMessage="Edit" />:
           <div className="ImageSetter__rotate-btns">
             <button className="ImageSetter__rotate__button" onClick={rotate}>
               <FormattedMessage id="rotate" defaultMessage="Rotate" />
