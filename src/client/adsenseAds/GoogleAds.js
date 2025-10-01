@@ -125,6 +125,7 @@ const GoogleAds = ({
           'list-item': listItem,
           'list-item-products': listItemProducts,
         })}
+        style={listItem ? { maxHeight: '320px' } : {}}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         ref={adRef}
       />
