@@ -2,6 +2,11 @@ import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
 import { deserializeToSlate } from '../utils/parse';
+import {
+  safeResetSelection,
+  getSafeSelectedElement,
+  isInsideCodeBlock,
+} from '../utils/safeSelection';
 
 function wrapListItemsInBulletedList(nodes) {
   const result = [];
@@ -23,7 +28,6 @@ function wrapListItemsInBulletedList(nodes) {
     }
   }
 
-  // В случае, если список закончился на listItem
   if (buffer.length) {
     result.push({
       type: 'bulletedList',
@@ -35,7 +39,7 @@ function wrapListItemsInBulletedList(nodes) {
 }
 
 const withEmbeds = cb => editor => {
-  const { isVoid, insertData, normalizeNode, selection } = editor;
+  const { isVoid, normalizeNode } = editor;
 
   /* eslint-disable no-param-reassign */
   editor.isVoid = element => (['video', 'image'].includes(element.type) ? true : isVoid(element));
@@ -47,16 +51,11 @@ const withEmbeds = cb => editor => {
     let isWrapped = false;
 
     try {
-      if (selection && editor.selection?.anchor?.path) {
-        const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
-
-        if (Node.has(editor, selectedElementPath)) {
-          selectedElement = Node.descendant(editor, selectedElementPath);
-          isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
-        }
-      }
+      selectedElement = getSafeSelectedElement(editor);
+      isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
     } catch (error) {
       console.warn('Error in withEmbeds normalizeNode:', error);
+      safeResetSelection(editor);
     }
 
     if (Element.isElement(node) && node.type === PARAGRAPH_BLOCK) {
@@ -101,13 +100,14 @@ const withEmbeds = cb => editor => {
     const html = data.getData('text/html');
     const isBlobImage = html && html?.includes('<img src="blob:');
 
+    // ---------- HTML-гілка: БЕЗ автодетекту "це код" ----------
     if (html && !isBlobImage) {
       let _html = html;
 
       const match = html?.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);
 
       if (match) {
-        /* on Windows browser insert extra breaklines  */
+        // На Windows браузери додають зайві брейки
         _html = _html.replace(
           /<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g,
           '<meta charset="utf-8">$1',
@@ -123,16 +123,11 @@ const withEmbeds = cb => editor => {
       let isWrapped = false;
 
       try {
-        if (editor.selection?.anchor?.path) {
-          const selectedElementPath = editor.selection.anchor.path.slice(0, -1);
-
-          if (Node.has(editor, selectedElementPath)) {
-            selectedElement = Node.descendant(editor, selectedElementPath);
-            isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
-          }
-        }
+        selectedElement = getSafeSelectedElement(editor);
+        isWrapped = selectedElement?.type?.includes(CODE_BLOCK);
       } catch (error) {
         console.warn('Error in withEmbeds insertData:', error);
+        safeResetSelection(editor);
       }
 
       let nodesNormalized = nodes
@@ -163,7 +158,6 @@ const withEmbeds = cb => editor => {
                         if (c.type === 'paragraph') {
                           return [...a, ...c.children];
                         }
-
                         if (!c.type && c.text === '\n') {
                           return a;
                         }
@@ -186,7 +180,6 @@ const withEmbeds = cb => editor => {
                 if (c.type === 'paragraph') {
                   return [...a, ...c.children];
                 }
-
                 if (!c.type && c.text === '\n') {
                   return a;
                 }
@@ -197,9 +190,7 @@ const withEmbeds = cb => editor => {
           }
 
           if (i.text === '\n') {
-            return {
-              text: '',
-            };
+            return { text: '' };
           }
 
           return i;
@@ -207,18 +198,13 @@ const withEmbeds = cb => editor => {
 
       if (nodesNormalized.length === 1 && nodesNormalized[0].type === 'image') {
         nodesNormalized = [
-          {
-            type: 'paragraph',
-            children: [{ text: '' }],
-          },
+          { type: 'paragraph', children: [{ text: '' }] },
           ...nodesNormalized,
-          {
-            type: 'paragraph',
-            children: [{ text: '' }],
-          },
+          { type: 'paragraph', children: [{ text: '' }] },
         ];
       }
 
+      // ВСТАВКА ЯК ЗВИЧАЙНИЙ ФРАГМЕНТ (без перетворення у code)
       Transforms.insertFragment(
         editor,
         !isWrapped
@@ -230,36 +216,68 @@ const withEmbeds = cb => editor => {
             ]
           : wrapListItemsInBulletedList(nodesNormalized),
       );
+
       cb(html);
       if (isWrapped) Transforms.move(editor, { unit: 'offset' });
 
       return;
     }
 
+    // ---------- PLAIN TEXT-гілка ----------
     const text = data.getData('text/plain');
 
+    // Чи ми всередині code-блоку
+    let isWrapped = false;
+
+    try {
+      isWrapped = isInsideCodeBlock(editor);
+    } catch (error) {
+      console.warn('Error checking code block wrapper:', error);
+      safeResetSelection(editor);
+    }
+
+    // URL-и: відео/лінк
     if (text && /^https?:\/\/\S+$/.test(text.trim())) {
       let node;
 
       if (text?.includes('youtube.com') || text?.includes('youtu.be')) {
-        node = {
-          type: 'video',
-          url: text.trim(),
-          children: [{ text: '' }],
-        };
+        node = { type: 'video', url: text.trim(), children: [{ text: '' }] };
       } else {
-        node = {
-          type: 'link',
-          url: text.trim(),
-          children: [{ text: text.trim() }],
-        };
+        node = { type: 'link', url: text.trim(), children: [{ text: text.trim() }] };
       }
-
       Transforms.insertNodes(editor, node);
 
       return;
     }
 
+    // Якщо всередині code — вставляємо як сирий текст
+    if (isWrapped && text) {
+      Transforms.insertText(editor, text);
+
+      return;
+    }
+
+    // Markdown fenced code ```lang\n...\n```
+    const isCodeBlock = /^```[\s\S]*?```$/m.test(text) || text?.includes('```');
+
+    if (isCodeBlock) {
+      const codeMatch = text.match(/^```(\w+)?\n([\s\S]*?)```$/m);
+
+      if (codeMatch) {
+        const [, language, codeContent] = codeMatch;
+        const codeNode = {
+          type: 'code',
+          lang: language || 'javascript',
+          children: [{ text: codeContent.trim() }],
+        };
+
+        Transforms.insertNodes(editor, codeNode);
+
+        return;
+      }
+    }
+
+    // Markdown або багаторядковий текст → десеріалізація в блоки
     const isMarkdown = /[*_#>`-]/.test(text) || text?.includes('\n');
 
     if (isMarkdown) {
@@ -271,7 +289,7 @@ const withEmbeds = cb => editor => {
       return;
     }
 
-    insertData(data);
+    Transforms.insertFragment(editor, deserializeToSlate(text));
   };
 
   return editor;

@@ -105,7 +105,6 @@ function traverse(node, state, depth = 0) {
   if (!node || !node.childNodes || isEmpty(node.childNodes)) return;
   Array.from(node.childNodes).forEach(child => {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
-
     if (tag) state.htmltags.add(tag);
 
     if (tag === 'img') img(state, child);
@@ -190,18 +189,26 @@ function linkifyNode(child, state) {
       ? child?.parentNode.tagName.toLowerCase()
       : child?.parentNode.tagName;
 
-    // Ігноруємо теги 'code' та 'a'
     if (tag === 'code' || tag === 'a') return;
 
     if (child?.nodeValue) {
-      const imageRegex = /(https?:\/\/[^\s]+?\.(?:jpe?g|png|jpg|gif|webp|svg))/gi;
+      const imageRegex = /https?:\/\/[^\s"'()<>]+?\.(?:jpe?g|png|jpg|gif|webp|svg)(?:\?[^\s"'()<>]*)?(?:#[^\s"'()<>]*)?(?=$|[\s'")\].,!?;:<>])/gi;
       const originalValue = child.nodeValue;
 
+      const isActualImage = url => {
+        const pathMatch = url.match(/^(https?:\/\/[^?#]+)/);
+        if (!pathMatch) return false;
+        const path = pathMatch[1];
+        return /\.(?:jpe?g|png|jpg|gif|webp|svg)$/i.test(path);
+      };
+
       if (imageRegex.test(originalValue)) {
-        const transformedValue = originalValue.replace(
-          imageRegex,
-          match => `<p><img src="${match}"></p>`,
-        );
+        const transformedValue = originalValue.replace(imageRegex, match => {
+          if (isActualImage(match.trim())) {
+            return `<p><img src="${match}"></p>`;
+          }
+          return match;
+        });
         if (transformedValue !== originalValue) {
           const newChild = DOMParser.parseFromString(`<span>${transformedValue}</span>`);
           child.parentNode.replaceChild(newChild, child);
@@ -213,7 +220,6 @@ function linkifyNode(child, state) {
     const { mutate } = state;
     if (!child.data) return;
     if (isEmbedable(child, state.links, state.images, state.resolveIframe)) return;
-
     const data = XMLSerializer.serializeToString(child);
     const content = linkify(
       data,
@@ -243,9 +249,14 @@ function imagify(content) {
 }
 
 function linkify(content, mutate, hashtags, usertags, images, links) {
-  // hashtag
+  // 0) Нормалізація «поламаних» схем: https\://, https\: → https://
+  content = content
+    .replace(/\\+(?=[:/])/g, '') // прибираємо backslashes перед ':' або '/'
+    .replace(/\b(https?):(?!\/\/)/gi, '$1://'); // https:example → https://example
+
+  // 1) Хештеги — твій існуючий код
   content = content.replace(/(^|\s)(#[-a-z\d]+)/gi, tag => {
-    if (/#[\d]+$/.test(tag)) return tag; // Don't allow numbers to be tags
+    if (/#[\d]+$/.test(tag)) return tag;
     const space = /^\s/.test(tag) ? tag[0] : '';
     const tag2 = tag.trim().substring(1);
     const tagLower = tag2.toLowerCase();
@@ -254,35 +265,31 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
     return `${space}<a href="/object/${tagLower}">${tag}</a>`;
   });
 
-  // usertag (mention)
-  // Cribbed from https://github.com/twitter/twitter-text/blob/v1.14.7/js/twitter-text.js#L90
-  // https://github.com/steemit/condenser/blob/7c588536d2568a554391ea1edaa656c636c5a890/src/shared/HtmlReady.js#L272-L290
-  content = content.replace(
-    // Added # symbol to regEx on position 70 for correct match of Guest user names
-    /(^|[^a-zA-Z0-9_!#$%&*@＠\/]|(^|[^a-zA-Z0-9_+~.-\/#]))[@＠]([a-z][-_.a-z\d]+[a-z\d])/gi,
-    (match, preceeding1, preceeding2, user) => {
-      const userLower = user.toLowerCase();
-      const valid = validateAccountName(userLower) == null;
+  // 2) Лінки (без картинок)
+  // уникаємо збігів усередині атрибутів типу href="..." / src="..."
+  const urlRe = /(?<!["'=])\bhttps?:\/\/[^\s<>()\[\]{}"']+/gi;
 
-      if (valid && usertags) usertags.add(userLower);
+  // якщо випадково зустрінеться картинка — пропускаємо (не лінкуємо тут)
+  const imageExtRe = /\.(?:jpe?g|png|gif|webp|svg)(?:\?[^ \t<>"']*)?$/i;
 
-      const preceedings = (preceeding1 || '') + (preceeding2 || ''); // include the preceeding matches if they exist
+  const stripTrailing = s => {
+    // відсікаємо типові розділові знаки в кінці, але не чіпаємо URL
+    const m = s.match(/^(.*?)([)\].,!?;:]+)?$/);
+    return { url: m ? m[1] : s, trail: (m && m[2]) || '' };
+  };
 
-      if (!mutate) return `${preceedings}${user}`;
+  content = content.replace(urlRe, raw => {
+    const { url, trail } = stripTrailing(raw);
 
-      return valid
-        ? `${preceedings}<a href="/@${userLower}">@${user}</a>`
-        : `${preceedings}@${user}`;
-    },
-  );
+    // НЕ обробляємо зображення тут
+    if (imageExtRe.test(url)) return raw;
 
-  content = content.replace(linksRe.any, ln => {
-    // do not linkify .exe or .zip urls
-    if (/\.(zip|exe)$/i.test(ln)) return ln;
-
-    if (links) links.add(ln);
-    return `<a href="${ln}">${ln}</a>`;
+    if (links) links.add(url);
+    return mutate
+      ? `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${trail}`
+      : `${url}${trail}`;
   });
+
   return content;
 }
 

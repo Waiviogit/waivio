@@ -1,47 +1,74 @@
-import { Editor, Range, Transforms, Node, Path } from 'slate';
+import { Editor, Range, Transforms, Node, Path, Element } from 'slate';
+
+const ZW = /\u200B/g;
+const isParagraph = n => Element.isElement(n) && n.type === 'paragraph';
+const isCodeBlock = n => Element.isElement(n) && n.type === 'code';
+const isVisuallyEmptyParagraph = node =>
+  isParagraph(node) &&
+  Node.string(node)
+    .replace(ZW, '')
+    .trim() === '';
+const isVisuallyEmptyCodeBlock = node =>
+  isCodeBlock(node) &&
+  Node.string(node)
+    .replace(ZW, '')
+    .trim() === '';
 
 const withEmptyParagraphHandling = editor => {
   const { deleteBackward, deleteForward } = editor;
 
-  // eslint-disable-next-line no-param-reassign
+  // eslint-disable-next-line no-param-reassign,consistent-return
   editor.deleteBackward = unit => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const { path, offset } = selection.anchor;
+      const { path } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
 
       try {
         if (!Node.has(editor, selectedElementPath)) {
-          deleteBackward(unit);
+          // Reset selection if path is invalid
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
 
-          return;
+          return deleteBackward(unit);
         }
+
         const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        // Check if we're at the beginning of an empty paragraph
+        // Handle empty code blocks - convert to paragraph
         if (
-          offset === 0 &&
-          selectedElement.type === 'paragraph' &&
-          selectedElement.children?.[0]?.text === ''
+          Editor.isStart(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyCodeBlock(selectedElement)
         ) {
-          const prevPath = selectedElementPath.every(p => !p)
-            ? [0]
-            : Path.previous(selectedElementPath);
-          const [prevNode] = Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+          Transforms.setNodes(editor, { type: 'paragraph' }, { at: selectedElementPath });
 
-          // Check if next node is an image/video
+          // eslint-disable-next-line consistent-return
+          return;
+        }
+
+        // ⬇️ Курсор саме на початку абзацу, і абзац «візуально порожній»
+        if (
+          Editor.isStart(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyParagraph(selectedElement)
+        ) {
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
+          const prevPath = Path.hasPrevious(selectedElementPath)
+            ? Path.previous(selectedElementPath)
+            : null;
+          const [prevNode] =
+            prevPath && Node.has(editor, prevPath) ? Editor.node(editor, prevPath) : [null];
+
           const nextPath = Path.next(selectedElementPath);
           const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
-          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
-
           const isBeforeImage = nextNode && ['image', 'video'].includes(nextNode.type);
 
-          // If we're before an image/video and this is the first paragraph, check if image is already selected
+          // якщо перед зображенням/відео і це перший абзац — виділяємо наступний блок замість видалення плейсхолдера
           if (isBeforeImage && selectedElementPath[0] === 0) {
-            // Check if the image is already selected
+            // якщо картинка вже виділена — просто прибираємо пустий абзац
             const isImageSelected =
               editor.selection &&
               Range.isExpanded(editor.selection) &&
@@ -49,119 +76,112 @@ const withEmptyParagraphHandling = editor => {
               editor.selection.focus.path[0] === nextPath[0];
 
             if (isImageSelected) {
-              // Image is already selected, remove the empty paragraph
               Transforms.removeNodes(editor, { at: selectedElementPath });
 
+              // eslint-disable-next-line consistent-return
               return;
             }
-            // Image is not selected, select it first
             Transforms.select(editor, Editor.range(editor, nextPath));
 
+            // eslint-disable-next-line consistent-return
             return;
           }
 
-          // If previous node is not an image/video, it's not the only paragraph, and it's not before an image/video, remove the empty paragraph and keep cursor at the same visual position
           if (prevNode && !['image', 'video'].includes(prevNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
-            // Position cursor at the end of the previous paragraph
-            const newPath = Path.previous(selectedElementPath);
+            const newPath = prevPath;
+            const endPoint = Editor.end(editor, newPath);
 
-            if (newPath && newPath[0] >= 0) {
-              const [newNode] = Editor.node(editor, newPath);
+            Transforms.select(editor, { anchor: endPoint, focus: endPoint });
 
-              if (newNode && newNode.children) {
-                const lastChildIndex = newNode.children.length - 1;
-                const lastChild = newNode.children[lastChildIndex];
-
-                if (lastChild && lastChild.text !== undefined) {
-                  Transforms.select(editor, {
-                    anchor: { path: [...newPath, lastChildIndex], offset: lastChild.text.length },
-                    focus: { path: [...newPath, lastChildIndex], offset: lastChild.text.length },
-                  });
-                } else {
-                  Transforms.select(editor, Editor.end(editor, newPath));
-                }
-              } else {
-                Transforms.select(editor, Editor.end(editor, newPath));
-              }
-            } else {
-              Transforms.select(editor, Editor.start(editor, []));
-            }
-
+            // eslint-disable-next-line consistent-return
             return;
           }
         }
-      } catch (error) {
-        console.warn('Error in withEmptyParagraphHandling deleteBackward:', error);
+      } catch (e) {
+        console.warn('Error in withEmptyParagraphHandling deleteBackward:', e);
+        // Reset selection if there's an error
+        try {
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+        } catch (resetError) {
+          console.warn('Error resetting selection in deleteBackward:', resetError);
+        }
       }
     }
 
     deleteBackward(unit);
   };
 
-  // eslint-disable-next-line no-param-reassign
+  // eslint-disable-next-line consistent-return,no-param-reassign
   editor.deleteForward = unit => {
     const { selection } = editor;
 
     if (selection && Range.isCollapsed(selection)) {
-      const { path, offset } = selection.anchor;
+      const { path } = selection.anchor;
       const selectedElementPath = path.slice(0, -1);
 
       try {
         if (!Node.has(editor, selectedElementPath)) {
-          deleteForward(unit);
+          // Reset selection if path is invalid
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
 
-          return;
+          return deleteForward(unit);
         }
+
         const selectedElement = Node.descendant(editor, selectedElementPath);
 
-        // Check if we're at the end of an empty paragraph
+        // Handle empty code blocks - convert to paragraph
         if (
-          offset === selectedElement.children?.[0]?.text?.length &&
-          selectedElement.type === 'paragraph' &&
-          selectedElement.children?.[0]?.text === ''
+          Editor.isEnd(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyCodeBlock(selectedElement)
         ) {
+          Transforms.setNodes(editor, { type: 'paragraph' }, { at: selectedElementPath });
+
+          // eslint-disable-next-line consistent-return
+          return;
+        }
+
+        if (
+          Editor.isEnd(editor, selection.anchor, selectedElementPath) &&
+          isVisuallyEmptyParagraph(selectedElement)
+        ) {
+          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
+
           const nextPath = Path.next(selectedElementPath);
           const [nextNode] = Node.has(editor, nextPath) ? Editor.node(editor, nextPath) : [null];
 
-          // Don't remove empty paragraph if it's the only paragraph in the editor (to preserve placeholder)
-          const isOnlyParagraph = editor.children.length === 1 && selectedElementPath[0] === 0;
-
-          // If next node is an image/video and it's not the only paragraph, remove the empty paragraph and keep cursor at the same visual position
           if (nextNode && ['image', 'video'].includes(nextNode.type) && !isOnlyParagraph) {
             Transforms.removeNodes(editor, { at: selectedElementPath });
 
-            // Position cursor at the beginning of the next paragraph (if any)
-            const newPath = Path.previous(selectedElementPath);
+            const newPath = Path.hasPrevious(nextPath) ? Path.previous(nextPath) : null;
 
-            if (newPath && newPath[0] >= 0) {
-              const [newNode] = Editor.node(editor, newPath);
+            if (newPath) {
+              const endPoint = Editor.end(editor, newPath);
 
-              if (newNode && newNode.children) {
-                const lastChildIndex = newNode.children.length - 1;
-                const lastChild = newNode.children[lastChildIndex];
-
-                if (lastChild && lastChild.text !== undefined) {
-                  Transforms.select(editor, {
-                    anchor: { path: [...newPath, lastChildIndex], offset: lastChild.text.length },
-                    focus: { path: [...newPath, lastChildIndex], offset: lastChild.text.length },
-                  });
-                } else {
-                  Transforms.select(editor, Editor.end(editor, newPath));
-                }
-              } else {
-                Transforms.select(editor, Editor.end(editor, newPath));
-              }
+              Transforms.select(editor, { anchor: endPoint, focus: endPoint });
             } else {
               Transforms.select(editor, Editor.start(editor, []));
             }
 
+            // eslint-disable-next-line consistent-return
             return;
           }
         }
-      } catch (error) {
-        console.warn('Error in withEmptyParagraphHandling deleteForward:', error);
+      } catch (e) {
+        console.warn('Error in withEmptyParagraphHandling deleteForward:', e);
+        // Reset selection if there's an error
+        try {
+          if (editor.children.length > 0) {
+            Transforms.select(editor, Editor.start(editor, [0]));
+          }
+        } catch (resetError) {
+          console.warn('Error resetting selection in deleteForward:', resetError);
+        }
       }
     }
 

@@ -443,6 +443,7 @@ const BusinessObject = ({
                   />
                 )}
                 {!isMobile() && <ProductRewardCard isSocialProduct reward={reward} />}
+                {intensive && <GoogleAds limitWidth />}
               </div>
             </div>
             {!isMobile() && showGallery && (
@@ -475,7 +476,7 @@ const BusinessObject = ({
                 companyId={companyIdBody}
               />
             )}
-            {intensive && <GoogleAds />}
+            {intensive && <GoogleAds inList />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading">

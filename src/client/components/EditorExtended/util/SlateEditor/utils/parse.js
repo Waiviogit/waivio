@@ -398,6 +398,10 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
   const _body = body
     .split('\n\n')
     .map(i => {
+      // Don't modify code blocks - preserve their formatting
+      if (i?.startsWith('```') && i?.endsWith('```')) {
+        return i;
+      }
       if (i?.includes('\n') && !i?.includes('|\n|')) return i.split('\n').join('\n\n');
 
       return i;

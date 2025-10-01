@@ -109,15 +109,16 @@ export function getHtml(
     return `${acc + item}\n\n`;
   }, '');
   parsedBody = remarkable.render(parsedBody);
-  parsedBody = parsedBody.replace(
-    /<a[^>]*href="([^"]*)"[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi,
-    (match, href, content) =>
+  parsedBody = parsedBody
+    .replace(/<a[^>]*href="([^"]*)"[^>]*>([^<]*<img[^>]*>[^<]*)<\/a>/gi, (match, href, content) =>
       content.replace(/<img([^>]*)>/gi, `<img$1 data-linked-url="${href}">`),
-  );
+    )
+    .replace(/<img([^>]*?)\/\s+([^>]*?)>/gi, '<img$1 $2 />');
   // if (options.isChatBotLink) parsedBody = addExplicitNumbersToLists(parsedBody);
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions, returnType).html;
+
   const MD_DATA_IMG = /!\[([^\]]*)\]\(\s*(data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/=]+)\s*\)/gi;
 
   if (options.rewriteLinks) {

@@ -22,17 +22,22 @@ const ImageSetterEditor = ({
     setState({ ...state, scale });
   };
 
-  const rotateLeft = e => {
-    e.preventDefault();
-    setState({ ...state, rotate: state.rotate - 90 });
-  };
-  const rotateRight = e => {
+  const rotate = e => {
     e.preventDefault();
     setState({ ...state, rotate: state.rotate + 90 });
   };
+  const mirror = e => {
+    e.preventDefault();
+    setState({ ...state, flipX: !state.flipX });
+  };
 
   const handleSave = async () => {
-    const dataUrl = editorEl.getImage().toDataURL();
+    let dataUrl = editorEl.getImage().toDataURL();
+
+    if (state.flipX) {
+      dataUrl = await mirrorImageData(dataUrl);
+    }
+
     const result = await fetch(dataUrl);
     const blob = await result.blob();
 
@@ -41,6 +46,38 @@ const ImageSetterEditor = ({
     handleChangeImage({ target: { files: [res] } });
     setIsOpen(false);
   };
+
+  const mirrorImageData = imageDataUrl =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.crossOrigin = 'anonymous';
+
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          ctx.scale(-1, 1);
+          ctx.drawImage(img, -img.width, 0);
+
+          resolve(canvas.toDataURL());
+        } catch (error) {
+          console.error('Error applying mirror transformation:', error);
+          reject(error);
+        }
+      };
+
+      img.onerror = () => {
+        console.error('Error loading image for mirroring');
+        reject(new Error('Failed to load image'));
+      };
+
+      img.src = imageDataUrl;
+    });
   const resetImage = () => {
     setState(initialState);
     setIsOpen(false);
@@ -63,6 +100,9 @@ const ImageSetterEditor = ({
             rotate={parseFloat(state.rotate)}
             borderRadius={state.width / (100 / state.borderRadius)}
             image={state.image}
+            style={{
+              transform: state.flipX ? 'scaleX(-1)' : 'scaleX(1)',
+            }}
           />
         </div>
         <div className="ImageSetter__zoom">
@@ -79,13 +119,13 @@ const ImageSetterEditor = ({
           />
         </div>
         <div className="ImageSetter__rotate">
-          <FormattedMessage id="rotate" defaultMessage="Rotate" />:
+          <FormattedMessage id="edit" defaultMessage="Edit" />:
           <div className="ImageSetter__rotate-btns">
-            <button className="ImageSetter__rotate__button" onClick={rotateLeft}>
-              <FormattedMessage id="left" defaultMessage="Left" />
+            <button className="ImageSetter__rotate__button" onClick={rotate}>
+              <FormattedMessage id="rotate" defaultMessage="Rotate" />
             </button>
-            <button className="ImageSetter__rotate__button" onClick={rotateRight}>
-              <FormattedMessage id="right" defaultMessage="Right" />
+            <button className="ImageSetter__rotate__button" onClick={mirror}>
+              <FormattedMessage id="mirror" defaultMessage="Mirror" />
             </button>
           </div>
         </div>
