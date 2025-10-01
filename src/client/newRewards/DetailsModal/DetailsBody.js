@@ -271,12 +271,9 @@ const DetailsModalBody = ({
             <li>
               <span className="nowrap">
                 Include hashtag{' '}
-                <a
-                  className="ml1 DetailsModal__container"
-                  href={'https://www.waivio.com/object/waivio'}
-                >
+                <Link className="ml1 DetailsModal__container" to={'/object/waivio'}>
                   #waivio
-                </a>{' '}
+                </Link>{' '}
                 to qualify for WAIV rewards
               </span>
               .
