@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal } from 'antd';
+import HtmlSandbox from '../../../components/HtmlSandbox';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -58,7 +59,7 @@ const ObjectOfTypePage = props => {
   const contentDiv = useRef();
   const { 0: wobjType } = props.match.params;
   const isCode = wobjType === 'code';
-
+  const getContent = obj => (isCode ? obj.htmlContent : obj.pageContent);
   const images = extractImageTags(parsedBody).map(image => ({
     ...image,
     src: unescape(image.src.replace('https://images.hive.blog/0x0/', '')),
@@ -83,8 +84,8 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!isEditMode) {
-      setCurrentContent(currObj.pageContent || '');
-      setContent(currObj.pageContent || '');
+      setCurrentContent(getContent(currObj) || '');
+      setContent(getContent(currObj) || '');
       setEditorInitialized(false);
       setDraft(null);
 
@@ -137,14 +138,14 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
-          setCurrentContent(wObject.pageContent || '');
-          setContent(wObject.pageContent || '');
+          setCurrentContent(getContent(wObject) || '');
+          setContent(getContent(wObject) || '');
           setNestedWobj(wObject);
           setIsLoading(false);
         });
       } else {
-        setCurrentContent(wobject.pageContent || '');
-        setContent(wobject.pageContent || '');
+        setCurrentContent(getContent(wobject) || '');
+        setContent(getContent(wobject) || '');
         setIsLoading(false);
       }
     }
@@ -178,11 +179,17 @@ const ObjectOfTypePage = props => {
       const { follow } = values;
 
       if (!err) {
-        const pageContentField = {
-          name: objectFields.pageContent,
-          body: content,
-          locale,
-        };
+        const pageContentField = isCode
+          ? {
+              name: objectFields.htmlContent,
+              body: content,
+              locale,
+            }
+          : {
+              name: objectFields.pageContent,
+              body: content,
+              locale,
+            };
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
@@ -235,6 +242,8 @@ const ObjectOfTypePage = props => {
     }
 
     if (content) {
+      if (isCode) return <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />;
+
       return <BodyContainer isPage full body={content} />;
     }
 
@@ -277,7 +286,11 @@ const ObjectOfTypePage = props => {
                         onClick={closePublishViev}
                       />
                     </div>
-                    <BodyContainer isPage full body={content} />
+                    {isCode ? (
+                      <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />
+                    ) : (
+                      <BodyContainer isPage full body={content} />
+                    )}
                     <div className="object-page-preview__options">
                       <LikeSection
                         form={form}

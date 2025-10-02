@@ -3,6 +3,7 @@ export const objectFields = {
   address: 'address',
   map: 'map',
   link: 'link',
+  htmlContent: 'htmlContent',
   avatar: 'avatar',
   background: 'background',
   companyId: 'companyId',
@@ -93,7 +94,6 @@ export const objectFields = {
   nutrition: 'nutrition',
   sale: 'sale',
   compareAtPrice: 'compareAtPrice',
-  htmlContent: 'htmlContent',
 };
 export const walletAddressFields = {
   walletTitle: 'walletTitle',

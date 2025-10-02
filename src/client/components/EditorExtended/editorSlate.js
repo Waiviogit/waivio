@@ -487,6 +487,7 @@ const EditorSlate = props => {
 
         // Handle Enter in code mode - create new code block
         if (isWobjCode && selectedElement.type === 'code') {
+          event.preventDefault();
           Transforms.insertNodes(editor, {
             type: 'code',
             lang: 'javascript',
