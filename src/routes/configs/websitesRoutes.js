@@ -219,6 +219,11 @@ const routes = (host, page) => ({
           component: Views.ObjectOfTypePage,
         },
         {
+          path: '/(code)',
+          exact: true,
+          component: Views.ObjectOfTypePage,
+        },
+        {
           path: '/blog/@:name',
           exact: true,
           component: Views.UserProfile,

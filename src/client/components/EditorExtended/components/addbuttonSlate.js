@@ -10,7 +10,7 @@ import { isAndroidDevice } from '../../../../common/helpers/apiHelpers';
 import { setLastSelection } from '../../../../store/slateEditorStore/editorActions';
 import { getLastSelection } from '../../../../store/slateEditorStore/editorSelectors';
 
-import { SIDE_BUTTONS_SLATE } from '../model/content';
+import { getButtonArray } from '../model/content';
 
 import './addbutton.less';
 
@@ -113,7 +113,7 @@ const AddButtonSlate = props => {
               {props.intl.formatMessage({ id: 'insert_btn', defaultMessage: 'Insert' })}
             </div>
             <div className="act-buttons-grid">
-              {SIDE_BUTTONS_SLATE.map(button => {
+              {getButtonArray(props.isCode).map(button => {
                 const Button = button.component;
                 const extraProps = button.props ? button.props : {};
 
@@ -157,6 +157,7 @@ AddButtonSlate.propTypes = {
   setEditorState: PropTypes.func,
   handleObjectSelect: PropTypes.func.isRequired,
   withTitleLine: PropTypes.bool,
+  isCode: PropTypes.bool,
   parentPost: PropTypes.shape({
     id: PropTypes.string,
   }),

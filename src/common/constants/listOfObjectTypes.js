@@ -86,6 +86,7 @@ const listOfObjectTypes = [
   'b&b',
   'car',
   'test',
+  'html',
 ];
 
 export const excludeHashtagObjType = listOfObjectTypes.filter(type => type !== 'hashtag');

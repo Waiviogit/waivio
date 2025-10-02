@@ -1,17 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
-
-import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import ObjectReviewsAndThreads from '../ObjectReviewsAndThreads/ObjectReviewsAndThreads';
+import { useSelector } from 'react-redux';
 import CatalogWrap from '../Catalog/CatalogWrap';
-import ObjectOfTypePage from '../ObjectOfTypePage/ObjectOfTypePage';
 import GroupObjectType from '../GroupObjectType/GroupObjectType';
-import ObjectOfTypeMap from '../ObjectOfTypeMap/ObjectOfTypeMap';
-import ObjectOfTypeWebpage from '../ObjectOfTypeWebpage/ObjectOfTypeWebpage';
-import ObjectFeed from '../ObjectFeed';
 import ObjectDepartmentsWobjList from '../ObjectTypeShop/ObjectDepartmentsWobjList';
+import ObjectFeed from '../ObjectFeed';
+import ObjectOfTypeMap from '../ObjectOfTypeMap/ObjectOfTypeMap';
+import ObjectOfTypePage from '../ObjectOfTypePage/ObjectOfTypePage';
+import ObjectOfTypeWebpage from '../ObjectOfTypeWebpage/ObjectOfTypeWebpage';
+import ObjectReviewsAndThreads from '../ObjectReviewsAndThreads/ObjectReviewsAndThreads';
 import WidgetPage from '../WidgetPage/WidgetPage';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const WobjSwitcherPage = () => {
   const wobject = useSelector(getObject);
@@ -22,6 +21,8 @@ const WobjSwitcherPage = () => {
       case 'list':
         return <CatalogWrap />;
       case 'page':
+        return <ObjectOfTypePage wobject={wobject} />;
+      case 'html':
         return <ObjectOfTypePage wobject={wobject} />;
       case 'newsfeed':
         return <ObjectFeed wobject={wobject} inNewsFeed />;
