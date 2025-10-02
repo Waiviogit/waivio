@@ -70,6 +70,16 @@ export const SIDE_BUTTONS_SLATE = [
   },
 ];
 
+export const getButtonArray = (isCode = false) =>
+  isCode
+    ? [
+        {
+          title: 'Code',
+          component: CodeSideButton,
+        },
+      ]
+    : SIDE_BUTTONS_SLATE;
+
 const createEditorState = (content = null, decorators = defaultDecorators) => {
   let initialEditorState = {};
 

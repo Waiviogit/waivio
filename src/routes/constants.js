@@ -13,6 +13,7 @@ export default {
       'expertise',
       'menu',
       'page',
+      'code',
       'webpage',
       'widget',
       'newsfeed',
