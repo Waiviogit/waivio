@@ -124,6 +124,7 @@ const Editor = props => {
             isNewReview={props.isNewReview}
             intl={props.intl}
             isVimeo={isVimeo}
+            isWobjCode={props.isWobjCode}
             isMainEditor
             sideButtons={SIDE_BUTTONS}
             onChange={handleContentChangeSlate}
@@ -134,10 +135,13 @@ const Editor = props => {
             setShowEditorSearch={props.setShowEditorSearch}
             setSearchCoordinates={props.setCursorCoordinates}
             initialBody={get(props, 'initialContent.body', '')}
-            placeholder={props.intl.formatMessage({
-              id: 'story_placeholder',
-              defaultMessage: 'Write your story...',
-            })}
+            placeholder={
+              props.placeholder ||
+              props.intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Write your story...',
+              })
+            }
             handlePasteText={props.handlePasteText}
             startToSearching={startToSearching}
             isLoading={resultLoading}
@@ -156,7 +160,9 @@ const propTypes = {
   intl: PropTypes.shape(),
   onChange: PropTypes.func,
   draftId: PropTypes.string,
+  placeholder: PropTypes.string,
   displayTitle: PropTypes.bool,
+  isWobjCode: PropTypes.bool,
   isNewReview: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteText: PropTypes.func,
@@ -179,9 +185,11 @@ const defaultProps = {
   handlePasteText: () => {},
   displayTitle: true,
   draftId: '',
+  placeholder: '',
   linkedObjects: [],
   searchObjectsResults: [],
   isStartSearchObject: false,
+  isWobjCode: false,
   initialContent: {
     body: '',
     title: '',

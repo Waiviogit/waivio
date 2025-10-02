@@ -563,6 +563,7 @@ const routes = {
           component: GroupObjectType,
         },
         { path: '/(webpage)', exact: true, component: Views.ObjectOfTypeWebpage },
+        { path: '/(code)', exact: true, component: Views.ObjectOfTypePage },
         {
           path: '/(blog)/@:name',
           exact: true,

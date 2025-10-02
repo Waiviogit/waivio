@@ -359,6 +359,11 @@ const routes = () => ({
           component: Views.ObjectOfTypePage,
         },
         {
+          path: '/(code)',
+          exact: true,
+          component: Views.ObjectOfTypePage,
+        },
+        {
           path: '/(group)',
           exact: true,
           component: GroupObjectType,
