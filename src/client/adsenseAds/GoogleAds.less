@@ -160,15 +160,18 @@
     justify-content: center;
     justify-self: center;
     width: 90%;
-    min-height: 160px;
-    max-height: 160px;
+    height: 160px;
+    position: relative;
     ins {
       display: block !important;
-      width: auto;
-      justify-self: center;
-      margin: 0 auto;
-      min-height: 160px;
-      max-height: 160px;
+      width: 100%;
+      height: 160px;
+      position: relative;
+      iframe {
+        width: 100% !important;
+        height: 160px !important;
+        max-height: 160px !important;
+      }
     }
   }
 
