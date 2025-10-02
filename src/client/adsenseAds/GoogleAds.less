@@ -11,9 +11,28 @@
 
     &.list-item,
     &.list-item-products {
-      //min-height: unset; // Remove min-height for list items
-      //height: 100%; // Take full height of parent
-      //max-height: 100%; // Don't exceed parent height
+      min-height: unset;
+      width: 100%;
+
+      @media (min-width: 1201px) {
+        height: calc((100vw - 40px) / 5);
+        max-height: calc((100vw - 40px) / 5) !important;
+      }
+
+      @media (max-width: 1200px) and (min-width: 999px) {
+        height: calc((100vw - 30px) / 4);
+        max-height: calc((100vw - 30px) / 4) !important;
+      }
+
+      @media (max-width: 998px) and (min-width: 481px) {
+        height: calc((100vw - 20px) / 3);
+        max-height: calc((100vw - 20px) / 3) !important;
+      }
+
+      @media (max-width: 480px) {
+        height: calc((100vw - 10px) / 2);
+        max-height: calc((100vw - 10px) / 2) !important;
+      }
     }
   }
   &.in-post {
@@ -85,6 +104,8 @@
     @media (min-width: 1201px) {
       width: calc((100% - 40px) / 5);
       max-width: calc((100% - 40px) / 5);
+      min-height: calc((100vw - 40px) / 5);
+      max-height: calc((100vw - 40px) / 5) !important;
 
       &:nth-child(5n) {
         margin-right: 0;
@@ -94,6 +115,8 @@
     @media (max-width: 1200px) and (min-width: 999px) {
       width: calc((100% - 30px) / 4);
       max-width: calc((100% - 30px) / 4);
+      min-height: calc((100vw - 30px) / 4);
+      max-height: calc((100vw - 30px) / 4) !important;
 
       &:nth-child(4n) {
         margin-right: 0;
@@ -103,6 +126,8 @@
     @media (max-width: 998px) and (min-width: 481px) {
       width: calc((100% - 20px) / 3);
       max-width: calc((100% - 20px) / 3);
+      min-height: calc((100vw - 20px) / 3);
+      max-height: calc((100vw - 20px) / 3) !important;
 
       &:nth-child(3n) {
         margin-right: 0;
@@ -112,6 +137,8 @@
     @media (max-width: 480px) {
       width: calc((100% - 10px) / 2);
       max-width: calc((100% - 10px) / 2);
+      min-height: calc((100vw - 10px) / 2);
+      max-height: calc((100vw - 10px) / 2) !important;
 
       &:nth-child(2n) {
         margin-right: 0;
