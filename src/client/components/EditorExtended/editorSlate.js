@@ -117,6 +117,7 @@ const EditorSlate = props => {
     parentPost,
     startToSearching,
     isLoading,
+    isWobjCode,
   } = props;
   const params = useParams();
   const query = useQuery();
@@ -132,14 +133,31 @@ const EditorSlate = props => {
     'md-RichEditor-root-small': props.small,
   });
 
-  const [value, setValue] = useState([
-    {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    },
-  ]);
+  const [value, setValue] = useState(() => {
+    if (isWobjCode) {
+      return [
+        {
+          type: 'code',
+          lang: 'javascript',
+          children: [{ text: '' }],
+        },
+      ];
+    }
+
+    return [
+      {
+        type: 'paragraph',
+        children: [{ text: '' }],
+      },
+    ];
+  });
 
   const handlePastedFiles = async event => {
+    // Prevent image pasting when in code mode
+    if (isWobjCode) {
+      return;
+    }
+
     const html = event.clipboardData.getData('text/html');
 
     if (html) return;
@@ -251,6 +269,13 @@ const EditorSlate = props => {
   };
 
   const handleDroppedFiles = async event => {
+    // Prevent image drops when in code mode
+    if (isWobjCode) {
+      event.preventDefault();
+
+      return 'not_handled';
+    }
+
     message.info(
       intl.formatMessage({
         id: 'notify_uploading_image',
@@ -351,6 +376,18 @@ const EditorSlate = props => {
   };
 
   const handleKeyCommand = event => {
+    // Prevent format changes when in code mode
+    if (isWobjCode) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const hotkey in HOTKEYS) {
+        if (isHotkey(hotkey, event)) {
+          event.preventDefault();
+
+          return true;
+        }
+      }
+    }
+
     // eslint-disable-next-line no-restricted-syntax
     for (const hotkey in HOTKEYS) {
       if (isHotkey(hotkey, event)) {
@@ -447,6 +484,17 @@ const EditorSlate = props => {
 
       if (event.key === 'Enter') {
         removeAllInlineFormats(editor);
+
+        // Handle Enter in code mode - create new code block
+        if (isWobjCode && selectedElement.type === 'code') {
+          Transforms.insertNodes(editor, {
+            type: 'code',
+            lang: 'javascript',
+            children: [{ text: '' }],
+          });
+
+          return true;
+        }
 
         if (
           ['listItem'].includes(selectedElement.type) &&
@@ -616,7 +664,7 @@ const EditorSlate = props => {
               match={props.match}
             />
           )}
-          <Toolbar editorNode={editorRef.current} intl={intl} />
+          {!isWobjCode && <Toolbar editorNode={editorRef.current} intl={intl} />}
           <Editable
             placeholder={placeholder}
             renderElement={renderElement}
@@ -645,6 +693,7 @@ const EditorSlate = props => {
             size={isComment ? 25 : 30}
             initialPosTop={initialPosTopBtn}
             ADD_BTN_DIF={ADD_BTN_DIF}
+            isCode={isWobjCode}
           />
         </div>
       </div>
@@ -677,6 +726,7 @@ EditorSlate.propTypes = {
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
+  isWobjCode: PropTypes.bool,
   isMainEditor: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,

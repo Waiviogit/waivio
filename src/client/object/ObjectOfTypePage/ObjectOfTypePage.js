@@ -56,6 +56,8 @@ const ObjectOfTypePage = props => {
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
   const parsedBody = getHtml(content, {}, 'text', { isPost: true });
   const contentDiv = useRef();
+  const { 0: wobjType } = props.match.params;
+  const isCode = wobjType === 'code';
 
   const images = extractImageTags(parsedBody).map(image => ({
     ...image,
@@ -312,6 +314,15 @@ const ObjectOfTypePage = props => {
                     onChange={handleChangeContent}
                     displayTitle={false}
                     match={props.match}
+                    placeholder={
+                      isCode
+                        ? intl.formatMessage({
+                            id: 'code_placeholder',
+                            defaultMessage: 'Write your code',
+                          })
+                        : ''
+                    }
+                    isWobjCode={isCode}
                   />
                 </div>
               </React.Fragment>
