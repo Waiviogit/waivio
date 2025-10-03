@@ -159,18 +159,22 @@
     display: flex;
     justify-content: center;
     justify-self: center;
-    width: 90%;
-    height: 160px;
+    min-width: 50%;
+    min-height: 160px;
     position: relative;
     ins {
       display: block !important;
       width: 100%;
-      height: 160px;
+      min-height: 160px !important;
       position: relative;
+      justify-self: center;
       iframe {
+        display: flex;
+        justify-content: center;
+        justify-self: center;
         width: 100% !important;
-        height: 160px !important;
-        max-height: 160px !important;
+        min-height: 160px !important;
+        max-height: 300px !important;
       }
     }
   }
