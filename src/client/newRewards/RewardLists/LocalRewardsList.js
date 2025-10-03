@@ -187,7 +187,7 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
           <EmptyCampaign
             emptyMessage={
               isJudges
-                ? 'There are no campaigns you have been added to as а judge '
+                ? 'There are no campaigns you have been added to as а judge.'
                 : intl.formatMessage({
                     id: 'empty_campaign_message',
                     defaultMessage:
