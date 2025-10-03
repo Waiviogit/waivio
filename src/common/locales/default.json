@@ -482,6 +482,7 @@
   "object_history": "History",
   "object_field_placeholder": "All updates",
   "object_field_name": "Name",
+  "object_field_htmlContent": "HTML Content",
   "object_field_title": "Title",
   "object_field_description": "Description",
   "object_field_address": "Address",

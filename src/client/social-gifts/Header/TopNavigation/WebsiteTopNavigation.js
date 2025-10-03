@@ -152,6 +152,8 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
       </span>
     );
 
+  if (isEmpty(linkList)) return null;
+
   return (
     <div id={'WebsiteTopNavigationContainer'}>
       <div className="WebsiteTopNavigation" id={'WebsiteTopNavigation'}>
