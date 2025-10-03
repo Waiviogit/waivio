@@ -483,19 +483,22 @@ const EditorSlate = props => {
       }
 
       if (event.key === 'Enter') {
-        removeAllInlineFormats(editor);
-
-        // Handle Enter in code mode - create new code block
-        if (isWobjCode && selectedElement.type === 'code') {
-          event.preventDefault();
-          Transforms.insertNodes(editor, {
-            type: 'code',
-            lang: 'javascript',
-            children: [{ text: '' }],
+        // 🔹 CODE MODE: вставляємо м'який перенос у поточний code-блок
+        if (isWobjCode) {
+          const [codeEntry] = Editor.nodes(editor, {
+            match: n => ElementSlate.isElement(n) && n.type === 'code',
           });
 
-          return true;
+          if (codeEntry) {
+            event.preventDefault();
+            editor.insertText('\n'); // або Editor.insertText(editor, '\n')
+
+            return true;
+          }
         }
+
+        // для всіх інших режимів — як і було
+        removeAllInlineFormats(editor);
 
         if (
           ['listItem'].includes(selectedElement.type) &&
@@ -524,8 +527,6 @@ const EditorSlate = props => {
             type: 'paragraph',
             children: [{ text: '' }],
           });
-
-          Transforms.setNodes(editor, { type: selectedElement.type }, { at: selectedElementPath });
 
           return true;
         } else if (isSoftNewlineEvent(event)) {

@@ -1,9 +1,18 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 2400, padding = 16 }) => {
+const HtmlSandbox = ({
+  html,
+  className,
+  fullPage,
+  autoSize = true,
+  maxHeight = 2400,
+  padding = 16,
+}) => {
   const iframeRef = useRef(null);
+  const [interactive, setInteractive] = useState(false); // спершу колесо прокрутки "проходить" повз фрейм
+
   // Strip Markdown fences if the whole content is a single fenced block: ```lang ... ``` or ~~~lang ... ~~~
   const stripMdFences = (input = '') => {
     const s = String(input)
@@ -237,8 +246,16 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 2400, paddi
       ">
       <style>
         :root { color-scheme: light dark; }
-        html, body { margin: 0; padding: ${padding}px; box-sizing: border-box; }
-        *, *::before, *::after { box-sizing: inherit; }
+ html, body  {
+ ${
+   fullPage
+     ? `margin: 0; padding: ${padding}px; box-sizing: border-box;       background: transparent;       overflow-y: ${
+         autoSize ? 'hidden' : 'auto'
+       };         overflow-x: hidden;`
+     : `margin: 0; padding: ${padding}px; box-sizing: border-box;`
+ }
+         
+       }        *, *::before, *::after { box-sizing: inherit; }
         img, video, svg, canvas, iframe { max-width: 100%; height: auto; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
@@ -258,7 +275,7 @@ ${headContent}
 ${bodyHtml}
 </body>
 </html>`;
-  }, [html, sanitizeConfig, padding]);
+  }, [html, sanitizeConfig, padding, autoSize]);
 
   const fit = () => {
     if (!autoSize || !iframeRef.current) return;
@@ -284,13 +301,23 @@ ${bodyHtml}
       fit();
       // Re-fit after potential late loads (fonts/images/css)
       setTimeout(fit, 50);
-      setTimeout(fit, 250);
-      setTimeout(fit, 1000);
+      setTimeout(() => {
+        fit();
+        setInteractive(true);
+      }, 250);
+      setTimeout(() => {
+        fit();
+        setInteractive(true);
+      }, 1000);
       try {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
 
-        doc?.fonts?.ready?.then?.(() => setTimeout(fit, 0));
-        // eslint-disable-next-line no-empty
+        doc?.fonts?.ready?.then?.(() =>
+          setTimeout(() => {
+            fit();
+            setInteractive(true);
+          }, 0),
+        ); // eslint-disable-next-line no-empty
       } catch {}
     };
 
@@ -311,11 +338,14 @@ ${bodyHtml}
       sandbox={sandboxValue}
       referrerPolicy="no-referrer"
       className={className}
+      {...(fullPage ? { scrolling: 'no' } : {})}
       style={{
         width: '100%',
         height: autoSize ? '400px' : `${maxHeight}px`,
         border: 'none',
-        overflow: 'hidden',
+        ...(fullPage
+          ? { display: 'block', verticalAlign: 'top', pointerEvents: interactive ? 'auto' : 'none' }
+          : { overflow: 'hidden' }),
       }}
       title="HTML Sandbox"
     />
@@ -324,6 +354,7 @@ ${bodyHtml}
 
 HtmlSandbox.defaultProps = {
   autoSize: true,
+  fullPage: false,
   maxHeight: 2400,
   padding: 16,
 };
@@ -332,6 +363,7 @@ HtmlSandbox.propTypes = {
   html: PropTypes.string.isRequired,
   className: PropTypes.string,
   autoSize: PropTypes.bool,
+  fullPage: PropTypes.bool,
   maxHeight: PropTypes.number,
   padding: PropTypes.number,
 };

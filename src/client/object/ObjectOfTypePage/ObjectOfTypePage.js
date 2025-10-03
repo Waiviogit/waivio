@@ -94,7 +94,7 @@ const ObjectOfTypePage = props => {
 
     if (draft) {
       setNotification(true);
-    } else if (isEditMode && userName && currObj.object_type === 'page') {
+    } else if (isEditMode && userName && ['page', 'html'].includes(currObj.object_type)) {
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
@@ -110,7 +110,7 @@ const ObjectOfTypePage = props => {
   useEffect(() => {
     if (!wobject.author_permlink) return;
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (userName && currObj.object_type === 'page') {
+    if (userName && ['page', 'html'].includes(currObj.object_type)) {
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
@@ -261,6 +261,71 @@ const ObjectOfTypePage = props => {
     );
   };
 
+  const getComponentEdit = () => {
+    if (isReadyToPublish)
+      return (
+        <div className="object-page-preview">
+          <div className="object-page-preview__header">
+            <div>Preview</div>
+            <IconButton
+              className="object-page-preview__close-btn"
+              icon={<Icon type="close" />}
+              onClick={closePublishViev}
+            />
+          </div>
+          {isCode ? (
+            <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />
+          ) : (
+            <BodyContainer isPage full body={content} />
+          )}
+          <div className="object-page-preview__options">
+            <LikeSection
+              form={form}
+              onVotePercentChange={handleVotePercentChange}
+              selectedType={wobject}
+              setLittleVotePower={setLittleVotePower}
+            />
+            {followingList?.includes(wobject.author_permlink) ? null : (
+              <FollowObjectForm form={form} />
+            )}
+          </div>
+          <div className="object-of-type-page__row align-center">
+            <Button
+              htmlType="submit"
+              disabled={form.getFieldError('like')}
+              onClick={handleSubmit}
+              size="large"
+            >
+              {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+            </Button>
+          </div>
+        </div>
+      );
+
+    return (
+      <div className={classNames('object-of-type-page__editor-wrapper')}>
+        <Editor
+          withTitle={false}
+          enabled
+          initialContent={{ body: contentForPublish }}
+          locale={editorLocale}
+          onChange={handleChangeContent}
+          displayTitle={false}
+          match={props.match}
+          placeholder={
+            isCode
+              ? intl.formatMessage({
+                  id: 'code_placeholder',
+                  defaultMessage: 'Write your code',
+                })
+              : ''
+          }
+          isWobjCode={isCode}
+        />
+      </div>
+    );
+  };
+
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
@@ -274,74 +339,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
-            {isEditMode && editorInitialized ? (
-              <React.Fragment>
-                {isReadyToPublish && (
-                  <div className="object-page-preview">
-                    <div className="object-page-preview__header">
-                      <div>Preview</div>
-                      <IconButton
-                        className="object-page-preview__close-btn"
-                        icon={<Icon type="close" />}
-                        onClick={closePublishViev}
-                      />
-                    </div>
-                    {isCode ? (
-                      <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />
-                    ) : (
-                      <BodyContainer isPage full body={content} />
-                    )}
-                    <div className="object-page-preview__options">
-                      <LikeSection
-                        form={form}
-                        onVotePercentChange={handleVotePercentChange}
-                        selectedType={wobject}
-                        setLittleVotePower={setLittleVotePower}
-                      />
-                      {followingList?.includes(wobject.author_permlink) ? null : (
-                        <FollowObjectForm form={form} />
-                      )}
-                    </div>
-                    <div className="object-of-type-page__row align-center">
-                      <Button
-                        htmlType="submit"
-                        disabled={form.getFieldError('like')}
-                        onClick={handleSubmit}
-                        size="large"
-                      >
-                        {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                <div
-                  className={classNames('object-of-type-page__editor-wrapper', {
-                    'object-of-type-page__editor-wrapper--hide': isReadyToPublish,
-                  })}
-                >
-                  <Editor
-                    withTitle={false}
-                    enabled
-                    initialContent={{ body: contentForPublish }}
-                    locale={editorLocale}
-                    onChange={handleChangeContent}
-                    displayTitle={false}
-                    match={props.match}
-                    placeholder={
-                      isCode
-                        ? intl.formatMessage({
-                            id: 'code_placeholder',
-                            defaultMessage: 'Write your code',
-                          })
-                        : ''
-                    }
-                    isWobjCode={isCode}
-                  />
-                </div>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>{renderBody()}</React.Fragment>
-            )}
+            {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (
               <Lightbox
                 wrapperClassName="LightboxTools"
