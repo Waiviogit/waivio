@@ -111,6 +111,34 @@ export function extractLinks(body) {
   return extract(body, hrefRegex).map(unescape);
 }
 
+export const getPreviousLink = (text, imageUrl) => {
+  const imagePos = text.indexOf(imageUrl);
+
+  if (imagePos === -1) {
+    return null;
+  }
+
+  const textBeforeImage = text.substring(0, imagePos);
+  const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const matches = [...textBeforeImage.matchAll(markdownLinkRegex)];
+
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const linkText = matches[i][1];
+    const linkUrl = matches[i][2];
+
+    if (linkText.toLowerCase() !== 'image' && linkText.toLowerCase() !== 'avatar') {
+      // Extract object name from URL if it's a full URL
+      if (linkUrl.includes('/object/')) {
+        return linkUrl.split('/object/').pop();
+      }
+
+      return linkUrl;
+    }
+  }
+
+  return null;
+};
+
 export const replacer = value => value && value.replace(/^@/g, '');
 
 export const fixedNumber = (num, precision = 0) => {
