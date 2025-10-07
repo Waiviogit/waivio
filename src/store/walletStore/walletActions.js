@@ -520,8 +520,7 @@ export const getWAIVTransferList = (
           limit: 10,
           showRewards: getShowRewards(getState()),
         }),
-    meta: 10,
-    isGuest,
+    meta: { limit: 10, isGuest },
   });
 };
 

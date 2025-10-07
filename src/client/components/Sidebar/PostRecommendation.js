@@ -75,7 +75,7 @@ PostRecommendation.propTypes = {
   match: PropTypes.shape().isRequired,
   getPostsByAuthor: PropTypes.func.isRequired,
   resetRecommendetPosts: PropTypes.func.isRequired,
-  recommendedPosts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  recommendedPosts: PropTypes.arrayOf(PropTypes.shape({})),
 };
 
 export default withRouter(

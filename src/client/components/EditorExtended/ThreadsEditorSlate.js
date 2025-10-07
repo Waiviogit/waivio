@@ -351,6 +351,7 @@ const ThreadsEditorSlate = props => {
               type: 'paragraph',
               children: [{ text: '' }],
             });
+
             return true;
           }
         } else if (isSoftNewlineEvent(event)) {

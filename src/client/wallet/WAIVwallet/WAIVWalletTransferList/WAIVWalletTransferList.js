@@ -63,7 +63,7 @@ const WAIVWalletTransferList = props => {
       >
         {props.transaction.list.map(item => (
           <WAIVWalletTransferItemsSwitcher
-            key={item._id}
+            key={item.transactionId}
             transaction={item}
             currentName={props.name}
           />

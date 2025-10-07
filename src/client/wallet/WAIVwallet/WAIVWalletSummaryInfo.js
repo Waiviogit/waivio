@@ -294,10 +294,10 @@ const WAIVWalletSummaryInfo = props => {
 };
 
 WAIVWalletSummaryInfo.propTypes = {
-  currencyInfo: PropTypes.shape({}).isRequired,
-  user: PropTypes.shape({}).isRequired,
+  currencyInfo: PropTypes.shape({}),
+  user: PropTypes.shape({}),
   match: PropTypes.shape().isRequired,
-  rates: PropTypes.number.isRequired,
+  rates: PropTypes.shape(),
   name: PropTypes.string.isRequired,
   authUserName: PropTypes.string.isRequired,
   getTokenBalance: PropTypes.func.isRequired,
