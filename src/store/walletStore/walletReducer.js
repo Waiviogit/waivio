@@ -405,9 +405,9 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         waivTransactionHistory: {
           list: [...action.payload.history.sort((a, b) => b.timestamp - a.timestamp)],
-          hasMore: action.isGuest
+          hasMore: action.meta.isGuest
             ? action.payload.hasMore
-            : action.payload.history.length === action.meta,
+            : action.payload.history.length === action.meta.limit,
           loading: false,
         },
       };
@@ -426,7 +426,9 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         waivTransactionHistory: {
           list: [...state.waivTransactionHistory.list, ...action.payload.history],
-          hasMore: action.payload.history.length === action.meta,
+          hasMore: action.meta.isGuest
+            ? action.payload.hasMore
+            : action.payload.history.length === action.meta,
           loading: false,
         },
       };

@@ -139,9 +139,9 @@ const EditorSearchObjects = ({
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactEditor.toDOMNode(editor, editor);
     const parentBoundary = parent.getBoundingClientRect();
-    const top = searchCoordinates.bottom - parentBoundary.top + searchCoordinates.height;
+    const top = searchCoordinates?.bottom - parentBoundary?.top + searchCoordinates?.height;
     const selectionCenter =
-      searchCoordinates.left + searchCoordinates.width / 2 - parentBoundary.left;
+      searchCoordinates?.left + searchCoordinates?.width / 2 - parentBoundary.left;
     let left = selectionCenter;
     const screenLeft = parentBoundary.left + selectionCenter;
 

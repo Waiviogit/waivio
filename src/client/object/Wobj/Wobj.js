@@ -175,8 +175,9 @@ const Wobj = ({
         return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent wobj={wobject} />;
-      case 'html':
-        return <HtmlSandbox fullPage html={wobject.htmlContent} />;
+      case 'html': {
+        return <HtmlSandbox fullPage html={wobject.code} />;
+      }
       case 'page':
       case 'list':
         return <Checklist />;

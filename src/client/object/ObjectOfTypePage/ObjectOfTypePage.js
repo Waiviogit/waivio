@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal } from 'antd';
+import { Button, Form, Icon, message, Modal, Checkbox } from 'antd';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -43,6 +43,7 @@ import './ObjectOfTypePage.less';
 
 const ObjectOfTypePage = props => {
   const { intl, form, isEditMode, locale, wobject, followingList, isLoadingFlag, userName } = props;
+
   const [content, setContent] = useState('');
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
@@ -54,17 +55,62 @@ const ObjectOfTypePage = props => {
   const [editorInitialized, setEditorInitialized] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
+
+  // NEW: flags to hide sections
+  const [hideSignInState, setHideSignIn] = useState(true);
+  const [hideMenuState, setHideMenu] = useState(true);
+
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
-  const parsedBody = getHtml(content, {}, 'text', { isPost: true });
-  const contentDiv = useRef();
   const { 0: wobjType } = props.match.params;
   const isCode = wobjType === 'code';
+
   const getContent = obj => (isCode ? obj.htmlContent : obj.pageContent);
+
+  const parseCodeField = raw => {
+    try {
+      const parsed = JSON.parse(raw);
+
+      if (
+        parsed &&
+        typeof parsed === 'object' &&
+        Object.prototype.hasOwnProperty.call(parsed, 'code')
+      ) {
+        return {
+          code: String(parsed.code ?? ''),
+          hideSignIn: Boolean(parsed.hideSignIn),
+          hideMenu: Boolean(parsed.hideMenu),
+          wrapped: true,
+        };
+      }
+    } catch (e) {
+      // fall back to plain string
+    }
+
+    return { code: raw || '', hideSignIn: true, hideMenu: true, wrapped: false };
+  };
+
+  // helper to seed editor/flags from any source value
+  const seedFromSource = value => {
+    if (isCode) {
+      const { code, hideMenu, hideSignIn } = parseCodeField(value || '');
+
+      setHideMenu(hideMenu);
+      setHideSignIn(hideSignIn);
+      setCurrentContent(code);
+      setContent(code);
+    } else {
+      setCurrentContent(value || '');
+      setContent(value || '');
+    }
+  };
+
+  const parsedBody = getHtml(content, {}, 'text', { isPost: true });
+  const contentDiv = useRef();
+
   const images = extractImageTags(parsedBody).map(image => ({
     ...image,
     src: unescape(image.src.replace('https://images.hive.blog/0x0/', '')),
   }));
-
   const imagesArraySize = size(images);
 
   const handleContentClick = e => {
@@ -82,10 +128,10 @@ const ObjectOfTypePage = props => {
     }
   };
 
+  // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      setCurrentContent(getContent(currObj) || '');
-      setContent(getContent(currObj) || '');
+      seedFromSource(getContent(currObj) || '');
       setEditorInitialized(false);
       setDraft(null);
 
@@ -107,9 +153,11 @@ const ObjectOfTypePage = props => {
     }
   }, [isEditMode, draft]);
 
+  // when route target changes
   useEffect(() => {
     if (!wobject.author_permlink) return;
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+
     if (userName && ['page', 'html'].includes(currObj.object_type)) {
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
@@ -127,6 +175,7 @@ const ObjectOfTypePage = props => {
     }
   }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
+  // initial content fetch (hash changes etc.)
   useEffect(() => {
     const {
       location: { hash },
@@ -138,14 +187,12 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
-          setCurrentContent(getContent(wObject) || '');
-          setContent(getContent(wObject) || '');
+          seedFromSource(getContent(wObject) || '');
           setNestedWobj(wObject);
           setIsLoading(false);
         });
       } else {
-        setCurrentContent(getContent(wobject) || '');
-        setContent(getContent(wobject) || '');
+        seedFromSource(getContent(wobject) || '');
         setIsLoading(false);
       }
     }
@@ -179,18 +226,25 @@ const ObjectOfTypePage = props => {
       const { follow } = values;
 
       if (!err) {
+        const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
+
+        // pack body: for code pages we send JSON with flags
+        const bodyOut = isCode
+          ? JSON.stringify({ code: content, hideSignIn: hideSignInState, hideMenu: hideMenuState })
+          : content;
+
         const pageContentField = isCode
           ? {
               name: objectFields.htmlContent,
-              body: content,
+              body: bodyOut,
               locale,
             }
           : {
               name: objectFields.pageContent,
-              body: content,
+              body: bodyOut,
               locale,
             };
-        const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
+
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
         appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
@@ -213,6 +267,7 @@ const ObjectOfTypePage = props => {
             props.setEditMode(!props.isEditMode);
           })
           .catch(error => {
+            // eslint-disable-next-line no-console
             console.error(error);
             message.error(
               intl.formatMessage({
@@ -261,6 +316,8 @@ const ObjectOfTypePage = props => {
     );
   };
 
+  const editorLocale = locale === 'auto' ? 'en-US' : locale;
+
   const getComponentEdit = () => {
     if (isReadyToPublish)
       return (
@@ -279,6 +336,24 @@ const ObjectOfTypePage = props => {
             <BodyContainer isPage full body={content} />
           )}
           <div className="object-page-preview__options">
+            {isCode && (
+              <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
+                <Checkbox
+                  checked={hideSignInState}
+                  onChange={e => setHideSignIn(e.target.checked)}
+                  style={{ display: 'block', marginBottom: 8 }}
+                >
+                  Hide sign-in section
+                </Checkbox>
+                <Checkbox
+                  checked={hideMenuState}
+                  onChange={e => setHideMenu(e.target.checked)}
+                  style={{ display: 'block' }}
+                >
+                  Hide site main menu section
+                </Checkbox>
+              </div>
+            )}
             <LikeSection
               form={form}
               onVotePercentChange={handleVotePercentChange}
@@ -329,7 +404,6 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
-  const editorLocale = locale === 'auto' ? 'en-US' : locale;
 
   return (
     <React.Fragment>
@@ -378,8 +452,7 @@ const ObjectOfTypePage = props => {
           visible={isNotificaion}
           title="Page draft"
           onOk={() => {
-            setCurrentContent(draft);
-            setContent(draft);
+            seedFromSource(draft);
             setNotification(false);
             setEditorInitialized(true);
           }}

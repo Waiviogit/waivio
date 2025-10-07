@@ -107,14 +107,16 @@ const WobjectView = ({
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':
       hasType(wobject, OBJECT_TYPE.PAGE) ||
-      hasType(wobject, OBJECT_TYPE.HTML) ||
+      (hasType(wobject, OBJECT_TYPE.HTML) && match.params[0] === 'code') ||
       isWebPage ||
       middleRightColumn ||
       entireColumn,
   });
   const centerClassList = classNames('center', {
     'center--page':
-      hasType(wobject, OBJECT_TYPE.PAGE) || hasType(wobject, OBJECT_TYPE.HTML) || isWebPage,
+      hasType(wobject, OBJECT_TYPE.PAGE) ||
+      (hasType(wobject, OBJECT_TYPE.HTML) && match.params[0] === 'code') ||
+      isWebPage,
     'center--middleForm': middleRightColumn,
     'center--fullForm': entireColumn,
   });
