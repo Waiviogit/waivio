@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getHtml } from '../Story/Body';
 import { getAppUrl } from '../../../store/appStore/appSelectors';
-import { linkifyText } from '../../../common/helpers/parser';
+import { renderMessageWithAvatars } from './AssistantMessage';
 
 const UserMessage = React.memo(({ text, lastMessageRef }) => {
   const appUrl = useSelector(getAppUrl);
@@ -11,9 +10,7 @@ const UserMessage = React.memo(({ text, lastMessageRef }) => {
   return (
     <>
       <div ref={lastMessageRef} style={{ marginBottom: '20px' }} />
-      <div className="message from-user">
-        {getHtml(linkifyText(text), {}, 'Object', { appUrl, isChatBotLink: true })}
-      </div>
+      <div className="message from-user">{renderMessageWithAvatars(text, appUrl)}</div>
     </>
   );
 });

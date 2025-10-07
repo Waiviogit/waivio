@@ -20,26 +20,22 @@
       overflow: hidden;
 
       @media (min-width: 1201px) {
-        min-height: calc((100vw - 40px) / 5 + 33px);
-        height: calc((100vw - 40px) / 5 + 33px);
+        height: calc((100vw - 40px) / 5 + 33px) !important;
         max-height: calc((100vw - 40px) / 5 + 33px) !important;
       }
 
       @media (max-width: 1200px) and (min-width: 999px) {
-        min-height: calc((100vw - 30px) / 4 + 33px);
-        height: calc((100vw - 30px) / 4 + 33px);
+        height: calc((100vw - 30px) / 4 + 33px) !important;
         max-height: calc((100vw - 30px) / 4 + 33px) !important;
       }
 
       @media (max-width: 998px) and (min-width: 481px) {
-        min-height: calc((100vw - 20px) / 3 + 33px);
-        height: calc((100vw - 20px) / 3 + 33px);
+        height: calc((100vw - 20px) / 3 + 33px) !important;
         max-height: calc((100vw - 20px) / 3 + 33px) !important;
       }
 
       @media (max-width: 480px) {
-        min-height: calc((100vw - 10px) / 2 + 33px);
-        height: calc((100vw - 10px) / 2 + 33px);
+        height: calc((100vw - 10px) / 2 + 33px) !important;
         max-height: calc((100vw - 10px) / 2 + 33px) !important;
       }
     }
@@ -60,7 +56,7 @@
     @media (min-width: 1201px) {
       width: calc((100% - 40px) / 5);
       max-width: calc((100% - 40px) / 5);
-      min-height: calc((100vw - 40px) / 5 + 33px);
+      height: calc((100vw - 40px) / 5 + 33px) !important;
       max-height: calc((100vw - 40px) / 5 + 33px) !important;
 
       &:nth-child(5n) {
@@ -71,7 +67,7 @@
     @media (max-width: 1200px) and (min-width: 999px) {
       width: calc((100% - 30px) / 4);
       max-width: calc((100% - 30px) / 4);
-      min-height: calc((100vw - 30px) / 4 + 33px);
+      height: calc((100vw - 30px) / 4 + 33px) !important;
       max-height: calc((100vw - 30px) / 4 + 33px) !important;
 
       &:nth-child(4n) {
@@ -82,7 +78,7 @@
     @media (max-width: 998px) and (min-width: 481px) {
       width: calc((100% - 20px) / 3);
       max-width: calc((100% - 20px) / 3);
-      min-height: calc((100vw - 20px) / 3 + 33px);
+      height: calc((100vw - 20px) / 3 + 33px) !important;
       max-height: calc((100vw - 20px) / 3 + 33px) !important;
 
       &:nth-child(3n) {
@@ -93,7 +89,7 @@
     @media (max-width: 480px) {
       width: calc((100% - 10px) / 2);
       max-width: calc((100% - 10px) / 2);
-      min-height: calc((100vw - 10px) / 2 + 33px);
+      height: calc((100vw - 10px) / 2 + 33px) !important;
       max-height: calc((100vw - 10px) / 2 + 33px) !important;
 
       &:nth-child(2n) {
@@ -167,15 +163,19 @@
     width: 100%;
     min-width: 80%;
     min-height: 160px;
+    max-height: 300px !important;
     margin: 0 auto;
     position: relative;
+    overflow: hidden;
     ins {
       display: flex !important;
       justify-content: center;
       align-items: center;
       width: 100%;
       min-height: 160px !important;
+      max-height: 300px !important;
       position: relative;
+      overflow: hidden;
       iframe {
         display: block;
         width: 100% !important;
