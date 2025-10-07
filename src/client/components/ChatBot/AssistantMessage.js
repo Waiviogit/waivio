@@ -13,7 +13,7 @@ export const processAvatarLinks = mess => {
   processedText = processedText.replace(markdownImageRegex, (match, altText, imageUrl) => {
     const previousLink = getPreviousLink(mess, imageUrl);
 
-    if (previousLink) {
+    if (previousLink && previousLink.includes('/object/')) {
       return `__AVATAR_LINK__${imageUrl}__${previousLink}__${altText}__END_AVATAR__`;
     }
 
