@@ -41,6 +41,10 @@ import {
   setLoadingStatus,
   setMainObj,
 } from '../../store/appStore/appActions';
+import {
+  getHideHeaderFromWobj,
+  getHideSignInFromWobj,
+} from '../../store/wObjectStore/wObjectSelectors';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
 import BBackTop from './../components/BBackTop';
@@ -105,6 +109,8 @@ const SocialWrapper = props => {
   const signInPage = props?.location.pathname?.includes('sign-in');
   const isWidget = new URLSearchParams(props.location?.search).get('display');
   const host = useSelector(getAppHost);
+  const hideHeader = useSelector(getHideHeaderFromWobj);
+  const hideSignIn = useSelector(getHideSignInFromWobj);
 
   const createWebsiteMenu = configuration => {
     if (!isEmpty(configuration?.shopSettings)) {
@@ -284,7 +290,9 @@ const SocialWrapper = props => {
             !isSocialGifts &&
             !isWidget &&
             typeof window !== 'undefined' &&
-            window.self === window.top && <Header />}
+            window.self === window.top && (
+              <Header hideSignIn={hideSignIn} hideHeader={hideHeader} />
+            )}
           <div
             className={classNames('ShopWebsiteWrapper', {
               'ShopWebsiteWrapper--widget': isWidget,

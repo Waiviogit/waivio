@@ -6,6 +6,14 @@ export const objectState = state => state.object;
 
 // reselect function
 export const getObject = createSelector([objectState], state => state.wobject);
+export const getHideHeaderFromWobj = createSelector(
+  [objectState],
+  state => state.wobject.hideHeader,
+);
+export const getHideSignInFromWobj = createSelector(
+  [objectState],
+  state => state.wobject.hideSignInHeader,
+);
 export const getBaseObject = createSelector([objectState], state => state.baseObject);
 
 export const getObjectFields = createSelector([getObject], state => get(state, 'fields', []));
