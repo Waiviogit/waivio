@@ -128,7 +128,6 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       const result = [];
       const rows = [];
 
-      // Group items into rows of 5
       for (let i = 0; i < items.length; i += 4) {
         rows.push(items.slice(i, i + 4));
       }
@@ -136,9 +135,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       rows.forEach((row, rowIndex) => {
         const rowElements = [...row.map(getRowFn)];
 
-        const shouldInjectAd = (moderate && rowIndex % 2 === 1) || intensive;
-
-        if (shouldInjectAd) {
+        if (intensive) {
           const adPosition = Math.floor(Math.random() * (rowElements.length + 1));
 
           rowElements.splice(
