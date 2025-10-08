@@ -56,7 +56,7 @@ class ListDnD extends Component {
     super(props);
     this.state = {
       items: props.listItems,
-      sort: 'custom',
+      sort: '',
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleSortChange = this.handleSortChange.bind(this);
@@ -131,6 +131,7 @@ class ListDnD extends Component {
         wobjType === OBJECT_TYPE.LIST
           ? sortedItems.filter(i => !i.checkedItemInList).map(item => item.id)
           : [],
+      sortType,
     });
   };
 
@@ -150,6 +151,7 @@ class ListDnD extends Component {
         this.props.wobjType === OBJECT_TYPE.LIST
           ? items.filter(i => !i.checkedItemInList).map(item => item.id)
           : [],
+      sortType: this.state.sort,
     });
   }
 
@@ -164,6 +166,7 @@ class ListDnD extends Component {
     this.props.onChange({
       exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
       include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+      sortType: this.state.sort,
     });
   };
 
@@ -171,7 +174,11 @@ class ListDnD extends Component {
     return (
       <div className="dnd-list-container">
         <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>Mode</div>
-        <Select defaultValue={'Custom'} onSelect={mode => this.setState({ mode })}>
+        <Select
+          placeholder={'Select sorting'}
+          defaultValue={'Custom'}
+          onSelect={mode => this.setState({ mode })}
+        >
           {['Custom', 'Auto'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}
@@ -181,7 +188,11 @@ class ListDnD extends Component {
             <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>
               Sort by
             </div>
-            <Select onChange={this.handleSortChange}>
+            <Select
+              onChange={this.handleSortChange}
+              defaultValue={'recency'}
+              placeholder={'Select sorting'}
+            >
               <Select.Option key="recency">
                 <FormattedMessage id="recency" defaultMessage="Recency" />
               </Select.Option>
