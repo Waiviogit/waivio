@@ -440,6 +440,7 @@ class ObjectInfo extends React.Component {
     const newsFilterClassesList = classNames('menu-btn', {
       active: location.pathname === newsFilterPath,
     });
+
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {

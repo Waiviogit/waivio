@@ -21,7 +21,7 @@ ObjectLink.propTypes = {
   children: PropTypes.node.isRequired,
   attributes: PropTypes.shape().isRequired,
   element: PropTypes.shape().isRequired,
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
 };
 
 export default ObjectLink;

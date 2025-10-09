@@ -213,7 +213,7 @@ class CreateObject extends React.Component {
                 locale: values.locale,
               });
 
-              this.props.appendObject(data).then(() => {
+              this.props.appendObject(data, true).then(() => {
                 setTimeout(() => this.forceCloseObject(), 5000);
               });
             } else {
