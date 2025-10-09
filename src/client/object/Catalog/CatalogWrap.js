@@ -66,13 +66,7 @@ const CatalogWrap = props => {
   const host = useSelector(getAppHost);
 
   useEffect(() => {
-    const defaultSortBy = obj => {
-      if (obj.sortCustom?.sortType) {
-        return obj.sortCustom.sortType;
-      }
-
-      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
-    };
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
 
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
@@ -84,13 +78,13 @@ const CatalogWrap = props => {
 
         if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
           setLoadedNestedWobject(true);
-          const initialSortType = defaultSortBy(wobjectNested);
-
-          setSortingBy(initialSortType);
-          const initialSortOrder = initialSortType === 'custom' ? wobjectNested.sortCustom : null;
-
           setLists(
-            sortListItemsBy(getListItems(wobjectNested), initialSortType, initialSortOrder, host),
+            sortListItemsBy(
+              getListItems(wobjectNested),
+              defaultSortBy(wobjectNested),
+              wobjectNested.sortCustom,
+              host,
+            ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
           setLoadingNestedWobject(false);
@@ -98,14 +92,14 @@ const CatalogWrap = props => {
           setLoadingNestedWobject(true);
 
           ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
-            const initialSortType = defaultSortBy(wObject);
-
-            setSortingBy(initialSortType);
-            const initialSortOrder =
-              initialSortType === 'custom' ? get(wObject, 'sortCustom', {}) : null;
-
+            setSortingBy(defaultSortBy(wObject));
             setLists(
-              sortListItemsBy(getListItems(wObject), initialSortType, initialSortOrder, host),
+              sortListItemsBy(
+                getListItems(wObject),
+                defaultSortBy(wObject),
+                get(wObject, 'sortCustom', {}),
+                host,
+              ),
             );
             setNestedWobj(wObject);
             setLoadingNestedWobject(false);
@@ -113,13 +107,16 @@ const CatalogWrap = props => {
           });
         }
       } else {
-        const initialSortType = defaultSortBy(wobject);
+        setSortingBy(defaultSortBy(wobject));
 
-        setSortingBy(initialSortType);
-        const initialSortOrder =
-          initialSortType === 'custom' ? get(wobject, 'sortCustom', {}) : null;
-
-        setLists(sortListItemsBy(getListItems(wobject), initialSortType, initialSortOrder, host));
+        setLists(
+          sortListItemsBy(
+            getListItems(wobject),
+            defaultSortBy(wobject),
+            get(wobject, 'sortCustom', {}),
+            host,
+          ),
+        );
         setLoadingNestedWobject(false);
         setRecencySortList(recencySortOrder(getListItem(wobject)));
       }
@@ -142,13 +139,7 @@ const CatalogWrap = props => {
     }
 
     const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
-    const defaultSortBy = obj => {
-      if (obj.sortCustom?.sortType) {
-        return obj.sortCustom.sortType;
-      }
-
-      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
-    };
+    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
 
     const currentSortType = sortBy || defaultSortBy(obj);
 
@@ -159,7 +150,7 @@ const CatalogWrap = props => {
 
       sortOrder = {
         ...currentSortCustom,
-        include: [listItem.author_permlink, ...(currentSortCustom.include || [])],
+        include: [...(currentSortCustom.include || []), listItem.author_permlink],
       };
     } else {
       sortOrder = currentRecencySortList;
