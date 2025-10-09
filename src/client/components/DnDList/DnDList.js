@@ -114,6 +114,7 @@ const DnDList = ({
       include: newInclude,
       expand,
       exclude,
+      sortType: 'custom',
     });
   };
 

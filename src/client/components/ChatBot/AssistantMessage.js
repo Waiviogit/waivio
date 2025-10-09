@@ -47,6 +47,9 @@ export const renderMessageWithAvatars = (mess, appUrl) => {
             alt={altText}
             style={{
               cursor: 'pointer',
+              objectFit: 'contain',
+              height: 'auto',
+              alignSelf: 'flex-start',
             }}
             onClick={() => handleAvatarClick(objectName)}
           />

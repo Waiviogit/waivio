@@ -136,8 +136,81 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
 
   if (!sortByParam || ['recency'].includes(sortByParam))
     return [...sortItemsByPr, ...withoutPromotion];
-  if (!sortByParam || ['custom'].includes(sortByParam))
+  if (!sortByParam || ['custom'].includes(sortByParam)) {
+    if (sortOrder && sortOrder.sortType && sortOrder.sortType !== 'custom') {
+      let comparator;
+
+      switch (sortOrder.sortType) {
+        case 'rank':
+          comparator = (a, b) => {
+            if (b.weight !== a.weight) return b.weight - a.weight;
+
+            return a.name.localeCompare(b.name);
+          };
+          break;
+        case 'by-name-asc':
+          comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+          break;
+        case 'by-name-desc':
+          comparator = (a, b) => getObjectName(b).localeCompare(getObjectName(a));
+          break;
+        case 'recency':
+          comparator = (a, b) => {
+            if (!a.addedAt && !b.addedAt) return 0;
+            if (!a.addedAt) return 1;
+            if (!b.addedAt) return -1;
+
+            return new Date(a.addedAt) - new Date(b.addedAt);
+          };
+          break;
+        case 'reverse_recency':
+          comparator = (a, b) => {
+            if (!a.addedAt && !b.addedAt) return 0;
+            if (!a.addedAt) return -1;
+            if (!b.addedAt) return 1;
+
+            return new Date(b.addedAt) - new Date(a.addedAt);
+          };
+          break;
+        default:
+          comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+          break;
+      }
+
+      const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+        const cmp = comparator(a, b);
+
+        if (cmp !== 0) return cmp;
+        if (has(a, 'addedAt') && has(b, 'addedAt')) {
+          return new Date(b.addedAt) - new Date(a.addedAt);
+        }
+
+        return 0;
+      });
+
+      const sorting = (a, b) => isList(b) - isList(a);
+
+      return [...sortItemsByPr, ...sorted.sort(sorting)];
+    }
+
+    if (!sortOrder || !sortOrder.include || sortOrder.include.length === 0) {
+      const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+        const cmp = getObjectName(a).localeCompare(getObjectName(b));
+
+        if (cmp !== 0) return cmp;
+        if (has(a, 'addedAt') && has(b, 'addedAt')) {
+          return new Date(b.addedAt) - new Date(a.addedAt);
+        }
+
+        return 0;
+      });
+      const sorting = (a, b) => isList(b) - isList(a);
+
+      return [...sortItemsByPr, ...sorted.sort(sorting)];
+    }
+
     return [...sortItemsByPr, ...getSortList(sortOrder, withoutPromotion)];
+  }
   let comparator;
 
   switch (sortByParam) {

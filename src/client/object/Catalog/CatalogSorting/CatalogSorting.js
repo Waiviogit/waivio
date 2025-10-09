@@ -11,6 +11,9 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
       </SortSelector.Item>
+      <SortSelector.Item key="reverse_recency">
+        <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
+      </SortSelector.Item>
       <SortSelector.Item key="custom">
         <FormattedMessage id="custom" defaultMessage="Custom" />
       </SortSelector.Item>
@@ -32,6 +35,9 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
+      </SortSelector.Item>
+      <SortSelector.Item key="reverse_recency">
+        <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
       </SortSelector.Item>
       <SortSelector.Item key="rank">
         <FormattedMessage id="rank" defaultMessage="Rank" />
