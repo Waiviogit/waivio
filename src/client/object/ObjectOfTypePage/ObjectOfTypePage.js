@@ -336,9 +336,9 @@ const ObjectOfTypePage = props => {
 
   const editorLocale = locale === 'auto' ? 'en-US' : locale;
 
-  const getComponentEdit = () => {
-    if (isReadyToPublish)
-      return (
+  const getComponentEdit = () => (
+    <React.Fragment>
+      {isReadyToPublish && (
         <div className="object-page-preview">
           <div className="object-page-preview__header">
             <div>Preview</div>
@@ -393,10 +393,12 @@ const ObjectOfTypePage = props => {
             </Button>
           </div>
         </div>
-      );
-
-    return (
-      <div className={classNames('object-of-type-page__editor-wrapper')}>
+      )}
+      <div
+        className={classNames('object-of-type-page__editor-wrapper', {
+          'object-of-type-page__editor-wrapper--hide': isReadyToPublish,
+        })}
+      >
         <Editor
           withTitle={false}
           enabled
@@ -416,8 +418,8 @@ const ObjectOfTypePage = props => {
           isWobjCode={isCode}
         />
       </div>
-    );
-  };
+    </React.Fragment>
+  );
 
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
