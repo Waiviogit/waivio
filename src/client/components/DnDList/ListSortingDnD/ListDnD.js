@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEqual } from 'lodash';
 import { FormattedMessage } from 'react-intl';
-import OBJECT_TYPE from '../../../object/const/objectTypes';
 import '../DnDList.less';
 import ListDnDItem from './ListDnDItem';
 
@@ -63,9 +62,9 @@ class ListDnD extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listItems } = this.props;
+    const { listItems, customSort } = this.props;
 
-    if (!isEqual(prevProps.listItems, listItems)) {
+    if (!isEqual(prevProps.listItems, listItems) || !isEqual(prevProps.customSort, customSort)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         items: listItems,
@@ -111,6 +110,8 @@ class ListDnD extends Component {
 
   handleSortChange = sortType => {
     const { items } = this.state;
+    const { customSort } = this.props;
+
     const sortedItems = this.sortItems(items, sortType);
 
     this.setState({
@@ -118,19 +119,29 @@ class ListDnD extends Component {
       sort: sortType,
     });
 
-    const { onChange, wobjType } = this.props;
-    let itemsList = sortedItems;
+    const {
+      onChange,
+      // wobjType
+    } = this.props;
+    // const itemsList = sortedItems;
 
-    if (wobjType === OBJECT_TYPE.LIST) {
-      itemsList = this.filterItems(sortedItems);
-    }
+    // if (wobjType === OBJECT_TYPE.LIST) {
+    //   itemsList = this.filterItems(sortedItems);
+    // }
+
+    const currentInclude = customSort?.include || [];
+    const currentExclude = customSort?.exclude || [];
+    const newInclude = sortedItems
+      .filter(item => currentInclude.includes(item.id))
+      .map(item => item.id);
+
+    const newExclude = sortedItems
+      .filter(item => currentExclude.includes(item.id))
+      .map(item => item.id);
 
     onChange({
-      include: itemsList.map(item => item.id),
-      exclude:
-        wobjType === OBJECT_TYPE.LIST
-          ? sortedItems.filter(i => !i.checkedItemInList).map(item => item.id)
-          : [],
+      include: newInclude,
+      exclude: newExclude,
       sortType,
     });
   };
@@ -139,19 +150,27 @@ class ListDnD extends Component {
     if (!result.destination) return;
 
     const items = reorder(this.state.items, result.source.index, result.destination.index);
-    let itemsList = items;
+    const { customSort } = this.props;
 
-    this.setState({ items });
+    this.setState({
+      items,
+      sort: 'custom',
+    });
 
-    if (this.props.wobjType === OBJECT_TYPE.LIST) itemsList = this.filterItems(items);
+    const currentInclude = customSort?.include || [];
+    const currentExclude = customSort?.exclude || [];
+
+    const newInclude =
+      currentInclude.length > 0
+        ? items.filter(item => currentInclude.includes(item.id)).map(item => item.id)
+        : items.map(item => item.id);
+
+    const newExclude = items.filter(item => currentExclude.includes(item.id)).map(item => item.id);
 
     this.props.onChange({
-      include: itemsList.map(item => item.id),
-      exclude:
-        this.props.wobjType === OBJECT_TYPE.LIST
-          ? items.filter(i => !i.checkedItemInList).map(item => item.id)
-          : [],
-      sortType: this.state.sort,
+      include: newInclude,
+      exclude: newExclude,
+      sortType: 'custom',
     });
   }
 

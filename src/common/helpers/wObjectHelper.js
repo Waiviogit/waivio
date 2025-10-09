@@ -342,7 +342,7 @@ export const getSortList = (sortedList = {}, itemsList) => {
     list => !sortedList?.include?.includes(list.author_permlink),
   );
 
-  const customSort = sortedList.include.reduce((acc, item) => {
+  const customSort = (sortedList.include || []).reduce((acc, item) => {
     const findItem = filtered.find(i => i.author_permlink === item);
 
     if (findItem) {

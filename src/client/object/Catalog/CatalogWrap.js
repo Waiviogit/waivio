@@ -67,7 +67,7 @@ const CatalogWrap = props => {
 
   useEffect(() => {
     const defaultSortBy = obj => {
-      if (obj.sortCustom?.sortType && obj.sortCustom.sortType !== 'custom') {
+      if (obj.sortCustom?.sortType) {
         return obj.sortCustom.sortType;
       }
 
@@ -142,8 +142,30 @@ const CatalogWrap = props => {
     }
 
     const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
+    const defaultSortBy = obj => {
+      if (obj.sortCustom?.sortType) {
+        return obj.sortCustom.sortType;
+      }
 
-    setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList, host));
+      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
+    };
+
+    const currentSortType = sortBy || defaultSortBy(obj);
+
+    let sortOrder;
+
+    if (currentSortType === 'custom') {
+      const currentSortCustom = get(obj, 'sortCustom', {});
+
+      sortOrder = {
+        ...currentSortCustom,
+        include: [listItem.author_permlink, ...(currentSortCustom.include || [])],
+      };
+    } else {
+      sortOrder = currentRecencySortList;
+    }
+
+    setLists(sortListItemsBy(currentList, currentSortType, sortOrder, host));
     setRecencySortList(currentRecencySortList);
   };
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
