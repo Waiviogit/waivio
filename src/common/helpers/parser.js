@@ -127,11 +127,6 @@ export const getPreviousLink = (text, imageUrl) => {
     const linkUrl = matches[i][2];
 
     if (linkText.toLowerCase() !== 'image' && linkText.toLowerCase() !== 'avatar') {
-      // Extract object name from URL if it's a full URL
-      if (linkUrl.includes('/object/')) {
-        return linkUrl.split('/object/').pop();
-      }
-
       return linkUrl;
     }
   }
