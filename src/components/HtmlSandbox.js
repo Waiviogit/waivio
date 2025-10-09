@@ -2,37 +2,56 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
 
-const HtmlSandbox = ({
-  html,
-  className,
-  fullPage,
-  autoSize = true,
-  maxHeight = 2400,
-  padding = 16,
-}) => {
+const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 2400, padding = 16 }) => {
   const iframeRef = useRef(null);
-  const [interactive, setInteractive] = useState(false); // спершу колесо прокрутки "проходить" повз фрейм
+  const [interactive, setInteractive] = useState(false);
 
-  // Strip Markdown fences if the whole content is a single fenced block: ```lang ... ``` or ~~~lang ... ~~~
-  const stripMdFences = (input = '') => {
+  const stripPreCodeWrapper = (input = '') => {
+    const m = String(input)
+      .trim()
+      .match(/^<pre[^>]*>\s*<code[^>]*>([\s\S]*?)<\/code>\s*<\/pre>$/i);
+
+    if (!m) return input;
+
+    const decode = s =>
+      s
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+
+    return decode(m[1]);
+  };
+
+  // 2) Один fenced-блок ```lang ... ``` або ~~~lang ... ~~~ → знімаємо паркани
+  const stripMdFencesLoose = (input = '') => {
     const s = String(input)
       .trim()
-      .replace(/^\uFEFF/, ''); // drop BOM if present
-    const start = s.match(/^(```|~~~)\s*([a-z0-9.+#-]*)?\s*[\r\n]/i);
-    const end = s.match(/[\r\n]?(```|~~~)\s*$/);
+      .replace(/^\uFEFF/, '');
+    const m = s.match(/^(```|~~~)\s*([a-z0-9_+.-]*)\s*\r?\n([\s\S]*?)\r?\n\1\s*$/i);
 
-    if (start && end && start[1] === end[1]) {
-      let out = s.replace(/^(```|~~~)\s*[a-z0-9.+#-]*\s*[\r\n]/i, '');
+    return m ? m[3] : input;
+  };
 
-      out = out.replace(new RegExp(`${end[1]}\\s*$`), '');
+  // 3) Декодуємо &lt;div&gt;… якщо виглядає як екранований HTML і немає реальних тегів
+  const maybeDecodeEntities = (input = '') => {
+    const s = String(input);
+    const looksEscaped = /&lt;|&gt;|&amp;|&quot;|&#39;/.test(s);
+    const hasRealTags = /<[a-z!/]/i.test(s);
 
-      return out.trim();
+    if (looksEscaped && !hasRealTags) {
+      const ta = document.createElement('textarea');
+
+      ta.innerHTML = s;
+
+      return ta.value;
     }
 
     return s;
   };
 
-  // Minimal CSS sanitizer for dangerous constructs inside <style> and inline style=""
+  // 4) Мінімальна санітизація CSS (без eval/expression/js: URL і подібного)
   const sanitizeCss = (css = '') =>
     css
       .replace(/expression\s*\(/gi, '')
@@ -42,12 +61,12 @@ const HtmlSandbox = ({
       .replace(/@charset\s+["'][^"']*["'];?/gi, '')
       .replace(/@namespace[\s\S]*?;?/gi, '');
 
+  // ---------- sanitize-html config ----------
   const sanitizeConfig = useMemo(
     () => ({
       allowedTags: [
         'html',
-        'head',
-        'body',
+        /* 'head', */ 'body',
         'style',
         'link',
         'div',
@@ -106,6 +125,19 @@ const HtmlSandbox = ({
         'a',
       ],
       disallowedTagsMode: 'discard',
+      // Повністю прибираємо елемент І ЙОГО ВМІСТ для head-метаданих і скриптів
+      exclusiveFilter: frame => {
+        const t = String(frame.tag || '').toLowerCase();
+
+        return (
+          t === 'title' ||
+          t === 'meta' ||
+          t === 'base' ||
+          t === 'script' ||
+          t === 'noscript' ||
+          t === 'template'
+        );
+      },
       allowedAttributes: {
         '*': ['class', 'id', 'title', 'role', 'data-*', 'aria-*', 'style'],
         a: ['href', 'name', 'target', 'rel', 'title', 'download'],
@@ -168,10 +200,9 @@ const HtmlSandbox = ({
         link: (tagName, attribs) => {
           const rel = (attribs.rel || '').toLowerCase();
 
-          if (rel === 'stylesheet' && attribs.href) {
-            return { tagName: 'link', attribs };
-          }
+          if (rel === 'stylesheet' && attribs.href) return { tagName: 'link', attribs };
 
+          // Усi інші <link> глушимо
           return { tagName: 'noscript', attribs: {} };
         },
         style: (tagName, attribs) => ({ tagName: 'style', attribs }),
@@ -185,26 +216,31 @@ const HtmlSandbox = ({
           },
         }),
       },
-      // No allowedStyles -> allow full inline CSS (we sanitize dangerous bits manually)
     }),
     [],
   );
 
+  // ---------- Build srcDoc ----------
   const processedHtml = useMemo(() => {
-    // 0) Remove Markdown fences if provided
-    const unfenced = stripMdFences(html || '');
+    // 0) Попередня нормалізація вхідного рядка
+    let raw = stripPreCodeWrapper(html || '');
 
-    // 1) Sanitize HTML structure & attributes
-    let cleanHtml = sanitizeHtml(unfenced, sanitizeConfig);
+    raw = stripMdFencesLoose(raw);
+    raw = maybeDecodeEntities(raw);
+    raw = raw
+      .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '') // приберe і тег, і текст усередині
+      .replace(/<meta[^>]*>/gi, '') // прибираємо мета
+      .replace(/<base[^>]*>/gi, '') // і <base>
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''); // скрипти + вміст
+    let cleanHtml = sanitizeHtml(raw, sanitizeConfig);
 
-    // 2) Sanitize inline style="..." payloads
     cleanHtml = cleanHtml.replace(/style\s*=\s*(['"])([\s\S]*?)\1/gi, (m, q, css) => {
       const safe = sanitizeCss(css);
 
       return `style=${q}${safe}${q}`;
     });
 
-    // 3) Extract <style> and <link rel="stylesheet"> to move into <head>
+    // 3) Витягнемо <style> та дозволені <link rel="stylesheet"> у <head>
     const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
     const linkRegex = /<link[^>]*rel=["']?stylesheet["']?[^>]*>/gi;
 
@@ -212,7 +248,6 @@ const HtmlSandbox = ({
     const links = [];
     let bodyHtml = cleanHtml;
 
-    // Extract and remove <style>
     let styleMatch;
 
     // eslint-disable-next-line no-cond-assign
@@ -221,7 +256,6 @@ const HtmlSandbox = ({
       bodyHtml = bodyHtml.replace(styleMatch[0], '');
     }
 
-    // Extract and remove <link rel="stylesheet">
     let linkMatch;
 
     // eslint-disable-next-line no-cond-assign
@@ -230,7 +264,19 @@ const HtmlSandbox = ({
       bodyHtml = bodyHtml.replace(linkMatch[0], '');
     }
 
-    // 4) Compose <head> with CSP, base reset, then external links, then sanitized style blocks
+    // 4) Додаткове прибирання head-штук у body (навіть якщо прослизнули)
+    bodyHtml = bodyHtml
+      .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '')
+      .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
+      .replace(/<meta[^>]*>/gi, '')
+      .replace(/<base[^>]*>/gi, '')
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<\/?(html|body)\b[^>]*>/gi, '');
+
+    // 5) Залишків скриптів не має бути, але на всяк випадок прибираємо й тут
+    bodyHtml = bodyHtml.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+
+    // 6) Формуємо <head> та базові стилі
     const headContent = `
       <meta charset="utf-8">
       <meta http-equiv="Content-Security-Policy" content="
@@ -246,16 +292,15 @@ const HtmlSandbox = ({
       ">
       <style>
         :root { color-scheme: light dark; }
- html, body  {
- ${
-   fullPage
-     ? `margin: 0; padding: ${padding}px; box-sizing: border-box;       background: transparent;       overflow-y: ${
-         autoSize ? 'hidden' : 'auto'
-       };         overflow-x: hidden;`
-     : `margin: 0; padding: ${padding}px; box-sizing: border-box;`
- }
-         
-       }        *, *::before, *::after { box-sizing: inherit; }
+        html, body {
+          margin: 0;
+          padding: ${padding}px;
+          box-sizing: border-box;
+          background: transparent;
+          ${autoSize ? 'overflow-y: hidden;' : 'overflow-y: auto;'}
+          overflow-x: hidden;
+        }
+        *, *::before, *::after { box-sizing: inherit; }
         img, video, svg, canvas, iframe { max-width: 100%; height: auto; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
@@ -265,7 +310,7 @@ const HtmlSandbox = ({
       ${styles.map(cssText => `<style>${cssText}</style>`).join('\n')}
     `;
 
-    // 5) Build full HTML document for srcDoc
+    // 7) Повертаємо повний документ для srcDoc
     return `<!doctype html>
 <html>
 <head>
@@ -277,6 +322,7 @@ ${bodyHtml}
 </html>`;
   }, [html, sanitizeConfig, padding, autoSize]);
 
+  // ---------- Autosize ----------
   const fit = () => {
     if (!autoSize || !iframeRef.current) return;
     try {
@@ -287,8 +333,8 @@ ${bodyHtml}
       const height = Math.min(doc.body?.scrollHeight || 0, maxHeight);
 
       if (height > 0) iframe.style.height = `${height}px`;
-    } catch {
-      // Cross-origin access blocked if no allow-same-origin; ignore
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -298,8 +344,8 @@ ${bodyHtml}
     if (!iframe) return;
 
     const handleLoad = () => {
+      setInteractive(false);
       fit();
-      // Re-fit after potential late loads (fonts/images/css)
       setTimeout(fit, 50);
       setTimeout(() => {
         fit();
@@ -317,8 +363,10 @@ ${bodyHtml}
             fit();
             setInteractive(true);
           }, 0),
-        ); // eslint-disable-next-line no-empty
-      } catch {}
+        );
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     iframe.addEventListener('load', handleLoad);
@@ -338,14 +386,14 @@ ${bodyHtml}
       sandbox={sandboxValue}
       referrerPolicy="no-referrer"
       className={className}
-      {...(fullPage ? { scrolling: 'no' } : {})}
+      scrolling={autoSize ? 'no' : 'auto'}
       style={{
+        display: 'block', // прибирає нижній baseline-gap як у <img>
         width: '100%',
         height: autoSize ? '400px' : `${maxHeight}px`,
         border: 'none',
-        ...(fullPage
-          ? { display: 'block', verticalAlign: 'top', pointerEvents: interactive ? 'auto' : 'none' }
-          : { overflow: 'hidden' }),
+        verticalAlign: 'top',
+        pointerEvents: interactive ? 'auto' : 'none', // щоб колесо прокрутки не «липло» до фрейму під час автофіту
       }}
       title="HTML Sandbox"
     />
@@ -354,7 +402,6 @@ ${bodyHtml}
 
 HtmlSandbox.defaultProps = {
   autoSize: true,
-  fullPage: false,
   maxHeight: 2400,
   padding: 16,
 };
@@ -363,7 +410,6 @@ HtmlSandbox.propTypes = {
   html: PropTypes.string.isRequired,
   className: PropTypes.string,
   autoSize: PropTypes.bool,
-  fullPage: PropTypes.bool,
   maxHeight: PropTypes.number,
   padding: PropTypes.number,
 };

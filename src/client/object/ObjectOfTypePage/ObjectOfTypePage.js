@@ -2,12 +2,14 @@ import classNames from 'classnames';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { isEmpty, size, trimEnd, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal, Checkbox } from 'antd';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
+import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -59,48 +61,38 @@ const ObjectOfTypePage = props => {
   // NEW: flags to hide sections
   const [hideSignInState, setHideSignIn] = useState(true);
   const [hideMenuState, setHideMenu] = useState(true);
-
+  const appendAdding = useSelector(getIsAddingAppendLoading);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
-  const { 0: wobjType } = props.match.params;
-  const isCode = wobjType === 'code';
-
-  const getContent = obj => (isCode ? obj.htmlContent : obj.pageContent);
-
+  const isCode = currObj.object_type === 'html';
+  const getContent = (obj, isWobjCode) => (isWobjCode ? obj.htmlContent : obj.pageContent);
   const parseCodeField = raw => {
-    try {
-      const parsed = JSON.parse(raw);
+    const parsed = parseJSON(raw);
 
-      if (
-        parsed &&
-        typeof parsed === 'object' &&
-        Object.prototype.hasOwnProperty.call(parsed, 'code')
-      ) {
-        return {
-          code: String(parsed.code ?? ''),
-          hideSignIn: Boolean(parsed.hideSignIn),
-          hideMenu: Boolean(parsed.hideMenu),
-          wrapped: true,
-        };
-      }
-    } catch (e) {
-      // fall back to plain string
+    if (parsed) {
+      return {
+        code: parsed.code,
+        hideSignIn: Boolean(parsed.hideSignIn),
+        hideMenu: Boolean(parsed.hideMenu),
+      };
     }
 
-    return { code: raw || '', hideSignIn: true, hideMenu: true, wrapped: false };
+    return {
+      code: raw,
+      hideSignIn: true,
+      hideMenu: true,
+    };
   };
-
-  // helper to seed editor/flags from any source value
-  const seedFromSource = value => {
-    if (isCode) {
-      const { code, hideMenu, hideSignIn } = parseCodeField(value || '');
+  const seedFromSource = (value, isObjTypeCode) => {
+    if (isObjTypeCode) {
+      const { code, hideMenu, hideSignIn } = parseCodeField(value);
 
       setHideMenu(hideMenu);
       setHideSignIn(hideSignIn);
       setCurrentContent(code);
       setContent(code);
     } else {
-      setCurrentContent(value || '');
-      setContent(value || '');
+      setCurrentContent(value);
+      setContent(value);
     }
   };
 
@@ -131,7 +123,10 @@ const ObjectOfTypePage = props => {
   // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      seedFromSource(getContent(currObj) || '');
+      seedFromSource(
+        getContent(currObj, currObj.object_type === 'html'),
+        currObj.object_type === 'html',
+      );
       setEditorInitialized(false);
       setDraft(null);
 
@@ -141,6 +136,8 @@ const ObjectOfTypePage = props => {
     if (draft) {
       setNotification(true);
     } else if (isEditMode && userName && ['page', 'html'].includes(currObj.object_type)) {
+      setIsReadyToPublish(false);
+
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
@@ -152,6 +149,10 @@ const ObjectOfTypePage = props => {
       });
     }
   }, [isEditMode, draft]);
+
+  useEffect(() => {
+    seedFromSource(getContent(wobject, isCode), isCode);
+  }, [wobject.htmlContent, wobject.pageContent]);
 
   // when route target changes
   useEffect(() => {
@@ -187,12 +188,18 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
-          seedFromSource(getContent(wObject) || '');
+          seedFromSource(
+            getContent(wObject, wObject.object_type === 'html'),
+            wObject.object_type === 'html',
+          );
           setNestedWobj(wObject);
           setIsLoading(false);
         });
       } else {
-        seedFromSource(getContent(wobject) || '');
+        seedFromSource(
+          getContent(wobject, wobject.object_type === 'html'),
+          wobject.object_type === 'html',
+        );
         setIsLoading(false);
       }
     }
@@ -230,7 +237,11 @@ const ObjectOfTypePage = props => {
 
         // pack body: for code pages we send JSON with flags
         const bodyOut = isCode
-          ? JSON.stringify({ code: content, hideSignIn: hideSignInState, hideMenu: hideMenuState })
+          ? JSON.stringify({
+              code: content,
+              hideSignIn: hideSignInState,
+              hideMenu: hideMenuState,
+            })
           : content;
 
         const pageContentField = isCode
@@ -247,9 +258,16 @@ const ObjectOfTypePage = props => {
 
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
-        appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
-          .then(() => {
+        appendPageContent(postData, {
+          follow,
+          votePercent: votePercent * 100,
+          isLike: true,
+          isObjectPage: true,
+        })
+          .then(res => {
             saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink);
+
+            return res;
           })
           .then(() => {
             message.success(
@@ -267,8 +285,8 @@ const ObjectOfTypePage = props => {
             props.setEditMode(!props.isEditMode);
           })
           .catch(error => {
-            // eslint-disable-next-line no-console
             console.error(error);
+            setIsLoading(false);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
@@ -292,7 +310,7 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (isLoading) {
+    if (isLoading || appendAdding) {
       return <Loading />;
     }
 
@@ -433,11 +451,16 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
+          {!isReadyToPublish && content?.includes('<script>') && (
+            <p style={{ padding: '15px 0', textAlign: 'center', color: 'red' }}>
+              The script tag is not allowed in code updates.
+            </p>
+          )}
           {isEditMode && !isReadyToPublish && (
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={littleVotePower || !content}
+                disabled={littleVotePower || !content || content.includes('<script>')}
                 onClick={handleReadyPublishClick}
                 size="large"
               >
@@ -452,7 +475,7 @@ const ObjectOfTypePage = props => {
           visible={isNotificaion}
           title="Page draft"
           onOk={() => {
-            seedFromSource(draft);
+            seedFromSource(draft, isCode);
             setNotification(false);
             setEditorInitialized(true);
           }}
@@ -477,7 +500,7 @@ ObjectOfTypePage.propTypes = {
 
   /* connect */
   locale: PropTypes.string,
-  location: PropTypes.string,
+  location: PropTypes.shape(),
   isLoadingFlag: PropTypes.bool,
   appendPageContent: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
@@ -496,7 +519,6 @@ ObjectOfTypePage.propTypes = {
 ObjectOfTypePage.defaultProps = {
   wobject: {},
   nestedWobject: {},
-  location: '',
   isLoadingFlag: false,
   locale: 'en-US',
   followingList: [],

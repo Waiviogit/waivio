@@ -49,11 +49,10 @@ const ObjectMenu = props => {
   const isHashtag = hasType(props.wobject, OBJECT_TYPE.HASHTAG);
   const isHTML = hasType(props.wobject, OBJECT_TYPE.HTML);
   const isSpesialPage =
-    isList || isPage || isWidget || isMap || isWebpage || isGroup || isNewsfeed || isShop;
-  const {
-    name,
-    0: tab = isSpesialPage ? props.wobject?.object_type : TAB_NAME.REVIEWS,
-  } = useParams();
+    isList || isPage || isWidget || isMap || isWebpage || isGroup || isNewsfeed || isShop || isHTML;
+  const tabName = props.wobject?.object_type === 'html' ? 'code' : props.wobject?.object_type;
+
+  const { name, 0: tab = isSpesialPage ? tabName : TAB_NAME.REVIEWS } = useParams();
   const authorityList = useSelector(getAuthorityList);
   const trusties = useSelector(getSiteTrusties);
   const activeHeart = authorityList[props.wobject.author_permlink];

@@ -27,6 +27,8 @@ const MenuItemButton = ({ item, show }) => {
             return setUrl(`/object/${authorPermlink}/menu#${itemBody.linkToObject}`);
           case 'page':
             return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
+          case 'html':
+            return setUrl(`/object/${authorPermlink}/code#${itemBody.linkToObject}`);
           case 'webpage':
             return setUrl(`/object/${authorPermlink}/webpage#${itemBody.linkToObject}`);
           case 'newsfeed':
