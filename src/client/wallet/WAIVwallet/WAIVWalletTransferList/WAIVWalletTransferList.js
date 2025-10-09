@@ -34,6 +34,7 @@ const WAIVWalletTransferList = props => {
       props.name,
       get(lastTransaction, 'timestamp'),
       get(lastTransaction, '_id'),
+      props.transaction.list?.length,
     );
   }, [props.name, props.transaction.list]);
 

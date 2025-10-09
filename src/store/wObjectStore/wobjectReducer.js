@@ -110,15 +110,19 @@ export default function wobjectReducer(state = initialState, action) {
       };
     case actions.GET_OBJECT_SUCCESS:
       if (action.payload.htmlContent) {
-        const { hideSignIn, hideMenu, code } = parseJSON(action.payload.htmlContent);
+        const htmlContent = parseJSON(action.payload.htmlContent) || {
+          hideSignIn: true,
+          hideMenu: true,
+          code: action.payload.htmlContent,
+        };
 
         return {
           ...state,
           wobject: {
             ...action.payload,
-            code,
-            hideHeader: hideMenu,
-            hideSignInHeader: hideSignIn,
+            code: htmlContent.code,
+            hideHeader: htmlContent.hideMenu,
+            hideSignInHeader: htmlContent.hideSignIn,
           },
           isFetching: false,
           isFailed: false,
