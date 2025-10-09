@@ -14,7 +14,9 @@ export const processAvatarLinks = mess => {
     const previousLink = getPreviousLink(mess, imageUrl);
 
     if (previousLink && previousLink.includes('/object/')) {
-      return `__AVATAR_LINK__${imageUrl}__${previousLink}__${altText}__END_AVATAR__`;
+      const objectName = previousLink.split('/object/').pop();
+
+      return `__AVATAR_LINK__${imageUrl}__${objectName}__${altText}__END_AVATAR__`;
     }
 
     return match;
