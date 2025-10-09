@@ -3,6 +3,7 @@ export const objectFields = {
   address: 'address',
   map: 'map',
   link: 'link',
+  htmlContent: 'htmlContent',
   avatar: 'avatar',
   background: 'background',
   companyId: 'companyId',

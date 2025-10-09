@@ -4,11 +4,14 @@ import { headers } from './ApiClient';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { compareTokensList } from '../store/swapStore/helper';
 
-export const getGuestWaivTransferHistory = (guestName, symbol) =>
-  fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestWallet}?symbol=${symbol}`, {
-    headers,
-    method: 'GET',
-  })
+export const getGuestWaivTransferHistory = (guestName, symbol, skip = 0, limit = 10) =>
+  fetch(
+    `${config.apiPrefix}${config.user}/${guestName}${config.guestWallet}?symbol=${symbol}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);

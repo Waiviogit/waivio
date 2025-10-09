@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash';
+import { parseJSON } from '../../common/helpers/parseJSON';
 import {
   GET_ADD_ONS,
   GET_SIMILAR_OBJECTS,
@@ -104,8 +105,30 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         wobject: {},
+        hideHeader: false,
+        hideSignInHeader: false,
       };
     case actions.GET_OBJECT_SUCCESS:
+      if (action.payload.htmlContent) {
+        const htmlContent = parseJSON(action.payload.htmlContent) || {
+          hideSignIn: true,
+          hideMenu: true,
+          code: action.payload.htmlContent,
+        };
+
+        return {
+          ...state,
+          wobject: {
+            ...action.payload,
+            code: htmlContent.code,
+            hideHeader: htmlContent.hideMenu,
+            hideSignInHeader: htmlContent.hideSignIn,
+          },
+          isFetching: false,
+          isFailed: false,
+        };
+      }
+
       return {
         ...state,
         wobject: {

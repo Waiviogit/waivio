@@ -30,12 +30,12 @@ const CuratorRewardsCard = props => (
 CuratorRewardsCard.propTypes = {
   timestamp: PropTypes.number.isRequired,
   quantity: PropTypes.string.isRequired,
-  account: PropTypes.string.isRequired,
+  account: PropTypes.string,
   symbol: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   authorperm: PropTypes.string.isRequired,
-  memo: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  memo: PropTypes.string,
+  type: PropTypes.string,
 };
 
 export default CuratorRewardsCard;

@@ -185,10 +185,15 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
         )}
         {isEmpty(rewards) ? (
           <EmptyCampaign
-            emptyMessage={intl.formatMessage({
-              id: 'empty_campaign_message',
-              defaultMessage: 'There are no rewards available for you to claim at this moment.',
-            })}
+            emptyMessage={
+              isJudges
+                ? 'There are no campaigns you have been added to as а judge.'
+                : intl.formatMessage({
+                    id: 'empty_campaign_message',
+                    defaultMessage:
+                      'There are no rewards available for you to claim at this moment.',
+                  })
+            }
           />
         ) : (
           <ReduxInfiniteScroll

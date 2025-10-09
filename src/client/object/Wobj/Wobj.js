@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useLocation } from 'react-router';
+import HtmlSandbox from '../../../components/HtmlSandbox';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import {
@@ -135,6 +136,7 @@ const Wobj = ({
         'link',
         'recipe',
         'shop',
+        'html',
       ]?.includes(wobject.object_type) ||
       (isSocial && isEditMode)
     )
@@ -173,6 +175,9 @@ const Wobj = ({
         return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent wobj={wobject} />;
+      case 'html': {
+        return <HtmlSandbox fullPage html={wobject.code} />;
+      }
       case 'page':
       case 'list':
         return <Checklist />;

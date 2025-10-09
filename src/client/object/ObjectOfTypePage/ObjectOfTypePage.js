@@ -2,11 +2,14 @@ import classNames from 'classnames';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { isEmpty, size, trimEnd, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal } from 'antd';
+import { Button, Form, Icon, message, Modal, Checkbox } from 'antd';
+import { parseJSON } from '../../../common/helpers/parseJSON';
+import HtmlSandbox from '../../../components/HtmlSandbox';
+import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -42,6 +45,7 @@ import './ObjectOfTypePage.less';
 
 const ObjectOfTypePage = props => {
   const { intl, form, isEditMode, locale, wobject, followingList, isLoadingFlag, userName } = props;
+
   const [content, setContent] = useState('');
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
@@ -53,7 +57,45 @@ const ObjectOfTypePage = props => {
   const [editorInitialized, setEditorInitialized] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
+
+  // NEW: flags to hide sections
+  const [hideSignInState, setHideSignIn] = useState(true);
+  const [hideMenuState, setHideMenu] = useState(true);
+  const appendAdding = useSelector(getIsAddingAppendLoading);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
+  const isCode = currObj.object_type === 'html';
+  const getContent = (obj, isWobjCode) => (isWobjCode ? obj.htmlContent : obj.pageContent);
+  const parseCodeField = raw => {
+    const parsed = parseJSON(raw);
+
+    if (parsed) {
+      return {
+        code: parsed.code,
+        hideSignIn: Boolean(parsed.hideSignIn),
+        hideMenu: Boolean(parsed.hideMenu),
+      };
+    }
+
+    return {
+      code: raw,
+      hideSignIn: true,
+      hideMenu: true,
+    };
+  };
+  const seedFromSource = (value, isObjTypeCode) => {
+    if (isObjTypeCode) {
+      const { code, hideMenu, hideSignIn } = parseCodeField(value);
+
+      setHideMenu(hideMenu);
+      setHideSignIn(hideSignIn);
+      setCurrentContent(code);
+      setContent(code);
+    } else {
+      setCurrentContent(value);
+      setContent(value);
+    }
+  };
+
   const parsedBody = getHtml(content, {}, 'text', { isPost: true });
   const contentDiv = useRef();
 
@@ -61,7 +103,6 @@ const ObjectOfTypePage = props => {
     ...image,
     src: unescape(image.src.replace('https://images.hive.blog/0x0/', '')),
   }));
-
   const imagesArraySize = size(images);
 
   const handleContentClick = e => {
@@ -79,10 +120,13 @@ const ObjectOfTypePage = props => {
     }
   };
 
+  // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      setCurrentContent(currObj.pageContent || '');
-      setContent(currObj.pageContent || '');
+      seedFromSource(
+        getContent(currObj, currObj.object_type === 'html'),
+        currObj.object_type === 'html',
+      );
       setEditorInitialized(false);
       setDraft(null);
 
@@ -91,7 +135,9 @@ const ObjectOfTypePage = props => {
 
     if (draft) {
       setNotification(true);
-    } else if (isEditMode && userName && currObj.object_type === 'page') {
+    } else if (isEditMode && userName && ['page', 'html'].includes(currObj.object_type)) {
+      setIsReadyToPublish(false);
+
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
@@ -105,9 +151,15 @@ const ObjectOfTypePage = props => {
   }, [isEditMode, draft]);
 
   useEffect(() => {
+    seedFromSource(getContent(wobject, isCode), isCode);
+  }, [wobject.htmlContent, wobject.pageContent]);
+
+  // when route target changes
+  useEffect(() => {
     if (!wobject.author_permlink) return;
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (userName && currObj.object_type === 'page') {
+
+    if (userName && ['page', 'html'].includes(currObj.object_type)) {
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
@@ -124,6 +176,7 @@ const ObjectOfTypePage = props => {
     }
   }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
+  // initial content fetch (hash changes etc.)
   useEffect(() => {
     const {
       location: { hash },
@@ -135,14 +188,18 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
-          setCurrentContent(wObject.pageContent || '');
-          setContent(wObject.pageContent || '');
+          seedFromSource(
+            getContent(wObject, wObject.object_type === 'html'),
+            wObject.object_type === 'html',
+          );
           setNestedWobj(wObject);
           setIsLoading(false);
         });
       } else {
-        setCurrentContent(wobject.pageContent || '');
-        setContent(wobject.pageContent || '');
+        seedFromSource(
+          getContent(wobject, wobject.object_type === 'html'),
+          wobject.object_type === 'html',
+        );
         setIsLoading(false);
       }
     }
@@ -176,17 +233,41 @@ const ObjectOfTypePage = props => {
       const { follow } = values;
 
       if (!err) {
-        const pageContentField = {
-          name: objectFields.pageContent,
-          body: content,
-          locale,
-        };
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
+
+        // pack body: for code pages we send JSON with flags
+        const bodyOut = isCode
+          ? JSON.stringify({
+              code: content,
+              hideSignIn: hideSignInState,
+              hideMenu: hideMenuState,
+            })
+          : content;
+
+        const pageContentField = isCode
+          ? {
+              name: objectFields.htmlContent,
+              body: bodyOut,
+              locale,
+            }
+          : {
+              name: objectFields.pageContent,
+              body: bodyOut,
+              locale,
+            };
+
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
-        appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
-          .then(() => {
+        appendPageContent(postData, {
+          follow,
+          votePercent: votePercent * 100,
+          isLike: true,
+          isObjectPage: true,
+        })
+          .then(res => {
             saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink);
+
+            return res;
           })
           .then(() => {
             message.success(
@@ -205,6 +286,7 @@ const ObjectOfTypePage = props => {
           })
           .catch(error => {
             console.error(error);
+            setIsLoading(false);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
@@ -228,11 +310,13 @@ const ObjectOfTypePage = props => {
   };
 
   const renderBody = () => {
-    if (isLoading) {
+    if (isLoading || appendAdding) {
       return <Loading />;
     }
 
     if (content) {
+      if (isCode) return <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />;
+
       return <BodyContainer isPage full body={content} />;
     }
 
@@ -250,10 +334,96 @@ const ObjectOfTypePage = props => {
     );
   };
 
+  const editorLocale = locale === 'auto' ? 'en-US' : locale;
+
+  const getComponentEdit = () => (
+    <React.Fragment>
+      {isReadyToPublish && (
+        <div className="object-page-preview">
+          <div className="object-page-preview__header">
+            <div>Preview</div>
+            <IconButton
+              className="object-page-preview__close-btn"
+              icon={<Icon type="close" />}
+              onClick={closePublishViev}
+            />
+          </div>
+          {isCode ? (
+            <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />
+          ) : (
+            <BodyContainer isPage full body={content} />
+          )}
+          <div className="object-page-preview__options">
+            {isCode && (
+              <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
+                <Checkbox
+                  checked={hideSignInState}
+                  onChange={e => setHideSignIn(e.target.checked)}
+                  style={{ display: 'block', marginBottom: 8 }}
+                >
+                  Hide sign-in section
+                </Checkbox>
+                <Checkbox
+                  checked={hideMenuState}
+                  onChange={e => setHideMenu(e.target.checked)}
+                  style={{ display: 'block' }}
+                >
+                  Hide site main menu section
+                </Checkbox>
+              </div>
+            )}
+            <LikeSection
+              form={form}
+              onVotePercentChange={handleVotePercentChange}
+              selectedType={wobject}
+              setLittleVotePower={setLittleVotePower}
+            />
+            {followingList?.includes(wobject.author_permlink) ? null : (
+              <FollowObjectForm form={form} />
+            )}
+          </div>
+          <div className="object-of-type-page__row align-center">
+            <Button
+              htmlType="submit"
+              disabled={form.getFieldError('like')}
+              onClick={handleSubmit}
+              size="large"
+            >
+              {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+            </Button>
+          </div>
+        </div>
+      )}
+      <div
+        className={classNames('object-of-type-page__editor-wrapper', {
+          'object-of-type-page__editor-wrapper--hide': isReadyToPublish,
+        })}
+      >
+        <Editor
+          withTitle={false}
+          enabled
+          initialContent={{ body: contentForPublish }}
+          locale={editorLocale}
+          onChange={handleChangeContent}
+          displayTitle={false}
+          match={props.match}
+          placeholder={
+            isCode
+              ? intl.formatMessage({
+                  id: 'code_placeholder',
+                  defaultMessage: 'Write your code',
+                })
+              : ''
+          }
+          isWobjCode={isCode}
+        />
+      </div>
+    </React.Fragment>
+  );
+
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
-  const editorLocale = locale === 'auto' ? 'en-US' : locale;
 
   return (
     <React.Fragment>
@@ -263,61 +433,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
-            {isEditMode && editorInitialized ? (
-              <React.Fragment>
-                {isReadyToPublish && (
-                  <div className="object-page-preview">
-                    <div className="object-page-preview__header">
-                      <div>Preview</div>
-                      <IconButton
-                        className="object-page-preview__close-btn"
-                        icon={<Icon type="close" />}
-                        onClick={closePublishViev}
-                      />
-                    </div>
-                    <BodyContainer isPage full body={content} />
-                    <div className="object-page-preview__options">
-                      <LikeSection
-                        form={form}
-                        onVotePercentChange={handleVotePercentChange}
-                        selectedType={wobject}
-                        setLittleVotePower={setLittleVotePower}
-                      />
-                      {followingList?.includes(wobject.author_permlink) ? null : (
-                        <FollowObjectForm form={form} />
-                      )}
-                    </div>
-                    <div className="object-of-type-page__row align-center">
-                      <Button
-                        htmlType="submit"
-                        disabled={form.getFieldError('like')}
-                        onClick={handleSubmit}
-                        size="large"
-                      >
-                        {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                <div
-                  className={classNames('object-of-type-page__editor-wrapper', {
-                    'object-of-type-page__editor-wrapper--hide': isReadyToPublish,
-                  })}
-                >
-                  <Editor
-                    withTitle={false}
-                    enabled
-                    initialContent={{ body: contentForPublish }}
-                    locale={editorLocale}
-                    onChange={handleChangeContent}
-                    displayTitle={false}
-                    match={props.match}
-                  />
-                </div>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>{renderBody()}</React.Fragment>
-            )}
+            {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (
               <Lightbox
                 wrapperClassName="LightboxTools"
@@ -337,11 +453,16 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
+          {!isReadyToPublish && content?.includes('<script>') && (
+            <p style={{ padding: '15px 0', textAlign: 'center', color: 'red' }}>
+              The script tag is not allowed in code updates.
+            </p>
+          )}
           {isEditMode && !isReadyToPublish && (
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={littleVotePower || !content}
+                disabled={littleVotePower || !content || content.includes('<script>')}
                 onClick={handleReadyPublishClick}
                 size="large"
               >
@@ -356,8 +477,7 @@ const ObjectOfTypePage = props => {
           visible={isNotificaion}
           title="Page draft"
           onOk={() => {
-            setCurrentContent(draft);
-            setContent(draft);
+            seedFromSource(draft, isCode);
             setNotification(false);
             setEditorInitialized(true);
           }}
@@ -382,7 +502,7 @@ ObjectOfTypePage.propTypes = {
 
   /* connect */
   locale: PropTypes.string,
-  location: PropTypes.string,
+  location: PropTypes.shape(),
   isLoadingFlag: PropTypes.bool,
   appendPageContent: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
@@ -401,7 +521,6 @@ ObjectOfTypePage.propTypes = {
 ObjectOfTypePage.defaultProps = {
   wobject: {},
   nestedWobject: {},
-  location: '',
   isLoadingFlag: false,
   locale: 'en-US',
   followingList: [],

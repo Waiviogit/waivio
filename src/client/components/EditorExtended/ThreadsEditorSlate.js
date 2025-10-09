@@ -342,13 +342,17 @@ const ThreadsEditorSlate = props => {
           HEADING_BLOCKS?.includes(selectedElement.type) ||
           (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
         ) {
+          event.preventDefault();
           if (!Node.has(editor, editor.selection.anchor.path)) return false;
           const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
 
           if (selectedLeaf.text.length === editor.selection.anchor.offset) {
-            setTimeout(() => {
-              Transforms.setNodes(editor, { type: 'paragraph' });
-            }, 0);
+            Transforms.insertNodes(editor, {
+              type: 'paragraph',
+              children: [{ text: '' }],
+            });
+
+            return true;
           }
         } else if (isSoftNewlineEvent(event)) {
           event.preventDefault();

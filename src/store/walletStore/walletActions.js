@@ -504,6 +504,7 @@ export const getWAIVTransferList = (
   account,
   timestampEnd,
   lastId,
+  skip,
   type = GET_WAIV_TRANSFER_LIST,
 ) => (dispatch, getState) => {
   const isGuest = guestUserRegex.test(account);
@@ -511,7 +512,7 @@ export const getWAIVTransferList = (
   return dispatch({
     type: type.ACTION,
     payload: isGuest
-      ? getGuestWaivTransferHistory(account, 'WAIV')
+      ? getGuestWaivTransferHistory(account, 'WAIV', skip, 10)
       : ApiClient.getEngineTransactionHistory({
           symbol: 'WAIV',
           account,
@@ -520,13 +521,12 @@ export const getWAIVTransferList = (
           limit: 10,
           showRewards: getShowRewards(getState()),
         }),
-    meta: 10,
-    isGuest,
+    meta: { limit: 10, isGuest },
   });
 };
 
-export const getMoreWAIVTransferList = (account, offset, lastId) => dispatch =>
-  dispatch(getWAIVTransferList(account, offset, lastId, GET_MORE_WAIV_TRANSFER_LIST));
+export const getMoreWAIVTransferList = (account, offset, lastId, skip) => dispatch =>
+  dispatch(getWAIVTransferList(account, offset, lastId, skip, GET_MORE_WAIV_TRANSFER_LIST));
 
 export const GET_HIVE_ENGINE_TRANSFER_LIST = createAsyncActionType(
   '@wallet/GET_HIVE_ENGINE_TRANSFER_LIST',

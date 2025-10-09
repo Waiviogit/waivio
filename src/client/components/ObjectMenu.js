@@ -34,6 +34,7 @@ const TAB_NAME = {
   FOLLOWERS: 'followers',
   EXPERTISE: 'expertise',
   GROUP: 'group',
+  CODE: 'code',
 };
 
 const ObjectMenu = props => {
@@ -46,12 +47,12 @@ const ObjectMenu = props => {
   const isNewsfeed = hasType(props.wobject, OBJECT_TYPE.NEWSFEED);
   const isShop = hasType(props.wobject, OBJECT_TYPE.SHOP);
   const isHashtag = hasType(props.wobject, OBJECT_TYPE.HASHTAG);
+  const isHTML = hasType(props.wobject, OBJECT_TYPE.HTML);
   const isSpesialPage =
-    isList || isPage || isWidget || isMap || isWebpage || isGroup || isNewsfeed || isShop;
-  const {
-    name,
-    0: tab = isSpesialPage ? props.wobject?.object_type : TAB_NAME.REVIEWS,
-  } = useParams();
+    isList || isPage || isWidget || isMap || isWebpage || isGroup || isNewsfeed || isShop || isHTML;
+  const tabName = props.wobject?.object_type === 'html' ? 'code' : props.wobject?.object_type;
+
+  const { name, 0: tab = isSpesialPage ? tabName : TAB_NAME.REVIEWS } = useParams();
   const authorityList = useSelector(getAuthorityList);
   const trusties = useSelector(getSiteTrusties);
   const activeHeart = authorityList[props.wobject.author_permlink];
@@ -85,6 +86,13 @@ const ObjectMenu = props => {
             <li className={getItemClasses(TAB_NAME.PAGE)} data-key={TAB_NAME.PAGE}>
               <Link to={createLink(TAB_NAME.PAGE)}>
                 <FormattedMessage id="page" defaultMessage="Page" />
+              </Link>
+            </li>
+          )}
+          {isHTML && (
+            <li className={getItemClasses(TAB_NAME.CODE)} data-key={TAB_NAME.CODE}>
+              <Link to={createLink(TAB_NAME.CODE)}>
+                <FormattedMessage id="code" defaultMessage="Code" />
               </Link>
             </li>
           )}

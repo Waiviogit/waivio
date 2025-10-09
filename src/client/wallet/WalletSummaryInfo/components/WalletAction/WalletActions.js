@@ -163,7 +163,7 @@ WalletAction.propTypes = {
   delegatedRc: PropTypes.shape(),
   rcBalance: PropTypes.number,
   mainCurrency: PropTypes.string.isRequired,
-  openDetailsModal: PropTypes.func.isRequired,
+  openDetailsModal: PropTypes.func,
   swapCurrencyOptions: PropTypes.arrayOf(PropTypes.string),
   withdrawCurrencyOption: PropTypes.arrayOf(PropTypes.string),
   options: PropTypes.arrayOf(PropTypes.string),

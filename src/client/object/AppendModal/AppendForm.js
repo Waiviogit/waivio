@@ -926,8 +926,9 @@ class AppendForm extends Component {
 
           const expandInfo = isEmpty(val?.expand) ? '' : `expand: ${val.expand.join(', ')}`;
           const includeInfo = isEmpty(val?.include) ? '' : `include: ${val.include.join(', ')}`;
+          const sortType = isEmpty(val?.sortType) ? '' : `sort type: ${val.sortType}`;
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}`;
+          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}\n${sortType}`;
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           let rulesAllow = '';
@@ -3945,6 +3946,7 @@ class AppendForm extends Component {
                     accentColor={PRIMARY_COLOR}
                     onChange={this.handleChangeSorting}
                     wobjType={wobjType}
+                    customSort={sortCustom}
                   />
                 ) : (
                   <SortingList

@@ -122,10 +122,9 @@ const GoogleAds = ({
       <ins
         {...insAttributes}
         className={classNames(insAttributes.className, {
-          'list-item': listItem,
-          'list-item-products': listItemProducts,
+          // 'list-item': listItem,
+          // 'list-item-products': listItemProducts,
         })}
-        style={listItem ? { maxHeight: '320px' } : {}}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         ref={adRef}
       />

@@ -440,6 +440,7 @@ class ObjectInfo extends React.Component {
     const newsFilterClassesList = classNames('menu-btn', {
       active: location.pathname === newsFilterPath,
     });
+
     let menuItem = (
       <LinkButton
         className={classNames('menu-btn', {
@@ -721,6 +722,7 @@ class ObjectInfo extends React.Component {
     const affiliateLinks = wobject?.affiliateLinks || [];
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const isRecipe = hasType(wobject, OBJECT_TYPE.RECIPE);
+    const isHtml = hasType(wobject, OBJECT_TYPE.HTML);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
@@ -907,6 +909,7 @@ class ObjectInfo extends React.Component {
         <React.Fragment>
           {isEditMode &&
             !isList &&
+            !isHtml &&
             (objectTypeMenuTitle ? (
               <div className="object-sidebar__section-title">
                 <FormattedMessage id={wobject.object_type} />
@@ -929,7 +932,7 @@ class ObjectInfo extends React.Component {
               {this.listItem(objectFields.sorting, null)}
             </div>
           )}
-          {!objectTypeMenuTitle && isEditMode && !isList && !isRecipe && (
+          {!objectTypeMenuTitle && isEditMode && !isList && !isRecipe && !isHtml && (
             <div
               className={
                 this.state.showMenuLegacy
