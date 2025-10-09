@@ -75,7 +75,8 @@ export default (state = initialState, action) => {
           (action.payload.account?.posting_json_metadata
             ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
             : '') ||
-          state.signature,
+          state.signature ||
+          '',
       };
     case types.LOGIN_SERVER.SUCCESS:
       if (action.meta && action.meta.refresh) return state;
@@ -99,7 +100,8 @@ export default (state = initialState, action) => {
           (action.payload.account?.posting_json_metadata
             ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
             : '') ||
-          state.signature,
+          state.signature ||
+          '',
         isAuthenticating: false,
       };
 

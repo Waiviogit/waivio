@@ -1,10 +1,11 @@
+import { Select } from 'antd';
+import classNames from 'classnames';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEqual } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import OBJECT_TYPE from '../../../object/const/objectTypes';
-import SortSelector from '../../SortSelector/SortSelector';
 import '../DnDList.less';
 import ListDnDItem from './ListDnDItem';
 
@@ -48,13 +49,14 @@ class ListDnD extends Component {
     onChange: () => {},
     wobjType: '',
     screenSize: '',
+    mode: 'Custom',
   };
 
   constructor(props) {
     super(props);
     this.state = {
       items: props.listItems,
-      sort: 'custom',
+      sort: '',
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleSortChange = this.handleSortChange.bind(this);
@@ -129,6 +131,7 @@ class ListDnD extends Component {
         wobjType === OBJECT_TYPE.LIST
           ? sortedItems.filter(i => !i.checkedItemInList).map(item => item.id)
           : [],
+      sortType,
     });
   };
 
@@ -148,6 +151,7 @@ class ListDnD extends Component {
         this.props.wobjType === OBJECT_TYPE.LIST
           ? items.filter(i => !i.checkedItemInList).map(item => item.id)
           : [],
+      sortType: this.state.sort,
     });
   }
 
@@ -162,37 +166,56 @@ class ListDnD extends Component {
     this.props.onChange({
       exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
       include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+      sortType: this.state.sort,
     });
   };
 
   render() {
-    const { sort } = this.state;
-
     return (
       <div className="dnd-list-container">
-        <div className="dnd-list-header">
-          <SortSelector sort={sort} onChange={this.handleSortChange}>
-            <SortSelector.Item key="recency">
-              <FormattedMessage id="recency" defaultMessage="Recency" />
-            </SortSelector.Item>
-            <SortSelector.Item key="rank">
-              <FormattedMessage id="rank" defaultMessage="Rank" />
-            </SortSelector.Item>
-            <SortSelector.Item key="by-name-asc">
-              <FormattedMessage id="by-name-asc" defaultMessage="A..Z">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-            <SortSelector.Item key="by-name-desc">
-              <FormattedMessage id="by-name-desc" defaultMessage="Z..A">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-            <SortSelector.Item key="reverse_recency">
-              <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
-            </SortSelector.Item>
-          </SortSelector>
-        </div>
+        <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>Mode</div>
+        <Select
+          placeholder={'Select sorting'}
+          defaultValue={'Custom'}
+          onSelect={mode => this.setState({ mode })}
+        >
+          {['Custom', 'Auto'].map(type => (
+            <Select.Option key={type}>{type}</Select.Option>
+          ))}
+        </Select>
+        {this.state.mode === 'Auto' && (
+          <>
+            <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>
+              Sort by
+            </div>
+            <Select
+              onChange={this.handleSortChange}
+              defaultValue={'recency'}
+              placeholder={'Select sorting'}
+            >
+              <Select.Option key="recency">
+                <FormattedMessage id="recency" defaultMessage="Recency" />
+              </Select.Option>
+              <Select.Option key="reverse_recency">
+                <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
+              </Select.Option>
+              <Select.Option key="rank">
+                <FormattedMessage id="rank" defaultMessage="Rank" />
+              </Select.Option>
+              <Select.Option key="by-name-asc">
+                <FormattedMessage id="by-name-asc" defaultMessage="A..Z">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </Select.Option>
+              <Select.Option key="by-name-desc">
+                <FormattedMessage id="by-name-desc" defaultMessage="Z..A">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </Select.Option>
+            </Select>
+          </>
+        )}
+        <br />
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="droppable">
             {(provided, snapshot) => (
