@@ -280,6 +280,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       const handleFullScreenWheel = e => {
         e.stopPropagation();
       };
+
       if (document) {
         const originalBodyOverflow = document?.body.style.overflow;
 
