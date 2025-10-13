@@ -268,7 +268,35 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
         chatBody.removeEventListener('wheel', stopPropagation);
       };
     }
-  }, []);
+  }, [isFullScreen]);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (isFullScreen) {
+      const handleFullScreenScroll = e => {
+        e.stopPropagation();
+      };
+
+      const handleFullScreenWheel = e => {
+        e.stopPropagation();
+      };
+      if (document) {
+        const originalBodyOverflow = document?.body.style.overflow;
+
+        document.body.style.overflow = 'hidden';
+
+        document?.addEventListener('scroll', handleFullScreenScroll, { passive: false });
+        document?.addEventListener('wheel', handleFullScreenWheel, { passive: false });
+
+        return () => {
+          document?.removeEventListener('scroll', handleFullScreenScroll);
+          document?.removeEventListener('wheel', handleFullScreenWheel);
+
+          document.body.style.overflow = originalBodyOverflow;
+        };
+      }
+    }
+  }, [isFullScreen]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
