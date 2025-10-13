@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import sanitizeHtml from 'sanitize-html';
+import { getTitleForLink, getObjectName, getObjectAvatar } from '../common/helpers/wObjectHelper';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 2400, padding = 16 }) => {
+const HtmlSandbox = ({ wobject, html, className, autoSize, maxHeight, padding }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
@@ -123,6 +125,14 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 2400, paddi
         'col',
         'colgroup',
         'a',
+        'div',
+        'section',
+        'article',
+        'header',
+        'footer',
+        'main',
+        'aside',
+        'nav',
       ],
       disallowedTagsMode: 'discard',
       // Повністю прибираємо елемент І ЙОГО ВМІСТ для head-метаданих і скриптів
@@ -330,7 +340,7 @@ ${bodyHtml}
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
 
       if (!doc) return;
-      const height = Math.min(doc.body?.scrollHeight || 0, maxHeight);
+      const height = doc.body?.scrollHeight;
 
       if (height > 0) iframe.style.height = `${height}px`;
     } catch (e) {
@@ -373,36 +383,61 @@ ${bodyHtml}
 
     // eslint-disable-next-line consistent-return
     return () => iframe.removeEventListener('load', handleLoad);
-  }, [autoSize, maxHeight]);
+  }, [autoSize]);
 
   const sandboxValue = `allow-popups allow-popups-to-escape-sandbox${
     autoSize ? ' allow-same-origin' : ''
   }`;
+  const titleText = getTitleForLink(wobject);
+  const image = getObjectAvatar(wobject);
 
   return (
-    <iframe
-      ref={iframeRef}
-      srcDoc={processedHtml}
-      sandbox={sandboxValue}
-      referrerPolicy="no-referrer"
-      className={className}
-      scrolling={autoSize ? 'no' : 'auto'}
-      style={{
-        display: 'block', // прибирає нижній baseline-gap як у <img>
-        width: '100%',
-        height: autoSize ? '400px' : `${maxHeight}px`,
-        border: 'none',
-        verticalAlign: 'top',
-        pointerEvents: interactive ? 'auto' : 'none', // щоб колесо прокрутки не «липло» до фрейму під час автофіту
-      }}
-      title="HTML Sandbox"
-    />
+    <React.Fragment>
+      <Helmet>
+        <title>{titleText}</title>
+        <meta name="description" content={wobject?.description} />
+        <meta property="og:title" content={titleText} />
+        <meta property="og:type" content="article" />
+        {/* <link rel="canonical" href={url} /> */}
+        {/* <meta property="og:url" content={url} /> */}
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        {/* <meta property="og:image:width" content="600" /> */}
+        {/* <meta property="og:image:height" content="600" /> */}
+        {/* <meta property="og:description" content={desc} /> */}
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        {/* <meta name="twitter:site" content={`@${siteName}`} /> */}
+        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:description" content={wobject?.description} />
+        <meta name="twitter:image" property="twitter:image" content={image} />
+        <meta property="og:site_name" content={getObjectName(wobject)} />
+        {/* <link rel="image_src" href={image} /> */}
+        <link id="favicon" rel="icon" href={image} type="image/x-icon" />
+      </Helmet>
+      <iframe
+        ref={iframeRef}
+        srcDoc={processedHtml}
+        sandbox={sandboxValue}
+        referrerPolicy="no-referrer"
+        className={className}
+        scrolling={autoSize ? 'no' : 'auto'}
+        style={{
+          display: 'block', // прибирає нижній baseline-gap як у <img>
+          width: '100%',
+          height: autoSize ? '400px' : `${maxHeight}px`,
+          border: 'none',
+          verticalAlign: 'top',
+          pointerEvents: interactive ? 'auto' : 'none', // щоб колесо прокрутки не «липло» до фрейму під час автофіту
+        }}
+        title="HTML Sandbox"
+      />
+    </React.Fragment>
   );
 };
 
 HtmlSandbox.defaultProps = {
   autoSize: true,
-  maxHeight: 2400,
+  maxHeight: 100000,
   padding: 16,
 };
 
@@ -412,6 +447,9 @@ HtmlSandbox.propTypes = {
   autoSize: PropTypes.bool,
   maxHeight: PropTypes.number,
   padding: PropTypes.number,
+  wobject: PropTypes.shape({
+    description: PropTypes.string,
+  }),
 };
 
 export default HtmlSandbox;
