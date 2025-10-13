@@ -232,7 +232,11 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       break;
   }
 
-  const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+  const uniqueItems = uniqBy(withoutPromotion, 'author_permlink');
+
+  const lists = uniqueItems.filter(item => isList(item));
+  const nonLists = uniqueItems.filter(item => !isList(item));
+  const sortedLists = lists.sort((a, b) => {
     const cmp = comparator(a, b);
 
     if (cmp !== 0) return cmp;
@@ -244,9 +248,19 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
     return 0;
   });
 
-  const sorting = (a, b) => isList(b) - isList(a);
+  const sortedNonLists = nonLists.sort((a, b) => {
+    const cmp = comparator(a, b);
 
-  return [...sortItemsByPr, ...sorted.sort(sorting)];
+    if (cmp !== 0) return cmp;
+
+    if (has(a, 'addedAt') && has(b, 'addedAt')) {
+      return new Date(b.addedAt) - new Date(a.addedAt);
+    }
+
+    return 0;
+  });
+
+  return [...sortItemsByPr, ...sortedLists, ...sortedNonLists];
 };
 
 export const getWobjectsForMap = objects =>
