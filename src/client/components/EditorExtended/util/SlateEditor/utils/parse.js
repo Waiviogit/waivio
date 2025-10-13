@@ -182,14 +182,6 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
     .use(remarkToSlate, {
       overrides: {
         link: (node, next) => {
-          if (node.url?.includes('/object/')) {
-            return {
-              type: 'object',
-              hashtag: node.children[0]?.value,
-              url: node.url,
-              children: [{ text: ' ' }],
-            };
-          }
           if (SteemEmbed.get(node.url)) {
             return {
               type: 'video',
@@ -198,12 +190,21 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             };
           }
 
-          if (node.children[0].type === 'image') {
+          if (node.children?.[0]?.type === 'image') {
             return {
               type: 'image',
               ...node.children[0],
               href: node.url,
               children: [{ text: '' }],
+            };
+          }
+
+          if (node.url?.includes('/object/')) {
+            return {
+              type: 'object',
+              hashtag: node.children[0]?.value,
+              url: node.url,
+              children: [{ text: ' ' }],
             };
           }
 

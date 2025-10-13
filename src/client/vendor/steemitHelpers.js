@@ -116,8 +116,8 @@ export const calculatePayout = (post, rates, isUpdates) => {
 
 export const isPostCashout = post =>
   post?.cashout_time
-    ? Date.parse(get(post, 'cashout_time')) < Date.now()
-    : Date.parse(get(post, 'payout_at')) < Date.now();
+    ? Date.parse(`${get(post, 'cashout_time')}.000Z`) < Date.now()
+    : Date.parse(`${get(post, 'payout_at')}.000Z`) < Date.now();
 
 export const isFlaggedPost = (votes, name) =>
   getDownvotes(votes).some(({ voter }) => voter === name);
