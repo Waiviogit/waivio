@@ -177,7 +177,9 @@ const PayoutDetail = React.memo(({ intl, post, isModal, isUpdates }) => {
               <FormattedMessage
                 id="payout_will_release_in_time"
                 defaultMessage="Will release {time}"
-                values={{ time: intl.formatRelative(post.cashout_time || post.payout_at) }}
+                values={{
+                  time: intl.formatRelative(`${post.cashout_time || post.payout_at}.000Z`),
+                }}
               />
             </span>
           </div>
