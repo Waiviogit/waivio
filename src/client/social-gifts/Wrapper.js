@@ -42,8 +42,8 @@ import {
   setMainObj,
 } from '../../store/appStore/appActions';
 import {
-  getHideHeaderFromBase,
-  getHideSignInFromBase,
+  getHideHeaderFromWobj,
+  getHideSignInFromWobj,
 } from '../../store/wObjectStore/wObjectSelectors';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -110,8 +110,8 @@ const SocialWrapper = props => {
   const signInPage = props?.location.pathname?.includes('sign-in');
   const isWidget = new URLSearchParams(props.location?.search).get('display');
   const host = useSelector(getAppHost);
-  const hideHeader = useSelector(getHideHeaderFromBase);
-  const hideSignIn = useSelector(getHideSignInFromBase);
+  const hideHeader = useSelector(getHideHeaderFromWobj);
+  const hideSignIn = useSelector(getHideSignInFromWobj);
   const configuration = useSelector(getConfigurationValues);
 
   const createWebsiteMenu = config => {
