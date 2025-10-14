@@ -15,6 +15,14 @@ export const getHideSignInFromWobj = createSelector(
   state => state.wobject.hideSignInHeader,
 );
 export const getBaseObject = createSelector([objectState], state => state.baseObject);
+export const getHideHeaderFromBase = createSelector(
+  [objectState],
+  state => state.baseObject.hideHeader,
+);
+export const getHideSignInFromBase = createSelector(
+  [objectState],
+  state => state.baseObject.hideSignInHeader,
+);
 
 export const getObjectFields = createSelector([getObject], state => get(state, 'fields', []));
 
