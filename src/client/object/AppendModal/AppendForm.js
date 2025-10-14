@@ -3935,7 +3935,8 @@ class AppendForm extends Component {
                 initialValue: {
                   expand: [],
                   exclude: [],
-                  include: listItems.map(item => item.id),
+                  include: [],
+                  sortType: 'recency',
                 },
               })(
                 isList ? (
@@ -3946,6 +3947,7 @@ class AppendForm extends Component {
                     onChange={this.handleChangeSorting}
                     wobjType={wobjType}
                     customSort={sortCustom}
+                    mode={isEmpty(sortCustom) || !sortCustom.include ? 'Auto' : 'Custom'}
                   />
                 ) : (
                   <SortingList
@@ -3954,6 +3956,7 @@ class AppendForm extends Component {
                     accentColor={PRIMARY_COLOR}
                     onChange={this.handleChangeSorting}
                     wobjType={wobjType}
+                    mode={isEmpty(sortCustom) || !sortCustom.include ? 'Auto' : 'Custom'}
                   />
                 ),
               )}
