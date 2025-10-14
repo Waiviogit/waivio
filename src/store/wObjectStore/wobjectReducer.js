@@ -157,13 +157,32 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
-    case actions.SET_BASE_OBJECT:
+    case actions.SET_BASE_OBJECT: {
+      if (action.payload.htmlContent) {
+        const htmlContent = parseJSON(action.payload.htmlContent) || {
+          hideSignIn: true,
+          hideMenu: true,
+          code: action.payload.htmlContent,
+        };
+
+        return {
+          ...state,
+          baseObject: {
+            ...action.payload,
+            code: htmlContent.code,
+            hideHeader: htmlContent.hideMenu,
+            hideSignInHeader: htmlContent.hideSignIn,
+          },
+        };
+      }
+
       return {
         ...state,
         baseObject: {
           ...action.payload,
         },
       };
+    }
 
     case actions.ADD_ITEM_TO_LIST:
       return {

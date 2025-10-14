@@ -651,6 +651,42 @@ const EditorSlate = props => {
     }
   };
 
+  const handleKeyUp = event => {
+    // Handle 4 spaces to enable code mode - check after space is inserted
+    if (event.key === ' ' && !isWobjCode) {
+      try {
+        const { selection } = editor;
+
+        if (selection && Range.isCollapsed(selection)) {
+          const [match] = Editor.nodes(editor, {
+            match: n => !Editor.isEditor(n) && ElementSlate.isElement(n) && n.type === 'paragraph',
+          });
+
+          if (match) {
+            const [node] = match;
+            const text = Node.string(node);
+
+            // Check if we have exactly 4 spaces and nothing else in the line
+            if (text === '    ') {
+              // Delete the 4 spaces
+              Transforms.delete(editor, {
+                at: {
+                  anchor: Editor.start(editor, selection.anchor.path.slice(0, -1)),
+                  focus: selection.anchor,
+                },
+              });
+
+              // Convert to code block
+              toggleBlock(editor, 'code');
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Error handling 4 spaces for code mode:', error);
+      }
+    }
+  };
+
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
@@ -672,6 +708,7 @@ const EditorSlate = props => {
             renderElement={renderElement}
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
+            onKeyUp={handleKeyUp}
             onDrop={handleDroppedFiles}
             onFocus={handleFocus}
             onBlur={() => {}}

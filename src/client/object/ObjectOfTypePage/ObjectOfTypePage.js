@@ -432,7 +432,7 @@ const ObjectOfTypePage = props => {
       ) : (
         <React.Fragment>
           {!isLoadingFlag ||
-            (isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+            (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (

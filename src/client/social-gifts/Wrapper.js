@@ -42,8 +42,8 @@ import {
   setMainObj,
 } from '../../store/appStore/appActions';
 import {
-  getHideHeaderFromWobj,
-  getHideSignInFromWobj,
+  getHideHeaderFromBase,
+  getHideSignInFromBase,
 } from '../../store/wObjectStore/wObjectSelectors';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -56,6 +56,7 @@ import {
   getWebsiteColors,
   getWebsiteConfiguration,
   getAppHost,
+  getConfigurationValues,
 } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
@@ -109,101 +110,100 @@ const SocialWrapper = props => {
   const signInPage = props?.location.pathname?.includes('sign-in');
   const isWidget = new URLSearchParams(props.location?.search).get('display');
   const host = useSelector(getAppHost);
-  const hideHeader = useSelector(getHideHeaderFromWobj);
-  const hideSignIn = useSelector(getHideSignInFromWobj);
+  const hideHeader = useSelector(getHideHeaderFromBase);
+  const hideSignIn = useSelector(getHideSignInFromBase);
+  const configuration = useSelector(getConfigurationValues);
 
-  const createWebsiteMenu = configuration => {
-    if (!isEmpty(configuration?.shopSettings)) {
-      if (configuration.shopSettings?.type === 'object') {
-        getObject(configuration.shopSettings?.value, props.username, props.locale).then(
-          async wobject => {
-            dispatch(setBaseObject(wobject));
-            const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-              const body = parseJSON(item.body);
+  const createWebsiteMenu = config => {
+    if (!isEmpty(config?.shopSettings)) {
+      if (config.shopSettings?.type === 'object') {
+        getObject(config.shopSettings?.value, props.username, props.locale).then(async wobject => {
+          dispatch(setBaseObject(wobject));
+          const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+            const body = parseJSON(item.body);
 
-              if (body?.linkToObject) {
-                return [...acc, body?.linkToObject];
-              }
-
-              return acc;
-            }, []);
-            const customSort = get(wobject, 'sortCustom.include', []);
-
-            if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
-              dispatch(
-                setItemsForNavigation([
-                  {
-                    link: createLink(wobject),
-                    name: 'Home',
-                    permlink: wobject?.author_permlink,
-                    object_type: wobject?.object_type,
-                  },
-                  {
-                    name: 'Legal',
-                    link: '/object/ljc-legal',
-                    permlink: 'ljc-legal',
-                    object_type: 'list',
-                  },
-                ]),
-              );
-              props.setLoadingStatus(true);
-            } else {
-              const listItems = isEmpty(menuItemLinks)
-                ? []
-                : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
-              const compareList = wobject?.menuItem?.map(wobjItem => {
-                const body = parseJSON(wobjItem.body);
-                const currItem = body?.linkToObject
-                  ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
-                  : body;
-
-                return {
-                  ...wobjItem,
-                  ...currItem,
-                  body,
-                };
-              });
-              const sortingButton = customSort.reduce((acc, curr) => {
-                const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-                return findObj ? [...acc, findObj] : acc;
-              }, []);
-
-              if (sortingButton?.[0]?.linkToWeb && !sortingButton?.[0]?.linkToWeb?.includes(host))
-                window.location.href = sortingButton[0].linkToWeb;
-
-              const fullList = [
-                ...sortingButton,
-                ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-              ];
-
-              const newList = await enrichMenuItems(fullList, language, true);
-
-              const buttonList = newList.map(i => ({
-                link: createLink(i),
-                name: i?.body?.title || getObjectName(i),
-                type: i.body.linkToObject ? 'nav' : 'blank',
-                permlink: i.body.linkToObject,
-                object_type: i?.object_type,
-              }));
-
-              dispatch(
-                setItemsForNavigation([
-                  ...buttonList,
-                  {
-                    name: 'Legal',
-                    link: '/object/ljc-legal',
-                    permlink: 'ljc-legal',
-                    object_type: 'list',
-                  },
-                ]),
-              );
-
-              props.setLoadingStatus(true);
+            if (body?.linkToObject) {
+              return [...acc, body?.linkToObject];
             }
-          },
-        );
+
+            return acc;
+          }, []);
+          const customSort = get(wobject, 'sortCustom.include', []);
+
+          if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
+            dispatch(
+              setItemsForNavigation([
+                {
+                  link: createLink(wobject),
+                  name: 'Home',
+                  permlink: wobject?.author_permlink,
+                  object_type: wobject?.object_type,
+                },
+                {
+                  name: 'Legal',
+                  link: '/object/ljc-legal',
+                  permlink: 'ljc-legal',
+                  object_type: 'list',
+                },
+              ]),
+            );
+            props.setLoadingStatus(true);
+          } else {
+            const listItems = isEmpty(menuItemLinks)
+              ? []
+              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
+
+            const compareList = wobject?.menuItem?.map(wobjItem => {
+              const body = parseJSON(wobjItem.body);
+              const currItem = body?.linkToObject
+                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
+                : body;
+
+              return {
+                ...wobjItem,
+                ...currItem,
+                body,
+              };
+            });
+            const sortingButton = customSort.reduce((acc, curr) => {
+              const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+              return findObj ? [...acc, findObj] : acc;
+            }, []);
+
+            if (sortingButton?.[0]?.linkToWeb && !sortingButton?.[0]?.linkToWeb?.includes(host))
+              window.location.href = sortingButton[0].linkToWeb;
+
+            const fullList = [
+              ...sortingButton,
+              ...compareList?.filter(i => !customSort?.includes(i.permlink)),
+            ];
+
+            const newList = await enrichMenuItems(fullList, language, true);
+
+            const buttonList = newList.map(i => ({
+              link: createLink(i),
+              name: i?.body?.title || getObjectName(i),
+              type: i.body.linkToObject ? 'nav' : 'blank',
+              permlink: i.body.linkToObject,
+              object_type: i?.object_type,
+            }));
+
+            dispatch(
+              setItemsForNavigation([
+                ...buttonList,
+                {
+                  name: 'Legal',
+                  link: '/object/ljc-legal',
+                  permlink: 'ljc-legal',
+                  object_type: 'list',
+                },
+              ]),
+            );
+
+            props.setLoadingStatus(true);
+          }
+        });
       }
     }
   };
@@ -289,6 +289,7 @@ const SocialWrapper = props => {
           {!signInPage &&
             !isSocialGifts &&
             !isWidget &&
+            !isEmpty(configuration) &&
             typeof window !== 'undefined' &&
             window.self === window.top && (
               <Header hideSignIn={hideSignIn} hideHeader={hideHeader} />
