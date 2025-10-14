@@ -163,7 +163,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
 
       return (
         <div>
-          <div className="Checklist__list">{injectAds(itemsListType, getListRow, false)}</div>
+          <div className="Checklist__list">{itemsListType.map(getListRow)}</div>
           <div className="Checklist__list">{injectAds(itemsProducts, getListRow, true)}</div>
         </div>
       );
