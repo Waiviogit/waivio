@@ -6,7 +6,7 @@ import { debounce, get } from 'lodash';
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
 import ModalBodySlider from '../common/ModalBodySlider';
-import ModalBodyVoteRatio from '../common/ModalBodyVoteRatio';
+import ModalBodyVoteRatioRadio from '../common/ModalBodyVoteRatioRadio/ModalBodyVoteRatioRadio';
 import { MATCH_BOTS_NAMES } from '../../../../../common/helpers/matchBotsHelpers';
 import ModalBodySearch from '../common/ModalBodySearch/ModalBodySearch';
 import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
@@ -25,10 +25,13 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
       minVotingPowerCurrencies: currencyListForSliderValues[value],
     }));
 
-  const handleChangeVote = debounce(
-    voteRatio => setInputsValue(prev => ({ ...prev, voteRatio, isSubmitted: false })),
-    200,
-  );
+  const handleChangeVote = debounce((value, fieldType) => {
+    if (fieldType === 'voteWeight') {
+      setInputsValue(prev => ({ ...prev, voteWeight: value, voteRatio: null, isSubmitted: false }));
+    } else if (fieldType === 'voteRatio') {
+      setInputsValue(prev => ({ ...prev, voteRatio: value, voteWeight: null, isSubmitted: false }));
+    }
+  }, 200);
 
   return (
     <div>
@@ -40,8 +43,9 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
           setInputsValue={setInputsValue}
         />
       )}
-      <ModalBodyVoteRatio
-        value={inputsValue.voteRatio}
+      <ModalBodyVoteRatioRadio
+        voteWeight={inputsValue.voteWeight}
+        voteRatio={inputsValue.voteRatio}
         handleChangeVote={handleChangeVote}
         isSubmitted={inputsValue.isSubmitted}
       />

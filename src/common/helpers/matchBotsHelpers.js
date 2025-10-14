@@ -24,7 +24,8 @@ export const INITIAL_INPUTS_VALUE = {
 };
 
 export const INITIAL_INPUTS_VALUE_CURATOR = {
-  voteRatio: 100,
+  voteWeight: 100,
+  voteRatio: null,
   manaValue: 75,
   notesValue: '',
   isDownvote: false,
@@ -67,16 +68,23 @@ export const getBotObjCurator = (botData, isEdit) => {
     type: MATCH_BOTS_NAMES.CURATORS,
     enabled: !isEdit || botData.enabled,
     voteComments: botData.isComments,
-    voteRatio: botData.voteRatio / 100,
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
     name: get(botData, 'selectedUser.account', ''),
     minVotingPowerCurrencies: botData.minVotingPowerCurrencies,
   };
 
+  if (botData.voteWeight !== null && botData.voteWeight !== undefined) {
+    dataObj.voteWeight = botData.voteWeight / 100;
+  } else if (botData.voteRatio !== null && botData.voteRatio !== undefined) {
+    dataObj.voteRatio = botData.voteRatio / 100;
+  }
+
   if (botData.notesValue) dataObj.note = botData.notesValue;
   if (botData.expiredAt) dataObj.expiredAt = botData.expiredAt && botData.expiredAt.format();
-  if (dataObj.type && dataObj.name && dataObj.voteRatio && dataObj.minVotingPower) {
+  const hasVoteValue = dataObj.voteWeight || dataObj.voteRatio;
+
+  if (dataObj.type && dataObj.name && hasVoteValue && dataObj.minVotingPower) {
     return dataObj;
   }
 
@@ -93,10 +101,11 @@ export const setInitialInputValues = value => {
     minVotingPowerCurrencies: ['WAIV'],
   };
 
-  if (value.voteWeight) initialState.voteValue = value.voteWeight / 100;
+  if (value.voteWeight) initialState.voteWeight = value.voteWeight * 100;
   if (value.voteComments) initialState.isComments = value.voteComments;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
+  if (value.voteWeight) initialState.voteWeight = value.voteWeight * 100;
   if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);
 
   return initialState;

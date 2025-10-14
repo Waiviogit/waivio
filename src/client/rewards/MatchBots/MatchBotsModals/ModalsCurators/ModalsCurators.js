@@ -38,7 +38,7 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
 
   const handleOpenConfirmEditModal = () => {
     setInputsValue(prev => ({ ...prev, isSubmitted: true }));
-    if (inputsValue.voteRatio) {
+    if (inputsValue.voteWeight || inputsValue.voteRatio) {
       setIsModalOpenConfirmEdit(true);
     }
   };
