@@ -138,7 +138,7 @@ const CatalogWrap = props => {
       currentList = [...listItems, listItem];
     }
 
-    const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
+    const currentRecencySortList = [...recencySortList, listItem.author_permlink];
     const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
 
     const currentSortType = sortBy || defaultSortBy(obj);
