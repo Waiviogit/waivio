@@ -28,6 +28,7 @@ const DnDList = ({
   onChange = () => {},
   wobjType = '',
   sortCustom,
+  mode = 'Custom',
 }) => {
   const [items, setItems] = useState(listItems);
   const [expand, setExpand] = useState([]);
@@ -77,10 +78,13 @@ const DnDList = ({
     setExclude(updatedExclude);
     const newInclude = items.filter(item => !updatedExclude?.includes(item.id)).map(i => i.id);
 
+    const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       include: newInclude,
       exclude: updatedExclude,
       expand,
+      sortType,
     });
   };
 
@@ -95,10 +99,13 @@ const DnDList = ({
 
     setExpand(newExpanded);
 
+    const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       expand: newExpanded,
       include,
       exclude,
+      sortType,
     });
   };
 
@@ -184,6 +191,7 @@ DnDList.propTypes = {
     include: PropTypes.arrayOf(PropTypes.string),
     exclude: PropTypes.arrayOf(PropTypes.string),
   }),
+  mode: PropTypes.string,
 };
 
 export default DnDList;

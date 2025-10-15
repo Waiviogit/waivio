@@ -136,7 +136,7 @@ class ListDnD extends Component {
     }
   };
 
-  handleSortChange = sortType => {
+  handleSortChange = (sortType = 'recency') => {
     const { items } = this.state;
     const { customSort } = this.props;
 
@@ -168,7 +168,7 @@ class ListDnD extends Component {
       .map(item => item.id);
 
     onChange({
-      include: newInclude,
+      include: sortType === 'custom' ? newInclude : [],
       exclude: newExclude,
       sortType,
     });
@@ -212,7 +212,10 @@ class ListDnD extends Component {
     this.setState({ items: itemsList });
     this.props.onChange({
       exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
-      include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+      include:
+        this.state.sort === 'custom'
+          ? itemsList.filter(i => i.checkedItemInList).map(item => item.id)
+          : [],
       sortType: this.state.sort,
     });
   };
