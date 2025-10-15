@@ -79,6 +79,7 @@ const DnDList = ({
     const newInclude = items.filter(item => !updatedExclude?.includes(item.id)).map(i => i.id);
 
     const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       include: newInclude,
       exclude: updatedExclude,
@@ -99,6 +100,7 @@ const DnDList = ({
     setExpand(newExpanded);
 
     const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       expand: newExpanded,
       include,
