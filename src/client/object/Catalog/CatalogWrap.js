@@ -66,7 +66,13 @@ const CatalogWrap = props => {
   const host = useSelector(getAppHost);
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
+    const defaultSortBy = obj => {
+      if (obj.sortCustom?.sortType) {
+        return obj.sortCustom.sortType;
+      }
+
+      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
+    };
 
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
@@ -139,7 +145,13 @@ const CatalogWrap = props => {
     }
 
     const currentRecencySortList = [...recencySortList, listItem.author_permlink];
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
+    const defaultSortBy = obj => {
+      if (obj.sortCustom?.sortType) {
+        return obj.sortCustom.sortType;
+      }
+
+      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
+    };
 
     const currentSortType = sortBy || defaultSortBy(obj);
 
