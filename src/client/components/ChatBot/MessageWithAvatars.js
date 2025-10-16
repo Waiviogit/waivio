@@ -149,22 +149,23 @@ const MessageWithAvatars = ({ text }) => {
         );
       } else {
         parts.push(
-          <img
-            key={`img-${match.index}`}
-            src={imageUrl}
-            alt={match[1] || 'image'}
-            style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px', margin: '4px' }}
-            onError={e => {
-              e.target.style.display = 'none';
-              const fallbackSpan = document.createElement('span');
+          <a href={imageUrl} target="_blank" rel="noopener noreferrer">
+            <img
+              key={`img-${match.index}`}
+              src={imageUrl}
+              alt={match[1] || 'image'}
+              onError={e => {
+                e.target.style.display = 'none';
+                const fallbackSpan = document.createElement('span');
 
-              fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
-                appUrl,
-                isChatBotLink: true,
-              });
-              e.target.parentNode.replaceChild(fallbackSpan, e.target);
-            }}
-          />,
+                fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
+                  appUrl,
+                  isChatBotLink: true,
+                });
+                e.target.parentNode.replaceChild(fallbackSpan, e.target);
+              }}
+            />
+          </a>,
         );
       }
 
