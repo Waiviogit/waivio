@@ -111,15 +111,19 @@ const MessageWithAvatars = ({ text }) => {
 
   const processTextWithImagesAndLinks = t => {
     const parts = [];
+    const preprocessedText = t.replace(
+      /^(\s*)[-•·*](\s*)(!\[[^\]]*\]\(https?:\/\/[^)]+\))/gm,
+      '$1$3',
+    );
 
     const markdownImageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
     let match;
     let lastIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
-    while ((match = markdownImageRegex.exec(t)) !== null) {
+    while ((match = markdownImageRegex.exec(preprocessedText)) !== null) {
       if (match.index > lastIndex) {
-        let beforeText = t.slice(lastIndex, match.index);
+        let beforeText = preprocessedText.slice(lastIndex, match.index);
 
         if (beforeText.endsWith('(')) {
           beforeText = beforeText.slice(0, -1);
@@ -170,7 +174,7 @@ const MessageWithAvatars = ({ text }) => {
       }
 
       const afterImageIndex = match.index + match[0].length;
-      const nextChar = text[afterImageIndex];
+      const nextChar = preprocessedText[afterImageIndex];
 
       if (nextChar === ')') {
         lastIndex = afterImageIndex + 1;
@@ -179,8 +183,8 @@ const MessageWithAvatars = ({ text }) => {
       }
     }
 
-    if (lastIndex < text.length) {
-      let remainingText = text.slice(lastIndex);
+    if (lastIndex < preprocessedText.length) {
+      let remainingText = preprocessedText.slice(lastIndex);
 
       if (remainingText.startsWith(')')) {
         remainingText = remainingText.slice(1);
@@ -195,7 +199,7 @@ const MessageWithAvatars = ({ text }) => {
       }
     }
 
-    return parts.length > 0 ? parts : [<span key="fallback">{text}</span>];
+    return parts.length > 0 ? parts : [<span key="fallback">{preprocessedText}</span>];
   };
 
   return <span>{processTextWithImagesAndLinks(text)}</span>;
