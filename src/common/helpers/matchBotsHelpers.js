@@ -101,7 +101,7 @@ export const setInitialInputValues = value => {
     minVotingPowerCurrencies: ['WAIV'],
   };
 
-  if (value.voteWeight) initialState.voteWeight = value.voteWeight * 100;
+  if (value.voteWeight) initialState.voteWeight = value.voteWeight / 100;
   if (value.voteComments) initialState.isComments = value.voteComments;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;

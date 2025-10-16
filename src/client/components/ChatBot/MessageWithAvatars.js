@@ -112,12 +112,12 @@ const MessageWithAvatars = ({ text }) => {
   const processTextWithImagesAndLinks = t => {
     const parts = [];
 
-    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    const markdownImageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
     let match;
     let lastIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
-    while ((match = imageRegex.exec(t)) !== null) {
+    while ((match = markdownImageRegex.exec(t)) !== null) {
       if (match.index > lastIndex) {
         let beforeText = t.slice(lastIndex, match.index);
 
@@ -149,9 +149,22 @@ const MessageWithAvatars = ({ text }) => {
         );
       } else {
         parts.push(
-          <span key={`img-${match.index}`}>
-            {getHtml(fullMatch, {}, 'Object', { appUrl, isChatBotLink: true })}
-          </span>,
+          <img
+            key={`img-${match.index}`}
+            src={imageUrl}
+            alt={match[1] || 'image'}
+            style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px', margin: '4px' }}
+            onError={e => {
+              e.target.style.display = 'none';
+              const fallbackSpan = document.createElement('span');
+
+              fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
+                appUrl,
+                isChatBotLink: true,
+              });
+              e.target.parentNode.replaceChild(fallbackSpan, e.target);
+            }}
+          />,
         );
       }
 
