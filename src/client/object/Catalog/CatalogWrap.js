@@ -180,7 +180,16 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     setSortingBy(sortType);
-    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {}), host));
+
+    let sortOrder = null;
+
+    if (sortType === 'custom') {
+      sortOrder = get(obj, 'sortCustom', {});
+    }
+
+    const sortedItems = sortListItemsBy(listItems, sortType, sortOrder, host);
+
+    setLists(sortedItems);
   };
 
   const getListRow = listItem => {

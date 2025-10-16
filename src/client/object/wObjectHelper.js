@@ -134,10 +134,9 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       return new Date(a.addedAt) - new Date(b.addedAt);
     });
 
-  if (!sortByParam || ['recency'].includes(sortByParam))
-    return [...sortItemsByPr, ...withoutPromotion];
+  // Remove early return to allow proper sorting logic to execute
 
-  if (sortByParam === 'custom' || (sortOrder && sortOrder.sortType)) {
+  if (sortByParam === 'custom' && sortOrder) {
     if (sortOrder && sortOrder.sortType && sortOrder.sortType !== 'custom') {
       let comparator;
 
@@ -227,6 +226,24 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       break;
     case 'by-name-desc':
       comparator = (a, b) => getObjectName(b).localeCompare(getObjectName(a));
+      break;
+    case 'recency':
+      comparator = (a, b) => {
+        if (!a.addedAt && !b.addedAt) return 0;
+        if (!a.addedAt) return 1;
+        if (!b.addedAt) return -1;
+
+        return new Date(a.addedAt) - new Date(b.addedAt);
+      };
+      break;
+    case 'reverse_recency':
+      comparator = (a, b) => {
+        if (!a.addedAt && !b.addedAt) return 0;
+        if (!a.addedAt) return -1;
+        if (!b.addedAt) return 1;
+
+        return new Date(b.addedAt) - new Date(a.addedAt);
+      };
       break;
     default:
       comparator = () => 0;
