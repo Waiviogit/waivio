@@ -32,10 +32,15 @@ export default class SortSelector extends React.Component {
 
     this.handleVisibleChange = this.handleVisibleChange.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.hide = this.hide.bind(this);
   }
 
   handleVisibleChange() {
     this.setState(prevState => ({ visible: !prevState.visible }));
+  }
+
+  hide() {
+    this.setState({ visible: false });
   }
 
   handleSelect(current) {
@@ -73,7 +78,7 @@ export default class SortSelector extends React.Component {
             visible={visible}
             onVisibleChange={this.handleVisibleChange}
             content={
-              <PopoverMenu bold onSelect={this.handleSelect}>
+              <PopoverMenu bold onSelect={this.handleSelect} hide={this.hide}>
                 {this.props.children}
               </PopoverMenu>
             }
