@@ -2,7 +2,7 @@ import { Checkbox } from 'antd';
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-
+import { has } from 'lodash';
 import { formatDate } from '../../../rewardsHelper';
 import ModalsCurators from '../../MatchBotsModals/ModalsCurators';
 import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
@@ -20,7 +20,10 @@ const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
       {type === 'curator' && (
         <td>
           {bot.enablePowerDown && '±'}
-          {Math.round(bot.voteRatio * 100)}%
+          {has(bot, 'voteRatio')
+            ? Math.round(bot.voteRatio * 100)
+            : Math.round(bot.voteWeight / 100)}
+          %
         </td>
       )}
       {type === 'author' && <td>{Math.round(bot.voteWeight / 100)}%</td>}

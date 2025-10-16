@@ -75,7 +75,7 @@ export const getBotObjCurator = (botData, isEdit) => {
   };
 
   if (botData.voteWeight !== null && botData.voteWeight !== undefined) {
-    dataObj.voteWeight = botData.voteWeight / 100;
+    dataObj.voteWeight = botData.voteWeight * 100;
   } else if (botData.voteRatio !== null && botData.voteRatio !== undefined) {
     dataObj.voteRatio = botData.voteRatio / 100;
   }
@@ -101,11 +101,10 @@ export const setInitialInputValues = value => {
     minVotingPowerCurrencies: ['WAIV'],
   };
 
-  if (value.voteWeight) initialState.voteWeight = value.voteWeight * 100;
+  if (value.voteWeight) initialState.voteWeight = value.voteWeight / 100;
   if (value.voteComments) initialState.isComments = value.voteComments;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
-  if (value.voteWeight) initialState.voteWeight = value.voteWeight * 100;
   if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);
 
   return initialState;

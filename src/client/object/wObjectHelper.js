@@ -136,7 +136,8 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
 
   if (!sortByParam || ['recency'].includes(sortByParam))
     return [...sortItemsByPr, ...withoutPromotion];
-  if (!sortByParam || ['custom'].includes(sortByParam)) {
+
+  if (sortByParam === 'custom' || (sortOrder && sortOrder.sortType)) {
     if (sortOrder && sortOrder.sortType && sortOrder.sortType !== 'custom') {
       let comparator;
 

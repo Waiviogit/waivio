@@ -66,7 +66,13 @@ const CatalogWrap = props => {
   const host = useSelector(getAppHost);
 
   useEffect(() => {
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
+    const defaultSortBy = obj => {
+      if (obj.sortCustom?.sortType) {
+        return obj.sortCustom.sortType;
+      }
+
+      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
+    };
 
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
@@ -128,20 +134,22 @@ const CatalogWrap = props => {
   }, [location.hash, wobject.author_permlink]);
 
   const handleAddItem = listItem => {
-    let currentList;
-
-    if (isEmpty(listItems)) {
-      currentList = [listItem];
-    } else if (listItems.some(item => item.author_permlink === listItem.author_permlink)) {
-      currentList = listItems;
-    } else {
-      currentList = [...listItems, listItem];
+    if (listItems.some(item => item.author_permlink === listItem.author_permlink)) {
+      return;
     }
 
     const currentRecencySortList = [...recencySortList, listItem.author_permlink];
-    const defaultSortBy = obj => (isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom');
+    const defaultSortBy = obj => {
+      if (obj.sortCustom?.sortType) {
+        return obj.sortCustom.sortType;
+      }
+
+      return isEmpty(obj.sortCustom?.include) ? 'rank' : 'custom';
+    };
 
     const currentSortType = sortBy || defaultSortBy(obj);
+
+    const newList = [...listItems, listItem];
 
     let sortOrder;
 
@@ -156,7 +164,7 @@ const CatalogWrap = props => {
       sortOrder = currentRecencySortList;
     }
 
-    setLists(sortListItemsBy(currentList, currentSortType, sortOrder, host));
+    setLists(sortListItemsBy(newList, currentSortType, sortOrder, host));
     setRecencySortList(currentRecencySortList);
   };
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;

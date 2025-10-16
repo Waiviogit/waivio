@@ -163,7 +163,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     const imageList = [...currentImage.map(i => i?.src), ...matchedLinks].slice(0, 2);
     const cleanText = textFromUser.replace(imageRegex, '').trim();
 
-    const question = `${cleanText}\n${imageList.join(' ')}`.trim();
+    const imageMarkdown = imageList.map(url => `![image](${url})`).join(' ');
+    const question = `${cleanText} ${imageMarkdown}`.trim();
 
     const newMessage = { text: question, role: 'human' };
     const id = isEmpty(chatId) ? uuidv4() : chatId;
