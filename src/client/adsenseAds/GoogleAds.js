@@ -40,7 +40,6 @@ const parseInsTagAttributes = str => {
 
 const GoogleAds = ({
   inPost = false,
-  listItem = false,
   listItemProducts = false,
   inFeed = false,
   inShop = false,
@@ -107,7 +106,6 @@ const GoogleAds = ({
 
   const wrapperClass = classNames('google-ads', {
     'in-post': inPost,
-    'list-item': listItem,
     'list-item-products': listItemProducts,
     'in-feed': inFeed,
     'in-shop': inShop,
@@ -121,10 +119,7 @@ const GoogleAds = ({
     <div className={wrapperClass}>
       <ins
         {...insAttributes}
-        className={classNames(insAttributes.className, {
-          // 'list-item': listItem,
-          // 'list-item-products': listItemProducts,
-        })}
+        className={classNames(insAttributes.className, {})}
         {...(isLocalhost ? { 'data-adtest': 'on' } : {})}
         ref={adRef}
       />
@@ -137,7 +132,6 @@ GoogleAds.propTypes = {
   inFeed: PropTypes.bool,
   inShop: PropTypes.bool,
   inList: PropTypes.bool,
-  listItem: PropTypes.bool,
   listItemProducts: PropTypes.bool,
   limitWidth: PropTypes.bool,
 };

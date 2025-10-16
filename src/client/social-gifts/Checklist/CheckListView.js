@@ -34,6 +34,8 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const { name } = useParams();
   const { minimal, intensive, moderate } = useAdLevelData();
 
+  const hasProducts = listItems && listItems.some(item => item.object_type !== 'list');
+
   let breadcrumbsFromQuery = query.get('breadcrumbs');
 
   breadcrumbsFromQuery = breadcrumbsFromQuery ? breadcrumbsFromQuery.split('/') : null;
@@ -135,7 +137,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       rows.forEach((row, rowIndex) => {
         const rowElements = [...row.map(getRowFn)];
 
-        if (intensive) {
+        if (intensive && isProducts) {
           const adPosition = Math.floor(Math.random() * (rowElements.length + 1));
 
           rowElements.splice(
@@ -163,13 +165,13 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
 
       return (
         <div>
-          <div className="Checklist__list">{injectAds(itemsListType, getListRow, false)}</div>
+          <div className="Checklist__list">{itemsListType.map(getListRow)}</div>
           <div className="Checklist__list">{injectAds(itemsProducts, getListRow, true)}</div>
         </div>
       );
     }
 
-    return <div className="Checklist__list">{injectAds(listItems, getListRow)}</div>;
+    return <div className="Checklist__list">{injectAds(listItems, getListRow, hasProducts)}</div>;
   };
 
   return (

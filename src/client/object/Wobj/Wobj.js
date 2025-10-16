@@ -176,7 +176,7 @@ const Wobj = ({
       case 'widget':
         return <WidgetContent wobj={wobject} />;
       case 'html': {
-        return <HtmlSandbox fullPage html={wobject.code} />;
+        return <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />;
       }
       case 'page':
       case 'list':

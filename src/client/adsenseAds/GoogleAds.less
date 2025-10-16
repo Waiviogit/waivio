@@ -14,89 +14,11 @@
       height: 100%;
       max-height: 100%;
     }
-    &.list-item {
-      min-height: unset;
-      width: 100%;
-      overflow: hidden;
-
-      @media (min-width: 1201px) {
-        height: calc((100vw - 40px) / 5 + 33px) !important;
-        max-height: calc((100vw - 40px) / 5 + 33px) !important;
-      }
-
-      @media (max-width: 1200px) and (min-width: 999px) {
-        height: calc((100vw - 30px) / 4 + 33px) !important;
-        max-height: calc((100vw - 30px) / 4 + 33px) !important;
-      }
-
-      @media (max-width: 998px) and (min-width: 481px) {
-        height: calc((100vw - 20px) / 3 + 33px) !important;
-        max-height: calc((100vw - 20px) / 3 + 33px) !important;
-      }
-
-      @media (max-width: 480px) {
-        height: calc((100vw - 10px) / 2 + 33px) !important;
-        max-height: calc((100vw - 10px) / 2 + 33px) !important;
-      }
-    }
   }
   &.in-post {
     max-height: 100px;
   }
 
-  &.list-item {
-    border: 1px solid #e9e7e7;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    @media (min-width: 1201px) {
-      width: calc((100% - 40px) / 5);
-      max-width: calc((100% - 40px) / 5);
-      height: calc((100vw - 40px) / 5 + 33px) !important;
-      max-height: calc((100vw - 40px) / 5 + 33px) !important;
-
-      &:nth-child(5n) {
-        margin-right: 0;
-      }
-    }
-
-    @media (max-width: 1200px) and (min-width: 999px) {
-      width: calc((100% - 30px) / 4);
-      max-width: calc((100% - 30px) / 4);
-      height: calc((100vw - 30px) / 4 + 33px) !important;
-      max-height: calc((100vw - 30px) / 4 + 33px) !important;
-
-      &:nth-child(4n) {
-        margin-right: 0;
-      }
-    }
-
-    @media (max-width: 998px) and (min-width: 481px) {
-      width: calc((100% - 20px) / 3);
-      max-width: calc((100% - 20px) / 3);
-      height: calc((100vw - 20px) / 3 + 33px) !important;
-      max-height: calc((100vw - 20px) / 3 + 33px) !important;
-
-      &:nth-child(3n) {
-        margin-right: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      width: calc((100% - 10px) / 2);
-      max-width: calc((100% - 10px) / 2);
-      height: calc((100vw - 10px) / 2 + 33px) !important;
-      max-height: calc((100vw - 10px) / 2 + 33px) !important;
-
-      &:nth-child(2n) {
-        margin-right: 0;
-      }
-    }
-  }
   &.list-item-products {
     border: 1px solid #e9e7e7;
     border-radius: 4px;

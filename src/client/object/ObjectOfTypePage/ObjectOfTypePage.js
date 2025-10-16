@@ -349,7 +349,7 @@ const ObjectOfTypePage = props => {
             />
           </div>
           {isCode ? (
-            <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />
+            <HtmlSandbox html={content} autoSize padding={16} />
           ) : (
             <BodyContainer isPage full body={content} />
           )}
@@ -431,7 +431,8 @@ const ObjectOfTypePage = props => {
         <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
-          {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+          {!isLoadingFlag ||
+            (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (

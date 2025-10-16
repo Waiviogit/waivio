@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { isEqual } from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import { isList } from '../../../../common/helpers/wObjectHelper';
 import '../DnDList.less';
 import ListDnDItem from './ListDnDItem';
 
@@ -77,6 +78,44 @@ class ListDnD extends Component {
   sortItems = (items, sortType) => {
     const sortedItems = [...items];
 
+    if (['rank', 'by-name-asc', 'by-name-desc'].includes(sortType)) {
+      const lists = sortedItems.filter(item => isList(item));
+      const nonLists = sortedItems.filter(item => !isList(item));
+
+      let sortedLists;
+      let sortedNonLists;
+
+      switch (sortType) {
+        case 'rank':
+          sortedLists = lists.sort((a, b) => {
+            const rankA = a.weight || 0;
+            const rankB = b.weight || 0;
+
+            return rankB - rankA;
+          });
+          sortedNonLists = nonLists.sort((a, b) => {
+            const rankA = a.weight || 0;
+            const rankB = b.weight || 0;
+
+            return rankB - rankA;
+          });
+          break;
+        case 'by-name-asc':
+          sortedLists = lists.sort((a, b) => a.name.localeCompare(b.name));
+          sortedNonLists = nonLists.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case 'by-name-desc':
+          sortedLists = lists.sort((a, b) => b.name.localeCompare(a.name));
+          sortedNonLists = nonLists.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        default:
+          sortedLists = lists;
+          sortedNonLists = nonLists;
+      }
+
+      return [...sortedLists, ...sortedNonLists];
+    }
+
     switch (sortType) {
       case 'recency':
         return sortedItems.sort((a, b) => {
@@ -92,23 +131,12 @@ class ListDnD extends Component {
 
           return dateB - dateA;
         });
-      case 'rank':
-        return sortedItems.sort((a, b) => {
-          const rankA = a.weight || 0;
-          const rankB = b.weight || 0;
-
-          return rankB - rankA;
-        });
-      case 'by-name-asc':
-        return sortedItems.sort((a, b) => a.name.localeCompare(b.name));
-      case 'by-name-desc':
-        return sortedItems.sort((a, b) => b.name.localeCompare(a.name));
       default:
         return sortedItems;
     }
   };
 
-  handleSortChange = sortType => {
+  handleSortChange = (sortType = 'recency') => {
     const { items } = this.state;
     const { customSort } = this.props;
 
@@ -140,7 +168,7 @@ class ListDnD extends Component {
       .map(item => item.id);
 
     onChange({
-      include: newInclude,
+      include: sortType === 'custom' ? newInclude : [],
       exclude: newExclude,
       sortType,
     });
@@ -184,7 +212,10 @@ class ListDnD extends Component {
     this.setState({ items: itemsList });
     this.props.onChange({
       exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
-      include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+      include:
+        this.state.sort === 'custom'
+          ? itemsList.filter(i => i.checkedItemInList).map(item => item.id)
+          : [],
       sortType: this.state.sort,
     });
   };

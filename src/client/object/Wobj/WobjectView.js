@@ -108,6 +108,7 @@ const WobjectView = ({
     'wobjRightContainer--right':
       hasType(wobject, OBJECT_TYPE.PAGE) ||
       (hasType(wobject, OBJECT_TYPE.HTML) && match.params[0] === 'code') ||
+      (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage ||
       middleRightColumn ||
       entireColumn,
@@ -116,6 +117,7 @@ const WobjectView = ({
     'center--page':
       hasType(wobject, OBJECT_TYPE.PAGE) ||
       (hasType(wobject, OBJECT_TYPE.HTML) && match.params[0] === 'code') ||
+      (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage,
     'center--middleForm': middleRightColumn,
     'center--fullForm': entireColumn,

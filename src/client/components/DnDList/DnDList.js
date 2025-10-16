@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import OBJECT_TYPE, { featuredObjectTypes } from '../../object/const/objectTypes';
+import { isList } from '../../../common/helpers/wObjectHelper';
 import DnDListItem from './DnDListItem';
 import './DnDList.less';
 
@@ -27,6 +28,7 @@ const DnDList = ({
   onChange = () => {},
   wobjType = '',
   sortCustom,
+  mode = 'Custom',
 }) => {
   const [items, setItems] = useState(listItems);
   const [expand, setExpand] = useState([]);
@@ -40,14 +42,21 @@ const DnDList = ({
       ? sortCustom.expand
       : listItems.map(item => item.id);
 
-    setItems(
-      listItems.sort((a, b) => {
-        const indexA = sortCustom?.include?.indexOf(a.id);
-        const indexB = sortCustom?.include?.indexOf(b.id);
+    const sortedItems = listItems.sort((a, b) => {
+      const indexA = sortCustom?.include?.indexOf(a.id);
+      const indexB = sortCustom?.include?.indexOf(b.id);
 
-        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
-      }),
-    );
+      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+    });
+
+    if (isEmpty(sortCustom) || !sortCustom.include) {
+      const listPrioritizedItems = sortedItems.sort((a, b) => isList(b) - isList(a));
+
+      setItems(listPrioritizedItems);
+    } else {
+      setItems(sortedItems);
+    }
+
     setExpand(featuredObjectTypes?.includes(wobjType) ? sortCustom?.expand || [] : productExpand);
     setInclude(isEmpty(sortCustom) ? listItems.map(item => item.id) : sortCustom.include);
     setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
@@ -69,10 +78,13 @@ const DnDList = ({
     setExclude(updatedExclude);
     const newInclude = items.filter(item => !updatedExclude?.includes(item.id)).map(i => i.id);
 
+    const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       include: newInclude,
       exclude: updatedExclude,
       expand,
+      sortType,
     });
   };
 
@@ -87,10 +99,13 @@ const DnDList = ({
 
     setExpand(newExpanded);
 
+    const sortType = mode === 'Auto' ? 'recency' : 'custom';
+
     onChange({
       expand: newExpanded,
       include,
       exclude,
+      sortType,
     });
   };
 
@@ -176,6 +191,7 @@ DnDList.propTypes = {
     include: PropTypes.arrayOf(PropTypes.string),
     exclude: PropTypes.arrayOf(PropTypes.string),
   }),
+  mode: PropTypes.string,
 };
 
 export default DnDList;
