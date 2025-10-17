@@ -151,7 +151,6 @@ class ListDnD extends Component {
     const { listItems } = this.props;
 
     if (mode === 'Auto') {
-      // включаем все элементы и сортируем по recency
       const allEnabled = listItems.map(i => ({ ...i, checkedItemInList: true }));
 
       this.setState(
@@ -205,9 +204,7 @@ class ListDnD extends Component {
   }
 
   toggleItemInSortingList = e => {
-    const { isDisabled, items, sort } = this.state;
-
-    if (isDisabled) return;
+    const { items, sort } = this.state;
 
     const itemsList = items.map(item => ({
       ...item,
