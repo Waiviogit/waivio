@@ -138,8 +138,13 @@ const MessageWithAvatars = ({ text }) => {
         }
       }
 
-      const imageUrl = match[2];
-      const fullMatch = match[0];
+      let imageUrl = match[2];
+
+      imageUrl = imageUrl.trim();
+
+      if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        imageUrl = `https://${imageUrl}`;
+      }
 
       const objectInfo = getObjectForImage(imageUrl);
 
@@ -153,23 +158,59 @@ const MessageWithAvatars = ({ text }) => {
         );
       } else {
         parts.push(
-          <a href={imageUrl} target="_blank" rel="noopener noreferrer">
-            <img
-              key={`img-${match.index}`}
-              src={imageUrl}
-              alt={match[1] || 'image'}
-              onError={e => {
-                e.target.style.display = 'none';
-                const fallbackSpan = document.createElement('span');
+          <div
+            key={`img-container-${match.index}`}
+            style={{ textAlign: 'center', margin: '10px 0' }}
+          >
+            <a
+              href={imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ cursor: 'pointer' }}
+            >
+              <img
+                key={`img-${match.index}`}
+                src={imageUrl}
+                alt={match[1] || 'image'}
+                style={{
+                  maxWidth: '100%',
+                  height: '200px',
+                  display: 'block',
+                  margin: '0 auto',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+                onError={e => {
+                  e.target.style.display = 'none';
+                  const fallbackDiv = document.createElement('div');
 
-                fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
-                  appUrl,
-                  isChatBotLink: true,
-                });
-                e.target.parentNode.replaceChild(fallbackSpan, e.target);
-              }}
-            />
-          </a>,
+                  fallbackDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    background-color: #f5f5f5;
+                    border: 2px dashed #ccc;
+         height:200px;
+                    color: #666;
+                    font-size: 14px;
+                    text-align: center;
+      
+                  `;
+                  fallbackDiv.innerHTML = `
+                    <div style="height: 200px" >
+                      <div style="font-size: 24px; ">🖼️</div>
+                      <div style="margin-top: -20px;">Image not available
+                      <p>  <a href="${imageUrl}" target="_blank" style=" text-decoration: none;">
+                          View original
+                        </a></p></div>
+                
+                    </div>
+                  `;
+                  e.target.parentNode.replaceChild(fallbackDiv, e.target);
+                }}
+              />
+            </a>
+          </div>,
         );
       }
 
