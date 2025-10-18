@@ -10,11 +10,10 @@ const HtmlSandbox = ({
   className,
   autoSize = true,
   maxHeight = 100000,
-  padding = 16,
+  inPreview,
 }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
-
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
       .trim()
@@ -31,7 +30,6 @@ const HtmlSandbox = ({
 
     return decode(m[1]);
   };
-
   const stripMdFencesLoose = (input = '') => {
     const s = String(input)
       .trim()
@@ -129,18 +127,18 @@ const HtmlSandbox = ({
         'col',
         'colgroup',
         'a',
+        'script',
+        'button',
+        'svg','g','path','circle','ellipse','rect','line','polyline','polygon',
+        'defs','clipPath','use',
+        'linearGradient','radialGradient','stop','pattern','mask'
       ],
       disallowedTagsMode: 'discard',
       exclusiveFilter: frame => {
         const t = String(frame.tag || '').toLowerCase();
 
         return (
-          t === 'title' ||
-          t === 'meta' ||
-          t === 'base' ||
-          t === 'script' ||
-          t === 'noscript' ||
-          t === 'template'
+          t === 'title' || t === 'meta' || t === 'base' || t === 'noscript' || t === 'template'
         );
       },
       allowedAttributes: {
@@ -157,7 +155,26 @@ const HtmlSandbox = ({
           'decoding',
           'referrerpolicy',
         ],
+        button: ['onclick'],
         source: ['src', 'srcset', 'type', 'media', 'sizes'],
+        // SVG
+        svg: ['viewBox','width','height','xmlns','xmlns:xlink','role','aria-label','aria-hidden'],
+        g: ['transform','opacity'],
+        path: ['d','fill','stroke','stroke-width','opacity','transform','vector-effect','fill-rule','clip-rule'],
+        circle: ['cx','cy','r','fill','stroke','stroke-width','opacity','transform'],
+        ellipse: ['cx','cy','rx','ry','fill','stroke','stroke-width','opacity','transform'],
+        rect: ['x','y','width','height','rx','ry','fill','stroke','stroke-width','opacity','transform'],
+        line: ['x1','y1','x2','y2','stroke','stroke-width','opacity','transform'],
+        polyline: ['points','fill','stroke','stroke-width','opacity','transform'],
+        polygon: ['points','fill','stroke','stroke-width','opacity','transform'],
+        defs: [],
+        clipPath: ['id'],
+        use: ['href','xlink:href','x','y','width','height','transform','opacity'],
+        linearGradient: ['id','x1','y1','x2','y2','gradientUnits'],
+        radialGradient: ['id','cx','cy','r','fx','fy','fr','gradientUnits'],
+        stop: ['offset','stop-color','stop-opacity'],
+        pattern: ['id','width','height','patternUnits','patternTransform','x','y','viewBox'],
+        mask: ['id','x','y','width','height','maskUnits'],
         video: [
           'src',
           'controls',
@@ -229,9 +246,7 @@ const HtmlSandbox = ({
     raw = raw
       .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
       .replace(/<meta[^>]*>/gi, '')
-      .replace(/<base[^>]*>/gi, '')
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
-
+      .replace(/<base[^>]*>/gi, '');
     let cleanHtml = sanitizeHtml(raw, sanitizeConfig);
 
     cleanHtml = cleanHtml.replace(/style\s*=\s*(['"])([\s\S]*?)\1/gi, (m, q, css) => {
@@ -239,7 +254,6 @@ const HtmlSandbox = ({
 
       return `style=${q}${safe}${q}`;
     });
-
     const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
     const linkRegex = /<link[^>]*rel=["']?stylesheet["']?[^>]*>/gi;
 
@@ -265,22 +279,21 @@ const HtmlSandbox = ({
       .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
       .replace(/<meta[^>]*>/gi, '')
       .replace(/<base[^>]*>/gi, '')
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '')
       .replace(/<\/?(html|body)\b[^>]*>/gi, '');
 
     const headContent = `
       <meta charset="utf-8">
-      <meta http-equiv="Content-Security-Policy" content="
-        default-src 'none';
-        img-src * data: blob:;
-        media-src *;
-        font-src *;
-        style-src * 'unsafe-inline';
-        connect-src *;
-        frame-ancestors 'none';
-        form-action 'none';
-        script-src 'none';
-      ">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'none';
+  img-src * data: blob:;
+  media-src *;
+  font-src *;
+  style-src * 'unsafe-inline';
+  connect-src *;
+  frame-ancestors 'none';
+  form-action 'none';
+  script-src 'unsafe-inline';
+">
       <style>
         :root {
           color-scheme: light dark;
@@ -316,7 +329,7 @@ ${bodyHtml}
 <div id="__hs-end" style="height:0; clear:both;"></div>
 </body>
 </html>`;
-  }, [html, sanitizeConfig, padding, autoSize]);
+  }, [html, sanitizeConfig, autoSize]);
 
   const fit = () => {
     if (!autoSize || !iframeRef.current) return;
@@ -445,9 +458,9 @@ ${bodyHtml}
     };
   }, [autoSize, maxHeight, initialStartHeight]);
 
-  const sandboxValue = `allow-popups allow-popups-to-escape-sandbox${
-    autoSize ? ' allow-same-origin' : ''
-  }`;
+  const sandboxValue = inPreview
+    ? `allow-popups allow-popups-to-escape-sandbox allow-same-origin`
+    : 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin';
   const titleText = getTitleForLink(wobject);
   const image = getObjectAvatar(wobject);
 
@@ -493,8 +506,8 @@ HtmlSandbox.propTypes = {
   html: PropTypes.string.isRequired,
   className: PropTypes.string,
   autoSize: PropTypes.bool,
+  inPreview: PropTypes.bool,
   maxHeight: PropTypes.number,
-  padding: PropTypes.number,
   wobject: PropTypes.shape({
     description: PropTypes.string,
   }),
