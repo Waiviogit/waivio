@@ -57,7 +57,7 @@ export const safeDraftAction = (draftId, data, { deleteCamp, isEdit } = {}) => (
 ) => {
   const state = getState();
 
-  if (!data.content && !deleteCamp && !isEdit) return Promise.reject('tut');
+  if (!data.content && !deleteCamp && !isEdit) return Promise.reject('have not sraft');
 
   const draft = dispatch(buildDraft(draftId, data, isEdit, deleteCamp));
   const draftList = getDraftPostsSelector(state);
