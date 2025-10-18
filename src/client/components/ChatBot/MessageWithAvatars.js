@@ -111,15 +111,19 @@ const MessageWithAvatars = ({ text }) => {
 
   const processTextWithImagesAndLinks = t => {
     const parts = [];
+    const preprocessedText = t.replace(
+      /^(\s*)[-•·*](\s*)(!\[[^\]]*\]\(https?:\/\/[^)]+\))/gm,
+      '$1$3',
+    );
 
     const markdownImageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
     let match;
     let lastIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
-    while ((match = markdownImageRegex.exec(t)) !== null) {
+    while ((match = markdownImageRegex.exec(preprocessedText)) !== null) {
       if (match.index > lastIndex) {
-        let beforeText = t.slice(lastIndex, match.index);
+        let beforeText = preprocessedText.slice(lastIndex, match.index);
 
         if (beforeText.endsWith('(')) {
           beforeText = beforeText.slice(0, -1);
@@ -134,8 +138,13 @@ const MessageWithAvatars = ({ text }) => {
         }
       }
 
-      const imageUrl = match[2];
-      const fullMatch = match[0];
+      let imageUrl = match[2];
+
+      imageUrl = imageUrl.trim();
+
+      if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+        imageUrl = `https://${imageUrl}`;
+      }
 
       const objectInfo = getObjectForImage(imageUrl);
 
@@ -149,28 +158,64 @@ const MessageWithAvatars = ({ text }) => {
         );
       } else {
         parts.push(
-          <a href={imageUrl} target="_blank" rel="noopener noreferrer">
-            <img
-              key={`img-${match.index}`}
-              src={imageUrl}
-              alt={match[1] || 'image'}
-              onError={e => {
-                e.target.style.display = 'none';
-                const fallbackSpan = document.createElement('span');
+          <div
+            key={`img-container-${match.index}`}
+            style={{ textAlign: 'center', margin: '10px 0' }}
+          >
+            <a
+              href={imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ cursor: 'pointer' }}
+            >
+              <img
+                key={`img-${match.index}`}
+                src={imageUrl}
+                alt={match[1] || 'image'}
+                style={{
+                  maxWidth: '100%',
+                  height: '200px',
+                  display: 'block',
+                  margin: '0 auto',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+                onError={e => {
+                  e.target.style.display = 'none';
+                  const fallbackDiv = document.createElement('div');
 
-                fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
-                  appUrl,
-                  isChatBotLink: true,
-                });
-                e.target.parentNode.replaceChild(fallbackSpan, e.target);
-              }}
-            />
-          </a>,
+                  fallbackDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                    background-color: #f5f5f5;
+                    border: 2px dashed #ccc;
+         height:200px;
+                    color: #666;
+                    font-size: 14px;
+                    text-align: center;
+      
+                  `;
+                  fallbackDiv.innerHTML = `
+                    <div style="height: 200px" >
+                      <div style="font-size: 24px; ">🖼️</div>
+                      <div style="margin-top: -20px;">Image not available
+                      <p>  <a href="${imageUrl}" target="_blank" style=" text-decoration: none;">
+                          View original
+                        </a></p></div>
+                
+                    </div>
+                  `;
+                  e.target.parentNode.replaceChild(fallbackDiv, e.target);
+                }}
+              />
+            </a>
+          </div>,
         );
       }
 
       const afterImageIndex = match.index + match[0].length;
-      const nextChar = text[afterImageIndex];
+      const nextChar = preprocessedText[afterImageIndex];
 
       if (nextChar === ')') {
         lastIndex = afterImageIndex + 1;
@@ -179,8 +224,8 @@ const MessageWithAvatars = ({ text }) => {
       }
     }
 
-    if (lastIndex < text.length) {
-      let remainingText = text.slice(lastIndex);
+    if (lastIndex < preprocessedText.length) {
+      let remainingText = preprocessedText.slice(lastIndex);
 
       if (remainingText.startsWith(')')) {
         remainingText = remainingText.slice(1);
@@ -195,7 +240,7 @@ const MessageWithAvatars = ({ text }) => {
       }
     }
 
-    return parts.length > 0 ? parts : [<span key="fallback">{text}</span>];
+    return parts.length > 0 ? parts : [<span key="fallback">{preprocessedText}</span>];
   };
 
   return <span>{processTextWithImagesAndLinks(text)}</span>;

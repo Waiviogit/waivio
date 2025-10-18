@@ -80,7 +80,7 @@ export const reserveProposition = (proposition, username) => async (
     steemConnectAPI
       .broadcast([commentOp])
       .then(async res => {
-        if (res.error) reject();
+        if (res.error) reject(res.error);
 
         if (isGuest) {
           setTimeout(() => {
