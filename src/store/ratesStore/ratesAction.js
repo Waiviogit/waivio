@@ -9,15 +9,21 @@ export const GET_GLOBAL_PROPERTIES = 'rates/GET_GLOBAL_PROPERTIES';
 export const getSwapEnginRates = () => dispatch =>
   dispatch({
     type: GET_RATES.ACTION,
-    payload: ApiClient.getEnginePoolRate(HIVE_ENGINE_DEFAULT_SWAP_LIST).then(res =>
-      res.reduce(
-        (acc, curr) => ({
-          ...acc,
-          [curr.symbol]: curr.USD,
-        }),
-        {},
-      ),
-    ),
+    payload: ApiClient.getEnginePoolRate(HIVE_ENGINE_DEFAULT_SWAP_LIST)
+      .then(res => {
+        if (isEmpty(res)) Promise.reject(res);
+
+        res.reduce(
+          (acc, curr) => ({
+            ...acc,
+            [curr.symbol]: curr.USD,
+          }),
+          {},
+        );
+      })
+      .catch(e => {
+        console.error(e);
+      }),
   });
 
 export const getMainCurrencyRate = rates => dispatch =>
