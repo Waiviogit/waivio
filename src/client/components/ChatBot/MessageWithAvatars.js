@@ -172,13 +172,13 @@ const MessageWithAvatars = ({ text }) => {
                 key={`img-${match.index}`}
                 src={imageUrl}
                 alt={match[1] || 'image'}
-                style={{
-                  maxWidth: '100%',
-                  height: '200px',
-                  display: 'block',
-                  margin: '0 auto',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                }}
+                // style={{
+                //   maxWidth: '100%',
+                //   height: '200px',
+                //   display: 'block',
+                //   margin: '0 auto',
+                //   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                // }}
                 onError={e => {
                   e.target.style.display = 'none';
                   const fallbackDiv = document.createElement('div');
