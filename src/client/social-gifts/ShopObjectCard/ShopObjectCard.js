@@ -40,8 +40,10 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
   const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
   const campaignTypesList = wObject?.campaigns?.campaignTypes || [];
-  const isGiveawayCampaign = campaignTypesList.includes('giveaways_object');
-  const isContestCampaign = campaignTypesList.includes('contests_object');
+  const propositionContest = wObject?.propositions?.[0]?.type === 'contests_object';
+  const propositionGiveaway = wObject?.propositions?.[0]?.type === 'giveaways_object';
+  const isGiveawayCampaign = campaignTypesList.includes('giveaways_object') || propositionGiveaway;
+  const isContestCampaign = campaignTypesList.includes('contests_object') || propositionContest;
   const isSpecialCampaign = isGiveawayCampaign || isContestCampaign;
   const daysLeft = proposition?.expiredAt
     ? Math.max(0, moment(proposition.expiredAt).diff(moment(), 'days'))
