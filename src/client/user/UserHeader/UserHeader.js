@@ -116,7 +116,11 @@ const UserHeader = ({
         followingType="user"
       />
       {user.youFollows && <BellButton user={user} />}
-      {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
+      {user.muted && (
+        <span className="UserHeader__muteCard pointer" onClick={() => handleMuteUserBlog(user)}>
+          {mutedLabelText}
+        </span>
+      )}
       {!mutedByModerator && (
         <UserPopoverMenu
           user={user}
