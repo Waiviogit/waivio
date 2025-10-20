@@ -5,6 +5,7 @@ import { get, has, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useParams, useHistory } from 'react-router';
+import moment from 'moment';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -38,6 +39,16 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const withRewards = !isEmpty(wObject?.propositions) || has(wObject, 'campaigns');
   const proposition = withRewards ? wObject?.propositions?.[0] || wObject?.campaigns : null;
   const rewardAmount = proposition?.rewardInUSD || proposition?.max_reward;
+  const campaignTypesList = wObject?.campaigns?.campaignTypes || [];
+  const isGiveawayCampaign = campaignTypesList.includes('giveaways_object');
+  const isContestCampaign = campaignTypesList.includes('contests_object');
+  const isSpecialCampaign = isGiveawayCampaign || isContestCampaign;
+  const daysLeft = proposition?.expiredAt
+    ? Math.max(0, moment(proposition.expiredAt).diff(moment(), 'days'))
+    : null;
+  const specialAmount = isContestCampaign
+    ? get(proposition, ['contestRewards', 0, 'rewardInUSD'], rewardAmount)
+    : rewardAmount;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -116,20 +127,31 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             isEnLocale ? 'ShopObjectCard__rewardTitle' : 'ShopObjectCard__rewardTitle--small'
           }
         >
-          <FormattedMessage
-            id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-            defaultMessage={`Share {minPhotos} photo${
-              proposition?.requirements?.minPhotos === 1 ? '' : 's'
-            } & earn`}
-            values={{ minPhotos: proposition?.requirements?.minPhotos }}
-          />{' '}
-          {isEnLocale ? (
-            <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
+          {isSpecialCampaign ? (
+            <>
+              <USDDisplay value={specialAmount} currencyDisplay={'symbol'} />{' '}
+              {isGiveawayCampaign ? 'Giveaway' : 'Contest'}
+              {daysLeft !== null &&
+                (isGiveawayCampaign ? ` - ${daysLeft} Days Left!` : ` - Win in ${daysLeft} Days!`)}
+            </>
           ) : (
-            <div>
-              {' '}
-              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-            </div>
+            <>
+              <FormattedMessage
+                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+                defaultMessage={`Share {minPhotos} photo${
+                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
+                } & earn`}
+                values={{ minPhotos: proposition?.requirements?.minPhotos }}
+              />{' '}
+              {isEnLocale ? (
+                <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
+              ) : (
+                <div>
+                  {' '}
+                  <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
+                </div>
+              )}
+            </>
           )}
         </h3>
       )}
