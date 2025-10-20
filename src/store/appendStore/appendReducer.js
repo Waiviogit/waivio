@@ -25,7 +25,7 @@ export default (state = defaultState, action) => {
     case appendActions.APPEND_WAIVIO_OBJECT.ERROR:
       return {
         ...state,
-        error: action.payload.message,
+        error: action?.payload?.message,
         addingAppend: false,
       };
 

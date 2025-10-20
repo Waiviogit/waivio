@@ -472,30 +472,39 @@ export const setAuthorityForObject = (
     dispatch(setObjectinAuthority(wobject.author_permlink));
   }
 
-  getAuthorityFields(wobject.author_permlink).then(postInformation => {
-    if (
-      isEmpty(postInformation) ||
-      isEmpty(postInformation.filter(p => p.creator === user.name && p.body === adminAuthority))
-    ) {
-      const data = getWobjectData();
+  getAuthorityFields(wobject.author_permlink)
+    .then(postInformation => {
+      if (
+        isEmpty(postInformation) ||
+        isEmpty(postInformation.filter(p => p.creator === user.name && p.body === adminAuthority))
+      ) {
+        const data = getWobjectData();
 
-      dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
-    } else {
-      const authority = postInformation.find(
-        post => post.creator === user.name && post.body === adminAuthority,
-      );
+        dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
+      } else {
+        const authority = postInformation.find(
+          post => post.creator === user.name && post.body === adminAuthority,
+        );
 
-      dispatch(
-        authorityVoteAppend(
-          authority?.author,
-          wobject.author_permlink,
-          authority?.permlink,
-          activeHeart ? downVotePower : userUpVotePower,
-          isObjectPage,
-        ),
-      );
-    }
-  });
+        dispatch(
+          authorityVoteAppend(
+            authority?.author,
+            wobject.author_permlink,
+            authority?.permlink,
+            activeHeart ? downVotePower : userUpVotePower,
+            isObjectPage,
+          ),
+        );
+      }
+    })
+    .catch(() => {
+      // Handle authority fields fetch error
+      if (activeHeart) {
+        dispatch(removeObjectFromAuthority(wobject.author_permlink));
+      } else {
+        dispatch(setObjectinAuthority(wobject.author_permlink));
+      }
+    });
 };
 
 export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
@@ -596,6 +605,11 @@ export const appendObject = (
 
   return postAppendWaivioObject({ ...postData, votePower: undefined, isLike: undefined })
     .then(async res => {
+      if (res.message) {
+        dispatch({ type: APPEND_WAIVIO_OBJECT.ERROR, payload: res });
+
+        return res;
+      }
       const voter = getAuthenticatedUserName(getState());
       const websocketCallback = async () => {
         await dispatch(
