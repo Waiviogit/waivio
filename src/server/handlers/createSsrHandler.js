@@ -138,23 +138,23 @@ export default function createSsrHandler(template) {
       }
     }
 
-    // if (isUser) {
-    //   return res.send(
-    //     renderSsrPage(
-    //       store,
-    //       null,
-    //       assets,
-    //       template,
-    //       isWaivio,
-    //       get(settings, 'googleAnalyticsTag', ''),
-    //       get(settings, 'googleGSCTag', ''),
-    //       get(settings, 'verificationTags', []),
-    //       get(settings, 'googleEventSnippet', ''),
-    //       get(settings, 'googleAdsConfig', ''),
-    //       get(adsenseSettings, 'code', ''),
-    //     ),
-    //   );
-    // }
+    if (isUser) {
+      return res.send(
+        renderSsrPage(
+          store,
+          null,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
+          get(settings, 'verificationTags', []),
+          get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
+          get(adsenseSettings, 'code', ''),
+        ),
+      );
+    }
 
     store.dispatch(getSafeLinksAction());
 
