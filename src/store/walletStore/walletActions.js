@@ -487,11 +487,15 @@ export const ADAPT_MARKET_TO_ENGINE = '@wallet/ADAPT_MARKET_TO_ENGINE';
 export const getTokenRates = tokenName => dispatch =>
   dispatch({
     type: GET_TOKEN_RATES.ACTION,
-    payload: ApiClient.getTokensEngineRates(tokenName).then(res => {
-      dispatch(setRate(tokenName, res?.current?.rates?.HIVE));
+    payload: ApiClient.getTokensEngineRates(tokenName)
+      .then(res => {
+        dispatch(setRate(tokenName, res?.current?.rates?.HIVE));
 
-      return res;
-    }),
+        return res;
+      })
+      .catch(e => {
+        console.error(e);
+      }),
     meta: tokenName,
   });
 

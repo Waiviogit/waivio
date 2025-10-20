@@ -17,13 +17,46 @@ const socketFactory = () => {
   if (typeof WebSocket !== 'undefined') {
     socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
 
+    socket.addEventListener('error', error => {
+      console.error('WebSocket connection error:', error);
+    });
+
     socket.sendAsync = (message, params) => {
-      socket.send(
-        JSON.stringify({
-          method: message,
-          params,
-        }),
-      );
+      if (socket.readyState === WebSocket.OPEN) {
+        try {
+          socket.send(
+            JSON.stringify({
+              method: message,
+              params,
+            }),
+          );
+        } catch (error) {
+          console.error('Error sending WebSocket message:', error);
+        }
+      } else if (socket.readyState === WebSocket.CONNECTING) {
+        socket.addEventListener(
+          'open',
+          () => {
+            try {
+              socket.send(
+                JSON.stringify({
+                  method: message,
+                  params,
+                }),
+              );
+            } catch (error) {
+              console.error('Error sending WebSocket message after connection:', error);
+            }
+          },
+          { once: true },
+        );
+      } else {
+        console.warn('WebSocket is not ready, attempting to reconnect...');
+        socketStore.instance = socketFactory();
+        setTimeout(() => {
+          socketStore.instance.sendAsync(message, params);
+        }, 1000);
+      }
     };
 
     socket.subscribeBlock = (type, blockNum, callback) => {

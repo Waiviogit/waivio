@@ -21,14 +21,10 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
         <FormattedMessage id="rank" defaultMessage="Rank" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-asc">
-        <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
-          {msg => msg.toUpperCase()}
-        </FormattedMessage>
+        <FormattedMessage id="by-name-asc" defaultMessage="A..Z" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-desc">
-        <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
-          {msg => msg.toUpperCase()}
-        </FormattedMessage>
+        <FormattedMessage id="by-name-desc" defaultMessage="Z..A" />
       </SortSelector.Item>
     </SortSelector>
   ) : (
@@ -43,26 +39,22 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
         <FormattedMessage id="rank" defaultMessage="Rank" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-asc">
-        <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
-          {msg => msg.toUpperCase()}
-        </FormattedMessage>
+        <FormattedMessage id="by-name-asc" defaultMessage="A..Z" />
       </SortSelector.Item>
       <SortSelector.Item key="by-name-desc">
-        <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
-          {msg => msg.toUpperCase()}
-        </FormattedMessage>
+        <FormattedMessage id="by-name-desc" defaultMessage="Z..A" />
       </SortSelector.Item>
     </SortSelector>
   );
 
 CatalogSorting.propTypes = {
-  sort: PropTypes.isRequired,
-  currWobject: PropTypes.isRequired,
+  sort: PropTypes.string.isRequired,
+  currWobject: PropTypes.shape().isRequired,
   handleSortChange: PropTypes.func.isRequired,
 };
 
 CatalogSorting.defaultProps = {
-  sort: [],
+  sort: 'recency',
   currWobject: {},
 };
 

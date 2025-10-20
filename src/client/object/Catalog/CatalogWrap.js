@@ -156,10 +156,23 @@ const CatalogWrap = props => {
     if (currentSortType === 'custom') {
       const currentSortCustom = get(obj, 'sortCustom', {});
 
-      sortOrder = {
-        ...currentSortCustom,
-        include: [...(currentSortCustom.include || []), listItem.author_permlink],
-      };
+      if (!isEmpty(currentSortCustom.include)) {
+        const existingItems = listItems
+          .filter(item => !currentSortCustom.exclude?.includes(item.author_permlink))
+          .map(item => item.author_permlink);
+
+        const allItems = [...existingItems, listItem.author_permlink];
+
+        sortOrder = {
+          ...currentSortCustom,
+          include: allItems,
+        };
+      } else {
+        sortOrder = {
+          ...currentSortCustom,
+          include: [listItem.author_permlink],
+        };
+      }
     } else {
       sortOrder = currentRecencySortList;
     }
@@ -180,7 +193,16 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     setSortingBy(sortType);
-    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {}), host));
+
+    let sortOrder = null;
+
+    if (sortType === 'custom') {
+      sortOrder = get(obj, 'sortCustom', {});
+    }
+
+    const sortedItems = sortListItemsBy(listItems, sortType, sortOrder, host);
+
+    setLists(sortedItems);
   };
 
   const getListRow = listItem => {
