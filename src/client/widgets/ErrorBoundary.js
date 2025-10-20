@@ -48,12 +48,20 @@ const ErrorBoundary = ComposedComponent => {
         const errorReportAsCode = `\`\`\`json\n${errorReport}\n\`\`\``;
 
         setTimeout(() => {
-          socket.send(
-            JSON.stringify({
-              method: subscribeTypes.clientError,
-              params: ['user', `Page crashed, report:\n${errorReportAsCode}`],
-            }),
-          );
+          if (socket.readyState === WebSocket.OPEN) {
+            try {
+              socket.send(
+                JSON.stringify({
+                  method: subscribeTypes.clientError,
+                  params: ['user', `Page crashed, report:\n${errorReportAsCode}`],
+                }),
+              );
+            } catch (e) {
+              console.error('Error sending error report via WebSocket:', e);
+            }
+          } else {
+            console.warn('WebSocket not ready for error report, skipping...');
+          }
         }, 300);
       }
     }
