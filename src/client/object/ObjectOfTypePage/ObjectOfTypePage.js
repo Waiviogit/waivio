@@ -283,11 +283,12 @@ const ObjectOfTypePage = props => {
           .then(res => {
             setLoadingForButton(false);
             if (res.message) return Promise.reject(res);
-            saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink).catch(
-              () => {
-                // Ignore draft save errors
-              },
-            );
+            saveDraftPage(
+              userName,
+              props.nestedWobject.author_permlink || wobject.author_permlink,
+            ).catch(() => {
+              // Ignore draft save errors
+            });
 
             return res;
           })
@@ -379,9 +380,14 @@ const ObjectOfTypePage = props => {
           ) : (
             <BodyContainer isPage full body={content} />
           )}
-          {content.includes('<script>') && <Alert message="The script won’t work in preview mode. If the script is saved, it will work after
-              submitting the update." type={'warning'} style={{textAlign: 'center', marginTop: '20px'}}/>
-          }
+          {content.includes('<script>') && (
+            <Alert
+              message="The script won’t work in preview mode. If the script is saved, it will work after
+              submitting the update."
+              type={'warning'}
+              style={{ textAlign: 'center', marginTop: '20px' }}
+            />
+          )}
           <div className="object-page-preview__options">
             {isCode && (
               <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
