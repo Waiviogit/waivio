@@ -21,7 +21,11 @@ export const getImportVote = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getDuplicateVote = async userName => {
@@ -39,7 +43,11 @@ export const getDuplicateVote = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getAthorityVote = async userName => {
@@ -57,7 +65,11 @@ export const getAthorityVote = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const hasAccessToImport = async userName => {
   let token = getGuestAccessToken();
@@ -79,7 +91,11 @@ export const hasAccessToImport = async userName => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getAuthorityList = async (userName, skip, limit) => {
@@ -102,7 +118,11 @@ export const getAuthorityList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setImportVote = async (user, minVotingPower) => {
@@ -125,7 +145,11 @@ export const setImportVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setDuplicateVote = async (user, minVotingPower) => {
@@ -148,7 +172,11 @@ export const setDuplicateVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setClaimAuthorityVote = async (user, minVotingPower) => {
@@ -171,7 +199,11 @@ export const setClaimAuthorityVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const uploadObject = async data => {
@@ -189,7 +221,11 @@ export const uploadObject = async data => {
     body: data,
   })
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getImportedObjects = async (userName, skip, limit) => {
@@ -212,7 +248,11 @@ export const getImportedObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getHistoryImportedObjects = async (userName, skip, limit) => {
@@ -235,7 +275,11 @@ export const getHistoryImportedObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getDuplicatedList = async (userName, skip, limit) => {
@@ -258,7 +302,11 @@ export const getDuplicatedList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getHistoryDuplicatedList = async (userName, skip, limit) => {
@@ -281,7 +329,11 @@ export const getHistoryDuplicatedList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getHistoryAuthorityObjects = async (userName, skip, limit) => {
@@ -304,7 +356,11 @@ export const getHistoryAuthorityObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const createAuthority = async (
@@ -360,7 +416,11 @@ export const deleteAuthority = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const changeAuthority = async (user, status, importId) => {
@@ -384,7 +444,11 @@ export const changeAuthority = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setObjectImport = async (user, status, importId) => {
@@ -408,7 +472,11 @@ export const setObjectImport = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setDuplicateList = async (user, status, importId) => {
@@ -432,7 +500,11 @@ export const setDuplicateList = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const deleteObjectImport = async (user, importId) => {
@@ -455,7 +527,11 @@ export const deleteObjectImport = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const deleteDuplicateList = async (user, importId) => {
@@ -478,7 +554,11 @@ export const deleteDuplicateList = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getAmazonAsins = async uri => {
@@ -525,7 +605,11 @@ export const getDepartmentsList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getTagsList = async (userName, skip, limit) => {
@@ -548,7 +632,11 @@ export const getTagsList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const setDepartmentsBotVote = async (user, minVotingPower) => {
@@ -571,7 +659,11 @@ export const setDepartmentsBotVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const setTagsBotVote = async (user, minVotingPower) => {
   let token = getGuestAccessToken();
@@ -593,7 +685,11 @@ export const setTagsBotVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const deleteDepartments = async (user, importId) => {
@@ -616,7 +712,11 @@ export const deleteDepartments = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const deleteTags = async (user, importId) => {
   let token = getGuestAccessToken();
@@ -638,7 +738,11 @@ export const deleteTags = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getHistoryDepartmentsObjects = async (userName, skip, limit) => {
@@ -661,7 +765,11 @@ export const getHistoryDepartmentsObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getHistoryTagsObjects = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -683,7 +791,11 @@ export const getHistoryTagsObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getDepartmentsVote = async userName => {
@@ -701,7 +813,11 @@ export const getDepartmentsVote = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getTagsVote = async userName => {
   let token = getGuestAccessToken();
@@ -718,7 +834,11 @@ export const getTagsVote = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const changeDepartments = async (user, status, importId) => {
@@ -742,7 +862,11 @@ export const changeDepartments = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const changeTags = async (user, status, importId) => {
   let token = getGuestAccessToken();
@@ -765,7 +889,11 @@ export const changeTags = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const createDepartment = async (user, authorPermlink, scanEmbedded) => {
@@ -963,7 +1091,11 @@ export const getDescriptionsList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getMessagesList = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -985,7 +1117,11 @@ export const getMessagesList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getRepostingList = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -1007,7 +1143,11 @@ export const getRepostingList = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const changeDescriptions = async (user, status, importId) => {
@@ -1031,7 +1171,11 @@ export const changeDescriptions = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const changeMessages = async (user, status, importId) => {
   let token = getGuestAccessToken();
@@ -1054,7 +1198,11 @@ export const changeMessages = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const changeReposting = async (user, status, importId) => {
   let token = getGuestAccessToken();
@@ -1077,7 +1225,11 @@ export const changeReposting = async (user, status, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const deleteDescriptions = async (user, importId) => {
@@ -1100,7 +1252,11 @@ export const deleteDescriptions = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const deleteMessage = async (user, importId) => {
   let token = getGuestAccessToken();
@@ -1122,7 +1278,11 @@ export const deleteMessage = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const deleteReposting = async (user, importId) => {
   let token = getGuestAccessToken();
@@ -1144,7 +1304,11 @@ export const deleteReposting = async (user, importId) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getHistoryDescriptionsObjects = async (userName, skip, limit) => {
@@ -1167,7 +1331,11 @@ export const getHistoryDescriptionsObjects = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getHistoryMessageBot = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -1189,7 +1357,11 @@ export const getHistoryMessageBot = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getHistoryRepostingBot = async (userName, skip, limit) => {
   let token = getGuestAccessToken();
@@ -1211,7 +1383,11 @@ export const getHistoryRepostingBot = async (userName, skip, limit) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getDescriptionsVote = async userName => {
@@ -1234,7 +1410,11 @@ export const getDescriptionsVote = async userName => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const setDescriptionsBotVote = async (user, minVotingPower) => {
   let token = getGuestAccessToken();
@@ -1256,7 +1436,11 @@ export const setDescriptionsBotVote = async (user, minVotingPower) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getGuestImportStatus = async userName => {
@@ -1279,7 +1463,11 @@ export const getGuestImportStatus = async userName => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const setGuestImportStatus = async (userName, importAuthorization) => {
   let token = getGuestAccessToken();
@@ -1305,7 +1493,11 @@ export const setGuestImportStatus = async (userName, importAuthorization) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getMessageBotRc = async userName => {
@@ -1323,7 +1515,11 @@ export const getMessageBotRc = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getRepostingBotRc = async userName => {
   let token = getGuestAccessToken();
@@ -1340,7 +1536,11 @@ export const getRepostingBotRc = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const changeMessageBotRc = async (user, minRc) => {
@@ -1363,7 +1563,11 @@ export const changeMessageBotRc = async (user, minRc) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const changeRepostingBotRc = async (user, minRc) => {
   let token = getGuestAccessToken();
@@ -1385,7 +1589,11 @@ export const changeRepostingBotRc = async (user, minRc) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getRepostingBotHost = async userName => {
@@ -1403,7 +1611,11 @@ export const getRepostingBotHost = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const changeRepostingBotHost = async (user, host) => {
@@ -1426,7 +1638,11 @@ export const changeRepostingBotHost = async (user, host) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const getShopifySettings = async (userName, waivioHostName) => {
   let token = getGuestAccessToken();
@@ -1448,7 +1664,11 @@ export const getShopifySettings = async (userName, waivioHostName) => {
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const saveShopifySettings = async (
   userName,
@@ -1480,7 +1700,11 @@ export const saveShopifySettings = async (
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const deleteShopifySettings = async (userName, waivioHostName) => {
   let token = getGuestAccessToken();
@@ -1501,7 +1725,11 @@ export const deleteShopifySettings = async (userName, waivioHostName) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const syncShopify = async (userName, waivioHostName, authority, locale) => {
@@ -1525,7 +1753,11 @@ export const syncShopify = async (userName, waivioHostName, authority, locale) =
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const getSyncShopify = async userName => {
@@ -1543,7 +1775,11 @@ export const getSyncShopify = async userName => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 
 export const resumeSyncShopify = async (userName, waivioHostName) => {
@@ -1566,7 +1802,11 @@ export const resumeSyncShopify = async (userName, waivioHostName) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export const stopSyncShopify = async (userName, waivioHostName) => {
   let token = getGuestAccessToken();
@@ -1588,6 +1828,10 @@ export const stopSyncShopify = async (userName, waivioHostName) => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Import API error:', e);
+
+      return e;
+    });
 };
 export default null;

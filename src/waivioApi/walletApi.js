@@ -14,7 +14,11 @@ export const getGuestWaivTransferHistory = (guestName, symbol, skip = 0, limit =
   )
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Wallet API error:', e);
+
+      return e;
+    });
 
 export const getGuestWaivBalance = guestName =>
   fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestBalance}?symbol=WAIV`, {
@@ -23,7 +27,11 @@ export const getGuestWaivBalance = guestName =>
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Wallet API error:', e);
+
+      return e;
+    });
 
 export const sendGuestTransferWAIV = async ({
   to,
@@ -50,7 +58,11 @@ export const sendGuestTransferWAIV = async ({
     }),
   })
     .then(res => res.json())
-    .catch(err => err);
+    .catch(err => {
+      console.error('Wallet API error:', err);
+
+      return err;
+    });
 
 export const withdrawGuest = async ({ account, data }) =>
   fetch(`${config.objectsBotApiPrefix}${config.guestWithdraw}`, {
@@ -63,7 +75,11 @@ export const withdrawGuest = async ({ account, data }) =>
     }),
   })
     .then(res => res.json())
-    .catch(err => err);
+    .catch(err => {
+      console.error('Wallet API error:', err);
+
+      return err;
+    });
 
 export const getTokenListForRebalancing = name =>
   fetch(`${config.arbitrageApiPrefix}${config.profit}${config.tokens}`, {
@@ -72,5 +88,9 @@ export const getTokenListForRebalancing = name =>
   })
     .then(res => res.json())
     .then(res => compareTokensList(name, res))
-    .catch(err => err);
+    .catch(err => {
+      console.error('Wallet API error:', err);
+
+      return err;
+    });
 export default null;

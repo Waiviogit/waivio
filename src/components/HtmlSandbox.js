@@ -6,7 +6,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
-  // Функції-хелпери залишаються без змін
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
       .trim()

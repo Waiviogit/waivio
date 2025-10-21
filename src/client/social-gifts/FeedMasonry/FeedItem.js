@@ -102,7 +102,8 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
             markTiktokUnavailable?.(post.permlink);
           }
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           setTiktokFailed(true);
           markTiktokUnavailable?.(post.permlink);
         });

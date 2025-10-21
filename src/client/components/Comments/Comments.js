@@ -211,7 +211,8 @@ class Comments extends React.Component {
 
         return Promise.resolve(res);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         this.setState({
           showCommentFormLoading: false,
           commentFormText: commentValue,

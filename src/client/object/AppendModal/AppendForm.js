@@ -424,7 +424,8 @@ class AppendForm extends Component {
 
             this.setState({ loading: false });
           })
-          .catch(() => {
+          .catch(error => {
+            console.error('Component error:', error);
             message.error(
               this.props.intl.formatMessage({
                 id: 'couldnt_append',
@@ -1602,7 +1603,8 @@ class AppendForm extends Component {
           ),
         );
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         message.error(
           intl.formatMessage({
             id: 'add_blog_failure',
@@ -1635,7 +1637,8 @@ class AppendForm extends Component {
           ),
         );
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         message.error(
           intl.formatMessage({
             id: 'couldnt_upload_image',

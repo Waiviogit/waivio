@@ -87,7 +87,8 @@ export default function withEditor(WrappedComponent) {
         .then(res => {
           callback(res.image, blob.name);
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           errorCallback();
           message.error(
             formatMessage({

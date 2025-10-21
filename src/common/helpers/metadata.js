@@ -33,7 +33,11 @@ export const addDraftMetadata = draft =>
       updateUserMetadata(draft.author, {
         ...metadata,
         drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
-      }).catch(e => e.message);
+      }).catch(e => {
+        console.error('Error updating draft metadata:', e);
+
+        return e.message;
+      });
 
       return metadata.drafts.find(d => d.draftId === draft.draftId);
     })

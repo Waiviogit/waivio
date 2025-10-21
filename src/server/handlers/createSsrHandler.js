@@ -1,4 +1,3 @@
-import Cookie from 'js-cookie';
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -21,12 +20,7 @@ import {
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import {
-  getSettingsAdsense,
-  getSettingsWebsite,
-  waivioAPI,
-  getSafeLinks,
-} from '../../waivioApi/ApiClient';
+import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -138,23 +132,23 @@ export default function createSsrHandler(template) {
       }
     }
 
-    if (isUser) {
-      return res.send(
-        renderSsrPage(
-          store,
-          null,
-          assets,
-          template,
-          isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-          get(settings, 'googleGSCTag', ''),
-          get(settings, 'verificationTags', []),
-          get(settings, 'googleEventSnippet', ''),
-          get(settings, 'googleAdsConfig', ''),
-          get(adsenseSettings, 'code', ''),
-        ),
-      );
-    }
+    // if (isUser) {
+    //   return res.send(
+    //     renderSsrPage(
+    //       store,
+    //       null,
+    //       assets,
+    //       template,
+    //       isWaivio,
+    //       get(settings, 'googleAnalyticsTag', ''),
+    //       get(settings, 'googleGSCTag', ''),
+    //       get(settings, 'verificationTags', []),
+    //       get(settings, 'googleEventSnippet', ''),
+    //       get(settings, 'googleAdsConfig', ''),
+    //       get(adsenseSettings, 'code', ''),
+    //     ),
+    //   );
+    // }
 
     store.dispatch(getSafeLinksAction());
 

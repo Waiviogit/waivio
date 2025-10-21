@@ -55,7 +55,8 @@ const ModalsCurators = ({ intl, modalType, addCuratorBot, bot, deleteCuratorBot 
             }),
           ),
         )
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           message.error(
             intl.formatMessage({
               id: 'append_validate_common_message',

@@ -92,7 +92,8 @@ const AppendWebpageModal = ({
             hideModal();
             setLoading(false);
           })
-          .catch(() => {
+          .catch(error => {
+            console.error('Component error:', error);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
