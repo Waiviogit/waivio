@@ -94,11 +94,11 @@ import './ObjectInfo.less';
   }),
   {
     getRelatedAlbum,
-    setStoreGroupId,
-    setStoreActiveOption,
-    setAuthors,
-    getCoordinates,
-    setLinkSafetyInfo,
+  setStoreGroupId,
+  setStoreActiveOption,
+  setAuthors,
+  getCoordinates,
+  setLinkSafetyInfo,
   },
 )
 class ObjectInfo extends React.Component {
@@ -255,7 +255,7 @@ class ObjectInfo extends React.Component {
       }
 
       return [...res, curr];
-    }, []);
+  }, []);
 
     this.setState({ menuItemsArray });
 
@@ -336,182 +336,182 @@ class ObjectInfo extends React.Component {
 
   listItem = (name, content) => {
     const { wobject, userName, isEditMode, albums, appendAlbum } = this.props;
-    const fieldsCount = getFieldsCount(wobject, name);
-    const exposedFields = getExposedFieldsByObjType(wobject);
-    const shouldDisplay = exposedFields?.includes(name);
-    const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
+      const fieldsCount = getFieldsCount(wobject, name);
+      const exposedFields = getExposedFieldsByObjType(wobject);
+      const shouldDisplay = exposedFields?.includes(name);
+      const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
 
-    return (
-      shouldDisplay &&
-      (!isEmpty(content) || accessExtend) && (
-        <div className="field-info">
+      return (
+        shouldDisplay &&
+        (!isEmpty(content) || accessExtend) && (
+          <div className="field-info">
           <React.Fragment>
-            {accessExtend && (
-              <div className="field-info__title">
-                <Proposition
-                  wObject={wobject}
-                  objectID={wobject.author_permlink}
-                  fieldName={name}
-                  objName={getObjectName(wobject)}
+              {accessExtend && (
+                <div className="field-info__title">
+                  <Proposition
+                    wObject={wobject}
+                    objectID={wobject.author_permlink}
+                    fieldName={name}
+                    objName={getObjectName(wobject)}
                   handleSelectField={this.handleSelectField}
                   selectedField={this.state.selectedField}
-                  linkTo={
-                    name === objectFields.pageContent
-                      ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
-                      : ''
-                  }
-                  albums={albums}
-                  appendAlbum={appendAlbum}
-                />
-                {fieldsCount}
-              </div>
-            )}
-            {content && (
-              <div
-                className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
-                data-test={`${name}-field-view`}
-              >
-                {content}
-              </div>
-            )}
+                    linkTo={
+                      name === objectFields.pageContent
+                        ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
+                        : ''
+                    }
+                    albums={albums}
+                    appendAlbum={appendAlbum}
+                  />
+                  {fieldsCount}
+                </div>
+              )}
+              {content && (
+                <div
+                  className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
+                  data-test={`${name}-field-view`}
+                >
+                  {content}
+                </div>
+              )}
           </React.Fragment>
-        </div>
-      )
-    );
+          </div>
+        )
+      );
   };
 
   renderCategoryItems = (categoryItems = [], category) => {
     const { object_type: type } = this.props.wobject;
-    const onlyFiveItems = categoryItems
-      ?.sort((a, b) => b.weight - a.weight)
-      .filter((f, i) => i < 5);
+      const onlyFiveItems = categoryItems
+        ?.sort((a, b) => b.weight - a.weight)
+        .filter((f, i) => i < 5);
     const tagArray = this.state.showMore[category] ? categoryItems : onlyFiveItems;
 
-    return (
-      <div>
-        {tagArray
-          ?.sort((a, b) => b.weight - a.weight)
+      return (
+        <div>
+          {tagArray
+            ?.sort((a, b) => b.weight - a.weight)
           ?.map(item => (
-            <Tag key={`${category}/${item.body}`} color="orange">
-              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
-            </Tag>
-          ))}
+              <Tag key={`${category}/${item.body}`} color="orange">
+                <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+              </Tag>
+            ))}
         {categoryItems.length > 5 && !this.state.showMore[category] && (
-          <span
-            role="presentation"
-            className="show-more"
-            onClick={() =>
+            <span
+              role="presentation"
+              className="show-more"
+              onClick={() =>
               this.setState({
-                showMore: {
-                  [category]: true,
-                },
+                  showMore: {
+                    [category]: true,
+                  },
               })
-            }
-          >
-            <FormattedMessage id="show_more" defaultMessage="Show more" />
-            ...
-          </span>
-        )}
-      </div>
-    );
+              }
+            >
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+              ...
+            </span>
+          )}
+        </div>
+      );
   };
 
   renderTagCategories = tagCategories =>
     tagCategories?.map(item => (
-      <div key={item.id}>
-        {`${item.body}:`}
-        <br />
+        <div key={item.id}>
+          {`${item.body}:`}
+          <br />
         {item.items && this.renderCategoryItems(item.items, item.body)}
-      </div>
+        </div>
     ));
 
   getMenuSectionLink = (item = {}) => {
     const { wobject, location } = this.props;
-    const customSortExclude = get(wobject, 'sortCustom.exclude', []);
-    const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
-    const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
-    const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
-    const blogClassesList = classNames('menu-btn', {
-      active: location.pathname === blogPath,
-    });
-    const formClassesList = classNames('menu-btn', {
-      active: location.pathname === formPath,
-    });
-    const newsFilterClassesList = classNames('menu-btn', {
-      active: location.pathname === newsFilterPath,
-    });
+      const customSortExclude = get(wobject, 'sortCustom.exclude', []);
+      const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
+      const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+      const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
+      const blogClassesList = classNames('menu-btn', {
+        active: location.pathname === blogPath,
+      });
+      const formClassesList = classNames('menu-btn', {
+        active: location.pathname === formPath,
+      });
+      const newsFilterClassesList = classNames('menu-btn', {
+        active: location.pathname === newsFilterPath,
+      });
 
-    let menuItem = (
-      <LinkButton
-        className={classNames('menu-btn', {
-          active: location.hash.slice(1).split('/')[0] === item.body,
-        })}
-        to={`/object/${wobject.author_permlink}/menu#${item.body || item.author_permlink}`}
-      >
-        {item.alias || getObjectName(item)}
-      </LinkButton>
-    );
+      let menuItem = (
+        <LinkButton
+          className={classNames('menu-btn', {
+            active: location.hash.slice(1).split('/')[0] === item.body,
+          })}
+          to={`/object/${wobject.author_permlink}/menu#${item.body || item.author_permlink}`}
+        >
+          {item.alias || getObjectName(item)}
+        </LinkButton>
+      );
 
-    switch (item.id) {
-      case objectFields.menuItem:
-        menuItem = (
-          <MenuItemButton item={item} show={!customSortExclude?.includes(item.permlink)} />
-        );
-        break;
-      case TYPES_OF_MENU_ITEM.BUTTON:
-        menuItem = (
-          <Button
-            className="LinkButton menu-btn field-button"
-            href={getLink(item.body.link)}
-            target={'_blank'}
-            block
-          >
-            {item.body.title}
-          </Button>
-        );
-        break;
-      case TYPES_OF_MENU_ITEM.PAGE:
-        menuItem = (
-          <LinkButton
-            className={classNames('menu-btn', {
-              active: location.hash.slice(1).split('/')[0] === item.body,
-            })}
-            to={`/object/${wobject.author_permlink}/page#${item.body || item.author_permlink}`}
-          >
-            {item.alias || getObjectName(item)}
-          </LinkButton>
-        );
-        break;
-      case objectFields.newsFilter:
-        menuItem = (
-          <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
-            {item.title || <FormattedMessage id="news" defaultMessage="News" />}
-          </LinkButton>
-        );
-        break;
-      case TYPES_OF_MENU_ITEM.BLOG:
-        menuItem = (
-          <LinkButton className={blogClassesList} to={blogPath}>
-            {item.blogTitle}
-          </LinkButton>
-        );
-        break;
-      case objectFields.form:
-        menuItem = (
-          <LinkButton className={formClassesList} to={formPath}>
-            {item.title}
-          </LinkButton>
-        );
-        break;
-      default:
-        break;
-    }
+      switch (item.id) {
+        case objectFields.menuItem:
+          menuItem = (
+            <MenuItemButton item={item} show={!customSortExclude?.includes(item.permlink)} />
+          );
+          break;
+        case TYPES_OF_MENU_ITEM.BUTTON:
+          menuItem = (
+            <Button
+              className="LinkButton menu-btn field-button"
+              href={getLink(item.body.link)}
+              target={'_blank'}
+              block
+            >
+              {item.body.title}
+            </Button>
+          );
+          break;
+        case TYPES_OF_MENU_ITEM.PAGE:
+          menuItem = (
+            <LinkButton
+              className={classNames('menu-btn', {
+                active: location.hash.slice(1).split('/')[0] === item.body,
+              })}
+              to={`/object/${wobject.author_permlink}/page#${item.body || item.author_permlink}`}
+            >
+              {item.alias || getObjectName(item)}
+            </LinkButton>
+          );
+          break;
+        case objectFields.newsFilter:
+          menuItem = (
+            <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
+              {item.title || <FormattedMessage id="news" defaultMessage="News" />}
+            </LinkButton>
+          );
+          break;
+        case TYPES_OF_MENU_ITEM.BLOG:
+          menuItem = (
+            <LinkButton className={blogClassesList} to={blogPath}>
+              {item.blogTitle}
+            </LinkButton>
+          );
+          break;
+        case objectFields.form:
+          menuItem = (
+            <LinkButton className={formClassesList} to={formPath}>
+              {item.title}
+            </LinkButton>
+          );
+          break;
+        default:
+          break;
+      }
 
-    return (
-      <div className="object-sidebar__menu-item" key={item.permlink}>
-        {menuItem}
-      </div>
-    );
+      return (
+        <div className="object-sidebar__menu-item" key={item.permlink}>
+          {menuItem}
+        </div>
+      );
   };
 
   validatedAlbums = albums =>
@@ -1756,61 +1756,74 @@ ${obj.productId}`}
       </React.Fragment>
     );
 
-    return (
-      <div ref={this.carouselRef}>
-        {!isEditMode && wobject.authors && (
-          <div className="mb3 wordBreak">
-            By{' '}
-            {this.props.authorsArray?.map((a, i) => (
-              <span key={this.authorFieldAuthorPermlink(a)}>
-                <Link
-                  to={
-                    this.authorFieldAuthorPermlink(a)
-                      ? `/object/${this.authorFieldAuthorPermlink(a)}`
-                      : `/discover-objects/${wobject.object_type}?search=${a.name}`
-                  }
-                >
-                  {a.name}
-                </Link>
-
-                <>
-                  {i !== this.props.authorsArray.length - 1 && ','}
-                  {'  '}
-                </>
-              </span>
-            ))}
+    const htmlSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="site" defaultMessage="Site" />
           </div>
         )}
-        {wobject && wobjName && (
-          <div className="object-sidebar">
+        {this.listItem(
+          objectFields.contentView, null
+        )}
+      </React.Fragment>
+    );
+
+  return (
+      <div ref={this.carouselRef}>
+        {!isEditMode && wobject.authors && (
+        <div className="mb3 wordBreak">
+          By{' '}
+            {this.props.authorsArray?.map((a, i) => (
+              <span key={this.authorFieldAuthorPermlink(a)}>
+              <Link
+                to={
+                    this.authorFieldAuthorPermlink(a)
+                      ? `/object/${this.authorFieldAuthorPermlink(a)}`
+                    : `/discover-objects/${wobject.object_type}?search=${a.name}`
+                }
+              >
+                {a.name}
+              </Link>
+
+              <>
+                  {i !== this.props.authorsArray.length - 1 && ','}
+                {'  '}
+              </>
+            </span>
+          ))}
+        </div>
+      )}
+      {wobject && wobjName && (
+        <div className="object-sidebar">
             {this.listItem(
-              objectFields.parent,
-              parent && (
-                <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
-              ),
-            )}
+            objectFields.parent,
+            parent && (
+              <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+            ),
+          )}
             {!isEditMode &&
               this.listItem(
-                objectFields.publisher,
+              objectFields.publisher,
                 publisher &&
                   (publisher.authorPermlink ? (
-                    <ObjectCard
+                  <ObjectCard
                       key={publisher.authorPermlink}
-                      wobject={publisherObj}
-                      showFollow={false}
-                    />
-                  ) : (
-                    <div className="flex ObjectCard__links">
+                    wobject={publisherObj}
+                    showFollow={false}
+                  />
+                ) : (
+                  <div className="flex ObjectCard__links">
                       <ObjectAvatar item={publisher} size={34} />{' '}
-                      <Link
-                        className="ObjectCard__name"
+                    <Link
+                      className="ObjectCard__name"
                         to={`/discover-objects/${wobject.object_type}?search=${publisher.name}`}
-                      >
+                    >
                         {publisher.name}
-                      </Link>
-                    </div>
-                  )),
-              )}
+                    </Link>
+                  </div>
+                )),
+            )}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {showMapSection && mapSection()}
@@ -1818,25 +1831,26 @@ ${obj.productId}`}
             {showGroupSection && groupSection}
             {showLRecipeSection && recipeSection}
             {aboutSection}
-            {isAffiliate && (
-              <AffiliateSection
-                userName={userName}
+          {isAffiliate && (
+            <AffiliateSection
+              userName={userName}
                 listItem={this.listItem}
                 isEditMode={isEditMode}
-                wobject={wobject}
-              />
-            )}
+              wobject={wobject}
+            />
+          )}
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
+            {isHtml && htmlSection}
             {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
-            {isMobile() && <ObjectInfoExperts wobject={wobject} />}
-          </div>
-        )}
-      </div>
-    );
+          {isMobile() && <ObjectInfoExperts wobject={wobject} />}
+        </div>
+      )}
+    </div>
+  );
   }
 }
 
