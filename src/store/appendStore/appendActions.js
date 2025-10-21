@@ -119,7 +119,8 @@ export const getChangedWobjectField = (
 
             return res;
           })
-          .catch(() => {
+          .catch(error => {
+            console.error('Error fetching changed wobject field:', error);
             // message.error('An error has occurred, please reload the page');
             dispatch({
               type: GET_CHANGED_WOBJECT_FIELD.ERROR,
@@ -179,7 +180,8 @@ export const getChangedWobjectFieldWithoutSoket = (
 
           return res;
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Error fetching changed wobject field without socket:', error);
           // message.error('An error has occurred, please reload the page');
           dispatch({
             type: GET_CHANGED_WOBJECT_FIELD.ERROR,
@@ -318,6 +320,7 @@ export const voteAppends = (
           });
         })
         .catch(err => {
+          console.error('Error appending vote:', err);
           dispatch({
             type: VOTE_APPEND.ERROR,
             payload: {
@@ -380,6 +383,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
       return res;
     })
     .catch(e => {
+      console.error('Error in authority vote append:', e);
       const authorityList = getAuthorityList(getState());
       const activeHeart = authorityList[authorPermlink];
 
@@ -425,17 +429,22 @@ export const affiliateCodeVoteAppend = (
     },
   });
 
-  return steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
-    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-      voter,
-      res?.result?.id || res?.id,
-    ]);
-    busyAPI.instance.subscribe((response, mess) => {
-      if (mess?.success && mess?.permlink === res.result.id) {
-        dispatch(setAffiliateObjects(userName, host));
-      }
+  return steemConnectAPI
+    .appendVote(voter, isGuest, author, permlink, weight)
+    .then(res => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+        voter,
+        res?.result?.id || res?.id,
+      ]);
+      busyAPI.instance.subscribe((response, mess) => {
+        if (mess?.success && mess?.permlink === res.result.id) {
+          dispatch(setAffiliateObjects(userName, host));
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error in affiliate code vote append:', error);
     });
-  });
 };
 
 export const setAuthorityForObject = (
@@ -497,7 +506,8 @@ export const setAuthorityForObject = (
         );
       }
     })
-    .catch(() => {
+    .catch(error => {
+      console.error('Error fetching authority fields:', error);
       // Handle authority fields fetch error
       if (activeHeart) {
         dispatch(removeObjectFromAuthority(wobject.author_permlink));
@@ -640,5 +650,9 @@ export const appendObject = (
 
       return res;
     })
-    .catch(() => dispatch({ type: APPEND_WAIVIO_OBJECT.ERROR }));
+    .catch(error => {
+      console.error('Error appending waivio object:', error);
+
+      return dispatch({ type: APPEND_WAIVIO_OBJECT.ERROR });
+    });
 };

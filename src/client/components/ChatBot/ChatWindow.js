@@ -375,7 +375,8 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
       .then(res => {
         setCurrentImage([...currentImage, { src: res.image }]);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         antdMessage.error("Couldn't upload image");
       });
   };

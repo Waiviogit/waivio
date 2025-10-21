@@ -218,7 +218,10 @@ export const searchObjectsAutoCompeteLoadingMore = (
 
       return res;
     }),
-  }).catch(() => dispatch(setSearchInBox(false)));
+  }).catch(error => {
+    console.error('Error in search action:', error);
+    dispatch(setSearchInBox(false));
+  });
 };
 
 const compareSearchResult = (searchString, wobjs) => async (dispatch, getState) => {
@@ -278,7 +281,11 @@ export const searchWebsiteObjectsAutoCompete = (searchString, sort = 'weight', l
 
         return res;
       })
-      .catch(() => dispatch(compareSearchResult(searchString, []))),
+      .catch(error => {
+        console.error('Error comparing search results:', error);
+
+        return dispatch(compareSearchResult(searchString, []));
+      }),
   });
 };
 
@@ -296,7 +303,10 @@ export const searchUsersAutoCompete = (userName, limit, notGuest = false) => (
         .then(result => ({
           result,
         }))
-        .catch(() => message.error('Something went wrong')),
+        .catch(error => {
+          console.error('Error in search API call:', error);
+          message.error('Something went wrong');
+        }),
     },
   });
 };

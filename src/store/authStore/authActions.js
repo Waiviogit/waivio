@@ -335,6 +335,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   })
     .then(() => dispatch({ type: SHOW_SETTINGS }))
     .catch(e => {
+      console.error('Error in authentication:', e);
       dispatch(loginError());
       Cookie.remove('auth');
       Cookie.remove('currentUser');
@@ -450,7 +451,11 @@ export const loginFromServer = cookie => dispatch => {
       payload: {
         promise,
       },
-    }).catch(e => e);
+    }).catch(e => {
+      console.error('Error in auth action:', e);
+
+      return e;
+    });
   } catch (e) {
     console.warn(e);
   }
@@ -579,6 +584,7 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
       });
     })
     .catch(e => {
+      console.error('Error in auth operation:', e);
       this.setState({ isLoading: false });
       message.error(e.message);
     });

@@ -120,7 +120,9 @@ export const getContent = (author, permlink, afterLike, isComment = false) => (
       permlink,
       afterLike,
     },
-  }).catch(() => {});
+  }).catch(error => {
+    console.error('Error in post operation:', error);
+  });
 };
 
 export const votePost = (postId, author, permlink, weight = 10000, isThread = false) => (
@@ -264,7 +266,8 @@ export const unpinUserPost = (user, hiveAuth, intl) => dispatch => {
           }),
         );
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Error in post action:', error);
         message.error(
           intl.formatMessage({
             id: 'transaction_fail',

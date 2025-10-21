@@ -70,7 +70,11 @@ export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) 
   )
     .then(res => res.json())
     .then(response => response.result)
-    .catch(error => ({ error }));
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return { error };
+    });
 
 export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NODES[0]) => {
   const response = await engineQuery({
@@ -109,7 +113,11 @@ export const getRecommendedObjects = (locale = 'en-US') =>
     }),
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getObjects = ({
   limit = 30,
@@ -134,7 +142,11 @@ export const getObjects = ({
     body: JSON.stringify(reqData),
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getObjectsByIds = ({
@@ -207,7 +219,11 @@ export const getFeedContentByObject = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getPinnedPostsByObject = (name, locale, follower, host) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.pin}`, {
@@ -222,7 +238,11 @@ export const getPinnedPostsByObject = (name, locale, follower, host) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 // eslint-disable-next-line camelcase
 export const getMoreFeedContentByObject = ({
@@ -245,7 +265,11 @@ export const getMoreFeedContentByObject = ({
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFeedContent = (sortBy, locale, follower, queryData) =>
   fetch(`${config.apiPrefix}${config.posts}`, {
@@ -260,7 +284,11 @@ export const getFeedContent = (sortBy, locale, follower, queryData) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMentionsPosts = (authUserName, account, skip, limit) =>
   fetch(`${config.apiPrefix}${config.posts}${config.mentions}`, {
@@ -274,7 +302,11 @@ export const getMentionsPosts = (authUserName, account, skip, limit) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const saveDraftPage = (user, authorPermlink, body) =>
   fetch(`${config.apiPrefix}${config.draft}${config.object}`, {
@@ -291,7 +323,11 @@ export const saveDraftPage = (user, authorPermlink, body) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getDraftPage = (user, authorPermlink) => {
   const query = createQuery({ authorPermlink, user });
@@ -305,7 +341,11 @@ export const getDraftPage = (user, authorPermlink) => {
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getUserProfileBlog = (
@@ -331,7 +371,11 @@ export const getUserProfileBlog = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserLastActivity = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.lastActivity}`, {
@@ -340,7 +384,11 @@ export const getUserLastActivity = userName =>
   })
     .then(res => res.json())
     .then(res => res.lastActivity)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const chechExistUser = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.existHive}`, {
     headers,
@@ -348,7 +396,11 @@ export const chechExistUser = userName =>
   })
     .then(res => res.json())
     .then(res => res.result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale, host) =>
   fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
@@ -364,7 +416,11 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages, loc
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMoreUserFeedContent = ({
   userName,
@@ -386,7 +442,11 @@ export const getMoreUserFeedContent = ({
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 // endregion
 
 export const postCreateWaivioObject = requestBody =>
@@ -397,7 +457,11 @@ export const postCreateWaivioObject = requestBody =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
@@ -409,7 +473,11 @@ export const getContent = (author, permlink = '', locale, follower) => {
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const searchObjects = (
@@ -478,7 +546,11 @@ export const searchUsers = (searchString, username, limit = 15, notGuest = false
   )
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const searchObjectTypes = (searchString, limit = 15, skip) => {
   const requestBody = { search_string: searchString, limit, skip };
@@ -498,7 +570,11 @@ export const postAppendWaivioObject = postData =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 // region Follow API requests
 export const getAllFollowingObjects = (username, skip, limit, authUser, locale) => {
@@ -514,7 +590,11 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
   })
     .then(res => res.json())
     .then(res => res.map(obj => obj.author_permlink))
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getWobjectFollowers = (
@@ -537,7 +617,11 @@ export const getWobjectFollowers = (
     .then(handleErrors)
     .then(res => res.json())
     .then(result => result || [])
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser, locale) => {
@@ -556,7 +640,11 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser, lo
     .then(handleErrors)
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getUserAccount = (username, withFollowings = false, authUser) =>
@@ -570,7 +658,11 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFollowingUpdates = (locale, userName, count = 5) =>
   fetch(
@@ -587,7 +679,11 @@ export const getFollowingUpdates = (locale, userName, count = 5) =>
     .then(handleErrors)
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 0) =>
   fetch(
@@ -603,7 +699,11 @@ export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
   fetch(
@@ -615,7 +715,11 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 // endregion
 
 export const getWobjectGallery = (wobject, locale, host) =>
@@ -629,7 +733,11 @@ export const getWobjectGallery = (wobject, locale, host) =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWobjectsWithUserWeight = (
   userName,
@@ -657,7 +765,11 @@ export const getWobjectsWithUserWeight = (
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30, sort) => {
@@ -673,7 +785,11 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30,
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getWobjectsExpertiseWithNewsFilter = (
@@ -696,7 +812,11 @@ export const getWobjectsExpertiseWithNewsFilter = (
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
@@ -712,7 +832,11 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAuthorsChildWobjects = (
   authorPermlink,
@@ -740,7 +864,11 @@ export const getAuthorsChildWobjects = (
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale) =>
   fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
@@ -754,7 +882,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getObjectType = (typeName, requestData, abortController, host) => {
   const { locale = 'en-US', userName } = requestData;
@@ -767,7 +899,11 @@ export const getObjectType = (typeName, requestData, abortController, host) => {
   })
     .then(res => res.json())
     .then(data => data)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getSearchResult = (
@@ -794,7 +930,11 @@ export const getSearchResult = (
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
   fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
@@ -809,7 +949,11 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
   })
     .then(res => res.json())
     .then(result => ({ data: result, type }))
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {}) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
@@ -821,7 +965,11 @@ export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {
   })
     .then(res => res.json())
     .then(data => data)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 // region Campaigns Requests
@@ -844,7 +992,11 @@ export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, pos
   )
     .then(res => res.json())
     .then(response => response.campaign)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getMatchBotRules = (guideName, limit, skip) =>
@@ -857,7 +1009,11 @@ export const getMatchBotRules = (guideName, limit, skip) =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, limit = 30) => {
   const getBody = obj => {
@@ -914,7 +1070,11 @@ export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, l
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getReport = ({ guideName, userName, reservationPermlink }) =>
@@ -929,7 +1089,11 @@ export const getReport = ({ guideName, userName, reservationPermlink }) =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 // endregion
 
 // region UserMetadata Requests
@@ -982,7 +1146,11 @@ export const getGuestPaymentsHistory = async (
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 // endregion
@@ -1534,7 +1702,11 @@ export const getChangedField = (
     },
   )
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUpdateByBody = (authorPermlink, name, locale, body) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.rawField}`, {
@@ -1549,7 +1721,11 @@ export const getUpdateByBody = (authorPermlink, name, locale, body) =>
     method: 'POST',
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFollowingSponsorsRewards = ({ userName, skip }) => {
   const query = skip ? `/?skip=${skip}` : '';
@@ -1560,7 +1736,11 @@ export const getFollowingSponsorsRewards = ({ userName, skip }) => {
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit = 10) =>
@@ -1573,7 +1753,11 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const showMoreTagsForUserFilters = (
   userName,
@@ -1597,7 +1781,11 @@ export const showMoreTagsForUserFilters = (
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const showMoreTagsForShopFilters = (tagCategory, path, skip = 0, limit = 10) =>
   fetch(`${config.apiPrefix}${config.shop}${config.filters}${config.tags}`, {
@@ -1612,7 +1800,11 @@ export const showMoreTagsForShopFilters = (tagCategory, path, skip = 0, limit = 
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getSocialInfoPost = (author, postPermlink) =>
   fetch(
@@ -1627,7 +1819,11 @@ export const getSocialInfoPost = (author, postPermlink) =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
@@ -1646,7 +1842,11 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
     .then(handleErrors)
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getTransferHistoryTableView = (data, filterAcc) => {
   const typesQuery = TRANSACTION_TYPES.reduce((acc, curr) => `${acc}&types=${curr}`, '');
@@ -1664,7 +1864,11 @@ export const getTransferHistoryTableView = (data, filterAcc) => {
     .then(handleErrors)
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const sendSentryNotification = async () => {
@@ -1683,7 +1887,11 @@ export const getReferralDetails = () =>
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserIsBlackListed = username =>
   fetch(
@@ -1695,7 +1903,11 @@ export const getUserIsBlackListed = username =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit = 10) =>
   fetch(
@@ -1707,7 +1919,11 @@ export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit =
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getStatusSponsoredRewards = (referral, userName, type = 'referral_server_fee') =>
   fetch(`${config.campaignApiPrefix}${config.payments}${config.payables}`, {
@@ -1717,7 +1933,11 @@ export const getStatusSponsoredRewards = (referral, userName, type = 'referral_s
   })
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getRelatedPhotos = (authorPermlink, limit, skip, host) =>
   fetch(
@@ -1732,7 +1952,11 @@ export const getRelatedPhotos = (authorPermlink, limit, skip, host) =>
   )
     .then(res => res.json())
     .then(result => result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 // websites
 
@@ -3824,7 +4048,11 @@ export const getNewsPermlinkByObjectName = ({
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getObjectOptions = (userName, authorPermlink, category, skip, limit) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
@@ -3857,7 +4085,11 @@ export const getAuthorityFields = permlink =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getShopUserDepartments = (userName, name, excluded, path, host, schema) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
@@ -3873,7 +4105,11 @@ export const getShopUserDepartments = (userName, name, excluded, path, host, sch
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getShopDepartments = (name, excluded, path, host) =>
   fetch(`${config.apiPrefix}${config.shop}${config.departments}`, {
@@ -3887,7 +4123,11 @@ export const getShopDepartments = (name, excluded, path, host) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserShopMainFeed = (
   userName,
@@ -3923,7 +4163,11 @@ export const getUserShopMainFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getShopMainFeed = (
   userName,
@@ -3957,7 +4201,11 @@ export const getShopMainFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWobjectShopMainFeed = (
   authorPermlink,
@@ -3991,7 +4239,11 @@ export const getWobjectShopMainFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWobjectShopDepartments = (authorPermlink, name, excluded, path, host) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departments}`, {
@@ -4009,7 +4261,11 @@ export const getWobjectShopDepartments = (authorPermlink, name, excluded, path, 
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWobjectShopFilters = (authorPermlink, path) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.filters}`, {
@@ -4022,7 +4278,11 @@ export const getWobjectShopFilters = (authorPermlink, path) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMoreTagsForWobjectShopFilters = (
   authorPermlink,
@@ -4044,7 +4304,11 @@ export const getMoreTagsForWobjectShopFilters = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getDepartmentsFeed = (
   userName,
@@ -4076,7 +4340,11 @@ export const getDepartmentsFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWobjectDepartmentsFeed = (
   authorPermlink,
@@ -4108,7 +4376,11 @@ export const getWobjectDepartmentsFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getShopDepartmentFeed = (
   userName,
@@ -4140,7 +4412,11 @@ export const getShopDepartmentFeed = (
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getDepartmentsFilters = path =>
   fetch(`${config.apiPrefix}${config.shop}${config.filters}`, {
@@ -4152,7 +4428,11 @@ export const getDepartmentsFilters = path =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getDepartmentsUserFilters = (userName, path, schema) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}`, {
@@ -4162,7 +4442,11 @@ export const getDepartmentsUserFilters = (userName, path, schema) =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAffiliateCodesForWebsite = (userName, host) =>
   fetch(`${config.apiPrefix}${config.sites}${config.affiliate}?userName=${userName}&host=${host}`, {
@@ -4174,7 +4458,11 @@ export const getAffiliateCodesForWebsite = (userName, host) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAffiliateObjectForWebsite = (userName, host) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.affiliate}`, {
@@ -4187,7 +4475,11 @@ export const getAffiliateObjectForWebsite = (userName, host) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const safeAffiliateCodesForWebsite = (userName, host, links) =>
   fetch(`${config.apiPrefix}${config.sites}${config.affiliate}`, {
@@ -4204,7 +4496,11 @@ export const safeAffiliateCodesForWebsite = (userName, host, links) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}`, {
@@ -4216,7 +4512,11 @@ export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getReferenceObjectsListByType = ({
   authorPermlink,
@@ -4238,7 +4538,11 @@ export const getReferenceObjectsListByType = ({
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getRelatedObjectsFromDepartments = (
   authorPermlink,
@@ -4259,7 +4563,11 @@ export const getRelatedObjectsFromDepartments = (
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getAddOnObjectsFromDepartments = (
   authorPermlink,
   userName,
@@ -4279,7 +4587,11 @@ export const getAddOnObjectsFromDepartments = (
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getFeaturedObjects = (authorPermlink, userName, locale, skip = 0, limit = 30, host) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.featured}`, {
@@ -4292,7 +4604,11 @@ export const getFeaturedObjects = (authorPermlink, userName, locale, skip = 0, l
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getSimilarObjectsFromDepartments = (
   authorPermlink,
@@ -4313,7 +4629,11 @@ export const getSimilarObjectsFromDepartments = (
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const sendTiktokPriview = (url, urlPreview) =>
   fetch(`${config.apiPrefix}${config.posts}${config.previewCache}`, {
@@ -4326,7 +4646,11 @@ export const sendTiktokPriview = (url, urlPreview) =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getVideoPostsPriview = urls => {
   if (isEmpty(urls)) return Promise.resolve([]);
@@ -4340,7 +4664,11 @@ export const getVideoPostsPriview = urls => {
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getChromeExtensionVersion = () =>
@@ -4349,7 +4677,11 @@ export const getChromeExtensionVersion = () =>
   )
     .then(response => response.json())
     .then(data => data.version)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMinMaxHiveAmount = outputCoinType =>
   fetch(`${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdrawRange}`, {
@@ -4361,7 +4693,11 @@ export const getMinMaxHiveAmount = outputCoinType =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getEstimatedHiveAmount = (amount, outputCoinType) =>
   fetch(`${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdrawEstimates}`, {
@@ -4374,7 +4710,11 @@ export const getEstimatedHiveAmount = (amount, outputCoinType) =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMinRejectVote = (userName, author, permlink, authorPermlink) =>
   fetch(`${config.apiPrefix}${config.users}${config.minReject}`, {
@@ -4389,7 +4729,11 @@ export const getMinRejectVote = (userName, author, permlink, authorPermlink) =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) => {
   const guestToken = getGuestAccessToken();
@@ -4411,7 +4755,11 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 export const withdrawHive = (amount, outputCoinType, userName, address) => {
   const guestToken = getGuestAccessToken();
@@ -4433,7 +4781,11 @@ export const withdrawHive = (amount, outputCoinType, userName, address) => {
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const saveCommentDraft = async (user, author, permlink, body) => {
@@ -4459,7 +4811,11 @@ export const saveCommentDraft = async (user, author, permlink, body) => {
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getCommentDraft = async (user, author, permlink) => {
@@ -4480,7 +4836,11 @@ export const getCommentDraft = async (user, author, permlink) => {
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 export const getObjectUpdatesLocale = (authorPermlink, permlink) =>
   fetch(
@@ -4495,7 +4855,11 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) =>
   )
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, sort = 'latest') =>
   fetch(
     `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
@@ -4509,7 +4873,11 @@ export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, so
   )
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort = 'latest') =>
   fetch(
     `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
@@ -4523,7 +4891,11 @@ export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort 
   )
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) =>
   fetch(
     `${config.apiPrefix}${config.thread}${config.hashtag}${config.count}?skip=${skip}&limit=${limit}`,
@@ -4534,7 +4906,11 @@ export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) =>
   )
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getUserFavoritesObjectTypesList = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.favorites}${config.list}`, {
     headers,
@@ -4542,7 +4918,11 @@ export const getUserFavoritesObjectTypesList = userName =>
   })
     .then(res => res.json())
     .then(posts => posts)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUserFavoriteObjects = (authUserName, user, objectType, skip, limit = 10) =>
   fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}`, {
@@ -4556,7 +4936,11 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getEngineStatisticWaivOwners = () =>
   fetch(`https://engine.waivio.com/engine-statistic/waiv/owners`, {
@@ -4565,7 +4949,11 @@ export const getEngineStatisticWaivOwners = () =>
   })
     .then(res => res.json())
     .then(r => r.result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getEngineStatisticWaivActiveUsers = () =>
   fetch(`https://engine.waivio.com/engine-statistic/waiv/active-users`, {
@@ -4574,7 +4962,11 @@ export const getEngineStatisticWaivActiveUsers = () =>
   })
     .then(res => res.json())
     .then(r => r.result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10, skip) =>
   fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}${config.map}`, {
     headers: { ...headers, follower: authUserName },
@@ -4588,7 +4980,11 @@ export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getUsersAvatar = names =>
   fetch(`${config.apiPrefix}${config.users}${config.avatar}`, {
@@ -4600,7 +4996,11 @@ export const getUsersAvatar = names =>
   })
     .then(res => res.json())
     .then(r => r)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getGuestUserMana = guestName =>
   fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestMana}`, {
@@ -4623,7 +5023,11 @@ export const getObjectsForMapObjectType = (name, body, locale, follower) =>
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getMapPermlinkByObject = (authorPermlink, locale, follower, host) =>
   fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.mapLink}`, {
@@ -4654,7 +5058,11 @@ export const getGroupObjectUserList = (authorPermlink, follower, limit, cursor) 
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getObjectsForMapImportText = async (
   userName,
@@ -4687,7 +5095,11 @@ export const getObjectsForMapImportText = async (
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getObjectsForMapImportObjects = async (
@@ -4719,7 +5131,11 @@ export const getObjectsForMapImportObjects = async (
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 export const getObjectsForMapImportAvatars = async (userName, placesUrl) => {
   let isGuest;
@@ -4743,7 +5159,11 @@ export const getObjectsForMapImportAvatars = async (userName, placesUrl) => {
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 export const getObjPermlinkByCompanyId = async (id, idType) => {
   let token = getGuestAccessToken();
@@ -4764,7 +5184,11 @@ export const getObjPermlinkByCompanyId = async (id, idType) => {
   })
     .then(res => res.json())
     .then(objects => objects)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 };
 
 export const getAppAdmins = () =>
@@ -4774,7 +5198,11 @@ export const getAppAdmins = () =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWebsitesInfoForAdmins = userName =>
   fetch(`${config.apiPrefix}${config.admins}${config.sites}`, {
@@ -4783,7 +5211,11 @@ export const getWebsitesInfoForAdmins = userName =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAdminVipTickets = userName =>
   fetch(`${config.apiPrefix}${config.admins}${config.vipTickets}`, {
@@ -4792,7 +5224,11 @@ export const getAdminVipTickets = userName =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getWhitelistForAdmins = userName =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
@@ -4801,7 +5237,11 @@ export const getWhitelistForAdmins = userName =>
   })
     .then(res => res.json())
     .then(res => res.result)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const addUserToAdminWhitelist = (userName, name) =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
@@ -4817,7 +5257,11 @@ export const addUserToAdminWhitelist = (userName, name) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const addCreditsByAdmin = (admin, userName, amount) =>
   fetch(`${config.apiPrefix}${config.admins}${config.credits}`, {
@@ -4834,7 +5278,11 @@ export const addCreditsByAdmin = (admin, userName, amount) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAdminGuests = (admin, skip, limit, searchString) =>
   fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.users}`, {
@@ -4852,7 +5300,11 @@ export const getAdminGuests = (admin, skip, limit, searchString) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAdminSpam = (admin, skip, limit, searchString) =>
   fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.spam}`, {
@@ -4870,7 +5322,11 @@ export const getAdminSpam = (admin, skip, limit, searchString) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 5) =>
   fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.spam}/${user}`, {
@@ -4887,7 +5343,11 @@ export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 5) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const blockAdminSpamUser = (admin, name, blocked) =>
   fetch(`${config.apiPrefix}${config.admins}${config.guests}${config.block}`, {
@@ -4904,7 +5364,11 @@ export const blockAdminSpamUser = (admin, name, blocked) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const deleteUserFromAdminWhitelist = (userName, name) =>
   fetch(`${config.apiPrefix}${config.admins}${config.whitelist}`, {
@@ -4920,7 +5384,11 @@ export const deleteUserFromAdminWhitelist = (userName, name) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getDraftsListAsync = ({ author }) =>
   fetch(`${config.apiPrefix}${config.draft}${config.posts}?author=${author}`, {
@@ -4929,7 +5397,11 @@ export const getDraftsListAsync = ({ author }) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const deleteDraftFromList = ({ author, ids }) =>
   fetch(`${config.apiPrefix}${config.draft}${config.post}`, {
@@ -4942,7 +5414,11 @@ export const deleteDraftFromList = ({ author, ids }) =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const saveDraft = body =>
   fetch(`${config.apiPrefix}${config.draft}${config.post}`, {
@@ -4952,7 +5428,11 @@ export const saveDraft = body =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getPayPalSubscriptionBasic = (host, userName) =>
   fetch(`${config.apiPrefix}${config.sites}${config.paypal}${config.subscription}${config.basic}`, {
@@ -5043,7 +5523,11 @@ export const getCreditsByAdminList = (admin, skip, limit = 50) =>
   )
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getSubscriptionsByAdminList = admin =>
   fetch(`${config.apiPrefix}${config.admins}${config.sites}${config.subscriptions}`, {
@@ -5052,7 +5536,11 @@ export const getSubscriptionsByAdminList = admin =>
   })
     .then(res => res.json())
     .then(res => res)
-    .catch(error => error);
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export const getCommentReactions = (author, permlink) =>
   fetch('https://api.deathwing.me', {

@@ -119,7 +119,8 @@ const EditorContainer = props => {
 
           return data;
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           setLoading(false);
           setCampaign(null);
         });

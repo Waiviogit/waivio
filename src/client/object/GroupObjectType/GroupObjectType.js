@@ -86,7 +86,8 @@ const GroupObjectType = ({ authUser, dynamicListInfo, loading, intl }) => {
           ),
         );
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         message.error(
           intl.formatMessage({
             id: 'couldnt_append',

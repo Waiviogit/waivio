@@ -167,7 +167,8 @@ const PostPopoverMenu = ({
                 }),
               );
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               setLoading(false);
               message.error(
                 intl.formatMessage({

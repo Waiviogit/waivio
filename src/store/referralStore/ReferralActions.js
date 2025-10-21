@@ -203,9 +203,13 @@ export const getMoreUserStatusCards = (username, sort, skip, limit) => ({
         hasMore: data.hasMore,
         userCards: data.users,
       }))
-      .catch(() => ({
-        type: GET_ERROR_MORE_USER_STATUS_CARDS,
-      })),
+      .catch(error => {
+        console.error('Error getting more user status cards:', error);
+
+        return {
+          type: GET_ERROR_MORE_USER_STATUS_CARDS,
+        };
+      }),
   },
 });
 

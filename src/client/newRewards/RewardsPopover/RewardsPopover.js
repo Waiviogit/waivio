@@ -83,7 +83,8 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
                 resolve();
               });
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               resolve();
             });
         });
@@ -104,7 +105,8 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
                 resolve();
               });
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               resolve();
             });
         });
@@ -125,7 +127,8 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
                 resolve();
               });
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               resolve();
             });
         });

@@ -35,7 +35,10 @@ export const followExpert = username => (dispatch, getState, { steemConnectAPI }
     steemConnectAPI
       .follow(authUser, username)
       .then(res => resolve(res))
-      .catch(error => reject(error)),
+      .catch(error => {
+        console.error('Error following expert:', error);
+        reject(error);
+      }),
   );
 };
 
@@ -51,7 +54,10 @@ export const unfollowExpert = username => (dispatch, getState, { steemConnectAPI
     steemConnectAPI
       .unfollow(authUser, username)
       .then(res => resolve(res))
-      .catch(error => reject(error)),
+      .catch(error => {
+        console.error('Error unfollowing expert:', error);
+        reject(error);
+      }),
   );
 };
 
@@ -311,7 +317,10 @@ export const assignProposition = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error assigning proposition:', error);
+        reject(error);
+      });
   });
 };
 
@@ -351,7 +360,10 @@ export const rejectReview = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error rejecting review:', error);
+        reject(error);
+      });
   });
 };
 
@@ -388,7 +400,10 @@ export const reinstateReward = ({ companyAuthor, username, reservationPermlink, 
           type: SET_PENDING_UPDATE.START,
         });
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error reinstating reward:', error);
+        reject(error);
+      });
   });
 };
 
@@ -446,7 +461,10 @@ export const changeReward = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error changing reward:', error);
+        reject(error);
+      });
   });
 };
 
@@ -492,7 +510,10 @@ export const declineProposition = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error declining proposition:', error);
+        reject(error);
+      });
   });
 };
 export const activateCampaign = (company, campaignPermlink) => (
@@ -540,7 +561,10 @@ export const activateCampaign = (company, campaignPermlink) => (
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      .catch(error => reject({ ...error }));
+      .catch(error => {
+        console.error('Error activating campaign:', error);
+        reject({ ...error });
+      });
   });
 };
 
@@ -573,7 +597,10 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error inactivating campaign:', error);
+        reject(error);
+      });
   });
 };
 // endregion
@@ -609,6 +636,7 @@ export const bellNotifications = (follower, following) => (
       });
     })
     .catch(err => {
+      console.error('Error with bell notifications:', err);
       message.error(err.message);
 
       return dispatch({

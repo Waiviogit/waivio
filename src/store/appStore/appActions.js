@@ -170,11 +170,12 @@ export const getCurrentAppSettings = () => (dispatch, getState) => {
 
       return res;
     })
-    .catch(() =>
+    .catch(error => {
+      console.error('Error in app action:', error);
       // message.error(e.message);
 
-      dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR }),
-    );
+      dispatch({ type: GET_CURRENT_APP_SETTINGS.ERROR });
+    });
 };
 
 export const SET_CURRENT_PAGE = '@app/SET_CURRENT_PAGE';
