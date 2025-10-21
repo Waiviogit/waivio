@@ -85,26 +85,31 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
     query.delete('radius');
   };
 
+  // eslint-disable-next-line consistent-return
   const getRewardsMethod = async skip => {
-    query.delete('showAll');
-    if (isLocation && !history.location.search?.includes('area')) {
-      let coordinats = location;
+    try {
+      query.delete('showAll');
+      if (isLocation && !history.location.search?.includes('area')) {
+        let coordinats = location;
 
-      if (isEmpty(coordinats)) {
-        const { value } = await dispatch(getCoordinates());
+        if (isEmpty(coordinats)) {
+          const { value } = await dispatch(getCoordinates());
 
-        coordinats = value;
-        setLocation(value);
-      }
+          coordinats = value;
+          setLocation(value);
+        }
 
-      query.set('area', [coordinats.latitude, coordinats.longitude]);
-      query.set('zoom', 3);
-      query.set('radius', getRadius(3));
-    } else if (!history.location.search) clearMapInfo();
+        query.set('area', [coordinats.latitude, coordinats.longitude]);
+        query.set('zoom', 3);
+        query.set('radius', getRadius(3));
+      } else if (!history.location.search) clearMapInfo();
 
-    return skip
-      ? dispatch(getMoreRewardsList(showAll, skip, query.toString(), sort, match.params[0]))
-      : dispatch(getRewardsList(showAll, query.toString(), sort, match.params[0]));
+      return skip
+        ? dispatch(getMoreRewardsList(showAll, skip, query.toString(), sort, match.params[0]))
+        : dispatch(getRewardsList(showAll, query.toString(), sort, match.params[0]));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const getFilters = () => {
@@ -149,12 +154,16 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   }, [history.location.pathname]);
 
   useEffect(() => {
-    getRewardsMethod(0);
+    getRewardsMethod(0).catch(err => {
+      console.error('Error loading rewards:', err);
+    });
     clearMapInfo();
   }, [history.location.search, sort, match.params[0], showAll]);
 
   const handleLoadingMoreRewardsList = () => {
-    getRewardsMethod(rewards?.length);
+    getRewardsMethod(rewards?.length).catch(err => {
+      console.error('Error loading more rewards:', err);
+    });
   };
 
   if (loading && isEmpty(rewards)) return <Loading />;

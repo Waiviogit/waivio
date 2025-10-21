@@ -52,18 +52,24 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   useEffect(() => {
     if (isVisiblePopover && !bothStatus) {
       if (isSponsor)
-        checkUserInBlackList(proposition?.guideName, proposition?.userName).then(res =>
-          setInBlackList(res.inBlacklist),
-        );
+        checkUserInBlackList(proposition?.guideName, proposition?.userName)
+          .then(res => setInBlackList(res.inBlacklist))
+          .catch(error => {
+            console.error('Error checking blacklist:', error);
+          });
       if (isUser && !isGiveaways) {
         checkUserFollowing(
           proposition?.userName,
           [proposition?.guideName],
           [proposition?.requiredObject?.author_permlink],
-        ).then(res => {
-          setFollowingObj(res.objects[0]?.follow);
-          setFollowingGuide(res.users[0]?.follow);
-        });
+        )
+          .then(res => {
+            setFollowingObj(res.objects[0]?.follow);
+            setFollowingGuide(res.users[0]?.follow);
+          })
+          .catch(error => {
+            console.error('Error checking following:', error);
+          });
       }
     }
     setMutedAuthort(proposition.muted);
@@ -85,7 +91,7 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
             })
             .catch(error => {
               console.error('Component error:', error);
-              resolve();
+              resolve(error);
             });
         });
       },
@@ -228,10 +234,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
             setLoadingType('user');
             const followMethod = followingGuide ? unfollowUser : followUser;
 
-            dispatch(followMethod(proposition?.guideName)).then(() => {
-              setFollowingGuide(!followingGuide);
-              setLoadingType('');
-            });
+            dispatch(followMethod(proposition?.guideName))
+              .then(() => {
+                setFollowingGuide(!followingGuide);
+                setLoadingType('');
+              })
+              .catch(error => {
+                console.error('Error following/unfollowing user:', error);
+                setLoadingType('');
+              });
           }}
         >
           {loadingType === 'user' && <Icon type={'loading'} />}{' '}
@@ -253,10 +264,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
             setLoadingType('object');
             const followMethod = followingObj ? unfollowObject : followObject;
 
-            dispatch(followMethod(proposition?.requiredObject?.author_permlink)).then(() => {
-              setFollowingObj(!followingObj);
-              setLoadingType('');
-            });
+            dispatch(followMethod(proposition?.requiredObject?.author_permlink))
+              .then(() => {
+                setFollowingObj(!followingObj);
+                setLoadingType('');
+              })
+              .catch(error => {
+                console.error('Error following/unfollowing object:', error);
+                setLoadingType('');
+              });
           }}
         >
           {loadingType === 'object' && <Icon type={'loading'} />}{' '}
@@ -278,10 +294,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
             setLoadingType('blackList');
             const methodType = inBlackList ? ids.blackList.remove : ids.blackList.add;
 
-            dispatch(changeBlackAndWhiteLists(methodType, [proposition?.userName])).then(() => {
-              setInBlackList(!inBlackList);
-              setLoadingType('');
-            });
+            dispatch(changeBlackAndWhiteLists(methodType, [proposition?.userName]))
+              .then(() => {
+                setInBlackList(!inBlackList);
+                setLoadingType('');
+              })
+              .catch(error => {
+                console.error('Error updating blacklist:', error);
+                setLoadingType('');
+              });
           }}
         >
           {loadingType === 'blackList' && <Icon type={'loading'} />}{' '}
@@ -309,9 +330,12 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           onClick={() => {
             setIsVisiblePopover(false);
             setOpenRejectCapm(true);
-            getContent(proposition.userName, proposition.reviewPermlink).then(p =>
-              setLinkedObjs(p.wobjects),
-            );
+            getContent(proposition.userName, proposition.reviewPermlink)
+              .then(p => setLinkedObjs(p.wobjects))
+              .catch(error => {
+                console.error('Error getting content:', error);
+                setLinkedObjs([]);
+              });
           }}
         >
           {intl.formatMessage({ id: 'reject_review', defaultMessage: 'Reject review' })}
@@ -367,10 +391,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
                 permlink: proposition.reviewPermlink,
                 author: proposition.userName,
               }),
-            ).then(() => {
-              setHidedPost(!hidedPost);
-              setLoadingType('');
-            });
+            )
+              .then(() => {
+                setHidedPost(!hidedPost);
+                setLoadingType('');
+              })
+              .catch(error => {
+                console.error('Error hiding/unhiding post:', error);
+                setLoadingType('');
+              });
           }}
         >
           {loadingType === 'hidepost' && <Icon type={'loading'} />}{' '}
@@ -390,10 +419,15 @@ const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
           onClick={() => {
             setLoadingType('muteuser');
 
-            dispatch(muteAuthorPost({ ...proposition, author: proposition.userName })).then(() => {
-              setMutedAuthort(!mutedAuthor);
-              setLoadingType('');
-            });
+            dispatch(muteAuthorPost({ ...proposition, author: proposition.userName }))
+              .then(() => {
+                setMutedAuthort(!mutedAuthor);
+                setLoadingType('');
+              })
+              .catch(error => {
+                console.error('Error muting/unmuting user:', error);
+                setLoadingType('');
+              });
           }}
         >
           {loadingType === 'muteuser' && <Icon type={'loading'} />}{' '}

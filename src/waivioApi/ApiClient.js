@@ -68,6 +68,7 @@ export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) 
       timeout: REQUEST_TIMEOUT,
     },
   )
+    .then(handleErrors)
     .then(res => res.json())
     .then(response => response.result)
     .catch(error => {
@@ -94,7 +95,7 @@ export const engineProxy = async (params, attempts = 5, hostUrl = HIVE_ENGINE_NO
 
 export function handleErrors(response) {
   if (!response.ok) {
-    Promise.reject(response);
+    return Promise.reject(response);
   }
 
   return response;
@@ -112,6 +113,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
       sample: true,
     }),
   })
+    .then(handleErrors)
     .then(res => res.json())
     .catch(error => {
       console.error('API Client error:', error);
@@ -2401,6 +2403,7 @@ export const getUserCoordinatesByIpAdress = () =>
     headers,
     method: 'GET',
   })
+    .then(handleErrors)
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
@@ -5643,6 +5646,7 @@ export const getJudgeRewardsMain = (userName, skip, query) => {
       method: 'GET',
     },
   )
+    .then(handleErrors)
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
