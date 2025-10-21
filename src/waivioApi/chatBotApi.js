@@ -19,7 +19,11 @@ export const getChatBotHistory = async id => {
   })
     .then(res => res.json())
     .then(response => response)
-    .catch(e => e);
+    .catch(e => {
+      console.error('Chat Bot API error:', e);
+
+      return e;
+    });
 };
 
 export const sendChatBotQuestion = async (query, id, userName, images, currentPageContent) => {
@@ -49,7 +53,11 @@ export const sendChatBotQuestion = async (query, id, userName, images, currentPa
     }),
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('Chat Bot API error:', error);
+
+      return error;
+    });
 };
 export const updateAIKnowledge = async (userName, host) => {
   let token = getGuestAccessToken();
@@ -75,5 +83,9 @@ export const updateAIKnowledge = async (userName, host) => {
     }),
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => {
+      console.error('Chat Bot API error:', error);
+
+      return error;
+    });
 };

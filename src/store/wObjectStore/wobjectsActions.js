@@ -47,7 +47,11 @@ export const getObject = authorPermlink => (dispatch, getState) => {
     type: GET_OBJECT,
     payload: ApiClient.getObject(authorPermlink, user, usedLocale, appHost, abortController)
       .then(res => res)
-      .catch(() => dispatch({ type: GET_OBJECT_ERROR })),
+      .catch(error => {
+        console.error('Error getting wobjects:', error);
+
+        return dispatch({ type: GET_OBJECT_ERROR });
+      }),
   });
 };
 
@@ -82,7 +86,9 @@ export const getFeedContentByObject = object => (dispatch, getState) => {
   return dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,
     payload: ApiClient.getFeedContentByObject(object, 10, '', locale, name),
-  }).catch(() => {});
+  }).catch(error => {
+    console.error('Error in wobject operation:', error);
+  });
 };
 
 export const getObjectInfo = (authorPermlink, username, requiredField) => dispatch => {
@@ -175,8 +181,12 @@ export const getNearbyObjects = authorPermlink => (dispatch, getState) => {
 
   return dispatch({
     type: GET_OBJECTS_NEARBY.ACTION,
-    payload: ApiClient.getNearbyObjects(authorPermlink, domain, 0, 5, 20000, appHost).catch(() =>
-      dispatch({ type: GET_OBJECT_ERROR }),
+    payload: ApiClient.getNearbyObjects(authorPermlink, domain, 0, 5, 20000, appHost).catch(
+      error => {
+        console.error('Error getting nearby objects:', error);
+
+        return dispatch({ type: GET_OBJECT_ERROR });
+      },
     ),
   });
 };

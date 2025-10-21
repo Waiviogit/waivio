@@ -608,7 +608,8 @@ class CreateRewards extends React.Component {
                 this.manageRedirect();
               }
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               message.error(`Campaign ${values.campaignName} has been rejected`);
             });
         }

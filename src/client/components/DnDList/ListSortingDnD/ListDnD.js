@@ -148,10 +148,14 @@ class ListDnD extends Component {
   };
 
   handleModeChange = mode => {
-    const { listItems } = this.props;
+    const { listItems, customSort } = this.props;
 
     if (mode === 'Auto') {
-      const allEnabled = listItems.map(i => ({ ...i, checkedItemInList: true }));
+      const excludedIds = customSort?.exclude || [];
+      const allEnabled = listItems.map(i => ({
+        ...i,
+        checkedItemInList: !excludedIds.includes(i.id),
+      }));
 
       this.setState(
         {

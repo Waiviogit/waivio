@@ -622,7 +622,8 @@ export const getCampaignInfo = ({ campaignId }, intl, campaignType, secondaryIte
 
         return campaign;
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Error in editor action:', error);
         dispatch(deleteCampaignIdFromDraft());
       });
   };

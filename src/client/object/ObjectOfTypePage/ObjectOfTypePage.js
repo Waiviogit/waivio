@@ -149,7 +149,8 @@ const ObjectOfTypePage = props => {
           setDraft(res.body);
           setEditorInitialized(false);
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           setEditorInitialized(true);
         });
     }
@@ -175,7 +176,8 @@ const ObjectOfTypePage = props => {
           setDraft(res.body);
           setEditorInitialized(false);
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           setEditorInitialized(true);
         });
     } else {
@@ -205,7 +207,8 @@ const ObjectOfTypePage = props => {
             setNestedWobj(wObject);
             setIsLoading(false);
           })
-          .catch(() => {
+          .catch(error => {
+            console.error('Component error:', error);
             setIsLoading(false);
           });
       } else {
@@ -229,7 +232,8 @@ const ObjectOfTypePage = props => {
             userName,
             props.nestedWobject.author_permlink || props.wobject.author_permlink,
             newContent,
-          ).catch(() => {
+          ).catch(error => {
+            console.error('Component error:', error);
             // Ignore draft save errors
           });
         }
@@ -286,7 +290,8 @@ const ObjectOfTypePage = props => {
             saveDraftPage(
               userName,
               props.nestedWobject.author_permlink || wobject.author_permlink,
-            ).catch(() => {
+            ).catch(error => {
+              console.error('Component error:', error);
               // Ignore draft save errors
             });
 

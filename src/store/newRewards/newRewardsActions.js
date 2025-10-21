@@ -174,7 +174,8 @@ export const reservePropositionForQuick = permlink => async (
           });
         }
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Error in rewards operation:', error);
         setTimeout(() => {
           dispatch(changeRewardsTab(username));
           resolve();
@@ -230,6 +231,7 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
         });
       })
       .catch(error => {
+        console.error('Error in rewards action:', error);
         message.error(error);
         reject(error);
       });
@@ -353,6 +355,7 @@ export const reinstateReward = proposition => (
         });
       })
       .catch(error => {
+        console.error('Error in rewards broadcast:', error);
         reject(error);
       });
   });

@@ -89,7 +89,8 @@ const JudgePosts = props => {
         .then(() => {
           setHasInitiallyLoaded(true);
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           setHasInitiallyLoaded(true);
         });
     }
