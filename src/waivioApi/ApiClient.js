@@ -2906,9 +2906,12 @@ export const getTokensEngineChart = (currency, period) =>
     .then(response => response)
     .catch(e => e);
 
-export const getUserVoteValueInfo = userName =>
+export const getUserVoteValueInfo = (userName, host) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
-    headers,
+    headers: {
+      ...headers,
+      ...addAppHost(host),
+    },
     method: 'GET',
   })
     .then(handleErrors)

@@ -6,7 +6,7 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal, Checkbox, Alert } from 'antd';
+import { Button, Form, Icon, message, Modal, Alert } from 'antd';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
@@ -58,10 +58,6 @@ const ObjectOfTypePage = props => {
   const [editorInitialized, setEditorInitialized] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-
-  // NEW: flags to hide sections
-  const [hideSignInState, setHideSignIn] = useState(true);
-  const [hideMenuState, setHideMenu] = useState(true);
   const appendAdding = useSelector(getIsAddingAppendLoading);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
   const isCode = currObj.object_type === 'html';
@@ -72,23 +68,17 @@ const ObjectOfTypePage = props => {
     if (parsed) {
       return {
         code: parsed.code,
-        hideSignIn: Boolean(parsed.hideSignIn),
-        hideMenu: Boolean(parsed.hideMenu),
       };
     }
 
     return {
       code: raw,
-      hideSignIn: true,
-      hideMenu: true,
     };
   };
   const seedFromSource = (value, isObjTypeCode) => {
     if (isObjTypeCode) {
-      const { code, hideMenu, hideSignIn } = parseCodeField(value);
+      const { code } = parseCodeField(value);
 
-      setHideMenu(hideMenu);
-      setHideSignIn(hideSignIn);
       setCurrentContent(code);
       setContent(code);
     } else {
@@ -255,25 +245,13 @@ const ObjectOfTypePage = props => {
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
 
         // pack body: for code pages we send JSON with flags
-        const bodyOut = isCode
-          ? JSON.stringify({
-              code: content,
-              hideSignIn: hideSignInState,
-              hideMenu: hideMenuState,
-            })
-          : content;
+        const bodyOut = content;
 
-        const pageContentField = isCode
-          ? {
-              name: objectFields.htmlContent,
-              body: bodyOut,
-              locale,
-            }
-          : {
-              name: objectFields.pageContent,
-              body: bodyOut,
-              locale,
-            };
+        const pageContentField = {
+          name: isCode ? objectFields.htmlContent : objectFields.pageContent,
+          body: bodyOut,
+          locale,
+        };
 
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
@@ -394,24 +372,6 @@ const ObjectOfTypePage = props => {
             />
           )}
           <div className="object-page-preview__options">
-            {isCode && (
-              <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
-                <Checkbox
-                  checked={hideSignInState}
-                  onChange={e => setHideSignIn(e.target.checked)}
-                  style={{ display: 'block', marginBottom: 8 }}
-                >
-                  Hide sign-in section
-                </Checkbox>
-                <Checkbox
-                  checked={hideMenuState}
-                  onChange={e => setHideMenu(e.target.checked)}
-                  style={{ display: 'block' }}
-                >
-                  Hide site main menu section
-                </Checkbox>
-              </div>
-            )}
             <LikeSection
               form={form}
               onVotePercentChange={handleVotePercentChange}

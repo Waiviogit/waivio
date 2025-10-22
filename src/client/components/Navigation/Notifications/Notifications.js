@@ -1230,9 +1230,21 @@ class Notifications extends React.Component {
           )}
         </div>
         <div className="Notifications__footer">
-          <Link to="/notifications-list" onClick={onNotificationClick}>
-            <FormattedMessage id="see_all" defaultMessage="See All" />
-          </Link>
+          <div>
+            <Link to="/notifications-list" onClick={onNotificationClick}>
+              <FormattedMessage id="see_all" defaultMessage="See All" />
+            </Link>
+            <div>
+              Get notified in{' '}
+              <a target={'_blank'} href={`https://t.me/WaivioNotificationsBot`} rel="noreferrer">
+                Telegram{' '}
+              </a>{' '}
+              app
+              <div className="Notification__text__date mb2" style={{ marginTop: '-15px' }}>
+                (start bot and send your username)
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

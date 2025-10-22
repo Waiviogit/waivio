@@ -1756,6 +1756,17 @@ ${obj.productId}`}
       </React.Fragment>
     );
 
+    const htmlSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="site" defaultMessage="Site" />
+          </div>
+        )}
+        {this.listItem(objectFields.contentView, null)}
+      </React.Fragment>
+    );
+
     return (
       <div ref={this.carouselRef}>
         {!isEditMode && wobject.authors && (
@@ -1829,6 +1840,7 @@ ${obj.productId}`}
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
+            {isHtml && htmlSection}
             {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}

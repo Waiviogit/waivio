@@ -6,6 +6,7 @@ export const objectFields = {
   htmlContent: 'htmlContent',
   avatar: 'avatar',
   background: 'background',
+  contentView: 'contentView',
   companyId: 'companyId',
   companyIdType: 'companyIdType',
   productId: 'productId',
