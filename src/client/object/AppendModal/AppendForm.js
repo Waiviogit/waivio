@@ -934,9 +934,10 @@ class AppendForm extends Component {
 
           const expandInfo = isEmpty(val?.expand) ? '' : `expand: ${val.expand.join(', ')}`;
           const includeInfo = isEmpty(val?.include) ? '' : `include: ${val.include.join(', ')}`;
+          const excludeInfo = isEmpty(val?.exclude) ? '' : `exclude: ${val.exclude.join(', ')}`;
           const sortType = isEmpty(val?.sortType) ? '' : `sort type: ${val.sortType}`;
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}\n${sortType}`;
+          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}\n${excludeInfo}\n${sortType}`;
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           let rulesAllow = '';
