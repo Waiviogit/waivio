@@ -113,20 +113,21 @@ export default class NotificationSettings extends React.Component {
               <p className="mt3">
                 <FormattedMessage
                   id="instant_mobile_notifications_description"
-                  defaultMessage="You can now receive instant mobile notifications via the Telegram app when someone replies to or re-blogs your post on Hive, mentions you, follows you, transfers funds to you, and so on."
+                  defaultMessage="Stay up to date with instant mobile alerts via Telegram!
+Get notified when someone replies to or reblogs your Hive post, mentions you, follows you, sends you funds, and more."
                 />
               </p>
               <p className="mt3">
                 <FormattedMessage
                   id="instant_mobile_notifications_open"
-                  defaultMessage="Open the Telegram chart with"
+                  defaultMessage="To get started, open a chat with"
                 />
                 <a href="https://t.me/WaivioNotificationsBot" target="_blank" rel="noreferrer">
                   @WaivioNotificationsBot
                 </a>
                 <FormattedMessage
                   id="instant_mobile_notifications_hive"
-                  defaultMessage="and enter the Hive usernames to subscribe."
+                  defaultMessage="on Telegram and enter your Hive username(s) to subscribe."
                 />
               </p>
             </div>
