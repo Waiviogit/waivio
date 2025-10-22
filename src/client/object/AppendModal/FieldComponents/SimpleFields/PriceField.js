@@ -35,4 +35,3 @@ PriceField.defaultProps = {
 };
 
 export default React.memo(PriceField);
-

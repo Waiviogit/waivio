@@ -54,6 +54,24 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [objectFields.contentView]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'View' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
   [objectFields.ageRange]: [
     {
       transform: value => value && value.toLowerCase(),

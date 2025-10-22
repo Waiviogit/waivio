@@ -35,4 +35,3 @@ CompareAtPriceField.defaultProps = {
 };
 
 export default React.memo(CompareAtPriceField);
-

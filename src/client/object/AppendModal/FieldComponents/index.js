@@ -55,4 +55,3 @@ export { default as LastActivityForm } from '../FormComponents/GroupForms/LastAc
 
 // Base
 export { default as BaseField } from './BaseField';
-

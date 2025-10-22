@@ -34,4 +34,3 @@ WorkTimeField.defaultProps = {
 };
 
 export default React.memo(WorkTimeField);
-

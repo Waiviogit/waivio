@@ -9,9 +9,7 @@ export { default as PrintLengthField } from './PrintLengthField';
 export { default as AgeRangeField } from './AgeRangeField';
 export { default as WorkTimeField } from './WorkTimeField';
 export { default as NutritionField } from './NutritionField';
-export { default as ContentViewField } from './ContentViewField';
 export { default as LanguageField } from './LanguageField';
 export { default as AuthorityField } from './AuthorityField';
 export { default as AffiliateUrlTemplateField } from './AffiliateUrlTemplateField';
 export { default as HashtagField } from './HashtagField';
-

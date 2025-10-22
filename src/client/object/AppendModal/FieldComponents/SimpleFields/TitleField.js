@@ -34,4 +34,3 @@ TitleField.defaultProps = {
 };
 
 export default React.memo(TitleField);
-

@@ -35,4 +35,3 @@ NameField.defaultProps = {
 };
 
 export default React.memo(NameField);
-

@@ -37,4 +37,3 @@ NutritionField.defaultProps = {
 };
 
 export default React.memo(NutritionField);
-

@@ -120,6 +120,7 @@ import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import MapAppendObject from '../../components/Maps/MapAppendObject';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { fieldsRules } from '../const/appendFormConstants';
 import OBJECT_TYPE from '../const/objectTypes';
@@ -128,7 +129,43 @@ import { getExposedFieldsByObjType } from '../wObjectHelper';
 import AppendFormFooter from './AppendFormFooter';
 import { splitIngredients } from './appendFormHelper';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
-import { renderField } from './FieldComponents/FieldMapper';
+import ContentViewField, {
+  transformValueToObject,
+} from './FieldComponents/SimpleFields/ContentViewField';
+import AddOnForm from './FormComponents/AddOnForm';
+import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
+import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
+import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
+import AuthorForm from './FormComponents/AuthorForm';
+import BrandForm from './FormComponents/BrandForm';
+import CompanyIdForm from './FormComponents/CompanyIdForm';
+import DelegationForm from './FormComponents/DelegationForm';
+import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
+import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
+import AddUserForm from './FormComponents/GroupForms/AddUserForm';
+import ExpertiseForm from './FormComponents/GroupForms/ExpertiseForm';
+import GroupFollowersForm from './FormComponents/GroupForms/GroupFollowersForm';
+import LastActivityForm from './FormComponents/GroupForms/LastActivityForm';
+import GroupIdForm from './FormComponents/GroupIdForm';
+import LinkUrlForm from './FormComponents/LinkUrlForm';
+import ManufacturerForm from './FormComponents/ManufacturerForm';
+import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
+import MapDesktopViewForm from './FormComponents/MapForms/MapDesktopViewForm';
+import MapObjectsListForm from './FormComponents/MapForms/MapObjectsListForm';
+import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
+import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
+import ProductIdForm from './FormComponents/MapForms/ProductIdForm';
+import MenuItemForm from './FormComponents/MenuItemForm';
+import MerchantForm from './FormComponents/MerchantForm';
+import NewsFilterForm from './FormComponents/NewsFilterForm';
+import ObjectFeaturesForm from './FormComponents/ObjectFeaturesForm';
+import PromotionForm from './FormComponents/PromotionForm/PromotionForm';
+import PublisherForm from './FormComponents/PublisherForm';
+import RelatedForm from './FormComponents/RelatedForm';
+import SaleForm from './FormComponents/SaleForm';
+import ShopFilterForm from './FormComponents/ShopFilterForm';
+import SimilarForm from './FormComponents/SimilarForm';
+import WalletAddressForm from './FormComponents/WalletAddressForm';
 
 import './AppendForm.less';
 
@@ -569,6 +606,10 @@ class AppendForm extends Component {
       }
       case objectFields.menuItem: {
         fieldBody.push(rest[objectFields.menuItem]);
+        break;
+      }
+      case objectFields.contentView: {
+        fieldBody.push(JSON.stringify(transformValueToObject(rest[objectFields.menuItem])));
         break;
       }
       default:
@@ -2221,74 +2262,277 @@ class AppendForm extends Component {
       </div>
     );
 
-    // NEW: Try to use migrated field component from FieldMapper
-    const fieldProps = {
-      // State props
-      loading,
-      selectedObject,
-      selectedCategory,
-      fileList,
-      categoryItem: this.state.categoryItem,
-      
-      // Component props
-      intl,
-      wObject,
-      categories,
-      selectedAlbum,
-      albums,
-      
-      // Form props
-      getFieldDecorator,
-      getFieldValue: this.props.form.getFieldValue,
-      getFieldRules: this.getFieldRules,
-      
-      // Handlers
-      handleSelectObject: this.handleSelectObject,
-      onCreateObject: this.handleCreateObject,
-      onObjectCardDelete: this.onObjectCardDelete,
-      handleSelectCategory: this.handleSelectCategory,
-    };
-
-    // Check if field has been migrated to new component system
-    const newFieldComponent = renderField(currentField, fieldProps);
-    
-    if (newFieldComponent) {
-      // Field is migrated - use new component (52 fields covered!)
-      return newFieldComponent;
-    }
-
-    // Field not yet migrated - fall back to old switch statement
     switch (currentField) {
-      // REMOVED 52 migrated fields - now using FieldMapper components:
-      // - Menu fields: PAGE, LIST
-      // - Simple fields: name, title, description, email, url, price, compareAtPrice, printLength, ageRange, workTime, nutrition, language, authority, affiliateUrlTemplate, hashtag
-      // - Recipe fields: calories, budget, cookingTime, recipeIngredients
-      // - Date fields: publicationDate
-      // - Object selection: parent, featured, categoryItem
-      // - Company fields: brand, manufacturer, merchant, publisher, authors
-      // - Related: related, similar, addOn
-      // - Identifiers: companyId, groupId
-      // - Affiliate: affiliateCode, affiliateGeoArea, affiliateProductIdTypes
-      // - Navigation: link, menuItem
-      // - Filters: shopFilter, newsFilter, newsFeed
-      // - Promotional: promotion, sale
-      // - Financial: walletAddress, delegation
-      // - Product: dimensions, features
-      // - Map: mapObjectsList, mapDesktopView, mapObjectTypes, mapObjectTags, mapRectangles, productId
-      // - Group: groupAdd, groupExpertise, groupFollowers, groupLastActivity
-      
-      // NOT MIGRATED - complex fields remain in switch:
-      // REMOVED: featured - now using FeaturedField
-      // REMOVED: publisher - now using PublisherForm via FieldMapper
-      // REMOVED: related - now using RelatedForm via FieldMapper
-      // REMOVED: addOn - now using AddOnForm via FieldMapper
-      // REMOVED: similar - now using SimilarForm via FieldMapper
-      // REMOVED: manufacturer - now using ManufacturerForm via FieldMapper
-      // REMOVED: brand - now using BrandForm via FieldMapper
-      // REMOVED: merchant - now using MerchantForm via FieldMapper
-      // REMOVED: authors - now using AuthorForm via FieldMapper
-      // REMOVED: affiliateGeoArea - now using AffiliateGeoAreaForm via FieldMapper
-      // REMOVED: categoryItem - now using CategoryItemField via FieldMapper
+      case TYPES_OF_MENU_ITEM.PAGE:
+      case TYPES_OF_MENU_ITEM.LIST: {
+        const objectType =
+          currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
+        const defaultTitle = currentField === TYPES_OF_MENU_ITEM.LIST ? 'List title' : 'Page title';
+        const titleId = currentField === TYPES_OF_MENU_ITEM.LIST ? 'list_title' : 'page_title';
+
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator('menuItemName')(
+                <Input
+                  className="AppendForm__input"
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: titleId,
+                    defaultMessage: defaultTitle,
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(currentField, {
+                rules: this.getFieldRules(currentField),
+              })(
+                <SearchObjectsAutocomplete
+                  className="menu-item-search"
+                  itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
+                  handleSelect={this.handleSelectObject}
+                  objectType={objectType}
+                />,
+              )}
+              {selectedObject && <ObjectCardView wObject={selectedObject} />}
+            </Form.Item>
+            <CreateObject
+              isSingleType
+              withOpenModalBtn={!selectedObject}
+              defaultObjectType={objectType}
+              onCreateObject={this.handleCreateObject}
+              openModalBtnText={intl.formatMessage({
+                id: `create_new_${objectType}`,
+                defaultMessage: 'Create new',
+              })}
+              parentObject={wObject}
+            />
+          </React.Fragment>
+        );
+      }
+      case objectFields.name: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.objectName, {
+              rules: this.getFieldRules(objectFields.objectName),
+            })(
+              <Input
+                autoFocus
+                className="AppendForm__input"
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'value_placeholder',
+                  defaultMessage: 'Add value',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.parent: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.parent, {
+              rules: this.getFieldRules(objectFields.parent),
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                useExtendedSearch
+              />,
+            )}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
+      case objectFields.featured: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.featured, {
+              rules: this.getFieldRules(objectFields.featured),
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                useExtendedSearch
+                itemsIdsToOmit={this.props.wObject.featured?.map(i => i.body)}
+              />,
+            )}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+            <br />
+            <div className="add-create-btns">
+              <CreateObject
+                withOpenModalBtn={!selectedObject}
+                openModalBtnText={intl.formatMessage({
+                  id: 'create_new_object',
+                  defaultMessage: 'Create new object',
+                })}
+                currentField={objectFields.featured}
+                onCreateObject={this.handleCreateObject}
+                parentObject={{}}
+              />
+            </div>
+          </Form.Item>
+        );
+      }
+      case objectFields.publisher: {
+        return (
+          <PublisherForm
+            onCreateObject={this.handleCreateObject}
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.related: {
+        return (
+          <RelatedForm
+            wobjRelated={wObject?.related}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.addOn: {
+        return (
+          <AddOnForm
+            wobjAddOn={wObject?.addOn}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.similar: {
+        return (
+          <SimilarForm
+            wobjSimilar={wObject?.similar}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.manufacturer: {
+        return (
+          <ManufacturerForm
+            loading={loading}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.brand: {
+        return (
+          <BrandForm
+            onCreateObject={this.handleCreateObject}
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.merchant: {
+        return (
+          <MerchantForm
+            onCreateObject={this.handleCreateObject}
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.authors: {
+        return (
+          <AuthorForm
+            wobjAuthors={wObject.authors}
+            loading={loading}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.affiliateGeoArea: {
+        return (
+          <AffiliateGeoAreaForm
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+          />
+        );
+      }
+      case objectFields.categoryItem: {
+        return (
+          <React.Fragment>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="suggest4" defaultMessage="I suggest to add field" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator('tagCategory', {
+                initialValue: selectedCategory ? selectedCategory.body : 'Select a category',
+                rules: this.getFieldRules(objectFields.tagCategory),
+              })(
+                <Select disabled={loading} onChange={this.handleSelectCategory}>
+                  {map(categories, category => (
+                    <Select.Option key={`${category.id}`} value={category.body}>
+                      {category.body}
+                    </Select.Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="suggest5" defaultMessage="I suggest to add field" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator(objectFields.categoryItem, {
+                rules: this.getFieldRules(objectFields.categoryItem),
+              })(
+                <SearchObjectsAutocomplete
+                  useExtendedSearch
+                  handleSelect={this.handleSelectObject}
+                  objectType="hashtag"
+                />,
+              )}
+              {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
       case objectFields.background: {
         return (
           <div className="image-wrapper">
@@ -2352,11 +2596,70 @@ class AppendForm extends Component {
           </div>
         );
       }
-      // REMOVED: title - now using TitleField via FieldMapper
-      // REMOVED: ageRange - now using AgeRangeField via FieldMapper
-      // REMOVED: promotion - now using PromotionForm via FieldMapper
-      // REMOVED: sale - now using SaleForm via FieldMapper
-      // REMOVED: printLength - will be next
+      case objectFields.title: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.title, {
+              rules: this.getFieldRules('objectFields.title'),
+            })(
+              <Input
+                autoFocus
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'description_short',
+                  defaultMessage: 'Short description',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.ageRange: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.ageRange, {
+              rules: this.getFieldRules(objectFields.ageRange),
+            })(
+              <Input.TextArea
+                autoSize={{ minRows: 4, maxRows: 8 }}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'age_range',
+                  defaultMessage: 'Reading age',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.promotion: {
+        return (
+          <PromotionForm
+            getFieldValue={this.props.form.getFieldValue}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+          />
+        );
+      }
+      case objectFields.sale: {
+        return (
+          <SaleForm
+            getFieldValue={this.props.form.getFieldValue}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            isSomeValue={this.state.isSomeValue}
+          />
+        );
+      }
       case objectFields.printLength: {
         return (
           <>
@@ -2429,6 +2732,16 @@ class AppendForm extends Component {
           <LastActivityForm
             getFieldDecorator={getFieldDecorator}
             handleSelectChange={this.handleSelectChange}
+          />
+        );
+      case objectFields.contentView:
+        return (
+          <ContentViewField
+            getFieldDecorator={getFieldDecorator}
+            handleSelectChange={this.handleSelectChange}
+            getFieldRules={this.getFieldRules}
+            intl={this.props.intl}
+            getFieldValue={this.props.form.getFieldValue}
           />
         );
       case objectFields.language:

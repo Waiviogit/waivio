@@ -2,17 +2,17 @@ import React from 'react';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 
-const BaseField = ({ 
-  fieldName, 
-  getFieldDecorator, 
-  rules, 
+const BaseField = ({
+  fieldName,
+  getFieldDecorator,
+  rules,
   initialValue,
   children,
   valuePropName,
-  ...formItemProps 
+  ...formItemProps
 }) => (
   <Form.Item {...formItemProps}>
-    {getFieldDecorator(fieldName, { 
+    {getFieldDecorator(fieldName, {
       rules,
       ...(initialValue !== undefined && { initialValue }),
     })(children)}
@@ -41,4 +41,3 @@ BaseField.defaultProps = {
 };
 
 export default BaseField;
-

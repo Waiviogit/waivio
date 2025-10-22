@@ -37,17 +37,10 @@ import {
 } from './RecipeFields';
 
 // Object Selection Fields
-import {
-  ParentField,
-  FeaturedField,
-  CategoryItemField,
-} from './ObjectSelectionFields';
+import { ParentField, FeaturedField, CategoryItemField } from './ObjectSelectionFields';
 
 // Menu Fields
-import {
-  MenuPageField,
-  MenuListField,
-} from './MenuFields';
+import { MenuPageField, MenuListField } from './MenuFields';
 
 // Existing Form Components, Map Forms, and Group Forms
 import {
@@ -105,73 +98,73 @@ export const FieldMapper = {
   [objectFields.affiliateUrlTemplate]: AffiliateUrlTemplateField,
   [objectFields.hashtag]: HashtagField,
   [objectFields.contentView]: ContentViewField,
-  
+
   // Numeric fields
   [objectFields.price]: PriceField,
   [objectFields.compareAtPrice]: CompareAtPriceField,
   [objectFields.printLength]: PrintLengthField,
   [objectFields.ageRange]: AgeRangeField,
-  
+
   // Date fields
   [objectFields.publicationDate]: PublicationDateField,
-  
+
   // Recipe fields
   [recipeFields.calories]: CaloriesField,
   [recipeFields.budget]: BudgetField,
   [recipeFields.cookingTime]: CookingTimeField,
   [recipeFields.recipeIngredients]: RecipeIngredientsField,
-  
+
   // Object selection fields
   [objectFields.parent]: ParentField,
   [objectFields.featured]: FeaturedField,
   [objectFields.categoryItem]: CategoryItemField,
-  
+
   // Company/Business fields
   [objectFields.brand]: BrandForm,
   [objectFields.manufacturer]: ManufacturerForm,
   [objectFields.merchant]: MerchantForm,
   [objectFields.publisher]: PublisherForm,
   [objectFields.authors]: AuthorForm,
-  
+
   // Related objects
   [objectFields.related]: RelatedForm,
   [objectFields.similar]: SimilarForm,
   [objectFields.addOn]: AddOnForm,
-  
+
   // Identifiers
   [objectFields.companyId]: CompanyIdForm,
   [objectFields.groupId]: GroupIdForm,
-  
+
   // Affiliate fields
   [objectFields.affiliateCode]: AffiliateCodeForm,
   [objectFields.affiliateGeoArea]: AffiliateGeoAreaForm,
   [objectFields.affiliateProductIdTypes]: AffiliateProductIdTypesForm,
-  
+
   // Link and navigation
   [objectFields.link]: LinkUrlForm,
   [objectFields.menuItem]: MenuItemForm,
-  
+
   // Menu fields (TYPES_OF_MENU_ITEM)
   [TYPES_OF_MENU_ITEM.PAGE]: MenuPageField,
   [TYPES_OF_MENU_ITEM.LIST]: MenuListField,
-  
+
   // Filters
   [objectFields.shopFilter]: ShopFilterForm,
   [objectFields.newsFilter]: NewsFilterForm,
   [objectFields.newsFeed]: ExtendedNewsFilterForm,
-  
+
   // Promotional
   [objectFields.promotion]: PromotionForm,
   [objectFields.sale]: SaleForm,
-  
+
   // Financial/Crypto
   [objectFields.walletAddress]: WalletAddressForm,
   [objectFields.delegation]: DelegationForm,
-  
+
   // Product specifications
   [objectFields.dimensions]: DimensionsForm,
   [objectFields.features]: ObjectFeaturesForm,
-  
+
   // Map fields
   [objectFields.mapObjectsList]: MapObjectsListForm,
   [objectFields.mapDesktopView]: MapDesktopViewForm,
@@ -179,7 +172,7 @@ export const FieldMapper = {
   [objectFields.mapObjectTags]: MapTagsForm,
   [objectFields.mapRectangles]: MapAreasForm,
   [objectFields.productId]: ProductIdForm,
-  
+
   // Group fields
   [objectFields.groupAdd]: AddUserForm,
   [objectFields.groupExpertise]: ExpertiseForm,
@@ -195,13 +188,13 @@ export const FieldMapper = {
  */
 export const renderField = (fieldName, props) => {
   const FieldComponent = FieldMapper[fieldName];
-  
+
   if (!FieldComponent) {
     // Якщо компонент не знайдено, повертаємо null
     // Це означає що поле ще не мігроване на нову систему
     return null;
   }
-  
+
   return <FieldComponent {...props} />;
 };
 
@@ -211,4 +204,3 @@ export const renderField = (fieldName, props) => {
  * @returns {boolean} True if field component exists
  */
 export const isFieldMigrated = fieldName => !!FieldMapper[fieldName];
-

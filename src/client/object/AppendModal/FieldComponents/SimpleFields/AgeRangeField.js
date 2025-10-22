@@ -34,4 +34,3 @@ AgeRangeField.defaultProps = {
 };
 
 export default React.memo(AgeRangeField);
-

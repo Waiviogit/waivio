@@ -35,4 +35,3 @@ EmailField.defaultProps = {
 };
 
 export default React.memo(EmailField);
-

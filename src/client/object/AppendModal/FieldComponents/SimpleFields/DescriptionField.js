@@ -37,4 +37,3 @@ DescriptionField.defaultProps = {
 };
 
 export default React.memo(DescriptionField);
-
