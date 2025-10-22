@@ -1240,6 +1240,9 @@ class Notifications extends React.Component {
                 Telegram{' '}
               </a>{' '}
               app
+              <div className="Notification__text__date mb2" style={{ marginTop: '-15px' }}>
+                (start bot and send your username)
+              </div>
             </div>
           </div>
         </div>
