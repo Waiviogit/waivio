@@ -13,6 +13,7 @@ import {
 } from '../authStore/authSelectors';
 import { calculateMana, dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
+import { getUserProfileBlogPosts } from '../feedStore/feedActions';
 
 export const GET_INFO_FOR_SIDEBAR = createAsyncActionType('@users/GET_INFO_FOR_SIDEBAR');
 
@@ -338,7 +339,13 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
   return dispatch({
     type: MUTE_CURRENT_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.muteUser(userName, user.name, action),
+      promise: steemConnectAPI.muteUser(userName, user.name, action).then(result => {
+        if (user.muted) {
+          dispatch(getUserProfileBlogPosts(user.name, { limit: 10, initialLoad: true }, []));
+        }
+
+        return result;
+      }),
     },
     meta: {
       muted: user.name,
