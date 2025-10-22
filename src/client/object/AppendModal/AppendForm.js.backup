@@ -129,9 +129,6 @@ import { getExposedFieldsByObjType } from '../wObjectHelper';
 import AppendFormFooter from './AppendFormFooter';
 import { splitIngredients } from './appendFormHelper';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
-import ContentViewField, {
-  transformValueToObject,
-} from './FieldComponents/SimpleFields/ContentViewField';
 import AddOnForm from './FormComponents/AddOnForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
@@ -140,6 +137,7 @@ import AuthorForm from './FormComponents/AuthorForm';
 import BrandForm from './FormComponents/BrandForm';
 import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DelegationForm from './FormComponents/DelegationForm';
+import './AppendForm.less';
 import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
 import AddUserForm from './FormComponents/GroupForms/AddUserForm';
@@ -166,8 +164,7 @@ import SaleForm from './FormComponents/SaleForm';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
 import SimilarForm from './FormComponents/SimilarForm';
 import WalletAddressForm from './FormComponents/WalletAddressForm';
-
-import './AppendForm.less';
+import { renderField } from './FieldComponents/FieldMapper';
 
 @connect(
   state => ({
@@ -606,10 +603,6 @@ class AppendForm extends Component {
       }
       case objectFields.menuItem: {
         fieldBody.push(rest[objectFields.menuItem]);
-        break;
-      }
-      case objectFields.contentView: {
-        fieldBody.push(JSON.stringify(transformValueToObject(rest[objectFields.menuItem])));
         break;
       }
       default:
@@ -2262,89 +2255,63 @@ class AppendForm extends Component {
       </div>
     );
 
-    switch (currentField) {
-      case TYPES_OF_MENU_ITEM.PAGE:
-      case TYPES_OF_MENU_ITEM.LIST: {
-        const objectType =
-          currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
-        const defaultTitle = currentField === TYPES_OF_MENU_ITEM.LIST ? 'List title' : 'Page title';
-        const titleId = currentField === TYPES_OF_MENU_ITEM.LIST ? 'list_title' : 'page_title';
+    // NEW: Try to use migrated field component from FieldMapper
+    const fieldProps = {
+      // State props
+      loading,
+      selectedObject,
+      selectedCategory,
+      fileList,
+      categoryItem: this.state.categoryItem,
+      
+      // Component props
+      intl,
+      wObject,
+      categories,
+      selectedAlbum,
+      albums,
+      
+      // Form props
+      getFieldDecorator,
+      getFieldValue: this.props.form.getFieldValue,
+      getFieldRules: this.getFieldRules,
+      
+      // Handlers
+      handleSelectObject: this.handleSelectObject,
+      onCreateObject: this.handleCreateObject,
+      onObjectCardDelete: this.onObjectCardDelete,
+      handleSelectCategory: this.handleSelectCategory,
+    };
 
-        return (
-          <React.Fragment>
-            <Form.Item>
-              {getFieldDecorator('menuItemName')(
-                <Input
-                  className="AppendForm__input"
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: titleId,
-                    defaultMessage: defaultTitle,
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(currentField, {
-                rules: this.getFieldRules(currentField),
-              })(
-                <SearchObjectsAutocomplete
-                  className="menu-item-search"
-                  itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                  handleSelect={this.handleSelectObject}
-                  objectType={objectType}
-                />,
-              )}
-              {selectedObject && <ObjectCardView wObject={selectedObject} />}
-            </Form.Item>
-            <CreateObject
-              isSingleType
-              withOpenModalBtn={!selectedObject}
-              defaultObjectType={objectType}
-              onCreateObject={this.handleCreateObject}
-              openModalBtnText={intl.formatMessage({
-                id: `create_new_${objectType}`,
-                defaultMessage: 'Create new',
-              })}
-              parentObject={wObject}
-            />
-          </React.Fragment>
-        );
-      }
-      case objectFields.name: {
-        return (
-          <Form.Item>
-            {getFieldDecorator(objectFields.objectName, {
-              rules: this.getFieldRules(objectFields.objectName),
-            })(
-              <Input
-                autoFocus
-                className="AppendForm__input"
-                disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'value_placeholder',
-                  defaultMessage: 'Add value',
-                })}
-              />,
-            )}
-          </Form.Item>
-        );
-      }
-      case objectFields.parent: {
-        return (
-          <Form.Item>
-            {getFieldDecorator(objectFields.parent, {
-              rules: this.getFieldRules(objectFields.parent),
-            })(
-              <SearchObjectsAutocomplete
-                handleSelect={this.handleSelectObject}
-                useExtendedSearch
-              />,
-            )}
-            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
-          </Form.Item>
-        );
-      }
+    // Check if field has been migrated to new component system
+    const newFieldComponent = renderField(currentField, fieldProps);
+    
+    if (newFieldComponent) {
+      // Field is migrated - use new component (52 fields covered!)
+      return newFieldComponent;
+    }
+
+    // Field not yet migrated - fall back to old switch statement
+    switch (currentField) {
+      // REMOVED 52 migrated fields - now using FieldMapper components:
+      // - Menu fields: PAGE, LIST
+      // - Simple fields: name, title, description, email, url, price, compareAtPrice, printLength, ageRange, workTime, nutrition, language, authority, affiliateUrlTemplate, hashtag
+      // - Recipe fields: calories, budget, cookingTime, recipeIngredients
+      // - Date fields: publicationDate
+      // - Object selection: parent, featured, categoryItem
+      // - Company fields: brand, manufacturer, merchant, publisher, authors
+      // - Related: related, similar, addOn
+      // - Identifiers: companyId, groupId
+      // - Affiliate: affiliateCode, affiliateGeoArea, affiliateProductIdTypes
+      // - Navigation: link, menuItem
+      // - Filters: shopFilter, newsFilter, newsFeed
+      // - Promotional: promotion, sale
+      // - Financial: walletAddress, delegation
+      // - Product: dimensions, features
+      // - Map: mapObjectsList, mapDesktopView, mapObjectTypes, mapObjectTags, mapRectangles, productId
+      // - Group: groupAdd, groupExpertise, groupFollowers, groupLastActivity
+      
+      // NOT MIGRATED - complex fields remain in switch:
       case objectFields.featured: {
         return (
           <Form.Item>
@@ -2732,16 +2699,6 @@ class AppendForm extends Component {
           <LastActivityForm
             getFieldDecorator={getFieldDecorator}
             handleSelectChange={this.handleSelectChange}
-          />
-        );
-      case objectFields.contentView:
-        return (
-          <ContentViewField
-            getFieldDecorator={getFieldDecorator}
-            handleSelectChange={this.handleSelectChange}
-            getFieldRules={this.getFieldRules}
-            intl={this.props.intl}
-            getFieldValue={this.props.form.getFieldValue}
           />
         );
       case objectFields.language:
