@@ -113,8 +113,7 @@ export default class NotificationSettings extends React.Component {
               <p className="mt3">
                 <FormattedMessage
                   id="instant_mobile_notifications_description"
-                  defaultMessage="Stay up to date with instant mobile alerts via Telegram!
-Get notified when someone replies to or reblogs your Hive post, mentions you, follows you, sends you funds, and more."
+                  defaultMessage="Stay up to date with instant mobile alerts via Telegram! Get notified when someone replies to or reblogs your Hive post, mentions you, follows you, sends you funds, and more."
                 />
               </p>
               <p className="mt3">
