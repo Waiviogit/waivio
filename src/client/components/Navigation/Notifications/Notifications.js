@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -1235,14 +1236,18 @@ class Notifications extends React.Component {
               <FormattedMessage id="see_all" defaultMessage="See All" />
             </Link>
             <div>
-              Get notified in{' '}
-              <a target={'_blank'} href={`https://t.me/WaivioNotificationsBot`} rel="noreferrer">
-                Telegram{' '}
-              </a>{' '}
-              app
-              <div className="Notification__text__date mb2" style={{ marginTop: '-15px' }}>
-                (start bot and send your username)
-              </div>
+              <Tooltip
+                placement="topLeft"
+                title={'Start bot and send your username'}
+                overlayClassName="TelegramTooltipContainer"
+                overlayStyle={{ top: '10px' }}
+              >
+                Get notified in{' '}
+                <a target={'_blank'} href={`https://t.me/WaivioNotificationsBot`} rel="noreferrer">
+                  Telegram{' '}
+                </a>{' '}
+                app
+              </Tooltip>
             </div>
           </div>
         </div>
