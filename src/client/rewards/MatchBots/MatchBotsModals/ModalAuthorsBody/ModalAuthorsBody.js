@@ -30,6 +30,14 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
     250,
   );
 
+  const voteMarks = {
+    '-100': '-100%',
+    '-50': '-50%',
+    '0': '0%',
+    '50': '50%',
+    '100': '100%',
+  };
+
   return (
     <div className="authorModalBody">
       {isAddModal && (
@@ -50,8 +58,11 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
         sliderDescription={intl.formatMessage({
           id: 'match_bot_slider_description_vote',
           defaultMessage:
-            'The Authors match bot only publishes upvotes with estimated value of 0.01 HBD or more.',
+            'Select positive values for upvotes or negative values for downvotes. The Authors match bot will cast votes with the specified value.',
         })}
+        marks={voteMarks}
+        min={-100}
+        max={100}
       />
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
