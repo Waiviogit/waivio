@@ -328,21 +328,18 @@ const ObjectOfTypePage = props => {
 
       setValidationScript(true);
       validateAppend(postData)
-        .then(async res => {
-          const parseRes = await res.json();
-
+        .then(res => {
           if (res.status === 200) {
             setIsReadyToPublish(!isReadyToPublish);
             setValidationScript(false);
-            message.success(parseRes.message);
           } else {
             setValidationScript(false);
-            message.error(parseRes.message);
+            message.error('Something went wrong. Please try again later.');
           }
         })
-        .catch(err => {
+        .catch(() => {
           setValidationScript(false);
-          message.error(err.message);
+          message.error('Something went wrong. Please try again later.');
         });
     } else {
       setIsReadyToPublish(!isReadyToPublish);
@@ -361,7 +358,7 @@ const ObjectOfTypePage = props => {
     }
 
     if (content) {
-      if (isCode) return <HtmlSandbox html={content} inPreview />;
+      if (isCode) return <HtmlSandbox html={content} />;
 
       return <BodyContainer isPage full body={content} />;
     }
@@ -398,14 +395,6 @@ const ObjectOfTypePage = props => {
             <HtmlSandbox html={content} autoSize padding={16} />
           ) : (
             <BodyContainer isPage full body={content} />
-          )}
-          {content.includes('<script>') && (
-            <Alert
-              message="The script won’t work in preview mode. If the script is saved, it will work after
-              submitting the update."
-              type={'warning'}
-              style={{ textAlign: 'center', marginTop: '20px' }}
-            />
           )}
           <div className="object-page-preview__options">
             <LikeSection
@@ -513,7 +502,7 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
-          {isNotHtml && (
+          {isNotHtml && isEditMode && (
             <Alert
               style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
               type={'error'}

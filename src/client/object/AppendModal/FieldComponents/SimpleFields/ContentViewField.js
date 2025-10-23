@@ -7,8 +7,6 @@ const { Option } = Select;
 
 export const transformValueToObject = value => {
   switch (value) {
-    case 'show_both':
-      return { hideSignIn: false, hideMenu: false };
     case 'hide_signin':
       return { hideSignIn: true, hideMenu: false };
     case 'hide_menu':
@@ -38,9 +36,9 @@ const ContentViewField = ({ getFieldDecorator, getFieldRules, intl, handleSelect
         })}
         onChange={handleSelectChange}
       >
-        <Option value="show_both">Sign in + Main menu</Option>
+        <Option value="hide_both">Sign in + Main menu</Option>
         <Option value="hide_signin">Sign In</Option>
-        <Option value="hide_menu">Menu</Option>
+        <Option value="hide_menu">Main Menu</Option>
       </Select>,
     )}
     <div>
