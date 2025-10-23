@@ -129,7 +129,7 @@ const MessageWithAvatars = ({ text }) => {
           }}
         >
           <div style={{ fontSize: 24 }}>🖼️</div>
-          <div style={{ marginTop: -10 }}>
+          <div>
             Image not available
             <br />
             <p>
