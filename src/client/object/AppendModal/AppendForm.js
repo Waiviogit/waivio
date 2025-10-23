@@ -297,7 +297,6 @@ class AppendForm extends Component {
   componentDidMount = () => {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
-    this.getMenuItem();
 
     this.getMenuItem();
 
@@ -610,7 +609,9 @@ class AppendForm extends Component {
         break;
       }
       case objectFields.contentView: {
-        fieldBody.push(JSON.stringify(transformValueToObject(rest[objectFields.menuItem])));
+        fieldBody.push(
+          JSON.stringify(transformValueToObject(getFieldValue(objectFields.contentView))),
+        );
         break;
       }
       default:

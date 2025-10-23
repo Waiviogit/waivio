@@ -7,8 +7,6 @@ const { Option } = Select;
 
 export const transformValueToObject = value => {
   switch (value) {
-    case 'show_both':
-      return { hideSignIn: false, hideMenu: false };
     case 'hide_signin':
       return { hideSignIn: true, hideMenu: false };
     case 'hide_menu':
