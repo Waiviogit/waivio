@@ -43,7 +43,7 @@ const SocialCampaignCard = ({
       : null;
 
   const getCampaignText = (isGiveaway, days) => {
-    if (days === 0) return isGiveaway ? ' - Today' : ' - Win Today';
+    if (days === 0) return isGiveaway ? ' - Today!' : ' - Win Today!';
     if (days === 1) return isGiveaway ? ' - 1 Day Left!' : ' - Win in 1 Day!';
 
     return isGiveaway ? ` - ${days} Days Left!` : ` - Win in ${days} Days!`;
@@ -77,7 +77,10 @@ const SocialCampaignCard = ({
           <h3>
             {isSpecialCampaign ? (
               <>
-                <USDDisplay value={specialAmount} currencyDisplay="symbol" />{' '}
+                <span className="SocialCampaignCard__earn">
+                  {' '}
+                  <USDDisplay value={specialAmount} currencyDisplay="symbol" />{' '}
+                </span>
                 {propositionGiveaway ? 'Giveaway' : 'Contest'}
                 {daysLeft !== null && getCampaignText(propositionGiveaway, daysLeft)}
               </>

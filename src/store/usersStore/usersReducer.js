@@ -505,6 +505,18 @@ export default function usersReducer(state = initialState, action) {
         },
       };
     }
+
+    case 'CLEAR_MUTE_LOADING': {
+      return {
+        ...state,
+        users: {
+          [action.meta.muted]: {
+            ...state.users[action.meta.muted],
+            muteLoading: false,
+          },
+        },
+      };
+    }
     case actions.RESET_USERS: {
       return initialState;
     }
