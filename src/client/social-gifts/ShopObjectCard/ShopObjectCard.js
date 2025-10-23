@@ -57,7 +57,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       : null;
 
   const getCampaignText = (isGiveaway, days) => {
-    if (days === 0) return isGiveaway ? ' - Today' : ' - Win Today';
+    if (days === 0) return isGiveaway ? ' - Today!' : ' - Win Today!';
     if (days === 1) return isGiveaway ? ' - 1 Day Left!' : ' - Win in 1 Day!';
 
     return isGiveaway ? ` - ${days} Days Left!` : ` - Win in ${days} Days!`;
