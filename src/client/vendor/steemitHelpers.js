@@ -93,9 +93,10 @@ export const calculatePayout = (post, rates, isUpdates) => {
   payoutDetails.curatorPayouts = hivePayoutHalf + waivPayoutHalf;
 
   if (!isPostCashout(post)) {
-    payoutDetails.cashoutInTime = (post.cashout_time || post.payout_at) + '.000Z';
+    payoutDetails.cashoutInTime = post.cashout_time.includes('Z')
+      ? post.cashout_time || post.payout_at
+      : (post.cashout_time || post.payout_at) + '.000Z';
   } else {
-    payoutDetails.HIVEPayout = total_payout_value;
     payoutDetails.pastPayouts = payout;
     payoutDetails.authorPayouts = total_author_payout + waivPayoutHalf;
     payoutDetails.curatorPayouts = total_curator_payout + waivPayoutHalf;

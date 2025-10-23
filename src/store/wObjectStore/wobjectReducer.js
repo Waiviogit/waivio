@@ -105,24 +105,24 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         wobject: {},
-        hideHeader: false,
-        hideSignInHeader: false,
       };
     case actions.GET_OBJECT_SUCCESS:
       if (action.payload.htmlContent) {
         const htmlContent = parseJSON(action.payload.htmlContent) || {
-          hideSignIn: true,
-          hideMenu: true,
           code: action.payload.htmlContent,
+        };
+
+        const contentView = parseJSON(action.payload.contentView) || {
+          hideSignIn: false,
+          hideMenu: false,
         };
 
         return {
           ...state,
           wobject: {
             ...action.payload,
+            ...contentView,
             code: htmlContent.code,
-            hideHeader: htmlContent.hideMenu,
-            hideSignInHeader: htmlContent.hideSignIn,
           },
           isFetching: false,
           isFailed: false,
@@ -158,24 +158,6 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
     case actions.SET_BASE_OBJECT: {
-      if (action.payload.htmlContent) {
-        const htmlContent = parseJSON(action.payload.htmlContent) || {
-          hideSignIn: true,
-          hideMenu: true,
-          code: action.payload.htmlContent,
-        };
-
-        return {
-          ...state,
-          baseObject: {
-            ...action.payload,
-            code: htmlContent.code,
-            hideHeader: htmlContent.hideMenu,
-            hideSignInHeader: htmlContent.hideSignIn,
-          },
-        };
-      }
-
       return {
         ...state,
         baseObject: {

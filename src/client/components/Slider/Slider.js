@@ -25,6 +25,7 @@ export default class Slider extends React.Component {
     value: PropTypes.number,
     voteWorth: PropTypes.number,
     visibleTransfer: PropTypes.bool,
+    isAppend: PropTypes.bool,
     onChange: PropTypes.func,
     post: PropTypes.shape({
       title: PropTypes.string,
@@ -113,7 +114,7 @@ export default class Slider extends React.Component {
           {this.props.visibleTransfer && (
             <Transfer sendTo={post.author} title={post.title} permLink={post.permlink} />
           )}{' '}
-          {isPostCashout(post) ? (
+          {isPostCashout(post) && !this.props.isAppend ? (
             <h3>
               <span>
                 <FormattedMessage

@@ -210,7 +210,12 @@ const AppendCard = props => {
           )}
         </div>
         {visibleSlider && !isLiked && (
-          <Slider value={sliderValue} voteWorth={voteWorth} onChange={handleSliderChange} />
+          <Slider
+            value={sliderValue}
+            voteWorth={voteWorth}
+            isAppend
+            onChange={handleSliderChange}
+          />
         )}
         <Comments show={commentsVisible} isQuickComments post={props.post} isUpdating />
       </div>
