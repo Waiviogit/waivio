@@ -13,6 +13,8 @@ const ModalBodySlider = ({
   selectOptions,
   handleChangeCurrency,
   currency,
+  min,
+  max,
 }) => {
   const formatTooltip = value => `${value}%`;
 
@@ -36,7 +38,8 @@ const ModalBodySlider = ({
         )}
       </p>
       <Slider
-        min={1}
+        min={min || 1}
+        max={max || 100}
         defaultValue={sliderValue}
         marks={marks}
         tipFormatter={formatTooltip}
@@ -56,6 +59,8 @@ ModalBodySlider.propTypes = {
   handleChangeCurrency: PropTypes.func,
   sliderTitle: PropTypes.string.isRequired,
   sliderDescription: PropTypes.string.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
 };
 
 ModalBodySlider.defaultProps = {
@@ -71,6 +76,8 @@ ModalBodySlider.defaultProps = {
   selectOptions: null,
   handleChangeCurrency: null,
   currency: ['WAIV'],
+  min: 1,
+  max: 100,
 };
 
 export default ModalBodySlider;

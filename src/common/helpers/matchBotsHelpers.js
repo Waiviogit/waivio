@@ -30,6 +30,7 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
   notesValue: '',
   isDownvote: false,
   isComments: false,
+  lastMomentVote: false,
   expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
@@ -68,6 +69,7 @@ export const getBotObjCurator = (botData, isEdit) => {
     type: MATCH_BOTS_NAMES.CURATORS,
     enabled: !isEdit || botData.enabled,
     voteComments: botData.isComments,
+    lastMomentVote: botData.lastMomentVote,
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
     name: get(botData, 'selectedUser.account', ''),
@@ -103,6 +105,7 @@ export const setInitialInputValues = value => {
 
   if (value.voteWeight) initialState.voteWeight = value.voteWeight / 100;
   if (value.voteComments) initialState.isComments = value.voteComments;
+  if (value.lastMomentVote) initialState.lastMomentVote = value.lastMomentVote;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
   if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);
