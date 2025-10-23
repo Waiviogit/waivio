@@ -1828,6 +1828,7 @@ ${obj.productId}`}
             {showLinkSection && linkSection}
             {showGroupSection && groupSection}
             {showLRecipeSection && recipeSection}
+            {isHtml && htmlSection}
             {aboutSection}
             {isAffiliate && (
               <AffiliateSection
@@ -1840,7 +1841,6 @@ ${obj.productId}`}
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {isHtml && htmlSection}
             {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
