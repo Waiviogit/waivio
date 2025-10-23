@@ -3,6 +3,7 @@ import { isEmpty, isNil } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAppHost } from '../appStore/appSelectors';
+import { unmuteSubscriptionWithBlog } from '../userStore/userActions';
 import { getUser } from './usersSelectors';
 import { LIKE_POST } from '../postsStore/postActions';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -335,10 +336,18 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
   const userName = getAuthenticatedUserName(state);
   const action = user.muted ? [] : ['ignore'];
 
+  // If unmuting, use the subscription approach with getBlog
+  if (user.muted) {
+    const host = getAppHost(state);
+
+    return dispatch(unmuteSubscriptionWithBlog(userName, user.name, host, user.name));
+  }
+
+  // If muting, use the regular approach
   return dispatch({
     type: MUTE_CURRENT_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.muteUser(userName, user.name, action),
+      promise: steemConnectAPI.muteUser(userName, user.name, action).then(result => result),
     },
     meta: {
       muted: user.name,
