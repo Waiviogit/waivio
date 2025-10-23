@@ -14,6 +14,8 @@ import {
   getFollowingUsersUpdates,
 } from './userSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getUserProfileBlogPosts } from '../feedStore/feedActions';
+import { MUTE_CURRENT_USER } from '../usersStore/usersActions';
 
 require('isomorphic-fetch');
 
@@ -655,3 +657,119 @@ export const getUrerExpertiseCounters = username => dispatch =>
       promise: ApiClient.getExpertiseCounters(username),
     },
   });
+
+export const UNMUTE_SUBSCRIPTION = createAsyncActionType('@user/UNMUTE_SUBSCRIPTION');
+
+export const unmuteSubscriptionWithBlog = (follower, following, host, userName) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  dispatch({
+    type: MUTE_CURRENT_USER.START,
+    meta: {
+      muted: following,
+      userName: follower,
+    },
+  });
+
+  dispatch({
+    type: UNMUTE_SUBSCRIPTION.START,
+    meta: following,
+  });
+
+  return steemConnectAPI.muteUser(follower, following, []).then(() => {
+    dispatch(
+      getChangesInAccessOptionWithBlog(
+        follower,
+        host,
+        UNMUTE_SUBSCRIPTION,
+        ApiClient.getRestrictionsInfo,
+        {
+          following,
+          userName,
+        },
+      ),
+    );
+  });
+};
+
+const getChangesInAccessOptionWithBlog = (
+  username,
+  host,
+  currentActionType,
+  processingFunction,
+  meta,
+) => async (dispatch, getState, { busyAPI }) => {
+  const { getLastBlockNum } = await import('../../client/vendor/steemitHelpers');
+  const { subscribeMethod, subscribeTypes } = await import('../../common/constants/blockTypes');
+
+  const blockNumber = await getLastBlockNum();
+
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNumber, subscribeTypes.posts]);
+  busyAPI.instance.subscribe((response, mess) => {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
+      processingFunction(host, username)
+        .then(res => {
+          dispatch({
+            type: currentActionType.SUCCESS,
+            payload: res,
+            meta,
+          });
+
+          dispatch({
+            type: MUTE_CURRENT_USER.SUCCESS,
+            meta: {
+              muted: meta.following,
+              userName: username,
+            },
+          });
+
+          if (meta.userName) {
+            dispatch(getUserProfileBlogPosts(meta.userName, { limit: 10, initialLoad: true }))
+              .then(() => {
+                dispatch({
+                  type: 'CLEAR_MUTE_LOADING',
+                  meta: {
+                    muted: meta.following,
+                    userName: username,
+                  },
+                });
+              })
+              .catch(() => {
+                dispatch({
+                  type: 'CLEAR_MUTE_LOADING',
+                  meta: {
+                    muted: meta.following,
+                    userName: username,
+                  },
+                });
+              });
+          } else {
+            dispatch({
+              type: 'CLEAR_MUTE_LOADING',
+              meta: {
+                muted: meta.following,
+                userName: username,
+              },
+            });
+          }
+
+          return res;
+        })
+        .catch(error => {
+          console.error('Component error:', error);
+          message.error('Something went wrong');
+          dispatch({
+            type: currentActionType.ERROR,
+          });
+        });
+    }
+  });
+};
