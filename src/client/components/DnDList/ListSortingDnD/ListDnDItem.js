@@ -4,8 +4,8 @@ import { Checkbox } from 'antd';
 import OBJECT_TYPE from '../../../object/const/objectTypes';
 import '../DnDListItem.less';
 
-const DnDListItem = ({ item, toggleItemInSortingList }) => (
-  <div className="dnd-list-item">
+const DnDListItem = ({ item, toggleItemInSortingList, isDisabled }) => (
+  <div className="dnd-list-item" style={{ cursor: isDisabled ? 'not-allowed' : 'default' }}>
     {item.wobjType === OBJECT_TYPE.LIST && (
       <Checkbox
         defaultChecked
@@ -29,11 +29,13 @@ DnDListItem.propTypes = {
     id: PropTypes.string.isRequired,
     checkedItemInList: PropTypes.bool.isRequired,
   }),
-  toggleItemInSortingList: PropTypes.shape().isRequired,
+  toggleItemInSortingList: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
 };
 
 DnDListItem.defaultProps = {
   screenSize: '',
+  isDisabled: false,
 };
 
 export default DnDListItem;

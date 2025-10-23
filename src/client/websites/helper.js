@@ -54,7 +54,8 @@ export const getChangesInAccessOption = (
 
           return res;
         })
-        .catch(() => {
+        .catch(error => {
+          console.error('Component error:', error);
           message.error('Something went wrong');
           dispatch({
             type: currentActionType.ERROR,

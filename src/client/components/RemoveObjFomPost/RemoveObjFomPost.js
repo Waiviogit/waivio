@@ -28,7 +28,8 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
               resolve();
               setRejectedList([...rejectedList, camp.campaignId]);
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               resolve();
             });
         });
@@ -47,7 +48,8 @@ const RemoveObjFomPost = ({ visible, linkedObj, onClose, campaigns, post }) => {
               resolve();
               setRejectedList([...rejectedList, obj.author_permlink]);
             })
-            .catch(() => {
+            .catch(error => {
+              console.error('Component error:', error);
               resolve();
             });
         });

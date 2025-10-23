@@ -6,7 +6,8 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal, Checkbox } from 'antd';
+import { Button, Form, Icon, message, Modal, Alert } from 'antd';
+import { validateHtml } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
@@ -25,7 +26,12 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
+import {
+  getDraftPage,
+  getObject,
+  saveDraftPage,
+  validateAppend,
+} from '../../../waivioApi/ApiClient';
 import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getHtml } from '../../components/Story/Body';
@@ -51,16 +57,14 @@ const ObjectOfTypePage = props => {
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [validationScript, setValidationScript] = useState(false);
+  const [loadingForButton, setLoadingForButton] = useState(false);
   const [draft, setDraft] = useState(null);
   const [littleVotePower, setLittleVotePower] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-
-  // NEW: flags to hide sections
-  const [hideSignInState, setHideSignIn] = useState(true);
-  const [hideMenuState, setHideMenu] = useState(true);
   const appendAdding = useSelector(getIsAddingAppendLoading);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
   const isCode = currObj.object_type === 'html';
@@ -71,23 +75,17 @@ const ObjectOfTypePage = props => {
     if (parsed) {
       return {
         code: parsed.code,
-        hideSignIn: Boolean(parsed.hideSignIn),
-        hideMenu: Boolean(parsed.hideMenu),
       };
     }
 
     return {
       code: raw,
-      hideSignIn: true,
-      hideMenu: true,
     };
   };
   const seedFromSource = (value, isObjTypeCode) => {
     if (isObjTypeCode) {
-      const { code, hideMenu, hideSignIn } = parseCodeField(value);
+      const { code } = parseCodeField(value);
 
-      setHideMenu(hideMenu);
-      setHideSignIn(hideSignIn);
       setCurrentContent(code);
       setContent(code);
     } else {
@@ -138,15 +136,20 @@ const ObjectOfTypePage = props => {
     } else if (isEditMode && userName && ['page', 'html'].includes(currObj.object_type)) {
       setIsReadyToPublish(false);
 
-      getDraftPage(userName, currObj.author_permlink).then(res => {
-        if (res.message || !res.body) {
-          setEditorInitialized(true);
+      getDraftPage(userName, currObj.author_permlink)
+        .then(res => {
+          if (res.message || !res.body) {
+            setEditorInitialized(true);
 
-          return;
-        }
-        setDraft(res.body);
-        setEditorInitialized(false);
-      });
+            return;
+          }
+          setDraft(res.body);
+          setEditorInitialized(false);
+        })
+        .catch(error => {
+          console.error('Component error:', error);
+          setEditorInitialized(true);
+        });
     }
   }, [isEditMode, draft]);
 
@@ -160,15 +163,20 @@ const ObjectOfTypePage = props => {
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (userName && ['page', 'html'].includes(currObj.object_type)) {
-      getDraftPage(userName, currObj.author_permlink).then(res => {
-        if (res.message || !res.body) {
-          setEditorInitialized(true);
+      getDraftPage(userName, currObj.author_permlink)
+        .then(res => {
+          if (res.message || !res.body) {
+            setEditorInitialized(true);
 
-          return;
-        }
-        setDraft(res.body);
-        setEditorInitialized(false);
-      });
+            return;
+          }
+          setDraft(res.body);
+          setEditorInitialized(false);
+        })
+        .catch(error => {
+          console.error('Component error:', error);
+          setEditorInitialized(true);
+        });
     } else {
       setEditorInitialized(true);
       setNotification(false);
@@ -187,14 +195,19 @@ const ObjectOfTypePage = props => {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
 
-        getObject(pathUrl, userName, locale).then(wObject => {
-          seedFromSource(
-            getContent(wObject, wObject.object_type === 'html'),
-            wObject.object_type === 'html',
-          );
-          setNestedWobj(wObject);
-          setIsLoading(false);
-        });
+        getObject(pathUrl, userName, locale)
+          .then(wObject => {
+            seedFromSource(
+              getContent(wObject, wObject.object_type === 'html'),
+              wObject.object_type === 'html',
+            );
+            setNestedWobj(wObject);
+            setIsLoading(false);
+          })
+          .catch(error => {
+            console.error('Component error:', error);
+            setIsLoading(false);
+          });
       } else {
         seedFromSource(
           getContent(wobject, wobject.object_type === 'html'),
@@ -216,7 +229,10 @@ const ObjectOfTypePage = props => {
             userName,
             props.nestedWobject.author_permlink || props.wobject.author_permlink,
             newContent,
-          );
+          ).catch(error => {
+            console.error('Component error:', error);
+            // Ignore draft save errors
+          });
         }
       }
     }, 500),
@@ -236,28 +252,17 @@ const ObjectOfTypePage = props => {
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
 
         // pack body: for code pages we send JSON with flags
-        const bodyOut = isCode
-          ? JSON.stringify({
-              code: content,
-              hideSignIn: hideSignInState,
-              hideMenu: hideMenuState,
-            })
-          : content;
+        const bodyOut = content;
 
-        const pageContentField = isCode
-          ? {
-              name: objectFields.htmlContent,
-              body: bodyOut,
-              locale,
-            }
-          : {
-              name: objectFields.pageContent,
-              body: bodyOut,
-              locale,
-            };
+        const pageContentField = {
+          name: isCode ? objectFields.htmlContent : objectFields.pageContent,
+          body: bodyOut,
+          locale,
+        };
 
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
+        setLoadingForButton(true);
         appendPageContent(postData, {
           follow,
           votePercent: votePercent * 100,
@@ -265,11 +270,20 @@ const ObjectOfTypePage = props => {
           isObjectPage: true,
         })
           .then(res => {
-            saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink);
+            setLoadingForButton(false);
+            if (res.message) return Promise.reject(res);
+            saveDraftPage(
+              userName,
+              props.nestedWobject.author_permlink || wobject.author_permlink,
+            ).catch(error => {
+              console.error('Component error:', error);
+              // Ignore draft save errors
+            });
 
             return res;
           })
           .then(() => {
+            setLoadingForButton(false);
             message.success(
               intl.formatMessage(
                 {
@@ -284,8 +298,10 @@ const ObjectOfTypePage = props => {
             );
             props.setEditMode(!props.isEditMode);
           })
+          // eslint-disable-next-line consistent-return
           .catch(error => {
             console.error(error);
+            if (error.message) return message.error(error.message);
             setIsLoading(false);
             message.error(
               intl.formatMessage({
@@ -293,6 +309,7 @@ const ObjectOfTypePage = props => {
                 defaultMessage: "Couldn't add the field to object.",
               }),
             );
+            setLoadingForButton(false);
           });
       }
     });
@@ -300,7 +317,36 @@ const ObjectOfTypePage = props => {
 
   const handleReadyPublishClick = e => {
     e.preventDefault();
-    setIsReadyToPublish(!isReadyToPublish);
+    if (isCode) {
+      const pageContentField = {
+        name: objectFields.htmlContent,
+        body: content,
+        locale,
+      };
+
+      const postData = getAppendData(userName, wobject, '', pageContentField);
+
+      setValidationScript(true);
+      validateAppend(postData)
+        .then(async res => {
+          const parseRes = await res.json();
+
+          if (res.status === 200) {
+            setIsReadyToPublish(!isReadyToPublish);
+            setValidationScript(false);
+            message.success(parseRes.message);
+          } else {
+            setValidationScript(false);
+            message.error(parseRes.message);
+          }
+        })
+        .catch(err => {
+          setValidationScript(false);
+          message.error(err.message);
+        });
+    } else {
+      setIsReadyToPublish(!isReadyToPublish);
+    }
   };
 
   const closePublishViev = e => {
@@ -315,7 +361,7 @@ const ObjectOfTypePage = props => {
     }
 
     if (content) {
-      if (isCode) return <HtmlSandbox html={content} autoSize maxHeight={2000} padding={16} />;
+      if (isCode) return <HtmlSandbox html={content} inPreview />;
 
       return <BodyContainer isPage full body={content} />;
     }
@@ -353,25 +399,15 @@ const ObjectOfTypePage = props => {
           ) : (
             <BodyContainer isPage full body={content} />
           )}
+          {content.includes('<script>') && (
+            <Alert
+              message="The script won’t work in preview mode. If the script is saved, it will work after
+              submitting the update."
+              type={'warning'}
+              style={{ textAlign: 'center', marginTop: '20px' }}
+            />
+          )}
           <div className="object-page-preview__options">
-            {isCode && (
-              <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
-                <Checkbox
-                  checked={hideSignInState}
-                  onChange={e => setHideSignIn(e.target.checked)}
-                  style={{ display: 'block', marginBottom: 8 }}
-                >
-                  Hide sign-in section
-                </Checkbox>
-                <Checkbox
-                  checked={hideMenuState}
-                  onChange={e => setHideMenu(e.target.checked)}
-                  style={{ display: 'block' }}
-                >
-                  Hide site main menu section
-                </Checkbox>
-              </div>
-            )}
             <LikeSection
               form={form}
               onVotePercentChange={handleVotePercentChange}
@@ -385,9 +421,10 @@ const ObjectOfTypePage = props => {
           <div className="object-of-type-page__row align-center">
             <Button
               htmlType="submit"
-              disabled={form.getFieldError('like')}
+              disabled={form.getFieldError('like') || loadingForButton}
               onClick={handleSubmit}
               size="large"
+              loading={loadingForButton}
             >
               {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
             </Button>
@@ -424,6 +461,7 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
+  const isNotHtml = validateHtml(content);
 
   return (
     <React.Fragment>
@@ -433,6 +471,27 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag ||
             (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+          {isCode && isEditMode && (
+            <Alert
+              type={'warning'}
+              style={{ textAlign: 'center', marginBottom: '10px' }}
+              message={
+                <div>
+                  Check out the{' '}
+                  <a
+                    rel="noreferrer"
+                    href={'/object/qci-creating-a-website-with-chatgpt-and-waivio-html-object/page'}
+                    target={'_blank'}
+                  >
+                    {' '}
+                    instructions
+                  </a>{' '}
+                  for creating your website with the HTML Object.
+                </div>
+              }
+              closable
+            />
+          )}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (
@@ -454,17 +513,22 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
-          {!isReadyToPublish && content?.includes('<script>') && (
-            <p style={{ padding: '15px 0', textAlign: 'center', color: 'red' }}>
-              The script tag is not allowed in code updates.
-            </p>
+          {isNotHtml && (
+            <Alert
+              style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
+              type={'error'}
+              message={
+                'The code must use only HTML, CSS, and JavaScript (script). Other technologies are not allowed.'
+              }
+            />
           )}
           {isEditMode && !isReadyToPublish && (
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={littleVotePower || !content || content.includes('<script>')}
+                disabled={littleVotePower || !content || isNotHtml}
                 onClick={handleReadyPublishClick}
+                loading={validationScript}
                 size="large"
               >
                 {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}

@@ -324,11 +324,13 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
         type: ADD_WEBSITE_ADMINISTRATOR.ERROR,
       });
     })
-    .catch(() =>
-      dispatch({
+    .catch(error => {
+      console.error('Error adding website administrator:', error);
+
+      return dispatch({
         type: ADD_WEBSITE_ADMINISTRATOR.ERROR,
-      }),
-    );
+      });
+    });
 };
 
 export const DELETE_WEBSITE_ADMINISTRATOR = createAsyncActionType(
@@ -398,11 +400,13 @@ export const addWebsiteModerators = (host, account) => (
         type: ADD_WEBSITE_MODERATORS.ERROR,
       });
     })
-    .catch(() =>
-      dispatch({
+    .catch(error => {
+      console.error('Error adding website moderators:', error);
+
+      return dispatch({
         type: ADD_WEBSITE_MODERATORS.ERROR,
-      }),
-    );
+      });
+    });
 };
 
 export const DELETE_WEBSITE_MODERATORS = createAsyncActionType(
@@ -480,11 +484,13 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
         type: ADD_WEBSITE_AUTHORITIES.ERROR,
       });
     })
-    .catch(() =>
-      dispatch({
+    .catch(error => {
+      console.error('Error adding website authorities:', error);
+
+      return dispatch({
         type: ADD_WEBSITE_AUTHORITIES.ERROR,
-      }),
-    );
+      });
+    });
 };
 export const ADD_WEBSITE_TRUSTIES = createAsyncActionType('@website/ADD_WEBSITE_TRUSTIES');
 
@@ -515,11 +521,13 @@ export const addWebTrusties = (host, account) => (dispatch, getState, { steemCon
         type: ADD_WEBSITE_TRUSTIES.ERROR,
       });
     })
-    .catch(() =>
-      dispatch({
+    .catch(error => {
+      console.error('Error adding website trusties:', error);
+
+      return dispatch({
         type: ADD_WEBSITE_TRUSTIES.ERROR,
-      }),
-    );
+      });
+    });
 };
 
 export const DELETE_WEBSITE_AUTHORITIES = createAsyncActionType(

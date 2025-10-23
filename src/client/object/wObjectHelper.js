@@ -134,7 +134,10 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       return new Date(a.addedAt) - new Date(b.addedAt);
     });
 
-  // Remove early return to allow proper sorting logic to execute
+  const excludedIds = new Set(sortOrder?.exclude || []);
+  const withoutExcluded = excludedIds.size
+    ? withoutPromotion.filter(item => !excludedIds.has(item.author_permlink))
+    : withoutPromotion;
 
   if (sortByParam === 'custom' && sortOrder) {
     if (sortOrder && sortOrder.sortType && sortOrder.sortType !== 'custom') {
@@ -177,7 +180,7 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
           break;
       }
 
-      const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+      const sorted = uniqBy(withoutExcluded, 'author_permlink').sort((a, b) => {
         const cmp = comparator(a, b);
 
         if (cmp !== 0) return cmp;
@@ -194,7 +197,7 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
     }
 
     if (!sortOrder || !sortOrder.include || sortOrder.include.length === 0) {
-      const sorted = uniqBy(withoutPromotion, 'author_permlink').sort((a, b) => {
+      const sorted = uniqBy(withoutExcluded, 'author_permlink').sort((a, b) => {
         const cmp = getObjectName(a).localeCompare(getObjectName(b));
 
         if (cmp !== 0) return cmp;
@@ -209,7 +212,7 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       return [...sortItemsByPr, ...sorted.sort(sorting)];
     }
 
-    return [...sortItemsByPr, ...getSortList(sortOrder, withoutPromotion)];
+    return [...sortItemsByPr, ...getSortList(sortOrder, withoutExcluded)];
   }
   let comparator;
 
@@ -250,7 +253,7 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       break;
   }
 
-  const uniqueItems = uniqBy(withoutPromotion, 'author_permlink');
+  const uniqueItems = uniqBy(withoutExcluded, 'author_permlink');
 
   const lists = uniqueItems.filter(item => isList(item));
   const nonLists = uniqueItems.filter(item => !isList(item));

@@ -44,8 +44,10 @@ const UserHeader = ({
   isGuest,
   authUserName,
   handleMuteUserBlog,
+  muteLoading,
 }) => {
   const [visible, setVisible] = useState(false);
+  const [hoveringMute, setHoveringMute] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${getImagePathPost(coverImage)}")` } : {};
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
@@ -98,6 +100,12 @@ const UserHeader = ({
   if (hostWithoutWWW?.indexOf('www.') === 0) {
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
+  const getMuteLabel = () => {
+    if (muteLoading) return intl.formatMessage({ id: 'unmuting', defaultMessage: 'Unmuting...' });
+    if (hoveringMute) return intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' });
+
+    return mutedLabelText;
+  };
 
   const guestPrefix = ' (guest)';
   const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
@@ -116,7 +124,34 @@ const UserHeader = ({
         followingType="user"
       />
       {user.youFollows && <BellButton user={user} />}
-      {user.muted && <span className="UserHeader__muteCard">{mutedLabelText}</span>}
+      {user.muted && (
+        <span
+          className="UserHeader__muteCard pointer"
+          onClick={async e => {
+            e.stopPropagation();
+            if (muteLoading) return;
+            await handleMuteUserBlog(user);
+          }}
+          onMouseEnter={() => setHoveringMute(true)}
+          onMouseLeave={() => setHoveringMute(false)}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
+        >
+          {getMuteLabel()}
+          {muteLoading && (
+            <i
+              className="iconfont icon-spinner"
+              style={{
+                fontSize: 14,
+                marginLeft: 4,
+                position: 'relative',
+                top: '1px',
+                animation: 'spin 0.8s linear infinite',
+              }}
+            />
+          )}
+        </span>
+      )}
+
       {!mutedByModerator && (
         <UserPopoverMenu
           user={user}
@@ -252,6 +287,7 @@ UserHeader.propTypes = {
   isGuest: PropTypes.bool,
   handleMuteUserBlog: PropTypes.func,
   authUserName: PropTypes.string,
+  muteLoading: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -265,12 +301,14 @@ UserHeader.defaultProps = {
   hasCover: false,
   handleMuteUserBlog: () => {},
   isGuest: false,
+  muteLoading: false,
 };
 
 export default injectIntl(
   connect(
-    state => ({
+    (state, ownProps) => ({
       authUserName: getAuthenticatedUserName(state),
+      muteLoading: state.users?.users?.[ownProps.user?.name]?.muteLoading || false,
     }),
     {
       unfollow: unfollowUser,

@@ -173,7 +173,8 @@ export function createPermlink(title, author, parent_author, parent_permlink, lo
 
         return checkPermLinkLength(permlink);
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         permlink = s;
         return checkPermLinkLength(permlink);
       });

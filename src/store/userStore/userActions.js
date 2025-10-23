@@ -18,6 +18,8 @@ import {
   getFollowingUsersUpdates,
 } from './userSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getUserProfileBlogPosts } from '../feedStore/feedActions';
+import { MUTE_CURRENT_USER } from '../usersStore/usersActions';
 
 require('isomorphic-fetch');
 
@@ -39,7 +41,10 @@ export const followExpert = username => (dispatch, getState, { steemConnectAPI }
     steemConnectAPI
       .follow(authUser, username)
       .then(res => resolve(res))
-      .catch(error => reject(error)),
+      .catch(error => {
+        console.error('Error following expert:', error);
+        reject(error);
+      }),
   );
 };
 
@@ -55,7 +60,10 @@ export const unfollowExpert = username => (dispatch, getState, { steemConnectAPI
     steemConnectAPI
       .unfollow(authUser, username)
       .then(res => resolve(res))
-      .catch(error => reject(error)),
+      .catch(error => {
+        console.error('Error unfollowing expert:', error);
+        reject(error);
+      }),
   );
 };
 
@@ -315,7 +323,10 @@ export const assignProposition = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error assigning proposition:', error);
+        reject(error);
+      });
   });
 };
 
@@ -355,7 +366,10 @@ export const rejectReview = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error rejecting review:', error);
+        reject(error);
+      });
   });
 };
 
@@ -392,7 +406,10 @@ export const reinstateReward = ({ companyAuthor, username, reservationPermlink, 
           type: SET_PENDING_UPDATE.START,
         });
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error reinstating reward:', error);
+        reject(error);
+      });
   });
 };
 
@@ -450,7 +467,10 @@ export const changeReward = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error changing reward:', error);
+        reject(error);
+      });
   });
 };
 
@@ -496,7 +516,10 @@ export const declineProposition = ({
           type: SET_PENDING_UPDATE.START,
         }),
       )
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error declining proposition:', error);
+        reject(error);
+      });
   });
 };
 export const activateCampaign = (company, campaignPermlink) => (
@@ -544,7 +567,10 @@ export const activateCampaign = (company, campaignPermlink) => (
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      .catch(error => reject({ ...error }));
+      .catch(error => {
+        console.error('Error activating campaign:', error);
+        reject({ ...error });
+      });
   });
 };
 
@@ -577,7 +603,10 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
+      .catch(error => {
+        console.error('Error inactivating campaign:', error);
+        reject(error);
+      });
   });
 };
 // endregion
@@ -613,6 +642,7 @@ export const bellNotifications = (follower, following) => (
       });
     })
     .catch(err => {
+      console.error('Error with bell notifications:', err);
       message.error(err.message);
 
       return dispatch({
@@ -631,3 +661,119 @@ export const getUrerExpertiseCounters = username => dispatch =>
       promise: ApiClient.getExpertiseCounters(username),
     },
   });
+
+export const UNMUTE_SUBSCRIPTION = createAsyncActionType('@user/UNMUTE_SUBSCRIPTION');
+
+export const unmuteSubscriptionWithBlog = (follower, following, host, userName) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  dispatch({
+    type: MUTE_CURRENT_USER.START,
+    meta: {
+      muted: following,
+      userName: follower,
+    },
+  });
+
+  dispatch({
+    type: UNMUTE_SUBSCRIPTION.START,
+    meta: following,
+  });
+
+  return steemConnectAPI.muteUser(follower, following, []).then(() => {
+    dispatch(
+      getChangesInAccessOptionWithBlog(
+        follower,
+        host,
+        UNMUTE_SUBSCRIPTION,
+        ApiClient.getRestrictionsInfo,
+        {
+          following,
+          userName,
+        },
+      ),
+    );
+  });
+};
+
+const getChangesInAccessOptionWithBlog = (
+  username,
+  host,
+  currentActionType,
+  processingFunction,
+  meta,
+) => async (dispatch, getState, { busyAPI }) => {
+  const { getLastBlockNum } = await import('../../client/vendor/steemitHelpers');
+  const { subscribeMethod, subscribeTypes } = await import('../../common/constants/blockTypes');
+
+  const blockNumber = await getLastBlockNum();
+
+  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNumber, subscribeTypes.posts]);
+  busyAPI.instance.subscribe((response, mess) => {
+    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
+      processingFunction(host, username)
+        .then(res => {
+          dispatch({
+            type: currentActionType.SUCCESS,
+            payload: res,
+            meta,
+          });
+
+          dispatch({
+            type: MUTE_CURRENT_USER.SUCCESS,
+            meta: {
+              muted: meta.following,
+              userName: username,
+            },
+          });
+
+          if (meta.userName) {
+            dispatch(getUserProfileBlogPosts(meta.userName, { limit: 10, initialLoad: true }))
+              .then(() => {
+                dispatch({
+                  type: 'CLEAR_MUTE_LOADING',
+                  meta: {
+                    muted: meta.following,
+                    userName: username,
+                  },
+                });
+              })
+              .catch(() => {
+                dispatch({
+                  type: 'CLEAR_MUTE_LOADING',
+                  meta: {
+                    muted: meta.following,
+                    userName: username,
+                  },
+                });
+              });
+          } else {
+            dispatch({
+              type: 'CLEAR_MUTE_LOADING',
+              meta: {
+                muted: meta.following,
+                userName: username,
+              },
+            });
+          }
+
+          return res;
+        })
+        .catch(error => {
+          console.error('Component error:', error);
+          message.error('Something went wrong');
+          dispatch({
+            type: currentActionType.ERROR,
+          });
+        });
+    }
+  });
+};

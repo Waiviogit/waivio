@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import { getAppUrl, getUsedLocale, getAppHost } from '../../../store/appStore/appSelectors';
@@ -14,70 +14,59 @@ const MessageWithAvatars = ({ text }) => {
   const [objectData, setObjectData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  if (!text || typeof text !== 'string') {
-    return <span />;
-  }
-
   const extractObjectLinks = t => {
+    if (!t || typeof t !== 'string') return [];
     const patterns = [
       /\/object\/([^\s)\]]+)/g,
       /https?:\/\/[^/]+\/object\/([^\s)\]]+)/g,
       /\[([^\]]+)]\(\/object\/([^\s)\]]+)\)/g,
       /\[([^\]]+)]\(https?:\/\/[^/]+\/object\/([^\s)\]]+)\)/g,
     ];
+    const matches = new Set();
 
-    const matches = [];
-
-    patterns.forEach(pattern => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const pattern of patterns) {
       let match;
 
       // eslint-disable-next-line no-cond-assign
       while ((match = pattern.exec(t)) !== null) {
         const objectLink = match[2] || match[1];
 
-        const cleanObjectLink = objectLink.split('/')[0];
-
-        matches.push(cleanObjectLink);
+        if (objectLink) matches.add(objectLink.split('/')[0]);
       }
-    });
+    }
 
-    return [...new Set(matches)];
+    return Array.from(matches);
   };
 
   const getObjectForImage = imageUrl => {
     // eslint-disable-next-line no-restricted-syntax
-    for (const [, objectInfo] of Object.entries(objectData)) {
-      if (objectInfo && objectInfo.avatar) {
-        const objectAvatar = objectInfo.avatar;
-        const proxyAvatar = getProxyImageURL(objectAvatar, 'preview');
+    for (const obj of Object.values(objectData)) {
+      // eslint-disable-next-line no-continue
+      if (!obj?.avatar) continue;
+      const avatar = obj.avatar;
+      const proxyAvatar = getProxyImageURL(avatar, 'preview');
+      const avatarFile = avatar
+        .split('?')[0]
+        .split('/')
+        .pop();
+      const proxyFile = proxyAvatar
+        .split('?')[0]
+        .split('/')
+        .pop();
+      const imageFile = imageUrl
+        .split('?')[0]
+        .split('/')
+        .pop();
 
-        const matches = [
-          imageUrl === objectAvatar,
-          imageUrl === proxyAvatar,
-          imageUrl.includes(objectAvatar),
-          objectAvatar.includes(imageUrl),
-
-          imageUrl
-            .split('?')[0]
-            .split('/')
-            .pop() ===
-            objectAvatar
-              .split('?')[0]
-              .split('/')
-              .pop(),
-          proxyAvatar
-            .split('?')[0]
-            .split('/')
-            .pop() ===
-            imageUrl
-              .split('?')[0]
-              .split('/')
-              .pop(),
-        ];
-
-        if (matches.some(match => match)) {
-          return objectInfo;
-        }
+      if (
+        [avatar, proxyAvatar].includes(imageUrl) ||
+        imageUrl.includes(avatar) ||
+        avatar.includes(imageUrl) ||
+        imageFile === avatarFile ||
+        imageFile === proxyFile
+      ) {
+        return obj;
       }
     }
 
@@ -87,118 +76,151 @@ const MessageWithAvatars = ({ text }) => {
   useEffect(() => {
     const objectLinks = extractObjectLinks(text);
 
-    if (objectLinks.length > 0) {
-      setIsLoading(true);
-      getObjectInfo(objectLinks, locale, host)
-        .then(response => {
-          if (response && response.wobjects) {
-            const objectMap = {};
+    if (!objectLinks.length) return;
 
-            response.wobjects.forEach(obj => {
-              objectMap[obj.author_permlink] = obj;
-            });
-            setObjectData(objectMap);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching object info:', error);
-        })
-        .finally(() => {
-          setIsLoading(false);
+    let isCancelled = false;
+
+    setIsLoading(true);
+
+    getObjectInfo(objectLinks, locale, host)
+      .then(response => {
+        if (isCancelled) return;
+        const objectMap = {};
+
+        response?.wobjects?.forEach(obj => {
+          objectMap[obj.author_permlink] = obj;
         });
-    }
+        setObjectData(objectMap);
+      })
+      .catch(err => {
+        if (!isCancelled) console.error('Error fetching object info:', err);
+      })
+      .finally(() => {
+        if (!isCancelled) setIsLoading(false);
+      });
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      isCancelled = true;
+    };
   }, [text, locale, host]);
 
-  const processTextWithImagesAndLinks = t => {
-    const parts = [];
+  // eslint-disable-next-line react/prop-types
+  const SafeImage = ({ src, alt }) => {
+    const [error, setError] = useState(false);
 
-    const markdownImageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    if (error) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
+            backgroundColor: '#f5f5f5',
+            border: '2px dashed #ccc',
+            height: 200,
+            color: '#666',
+            fontSize: 14,
+            textAlign: 'center',
+            marginTop: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          <div style={{ fontSize: 24 }}>🖼️</div>
+          <div>
+            Image not available
+            <br />
+            <p>
+              {' '}
+              <a href={src} target="_blank" rel="noopener noreferrer">
+                View original
+              </a>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <a href={src} target="_blank" rel="noopener noreferrer">
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setError(true)}
+          style={{ maxWidth: '100%', margin: '10px 0' }}
+        />
+      </a>
+    );
+  };
+
+  const processedParts = useMemo(() => {
+    if (!text) return [];
+    const parts = [];
+    const preprocessed = text.replace(
+      /^(\s*)[-•·*](\s*)(!\[[^\]]*\]\(https?:\/\/[^)]+\))/gm,
+      '$1$3',
+    );
+
+    const regex = /!\[([^\]]*)\]\(([^)]+)\)/g;
     let match;
     let lastIndex = 0;
 
     // eslint-disable-next-line no-cond-assign
-    while ((match = markdownImageRegex.exec(t)) !== null) {
+    while ((match = regex.exec(preprocessed)) !== null) {
       if (match.index > lastIndex) {
-        let beforeText = t.slice(lastIndex, match.index);
+        const beforeText = preprocessed.slice(lastIndex, match.index);
 
-        if (beforeText.endsWith('(')) {
-          beforeText = beforeText.slice(0, -1);
-        }
-
-        if (beforeText) {
+        if (beforeText)
           parts.push(
             <span key={`text-${lastIndex}`}>
               {getHtml(beforeText, {}, 'Object', { appUrl, isChatBotLink: true })}
             </span>,
           );
-        }
       }
 
-      const imageUrl = match[2];
-      const fullMatch = match[0];
+      let imageUrl = match[2].trim();
 
-      const objectInfo = getObjectForImage(imageUrl);
+      if (!imageUrl.startsWith('http')) imageUrl = `https://${imageUrl}`;
 
-      if (objectInfo && !isLoading) {
+      const obj = getObjectForImage(imageUrl);
+
+      if (obj && !isLoading) {
         parts.push(
           <ObjectAvatarPicture
             key={`img-avatar-${match.index}`}
-            object={objectInfo}
+            object={obj}
             className="object-avatar-large"
           />,
         );
       } else {
         parts.push(
-          <a href={imageUrl} target="_blank" rel="noopener noreferrer">
-            <img
-              key={`img-${match.index}`}
-              src={imageUrl}
-              alt={match[1] || 'image'}
-              onError={e => {
-                e.target.style.display = 'none';
-                const fallbackSpan = document.createElement('span');
-
-                fallbackSpan.innerHTML = getHtml(fullMatch, {}, 'Object', {
-                  appUrl,
-                  isChatBotLink: true,
-                });
-                e.target.parentNode.replaceChild(fallbackSpan, e.target);
-              }}
-            />
-          </a>,
+          <SafeImage key={`img-${match.index}`} src={imageUrl} alt={match[1] || 'image'} />,
         );
       }
 
-      const afterImageIndex = match.index + match[0].length;
-      const nextChar = text[afterImageIndex];
-
-      if (nextChar === ')') {
-        lastIndex = afterImageIndex + 1;
-      } else {
-        lastIndex = afterImageIndex;
-      }
+      lastIndex = match.index + match[0].length;
     }
 
-    if (lastIndex < text.length) {
-      let remainingText = text.slice(lastIndex);
+    if (lastIndex < preprocessed.length) {
+      const remaining = preprocessed.slice(lastIndex);
 
-      if (remainingText.startsWith(')')) {
-        remainingText = remainingText.slice(1);
-      }
-
-      if (remainingText) {
+      if (remaining)
         parts.push(
           <span key={`remaining-${lastIndex}`}>
-            {getHtml(remainingText, {}, 'Object', { appUrl, isChatBotLink: true })}
+            {getHtml(remaining, {}, 'Object', { appUrl, isChatBotLink: true })}
           </span>,
         );
-      }
     }
 
-    return parts.length > 0 ? parts : [<span key="fallback">{text}</span>];
-  };
+    return parts;
+  }, [text, objectData, isLoading, appUrl]);
 
-  return <span>{processTextWithImagesAndLinks(text)}</span>;
+  return <span>{processedParts}</span>;
 };
 
 MessageWithAvatars.propTypes = {

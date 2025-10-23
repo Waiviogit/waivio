@@ -378,11 +378,13 @@ export const getMoreUserTransactionHistory = (username, limit, operationNum) => 
           operationNum: data.operationNum,
           hasMore: data.hasMore,
         }))
-        .catch(() =>
-          dispatch({
+        .catch(error => {
+          console.error('Error loading transactions:', error);
+
+          return dispatch({
             type: GET_ERROR_LOADING_TRANSACTIONS,
-          }),
-        ),
+          });
+        }),
     },
   });
 
@@ -421,11 +423,13 @@ export const getMoreTableUserTransactionHistory = ({
           withdrawals: data.withdrawals,
           deposits: data.deposits,
         }))
-        .catch(() =>
-          dispatch({
+        .catch(error => {
+          console.error('Error loading table transactions:', error);
+
+          return dispatch({
             type: GET_ERROR_LOADING_TABLE_TRANSACTIONS,
-          }),
-        ),
+          });
+        }),
     },
   });
 
@@ -692,7 +696,10 @@ export const claimRewards = (name, hiveBalance, hbdBalance, vestingBalance) => (
         }
       });
     })
-    .catch(() => message.error('Something went wrong'));
+    .catch(error => {
+      console.error('Error in wallet operation:', error);
+      message.error('Something went wrong');
+    });
 
 export const TOGGLE_DEPOSIT_MODAL = '@wallet/TOGGLE_DEPOSIT_MODAL';
 

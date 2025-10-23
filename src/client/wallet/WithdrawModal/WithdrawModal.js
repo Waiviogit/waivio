@@ -120,7 +120,8 @@ const WithdrawModal = props => {
   useEffect(() => {
     getWithdraws()
       .then(res => setDelay(res?.length))
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         message.error(
           'The requested information isn’t available right now. Please close and reopen to try again.',
         );

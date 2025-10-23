@@ -152,8 +152,7 @@ class Notifications extends React.Component {
         <p className="NotificationsPage__paragraph">
           <FormattedMessage
             id="notify_list_message_telegram"
-            defaultMessage="Open the Telegram chart with {link} and enter the Hive usernames
-          to subscribes."
+            defaultMessage="To get started, open a chat with {link} on Telegram and enter your Hive username(s) to subscribe."
             values={{
               link: (
                 <a

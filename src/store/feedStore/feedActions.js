@@ -215,7 +215,11 @@ export const getUserProfileBlogPosts = (
       })
         .then(res => res.json())
         .then(res => res?.result)
-        .catch(() => null)
+        .catch(error => {
+          console.error('Error in feed action:', error);
+
+          return null;
+        })
     : Promise.resolve(null);
 
   const feedRequest = ApiClient.getUserProfileBlog(

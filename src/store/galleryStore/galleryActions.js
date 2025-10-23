@@ -31,7 +31,9 @@ export const getAlbums = authorPermlink => (dispatch, getState) => {
         return [...defaultAlbum, ...sortedAlbums];
       }),
     },
-  }).catch(() => {});
+  }).catch(error => {
+    console.error('Error in gallery action:', error);
+  });
 };
 
 export const getRelatedAlbum = (authorPermlink, limit = 30, skip = 0) => (dispatch, getState) => {

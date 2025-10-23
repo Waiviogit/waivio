@@ -62,6 +62,18 @@ const DnDList = ({
     setExclude(!isEmpty(sortCustom) ? sortCustom.exclude : []);
   }, [listItems.length]);
 
+  useEffect(() => {
+    if (mode === 'Auto' && sortCustom?.exclude) {
+      const excludedIds = sortCustom.exclude;
+      const updatedItems = listItems.map(item => ({
+        ...item,
+        checkedItemInList: !excludedIds.includes(item.id),
+      }));
+
+      setItems(updatedItems);
+    }
+  }, [mode, sortCustom?.exclude, listItems]);
+
   const onCheckboxClick = id => {
     let updatedInclude;
     let updatedExclude;

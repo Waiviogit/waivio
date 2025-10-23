@@ -124,7 +124,8 @@ const CreateRule = ({
         );
         updateSponsorList();
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         setConfirmModalLoaded(false);
         handleChangeModalVisible();
       });
@@ -166,7 +167,8 @@ const CreateRule = ({
           }),
         );
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('Component error:', error);
         setDeleteModalLoaded(false);
         handleChangeModalVisible();
       });

@@ -44,6 +44,7 @@ class ListDnD extends Component {
       exclude: PropTypes.arrayOf(PropTypes.string),
     }),
   };
+
   static defaultProps = {
     accentColor: 'lightgreen',
     onChange: () => {},
@@ -57,9 +58,12 @@ class ListDnD extends Component {
     this.state = {
       items: props.listItems,
       sort: '',
+      mode: 'Custom',
+      isDisabled: false,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.handleSortChange = this.handleSortChange.bind(this);
+    this.handleModeChange = this.handleModeChange.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -67,9 +71,7 @@ class ListDnD extends Component {
 
     if (!isEqual(prevProps.listItems, listItems) || !isEqual(prevProps.customSort, customSort)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        items: listItems,
-      });
+      this.setState({ items: listItems });
     }
   }
 
@@ -87,18 +89,8 @@ class ListDnD extends Component {
 
       switch (sortType) {
         case 'rank':
-          sortedLists = lists.sort((a, b) => {
-            const rankA = a.weight || 0;
-            const rankB = b.weight || 0;
-
-            return rankB - rankA;
-          });
-          sortedNonLists = nonLists.sort((a, b) => {
-            const rankA = a.weight || 0;
-            const rankB = b.weight || 0;
-
-            return rankB - rankA;
-          });
+          sortedLists = lists.sort((a, b) => (b.weight || 0) - (a.weight || 0));
+          sortedNonLists = nonLists.sort((a, b) => (b.weight || 0) - (a.weight || 0));
           break;
         case 'by-name-asc':
           sortedLists = lists.sort((a, b) => a.name.localeCompare(b.name));
@@ -118,19 +110,9 @@ class ListDnD extends Component {
 
     switch (sortType) {
       case 'recency':
-        return sortedItems.sort((a, b) => {
-          const dateA = new Date(a.addedAt || 0);
-          const dateB = new Date(b.addedAt || 0);
-
-          return dateA - dateB;
-        });
+        return sortedItems.sort((a, b) => new Date(a.addedAt || 0) - new Date(b.addedAt || 0));
       case 'reverse_recency':
-        return sortedItems.sort((a, b) => {
-          const dateA = new Date(a.addedAt || 0);
-          const dateB = new Date(b.addedAt || 0);
-
-          return dateB - dateA;
-        });
+        return sortedItems.sort((a, b) => new Date(b.addedAt || 0) - new Date(a.addedAt || 0));
       default:
         return sortedItems;
     }
@@ -138,7 +120,7 @@ class ListDnD extends Component {
 
   handleSortChange = (sortType = 'recency') => {
     const { items } = this.state;
-    const { customSort } = this.props;
+    const { customSort, onChange } = this.props;
 
     const sortedItems = this.sortItems(items, sortType);
 
@@ -147,18 +129,9 @@ class ListDnD extends Component {
       sort: sortType,
     });
 
-    const {
-      onChange,
-      // wobjType
-    } = this.props;
-    // const itemsList = sortedItems;
-
-    // if (wobjType === OBJECT_TYPE.LIST) {
-    //   itemsList = this.filterItems(sortedItems);
-    // }
-
     const currentInclude = customSort?.include || [];
     const currentExclude = customSort?.exclude || [];
+
     const newInclude = sortedItems
       .filter(item => currentInclude.includes(item.id))
       .map(item => item.id);
@@ -174,8 +147,40 @@ class ListDnD extends Component {
     });
   };
 
+  handleModeChange = mode => {
+    const { listItems, customSort } = this.props;
+
+    if (mode === 'Auto') {
+      const excludedIds = customSort?.exclude || [];
+      const allEnabled = listItems.map(i => ({
+        ...i,
+        checkedItemInList: !excludedIds.includes(i.id),
+      }));
+
+      this.setState(
+        {
+          mode,
+          items: this.sortItems(allEnabled, 'recency'),
+          sort: 'recency',
+          isDisabled: true,
+        },
+        () => {
+          this.handleSortChange('recency');
+        },
+      );
+    } else {
+      this.setState({
+        mode,
+        items: listItems,
+        isDisabled: false,
+      });
+    }
+  };
+
   onDragEnd(result) {
-    if (!result.destination) return;
+    const { isDisabled } = this.state;
+
+    if (isDisabled || !result.destination) return;
 
     const items = reorder(this.state.items, result.source.index, result.destination.index);
     const { customSort } = this.props;
@@ -203,7 +208,8 @@ class ListDnD extends Component {
   }
 
   toggleItemInSortingList = e => {
-    const { items } = this.state;
+    const { items, sort } = this.state;
+
     const itemsList = items.map(item => ({
       ...item,
       checkedItemInList: item.id === e.target.id ? e.target.checked : item.checkedItemInList,
@@ -213,35 +219,32 @@ class ListDnD extends Component {
     this.props.onChange({
       exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
       include:
-        this.state.sort === 'custom'
-          ? itemsList.filter(i => i.checkedItemInList).map(item => item.id)
-          : [],
-      sortType: this.state.sort,
+        sort === 'custom' ? itemsList.filter(i => i.checkedItemInList).map(item => item.id) : [],
+      sortType: sort,
     });
   };
 
   render() {
+    const { mode, items, isDisabled } = this.state;
+
     return (
       <div className="dnd-list-container">
         <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>Mode</div>
-        <Select
-          placeholder={'Select sorting'}
-          defaultValue={'Custom'}
-          onSelect={mode => this.setState({ mode })}
-        >
+        <Select placeholder="Select sorting mode" value={mode} onSelect={this.handleModeChange}>
           {['Custom', 'Auto'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}
         </Select>
-        {this.state.mode === 'Auto' && (
+
+        {mode === 'Auto' && (
           <>
             <div className={classNames('ant-form-item-label AppendForm__appendTitles', {})}>
               Sort by
             </div>
             <Select
               onChange={this.handleSortChange}
-              defaultValue={'recency'}
-              placeholder={'Select sorting'}
+              value={this.state.sort || 'recency'}
+              placeholder="Select sorting"
             >
               <Select.Option key="recency">
                 <FormattedMessage id="recency" defaultMessage="Recency" />
@@ -253,25 +256,28 @@ class ListDnD extends Component {
                 <FormattedMessage id="rank" defaultMessage="Rank" />
               </Select.Option>
               <Select.Option key="by-name-asc">
-                <FormattedMessage id="by-name-asc" defaultMessage="A..Z">
-                  {msg => msg.toUpperCase()}
-                </FormattedMessage>
+                <FormattedMessage id="by-name-asc" defaultMessage="A..Z" />
               </Select.Option>
               <Select.Option key="by-name-desc">
-                <FormattedMessage id="by-name-desc" defaultMessage="Z..A">
-                  {msg => msg.toUpperCase()}
-                </FormattedMessage>
+                <FormattedMessage id="by-name-desc" defaultMessage="Z..A" />
               </Select.Option>
             </Select>
           </>
         )}
+
         <br />
+
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <Droppable droppableId="droppable">
+          <Droppable droppableId="droppable" isDropDisabled={isDisabled}>
             {(provided, snapshot) => (
               <div className="dnd-list" ref={provided.innerRef}>
-                {this.state.items.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                {items.map((item, index) => (
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id}
+                    index={index}
+                    isDragDisabled={isDisabled}
+                  >
                     {(druggableProvided, druggableSnapshot) => (
                       <div
                         className="dnd-list__item"
@@ -288,6 +294,7 @@ class ListDnD extends Component {
                         <ListDnDItem
                           item={item}
                           toggleItemInSortingList={this.toggleItemInSortingList}
+                          isDisabled={isDisabled}
                         />
                       </div>
                     )}
