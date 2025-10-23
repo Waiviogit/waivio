@@ -39,15 +39,14 @@ const ContentViewField = ({ getFieldDecorator, getFieldRules, intl, handleSelect
         onChange={handleSelectChange}
       >
         <Option value="show_both">Sign in + Main menu</Option>
-        <Option value="hide_signin">Hide Sign In</Option>
-        <Option value="hide_menu">Hide Menu</Option>
-        <Option value="hide_both">Hide Both</Option>
+        <Option value="hide_signin">Sign In</Option>
+        <Option value="hide_menu">Menu</Option>
       </Select>,
     )}
     <div>
       {intl.formatMessage({
         id: 'note_add_display_headers',
-        defaultMessage: 'Note: Add display of sign in and main site menu to the site page.',
+        defaultMessage: 'Add display of sign in and main site menu to the site page.',
       })}
     </div>
   </Form.Item>

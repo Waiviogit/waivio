@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal, Alert } from 'antd';
+import { validateHtml } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
@@ -25,7 +26,12 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
+import {
+  getDraftPage,
+  getObject,
+  saveDraftPage,
+  validateAppend,
+} from '../../../waivioApi/ApiClient';
 import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getHtml } from '../../components/Story/Body';
@@ -51,6 +57,7 @@ const ObjectOfTypePage = props => {
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [validationScript, setValidationScript] = useState(false);
   const [loadingForButton, setLoadingForButton] = useState(false);
   const [draft, setDraft] = useState(null);
   const [littleVotePower, setLittleVotePower] = useState(null);
@@ -310,7 +317,36 @@ const ObjectOfTypePage = props => {
 
   const handleReadyPublishClick = e => {
     e.preventDefault();
-    setIsReadyToPublish(!isReadyToPublish);
+    if (isCode) {
+      const pageContentField = {
+        name: objectFields.htmlContent,
+        body: content,
+        locale,
+      };
+
+      const postData = getAppendData(userName, wobject, '', pageContentField);
+
+      setValidationScript(true);
+      validateAppend(postData)
+        .then(async res => {
+          const parseRes = await res.json();
+
+          if (res.status === 200) {
+            setIsReadyToPublish(!isReadyToPublish);
+            setValidationScript(false);
+            message.success(parseRes.message);
+          } else {
+            setValidationScript(false);
+            message.error(parseRes.message);
+          }
+        })
+        .catch(err => {
+          setValidationScript(false);
+          message.error(err.message);
+        });
+    } else {
+      setIsReadyToPublish(!isReadyToPublish);
+    }
   };
 
   const closePublishViev = e => {
@@ -425,6 +461,7 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
+  const isNotHtml = validateHtml(content);
 
   return (
     <React.Fragment>
@@ -434,6 +471,27 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag ||
             (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+          {isCode && isEditMode && (
+            <Alert
+              type={'warning'}
+              style={{ textAlign: 'center', marginBottom: '10px' }}
+              message={
+                <div>
+                  Check out the{' '}
+                  <a
+                    rel="noreferrer"
+                    href={'/object/qci-creating-a-website-with-chatgpt-and-waivio-html-object/page'}
+                    target={'_blank'}
+                  >
+                    {' '}
+                    instructions
+                  </a>{' '}
+                  for creating your website with the HTML Object.
+                </div>
+              }
+              closable
+            />
+          )}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (
@@ -455,12 +513,22 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
+          {isNotHtml && (
+            <Alert
+              style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
+              type={'error'}
+              message={
+                'The code must use only HTML, CSS, and JavaScript (script). Other technologies are not allowed.'
+              }
+            />
+          )}
           {isEditMode && !isReadyToPublish && (
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={littleVotePower || !content}
+                disabled={littleVotePower || !content || isNotHtml}
                 onClick={handleReadyPublishClick}
+                loading={validationScript}
                 size="large"
               >
                 {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}

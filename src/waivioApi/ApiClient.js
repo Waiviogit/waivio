@@ -465,6 +465,21 @@ export const postCreateWaivioObject = requestBody =>
       return error;
     });
 
+export const validateAppend = requestBody =>
+  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}${config.validate}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then(result => result)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
   const link = permlink?.includes(author) ? permlink : `${author}/${permlink}`;
