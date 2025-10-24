@@ -2,6 +2,7 @@ import * as React from 'react';
 import { debounce, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
 
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
@@ -79,6 +80,12 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
         selectOptions={cryptoCurrencyListForSlider}
         handleChangeCurrency={handleChangeCurrency}
         currency={get(bot, 'minVotingPowerCurrencies')}
+      />
+      <ModalBodyCheckBox
+        type="lastMomentVote"
+        textId="matchBot_curator_vote"
+        value={inputsValue.lastMomentVote}
+        setInputsValue={setInputsValue}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />

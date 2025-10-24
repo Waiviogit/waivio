@@ -20,6 +20,7 @@ export const INITIAL_INPUTS_VALUE = {
   expiredAt: null,
   notesValue: '',
   isSubmitted: false,
+  lastMomentVote: false,
   minVotingPowerCurrencies: ['WAIV'],
 };
 
@@ -50,6 +51,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
     type: MATCH_BOTS_NAMES.AUTHORS,
     name: get(botData, 'selectedUser.account', ''),
     enabled: !isEdit || botData.enabled,
+    lastMomentVote: botData.lastMomentVote,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
     minVotingPowerCurrencies: botData.minVotingPowerCurrencies,
@@ -100,6 +102,7 @@ export const setInitialInputValues = value => {
     enabled: value.enabled,
     notesValue: value.note || '',
     isSubmitted: false,
+    lastMomentVote: false,
     minVotingPowerCurrencies: ['WAIV'],
   };
 
