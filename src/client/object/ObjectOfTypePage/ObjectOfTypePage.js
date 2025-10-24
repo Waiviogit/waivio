@@ -502,7 +502,7 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
-          {isNotHtml && isEditMode && (
+          {isNotHtml && isEditMode && content && (
             <Alert
               style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
               type={'error'}

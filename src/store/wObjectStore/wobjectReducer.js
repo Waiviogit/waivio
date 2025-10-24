@@ -113,8 +113,8 @@ export default function wobjectReducer(state = initialState, action) {
         };
 
         const contentView = parseJSON(action.payload.contentView) || {
-          hideSignIn: false,
-          hideMenu: false,
+          hideSignIn: true,
+          hideMenu: true,
         };
 
         return {

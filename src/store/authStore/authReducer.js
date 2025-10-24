@@ -48,8 +48,8 @@ export default (state = initialState, action) => {
           isAuthenticated: true,
           loaded: true,
           user: {
-            ...(action.payload.account || state.user),
-            ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+            ...(action.payload?.account || state.user),
+            ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
           },
           isAuthenticating: false,
         };
@@ -62,18 +62,18 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         loaded: true,
         user: {
-          ...(action.payload.account || state.user),
-          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          ...(action.payload?.account || state.user),
+          ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
-        isGuestUser: action.payload.isGuestUser,
+        isGuestUser: action.payload?.isGuestUser,
         tabType: action.payload.tabType,
         isAuthenticating: false,
         signature:
           action.payload.userMetaData?.profile?.signature ||
-          (action.payload.account?.posting_json_metadata
-            ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
+          (action.payload?.account?.posting_json_metadata
+            ? JSON.parse(action.payload?.account.posting_json_metadata)?.profile?.signature
             : '') ||
           state.signature ||
           '',
@@ -88,17 +88,17 @@ export default (state = initialState, action) => {
         isAuthenticatedInServer: true,
         loaded: true,
         user: {
-          ...(action.payload.account || state.user),
-          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          ...(action.payload?.account || state.user),
+          ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
-        isGuestUser: action.payload.isGuestUser,
+        isGuestUser: action.payload?.isGuestUser,
         tabType: action.payload.tabType,
         signature:
           action.payload.userMetaData?.profile?.signature ||
-          (action.payload.account?.posting_json_metadata
-            ? JSON.parse(action.payload.account.posting_json_metadata)?.profile?.signature
+          (action.payload?.account?.posting_json_metadata
+            ? JSON.parse(action.payload?.account.posting_json_metadata)?.profile?.signature
             : '') ||
           state.signature ||
           '',
@@ -141,7 +141,7 @@ export default (state = initialState, action) => {
         isReloading: false,
         user: {
           ...state.user,
-          ...action.payload.account,
+          ...action.payload?.account,
         },
       };
     case types.UPDATE_AUTHORITY:
