@@ -460,7 +460,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag ||
             (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
-          {isCode && isEditMode && (
+          {isCode && isEditMode && content && (
             <Alert
               type={'warning'}
               style={{ textAlign: 'center', marginBottom: '10px' }}
