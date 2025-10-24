@@ -49,7 +49,7 @@ export default (state = initialState, action) => {
           loaded: true,
           user: {
             ...(action.payload?.account || state.user),
-            ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+            ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
           },
           isAuthenticating: false,
         };
@@ -63,11 +63,11 @@ export default (state = initialState, action) => {
         loaded: true,
         user: {
           ...(action.payload?.account || state.user),
-          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
-        isGuestUser: action.payload.isGuestUser,
+        isGuestUser: action.payload?.isGuestUser,
         tabType: action.payload.tabType,
         isAuthenticating: false,
         signature:
@@ -89,11 +89,11 @@ export default (state = initialState, action) => {
         loaded: true,
         user: {
           ...(action.payload?.account || state.user),
-          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+          ...(action.payload?.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
-        isGuestUser: action.payload.isGuestUser,
+        isGuestUser: action.payload?.isGuestUser,
         tabType: action.payload.tabType,
         signature:
           action.payload.userMetaData?.profile?.signature ||

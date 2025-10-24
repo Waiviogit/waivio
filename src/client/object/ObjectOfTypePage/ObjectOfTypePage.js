@@ -460,7 +460,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag ||
             (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
-          {isCode && isEditMode && content && (
+          {isCode && isEditMode && (
             <Alert
               type={'warning'}
               style={{ textAlign: 'center', marginBottom: '10px' }}
@@ -502,7 +502,7 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
-          {isNotHtml && isEditMode && (
+          {isNotHtml && isEditMode && content && (
             <Alert
               style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
               type={'error'}
