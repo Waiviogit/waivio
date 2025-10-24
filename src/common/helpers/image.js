@@ -49,4 +49,25 @@ export const getImagePath = (album, image, type) =>
 export const getImagePathPost = url =>
   url?.includes('nyc3.digitaloceanspaces') ? url : getProxyImageURL(url);
 
+export const isSquareImage = (width, height, tolerance = 0.05) => {
+  if (!width || !height) return false;
+  const ratio = Math.abs(width - height) / Math.max(width, height);
+
+  return ratio <= tolerance;
+};
+
+export const isLandscapeImage = (width, height, tolerance = 0.05) => {
+  if (!width || !height) return false;
+  if (isSquareImage(width, height, tolerance)) return false;
+
+  return width > height;
+};
+
+export const isPortraitImage = (width, height, tolerance = 0.05) => {
+  if (!width || !height) return false;
+  if (isSquareImage(width, height, tolerance)) return false;
+
+  return height > width;
+};
+
 export default null;
