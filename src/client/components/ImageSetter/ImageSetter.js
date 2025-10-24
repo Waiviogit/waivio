@@ -7,7 +7,7 @@ import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
-import { isValidImage } from '../../../common/helpers/image';
+import { isValidImage, isLandscapeImage } from '../../../common/helpers/image';
 import {
   ALLOWED_IMG_FORMATS,
   MAX_IMG_SIZE,
@@ -75,7 +75,7 @@ const ImageSetter = ({
     const objectUrl = URL.createObjectURL(imageFile);
 
     image.onload = () => {
-      const isLandscape = image.naturalWidth > image.naturalHeight && isConfig;
+      const isLandscape = isLandscapeImage(image.naturalWidth, image.naturalHeight) && isConfig;
       const updatedInitialState = {
         ...initialState,
         image: imageFile,
