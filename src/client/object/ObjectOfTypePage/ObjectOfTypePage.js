@@ -121,10 +121,7 @@ const ObjectOfTypePage = props => {
   // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      seedFromSource(
-        getContent(currObj, currObj.object_type === 'html'),
-        currObj.object_type === 'html',
-      );
+      seedFromSource(getContent(currObj, isCode), isCode);
       setEditorInitialized(false);
       setDraft(null);
 
@@ -450,7 +447,7 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
-  const isNotHtml = validateHtml(content);
+  const isNotHtml = isCode && validateHtml(content);
 
   return (
     <React.Fragment>
