@@ -2,7 +2,7 @@ import { get, some, filter, isEmpty, compact, isEqual, has, isNil } from 'lodash
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
-import { getFeedContentByObject } from '../../waivioApi/ApiClient';
+import { getFeedContentByObject, getPinnedPostsByObject } from '../../waivioApi/ApiClient';
 import { getHtml } from '../../client/components/Story/Body';
 
 export const getObjectName = (wobj = {}) =>
@@ -483,14 +483,18 @@ export const sortByFieldPermlinksList = (permlinksArr, objects) =>
   }, []);
 
 export const showDescriptionPage = async (wobject, locale) => {
-  const hasPosts = await getFeedContentByObject(wobject.author_permlink, 1, [], locale).then(
-    res => !isEmpty(res),
-  );
+  const [hasPosts, hasPinnedPosts] = await Promise.all([
+    getFeedContentByObject(wobject.author_permlink, 1, [], locale).then(res => !isEmpty(res)),
+    getPinnedPostsByObject(wobject.author_permlink, locale, undefined, undefined).then(
+      res => !isEmpty(res) && !res.message,
+    ),
+  ]);
 
   return (
     !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
     has(wobject, 'description') &&
     !hasPosts &&
+    !hasPinnedPosts &&
     !wobject.menuItem &&
     !wobject.menuItems
   );
