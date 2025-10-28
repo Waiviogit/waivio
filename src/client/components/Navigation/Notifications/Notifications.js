@@ -1237,7 +1237,11 @@ class Notifications extends React.Component {
         <div className="Notifications__footer" style={{ height: '60px', lineHeight: '22px' }}>
           <div style={{ marginTop: '5px' }}>
             Get notified in{' '}
-            <a target={'_blank'} href={`https://t.me/WaivioNotificationsBot`} rel="noreferrer">
+            <a
+              target={'_blank'}
+              href={`https://t.me/WaivioNotificationsBot?start`}
+              rel="noreferrer"
+            >
               Telegram{' '}
             </a>{' '}
             app
