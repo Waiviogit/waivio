@@ -449,14 +449,16 @@ const ObjectOfTypePage = props => {
   }-mode`;
   const isNotHtml = isCode && validateHtml(content);
 
+  const isPageType = hasType(wobject, 'page');
+  const shouldShowBreadcrumbs = !isLoadingFlag && (!isEmpty(props.nestedWobject) || isPageType);
+
   return (
     <React.Fragment>
       {hasType(props.nestedWobject, 'list') ? (
         <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
-          {!isLoadingFlag ||
-            (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+          {shouldShowBreadcrumbs && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           {isCode && isEditMode && (
             <Alert
               type={'warning'}
