@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { setGoogleTagEvent } from '../../../common/helpers';
 import ObjectFeed from './ObjectFeed';
 import IconButton from '../../components/IconButton';
-import { handleCreatePost } from '../../../common/helpers/wObjectHelper';
+import { handleCreatePost, hasType } from '../../../common/helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import {
   getAuthenticatedUserName,
@@ -49,12 +49,15 @@ const ObjectFeedContainer = ({
     }
   }, [match?.params?.parentName, match?.params?.name]);
 
+  const isPageType = hasType(wobject, 'page');
+  const shouldShowBreadcrumbs = match?.params?.parentName || isPageType;
+
   return (
     <React.Fragment>
       {isAuthenticated && !isPageMode && (
         <>
-          {match?.params?.parentName ? (
-            <CatalogBreadcrumb wobject={nestedWobj} intl={intl} />
+          {shouldShowBreadcrumbs ? (
+            <CatalogBreadcrumb wobject={nestedWobj || wobject} intl={intl} />
           ) : (
             <div className="object-feed__row justify-end">
               <IconButton

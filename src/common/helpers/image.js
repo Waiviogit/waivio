@@ -53,7 +53,7 @@ export const isSquareImage = (width, height) => {
   if (!width || !height) return false;
   const ratio = width / height;
 
-  return ratio <= 1.3;
+  return ratio <= 1.5;
 };
 
 export const isLandscapeImage = (width, height, tolerance = 0.05) => {
