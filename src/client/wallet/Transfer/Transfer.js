@@ -524,8 +524,7 @@ export default class Transfer extends React.Component {
         new Error(
           intl.formatMessage({
             id: 'memo_hash_symbol_error',
-            defaultMessage:
-              'The # symbol cannot be used in memo text unless it is at the beginning.',
+            defaultMessage: 'The # symbol is not allowed in memo messages.',
           }),
         ),
       ]);
