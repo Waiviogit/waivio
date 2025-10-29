@@ -519,6 +519,15 @@ export default class Transfer extends React.Component {
           }),
         ),
       ]);
+    } else if (value && value.includes('#') && value.trim()[0] !== '#') {
+      return callback([
+        new Error(
+          intl.formatMessage({
+            id: 'memo_hash_symbol_error',
+            defaultMessage: 'The # symbol is not allowed in memo messages.',
+          }),
+        ),
+      ]);
     }
 
     return callback();
