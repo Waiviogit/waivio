@@ -2722,5 +2722,6 @@
   "paste_your_meta_tags_here": "Paste your meta tags here",
   "judges": "Judges",
   "mobnav_judges": "Judges",
-  "judges_rewards_new": "Judges"
+  "judges_rewards_new": "Judges",
+  "matchBot_curator_vote": "Vote in last block"
 }
