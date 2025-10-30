@@ -936,6 +936,7 @@ export const prepareAndImportObjects = (
         parentPermlink: selectedType.permlink,
         isExtendingOpen: true,
         isPostingOpen: true,
+        datafinityObject: true,
       };
       const { companyIdType, companyId } = objData?.companyIds[0];
       const existWobjPermlink = (await getObjPermlinkByCompanyId(companyId, companyIdType))?.result;

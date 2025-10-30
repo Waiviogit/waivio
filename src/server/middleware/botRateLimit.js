@@ -11,11 +11,7 @@ const DAILY_LIMIT = 2500;
 const DAILY_LIMIT_SITE = 500;
 
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
-const openaiList = [
-  'OAI-SearchBot',
-  'ChatGPT-User',
-  'GPTBot'
-];
+const openaiList = ['OAI-SearchBot', 'ChatGPT-User', 'GPTBot'];
 
 const isGoogleBot = createIsbotFromList(googleList);
 const isOpenAIBot = createIsbotFromList(openaiList);
