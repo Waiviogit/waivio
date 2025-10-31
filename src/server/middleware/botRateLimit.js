@@ -17,7 +17,6 @@ const isGoogleBot = createIsbotFromList(googleList);
 const isOpenAIBot = createIsbotFromList(openaiList);
 
 const isChatGptBot = userAgent => Boolean(userAgent) && isOpenAIBot(userAgent);
-
 const getIpFromHeaders = req => req.headers['x-forwarded-for'] || req.headers['x-real-ip'];
 
 const botRateLimit = async (req, res, next) => {
@@ -44,6 +43,9 @@ const botRateLimit = async (req, res, next) => {
   //   res.set('Retry-After', ttlTime);
   //   return res.status(429).send(TOO_MANY_REQ_PAGE);
   // }
+
+  console.log('User-Agent:', userAgent);
+  console.log('openAiBot', openAiBot);
 
   const socialSites = isInheritedHost(req.hostname);
   if (socialSites) return next();
