@@ -7,7 +7,7 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { calculateVotePowerForSlider } from '../../vendor/steemitHelpers';
+import { calculateVotePowerForSlider, isPostCashout } from '../../vendor/steemitHelpers';
 import {
   getSocialInfoPost,
   handleHidePost,
@@ -282,6 +282,7 @@ class StoryFooter extends React.Component {
         </div>
         {this.state.sliderVisible && (!postState.isLiked || !postState.isReported) && (
           <Slider
+            isPostCashout={isPostCashout(post)}
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
