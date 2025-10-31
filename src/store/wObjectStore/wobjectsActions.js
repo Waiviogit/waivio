@@ -151,7 +151,7 @@ export const createWaivioObject = (postData, options = {}) => async (
     isPostingOpen: Boolean(wobj.isPostingOpen),
     parentAuthor: wobj.parentAuthor,
     parentPermlink: wobj.parentPermlink,
-    datafinityObject: wobj.datafinityObject || false,
+    datafinityObject: wobj.datafinityObject || undefined,
   };
 
   return ApiClient.postCreateWaivioObject(requestBody).then(response => {
