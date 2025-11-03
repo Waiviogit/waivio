@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal, Alert } from 'antd';
-import { validateHtml } from '../../../common/helpers/htmlContent';
+import { analyzePastedCode } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
@@ -450,7 +450,7 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
-  const isNotHtml = validateHtml(content);
+  const isNotHtml = analyzePastedCode(content);
 
   return (
     <React.Fragment>
