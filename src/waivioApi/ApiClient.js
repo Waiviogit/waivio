@@ -482,7 +482,7 @@ export const validateAppend = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
-  const link = permlink?.includes(author) ? permlink : `${author}/${permlink}`;
+  const link = permlink?.includes(`${author}/`) ? permlink : `${author}/${permlink}`;
 
   return fetch(`${config.apiPrefix}${config.post}/${link}`, {
     headers: { ...headers, app: config.appName, locale },

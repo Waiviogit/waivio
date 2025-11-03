@@ -7,6 +7,7 @@ import {
   accessTypesArr,
   getObjectName,
   haveAccess,
+  parseWobjectField,
 } from '../../../../common/helpers/wObjectHelper';
 
 import SocialLinks from '../../../components/SocialLinks';
@@ -89,16 +90,21 @@ const BusinessDetails = ({
               center={mapCenter}
             />
           )}
-          {website && (
-            <div className="BusinessObject__website field-website mb5px ">
-              <span className="field-website__title">
-                <i className="iconfont icon-link text-icon link" />
-                <span className={'main-color-button'} onClick={() => setLinkSafety(website.link)}>
-                  {website.title}
-                </span>
-              </span>
-            </div>
-          )}
+          {website &&
+            website.map(w => {
+              const body = parseWobjectField(w, 'body');
+
+              return (
+                <div key={body?.link} className="BusinessObject__website field-website mb5px ">
+                  <span className="field-website__title">
+                    <i className="iconfont icon-link text-icon link" />
+                    <span className={'main-color-button'} onClick={() => setLinkSafety(body?.link)}>
+                      {body?.title}
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
           {has(wobject, 'link') && (
             <div className={'BusinessObject__links'}>
               <SocialLinks isSocial profile={pickBy(profile, identity)} />

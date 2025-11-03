@@ -103,12 +103,15 @@ export const setInitialInputValues = value => {
     notesValue: value.note || '',
     isSubmitted: false,
     lastMomentVote: false,
-    minVotingPowerCurrencies: ['WAIV'],
+    minVotingPowerCurrencies: value.minVotingPowerCurrencies || ['WAIV'],
   };
 
-  if (value.voteWeight) initialState.voteWeight = value.voteWeight / 100;
+  if (value.voteWeight) {
+    initialState.voteWeight = value.voteWeight / 100;
+    initialState.voteValue = value.voteWeight / 100;
+  }
   if (value.voteComments) initialState.isComments = value.voteComments;
-  if (value.lastMomentVote) initialState.lastMomentVote = value.lastMomentVote;
+  if (value.lastMomentVote !== undefined) initialState.lastMomentVote = value.lastMomentVote;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
   if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);

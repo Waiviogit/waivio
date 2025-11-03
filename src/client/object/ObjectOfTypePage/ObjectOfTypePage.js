@@ -121,10 +121,7 @@ const ObjectOfTypePage = props => {
   // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      seedFromSource(
-        getContent(currObj, currObj.object_type === 'html'),
-        currObj.object_type === 'html',
-      );
+      seedFromSource(getContent(currObj, isCode), isCode);
       setEditorInitialized(false);
       setDraft(null);
 
@@ -450,7 +447,10 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
-  const isNotHtml = analyzePastedCode(content);
+  const isNotHtml = isCode && analyzePastedCode(content);
+
+  const isPageType = hasType(wobject, 'page');
+  const shouldShowBreadcrumbs = !isLoadingFlag && (!isEmpty(props.nestedWobject) || isPageType);
 
   return (
     <React.Fragment>
@@ -458,8 +458,7 @@ const ObjectOfTypePage = props => {
         <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
-          {!isLoadingFlag ||
-            (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+          {shouldShowBreadcrumbs && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           {isCode && isEditMode && (
             <Alert
               type={'warning'}
