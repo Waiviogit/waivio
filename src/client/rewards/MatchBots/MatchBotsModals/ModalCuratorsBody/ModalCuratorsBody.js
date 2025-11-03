@@ -66,7 +66,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
         handleChangeSlider={handleChangeSliderMana}
         sliderTitle={intl.formatMessage({
           id: 'match_bot_slider_title_mana',
-          defaultMessage: 'Min. Voting Power (mana):',
+          defaultMessage: 'Min. voting power (mana):',
         })}
         sliderDescription={intl.formatMessage({
           id: 'match_bot_slider_description_mana_curator',

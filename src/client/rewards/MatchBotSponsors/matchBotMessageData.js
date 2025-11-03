@@ -84,10 +84,10 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
     'matchBot_sponsors_provided',
     ' The Sponsors match bot service is provided on as-is / as-available basis.',
   ),
-  titleBotsAuthors: localizer('matchBot_title_authors', ' Authors match bot'),
+  titleBotsAuthors: localizer('matchBot_title_authors', ' Authors Match Bot'),
   authorsMatchBotsMeaning: localizer(
     'authors_match_bots_meaning',
-    'automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.',
+    'automatically upvotes posts published by specified authors. It does not upvote comments or reblogs.',
   ),
   authorsMatchBotsCommand: localizer(
     'authors_match_bots_command',
@@ -95,11 +95,11 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
   ),
   authorsMatchBotsImportant: localizer(
     'authors_match_bots_important',
-    'Important: The Authors match bot only publishes upvotes with estimated combine value of 0.01 HBD or more.',
+    'Important: The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
   ),
   authorsMatchBotsVotes: localizer(
     'authors_match_bots_votes',
-    'Votes will be processed as long as the mana (voting power) on the account remains above the threshold as specified for each author.',
+    'Voting will continue as long as your account’s voting mana remains above the threshold defined for each author.',
   ),
   matchBotsFee: localizer('match_bots_fee', 'Match bot service fee: '),
   matchBotsSupport: localizer(
@@ -108,13 +108,13 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
   ),
   matchBotsAuthorsAuthText: localizer(
     'match_bots_authors_auth_text',
-    'The Authors match bot requires authorization to distribute votes on your behalf: ',
+    'The Authors Match Bot requires authorization to distribute votes on your behalf: ',
   ),
   matchBotsAuthLink: localizer('match_bots_auth_link', 'Authorize now'),
   matchBotsUnAuthLink: localizer('match_bots_unauth_link', 'Remove authorize'),
   matchBotsAuthHiveSigner: localizer(
     'match_bots_auth_hivesigner',
-    'The authorization is completed via HiveSigner and can be revoked at any time.',
+    'Authorization is handled via HiveSigner and can be revoked at any time.',
   ),
   matchBotsAuthorsProvided: localizer(
     'matchBot_authors_provided',

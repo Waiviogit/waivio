@@ -91,13 +91,13 @@ const CreateRule = ({
     const spnsr = !isEdit ? sponsor.account : editRule.sponsor;
     const prepareObjData = isNew
       ? {
-          sponsor: spnsr,
-          votingPercent: sliderValue / 100,
-        }
+        sponsor: spnsr,
+        votingPercent: sliderValue / 100,
+      }
       : {
-          sponsor: spnsr,
-          voting_percent: sliderValue / 100,
-        };
+        sponsor: spnsr,
+        voting_percent: sliderValue / 100,
+      };
 
     if (!isEdit || isEnabledRule) prepareObjData.enabled = true;
     if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
@@ -113,13 +113,13 @@ const CreateRule = ({
           intl.formatMessage(
             !isEdit
               ? {
-                  id: 'matchBot_success_created',
-                  defaultMessage: 'Rule created successfully',
-                }
+                id: 'matchBot_success_created',
+                defaultMessage: 'Rule created successfully',
+              }
               : {
-                  id: 'matchBot_success_edited',
-                  defaultMessage: 'Rule edited successfully',
-                },
+                id: 'matchBot_success_edited',
+                defaultMessage: 'Rule edited successfully',
+              },
           ),
         );
         updateSponsorList();
@@ -362,7 +362,7 @@ const CreateRule = ({
               <div className="CreateRule__text f9">
                 {intl.formatMessage({
                   id: 'matchBot_remove_match_bot_rule_click_button',
-                  defaultMessage: 'To remove the match bot rule, click the delete button',
+                  defaultMessage: '',
                 })}
                 :
               </div>
@@ -410,7 +410,7 @@ CreateRule.propTypes = {
 };
 CreateRule.defaultProps = {
   editRule: {},
-  updateSponsorList: () => {},
+  updateSponsorList: () => { },
   isNew: false,
 };
 

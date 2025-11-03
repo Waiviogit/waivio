@@ -5,18 +5,18 @@ import { injectIntl } from 'react-intl';
 const MatchBotsAuthorsContent = ({ intl, isEngLocale }) => (
   <div className="MatchBot__text-content">
     <p>
-      {isEngLocale && <span>The</span>}
+      {isEngLocale && <span>The </span>}
       <span className="fw6">
         {intl.formatMessage({
           id: 'matchBot_title_authors',
-          defaultMessage: ' Authors match bot',
+          defaultMessage: 'Authors Match Bot',
         })}{' '}
       </span>
       <span>
         {intl.formatMessage({
           id: 'authors_match_bots_meaning',
           defaultMessage:
-            'automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.',
+            'automatically upvotes posts published by specified authors. It does not upvote comments or reblogs.',
         })}
       </span>
     </p>
@@ -24,21 +24,21 @@ const MatchBotsAuthorsContent = ({ intl, isEngLocale }) => (
       {intl.formatMessage({
         id: 'authors_match_bots_command',
         defaultMessage:
-          'For each author, please specify the upvoting power in the range from +1% to +100% (maximum upvote). Actual value of the upvote depends on the current upvoting mana on the account at the time of the action.',
+          'For each author, you can set an upvote weight ranging from +1% to +100% (maximum vote). The actual vote value will depend on the current voting mana available on your account at the moment the vote is cast.',
       })}
     </p>
     <p>
       {intl.formatMessage({
         id: 'authors_match_bots_important',
         defaultMessage:
-          'Important: The Authors match bot only publishes upvotes with estimated combined value of 0.01 HBD or more.',
+          'Important: The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
       })}
     </p>
     <p>
       {intl.formatMessage({
         id: 'authors_match_bots_votes',
         defaultMessage:
-          'Votes will be processed as long as the mana (voting power) on the account remains above the threshold as specified for each author.',
+          'Voting will continue as long as your account’s voting mana remains above the threshold defined for each author.',
       })}
     </p>
   </div>
