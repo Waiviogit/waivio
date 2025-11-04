@@ -39,7 +39,7 @@ const ModalFooter = ({
           <div className="modalFooter__text f9">
             {intl.formatMessage({
               id: 'matchBot_remove_match_bot_rule_click_button',
-              defaultMessage: 'To remove the match bot rule, click the delete button',
+              defaultMessage: 'To remove this rule, click the Delete button',
             })}
             :
           </div>
@@ -47,7 +47,7 @@ const ModalFooter = ({
             <Button disabled={false} onClick={handleDeleteConfirmation}>
               {intl.formatMessage({
                 id: 'matchBot_btn_delete_rule',
-                defaultMessage: 'Delete rule',
+                defaultMessage: 'Delete',
               })}
             </Button>
           </div>

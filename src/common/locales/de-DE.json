@@ -1783,7 +1783,7 @@
   "match_bot_search_author": "Autor",
   "match_bot_slider_title_vote": "Wert für die Abstimmung festlegen:",
   "match_bot_slider_description_vote": "Der Authors Match Bot veröffentlicht nur Upvotes mit einem geschätzten Wert von 0,01 HBD oder mehr.",
-  "match_bot_slider_title_mana": "Min. Voting Power (Mana):",
+  "match_bot_slider_title_mana": "Min. voting power (mana):",
   "match_bot_slider_description_mana": "Die Stimmen werden nur verarbeitet, wenn der VP auf dem Konto zum Zeitpunkt der Abstimmung über dem angegebenen Schwellenwert liegt (typischerweise 5 Minuten nach Veröffentlichung des Beitrags).",
   "match_bot_notes": "Hinweise:",
   "matchBot_MinVP": "Min VP",

@@ -127,7 +127,7 @@ export const campaingSettings = withWarning => ({
     {
       to: '/rewards/fraud-detection',
       id: 'fraud-detection',
-      defaultMessage: 'Fraud detection',
+      defaultMessage: 'Fraud Detection Assistant',
       forUser: true,
     },
     {
