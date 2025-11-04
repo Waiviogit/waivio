@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 const MatchBotsCuratorsContent = ({ isEngLocale, intl }) => (
   <div className="MatchBot__text-content">
-    <p>
+    <p className="mb3">
       {isEngLocale && <span>The </span>}
       <span className="fw6">
         {intl.formatMessage({
@@ -29,24 +29,26 @@ const MatchBotsCuratorsContent = ({ isEngLocale, intl }) => (
     </p>
     <p>
       {intl.formatMessage({
-        id: 'curators_match_bots_important',
-        defaultMessage:
-          'Important: The Curators Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
-      })}
-    </p>
-    <p>
-      {intl.formatMessage({
         id: 'curators_match_bots_condition',
         defaultMessage:
           'You may also enable the option to repeat downvotes from selected curators if you wish to align fully with their curation behavior.',
       })}
     </p>
-    <p>
+    <p className="mb3">
       {intl.formatMessage({
         id: 'curators_match_bots_votes',
         defaultMessage:
           "Voting will continue as long as your account's voting mana remains above the threshold defined for each curator.",
       })}
+    </p>
+    <p>
+      <span className="fw6">
+        {intl.formatMessage({
+          id: 'curators_match_bots_important',
+          defaultMessage:
+            'Important: The Curators Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
+        })}
+      </span>
     </p>
   </div>
 );

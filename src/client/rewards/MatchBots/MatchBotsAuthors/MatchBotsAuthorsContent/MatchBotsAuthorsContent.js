@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 const MatchBotsAuthorsContent = ({ intl, isEngLocale }) => (
   <div className="MatchBot__text-content">
-    <p>
+    <p className="mb3">
       {isEngLocale && <span>The </span>}
       <span className="fw6">
         {intl.formatMessage({
@@ -27,19 +27,21 @@ const MatchBotsAuthorsContent = ({ intl, isEngLocale }) => (
           'For each author, you can set an upvote weight ranging from +1% to +100% (maximum vote). The actual vote value will depend on the current voting mana available on your account at the moment the vote is cast.',
       })}
     </p>
-    <p>
-      {intl.formatMessage({
-        id: 'authors_match_bots_important',
-        defaultMessage:
-          'Important: The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
-      })}
-    </p>
-    <p>
+    <p className="mb3">
       {intl.formatMessage({
         id: 'authors_match_bots_votes',
         defaultMessage:
-          'Voting will continue as long as your account’s voting mana remains above the threshold defined for each author.',
+          "Voting will continue as long as your account's voting mana remains above the threshold defined for each author.",
       })}
+    </p>
+    <p>
+      <span className="fw6">
+        {intl.formatMessage({
+          id: 'authors_match_bots_important',
+          defaultMessage:
+            'Important: The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
+        })}
+      </span>
     </p>
   </div>
 );
