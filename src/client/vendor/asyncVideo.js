@@ -1,42 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { getOdyseeLink } from '../components/EditorExtended/util/videoHelper';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { getOdyseeLink } from '../components/EditorExtended/util/videoHelper';
 
 const AsyncVideo = ({ url }) => {
-  const [src, setSrc] = useState('');
-  useEffect(() => {
-    const getVideo = async () => {
-      try {
-        const _url = await getOdyseeLink(url);
-        setSrc(_url);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    getVideo();
-  }, [url]);
+  const src = useMemo(() => (url ? getOdyseeLink(url) : ''), [url]);
+
+  if (!src) return null;
 
   return (
     <div className="PostFeedEmbed__container">
       <iframe
-        title={src}
-        width="100%"
-        height={400}
+        title="Odysee video"
         className="video-iframe"
+        style={{ width: '100%', aspectRatio: '16 / 9', marginBottom: '5px' }}
         src={src}
         frameBorder="0"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowFullScreen
       />
     </div>
   );
 };
 
+AsyncVideo.propTypes = { url: PropTypes.string.isRequired };
 export default AsyncVideo;
-
-AsyncVideo.propTypes = {
-  url: PropTypes.string.isRequired,
-};
-
-AsyncVideo.defaultProps = {
-  url: '',
-};

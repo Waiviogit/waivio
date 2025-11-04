@@ -63,9 +63,15 @@ export const calculatePayout = (post, rates, isUpdates) => {
     'payout',
     0,
   );
-  const waivPayout = post?.total_rewards_WAIV
-    ? get(post, 'total_rewards_WAIV', 0) * rates
-    : get(post, 'total_payout_WAIV', 0) * rates;
+
+  let waivPayout = 0;
+
+  if ((get(post, 'total_rewards_WAIV', 0) || get(post, 'total_payout_WAIV', 0)) > 0) {
+    waivPayout = post?.total_rewards_WAIV
+      ? get(post, 'total_rewards_WAIV', 0) * rates
+      : get(post, 'total_payout_WAIV', 0) * rates;
+  }
+
   const waivPayoutHalf = waivPayout / 2;
   const max_payout = parsePayoutAmount(post.max_accepted_payout);
   const pending_payout = parsePayoutAmount(post.pending_payout_value);

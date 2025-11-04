@@ -150,7 +150,7 @@ export function truncateNumber(num, decimalPlaces) {
   // eslint-disable-next-line no-restricted-properties
   const factor = Math.pow(10, decimalPlaces);
 
-  return Math.trunc(num * factor) / factor;
+  return Math.round(num * factor) / factor;
 }
 
 export default null;
