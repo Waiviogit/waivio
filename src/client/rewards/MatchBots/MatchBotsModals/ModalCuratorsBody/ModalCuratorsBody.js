@@ -71,7 +71,7 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
         sliderDescription={intl.formatMessage({
           id: 'match_bot_slider_description_mana_curator',
           defaultMessage:
-            'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting.',
+            "Votes will only be processed if the account's voting power exceeds the specified threshold at the time the vote is cast.",
         })}
         selectOptions={cryptoCurrencyListForSlider}
         handleChangeCurrency={handleChangeCurrency}

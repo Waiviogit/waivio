@@ -47,7 +47,7 @@ const ModalFooter = ({
             <Button disabled={false} onClick={handleDeleteConfirmation}>
               {intl.formatMessage({
                 id: 'matchBot_btn_delete_rule',
-                defaultMessage: 'Delete rule',
+                defaultMessage: 'Delete',
               })}
             </Button>
           </div>

@@ -91,13 +91,13 @@ const CreateRule = ({
     const spnsr = !isEdit ? sponsor.account : editRule.sponsor;
     const prepareObjData = isNew
       ? {
-        sponsor: spnsr,
-        votingPercent: sliderValue / 100,
-      }
+          sponsor: spnsr,
+          votingPercent: sliderValue / 100,
+        }
       : {
-        sponsor: spnsr,
-        voting_percent: sliderValue / 100,
-      };
+          sponsor: spnsr,
+          voting_percent: sliderValue / 100,
+        };
 
     if (!isEdit || isEnabledRule) prepareObjData.enabled = true;
     if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
@@ -113,13 +113,13 @@ const CreateRule = ({
           intl.formatMessage(
             !isEdit
               ? {
-                id: 'matchBot_success_created',
-                defaultMessage: 'Rule created successfully',
-              }
+                  id: 'matchBot_success_created',
+                  defaultMessage: 'Rule created successfully',
+                }
               : {
-                id: 'matchBot_success_edited',
-                defaultMessage: 'Rule edited successfully',
-              },
+                  id: 'matchBot_success_edited',
+                  defaultMessage: 'Rule edited successfully',
+                },
           ),
         );
         updateSponsorList();
@@ -273,7 +273,7 @@ const CreateRule = ({
                 <div>
                   {intl.formatMessage({
                     id: 'matchBot_define_value_match_upvote',
-                    defaultMessage: 'Define value of the match upvote:',
+                    defaultMessage: 'Define the value of the match upvote:',
                   })}
                 </div>
                 <div>
@@ -296,7 +296,7 @@ const CreateRule = ({
               {intl.formatMessage({
                 id: 'matchBot_match_bot_will_upvote_posts_eligible_receive_rewards',
                 defaultMessage:
-                  'Match bot will upvote posts eligible to receive rewards offered by the specified sponsor.',
+                  'Sponsors Match Bot will upvote posts that are eligible to receive rewards offered by the specified sponsor.',
               })}
             </span>
           </Form.Item>
@@ -319,7 +319,7 @@ const CreateRule = ({
           <Form.Item
             label={intl.formatMessage({
               id: 'matchBot_set_note',
-              defaultMessage: 'Note (not visible to the public):',
+              defaultMessage: 'Notes',
             })}
           >
             {getFieldDecorator('noticeField', {
@@ -370,7 +370,7 @@ const CreateRule = ({
                 <Button disabled={false} onClick={handleDeleteModalVisibility}>
                   {intl.formatMessage({
                     id: 'matchBot_btn_delete_rule',
-                    defaultMessage: 'Delete rule',
+                    defaultMessage: 'Delete',
                   })}
                 </Button>
               </div>
@@ -410,7 +410,7 @@ CreateRule.propTypes = {
 };
 CreateRule.defaultProps = {
   editRule: {},
-  updateSponsorList: () => { },
+  updateSponsorList: () => {},
   isNew: false,
 };
 
