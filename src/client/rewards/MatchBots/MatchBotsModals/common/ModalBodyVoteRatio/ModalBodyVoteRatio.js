@@ -54,7 +54,7 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote, isSubmitted }) => {
         {intl.formatMessage({
           id: 'matchBot_curator_vote_ratio_msg',
           defaultMessage:
-            'The Curators match bot only publishes votes with estimated value of 0.01 HBD or more.',
+            'The Curators Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
         })}
       </p>
     </div>

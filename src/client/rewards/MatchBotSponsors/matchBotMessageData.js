@@ -7,21 +7,21 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
     'matchBot_success_min_voted_changed',
     'Minimum voting power changed',
   ),
-  manageMatchBot: localizer('matchBot_sponsors_match_bot', ' Sponsors match bot'),
+  manageMatchBot: localizer('matchBot_sponsors_match_bot', 'Sponsors Match Bot'),
   turnOn: localizer('matchBot_turn_on', 'Turn on'),
   turnOff: localizer('matchBot_turn_off', 'Turn off'),
   designedOffsetPortion: localizer(
     'matchBot_designed_offset_portion_of_direct_rewards',
-    ' is designed to offset portion of direct rewards with upvotes.',
+    ' is designed to support sponsored content by using upvotes to cover a portion of direct reward payouts. When an eligible post receives a direct reward, the bot can cast an upvote representing a percentage of that reward value, helping reduce the direct payment required from the sponsor.',
   ),
   contentUserPostedReview: localizer(
     'matchBot_content_user_has_posted_review_eligible_receive_direct_reward',
-    "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 {currency}. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 {currency} in author's rewards and the direct payment can be reduced to 4.50 {currency}.",
+    'For example, if a post is eligible for a 5.00 {currency} direct reward, the bot may upvote it to match 10% of that amount, assuming sufficient voting power is available. In this case, the author would receive 0.50 WAIV through curation, reducing the remaining direct payment to 4.50 {currency}.',
     values,
   ),
   thirdPartyCampaignSponsors: localizer(
     'matchBot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
-    'Important: Third party campaign sponsors must register the match bot in their campaigns for the value of bot upvotes to be subtracted from the direct obligations.',
+    'Important: Third-party campaign sponsors must register the Match Bot within their campaigns to ensure that the value of upvotes is correctly deducted from direct payment obligations.',
   ),
   matchBotRequiresAuthorization: localizer(
     'matchBot_match_bot_requires_authorization_distribute_votes_behalf',
@@ -37,7 +37,7 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
   change: localizer('matchBot_minimum_voting_power_change', 'change'),
   upvoteEligiblePosts: localizer(
     'matchBot_will_upvote_eligible_posts_only_if_VP',
-    'Match bot will upvote eligible posts only if VP on the account exceeds the set value.',
+    "Voting will continue as long as your account's voting mana remains above the defined threshold.",
   ),
   addSponsor: localizer('matchBot_add_mb_sponsor', 'Add sponsor'),
   changeMinVotingPower: localizer(
@@ -82,24 +82,24 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
   disclaimer: localizer('matchBot_sponsors_disclaimer', 'Disclaimer:'),
   matchBotsProvided: localizer(
     'matchBot_sponsors_provided',
-    ' The Sponsors match bot service is provided on as-is / as-available basis.',
+    ' The Sponsors Match Bot service is provided on an as-is and as-available basis.',
   ),
-  titleBotsAuthors: localizer('matchBot_title_authors', ' Authors match bot'),
+  titleBotsAuthors: localizer('matchBot_title_authors', ' Authors Match Bot'),
   authorsMatchBotsMeaning: localizer(
     'authors_match_bots_meaning',
-    'automatically upvotes posts published by the specified authors. It does not upvote comments or re-blogs.',
+    'automatically upvotes posts published by specified authors. It does not upvote comments or reblogs.',
   ),
   authorsMatchBotsCommand: localizer(
     'authors_match_bots_command',
-    'For each author, please specify the upvoting power in the range from +1% to +100% (maximum upvote). Actual value of the upvote depends on the current upvoting mana on the account at the time of the action.',
+    'For each author, you can set an upvote weight ranging from +1% to +100% (maximum vote). The actual vote value will depend on the current voting mana available on your account at the moment the vote is cast.',
   ),
   authorsMatchBotsImportant: localizer(
     'authors_match_bots_important',
-    'Important: The Authors match bot only publishes upvotes with estimated combine value of 0.01 HBD or more.',
+    'Important: The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
   ),
   authorsMatchBotsVotes: localizer(
     'authors_match_bots_votes',
-    'Votes will be processed as long as the mana (voting power) on the account remains above the threshold as specified for each author.',
+    'Voting will continue as long as your account’s voting mana remains above the threshold defined for each author.',
   ),
   matchBotsFee: localizer('match_bots_fee', 'Match bot service fee: '),
   matchBotsSupport: localizer(
@@ -108,46 +108,46 @@ export default (localizer, values = { currency: 'HIVE' }) => ({
   ),
   matchBotsAuthorsAuthText: localizer(
     'match_bots_authors_auth_text',
-    'The Authors match bot requires authorization to distribute votes on your behalf: ',
+    'The Authors Match Bot requires authorization to distribute votes on your behalf: ',
   ),
   matchBotsAuthLink: localizer('match_bots_auth_link', 'Authorize now'),
   matchBotsUnAuthLink: localizer('match_bots_unauth_link', 'Remove authorize'),
   matchBotsAuthHiveSigner: localizer(
     'match_bots_auth_hivesigner',
-    'The authorization is completed via HiveSigner and can be revoked at any time.',
+    'Authorization is handled via HiveSigner and can be revoked at any time.',
   ),
   matchBotsAuthorsProvided: localizer(
     'matchBot_authors_provided',
-    ' The Authors match bot service is provided on as-is / as-available basis.',
+    'The Authors Match Bot service is provided on as-is / as-available basis.',
   ),
   matchBotsAuthorsBtnAdd: localizer('matchBot_authors_btn_add', 'Add author'),
-  titleBotsCurators: localizer('matchBot_title_curators', ' Curators match bot'),
+  titleBotsCurators: localizer('matchBot_title_curators', ' Curators Match Bot'),
   curatorsMatchBotsMeaning: localizer(
     'curators_match_bots_meaning',
-    'automatically repeats the upvotes and downvotes of specified users (curators) on posts and comments.',
+    'automatically mirrors the upvotes and downvotes of selected users (curators) on both posts and comments. You simply choose which curators you want to follow, and the bot will apply a proportionate version of their voting actions from your account.',
   ),
   curatorsMatchBotsCommand: localizer(
     'curators_match_bots_command',
-    "For each curator, please specify the voting ratio - the proportion of your vote to the curator's vote. For example, 100% means that you want the same vote as the curator. Sometimes, if your vote value is less than the curator's, you can amplify your vote. If you specified a 200% vote ratio and the curator voted 10%, your vote would be 20%. Please note that all votes are capped at a maximum of 100%.",
+    "For each curator, you can choose how your vote should be applied. In proportional mode, the voting ratio determines the strength of your vote in relation to the curator's. A ratio of 100% means your vote will mirror the curator's exactly, while a 200% ratio will double their vote strength on your behalf. In absolute mode, you set a fixed voting strength that will always be used, regardless of the curator's vote value. This ensures that every mirrored vote reflects your selected power consistently. In both modes, votes are capped at a maximum of 100%.",
   ),
   curatorsMatchBotsImportant: localizer(
     'curators_match_bots_important',
-    'Important: If the estimated combine value of the vote is less than 0.01 HBD, the Curator match bot will skip this vote.',
+    'Important: The Curators Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
   ),
   curatorsMatchBotsCondition: localizer(
     'curators_match_bots_condition',
-    'If you also want to repeat curator’s downvotes, please check the corresponding box.',
+    'You may also enable the option to repeat downvotes from selected curators if you wish to align fully with their curation behavior.',
   ),
   curatorsMatchBotsVotes: localizer(
     'curators_match_bots_votes',
-    'Votes will be processed as long as the mana (voting power) on the account remains above the threshold specified for each curator.',
+    "Voting will continue as long as your account's voting mana remains above the threshold defined for each curator.",
   ),
   matchBotsCuratorsProvided: localizer(
     'matchBot_curators_provided',
-    ' The Curators match bot service is provided on as-is / as-available basis.',
+    ' The Curators Match Bot service is provided on as-is / as-available basis.',
   ),
   matchBotsCuratorsAuthText: localizer(
     'match_bots_curators_auth_text',
-    'The Curators match bot requires authorization to distribute votes on your behalf: ',
+    'The Curators Match Bot requires authorization to distribute votes on your behalf: ',
   ),
 });
