@@ -36,11 +36,11 @@ const Blacklist = ({ intl }) => {
         >
           <BlacklistContentNew
             type={'Blacklist'}
-            title={'Add user to the blacklist'}
+            title={'Add user to blacklist'}
             caption={
               <p>
-                Blacklisted users cannot participate in any campaign sponsored by{' '}
-                <Link to={`/@${userName}`}>{userName}</Link>
+                Blacklisted users cannot participate in any campaigns sponsored by{' '}
+                <Link to={`/@${userName}`}>{userName}</Link>.
               </p>
             }
             userList={blacklistUsers}
@@ -57,10 +57,10 @@ const Blacklist = ({ intl }) => {
         >
           <BlacklistContentNew
             buttonTitle={'Subscribe'}
-            title={'Recognize other users blacklists'}
+            title={"Recognize other users' blacklists"}
             type={'References'}
             caption={
-              "When you reference another user's blacklist, you also recognize all other blacklists referred to by that user"
+              "When you reference another user's blacklist, you also acknowledge all other blacklists that the user has referenced."
             }
             userList={followListsUsers}
             ids={ids.followList}
@@ -77,11 +77,12 @@ const Blacklist = ({ intl }) => {
           <BlacklistContentNew
             type={'Whitelist'}
             userList={whiteListUsers}
-            title={'Add user to the whitelist'}
+            title={'Add user to whitelist'}
             caption={
               <p>
-                Whitelisted users can participate in any campaign (subject to campaign eligibility
-                criteria) sponsored by <Link to={`/@${userName}`}>{userName}</Link>
+                Whitelisted users may participate in any campaign sponsored by{' '}
+                <Link to={`/@${userName}`}>{userName}</Link>, subject to campaign eligibility
+                criteria.
               </p>
             }
             ids={ids.whiteList}

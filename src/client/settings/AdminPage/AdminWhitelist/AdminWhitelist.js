@@ -61,7 +61,7 @@ const AdminWhitelist = () => {
                 <WhitelistContent
                   type={'Whitelist'}
                   userList={whiteListUsers}
-                  title={'Add user to the whitelist'}
+                  title={'Add user to whitelist'}
                   caption={
                     <p>Whitelisted users will have access to benefits on the Waivio platform.</p>
                   }

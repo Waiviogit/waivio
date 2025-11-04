@@ -89,6 +89,7 @@ const ModalBodyVoteRatioRadio = ({
                   id: 'matchBot_curator_absolute_vote_ratio',
                   defaultMessage: 'Absolute vote ratio (1%-100%)',
                 })}
+                {':'}
               </span>
             </Radio>
             <Input
@@ -109,6 +110,7 @@ const ModalBodyVoteRatioRadio = ({
                   id: 'matchBot_curator_proportional_vote_ratio',
                   defaultMessage: 'Proportional vote ratio (1%-10000%)',
                 })}
+                {':'}
               </span>
             </Radio>
             <Input
@@ -137,7 +139,7 @@ const ModalBodyVoteRatioRadio = ({
         {intl.formatMessage({
           id: 'matchBot_curator_vote_ratio_msg',
           defaultMessage:
-            'The Curators match bot only publishes votes with estimated value of 0.01 HBD or more.',
+            'The Curators Match Bot only publishes votes with estimated value of 0.01 HBD or more.',
         })}
       </p>
     </div>
