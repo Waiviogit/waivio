@@ -1,6 +1,7 @@
 import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
+import { createEmptyNode } from '../utils/embed';
 import { deserializeToSlate } from '../utils/parse';
 import {
   safeResetSelection,
@@ -223,7 +224,6 @@ const withEmbeds = cb => editor => {
       return;
     }
 
-    // ---------- PLAIN TEXT-гілка ----------
     const text = data.getData('text/plain');
 
     // Чи ми всередині code-блоку
@@ -242,10 +242,12 @@ const withEmbeds = cb => editor => {
 
       if (text?.includes('youtube.com') || text?.includes('youtu.be')) {
         node = { type: 'video', url: text.trim(), children: [{ text: '' }] };
+        Transforms.insertNodes(editor, node);
+        Transforms.insertNodes(editor, createEmptyNode());
       } else {
         node = { type: 'link', url: text.trim(), children: [{ text: text.trim() }] };
+        Transforms.insertNodes(editor, node);
       }
-      Transforms.insertNodes(editor, node);
 
       return;
     }

@@ -338,7 +338,7 @@ class StoryFull extends React.Component {
 
     const body = initialPostBody;
 
-    const signedBody = body?.replaceAll('http://', 'https://');
+    const signedBody = body;
 
     // if (signature) signedBody = `${body}<hr>${signature}`;
 

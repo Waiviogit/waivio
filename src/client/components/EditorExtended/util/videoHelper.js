@@ -74,29 +74,27 @@ export const getYoutubeSrc = url => {
   };
 };
 
-export const getOdyseeLink = async url => {
-  const match = url.replace(/(\?.*=.*)/, '')?.match(VIDEO_MATCH_URL.ODYSEE);
-  const name = match && match[1];
+export const getOdyseeLink = input => {
+  if (!input) return '';
+
+  let raw = String(input).trim();
 
   try {
-    const body = {
-      method: 'resolve',
-      params: {
-        urls: [name],
-      },
-    };
-    const res = await fetch('https://api.na-backend.odysee.com/api/v1/proxy?m=get', {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
-    const _res = await res.json();
-    const claimId = _res.result[name].claim_id;
-    const claimName = _res.result[name].name;
-
-    return `https://odysee.com/$/embed/${claimName}/${claimId}`;
+    raw = decodeURIComponent(raw);
   } catch (e) {
-    return false;
+    console.error(e);
   }
+  if (!/^https?:\/\//i.test(raw)) raw = `https://${raw.replace(/^\/+/, '')}`;
+
+  if (!/odysee\.com/i.test(raw)) return '';
+
+  const u = new URL(raw);
+
+  if (u.pathname.startsWith('/$/embed/')) return u.toString();
+
+  u.pathname = `/$/embed${u.pathname.startsWith('/') ? u.pathname : `/${u.pathname}`}`;
+
+  return u.toString();
 };
 
 export const getOdyseeSrc = async url => ({

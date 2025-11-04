@@ -146,12 +146,12 @@ class WebsiteWrapper extends React.PureComponent {
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),
-      store.dispatch(getRate()),
-      store.dispatch(getRewardFund()),
-      store.dispatch(getSwapEnginRates()),
-      store.dispatch(getCryptoPriceHistory()),
-      store.dispatch(getTokenRates('WAIV')),
-      store.dispatch(getGlobalProperties()),
+      // store.dispatch(getRate()),
+      // store.dispatch(getRewardFund()),
+      // store.dispatch(getSwapEnginRates()),
+      // store.dispatch(getCryptoPriceHistory()),
+      // store.dispatch(getTokenRates('WAIV')),
+      // store.dispatch(getGlobalProperties()),
     ]);
   }
 
