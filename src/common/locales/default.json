@@ -2721,5 +2721,6 @@
   "paste_your_meta_tags_here": "Paste your meta tags here",
   "judges": "Judges",
   "mobnav_judges": "Judges",
-  "judges_rewards_new": "Judges"
+  "judges_rewards_new": "Judges",
+  "authors_match_bot_slider_description_vote": "Select a positive value for upvotes or a negative value for downvotes. Only upvotes estimated to exceed 0.01 HBD will be cast."
 }

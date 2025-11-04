@@ -48,9 +48,9 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
           defaultMessage: 'Specify upvote value:',
         })}
         sliderDescription={intl.formatMessage({
-          id: 'match_bot_slider_description_vote',
+          id: 'authors_match_bot_slider_description_vote',
           defaultMessage:
-            'The Authors Match Bot only casts upvotes estimated to have a combined value of at least 0.01 HBD.',
+            'Select a positive value for upvotes or a negative value for downvotes. Only upvotes estimated to exceed 0.01 HBD will be cast.',
         })}
       />
       <ModalBodySlider
