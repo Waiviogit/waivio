@@ -61,6 +61,12 @@ const ModalCuratorsBody = ({ intl, isAddModal, inputsValue, setInputsValue, bot 
         value={inputsValue.isComments}
         setInputsValue={setInputsValue}
       />
+      <ModalBodyCheckBox
+        type="lastMomentVote"
+        textId="matchBot_curator_vote"
+        value={inputsValue.lastMomentVote}
+        setInputsValue={setInputsValue}
+      />
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
         handleChangeSlider={handleChangeSliderMana}

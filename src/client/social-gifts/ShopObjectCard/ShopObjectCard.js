@@ -55,6 +55,14 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             .diff(moment().startOf('day'), 'days'),
         )
       : null;
+
+  const getCampaignText = (isGiveaway, days) => {
+    if (days === 0) return isGiveaway ? ' - Today!' : ' - Win Today!';
+    if (days === 1) return isGiveaway ? ' - 1 Day Left!' : ' - Win in 1 Day!';
+
+    return isGiveaway ? ` - ${days} Days Left!` : ` - Win in ${days} Days!`;
+  };
+
   const specialAmount = isContestCampaign
     ? get(proposition, ['contestRewards', 0, 'rewardInUSD'], rewardAmount)
     : rewardAmount;
@@ -138,10 +146,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         >
           {isSpecialCampaign ? (
             <>
-              <USDDisplay value={specialAmount} currencyDisplay={'symbol'} />{' '}
+              <USDDisplay value={specialAmount} currencyDisplay="symbol" />{' '}
               {isGiveawayCampaign ? 'Giveaway' : 'Contest'}
-              {daysLeft !== null &&
-                (isGiveawayCampaign ? ` - ${daysLeft} Days Left!` : ` - Win in ${daysLeft} Days!`)}
+              {daysLeft !== null && getCampaignText(isGiveawayCampaign, daysLeft)}
             </>
           ) : (
             <>

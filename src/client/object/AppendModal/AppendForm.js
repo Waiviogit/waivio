@@ -129,6 +129,9 @@ import { getExposedFieldsByObjType } from '../wObjectHelper';
 import AppendFormFooter from './AppendFormFooter';
 import { splitIngredients } from './appendFormHelper';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
+import ContentViewField, {
+  transformValueToObject,
+} from './FieldComponents/SimpleFields/ContentViewField';
 import AddOnForm from './FormComponents/AddOnForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
@@ -137,7 +140,6 @@ import AuthorForm from './FormComponents/AuthorForm';
 import BrandForm from './FormComponents/BrandForm';
 import CompanyIdForm from './FormComponents/CompanyIdForm';
 import DelegationForm from './FormComponents/DelegationForm';
-import './AppendForm.less';
 import DimensionsForm from './FormComponents/DimensionsForms/DimensionsForm';
 import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
 import AddUserForm from './FormComponents/GroupForms/AddUserForm';
@@ -164,6 +166,8 @@ import SaleForm from './FormComponents/SaleForm';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
 import SimilarForm from './FormComponents/SimilarForm';
 import WalletAddressForm from './FormComponents/WalletAddressForm';
+
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -604,6 +608,12 @@ class AppendForm extends Component {
         fieldBody.push(rest[objectFields.menuItem]);
         break;
       }
+      case objectFields.contentView: {
+        fieldBody.push(
+          JSON.stringify(transformValueToObject(getFieldValue(objectFields.contentView))),
+        );
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -926,9 +936,10 @@ class AppendForm extends Component {
 
           const expandInfo = isEmpty(val?.expand) ? '' : `expand: ${val.expand.join(', ')}`;
           const includeInfo = isEmpty(val?.include) ? '' : `include: ${val.include.join(', ')}`;
+          const excludeInfo = isEmpty(val?.exclude) ? '' : `exclude: ${val.exclude.join(', ')}`;
           const sortType = isEmpty(val?.sortType) ? '' : `sort type: ${val.sortType}`;
 
-          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}\n${sortType}`;
+          return `@${author} added ${currentField} (${langReadable}):\n ${expandInfo}\n${includeInfo}\n${excludeInfo}\n${sortType}`;
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           let rulesAllow = '';
@@ -2724,6 +2735,16 @@ class AppendForm extends Component {
           <LastActivityForm
             getFieldDecorator={getFieldDecorator}
             handleSelectChange={this.handleSelectChange}
+          />
+        );
+      case objectFields.contentView:
+        return (
+          <ContentViewField
+            getFieldDecorator={getFieldDecorator}
+            handleSelectChange={this.handleSelectChange}
+            getFieldRules={this.getFieldRules}
+            intl={this.props.intl}
+            getFieldValue={this.props.form.getFieldValue}
           />
         );
       case objectFields.language:

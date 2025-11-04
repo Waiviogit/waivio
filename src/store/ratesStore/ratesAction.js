@@ -11,9 +11,9 @@ export const getSwapEnginRates = () => dispatch =>
     type: GET_RATES.ACTION,
     payload: ApiClient.getEnginePoolRate(HIVE_ENGINE_DEFAULT_SWAP_LIST)
       .then(res => {
-        if (isEmpty(res)) Promise.reject(res);
+        if (isEmpty(res)) return Promise.reject(res);
 
-        res.reduce(
+        return res.reduce(
           (acc, curr) => ({
             ...acc,
             [curr.symbol]: curr.USD,

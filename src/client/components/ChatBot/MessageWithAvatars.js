@@ -124,15 +124,20 @@ const MessageWithAvatars = ({ text }) => {
             color: '#666',
             fontSize: 14,
             textAlign: 'center',
+            marginTop: '10px',
+            marginBottom: '10px',
           }}
         >
           <div style={{ fontSize: 24 }}>🖼️</div>
-          <div style={{ marginTop: -10 }}>
+          <div>
             Image not available
             <br />
-            <a href={src} target="_blank" rel="noopener noreferrer">
-              View original
-            </a>
+            <p>
+              {' '}
+              <a href={src} target="_blank" rel="noopener noreferrer">
+                View original
+              </a>
+            </p>
           </div>
         </div>
       );

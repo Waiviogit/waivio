@@ -7,6 +7,7 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 import { getRequestLocale, loadLanguage } from '../../common/translations';
 import {
   setAppHost,
@@ -98,9 +99,17 @@ export default function createSsrHandler(template) {
     const currentUser =
       query && query.get('access_token') ? query?.get('username') : req?.cookies?.currentUser;
 
-    if (req.cookies && !req.url?.includes('sign-in')) {
+    if (req.cookies && !req.url?.includes('sign-in') && access_token) {
       sc2Api.setAccessToken(access_token);
-      const data = { access_token, socialProvider, ...req?.cookies, currentUser };
+      const isGuest = currentUser?.startsWith(GUEST_PREFIX);
+      const data = {
+        access_token,
+        socialProvider,
+        ...req?.cookies,
+        currentUser,
+        ...(isGuest ? { guestName: currentUser } : {}),
+      };
+
       try {
         await store.dispatch(loginFromServer(data)).then(async res => {
           try {

@@ -2,6 +2,8 @@ import { message } from 'antd';
 import { isEmpty, isNil } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAppHost } from '../appStore/appSelectors';
+import { unmuteSubscriptionWithBlog } from '../userStore/userActions';
 import { getUser } from './usersSelectors';
 import { LIKE_POST } from '../postsStore/postActions';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -15,7 +17,7 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 export const GET_INFO_FOR_SIDEBAR = createAsyncActionType('@users/GET_INFO_FOR_SIDEBAR');
 
-export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
+export const getInfoForSideBar = (username, lastActiv) => async (dispatch, getState) => {
   dispatch({
     type: GET_INFO_FOR_SIDEBAR.START,
     meta: { username },
@@ -26,6 +28,7 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
     const [acc] = await dHive.database.getAccounts([username]);
     const voting_mana = await dHive.rc.calculateVPMana(acc);
     const rc = await dHive.rc.getRCMana(username, acc);
+    const appHost = getAppHost(getState());
 
     data = {
       balance: acc?.balance,
@@ -49,7 +52,7 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
     try {
       let lastActivity = lastActiv;
       const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
-      const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
+      const userVoteValue = await ApiClient.getUserVoteValueInfo(username, appHost);
       const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
 
       if (isEmpty(lastActiv) || isNil(lastActiv)) {
@@ -333,10 +336,18 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
   const userName = getAuthenticatedUserName(state);
   const action = user.muted ? [] : ['ignore'];
 
+  // If unmuting, use the subscription approach with getBlog
+  if (user.muted) {
+    const host = getAppHost(state);
+
+    return dispatch(unmuteSubscriptionWithBlog(userName, user.name, host, user.name));
+  }
+
+  // If muting, use the regular approach
   return dispatch({
     type: MUTE_CURRENT_USER.ACTION,
     payload: {
-      promise: steemConnectAPI.muteUser(userName, user.name, action),
+      promise: steemConnectAPI.muteUser(userName, user.name, action).then(result => result),
     },
     meta: {
       muted: user.name,

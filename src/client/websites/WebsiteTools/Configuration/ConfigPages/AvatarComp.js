@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { isSquareImage } from '../../../../../common/helpers/image';
 
 const AvatarComp = ({ link, isBanner, isDesktopLogo = false }) => {
   const [isRectangle, setIsRectangle] = useState(false);
@@ -12,7 +13,7 @@ const AvatarComp = ({ link, isBanner, isDesktopLogo = false }) => {
 
     img.src = link;
     img.onload = () => {
-      setIsRectangle(img.naturalWidth > img.naturalHeight);
+      setIsRectangle(!isSquareImage(img.naturalWidth, img.naturalHeight));
     };
   }, [link, isDesktopLogo]);
 

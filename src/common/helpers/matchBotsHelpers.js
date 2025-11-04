@@ -20,6 +20,7 @@ export const INITIAL_INPUTS_VALUE = {
   expiredAt: null,
   notesValue: '',
   isSubmitted: false,
+  lastMomentVote: false,
   minVotingPowerCurrencies: ['WAIV'],
 };
 
@@ -30,6 +31,7 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
   notesValue: '',
   isDownvote: false,
   isComments: false,
+  lastMomentVote: false,
   expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
@@ -49,6 +51,7 @@ export const getBotObjAuthor = (botData, isEdit) => {
     type: MATCH_BOTS_NAMES.AUTHORS,
     name: get(botData, 'selectedUser.account', ''),
     enabled: !isEdit || botData.enabled,
+    lastMomentVote: botData.lastMomentVote,
     voteWeight: botData.voteValue * 100,
     minVotingPower: botData.manaValue * 100,
     minVotingPowerCurrencies: botData.minVotingPowerCurrencies,
@@ -68,6 +71,7 @@ export const getBotObjCurator = (botData, isEdit) => {
     type: MATCH_BOTS_NAMES.CURATORS,
     enabled: !isEdit || botData.enabled,
     voteComments: botData.isComments,
+    lastMomentVote: botData.lastMomentVote,
     enablePowerDown: botData.isDownvote,
     minVotingPower: botData.manaValue * 100,
     name: get(botData, 'selectedUser.account', ''),
@@ -98,11 +102,16 @@ export const setInitialInputValues = value => {
     enabled: value.enabled,
     notesValue: value.note || '',
     isSubmitted: false,
-    minVotingPowerCurrencies: ['WAIV'],
+    lastMomentVote: false,
+    minVotingPowerCurrencies: value.minVotingPowerCurrencies || ['WAIV'],
   };
 
-  if (value.voteWeight) initialState.voteWeight = value.voteWeight / 100;
+  if (value.voteWeight) {
+    initialState.voteWeight = value.voteWeight / 100;
+    initialState.voteValue = value.voteWeight / 100;
+  }
   if (value.voteComments) initialState.isComments = value.voteComments;
+  if (value.lastMomentVote !== undefined) initialState.lastMomentVote = value.lastMomentVote;
   if (value.enablePowerDown) initialState.isDownvote = value.enablePowerDown;
   if (value.voteRatio) initialState.voteRatio = value.voteRatio * 100;
   if (value.expiredAt) initialState.expiredAt = moment(value.expiredAt);

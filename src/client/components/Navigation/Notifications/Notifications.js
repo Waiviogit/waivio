@@ -1234,6 +1234,20 @@ class Notifications extends React.Component {
             <FormattedMessage id="see_all" defaultMessage="See All" />
           </Link>
         </div>
+        <div className="Notifications__footer" style={{ height: '60px', lineHeight: '22px' }}>
+          <div style={{ marginTop: '5px' }}>
+            Get notified in{' '}
+            <a
+              target={'_blank'}
+              href={`https://t.me/WaivioNotificationsBot?start`}
+              rel="noreferrer"
+            >
+              Telegram{' '}
+            </a>{' '}
+            app
+          </div>{' '}
+          <div>Enter Hive account(s) in chat</div>
+        </div>
       </div>
     );
   }

@@ -30,10 +30,27 @@
     height: 35px;
     line-height: 35px;
     border-top: @base-border;
+    font-weight: 500;
 
     & > a {
       font-weight: 500;
     }
+  }
+}
+.TelegramTooltipContainer {
+  &.ant-tooltip.ant-tooltip-placement-topLeft {
+    padding-bottom: 0 !important;
+  }
+
+  & .ant-tooltip-inner {
+    color: @black-text-basic;
+    background: @white;
+    width: 250px;
+    margin-left: -25px;
+  }
+
+  & .ant-tooltip-arrow::before {
+    background: transparent;
   }
 }
 

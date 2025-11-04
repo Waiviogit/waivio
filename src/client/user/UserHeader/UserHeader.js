@@ -44,10 +44,10 @@ const UserHeader = ({
   isGuest,
   authUserName,
   handleMuteUserBlog,
+  muteLoading,
 }) => {
   const [visible, setVisible] = useState(false);
   const [hoveringMute, setHoveringMute] = useState(false);
-  const [isLoadingUnmute, setIsLoadingUnmute] = useState(false);
   const style = hasCover ? { backgroundImage: `url("${getImagePathPost(coverImage)}")` } : {};
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
@@ -101,9 +101,7 @@ const UserHeader = ({
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
   const getMuteLabel = () => {
-    if (isLoadingUnmute && hoveringMute)
-      return intl.formatMessage({ id: 'unmuting', defaultMessage: 'Unmuting...' });
-    if (isLoadingUnmute) return intl.formatMessage({ id: 'muted', defaultMessage: mutedLabelText });
+    if (muteLoading) return intl.formatMessage({ id: 'unmuting', defaultMessage: 'Unmuting...' });
     if (hoveringMute) return intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' });
 
     return mutedLabelText;
@@ -131,20 +129,15 @@ const UserHeader = ({
           className="UserHeader__muteCard pointer"
           onClick={async e => {
             e.stopPropagation();
-            if (isLoadingUnmute) return;
-            setIsLoadingUnmute(true);
-            try {
-              await handleMuteUserBlog(user);
-            } finally {
-              setIsLoadingUnmute(false);
-            }
+            if (muteLoading) return;
+            await handleMuteUserBlog(user);
           }}
           onMouseEnter={() => setHoveringMute(true)}
           onMouseLeave={() => setHoveringMute(false)}
           style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
         >
           {getMuteLabel()}
-          {isLoadingUnmute && (
+          {muteLoading && (
             <i
               className="iconfont icon-spinner"
               style={{
@@ -294,6 +287,7 @@ UserHeader.propTypes = {
   isGuest: PropTypes.bool,
   handleMuteUserBlog: PropTypes.func,
   authUserName: PropTypes.string,
+  muteLoading: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -307,12 +301,14 @@ UserHeader.defaultProps = {
   hasCover: false,
   handleMuteUserBlog: () => {},
   isGuest: false,
+  muteLoading: false,
 };
 
 export default injectIntl(
   connect(
-    state => ({
+    (state, ownProps) => ({
       authUserName: getAuthenticatedUserName(state),
+      muteLoading: state.users?.users?.[ownProps.user?.name]?.muteLoading || false,
     }),
     {
       unfollow: unfollowUser,

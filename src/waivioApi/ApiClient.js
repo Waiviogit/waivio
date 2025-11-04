@@ -465,9 +465,24 @@ export const postCreateWaivioObject = requestBody =>
       return error;
     });
 
+export const validateAppend = requestBody =>
+  fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}${config.validate}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then(result => result)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
-  const link = permlink?.includes(author) ? permlink : `${author}/${permlink}`;
+  const link = permlink?.includes(`${author}/`) ? permlink : `${author}/${permlink}`;
 
   return fetch(`${config.apiPrefix}${config.post}/${link}`, {
     headers: { ...headers, app: config.appName, locale },
@@ -2906,9 +2921,12 @@ export const getTokensEngineChart = (currency, period) =>
     .then(response => response)
     .catch(e => e);
 
-export const getUserVoteValueInfo = userName =>
+export const getUserVoteValueInfo = (userName, host) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
-    headers,
+    headers: {
+      ...headers,
+      ...addAppHost(host),
+    },
     method: 'GET',
   })
     .then(handleErrors)

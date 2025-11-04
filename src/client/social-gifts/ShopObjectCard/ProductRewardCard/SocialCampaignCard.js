@@ -1,3 +1,5 @@
+import { isEmpty, get } from 'lodash';
+import moment from 'moment/moment';
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
@@ -25,7 +27,32 @@ const SocialCampaignCard = ({
   intl,
 }) => {
   const minPhotos = proposition?.requirements?.minPhotos;
+  const propositionContest = proposition.type === 'contests_object';
+  const propositionGiveaway = proposition.type === 'giveaways_object';
+  const isSpecialCampaign = propositionContest || propositionGiveaway;
   const isMention = proposition.type === 'mentions';
+  const daysLeft =
+    proposition?.nextEventDate && !isEmpty(proposition?.nextEventDate)
+      ? Math.max(
+          0,
+          moment
+            .utc(proposition.nextEventDate)
+            .startOf('day')
+            .diff(moment().startOf('day'), 'days'),
+        )
+      : null;
+
+  const getCampaignText = (isGiveaway, days) => {
+    if (days === 0) return isGiveaway ? ' - Today!' : ' - Win Today!';
+    if (days === 1) return isGiveaway ? ' - 1 Day Left!' : ' - Win in 1 Day!';
+
+    return isGiveaway ? ` - ${days} Days Left!` : ` - Win in ${days} Days!`;
+  };
+
+  const specialAmount = propositionContest
+    ? get(proposition, ['contestRewards', 0, 'rewardInUSD'], maxReward)
+    : maxReward;
+
   const buttonLabel =
     maxReward === proposition.minReward
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
@@ -48,15 +75,28 @@ const SocialCampaignCard = ({
       <div className="SocialCampaignCard__card">
         <div className="SocialCampaignCard__content">
           <h3>
-            <FormattedMessage
-              id={`share_photo${minPhotos === 1 ? '' : 's'}_and_earn`}
-              defaultMessage={`Share {minPhotos} photo${minPhotos === 1 ? '' : 's'} and earn`}
-              values={{ minPhotos: minPhotos === 0 ? '' : minPhotos }}
-            />
-            <span className="SocialCampaignCard__earn">
-              {' '}
-              <USDDisplay currencyDisplay={'symbol'} value={maxReward} />
-            </span>
+            {isSpecialCampaign ? (
+              <>
+                <span className="SocialCampaignCard__earn">
+                  {' '}
+                  <USDDisplay value={specialAmount} currencyDisplay="symbol" />{' '}
+                </span>
+                {propositionGiveaway ? 'Giveaway' : 'Contest'}
+                {daysLeft !== null && getCampaignText(propositionGiveaway, daysLeft)}
+              </>
+            ) : (
+              <>
+                <FormattedMessage
+                  id={`share_photo${minPhotos === 1 ? '' : 's'}_and_earn`}
+                  defaultMessage={`Share {minPhotos} photo${minPhotos === 1 ? '' : 's'} and earn`}
+                  values={{ minPhotos: minPhotos === 0 ? '' : minPhotos }}
+                />
+                <span className="SocialCampaignCard__earn">
+                  {' '}
+                  <USDDisplay currencyDisplay={'symbol'} value={maxReward} />
+                </span>
+              </>
+            )}
           </h3>
           <div className="SocialCampaignCard__sponsor-container">
             <Link to={`/@${sponsor}`}>

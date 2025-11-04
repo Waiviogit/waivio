@@ -2,6 +2,7 @@ import * as React from 'react';
 import { debounce, get } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import ModalBodyCheckBox from '../common/ModalBodyCheckBox/ModalBodyCheckBox';
 
 import ModalBodyDate from '../common/ModalBodyDate';
 import ModalBodyNotes from '../common/ModalBodyNotes';
@@ -30,6 +31,14 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
     250,
   );
 
+  const voteMarks = {
+    '-100': '-100%',
+    '-50': '-50%',
+    '0': '0%',
+    '50': '50%',
+    '100': '100%',
+  };
+
   return (
     <div className="authorModalBody">
       {isAddModal && (
@@ -52,6 +61,9 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
           defaultMessage:
             'Select a positive value for upvotes or a negative value for downvotes. Only upvotes estimated to exceed 0.01 HBD will be cast.',
         })}
+        marks={voteMarks}
+        min={-100}
+        max={100}
       />
       <ModalBodySlider
         sliderValue={inputsValue.manaValue}
@@ -68,6 +80,12 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
         selectOptions={cryptoCurrencyListForSlider}
         handleChangeCurrency={handleChangeCurrency}
         currency={get(bot, 'minVotingPowerCurrencies')}
+      />
+      <ModalBodyCheckBox
+        type="lastMomentVote"
+        textId="matchBot_curator_vote"
+        value={inputsValue.lastMomentVote}
+        setInputsValue={setInputsValue}
       />
       <ModalBodyDate onChange={handleChangeDate} value={inputsValue.expiredAt} />
       <ModalBodyNotes onChange={handleChangeNote} textAreaValue={inputsValue.notesValue} />

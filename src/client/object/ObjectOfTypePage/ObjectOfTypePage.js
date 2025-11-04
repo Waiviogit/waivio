@@ -6,7 +6,8 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal, Checkbox, Alert } from 'antd';
+import { Button, Form, Icon, message, Modal, Alert } from 'antd';
+import { analyzePastedCode } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
@@ -25,7 +26,12 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
+import {
+  getDraftPage,
+  getObject,
+  saveDraftPage,
+  validateAppend,
+} from '../../../waivioApi/ApiClient';
 import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getHtml } from '../../components/Story/Body';
@@ -51,6 +57,7 @@ const ObjectOfTypePage = props => {
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [validationScript, setValidationScript] = useState(false);
   const [loadingForButton, setLoadingForButton] = useState(false);
   const [draft, setDraft] = useState(null);
   const [littleVotePower, setLittleVotePower] = useState(null);
@@ -58,10 +65,6 @@ const ObjectOfTypePage = props => {
   const [editorInitialized, setEditorInitialized] = useState(false);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-
-  // NEW: flags to hide sections
-  const [hideSignInState, setHideSignIn] = useState(true);
-  const [hideMenuState, setHideMenu] = useState(true);
   const appendAdding = useSelector(getIsAddingAppendLoading);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
   const isCode = currObj.object_type === 'html';
@@ -72,23 +75,17 @@ const ObjectOfTypePage = props => {
     if (parsed) {
       return {
         code: parsed.code,
-        hideSignIn: Boolean(parsed.hideSignIn),
-        hideMenu: Boolean(parsed.hideMenu),
       };
     }
 
     return {
       code: raw,
-      hideSignIn: true,
-      hideMenu: true,
     };
   };
   const seedFromSource = (value, isObjTypeCode) => {
     if (isObjTypeCode) {
-      const { code, hideMenu, hideSignIn } = parseCodeField(value);
+      const { code } = parseCodeField(value);
 
-      setHideMenu(hideMenu);
-      setHideSignIn(hideSignIn);
       setCurrentContent(code);
       setContent(code);
     } else {
@@ -124,10 +121,7 @@ const ObjectOfTypePage = props => {
   // when switching edit/view modes initially
   useEffect(() => {
     if (!isEditMode) {
-      seedFromSource(
-        getContent(currObj, currObj.object_type === 'html'),
-        currObj.object_type === 'html',
-      );
+      seedFromSource(getContent(currObj, isCode), isCode);
       setEditorInitialized(false);
       setDraft(null);
 
@@ -255,25 +249,13 @@ const ObjectOfTypePage = props => {
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
 
         // pack body: for code pages we send JSON with flags
-        const bodyOut = isCode
-          ? JSON.stringify({
-              code: content,
-              hideSignIn: hideSignInState,
-              hideMenu: hideMenuState,
-            })
-          : content;
+        const bodyOut = content;
 
-        const pageContentField = isCode
-          ? {
-              name: objectFields.htmlContent,
-              body: bodyOut,
-              locale,
-            }
-          : {
-              name: objectFields.pageContent,
-              body: bodyOut,
-              locale,
-            };
+        const pageContentField = {
+          name: isCode ? objectFields.htmlContent : objectFields.pageContent,
+          body: bodyOut,
+          locale,
+        };
 
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
@@ -332,7 +314,33 @@ const ObjectOfTypePage = props => {
 
   const handleReadyPublishClick = e => {
     e.preventDefault();
-    setIsReadyToPublish(!isReadyToPublish);
+    if (isCode) {
+      const pageContentField = {
+        name: objectFields.htmlContent,
+        body: content,
+        locale,
+      };
+
+      const postData = getAppendData(userName, wobject, '', pageContentField);
+
+      setValidationScript(true);
+      validateAppend(postData)
+        .then(res => {
+          if (res.status === 200) {
+            setIsReadyToPublish(!isReadyToPublish);
+            setValidationScript(false);
+          } else {
+            setValidationScript(false);
+            message.error('Something went wrong. Please try again later.');
+          }
+        })
+        .catch(() => {
+          setValidationScript(false);
+          message.error('Something went wrong. Please try again later.');
+        });
+    } else {
+      setIsReadyToPublish(!isReadyToPublish);
+    }
   };
 
   const closePublishViev = e => {
@@ -347,7 +355,7 @@ const ObjectOfTypePage = props => {
     }
 
     if (content) {
-      if (isCode) return <HtmlSandbox html={content} inPreview />;
+      if (isCode) return <HtmlSandbox html={content} />;
 
       return <BodyContainer isPage full body={content} />;
     }
@@ -385,33 +393,7 @@ const ObjectOfTypePage = props => {
           ) : (
             <BodyContainer isPage full body={content} />
           )}
-          {content.includes('<script>') && (
-            <Alert
-              message="The script won’t work in preview mode. If the script is saved, it will work after
-              submitting the update."
-              type={'warning'}
-              style={{ textAlign: 'center', marginTop: '20px' }}
-            />
-          )}
           <div className="object-page-preview__options">
-            {isCode && (
-              <div className="object-page-preview__flags" style={{ marginBottom: 20 }}>
-                <Checkbox
-                  checked={hideSignInState}
-                  onChange={e => setHideSignIn(e.target.checked)}
-                  style={{ display: 'block', marginBottom: 8 }}
-                >
-                  Hide sign-in section
-                </Checkbox>
-                <Checkbox
-                  checked={hideMenuState}
-                  onChange={e => setHideMenu(e.target.checked)}
-                  style={{ display: 'block' }}
-                >
-                  Hide site main menu section
-                </Checkbox>
-              </div>
-            )}
             <LikeSection
               form={form}
               onVotePercentChange={handleVotePercentChange}
@@ -465,6 +447,10 @@ const ObjectOfTypePage = props => {
   const classObjPage = `object-of-type-page ${
     isEditMode && !isReadyToPublish ? 'edit' : 'view'
   }-mode`;
+  const isNotHtml = isCode && analyzePastedCode(content);
+
+  const isPageType = hasType(wobject, 'page');
+  const shouldShowBreadcrumbs = !isLoadingFlag && (!isEmpty(props.nestedWobject) || isPageType);
 
   return (
     <React.Fragment>
@@ -472,8 +458,28 @@ const ObjectOfTypePage = props => {
         <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
-          {!isLoadingFlag ||
-            (!isEmpty(props.nestedWobject) && <CatalogBreadcrumb wobject={wobject} intl={intl} />)}
+          {shouldShowBreadcrumbs && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+          {isCode && isEditMode && (
+            <Alert
+              type={'warning'}
+              style={{ textAlign: 'center', marginBottom: '10px' }}
+              message={
+                <div>
+                  Check out the{' '}
+                  <a
+                    rel="noreferrer"
+                    href={'/object/qci-creating-a-website-with-chatgpt-and-waivio-html-object/page'}
+                    target={'_blank'}
+                  >
+                    {' '}
+                    instructions
+                  </a>{' '}
+                  for creating your website with the HTML Object.
+                </div>
+              }
+              closable
+            />
+          )}
           <div className={classObjPage} ref={contentDiv} onClick={handleContentClick}>
             {isEditMode && editorInitialized ? getComponentEdit() : renderBody()}
             {open && (
@@ -495,12 +501,22 @@ const ObjectOfTypePage = props => {
               />
             )}
           </div>
+          {isNotHtml && isEditMode && content && (
+            <Alert
+              style={{ textAlign: 'center', marginTop: '20px', marginBottom: '10px' }}
+              type={'error'}
+              message={
+                'The code must use only HTML, CSS, and JavaScript (script). Other technologies are not allowed.'
+              }
+            />
+          )}
           {isEditMode && !isReadyToPublish && (
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={littleVotePower || !content}
+                disabled={littleVotePower || !content || isNotHtml}
                 onClick={handleReadyPublishClick}
+                loading={validationScript}
                 size="large"
               >
                 {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
