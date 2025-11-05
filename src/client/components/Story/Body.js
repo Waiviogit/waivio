@@ -210,7 +210,6 @@ const Body = props => {
               // eslint-disable-next-line no-param-reassign
               imgNode.dataset.processed = 'true';
             } else {
-              // Final fallback to no-image
               // eslint-disable-next-line no-param-reassign
               imgNode.src = '/images/icons/no-image.png';
               // eslint-disable-next-line no-param-reassign
@@ -275,6 +274,7 @@ const Body = props => {
     params.name,
     sendError,
     props.safeLinks,
+    props.full,
   );
 
   return (

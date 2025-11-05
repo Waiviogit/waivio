@@ -1,60 +1,59 @@
-// html-vs-jsx.js
+const TAG_LIKE_RX = /<\s*(!doctype|html|head|body|script|style|div|section|svg|[a-z][a-z0-9:-]*)[\s>]/i;
 
-/** Груба, але практична евристика */
-export function isJsxLike(src = '') {
-  const s = String(src).trim();
-
-  const reactHints = [
-    /\bimport\s+React\b/i,
-    /\bfrom\s+['"]react['"]/i,
-    /\bexport\s+default\b/i,
-    /\buse(State|Effect|Memo|Ref|Callback)\b/,
-    /\bclassName\s*=/,
-    /\bon[A-Z][a-zA-Z]+\s*=\s*\{/,
-    /<\s*[A-Z][A-Za-z0-9]*/, // тег з великої (компонент)
-    /<>[\s\S]*<\/>/, // React Fragment
-    /\breturn\s*\(/, // повертає JSX
-  ];
-
-  return reactHints.some(rx => rx.test(s));
+function stripScriptBlocks(src = '') {
+  return String(src).replace(/<script[\s\S]*?<\/script>/gi, '');
 }
 
-export function isProbablyHtml(src = '') {
-  const s = String(src).trim();
+function hasJsxHints(src = '') {
+  const s = String(src);
 
-  if (!s || s.length < 3) return false;
+  if (/\bclassName\s*=/.test(s)) return true;
+  if (/on[A-Z][A-Za-z0-9]*\s*=\s*\{/.test(s)) return true;
+  if (/<\s*[A-Z][A-Za-z0-9]*\b/.test(s)) return true;
+  if (/<>\s*[\s\S]*<\/>/.test(s)) return true;
 
-  if (/<!doctype\s+html>/i.test(s)) return true;
-  if (/<html[\s>]/i.test(s)) return true;
-  if (/<(head|body|section|div|span|p|h[1-6]|svg|table|header|footer|nav|main)\b/i.test(s))
+  return false;
+}
+
+export function analyzePastedCode(src = '') {
+  const text = String(src ?? '').trim();
+
+  if (!text || text.length < 3) {
     return true;
+  }
+  if (/<!doctype\s+html>/i.test(text) || /<html[\s>]/i.test(text)) {
+    return false;
+  }
+  if (!TAG_LIKE_RX.test(text)) {
+    return true;
+  }
 
-  if (/<\/?[a-z][\s\S]*?>/i.test(s)) {
-    if (isJsxLike(s)) return false;
+  if (typeof window !== 'undefined' && 'DOMParser' in window) {
+    try {
+      const doc = new DOMParser().parseFromString(text, 'text/html');
+      const hasEl = !!doc.head.querySelector('*') || !!doc.body.querySelector('*');
 
+      if (hasEl) {
+        const withoutScripts = stripScriptBlocks(text);
+
+        if (hasJsxHints(withoutScripts)) {
+          return true;
+        }
+
+        return false;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const withoutScripts = stripScriptBlocks(text);
+
+  if (hasJsxHints(withoutScripts)) {
     return true;
   }
 
   return false;
 }
 
-export function escapeHtml(s = '') {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-
-export function validateHtml(src = '') {
-  const text = String(src ?? '');
-
-  if (isJsxLike(text)) {
-    return true;
-  }
-
-  if (isProbablyHtml(text)) {
-    return false;
-  }
-
-  return true;
-}
+export default null;

@@ -329,6 +329,7 @@ export default ({
       return { tagName: 'div', text: `(Unsupported ${srcAtty})` };
     },
     img: (tagName, attribs) => {
+      console.log(attribs);
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
       let { src, alt, 'data-linked-url': linkedUrl, 'data-fallback-src': fallbackSrc } = attribs;
@@ -341,7 +342,6 @@ export default ({
       src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
-      // Додаємо alt тільки якщо він вручну доданий користувачем
       if (isManualAltText(alt, src)) {
         atts.alt = alt;
       }
@@ -359,14 +359,8 @@ export default ({
           text: aTag,
         };
       }
-
       // Create image with caption if alt text is meaningful
-      const imageWithCaption = createImageWithCaption(
-        atts.src,
-        atts.alt || '',
-        linkedUrl,
-        fallbackSrc,
-      );
+      const imageWithCaption = createImageWithCaption(atts.src, alt || '', linkedUrl, fallbackSrc);
       return {
         tagName: 'div',
         attribs: {

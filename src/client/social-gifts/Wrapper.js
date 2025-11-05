@@ -546,12 +546,12 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(getWebsiteSettings(req.headers.host)),
     store.dispatch(getAdsenseSettings(req.headers.host)),
-    store.dispatch(getRate()),
-    store.dispatch(getRewardFund()),
-    store.dispatch(getTokenRates('WAIV')),
-    store.dispatch(getCryptoPriceHistory()),
-    store.dispatch(getSwapEnginRates()),
-    store.dispatch(getGlobalProperties()),
+    // store.dispatch(getRate()),
+    // store.dispatch(getRewardFund()),
+    // store.dispatch(getTokenRates('WAIV')),
+    // store.dispatch(getCryptoPriceHistory()),
+    // store.dispatch(getSwapEnginRates()),
+    // store.dispatch(getGlobalProperties()),
   ]);
 };
 

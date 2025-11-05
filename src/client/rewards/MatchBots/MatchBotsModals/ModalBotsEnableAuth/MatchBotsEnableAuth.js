@@ -23,7 +23,8 @@ const ModalBotsEnableAuth = ({
     if (!isAuthority)
       return intl.formatMessage({
         id: 'matchBot_match_bot_requires_authorization_distribute_votes_behalf',
-        defaultMessage: 'The match bot requires authorization to distribute votes on your behalf',
+        defaultMessage:
+          'The Sponsors Match Bot requires authorization to distribute votes on your behalf',
       });
     if (!modalBot.enabled)
       return (

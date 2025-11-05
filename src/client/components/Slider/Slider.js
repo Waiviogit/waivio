@@ -7,7 +7,6 @@ import { debounce } from 'lodash';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
 import { openTransfer } from '../../../store/walletStore/walletActions';
-import { isPostCashout } from '../../vendor/steemitHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
 import { getIsTransferVisible } from '../../../store/walletStore/walletSelectors';
 
@@ -25,6 +24,7 @@ export default class Slider extends React.Component {
     value: PropTypes.number,
     voteWorth: PropTypes.number,
     visibleTransfer: PropTypes.bool,
+    isPostCashout: PropTypes.bool,
     isAppend: PropTypes.bool,
     onChange: PropTypes.func,
     post: PropTypes.shape({
@@ -114,7 +114,7 @@ export default class Slider extends React.Component {
           {this.props.visibleTransfer && (
             <Transfer sendTo={post.author} title={post.title} permLink={post.permlink} />
           )}{' '}
-          {isPostCashout(post) && !this.props.isAppend ? (
+          {this.props.isPostCashout && !this.props.isAppend ? (
             <h3>
               <span>
                 <FormattedMessage

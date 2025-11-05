@@ -10,8 +10,17 @@ const { NODE_ENV } = process.env;
 const DAILY_LIMIT = 2500;
 const DAILY_LIMIT_SITE = 500;
 
-const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
-const isGoogleBot = createIsbotFromList(googleList);
+const botAllowList = [
+  '(?<! (?:channel/|google/))google(?!(app|/google| pixel))',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'GPTBot',
+  'Amazonbot',
+  'bingbot',
+];
+const isAllowedBot = createIsbotFromList(botAllowList);
+
+const dontApplyLimits = userAgent => Boolean(userAgent) && isAllowedBot(userAgent);
 
 const getIpFromHeaders = req => req.headers['x-forwarded-for'] || req.headers['x-real-ip'];
 
@@ -20,7 +29,6 @@ const botRateLimit = async (req, res, next) => {
   const ttlTime = 60 * 60 * 24;
   const userAgent = req.get('User-Agent');
   const bot = isbot(userAgent);
-  const googleBot = isGoogleBot(userAgent);
   const ip = getIpFromHeaders(req);
 
   const statisticsKey = `${REDIS_KEYS.SSR_RATE_STATISTIC_COUNTER}:${hostname}:${
@@ -41,7 +49,7 @@ const botRateLimit = async (req, res, next) => {
 
   const socialSites = isInheritedHost(req.hostname);
   if (socialSites) return next();
-  if (googleBot) return next();
+  if (dontApplyLimits(userAgent)) return next();
 
   const siteLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}:${hostname}`;
   const severLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}`;

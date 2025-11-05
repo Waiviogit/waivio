@@ -63,7 +63,7 @@ const MatchBotsService = ({ intl, isAuthority, botType, botName, onlyAuth, isGue
               {intl.formatMessage({
                 id: 'match_bots_auth_hivesigner',
                 defaultMessage:
-                  'The authorization is completed via HiveSigner and can be revoked at any time.',
+                  'Authorization is handled via HiveSigner and can be revoked at any time.',
               })}
             </b>
           </div>

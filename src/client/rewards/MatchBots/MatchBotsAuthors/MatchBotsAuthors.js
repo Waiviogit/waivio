@@ -25,7 +25,7 @@ const MatchBotsAuthors = ({ intl, isEngLocale, matchBots, getMatchBots, clearMat
         botType={MATCH_BOTS_TYPES.AUTHORS}
         botTitle={intl.formatMessage({
           id: 'matchBot_title_authors',
-          defaultMessage: ' Authors match bot',
+          defaultMessage: 'Authors Match Bot',
         })}
         turnOffTitle={intl.formatMessage({ id: 'matchBot_turn_off', defaultMessage: 'Turn off' })}
         turnOnTitle={intl.formatMessage({ id: 'matchBot_turn_on', defaultMessage: 'Turn on' })}

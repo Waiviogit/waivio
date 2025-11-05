@@ -19,7 +19,8 @@ const periods = ['1d', '7d', '1m', '3m', '6m', '1y', '2y', 'all'];
 const yearsPeriods = ['1y', '2y', 'all'];
 
 const WaivPriceChart = () => {
-  const querySelectorSearchParams = new URLSearchParams(location?.search);
+  const querySelectorSearchParams =
+    typeof window !== 'undefined' && new URLSearchParams(location?.search);
   const isWidget = querySelectorSearchParams.get('display');
   const [type, setType] = React.useState('1m');
   const [lowUSD, setLowUSD] = React.useState(0);

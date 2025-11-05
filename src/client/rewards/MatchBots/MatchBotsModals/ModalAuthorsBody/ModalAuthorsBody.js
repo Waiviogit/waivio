@@ -54,12 +54,12 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
         handleChangeSlider={handleChangeSliderVote}
         sliderTitle={intl.formatMessage({
           id: 'match_bot_slider_title_vote',
-          defaultMessage: 'Specify the value for the vote:',
+          defaultMessage: 'Specify upvote value:',
         })}
         sliderDescription={intl.formatMessage({
-          id: 'match_bot_slider_description_vote',
+          id: 'authors_match_bot_slider_description_vote',
           defaultMessage:
-            'Select positive values for upvotes or negative values for downvotes. The Authors match bot will cast votes with the specified value.',
+            'Select a positive value for upvotes or a negative value for downvotes. Only upvotes estimated to exceed 0.01 HBD will be cast.',
         })}
         marks={voteMarks}
         min={-100}
@@ -75,7 +75,7 @@ const ModalAuthorsBody = ({ intl, inputsValue, setInputsValue, isAddModal, bot }
         sliderDescription={intl.formatMessage({
           id: 'match_bot_slider_description_mana',
           defaultMessage:
-            'Votes will only be processed if the VP on the account is greater than the specified threshold at the time of voting (typically, 5 min after the post is published).',
+            'Votes will only be processed if the account’s voting power exceeds the specified threshold at the time the vote is cast (typically about 5 minutes after the post is published).',
         })}
         selectOptions={cryptoCurrencyListForSlider}
         handleChangeCurrency={handleChangeCurrency}
