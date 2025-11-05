@@ -56,6 +56,8 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
       .replace(/url\(\s*(['"])?\s*javascript:.*?\)/gi, 'url(about:blank)')
       .replace(/@charset\s+["'][^"']*["'];?/gi, '')
       .replace(/@namespace[\s\S]*?;?/gi, '')
+      .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`)
+      .replace(/\bbackground-attachment\s*:\s*fixed\b/gi, 'background-attachment: scroll')
       .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`);
 
   const sanitizeConfig = useMemo(() => {
@@ -422,6 +424,9 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
           --hs-vh: 1vh;
         }
         html, body {
+          background-attachment: scroll !important;
+          height: auto !important;
+          min-height: 0 !important;
           margin: 0;
           box-sizing: border-box;
           background: transparent;
@@ -458,18 +463,40 @@ ${bodyHtml}
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
 
       if (!doc) return;
+
       const d = doc.documentElement;
+      const body = doc.body;
       const end = doc.getElementById('__hs-end');
-      const padB = parseFloat(doc.defaultView.getComputedStyle(doc.body).paddingBottom || '0') || 0;
-      const endBottom = (end?.offsetTop || 0) + (end?.offsetHeight || 0) + padB;
+
+      const padB = parseFloat(doc.defaultView.getComputedStyle(body).paddingBottom || '0') || 0;
+
+      // старий спосіб
+      const endBottomByOffset = (end?.offsetTop || 0) + (end?.offsetHeight || 0) + padB;
+
+      // нові, більш стабільні метрики
+      const rectEnd = end?.getBoundingClientRect?.();
+      const rectBody = body?.getBoundingClientRect?.();
+      const rectDoc = d?.getBoundingClientRect?.();
+
+      // getBoundingClientRect дає координати у viewport; додаємо clientTop/scrollTop як підстраховку
+      const bottomByRect = Math.max(
+        rectEnd ? rectEnd.bottom : 0,
+        rectBody ? rectBody.bottom : 0,
+        rectDoc ? rectDoc.bottom : 0,
+      );
+
       const fallback = Math.max(
-        doc.body?.scrollHeight || 0,
+        body?.scrollHeight || 0,
         d?.scrollHeight || 0,
         d?.clientHeight || 0,
       );
-      const tight = Math.max(endBottom, 0) || fallback;
 
-      if (tight > 0) iframe.style.height = `${Math.min(tight, maxHeight)}px`;
+      // беремо найбільше з трьох варіантів
+      const tight = Math.max(endBottomByOffset, bottomByRect, fallback, 0);
+
+      if (tight > 0) {
+        iframe.style.height = `${Math.min(tight, maxHeight)}px`;
+      }
     } catch (e) {
       console.error(e);
     }
