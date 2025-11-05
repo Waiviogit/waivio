@@ -536,7 +536,7 @@ class ObjectInfo extends React.Component {
     const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
-    const website = parseWobjectField(wobject, 'website');
+    const website = get(wobject, 'website');
     const menuItem = get(wobject, 'menuItem', []);
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -1402,19 +1402,24 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.website,
-          website && website.title && website.link && (
-            <div className="field-website">
-              <span className="field-website__title">
-                <i className="iconfont icon-link text-icon link" />
-                <span
-                  className={'main-color-button'}
-                  onClick={() => this.props.setLinkSafetyInfo(website.link)}
-                >
-                  {website.title}
-                </span>
-              </span>
-            </div>
-          ),
+          website &&
+            website?.map(w => {
+              const body = parseWobjectField(w, 'body');
+
+              return (
+                <div key={body.link} className="field-website">
+                  <span className="field-website__title">
+                    <i className="iconfont icon-link text-icon link" />
+                    <span
+                      className={'main-color-button'}
+                      onClick={() => this.props.setLinkSafetyInfo(body.link)}
+                    >
+                      {body.title}
+                    </span>
+                  </span>
+                </div>
+              );
+            }),
         )}
         {this.listItem(
           objectFields.phone,
