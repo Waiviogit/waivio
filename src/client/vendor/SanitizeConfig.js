@@ -345,7 +345,7 @@ export default ({
       if (isManualAltText(alt, src)) {
         atts.alt = alt;
       }
-      console.log(alt);
+
       if (isChatBotLink) {
         const imgTag = `<img src="${
           atts.src
