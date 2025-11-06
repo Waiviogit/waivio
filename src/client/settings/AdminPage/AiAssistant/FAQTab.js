@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Button, Input, Select, Table, Tag, message, Popconfirm } from 'antd';
@@ -37,6 +37,7 @@ const FAQTab = ({ intl }) => {
 
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
+  const containerRef = useRef(null);
 
   const debouncedSetSearch = useMemo(
     () =>
@@ -278,7 +279,7 @@ const FAQTab = ({ intl }) => {
   const canGoLast = currentPage < totalPages;
 
   return (
-    <div className="AdminPage min-width FAQTab">
+    <div ref={containerRef} className="AdminPage min-width FAQTab">
       <div className="FAQTab__header">
         <h2>FAQ</h2>
         <p className="FAQTab__description">
@@ -314,6 +315,8 @@ const FAQTab = ({ intl }) => {
                 setCurrentPage(1);
               }}
               className="FAQTab__select FAQTab__topic-select"
+              getPopupContainer={() => containerRef.current || document.body}
+              dropdownMatchSelectWidth={false}
             >
               {filteredTopics?.map(topic => (
                 <Option key={topic} value={topic}>
@@ -333,6 +336,8 @@ const FAQTab = ({ intl }) => {
                 setCurrentPage(1);
               }}
               className="FAQTab__select FAQTab__page-size-select"
+              getPopupContainer={() => containerRef.current || document.body}
+              dropdownMatchSelectWidth={false}
             >
               {PAGE_SIZES.map(size => (
                 <Option key={size} value={size}>

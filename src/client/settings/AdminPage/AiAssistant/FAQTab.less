@@ -2,6 +2,9 @@
 @import (reference) '../../../styles/custom.less';
 
 .FAQTab {
+  position: relative;
+  overflow-x: hidden;
+
   p {
     color: @blue-botticelli;
   }
@@ -91,10 +94,18 @@
 
   &__topic-select {
     width: 150px;
+
+    .ant-select-dropdown {
+      min-width: 150px !important;
+    }
   }
 
   &__page-size-select {
     width: 100px;
+
+    .ant-select-dropdown {
+      min-width: 100px !important;
+    }
   }
 
   &__table {
@@ -142,6 +153,11 @@
     color: @outer-space;
     font-size: 14px;
     line-height: 1.4;
+    width: 200px;
+
+    @media @small {
+      width: 500px;
+    }
   }
 
   &__answer-text {
@@ -149,6 +165,10 @@
     font-size: 13px;
     line-height: 1.5;
     margin-top: 4px;
+    width: 200px;
+    @media @small {
+      width: 500px;
+    }
   }
 
   &__topic-tag {
