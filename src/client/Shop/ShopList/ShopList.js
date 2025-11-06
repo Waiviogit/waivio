@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { useLocation, useRouteMatch } from 'react-router';
-import { Icon } from 'antd';
+import { useHistory, useLocation, useRouteMatch } from 'react-router';
+import { Icon, Tag } from 'antd';
 import classNames from 'classnames';
 import InfiniteScroll from 'react-infinite-scroller';
 
@@ -34,6 +34,7 @@ import useAdLevelData from '../../../hooks/useAdsense';
 const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => {
   const query = useQuery();
   const location = useLocation();
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const match = useRouteMatch();
   const authUser = useSelector(getAuthenticatedUserName);
@@ -45,6 +46,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
   const emptySocialMessage = isRecipe
     ? 'There are no recipes.'
     : 'This shop does not have any products.';
+
+  const activeFilters = parseQueryForFilters(query);
 
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
@@ -96,10 +99,40 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
     }
   };
 
+  const handleRemoveTag = (categoryName, tag) => {
+    const currentTags = query.get(categoryName)?.split(',') || [];
+    const filteredTags = currentTags.filter(t => t !== tag);
+
+    if (isEmpty(filteredTags)) {
+      query.delete(categoryName);
+    } else {
+      query.set(categoryName, filteredTags.join(','));
+    }
+
+    history.push(`?${query.toString()}${location.hash}`);
+  };
+
   if (loading) return <Loading />;
+
+  const hasActiveTags = query.toString().length > 0;
 
   return (
     <div className="ShopList">
+      {hasActiveTags && (
+        <div className="ShopList__tags">
+          {activeFilters.tagCategory.map(category =>
+            category.tags.map(tag => (
+              <Tag
+                key={`${category.categoryName}-${tag}`}
+                closable
+                onClose={() => handleRemoveTag(category.categoryName, tag)}
+              >
+                {tag}
+              </Tag>
+            )),
+          )}
+        </div>
+      )}
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing
           emptyMessage={

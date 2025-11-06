@@ -31,6 +31,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const query = useQuery();
   const list = useRef();
   const schema = getUserShopSchema(location?.pathname);
+  const isRecipe = schema === 'recipe';
   const path = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -52,7 +53,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
       setLoading(false);
     });
 
-    if (!isMobile() && typeof window !== 'undefined')
+    if (!isRecipe && !isMobile() && typeof window !== 'undefined')
       window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [match.params.department, match.params.name, user, query.toString(), location.hash]);
 

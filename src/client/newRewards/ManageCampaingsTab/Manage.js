@@ -197,11 +197,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
               {!isMobile() && (
                 <React.Fragment>
                   <td>{round(row.budgetUSD * currency.rate, 2)}</td>
-                  <td>
-                    {campaignTypes.CONTESTS_OBJECT === row.type
-                      ? round(row.budgetUSD * currency.rate, 2)
-                      : round(row.rewardInUSD * currency.rate, 2)}
-                  </td>
+                  <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
                   <td>
                     <Link to={`/rewards/reservations?statuses=assigned&campaignNames=${row.name}`}>
                       {row.reserved || null}
