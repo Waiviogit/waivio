@@ -66,6 +66,7 @@ const LINKS = {
   ADMIN_WHITELIST: '/admin-whitelist',
   ADMIN_NEW_ACCOUNTS: '/admin-new-accounts',
   ADMIN_GUESTS: '/admin-guests',
+  AI_ASSISTANT: '/ai-assistant',
   ADMIN_SPAM: '/admin-spam',
 };
 

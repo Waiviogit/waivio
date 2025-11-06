@@ -84,6 +84,12 @@ export const adminSettings = {
       defaultMessage: 'Guests',
       paths: ['/admin-guests', '/admin-spam'],
     },
+    {
+      to: '/ai-assistant',
+      id: 'ai_assistant',
+      defaultMessage: 'AI assistant',
+      paths: ['/ai-assistant'],
+    },
   ],
 };
 export const dataManagementSettings = {
