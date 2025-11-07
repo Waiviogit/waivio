@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Input, Select, Table, Tag, message, Popconfirm } from 'antd';
+import { Button, Input, Select, Tag, message, Popconfirm } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -56,7 +56,9 @@ const FAQTab = ({ intl }) => {
     if (!isAuth || !authUserName) return;
 
     setLoading(true);
-    getAssistantFaqTopics(authUserName).then(r => setTopics(r.topics));
+    const addSpacesToCamelCase = str => str.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+    getAssistantFaqTopics(authUserName).then(r => setTopics(r.topics.map(addSpacesToCamelCase)));
     try {
       const skip = (currentPage - 1) * pageSize;
       const topic = selectedTopic && selectedTopic !== 'All topics' ? selectedTopic : null;
@@ -145,49 +147,6 @@ const FAQTab = ({ intl }) => {
     loadTotalCount();
   };
 
-  const columns = [
-    {
-      title: 'Question',
-      dataIndex: 'question',
-      key: 'question',
-      render: (text, record) => (
-        <div>
-          <div className="FAQTab__question-text">{text}</div>
-          <div className="FAQTab__answer-text">{record.answer}</div>
-        </div>
-      ),
-    },
-    {
-      title: 'Topic',
-      dataIndex: 'topic',
-      key: 'topic',
-      width: 120,
-      render: topic => <Tag className="FAQTab__topic-tag">{topic || 'general'}</Tag>,
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: 150,
-      render: (_, record) => (
-        <div className="FAQTab__actions">
-          <Button type="link" onClick={() => handleEdit(record)} className="FAQTab__edit-button">
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure you want to delete this FAQ?"
-            onConfirm={() => handleDelete(record._id || record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link" danger className="FAQTab__delete-button">
-              Delete
-            </Button>
-          </Popconfirm>
-        </div>
-      ),
-    },
-  ];
-
   const filteredFaqs = useMemo(() => {
     if (!search || !search.trim()) {
       return faqs;
@@ -253,30 +212,20 @@ const FAQTab = ({ intl }) => {
     }
   }, [totalFiltered, displayFaqs.length, currentPage, pageSize]);
 
-  const startItem = useMemo(() => {
-    if (totalFiltered === 0 || displayFaqs.length === 0) return 0;
-
-    const calculatedStart = (currentPage - 1) * pageSize + 1;
-
-    return Math.max(1, Math.min(calculatedStart, totalFiltered));
-  }, [totalFiltered, displayFaqs.length, currentPage, pageSize]);
-
-  const endItem = useMemo(() => {
-    if (totalFiltered === 0 || displayFaqs.length === 0) return 0;
-
-    const calculatedStart = (currentPage - 1) * pageSize + 1;
-    const calculatedEnd = calculatedStart + displayFaqs.length - 1;
-
-    const validEnd = Math.min(calculatedEnd, totalFiltered);
-    const finalEnd = Math.max(startItem, validEnd);
-
-    return Math.max(startItem, finalEnd);
-  }, [totalFiltered, displayFaqs.length, currentPage, pageSize, startItem]);
-
   const lastPage = useMemo(() => totalPages, [totalPages]);
 
   const canGoNext = isSearchActive ? currentPage < totalPages : hasMore || currentPage < totalPages;
   const canGoLast = currentPage < totalPages;
+
+  if (isEmpty(displayFaqs) && !loading)
+    return (
+      <EmptyCampaing
+        emptyMessage={intl.formatMessage({
+          id: 'no_results',
+          defaultMessage: 'No FAQs found',
+        })}
+      />
+    );
 
   return (
     <div ref={containerRef} className="AdminPage min-width FAQTab">
@@ -348,29 +297,53 @@ const FAQTab = ({ intl }) => {
           </div>
         </div>
       </div>
-      {loading && <Loading />}
-      {!loading && isEmpty(displayFaqs) ? (
-        <EmptyCampaing
-          emptyMessage={intl.formatMessage({
-            id: 'no_results',
-            defaultMessage: 'No FAQs found',
-          })}
-        />
+      {loading ? (
+        <Loading />
       ) : (
         <>
-          <Table
-            columns={columns}
-            dataSource={displayFaqs}
-            rowKey={record => record._id || record.id}
-            pagination={false}
-            className="FAQTab__table"
-            bordered={false}
-          />
+          <div className="FAQTab__table">
+            <div className="FAQTab__table-header">
+              <div className="FAQTab__table-header-cell FAQTab__table-cell--question">Question</div>
+              <div className="FAQTab__table-header-cell FAQTab__table-cell--topic">Topic</div>
+              <div className="FAQTab__table-header-cell FAQTab__table-cell--actions">Actions</div>
+            </div>
+            <div className="FAQTab__table-body">
+              {displayFaqs.map(record => (
+                <div key={record._id || record.id} className="FAQTab__table-row">
+                  <div className="FAQTab__table-cell FAQTab__table-cell--question">
+                    <div className="FAQTab__question-text">{record.question}</div>
+                    <div className="FAQTab__answer-text">{record.answer}</div>
+                  </div>
+                  <div className="FAQTab__table-cell FAQTab__table-cell--topic">
+                    <Tag className="FAQTab__topic-tag">{record.topic || 'general'}</Tag>
+                  </div>
+                  <div className="FAQTab__table-cell FAQTab__table-cell--actions">
+                    <div className="FAQTab__actions">
+                      <Button
+                        type="link"
+                        onClick={() => handleEdit(record)}
+                        className="FAQTab__edit-button"
+                      >
+                        Edit
+                      </Button>
+                      <Popconfirm
+                        title="Are you sure you want to delete this FAQ?"
+                        onConfirm={() => handleDelete(record._id || record.id)}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button type="link" danger className="FAQTab__delete-button">
+                          Delete
+                        </Button>
+                      </Popconfirm>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           {totalFiltered > 0 && (
             <div className="FAQTab__pagination">
-              <span className="FAQTab__pagination-info">
-                Showing {startItem}-{endItem} of {totalFiltered}
-              </span>
               <div className="FAQTab__pagination-controls">
                 <a
                   className={`FAQTab__pagination-link ${
@@ -402,9 +375,7 @@ const FAQTab = ({ intl }) => {
                 >
                   &lt; Prev
                 </a>
-                <span className="FAQTab__pagination-page">
-                  Page {currentPage}/{totalPages}
-                </span>
+                <span className="FAQTab__pagination-page">Page {currentPage}</span>
                 <a
                   className={`FAQTab__pagination-link ${
                     !canGoNext
@@ -448,6 +419,7 @@ const FAQTab = ({ intl }) => {
         onSuccess={handleModalSuccess}
         editingFaq={editingFaq}
         authUserName={authUserName}
+        topics={topics}
       />
     </div>
   );

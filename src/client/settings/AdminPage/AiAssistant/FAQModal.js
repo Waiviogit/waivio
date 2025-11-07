@@ -6,14 +6,7 @@ import { createAssistantFaq, updateAssistantFaq } from '../../../../waivioApi/Ap
 const { TextArea } = Input;
 const { Option } = Select;
 
-const FAQ_TOPICS = [
-  { value: 'general', label: 'General' },
-  { value: 'product', label: 'Product' },
-  { value: 'technical', label: 'Technical' },
-  { value: 'business', label: 'Business' },
-];
-
-const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form }) => {
+const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form, topics }) => {
   const [loading, setLoading] = useState(false);
   const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = form;
 
@@ -78,23 +71,30 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form 
       <Form layout="vertical">
         <Form.Item label="Question">
           {getFieldDecorator('question', {
-            rules: [{ required: true, message: 'Please enter a question' }],
+            rules: [{ message: 'Please enter a question' }],
           })(<Input placeholder="Enter question" />)}
         </Form.Item>
         <Form.Item label="Answer">
           {getFieldDecorator('answer', {
-            rules: [{ required: true, message: 'Please enter an answer' }],
-          })(<TextArea rows={4} placeholder="Enter answer" showCount maxLength={1000} />)}
+            rules: [{ message: 'Please enter an answer' }],
+          })(
+            <TextArea
+              autoSize={{ minRows: 5, maxRows: 10 }}
+              placeholder="Enter answer"
+              showCount
+              maxLength={1000}
+            />,
+          )}
         </Form.Item>
         <Form.Item label="Topic">
           {getFieldDecorator('topic', {
-            rules: [{ required: true, message: 'Please select a topic' }],
+            rules: [{ message: 'Please select a topic' }],
             initialValue: 'general',
           })(
             <Select placeholder="Select topic">
-              {FAQ_TOPICS.map(topic => (
-                <Option key={topic.value} value={topic.value}>
-                  {topic.label}
+              {topics?.map(topic => (
+                <Option key={topic} value={topic}>
+                  {topic}
                 </Option>
               ))}
             </Select>,
@@ -109,6 +109,7 @@ FAQModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
+  topics: PropTypes.arrayOf().isRequired,
   editingFaq: PropTypes.shape({
     _id: PropTypes.string,
     id: PropTypes.string,
