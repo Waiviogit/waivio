@@ -74,29 +74,30 @@
   &__search-input {
     width: 400px;
     border-radius: 4px;
-    border: 1px solid @white;
 
     .ant-input {
-      width: 400px;
+      width: 398px;
       border-radius: 4px;
-      border: 1px solid @white;
+      background-color: @white;
     }
   }
 
   &__select {
     border-radius: 4px;
+    background-color: @white;
 
     .ant-select-selector {
       border-radius: 4px;
       border: 1px solid @white;
+      background-color: @white;
     }
   }
 
   &__topic-select {
-    width: 150px;
+    width: 275px;
 
     .ant-select-dropdown {
-      min-width: 150px !important;
+      min-width: 275px !important;
     }
   }
 
@@ -110,40 +111,80 @@
 
   &__table {
     background-color: @white;
+    border: 1px solid #d9d9d9;
+    font-size: 14px;
+    width: 100%;
+    border-collapse: collapse;
+  }
 
-    .ant-table {
-      background-color: @white;
-      border: none;
-      font-size: 14px;
+  &__table-header {
+    display: flex;
+    background-color: @white;
+    border-bottom: 1px solid #d9d9d9;
+  }
+
+  &__table-header-cell {
+    font-weight: 500;
+    color: @outer-space;
+    padding: 12px 16px;
+    border-right: 1px solid #d9d9d9;
+    text-align: left;
+
+    &.FAQTab__table-cell--question {
+      flex: 2;
     }
 
-    .ant-table-container {
-      border: none;
-      border-top: none;
+    &.FAQTab__table-cell--topic {
+      flex: 0 0 120px;
     }
 
-    .ant-table-thead {
-      border-bottom: none;
-    }
-
-    .ant-table-tbody > tr > td {
-      border-bottom: 1px solid @white;
-      padding: 12px 16px;
-      border-top: none;
-      border-left: none;
+    &.FAQTab__table-cell--actions {
+      flex: 0 0 150px;
       border-right: none;
     }
+  }
 
-    .ant-table-tbody > tr:last-child > td {
+  &__table-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__table-row {
+    display: flex;
+    border-bottom: 1px solid #d9d9d9;
+    min-width: 0;
+    width: 100%;
+
+    &:last-child {
       border-bottom: none;
     }
+  }
 
-    .ant-table-tbody > tr {
-      border-bottom: 1px solid @white;
+  &__table-cell {
+    padding: 12px 16px;
+    border-right: 1px solid #d9d9d9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: @white;
+    overflow: hidden;
+    word-wrap: break-word;
+    min-width: 0;
+
+    &.FAQTab__table-cell--question {
+      flex: 2;
     }
 
-    .ant-table-tbody > tr:last-child {
-      border-bottom: none;
+    &.FAQTab__table-cell--topic {
+      flex: 0 0 120px;
+    }
+
+    &.FAQTab__table-cell--actions {
+      flex: 0 0 150px;
+      border-right: none;
+      flex-direction: row;
+      align-items: center;
+      overflow: visible;
     }
   }
 
@@ -153,11 +194,9 @@
     color: @outer-space;
     font-size: 14px;
     line-height: 1.4;
-    width: 200px;
-
-    @media @small {
-      width: 500px;
-    }
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   &__answer-text {
@@ -165,18 +204,17 @@
     font-size: 13px;
     line-height: 1.5;
     margin-top: 4px;
-    width: 200px;
-    @media @small {
-      width: 500px;
-    }
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
 
   &__topic-tag {
     border-radius: 12px;
-    padding: 2px 12px;
+    padding: 2px 4px;
     background-color: @white;
     color: @outer-space;
-    border: none;
+    border: 1px solid #d9d9d9;
     font-size: 12px;
     margin: 0;
   }
@@ -187,35 +225,44 @@
   }
 
   &__edit-button {
-    padding: 0;
-    color: @blue-baliHai;
+    padding: 4px 12px;
+    color: var(--website-color);
     font-size: 14px;
     height: auto;
     line-height: 1.5;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    background-color: @white;
 
     &:hover {
-      border-color: transparent !important;
+      border-color: #d9d9d9 !important;
+      color: @blue-baliHai;
     }
   }
 
   &__delete-button {
-    padding: 0;
+    padding: 4px 12px;
     color: @red;
     font-size: 14px;
     height: auto;
     line-height: 1.5;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    background-color: @white;
 
     &:hover {
+      border-color: #d9d9d9 !important;
       color: @red;
     }
   }
 
   &__pagination {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 16px;
     padding: 12px 0;
+    width: 100%;
   }
 
   &__pagination-info {
@@ -225,7 +272,8 @@
 
   &__pagination-controls {
     display: flex;
-    align-items: center;
+
+    align-items: flex-end;
     gap: 8px;
   }
 
@@ -255,34 +303,6 @@
     font-weight: 600;
     color: @outer-space;
     font-size: 14px;
-  }
-
-  .ant-table-thead > tr > th {
-    font-weight: 500;
-    color: @outer-space;
-    border-bottom: 1px solid @white;
-    padding: 12px 16px;
-    background-color: @white;
-    text-align: left;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .ant-table-container {
-    border: none;
-  }
-
-  .ant-table {
-    border: none;
-  }
-
-  .ant-table-tbody > tr:hover > td {
-    background-color: @white;
-  }
-
-  .ant-table-placeholder {
-    border: none;
   }
 
   .ant-empty {
