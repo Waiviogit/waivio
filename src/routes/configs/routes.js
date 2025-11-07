@@ -208,6 +208,11 @@ const routes = {
       exact: true,
       component: Views.AdminGuests,
     },
+    {
+      path: '/(ai-assistant)',
+      exact: true,
+      component: Views.AiAssistant,
+    },
 
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],

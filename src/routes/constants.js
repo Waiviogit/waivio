@@ -179,6 +179,7 @@ export default {
       'admin-whitelist',
       'admin-new-accounts',
       'admin-guests',
+      'ai-assistant',
       'admin-spam',
       'admin-credits',
       'admin-actions',

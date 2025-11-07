@@ -234,6 +234,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'admin';
       filterName = 'guests';
       break;
+    case '/ai-assistant':
+      pageName = 'admin';
+      filterName = 'ai-assistant';
+      break;
     case '/admin-spam':
       pageName = 'admin';
       filterName = 'spam';

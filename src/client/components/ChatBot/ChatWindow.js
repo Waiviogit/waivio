@@ -221,7 +221,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [chatMessages.length, loading]);
+  }, [chatMessages?.length, loading]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -546,7 +546,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
           )}
           <div className="chat-messages">
             {!isEmpty(chatMessages) &&
-              chatMessages.map((mes, index) => {
+              chatMessages?.map((mes, index) => {
                 const text = mes.text.replace(/\n\n/g, '\n');
                 const key = mes.id || `${mes.role}-${index}`;
 
@@ -554,7 +554,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
                   <UserMessage
                     key={key}
                     text={text}
-                    lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                    lastMessageRef={index === chatMessages?.length - 1 ? lastMessageRef : null}
                   />
                 ) : (
                   <AssistantMessage
@@ -563,7 +563,7 @@ const ChatWindow = ({ className, hideChat, open, setIsOpen }) => {
                     key={key}
                     text={text}
                     loading={false}
-                    lastMessageRef={index === chatMessages.length - 1 ? lastMessageRef : null}
+                    lastMessageRef={index === chatMessages?.length - 1 ? lastMessageRef : null}
                   />
                 );
               })}
