@@ -6,6 +6,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
+  // ---------- helpers ----------
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
       .trim()
@@ -48,6 +49,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
     return s;
   };
 
+  // sanitize inline CSS (м’яко)
   const sanitizeCss = (css = '') =>
     css
       .replace(/expression\s*\(/gi, '')
@@ -56,9 +58,10 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
       .replace(/url\(\s*(['"])?\s*javascript:.*?\)/gi, 'url(about:blank)')
       .replace(/@charset\s+["'][^"']*["'];?/gi, '')
       .replace(/@namespace[\s\S]*?;?/gi, '')
+      // замінюємо vh на наш кастомний варіант
       .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`)
-      .replace(/\bbackground-attachment\s*:\s*fixed\b/gi, 'background-attachment: scroll')
-      .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`);
+      // ...і прибираємо "fixed" бекграунди, що часто ламають вимір
+      .replace(/\bbackground-attachment\s*:\s*fixed\b/gi, 'background-attachment: scroll');
 
   const sanitizeConfig = useMemo(() => {
     const cfg = {
@@ -362,6 +365,12 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
     return cfg;
   }, [inPreview]);
 
+  // detect vh in user CSS/HTML
+  const hasVh = useMemo(() => /\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/i.test(html || ''), [html]);
+
+  // if є vh → відключаємо autoSize (даємо скрол усередині iframe)
+  const effectiveAutoSize = useMemo(() => autoSize && !hasVh, [autoSize, hasVh]);
+
   const processedHtml = useMemo(() => {
     let raw = stripPreCodeWrapper(html || '');
 
@@ -374,12 +383,14 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
 
     const cleanHtml = sanitizeHtml(raw, sanitizeConfig);
 
+    // sanitize inline style=""
     const processed = cleanHtml.replace(/style\s*=\s*(['"])([\s\S]*?)\1/gi, (m, q, css) => {
       const safe = sanitizeCss(css);
 
       return `style=${q}${safe}${q}`;
     });
 
+    // extract <style> and <link rel=stylesheet>
     const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
     const linkRegex = /<link[^>]*rel=["']?stylesheet["']?[^>]*>/gi;
     const styles = [];
@@ -419,26 +430,36 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
         ${inPreview ? "script-src 'none';" : "script-src 'unsafe-inline';"}
       ">
       <style>
-        :root {
-          color-scheme: light dark;
-          --hs-vh: 1vh;
-        }
-        html, body {
+        :root { color-scheme: light dark; --hs-vh: 1vh; }
+
+        html {
           background-attachment: scroll !important;
           height: auto !important;
           min-height: 0 !important;
           margin: 0;
           box-sizing: border-box;
-          background: transparent;
-          ${autoSize ? 'overflow-y: hidden;' : 'overflow-y: auto;'}
+          background: transparent; /* не фарбуємо html */
+          ${effectiveAutoSize ? 'overflow-y: hidden;' : 'overflow-y: auto;'}
           overflow-x: hidden;
         }
+
+        /* поважаємо margin у body (НЕ скидаємо його) */
+        body {
+          padding: 0 !important;
+          min-height: 0 !important;
+          height: auto !important;
+          box-sizing: inherit;
+          background: transparent;
+        }
+
+        /* точковий фікс для CV */
+        .topbar { position: static !important; }
+
         *, *::before, *::after { box-sizing: inherit; }
         img, video, svg, canvas, iframe { max-width: 100%; height: auto; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
         pre, code { white-space: pre-wrap; word-break: break-word; }
-        nav { position: sticky !important; top: 0; }
       </style>
       ${links.join('\n')}
       ${styles.map(cssText => `<style>${cssText}</style>`).join('\n')}
@@ -454,10 +475,11 @@ ${bodyHtml}
 <div id="__hs-end" style="height:0; clear:both;"></div>
 </body>
 </html>`;
-  }, [html, sanitizeConfig, autoSize, inPreview]);
+  }, [html, sanitizeConfig, effectiveAutoSize, inPreview]);
 
+  // --- sizing ---
   const fit = () => {
-    if (!autoSize || !iframeRef.current) return;
+    if (!effectiveAutoSize || !iframeRef.current) return;
     try {
       const iframe = iframeRef.current;
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -468,30 +490,30 @@ ${bodyHtml}
       const body = doc.body;
       const end = doc.getElementById('__hs-end');
 
-      const padB = parseFloat(doc.defaultView.getComputedStyle(body).paddingBottom || '0') || 0;
+      // body margins (щоб врахувати колапс верхнього margin)
+      const cs = doc.defaultView?.getComputedStyle?.(body);
+      const mt = parseFloat(cs?.marginTop || '0') || 0;
+      const mb = parseFloat(cs?.marginBottom || '0') || 0;
 
-      // старий спосіб
-      const endBottomByOffset = (end?.offsetTop || 0) + (end?.offsetHeight || 0) + padB;
+      const padB = parseFloat(doc.defaultView?.getComputedStyle?.(body).paddingBottom || '0') || 0;
 
-      // нові, більш стабільні метрики
+      const endBottomByOffset = (end?.offsetTop || 0) + (end?.offsetHeight || 0) + padB + mt + mb;
+
       const rectEnd = end?.getBoundingClientRect?.();
       const rectBody = body?.getBoundingClientRect?.();
       const rectDoc = d?.getBoundingClientRect?.();
 
-      // getBoundingClientRect дає координати у viewport; додаємо clientTop/scrollTop як підстраховку
       const bottomByRect = Math.max(
-        rectEnd ? rectEnd.bottom : 0,
-        rectBody ? rectBody.bottom : 0,
+        rectEnd ? rectEnd.bottom + mt + mb : 0,
+        rectBody ? rectBody.bottom + mt + mb : 0,
         rectDoc ? rectDoc.bottom : 0,
       );
 
-      const fallback = Math.max(
-        body?.scrollHeight || 0,
-        d?.scrollHeight || 0,
-        d?.clientHeight || 0,
-      );
+      const bodyContent =
+        Math.max(body.scrollHeight, body.offsetHeight, body.clientHeight) + mt + mb;
 
-      // беремо найбільше з трьох варіантів
+      const fallback = Math.max(bodyContent, d?.scrollHeight || 0, d?.clientHeight || 0);
+
       const tight = Math.max(endBottomByOffset, bottomByRect, fallback, 0);
 
       if (tight > 0) {
@@ -503,19 +525,22 @@ ${bodyHtml}
   };
 
   const initialStartHeight = useMemo(() => {
+    if (!effectiveAutoSize) return maxHeight;
     const viewport = typeof window !== 'undefined' ? window.innerHeight : 0;
-    const clamped = Math.max(700, Math.min(viewport || 0, 1100));
+    const clamped = Math.max(240, Math.min(viewport || 0, 900));
 
     return Math.min(maxHeight || 100000, clamped);
-  }, [maxHeight]);
+  }, [effectiveAutoSize, maxHeight]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
 
     if (!iframe) return;
+
     const handleLoad = () => {
       setInteractive(false);
       iframe.style.height = `${initialStartHeight}px`;
+
       const setVh = () => {
         const oneVh =
           typeof window !== 'undefined' && window.innerHeight ? window.innerHeight / 100 : 0;
@@ -536,13 +561,14 @@ ${bodyHtml}
       window.addEventListener('resize', setVh);
       window.addEventListener('orientationchange', setVh);
       iframe.__setVh = setVh;
-      requestAnimationFrame(() => fit());
+
+      requestAnimationFrame(fit);
       setTimeout(fit, 50);
       setTimeout(fit, 250);
       setTimeout(() => {
         fit();
         setInteractive(true);
-      }, 1000);
+      }, 800);
 
       try {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -594,7 +620,7 @@ ${bodyHtml}
         console.error(e);
       }
     };
-  }, [autoSize, maxHeight, initialStartHeight]);
+  }, [effectiveAutoSize, maxHeight, initialStartHeight]);
 
   const sandboxValue = inPreview
     ? 'allow-popups allow-popups-to-escape-sandbox allow-same-origin'
@@ -607,11 +633,11 @@ ${bodyHtml}
       sandbox={sandboxValue}
       referrerPolicy="no-referrer"
       className={className}
-      scrolling={autoSize ? 'no' : 'auto'}
+      scrolling={effectiveAutoSize ? 'no' : 'auto'}
       style={{
         display: 'block',
         width: '100%',
-        height: autoSize ? `${initialStartHeight}px` : `${maxHeight}px`,
+        height: `${initialStartHeight}px`,
         border: 'none',
         verticalAlign: 'top',
         pointerEvents: interactive ? 'auto' : 'none',
