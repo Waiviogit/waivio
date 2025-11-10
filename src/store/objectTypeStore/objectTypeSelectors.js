@@ -41,5 +41,5 @@ export const getWobjectsList = createSelector([objectTypeState], state => state.
 
 export const getWobjectsHasMore = createSelector(
   [objectTypeState],
-  state => state.relatedObjectsHasMore,
+  state => state.hasMoreRelatedObjects,
 );
