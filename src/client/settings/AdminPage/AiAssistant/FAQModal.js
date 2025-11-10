@@ -16,11 +16,11 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
         setFieldsValue({
           question: editingFaq.question,
           answer: editingFaq.answer,
-          topic: editingFaq.topic || 'general',
+          topic: editingFaq.topic || 'WaivioGeneral',
         });
       } else {
         resetFields();
-        setFieldsValue({ topic: 'general' });
+        setFieldsValue({ topic: 'WaivioGeneral' });
       }
     }
   }, [visible, editingFaq, resetFields, setFieldsValue]);
@@ -89,7 +89,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
         <Form.Item label="Topic">
           {getFieldDecorator('topic', {
             rules: [{ message: 'Please select a topic' }],
-            initialValue: 'general',
+            initialValue: 'WaivioGeneral',
           })(
             <Select placeholder="Select topic">
               {topics?.map(topic => (

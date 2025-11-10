@@ -4,6 +4,7 @@
 .FAQTab {
   position: relative;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
 
   p {
     color: @blue-botticelli;
@@ -13,15 +14,18 @@
   }
 
   &__title {
-    font-size: 40px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: @outer-space;
-    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media @small {
+      color: @black-text;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 
   &__description {
-    color: @blue-botticelli;
     margin-bottom: 16px;
     font-size: 16px;
     line-height: 1.5;
@@ -65,10 +69,15 @@
   }
 
   &__filter-label {
-    font-size: 14px;
-    color: @outer-space;
-    font-weight: 500;
-    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media @small {
+      color: @black-text;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 
   &__search-input {
@@ -110,25 +119,31 @@
   }
 
   &__table {
-    background-color: @white;
-    border: 1px solid #d9d9d9;
-    font-size: 14px;
     width: 100%;
-    border-collapse: collapse;
+    border: 1px solid;
+    text-align: center;
+    font-size: 13px;
+    transition: opacity 0.15s ease;
+
+    @media @small {
+      font-size: 16px;
+    }
   }
 
   &__table-header {
     display: flex;
-    background-color: @white;
-    border-bottom: 1px solid #d9d9d9;
+    border-bottom: 1px solid;
   }
 
   &__table-header-cell {
     font-weight: 500;
-    color: @outer-space;
-    padding: 12px 16px;
-    border-right: 1px solid #d9d9d9;
-    text-align: left;
+    color: @black-text;
+    padding: 8px 12px;
+    border-right: 1px solid;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &.FAQTab__table-cell--question {
       flex: 2;
@@ -147,11 +162,12 @@
   &__table-body {
     display: flex;
     flex-direction: column;
+    transition: min-height 0.2s ease;
   }
 
   &__table-row {
     display: flex;
-    border-bottom: 1px solid #d9d9d9;
+    border-bottom: 1px solid;
     min-width: 0;
     width: 100%;
 
@@ -161,22 +177,24 @@
   }
 
   &__table-cell {
-    padding: 12px 16px;
-    border-right: 1px solid #d9d9d9;
+    padding: 8px 12px;
+    border-right: 1px solid;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: @white;
     overflow: hidden;
     word-wrap: break-word;
     min-width: 0;
 
     &.FAQTab__table-cell--question {
       flex: 2;
+      text-align: left;
     }
 
     &.FAQTab__table-cell--topic {
       flex: 0 0 120px;
+      text-align: center;
+      align-items: center;
     }
 
     &.FAQTab__table-cell--actions {
@@ -184,6 +202,7 @@
       border-right: none;
       flex-direction: row;
       align-items: center;
+      justify-content: center;
       overflow: visible;
     }
   }
@@ -217,6 +236,17 @@
     border: 1px solid #d9d9d9;
     font-size: 12px;
     margin: 0;
+
+    &--clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--website-color);
+        color: @white;
+        border-color: var(--website-color);
+      }
+    }
   }
 
   &__actions {
@@ -225,33 +255,25 @@
   }
 
   &__edit-button {
-    padding: 4px 12px;
+    padding: 2px 4px;
     color: var(--website-color);
     font-size: 14px;
     height: auto;
     line-height: 1.5;
-    border: 1px solid #d9d9d9;
-    border-radius: 12px;
-    background-color: @white;
 
     &:hover {
-      border-color: #d9d9d9 !important;
       color: @blue-baliHai;
     }
   }
 
   &__delete-button {
-    padding: 4px 12px;
+    padding: 2px 4px;
     color: @red;
     font-size: 14px;
     height: auto;
     line-height: 1.5;
-    border: 1px solid #d9d9d9;
-    border-radius: 12px;
-    background-color: @white;
 
     &:hover {
-      border-color: #d9d9d9 !important;
       color: @red;
     }
   }
