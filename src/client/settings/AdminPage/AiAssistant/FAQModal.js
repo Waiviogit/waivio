@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Select, message } from 'antd';
 import PropTypes from 'prop-types';
-import { createAssistantFaq, updateAssistantFaq } from '../../../../waivioApi/ApiClient';
+import { createAssistantFaq, patchAssistantFaq } from '../../../../waivioApi/ApiClient';
 import { addSpacesToCamelCase, removeSpacesFromCamelCase } from './FAQTab';
 
 const { TextArea } = Input;
@@ -86,7 +86,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
         const topicWithoutSpaces = removeSpacesFromCamelCase(values.topic);
 
         if (editingFaq) {
-          await updateAssistantFaq(
+          await patchAssistantFaq(
             authUserName,
             editingFaq._id || editingFaq.id,
             values.question,
@@ -164,6 +164,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
             <Select placeholder="Select topic">
               {topics.map(topic => {
                 const topicWithSpaces = addSpacesToCamelCase(topic);
+
                 return (
                   <Option key={topic} value={topicWithSpaces}>
                     {topicWithSpaces}

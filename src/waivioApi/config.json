@@ -293,5 +293,6 @@
   "judgePosts": "/judge-posts",
   "links": "/links",
   "qna": "/qna",
-  "topics": "/topics"
+  "topics": "/topics",
+  "migrateToWeaviate": "/migrate-to-weaviate"
 }

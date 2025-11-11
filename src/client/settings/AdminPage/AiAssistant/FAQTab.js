@@ -4,11 +4,14 @@ import { injectIntl } from 'react-intl';
 import { Button, Input, Select, Tag, message, Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import {
   getAssistantFaq,
   getAssistantFaqTopics,
   deleteAssistantFaq,
+  updateAssistantFaq,
 } from '../../../../waivioApi/ApiClient';
+
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -62,6 +65,8 @@ const FAQTab = ({ intl }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState(null);
   const [expandedAnswers, setExpandedAnswers] = useState(new Set());
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [updateButtonDisabled, setUpdateButtonDisabled] = useState(false);
 
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
@@ -170,6 +175,34 @@ const FAQTab = ({ intl }) => {
     setFaqToDelete(null);
   };
 
+  const handleUpdateClick = () => {
+    setUpdateModalVisible(true);
+  };
+
+  const handleUpdateConfirm = () => {
+    setUpdateModalVisible(false);
+    setModalVisible(false);
+
+    setUpdateButtonDisabled(true);
+    setTimeout(() => {
+      setUpdateButtonDisabled(false);
+    }, 30000);
+
+    // Proceed with API call in the background
+    updateAssistantFaq(authUserName)
+      .then(() => {
+        message.success('AI Assistant updated successfully');
+      })
+      .catch(error => {
+        console.error('Error updating AI Assistant:', error);
+        message.error('Failed to update AI Assistant');
+      });
+  };
+
+  const handleUpdateCancel = () => {
+    setUpdateModalVisible(false);
+  };
+
   const handleEdit = faq => {
     setEditingFaq(faq);
     setModalVisible(true);
@@ -271,9 +304,19 @@ const FAQTab = ({ intl }) => {
       </div>
 
       <div className="FAQTab__controls">
-        <Button type={'primary'} onClick={handleAdd} className="FAQTab__add-button">
-          + Add Q&A
-        </Button>
+        <div className="FAQTab__button-group">
+          <Button type={'primary'} onClick={handleAdd} className="FAQTab__add-button">
+            + Add Q&A
+          </Button>
+          <Button
+            type={'primary'}
+            onClick={handleUpdateClick}
+            className="FAQTab__update-button"
+            disabled={updateButtonDisabled}
+          >
+            Update AI Assistant
+          </Button>
+        </div>
 
         <div className="FAQTab__filters">
           <div className="FAQTab__filter-group">
@@ -529,6 +572,19 @@ const FAQTab = ({ intl }) => {
         title={'Delete FAQ'}
       >
         <p>Are you sure you want to delete this FAQ?</p>
+      </Modal>
+      <Modal
+        visible={updateModalVisible}
+        onCancel={handleUpdateCancel}
+        onOk={handleUpdateConfirm}
+        okText="OK"
+        cancelText="Cancel"
+        className="FAQTab__update-modal"
+        title={'Update AI Assistant'}
+      >
+        <p>
+          Are you sure you want to update the AI Assistant? The updated information will be applied.
+        </p>
       </Modal>
     </div>
   );

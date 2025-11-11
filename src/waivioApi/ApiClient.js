@@ -5735,7 +5735,17 @@ export const createAssistantFaq = (currentUser, question, answer, topic) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const updateAssistantFaq = (currentUser, id, question, answer, topic) =>
+export const updateAssistantFaq = currentUser =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.migrateToWeaviate}`, {
+    headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
+    body: '',
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+
+export const patchAssistantFaq = (currentUser, id, question, answer, topic) =>
   fetch(`${config.baseUrl}${config.assistant}${config.qna}/${id}`, {
     headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
     body: JSON.stringify({ question, answer, topic }),

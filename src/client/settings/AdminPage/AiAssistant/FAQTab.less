@@ -35,13 +35,20 @@
     margin-bottom: 24px;
   }
 
+  &__button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
   &__add-button {
     background-color: var(--website-color);
     border-color: var(--website-color);
     color: @white;
     border-radius: 20px;
     font-weight: 500;
-    margin-bottom: 16px;
     height: auto;
     padding: 8px 16px;
     border: none;
@@ -52,6 +59,30 @@
       background-color: var(--website-color);
       border-color: var(--website-color);
       color: @white;
+    }
+  }
+
+  &__update-button {
+    background-color: @white;
+    border: 1px solid var(--website-color);
+    color: var(--website-color);
+    border-radius: 20px;
+    font-weight: 500;
+    height: auto;
+    padding: 8px 16px;
+
+    font-size: 14px;
+
+    &:hover,
+    &:focus {
+      background-color: var(--website-color);
+      border-color: var(--website-color);
+      color: @white;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 
