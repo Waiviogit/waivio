@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Input, Select, Tag, message, Popconfirm } from 'antd';
+import { Button, Input, Select, Tag, message, Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
 import {
   getAssistantFaq,
   getAssistantFaqTopics,
   deleteAssistantFaq,
+  updateAssistantFaq,
 } from '../../../../waivioApi/ApiClient';
+
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -22,6 +25,31 @@ const { Option } = Select;
 
 const PAGE_SIZES = [5, 10, 20, 50];
 
+export const addSpacesToCamelCase = str => {
+  if (!str) return str;
+
+  // If string already has spaces, return as-is
+  if (str.includes(' ')) {
+    return str;
+  }
+
+  // Insert a space before each uppercase letter (except the first one)
+  return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+};
+
+export const removeSpacesFromCamelCase = str => {
+  if (!str) return str;
+
+  if (!str.includes(' ')) {
+    return str;
+  }
+
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+};
+
 const FAQTab = ({ intl }) => {
   const [faqs, setFaqs] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -34,6 +62,11 @@ const FAQTab = ({ intl }) => {
   const [hasMore, setHasMore] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingFaq, setEditingFaq] = useState(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [faqToDelete, setFaqToDelete] = useState(null);
+  const [expandedAnswers, setExpandedAnswers] = useState(new Set());
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
+  const [updateButtonDisabled, setUpdateButtonDisabled] = useState(false);
 
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
@@ -56,21 +89,39 @@ const FAQTab = ({ intl }) => {
     if (!isAuth || !authUserName) return;
 
     setLoading(true);
-    const addSpacesToCamelCase = str => str.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-    getAssistantFaqTopics(authUserName).then(r => setTopics(r.topics.map(addSpacesToCamelCase)));
     try {
-      const skip = (currentPage - 1) * pageSize;
-      const topic = selectedTopic && selectedTopic !== 'All topics' ? selectedTopic : null;
+      const [topicsResponse, faqResponse] = await Promise.all([
+        getAssistantFaqTopics(authUserName),
+        (async () => {
+          const skip = (currentPage - 1) * pageSize;
+          const topic =
+            selectedTopic && selectedTopic !== 'All topics'
+              ? removeSpacesFromCamelCase(selectedTopic)
+              : null;
 
-      const response = await getAssistantFaq(authUserName, topic, skip, pageSize);
+          return getAssistantFaq(authUserName, topic, skip, pageSize);
+        })(),
+      ]);
 
-      if (response && response.result) {
-        setFaqs(response.result);
-        setHasMore(response.hasMore || false);
+      if (topicsResponse && topicsResponse.topics) {
+        setTopics(topicsResponse.topics.map(addSpacesToCamelCase));
+      }
 
-        if (total === 0 && response.total !== undefined && response.total !== null) {
-          setTotal(response.total);
+      if (faqResponse && faqResponse.result) {
+        setFaqs(faqResponse.result);
+        setHasMore(faqResponse.hasMore || false);
+
+        if (faqResponse.total !== undefined && faqResponse.total !== null) {
+          setTotal(faqResponse.total);
+        } else if (faqResponse.result.length > 0) {
+          const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
+
+          if (totalResponse && totalResponse.result) {
+            setTotal(totalResponse.result.length);
+          }
+        } else {
+          setTotal(0);
         }
       } else {
         setFaqs([]);
@@ -88,42 +139,68 @@ const FAQTab = ({ intl }) => {
     }
   };
 
-  const loadTotalCount = async () => {
-    if (!isAuth || !authUserName) return;
-
-    try {
-      const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
-
-      if (totalResponse && totalResponse.result) {
-        setTotal(totalResponse.result.length);
-      }
-    } catch (error) {
-      console.warn('Could not fetch total count:', error);
-    }
-  };
-
   useEffect(() => {
     loadFaqs();
   }, [isAuth, authUserName, currentPage, pageSize, selectedTopic]);
 
-  useEffect(() => {
-    loadTotalCount();
-  }, [isAuth, authUserName, selectedTopic]);
+  const handleDeleteClick = record => {
+    setFaqToDelete(record);
+    setDeleteModalVisible(true);
+  };
 
-  const handleDelete = async id => {
+  const handleDeleteConfirm = async () => {
+    if (!faqToDelete) return;
+
+    const id = faqToDelete._id || faqToDelete.id;
+
     try {
       await deleteAssistantFaq(authUserName, id);
       message.success('FAQ deleted successfully');
+      setDeleteModalVisible(false);
+      setFaqToDelete(null);
 
       if (currentPage > 1) {
         setCurrentPage(1);
+      } else {
+        loadFaqs();
       }
-      loadFaqs();
-      loadTotalCount();
     } catch (error) {
       console.error('Error deleting FAQ:', error);
       message.error('Failed to delete FAQ');
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalVisible(false);
+    setFaqToDelete(null);
+  };
+
+  const handleUpdateClick = () => {
+    setUpdateModalVisible(true);
+  };
+
+  const handleUpdateConfirm = () => {
+    setUpdateModalVisible(false);
+    setModalVisible(false);
+
+    setUpdateButtonDisabled(true);
+    setTimeout(() => {
+      setUpdateButtonDisabled(false);
+    }, 30000);
+
+    // Proceed with API call in the background
+    updateAssistantFaq(authUserName)
+      .then(() => {
+        message.success('AI Assistant updated successfully');
+      })
+      .catch(error => {
+        console.error('Error updating AI Assistant:', error);
+        message.error('Failed to update AI Assistant');
+      });
+  };
+
+  const handleUpdateCancel = () => {
+    setUpdateModalVisible(false);
   };
 
   const handleEdit = faq => {
@@ -144,7 +221,6 @@ const FAQTab = ({ intl }) => {
   const handleModalSuccess = () => {
     handleModalClose();
     loadFaqs();
-    loadTotalCount();
   };
 
   const filteredFaqs = useMemo(() => {
@@ -217,16 +293,6 @@ const FAQTab = ({ intl }) => {
   const canGoNext = isSearchActive ? currentPage < totalPages : hasMore || currentPage < totalPages;
   const canGoLast = currentPage < totalPages;
 
-  if (isEmpty(displayFaqs) && !loading)
-    return (
-      <EmptyCampaing
-        emptyMessage={intl.formatMessage({
-          id: 'no_results',
-          defaultMessage: 'No FAQs found',
-        })}
-      />
-    );
-
   return (
     <div ref={containerRef} className="AdminPage min-width FAQTab">
       <div className="FAQTab__header">
@@ -238,9 +304,19 @@ const FAQTab = ({ intl }) => {
       </div>
 
       <div className="FAQTab__controls">
-        <Button type={'primary'} onClick={handleAdd} className="FAQTab__add-button">
-          + Add Q&A
-        </Button>
+        <div className="FAQTab__button-group">
+          <Button type={'primary'} onClick={handleAdd} className="FAQTab__add-button">
+            + Add Q&A
+          </Button>
+          <Button
+            type={'primary'}
+            onClick={handleUpdateClick}
+            className="FAQTab__update-button"
+            disabled={updateButtonDisabled}
+          >
+            Update AI Assistant
+          </Button>
+        </div>
 
         <div className="FAQTab__filters">
           <div className="FAQTab__filter-group">
@@ -283,6 +359,15 @@ const FAQTab = ({ intl }) => {
               onChange={value => {
                 setPageSize(value);
                 setCurrentPage(1);
+                if (containerRef.current) {
+                  const scrollTop = containerRef.current.scrollTop;
+
+                  requestAnimationFrame(() => {
+                    if (containerRef.current) {
+                      containerRef.current.scrollTop = scrollTop;
+                    }
+                  });
+                }
               }}
               className="FAQTab__select FAQTab__page-size-select"
               getPopupContainer={() => containerRef.current || document.body}
@@ -297,8 +382,16 @@ const FAQTab = ({ intl }) => {
           </div>
         </div>
       </div>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {loading ? (
         <Loading />
+      ) : isEmpty(displayFaqs) ? (
+        <EmptyCampaing
+          emptyMessage={intl.formatMessage({
+            id: 'no_results',
+            defaultMessage: 'No FAQs found',
+          })}
+        />
       ) : (
         <>
           <div className="FAQTab__table">
@@ -312,10 +405,60 @@ const FAQTab = ({ intl }) => {
                 <div key={record._id || record.id} className="FAQTab__table-row">
                   <div className="FAQTab__table-cell FAQTab__table-cell--question">
                     <div className="FAQTab__question-text">{record.question}</div>
-                    <div className="FAQTab__answer-text">{record.answer}</div>
+                    <div className="FAQTab__answer-text">
+                      {record.answer && record.answer.length > 250 ? (
+                        <>
+                          {expandedAnswers.has(record._id || record.id) ? (
+                            <>
+                              {record.answer}
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedAnswers);
+
+                                  newExpanded.delete(record._id || record.id);
+                                  setExpandedAnswers(newExpanded);
+                                }}
+                                className="FAQTab__show-more-button"
+                              >
+                                Show less
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              {record.answer.substring(0, 250)}...
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedAnswers);
+
+                                  newExpanded.add(record._id || record.id);
+                                  setExpandedAnswers(newExpanded);
+                                }}
+                                className="FAQTab__show-more-button"
+                              >
+                                Show more
+                              </Button>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        record.answer
+                      )}
+                    </div>
                   </div>
                   <div className="FAQTab__table-cell FAQTab__table-cell--topic">
-                    <Tag className="FAQTab__topic-tag">{record.topic || 'general'}</Tag>
+                    <Tag
+                      className="FAQTab__topic-tag FAQTab__topic-tag--clickable"
+                      onClick={() => {
+                        const topicWithSpaces = addSpacesToCamelCase(record.topic || 'general');
+
+                        setSelectedTopic(topicWithSpaces);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      {addSpacesToCamelCase(record.topic || 'general')}
+                    </Tag>
                   </div>
                   <div className="FAQTab__table-cell FAQTab__table-cell--actions">
                     <div className="FAQTab__actions">
@@ -326,16 +469,14 @@ const FAQTab = ({ intl }) => {
                       >
                         Edit
                       </Button>
-                      <Popconfirm
-                        title="Are you sure you want to delete this FAQ?"
-                        onConfirm={() => handleDelete(record._id || record.id)}
-                        okText="Yes"
-                        cancelText="No"
+                      <Button
+                        type="link"
+                        danger
+                        className="FAQTab__delete-button"
+                        onClick={() => handleDeleteClick(record)}
                       >
-                        <Button type="link" danger className="FAQTab__delete-button">
-                          Delete
-                        </Button>
-                      </Popconfirm>
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -421,6 +562,30 @@ const FAQTab = ({ intl }) => {
         authUserName={authUserName}
         topics={topics}
       />
+      <Modal
+        visible={deleteModalVisible}
+        onCancel={handleDeleteCancel}
+        onOk={handleDeleteConfirm}
+        okText="OK"
+        cancelText="Cancel"
+        className="FAQTab__delete-modal"
+        title={'Delete FAQ'}
+      >
+        <p>Are you sure you want to delete this FAQ?</p>
+      </Modal>
+      <Modal
+        visible={updateModalVisible}
+        onCancel={handleUpdateCancel}
+        onOk={handleUpdateConfirm}
+        okText="OK"
+        cancelText="Cancel"
+        className="FAQTab__update-modal"
+        title={'Update AI Assistant'}
+      >
+        <p>
+          Are you sure you want to update the AI Assistant? The updated information will be applied.
+        </p>
+      </Modal>
     </div>
   );
 };
