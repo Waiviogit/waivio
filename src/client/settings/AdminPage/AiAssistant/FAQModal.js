@@ -2,49 +2,105 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Select, message } from 'antd';
 import PropTypes from 'prop-types';
 import { createAssistantFaq, updateAssistantFaq } from '../../../../waivioApi/ApiClient';
+import { addSpacesToCamelCase, removeSpacesFromCamelCase } from './FAQTab';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form, topics }) => {
   const [loading, setLoading] = useState(false);
+  const [answerError, setAnswerError] = useState('');
+  const [questionError, setQuestionError] = useState('');
   const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = form;
 
   useEffect(() => {
     if (visible) {
       if (editingFaq) {
+        const topicForDisplay = addSpacesToCamelCase(editingFaq.topic || 'WaivioGeneral');
+
         setFieldsValue({
           question: editingFaq.question,
           answer: editingFaq.answer,
-          topic: editingFaq.topic || 'WaivioGeneral',
+          topic: topicForDisplay,
         });
+        if (editingFaq.answer && editingFaq.answer.length > 2000) {
+          setAnswerError(
+            'The maximum length is 2000 characters. Please make your answer more concise.',
+          );
+        } else {
+          setAnswerError('');
+        }
+        if (editingFaq.question && editingFaq.question.length > 500) {
+          setQuestionError(
+            'The maximum length is 500 characters. Please make your question more concise.',
+          );
+        } else {
+          setQuestionError('');
+        }
       } else {
         resetFields();
-        setFieldsValue({ topic: 'WaivioGeneral' });
+        setFieldsValue({ topic: addSpacesToCamelCase('WaivioGeneral') });
+        setAnswerError('');
+        setQuestionError('');
       }
     }
   }, [visible, editingFaq, resetFields, setFieldsValue]);
 
+  const handleQuestionChange = e => {
+    const value = e.target.value;
+
+    if (value.length >= 500) {
+      setQuestionError(
+        'The maximum length is 500 characters. Please make your question more concise.',
+      );
+    } else {
+      setQuestionError('');
+    }
+
+    setFieldsValue({ question: value });
+  };
+
+  const handleAnswerChange = e => {
+    const value = e.target.value;
+
+    if (value.length >= 2000) {
+      setAnswerError(
+        'The maximum length is 2000 characters. Please make your answer more concise.',
+      );
+    } else {
+      setAnswerError('');
+    }
+
+    setFieldsValue({ answer: value });
+  };
+
   const handleSubmit = () => {
     validateFields(async (err, values) => {
-      if (err) {
+      if (err || answerError || questionError) {
         return;
       }
 
       setLoading(true);
 
       try {
+        const topicWithoutSpaces = removeSpacesFromCamelCase(values.topic);
+
         if (editingFaq) {
           await updateAssistantFaq(
             authUserName,
             editingFaq._id || editingFaq.id,
             values.question,
             values.answer,
-            values.topic,
+            topicWithoutSpaces,
           );
           message.success('FAQ updated successfully');
         } else {
-          await createAssistantFaq(authUserName, values.question, values.answer, values.topic);
+          await createAssistantFaq(
+            authUserName,
+            values.question,
+            values.answer,
+            topicWithoutSpaces,
+          );
           message.success('FAQ created successfully');
         }
 
@@ -65,38 +121,55 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       onCancel={onClose}
       onOk={handleSubmit}
       confirmLoading={loading}
+      okText={editingFaq ? 'Save' : 'Add'}
       destroyOnClose
       width={600}
     >
       <Form layout="vertical">
-        <Form.Item label="Question">
+        <Form.Item
+          label="Question"
+          validateStatus={questionError ? 'error' : ''}
+          help={questionError}
+        >
           {getFieldDecorator('question', {
             rules: [{ message: 'Please enter a question' }],
-          })(<Input placeholder="Enter question" />)}
+          })(
+            <Input
+              placeholder="Enter question"
+              maxLength={500}
+              onChange={handleQuestionChange}
+              style={questionError ? { borderColor: '#ff4d4f' } : {}}
+            />,
+          )}
         </Form.Item>
-        <Form.Item label="Answer">
+        <Form.Item label="Answer" validateStatus={answerError ? 'error' : ''} help={answerError}>
           {getFieldDecorator('answer', {
-            rules: [{ message: 'Please enter an answer' }],
+            rules: [{ message: 'Please enter an answer', max: 2000 }],
           })(
             <TextArea
-              autoSize={{ minRows: 5, maxRows: 10 }}
+              autoSize={{ minRows: 10, maxRows: 30 }}
               placeholder="Enter answer"
               showCount
-              maxLength={1000}
+              maxLength={2000}
+              onChange={handleAnswerChange}
+              style={answerError ? { borderColor: '#ff4d4f' } : {}}
             />,
           )}
         </Form.Item>
         <Form.Item label="Topic">
           {getFieldDecorator('topic', {
             rules: [{ message: 'Please select a topic' }],
-            initialValue: 'WaivioGeneral',
+            initialValue: addSpacesToCamelCase('WaivioGeneral'),
           })(
             <Select placeholder="Select topic">
-              {topics?.map(topic => (
-                <Option key={topic} value={topic}>
-                  {topic}
-                </Option>
-              ))}
+              {topics.map(topic => {
+                const topicWithSpaces = addSpacesToCamelCase(topic);
+                return (
+                  <Option key={topic} value={topicWithSpaces}>
+                    {topicWithSpaces}
+                  </Option>
+                );
+              })}
             </Select>,
           )}
         </Form.Item>

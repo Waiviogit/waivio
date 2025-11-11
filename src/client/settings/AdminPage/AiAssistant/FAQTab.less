@@ -60,12 +60,42 @@
     gap: 16px;
     align-items: flex-start;
     flex-wrap: wrap;
+
+    @media only screen and (min-width: 768px) and (max-width: 1199px) {
+      flex-wrap: nowrap;
+      gap: 12px;
+    }
+
+    @media only screen and (max-width: 767px) {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
   }
 
   &__filter-group {
     display: flex;
     flex-direction: column;
     gap: 4px;
+
+    @media only screen and (max-width: 767px) {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 200px;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    &__filter-group:first-child {
+      flex: 2;
+      min-width: 0;
+    }
+
+    &__filter-group:nth-child(2) {
+      flex: 0 0 120px;
+    }
+
+    &__filter-group:nth-child(3) {
+      flex: 0 0 150px;
+    }
   }
 
   &__filter-label {
@@ -81,11 +111,11 @@
   }
 
   &__search-input {
-    width: 400px;
+    width: 100%;
     border-radius: 4px;
 
     .ant-input {
-      width: 398px;
+      width: 100%;
       border-radius: 4px;
       background-color: @white;
     }
@@ -103,22 +133,23 @@
   }
 
   &__topic-select {
-    width: 275px;
+    width: 100%;
 
     .ant-select-dropdown {
-      min-width: 275px !important;
+      min-width: 120px !important;
     }
   }
 
   &__page-size-select {
-    width: 100px;
+    width: 100%;
 
     .ant-select-dropdown {
-      min-width: 100px !important;
+      min-width: 150px !important;
     }
   }
 
   &__table {
+    border-radius: 4px;
     width: 100%;
     border: 1px solid;
     text-align: center;
@@ -219,13 +250,25 @@
   }
 
   &__answer-text {
-    color: @blue-baliHai;
     font-size: 13px;
     line-height: 1.5;
     margin-top: 4px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+  }
+
+  &__show-more-button {
+    padding: 0;
+    margin-left: 4px;
+    height: auto;
+    font-size: 13px;
+    color: var(--website-color);
+    line-height: 1.5;
+
+    &:hover {
+      color: @blue-baliHai;
+    }
   }
 
   &__topic-tag {

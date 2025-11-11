@@ -22,6 +22,31 @@ const { Option } = Select;
 
 const PAGE_SIZES = [5, 10, 20, 50];
 
+export const addSpacesToCamelCase = str => {
+  if (!str) return str;
+
+  // If string already has spaces, return as-is
+  if (str.includes(' ')) {
+    return str;
+  }
+
+  // Insert a space before each uppercase letter (except the first one)
+  return str.replace(/([a-z])([A-Z])/g, '$1 $2');
+};
+
+export const removeSpacesFromCamelCase = str => {
+  if (!str) return str;
+
+  if (!str.includes(' ')) {
+    return str;
+  }
+
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+};
+
 const FAQTab = ({ intl }) => {
   const [faqs, setFaqs] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -36,6 +61,7 @@ const FAQTab = ({ intl }) => {
   const [editingFaq, setEditingFaq] = useState(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [faqToDelete, setFaqToDelete] = useState(null);
+  const [expandedAnswers, setExpandedAnswers] = useState(new Set());
 
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
@@ -52,27 +78,6 @@ const FAQTab = ({ intl }) => {
 
   const handleSearch = value => {
     debouncedSetSearch(value);
-  };
-
-  const addSpacesToCamelCase = str => {
-    if (!str) return str;
-
-    // Return the string as is, without any modifications or capitalization
-    return str;
-  };
-  const removeSpacesFromCamelCase = str => {
-    if (!str) return str;
-
-    // If it's a single word (no spaces), return as-is without uppercasing
-    if (!str.includes(' ')) {
-      return str;
-    }
-
-    // If it has multiple words, convert to PascalCase (remove spaces and capitalize)
-    return str
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join('');
   };
 
   const loadFaqs = async () => {
@@ -357,7 +362,47 @@ const FAQTab = ({ intl }) => {
                 <div key={record._id || record.id} className="FAQTab__table-row">
                   <div className="FAQTab__table-cell FAQTab__table-cell--question">
                     <div className="FAQTab__question-text">{record.question}</div>
-                    <div className="FAQTab__answer-text">{record.answer}</div>
+                    <div className="FAQTab__answer-text">
+                      {record.answer && record.answer.length > 250 ? (
+                        <>
+                          {expandedAnswers.has(record._id || record.id) ? (
+                            <>
+                              {record.answer}
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedAnswers);
+
+                                  newExpanded.delete(record._id || record.id);
+                                  setExpandedAnswers(newExpanded);
+                                }}
+                                className="FAQTab__show-more-button"
+                              >
+                                Show less
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              {record.answer.substring(0, 250)}...
+                              <Button
+                                type="link"
+                                onClick={() => {
+                                  const newExpanded = new Set(expandedAnswers);
+
+                                  newExpanded.add(record._id || record.id);
+                                  setExpandedAnswers(newExpanded);
+                                }}
+                                className="FAQTab__show-more-button"
+                              >
+                                Show more
+                              </Button>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        record.answer
+                      )}
+                    </div>
                   </div>
                   <div className="FAQTab__table-cell FAQTab__table-cell--topic">
                     <Tag
