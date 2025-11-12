@@ -87,7 +87,7 @@ export const adminSettings = {
     {
       to: '/ai-assistant',
       id: 'ai_assistant',
-      defaultMessage: 'AI assistant',
+      defaultMessage: 'AI assistant (BETA)',
       paths: ['/ai-assistant'],
     },
   ],
