@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { debounce, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Input, Select, Tag, message, Modal } from 'antd';
+import { Button, Select, Tag, message, Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -54,7 +54,7 @@ const FAQTab = ({ intl }) => {
   const [faqs, setFaqs] = useState([]);
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(null);
+  const [search] = useState(null);
   const [selectedTopic, setSelectedTopic] = useState('All topics');
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,18 +72,18 @@ const FAQTab = ({ intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const containerRef = useRef(null);
 
-  const debouncedSetSearch = useMemo(
-    () =>
-      debounce(value => {
-        setSearch(value);
-        setCurrentPage(1);
-      }, 500),
-    [],
-  );
-
-  const handleSearch = value => {
-    debouncedSetSearch(value);
-  };
+  // const debouncedSetSearch = useMemo(
+  //   () =>
+  //     debounce(value => {
+  //       setSearch(value);
+  //       setCurrentPage(1);
+  //     }, 500),
+  //   [],
+  // );
+  //
+  // const handleSearch = value => {
+  //   debouncedSetSearch(value);
+  // };
 
   const loadFaqs = async () => {
     if (!isAuth || !authUserName) return;
@@ -309,7 +309,6 @@ const FAQTab = ({ intl }) => {
             + Add Q&A
           </Button>
           <Button
-            type={'primary'}
             onClick={handleUpdateClick}
             className="FAQTab__update-button"
             disabled={updateButtonDisabled}
@@ -318,69 +317,71 @@ const FAQTab = ({ intl }) => {
           </Button>
         </div>
 
-        <div className="FAQTab__filters">
-          <div className="FAQTab__filter-group">
-            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-            <label className="FAQTab__filter-label">Search</label>
-            <Input
-              placeholder="Search question or answer..."
-              allowClear
-              onChange={e => handleSearch(e.target.value)}
-              className="FAQTab__search-input"
-            />
-          </div>
+        {!loading && (
+          <div className="FAQTab__filters">
+            {/* <div className="FAQTab__filter-group"> */}
+            {/*   /!* eslint-disable-next-line jsx-a11y/label-has-for *!/ */}
+            {/*   <label className="FAQTab__filter-label">Search</label> */}
+            {/*   <Input */}
+            {/*     placeholder="Search question or answer..." */}
+            {/*     allowClear */}
+            {/*     onChange={e => handleSearch(e.target.value)} */}
+            {/*     className="FAQTab__search-input" */}
+            {/*   /> */}
+            {/* </div> */}
 
-          <div className="FAQTab__filter-group">
-            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-            <label className="FAQTab__filter-label">Topic</label>
-            <Select
-              value={selectedTopic}
-              onChange={value => {
-                setSelectedTopic(value);
-                setCurrentPage(1);
-              }}
-              className="FAQTab__select FAQTab__topic-select"
-              getPopupContainer={() => containerRef.current || document.body}
-              dropdownMatchSelectWidth={false}
-            >
-              {filteredTopics?.map(topic => (
-                <Option key={topic} value={topic}>
-                  {topic}
-                </Option>
-              ))}
-            </Select>
-          </div>
+            <div className="FAQTab__filter-group">
+              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+              <label className="FAQTab__filter-label">Topic</label>
+              <Select
+                value={selectedTopic}
+                onChange={value => {
+                  setSelectedTopic(value);
+                  setCurrentPage(1);
+                }}
+                className="FAQTab__select FAQTab__topic-select"
+                getPopupContainer={() => containerRef.current || document.body}
+                dropdownMatchSelectWidth={false}
+              >
+                {filteredTopics?.map(topic => (
+                  <Option key={topic} value={topic}>
+                    {topic}
+                  </Option>
+                ))}
+              </Select>
+            </div>
 
-          <div className="FAQTab__filter-group">
-            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-            <label className="FAQTab__filter-label">Page size</label>
-            <Select
-              value={pageSize}
-              onChange={value => {
-                setPageSize(value);
-                setCurrentPage(1);
-                if (containerRef.current) {
-                  const scrollTop = containerRef.current.scrollTop;
+            <div className="FAQTab__filter-group">
+              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+              <label className="FAQTab__filter-label">Page size</label>
+              <Select
+                value={pageSize}
+                onChange={value => {
+                  setPageSize(value);
+                  setCurrentPage(1);
+                  if (containerRef.current) {
+                    const scrollTop = containerRef.current.scrollTop;
 
-                  requestAnimationFrame(() => {
-                    if (containerRef.current) {
-                      containerRef.current.scrollTop = scrollTop;
-                    }
-                  });
-                }
-              }}
-              className="FAQTab__select FAQTab__page-size-select"
-              getPopupContainer={() => containerRef.current || document.body}
-              dropdownMatchSelectWidth={false}
-            >
-              {PAGE_SIZES.map(size => (
-                <Option key={size} value={size}>
-                  {size}
-                </Option>
-              ))}
-            </Select>
+                    requestAnimationFrame(() => {
+                      if (containerRef.current) {
+                        containerRef.current.scrollTop = scrollTop;
+                      }
+                    });
+                  }
+                }}
+                className="FAQTab__select FAQTab__page-size-select"
+                getPopupContainer={() => containerRef.current || document.body}
+                dropdownMatchSelectWidth={false}
+              >
+                {PAGE_SIZES.map(size => (
+                  <Option key={size} value={size}>
+                    {size}
+                  </Option>
+                ))}
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* eslint-disable-next-line no-nested-ternary */}
       {loading ? (
@@ -577,13 +578,14 @@ const FAQTab = ({ intl }) => {
         visible={updateModalVisible}
         onCancel={handleUpdateCancel}
         onOk={handleUpdateConfirm}
-        okText="OK"
+        okText="Update"
         cancelText="Cancel"
         className="FAQTab__update-modal"
         title={'Update AI Assistant'}
       >
-        <p>
-          Are you sure you want to update the AI Assistant? The updated information will be applied.
+        <p className={'tc'}>
+          <p>Are you sure you want to update the AI Assistant?</p>
+          <p>The updated information will be applied.</p>
         </p>
       </Modal>
     </div>
