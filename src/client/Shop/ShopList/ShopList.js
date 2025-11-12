@@ -152,6 +152,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
           <div
             className={classNames('ShopList__departments', {
               'ShopList__departments--isSocial': isSocial,
+              'ShopList__departments--hasQuery': hasActiveTags,
             })}
           >
             {departments?.map((dep, index) => {
