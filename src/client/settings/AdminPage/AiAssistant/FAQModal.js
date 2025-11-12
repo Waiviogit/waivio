@@ -124,6 +124,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       okText={editingFaq ? 'Save' : 'Add'}
       destroyOnClose
       width={600}
+      okButtonProps={{ disabled: answerError || questionError }}
     >
       <Form layout="vertical">
         <Form.Item
