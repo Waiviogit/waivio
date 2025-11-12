@@ -2,10 +2,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inPreview }) => {
+const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000 }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
+  // -------- helpers -------------------------------------------------
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
       .trim()
@@ -48,6 +49,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
     return s;
   };
 
+  // важливо: НЕ ламаємо sticky/fixed та фон. Лише чистимо потенційно небезпечне + патчимо vh.
   const sanitizeCss = (css = '') =>
     css
       .replace(/expression\s*\(/gi, '')
@@ -56,10 +58,9 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
       .replace(/url\(\s*(['"])?\s*javascript:.*?\)/gi, 'url(about:blank)')
       .replace(/@charset\s+["'][^"']*["'];?/gi, '')
       .replace(/@namespace[\s\S]*?;?/gi, '')
-      .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`)
-      .replace(/\bbackground-attachment\s*:\s*fixed\b/gi, 'background-attachment: scroll')
       .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`);
 
+  // ------ sanitize-html config -------------------------------------
   const sanitizeConfig = useMemo(() => {
     const cfg = {
       allowedTags: [
@@ -124,6 +125,8 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
         'a',
         'script',
         'button',
+        'iframe',
+        // SVGs
         'svg',
         'g',
         'path',
@@ -171,7 +174,37 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
         );
       },
       allowedAttributes: {
-        '*': ['class', 'id', 'title', 'role', 'data-*', 'aria-*', 'style'],
+        '*': [
+          'class',
+          'id',
+          'title',
+          'role',
+          'data-*',
+          'aria-*',
+          'style',
+          // дозволяємо on* бо валідацію вже зробили
+          'onclick',
+          'ondblclick',
+          'onmousedown',
+          'onmouseup',
+          'onmouseover',
+          'onmousemove',
+          'onmouseout',
+          'onkeydown',
+          'onkeyup',
+          'onkeypress',
+          'onfocus',
+          'onblur',
+          'onchange',
+          'onsubmit',
+          'onreset',
+          'onselect',
+          'onload',
+          'onunload',
+          'ontouchstart',
+          'ontouchend',
+          'ontouchmove',
+        ],
         a: ['href', 'name', 'target', 'rel', 'title', 'download'],
         img: [
           'src',
@@ -184,8 +217,41 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
           'decoding',
           'referrerpolicy',
         ],
-        button: ['onclick'],
         source: ['src', 'srcset', 'type', 'media', 'sizes'],
+        video: [
+          'src',
+          'controls',
+          'autoplay',
+          'loop',
+          'muted',
+          'playsinline',
+          'poster',
+          'width',
+          'height',
+        ],
+        audio: ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'],
+        iframe: [
+          'src',
+          'srcdoc',
+          'width',
+          'height',
+          'allow',
+          'allowfullscreen',
+          'loading',
+          'referrerpolicy',
+        ],
+        link: [
+          'rel',
+          'href',
+          'media',
+          'as',
+          'type',
+          'crossorigin',
+          'referrerpolicy',
+          'integrity',
+          'disabled',
+          'title',
+        ],
         svg: [
           'viewbox',
           'width',
@@ -265,31 +331,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
           'patterncontentunits',
         ],
         mask: ['id', 'x', 'y', 'width', 'height', 'maskunits'],
-        video: [
-          'src',
-          'controls',
-          'autoplay',
-          'loop',
-          'muted',
-          'playsinline',
-          'poster',
-          'width',
-          'height',
-        ],
-        audio: ['src', 'controls', 'autoplay', 'loop', 'muted', 'preload'],
         table: ['border', 'cellpadding', 'cellspacing', 'width', 'align'],
-        link: [
-          'rel',
-          'href',
-          'media',
-          'as',
-          'type',
-          'crossorigin',
-          'referrerpolicy',
-          'integrity',
-          'disabled',
-          'title',
-        ],
         filter: ['id', 'x', 'y', 'width', 'height', 'filterunits', 'primitiveunits'],
         fegaussianblur: ['in', 'stddeviation', 'result'],
         feoffset: ['in', 'dx', 'dy', 'result'],
@@ -303,6 +345,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
         audio: ['http', 'https'],
         source: ['http', 'https', 'data', 'blob'],
         link: ['http', 'https'],
+        iframe: ['http', 'https', 'data', 'blob'],
       },
       allowProtocolRelative: false,
       transformTags: {
@@ -313,7 +356,12 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
         link: (tagName, attribs) => {
           const rel = (attribs.rel || '').toLowerCase();
 
-          if (rel === 'stylesheet' && attribs.href) return { tagName: 'link', attribs };
+          if (
+            (rel === 'stylesheet' || rel === 'preconnect' || rel === 'dns-prefetch') &&
+            attribs.href
+          ) {
+            return { tagName: 'link', attribs };
+          }
 
           return { tagName: 'noscript', attribs: {} };
         },
@@ -330,38 +378,16 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
       },
     };
 
-    if (!inPreview) {
-      const star = cfg.allowedAttributes['*'] || [];
-      const eventHandlers = [
-        'onclick',
-        'ondblclick',
-        'onmousedown',
-        'onmouseup',
-        'onmouseover',
-        'onmousemove',
-        'onmouseout',
-        'onkeydown',
-        'onkeyup',
-        'onkeypress',
-        'onfocus',
-        'onblur',
-        'onchange',
-        'onsubmit',
-        'onreset',
-        'onselect',
-        'onload',
-        'onunload',
-        'ontouchstart',
-        'ontouchend',
-        'ontouchmove',
-      ];
-
-      cfg.allowedAttributes['*'] = [...star, ...eventHandlers];
-    }
-
     return cfg;
-  }, [inPreview]);
+  }, []);
 
+  // Виявляємо VH
+  const hasVh = useMemo(() => /\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi.test(html || ''), [html]);
+
+  // Авто-висота працює лише якщо НЕМає vh (інакше даємо внутрішній скрол)
+  const effectiveAutoSize = useMemo(() => autoSize && !hasVh, [autoSize, hasVh]);
+
+  // --------- HTML під iframe ---------------------------------------
   const processedHtml = useMemo(() => {
     let raw = stripPreCodeWrapper(html || '');
 
@@ -405,40 +431,33 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
       .replace(/<base[^>]*>/gi, '')
       .replace(/<\/?(html|body)\b[^>]*>/gi, '');
 
+    // ВАЖЛИВО: дозволяємо скрипти/фрейми у CSP (бо є власна валідація)
     const headContent = `
       <meta charset="utf-8">
       <meta http-equiv="Content-Security-Policy" content="
-        default-src 'none';
+        default-src 'self' data: blob: https:;
         img-src * data: blob:;
         media-src *;
         font-src *;
         style-src * 'unsafe-inline';
+        script-src 'unsafe-inline' https: data: blob:;
         connect-src *;
-        frame-ancestors 'none';
+        frame-src *;
+        child-src *;
+        object-src 'none';
+        base-uri 'none';
         form-action 'none';
-        ${inPreview ? "script-src 'none';" : "script-src 'unsafe-inline';"}
       ">
       <style>
-        :root {
-          color-scheme: light dark;
-          --hs-vh: 1vh;
-        }
-        html, body {
-          background-attachment: scroll !important;
-          height: auto !important;
-          min-height: 0 !important;
-          margin: 0;
-          box-sizing: border-box;
-          background: transparent;
-          ${autoSize ? 'overflow-y: hidden;' : 'overflow-y: auto;'}
-          overflow-x: hidden;
-        }
+        :root { color-scheme: light dark; --hs-vh: 1vh; }
+        html, body { margin: 0; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
+        /* якщо autoSize увімкнено — ховаємо внутр. вертикальний скрол, інакше дозволяємо */
+        html { ${effectiveAutoSize ? 'overflow-y:hidden;' : 'overflow-y:auto;'} overflow-x:hidden; }
         img, video, svg, canvas, iframe { max-width: 100%; height: auto; }
         table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
         pre, code { white-space: pre-wrap; word-break: break-word; }
-        nav { position: sticky !important; top: 0; }
       </style>
       ${links.join('\n')}
       ${styles.map(cssText => `<style>${cssText}</style>`).join('\n')}
@@ -446,18 +465,34 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000, inP
 
     return `<!doctype html>
 <html>
-<head>
-${headContent}
-</head>
+<head>${headContent}</head>
 <body>
 ${bodyHtml}
 <div id="__hs-end" style="height:0; clear:both;"></div>
 </body>
 </html>`;
-  }, [html, sanitizeConfig, autoSize, inPreview]);
+  }, [html, sanitizeConfig, effectiveAutoSize]);
+
+  // --------- sizing -------------------------------------------------
+  const updateVhVar = () => {
+    try {
+      const iframe = iframeRef.current;
+
+      if (!iframe) return;
+      const doc = iframe.contentDocument || iframe.contentWindow?.document;
+      const h = Math.max(
+        1,
+        Math.round((iframe.clientHeight || iframe.getBoundingClientRect().height || 0) / 100),
+      );
+
+      if (doc?.documentElement) doc.documentElement.style.setProperty('--hs-vh', `${h}px`);
+    } catch (e) {
+      /* noop */
+    }
+  };
 
   const fit = () => {
-    if (!autoSize || !iframeRef.current) return;
+    if (!effectiveAutoSize || !iframeRef.current) return;
     try {
       const iframe = iframeRef.current;
       const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -470,15 +505,11 @@ ${bodyHtml}
 
       const padB = parseFloat(doc.defaultView.getComputedStyle(body).paddingBottom || '0') || 0;
 
-      // старий спосіб
       const endBottomByOffset = (end?.offsetTop || 0) + (end?.offsetHeight || 0) + padB;
 
-      // нові, більш стабільні метрики
       const rectEnd = end?.getBoundingClientRect?.();
       const rectBody = body?.getBoundingClientRect?.();
       const rectDoc = d?.getBoundingClientRect?.();
-
-      // getBoundingClientRect дає координати у viewport; додаємо clientTop/scrollTop як підстраховку
       const bottomByRect = Math.max(
         rectEnd ? rectEnd.bottom : 0,
         rectBody ? rectBody.bottom : 0,
@@ -491,76 +522,94 @@ ${bodyHtml}
         d?.clientHeight || 0,
       );
 
-      // беремо найбільше з трьох варіантів
       const tight = Math.max(endBottomByOffset, bottomByRect, fallback, 0);
 
       if (tight > 0) {
-        iframe.style.height = `${Math.min(tight, maxHeight)}px`;
+        const newH = Math.min(tight, maxHeight);
+
+        iframe.style.height = `${newH}px`;
+        updateVhVar();
       }
     } catch (e) {
-      console.error(e);
+      /* noop */
     }
   };
 
+  // стартова висота:
+  // - якщо effectiveAutoSize=true → clamp по viewport, напр. 300..900
+  // - якщо false (є vh) → даємо адекватне вікно зі скролом, напр. 600..1000, а не maxHeight
   const initialStartHeight = useMemo(() => {
-    const viewport = typeof window !== 'undefined' ? window.innerHeight : 0;
-    const clamped = Math.max(700, Math.min(viewport || 0, 1100));
+    const vp = typeof window !== 'undefined' ? window.innerHeight : 0;
+
+    if (effectiveAutoSize) {
+      const clamped = Math.max(300, Math.min(vp || 0, 900));
+
+      return Math.min(maxHeight || 100000, clamped);
+    }
+    // режим зі скролом
+    const clamped = Math.max(600, Math.min(vp || 0, 1000)) || 800;
 
     return Math.min(maxHeight || 100000, clamped);
-  }, [maxHeight]);
+  }, [effectiveAutoSize, maxHeight]);
 
+  // --------- lifecycle ---------------------------------------------
   useEffect(() => {
     const iframe = iframeRef.current;
 
     if (!iframe) return;
+
     const handleLoad = () => {
       setInteractive(false);
       iframe.style.height = `${initialStartHeight}px`;
-      const setVh = () => {
-        const oneVh =
-          typeof window !== 'undefined' && window.innerHeight ? window.innerHeight / 100 : 0;
+      updateVhVar();
 
-        try {
-          const doc = iframe.contentDocument || iframe.contentWindow?.document;
-
-          if (oneVh && doc?.documentElement) {
-            doc.documentElement.style.setProperty('--hs-vh', `${oneVh}px`);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-        fit();
-      };
-
-      setVh();
-      window.addEventListener('resize', setVh);
-      window.addEventListener('orientationchange', setVh);
-      iframe.__setVh = setVh;
-      requestAnimationFrame(() => fit());
-      setTimeout(fit, 50);
-      setTimeout(fit, 250);
-      setTimeout(() => {
-        fit();
+      // підлаштовуємося під вміст
+      if (effectiveAutoSize) {
+        requestAnimationFrame(() => fit());
+        setTimeout(fit, 50);
+        setTimeout(fit, 250);
+        setTimeout(() => {
+          fit();
+          setInteractive(true);
+        }, 1000);
+      } else {
         setInteractive(true);
-      }, 1000);
+      }
 
       try {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
 
+        // ресайз при завантаженні картинок/шрифтів
         [...(doc?.images || [])].forEach(img => {
-          if (!img.complete) img.addEventListener('load', fit, { once: true });
+          if (!img.complete)
+            img.addEventListener(
+              'load',
+              () => {
+                fit();
+                updateVhVar();
+              },
+              { once: true },
+            );
         });
         doc?.fonts?.ready?.then?.(() =>
           setTimeout(() => {
             fit();
-            setInteractive(true);
+            updateVhVar();
           }, 0),
         );
-        const mo = new MutationObserver(() => fit());
+
+        const mo = new MutationObserver(() => {
+          fit();
+          updateVhVar();
+        });
 
         mo.observe(doc?.body || doc, { childList: true, subtree: true });
         iframe.__mo = mo;
-        const ro = new ResizeObserver(() => fit());
+
+        const ro = new ResizeObserver(() => {
+          fit();
+          updateVhVar();
+        });
 
         if (doc?.body) ro.observe(doc.body);
         if (doc?.documentElement) ro.observe(doc.documentElement);
@@ -570,11 +619,20 @@ ${bodyHtml}
       }
     };
 
+    const onOuterResize = () => {
+      fit();
+      updateVhVar();
+    };
+
     iframe.addEventListener('load', handleLoad);
+    window.addEventListener('resize', onOuterResize);
+    window.addEventListener('orientationchange', onOuterResize);
 
     // eslint-disable-next-line consistent-return
     return () => {
       iframe.removeEventListener('load', handleLoad);
+      window.removeEventListener('resize', onOuterResize);
+      window.removeEventListener('orientationchange', onOuterResize);
       try {
         iframe.__mo?.disconnect?.();
       } catch (e) {
@@ -594,11 +652,11 @@ ${bodyHtml}
         console.error(e);
       }
     };
-  }, [autoSize, maxHeight, initialStartHeight]);
+  }, [effectiveAutoSize, maxHeight, initialStartHeight]);
 
-  const sandboxValue = inPreview
-    ? 'allow-popups allow-popups-to-escape-sandbox allow-same-origin'
-    : 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin';
+  // Скрипти дозвлені завжди (валидація вже зроблена)
+  const sandboxValue =
+    'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin';
 
   return (
     <iframe
@@ -607,11 +665,11 @@ ${bodyHtml}
       sandbox={sandboxValue}
       referrerPolicy="no-referrer"
       className={className}
-      scrolling={autoSize ? 'no' : 'auto'}
+      scrolling={effectiveAutoSize ? 'no' : 'auto'}
       style={{
         display: 'block',
         width: '100%',
-        height: autoSize ? `${initialStartHeight}px` : `${maxHeight}px`,
+        height: `${initialStartHeight}px`,
         border: 'none',
         verticalAlign: 'top',
         pointerEvents: interactive ? 'auto' : 'none',
@@ -625,7 +683,6 @@ HtmlSandbox.propTypes = {
   html: PropTypes.string.isRequired,
   className: PropTypes.string,
   autoSize: PropTypes.bool,
-  inPreview: PropTypes.bool,
   maxHeight: PropTypes.number,
 };
 

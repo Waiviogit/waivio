@@ -329,7 +329,6 @@ export default ({
       return { tagName: 'div', text: `(Unsupported ${srcAtty})` };
     },
     img: (tagName, attribs) => {
-      console.log(attribs);
       if (noImage) return { tagName: 'div', text: noImageText };
       // See https://github.com/punkave/sanitize-html/issues/117
       let { src, alt, 'data-linked-url': linkedUrl, 'data-fallback-src': fallbackSrc } = attribs;

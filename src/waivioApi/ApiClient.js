@@ -6,7 +6,7 @@ import { message } from 'antd';
 import store from 'store';
 import { campaignTypes } from '../client/rewards/rewardsHelper';
 
-import config from './routes';
+import config, { baseUrl } from './routes';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
@@ -5724,5 +5724,80 @@ export const getJudgesPostLinks = (
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
+
+export const createAssistantFaq = (currentUser, question, answer, topic) =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}`, {
+    headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
+    body: JSON.stringify({ question, answer, topic }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+
+export const updateAssistantFaq = currentUser =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.migrateToWeaviate}`, {
+    headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
+    body: '',
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+
+export const patchAssistantFaq = (currentUser, id, question, answer, topic) =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}/${id}`, {
+    headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
+    body: JSON.stringify({ question, answer, topic }),
+    method: 'PATCH',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+export const deleteAssistantFaq = (currentUser, id) =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}/${id}`, {
+    headers: { ...headers, ...getAuthHeaders(), 'Current-User': currentUser },
+
+    method: 'DELETE',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .catch(e => e);
+
+export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 100) => {
+  const query = createQuery({ topic, skip, limit });
+  return fetch(`${config.baseUrl}${config.assistant}${config.qna}?${query}`, {
+    headers: {
+      ...headers,
+      'Current-User': currentUser,
+      ...getAuthHeaders(),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+};
+export const getAssistantFaqTopics = currentUser =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.topics}`, {
+    headers: {
+      ...headers,
+      'Current-User': currentUser,
+      ...getAuthHeaders(),
+    },
+
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
 
 export default null;

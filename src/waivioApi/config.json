@@ -291,5 +291,8 @@
   "safeLinks": "/safe-links",
   "judge": "/judge",
   "judgePosts": "/judge-posts",
-  "links": "/links"
+  "links": "/links",
+  "qna": "/qna",
+  "topics": "/topics",
+  "migrateToWeaviate": "/migrate-to-weaviate"
 }

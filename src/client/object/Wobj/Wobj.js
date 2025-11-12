@@ -176,7 +176,35 @@ const Wobj = ({
       case 'widget':
         return <WidgetContent wobj={wobject} />;
       case 'html': {
-        return <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />;
+        // eslint-disable-next-line no-console
+        console.log(getObjectAvatar(wobject));
+
+        return (
+          <React.Fragment>
+            <Helmet>
+              <title>{title}</title>
+              <meta property="og:title" content={title} />
+              <link rel="canonical" href={canonical} />
+              <meta name="description" content={desc} />
+              <meta name="twitter:card" content={'summary_large_image'} />
+              <meta name="twitter:site" content={`@${siteName}`} />
+              <meta name="twitter:title" content={title} />
+              <meta name="twitter:description" content={desc} />
+              <meta name="twitter:image" content={image} />
+              <meta property="og:title" content={title} />
+              <meta property="og:type" content="article" />
+              <meta property="og:url" content={canonical} />
+              <meta property="og:image" content={image} />
+              <meta property="og:image:width" content="600" />
+              <meta property="og:image:height" content="600" />
+              <meta property="og:description" content={desc} />
+              <meta property="og:site_name" content={siteName} />
+              <link rel="image_src" href={image} />
+              <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
+            </Helmet>
+            <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />
+          </React.Fragment>
+        );
       }
       case 'page':
       case 'list':

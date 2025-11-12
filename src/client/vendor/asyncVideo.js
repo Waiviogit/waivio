@@ -12,7 +12,7 @@ const AsyncVideo = ({ url }) => {
       <iframe
         title="Odysee video"
         className="video-iframe"
-        style={{ width: '100%', aspectRatio: '16 / 9', marginBottom: '5px' }}
+        style={{ aspectRatio: '16 / 9', marginBottom: '5px' }}
         src={src}
         frameBorder="0"
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen"

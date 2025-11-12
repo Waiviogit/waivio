@@ -80,6 +80,7 @@ const UserFirstPageSwitcher = ({ type, intl }) => {
                 visible={visibleFilter}
                 type={shopSettings?.type}
                 user={shopSettings?.value}
+                isRecipePage
               />
               <UserShoppingList isRecipePage name={shopSettings?.value} isSocial />
             </div>

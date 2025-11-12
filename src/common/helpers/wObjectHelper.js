@@ -491,7 +491,7 @@ export const showDescriptionPage = async (wobject, locale) => {
   ]);
 
   return (
-    !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
+    !['list', 'page', 'widget', 'newsfeed', 'html'].includes(wobject.object_type) &&
     has(wobject, 'description') &&
     !hasPosts &&
     !hasPinnedPosts &&

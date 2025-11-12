@@ -1,0 +1,418 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.FAQTab {
+  position: relative;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+
+  p {
+    color: @blue-botticelli;
+  }
+  &__header {
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media @small {
+      color: @black-text;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__description {
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  &__controls {
+    margin-bottom: 24px;
+  }
+
+  &__button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__add-button {
+    background-color: var(--website-color);
+    border-color: var(--website-color);
+    color: @white;
+    border-radius: 20px;
+    font-weight: 500;
+    height: auto;
+    padding: 8px 16px;
+    border: none;
+    font-size: 14px;
+
+    &:hover,
+    &:focus {
+      background-color: var(--website-color);
+      border-color: var(--website-color);
+      color: @white;
+    }
+  }
+
+  &__update-button {
+    background-color: @white;
+    border: 1px solid var(--website-color);
+    color: var(--website-color);
+    border-radius: 20px;
+    font-weight: 500;
+    height: auto;
+    padding: 8px 16px;
+
+    font-size: 14px;
+
+    &:hover,
+    &:focus {
+      border-color: var(--website-color);
+      color: @white;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    @media only screen and (min-width: 768px) and (max-width: 1199px) {
+      flex-wrap: nowrap;
+      gap: 12px;
+    }
+
+    @media only screen and (max-width: 767px) {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+
+  &__filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    @media only screen and (max-width: 767px) {
+      flex: 1 1 calc(50% - 6px);
+      min-width: 200px;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    &__filter-group:first-child {
+      flex: 2;
+      min-width: 0;
+    }
+
+    &__filter-group:nth-child(2) {
+      flex: 0 0 225px;
+    }
+
+    &__filter-group:nth-child(3) {
+      flex: 0 0 65px;
+    }
+  }
+
+  &__filter-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    @media @small {
+      color: @black-text;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__search-input {
+    width: 100%;
+    border-radius: 4px;
+
+    .ant-input {
+      width: 100%;
+      border-radius: 4px;
+      background-color: @white;
+    }
+  }
+
+  &__select {
+    border-radius: 4px;
+    background-color: @white;
+
+    .ant-select-selector {
+      border-radius: 4px;
+      border: 1px solid @white;
+      background-color: @white;
+    }
+  }
+
+  &__topic-select {
+    width: 100%;
+
+    .ant-select-dropdown {
+      min-width: 120px !important;
+    }
+  }
+
+  &__page-size-select {
+    width: 100%;
+
+    .ant-select-dropdown {
+      min-width: 150px !important;
+    }
+  }
+
+  &__table {
+    border-radius: 4px;
+    width: 100%;
+    border: 1px solid #d9d9d9;
+    text-align: center;
+    font-size: 13px;
+    transition: opacity 0.15s ease;
+
+    @media @small {
+      font-size: 16px;
+    }
+  }
+
+  &__table-header {
+    display: flex;
+    border-bottom: 1px solid #d9d9d9;
+  }
+
+  &__table-header-cell {
+    font-weight: 500;
+    color: @black-text;
+    padding: 8px 12px;
+    border-right: 1px solid #d9d9d9;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.FAQTab__table-cell--question {
+      flex: 2;
+    }
+
+    &.FAQTab__table-cell--topic {
+      flex: 0 0 150px;
+    }
+
+    &.FAQTab__table-cell--actions {
+      flex: 0 0 150px;
+      border-right: none;
+    }
+  }
+
+  &__table-body {
+    display: flex;
+    flex-direction: column;
+    transition: min-height 0.2s ease;
+  }
+
+  &__table-row {
+    display: flex;
+    border-bottom: 1px solid #d9d9d9;
+    min-width: 0;
+    width: 100%;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__table-cell {
+    padding: 8px 12px;
+    border-right: 1px solid #d9d9d9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    min-width: 0;
+
+    &.FAQTab__table-cell--question {
+      flex: 2;
+      text-align: left;
+    }
+
+    &.FAQTab__table-cell--topic {
+      flex: 0 0 150px;
+      text-align: center;
+      align-items: center;
+    }
+
+    &.FAQTab__table-cell--actions {
+      flex: 0 0 150px;
+      border-right: none;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+  }
+
+  &__question-text {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: @outer-space;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  &__answer-text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  &__show-more-button {
+    padding: 0;
+    margin-left: 4px;
+    height: auto;
+    font-size: 13px;
+    color: var(--website-color);
+    line-height: 1.5;
+
+    &:hover {
+      color: @blue-baliHai;
+    }
+  }
+
+  &__topic-tag {
+    border-radius: 12px;
+    padding: 2px 4px;
+    background-color: @white;
+    color: @outer-space;
+    border: 1px solid #d9d9d9;
+    font-size: 12px;
+    margin: 0;
+
+    &--clickable {
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--website-color);
+        color: @white;
+        border-color: var(--website-color);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__edit-button {
+    padding: 2px 4px;
+    color: var(--website-color);
+    font-size: 14px;
+    height: auto;
+    line-height: 1.5;
+    border: none !important;
+    box-shadow: none !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: @blue-baliHai;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  &__delete-button {
+    padding: 2px 4px;
+    color: @red;
+    font-size: 14px;
+    height: auto;
+    line-height: 1.5;
+    border: none !important;
+    box-shadow: none !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border: none !important;
+      box-shadow: none !important;
+      color: @red;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 16px;
+    padding: 12px 0;
+    width: 100%;
+  }
+
+  &__pagination-info {
+    color: @blue-baliHai;
+    font-size: 14px;
+  }
+
+  &__pagination-controls {
+    display: flex;
+
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  &__pagination-link {
+    font-size: 14px;
+    text-decoration: none;
+    color: @outer-space;
+
+    &--disabled {
+      color: @silver;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &--active {
+      color: @outer-space;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__pagination-page {
+    margin: 0 8px;
+    font-weight: 600;
+    color: @outer-space;
+    font-size: 14px;
+  }
+
+  .ant-empty {
+    margin: 20px 0;
+  }
+}

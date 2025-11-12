@@ -95,7 +95,9 @@ const NewDiscover = () => {
       ];
     }
 
-    dispatch(getObjectsTypeByTypesNameMore(type, filter, 0, wobjects_count, filter.tagCategory));
+    const skip = objects?.length || 0;
+
+    dispatch(getObjectsTypeByTypesNameMore(type, filter, wobjects_count, skip, filter.tagCategory));
   };
 
   const handleDeleteTag = () => {
