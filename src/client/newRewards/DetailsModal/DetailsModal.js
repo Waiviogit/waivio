@@ -26,9 +26,9 @@ import {
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
 
 import './Details.less';
-import { getObjectUrl } from '../../../common/helpers/postHelpers';
 
 const DetailsModal = ({
   proposition,
@@ -85,7 +85,7 @@ const DetailsModal = ({
         });
       }
     } else {
-      setRequiredObject(proposition.requiredObject);
+      setRequiredObject(proposition.requiredObject || proposition.object);
     }
 
     if (!proposition?.reserved && !isJudges) {
