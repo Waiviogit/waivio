@@ -26,9 +26,9 @@ import {
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
 
 import './Details.less';
-import { getObjectUrl } from '../../../common/helpers/postHelpers';
 
 const DetailsModal = ({
   proposition,
@@ -65,10 +65,10 @@ const DetailsModal = ({
   const userName = useSelector(getAuthenticatedUserName);
   const disable = Object.values(requirements).some(requirement => !requirement);
   const objects = isArray(proposition?.objects) ? proposition?.objects[0] : proposition?.objects;
-  const withoutSecondary = requiredObject.author_permlink
-    ? requiredObject.author_permlink === proposition?.object?.author_permlink ||
-      requiredObject.author_permlink === object?.author_permlink
-    : requiredObject.name === objects?.replace('@', '');
+  const withoutSecondary = requiredObject?.author_permlink
+    ? requiredObject?.author_permlink === proposition?.object?.author_permlink ||
+      requiredObject?.author_permlink === object?.author_permlink
+    : requiredObject?.name === objects?.replace('@', '');
 
   useEffect(() => {
     if (!has(proposition, 'object')) {
@@ -76,7 +76,7 @@ const DetailsModal = ({
     }
     if (stringRequiredObj) {
       if (proposition?.requiredObject?.includes('@')) {
-        getUserAccount(proposition?.requiredObject.replace('@', '')).then(res => {
+        getUserAccount(proposition?.requiredObject?.replace('@', '')).then(res => {
           setRequiredObject(res);
         });
       } else {
@@ -85,7 +85,7 @@ const DetailsModal = ({
         });
       }
     } else {
-      setRequiredObject(proposition.requiredObject);
+      setRequiredObject(proposition.requiredObject || proposition.object);
     }
 
     if (!proposition?.reserved && !isJudges) {
@@ -117,7 +117,7 @@ const DetailsModal = ({
 
     let search = requiredObject?.author_permlink
       ? `?object=[${getObjectName(requiredObject).replace('&', '*amp*')}](${
-          requiredObject.object_type === 'link'
+          requiredObject?.object_type === 'link'
             ? requiredObject?.url.replace('*', '')
             : getObjectUrl(requiredObject?.author_permlink)
         })`
