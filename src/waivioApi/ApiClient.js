@@ -5800,4 +5800,22 @@ export const getAssistantFaqTopics = currentUser =>
       return error;
     });
 
+export const searchAssistantFaq = (currentUser, search) =>
+  fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.search}?search=${search}`, {
+    headers: {
+      ...headers,
+      'Current-User': currentUser,
+      ...getAuthHeaders(),
+    },
+
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+
 export default null;

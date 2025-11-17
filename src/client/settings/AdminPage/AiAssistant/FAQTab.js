@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { Button, Select, Tag, message, Modal } from 'antd';
+import { Button, Select, Tag, message, Modal, Input } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import {
   getAssistantFaqTopics,
   deleteAssistantFaq,
   updateAssistantFaq,
+  searchAssistantFaq,
 } from '../../../../waivioApi/ApiClient';
 
 import {
@@ -54,7 +55,8 @@ const FAQTab = ({ intl }) => {
   const [faqs, setFaqs] = useState([]);
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search] = useState(null);
+  const [search, setSearch] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('All topics');
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,19 +73,74 @@ const FAQTab = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
   const containerRef = useRef(null);
+  const prevPageRef = useRef(currentPage);
+  const prevPageSizeRef = useRef(pageSize);
+  const prevTopicRef = useRef(selectedTopic);
 
-  // const debouncedSetSearch = useMemo(
-  //   () =>
-  //     debounce(value => {
-  //       setSearch(value);
-  //       setCurrentPage(1);
-  //     }, 500),
-  //   [],
-  // );
-  //
-  // const handleSearch = value => {
-  //   debouncedSetSearch(value);
-  // };
+  const MIN_SEARCH_LENGTH = 3;
+
+  const debouncedSetSearch = useMemo(
+    () =>
+      debounce(value => {
+        const trimmedValue = value ? value.trim() : '';
+
+        if (trimmedValue.length === 0 || trimmedValue.length >= MIN_SEARCH_LENGTH) {
+          setSearch(trimmedValue.length >= MIN_SEARCH_LENGTH ? trimmedValue : null);
+          setCurrentPage(1);
+        }
+      }, 500),
+    [],
+  );
+
+  const handleSearch = value => {
+    setSearchInput(value);
+
+    debouncedSetSearch(value);
+  };
+
+  const loadFaqsOnly = async () => {
+    if (!isAuth || !authUserName) return;
+
+    setLoading(true);
+
+    try {
+      let faqResponse;
+
+      if (search && search.trim()) {
+        faqResponse = await searchAssistantFaq(authUserName, search.trim());
+      } else {
+        const skip = (currentPage - 1) * pageSize;
+        const topic =
+          selectedTopic && selectedTopic !== 'All topics'
+            ? removeSpacesFromCamelCase(selectedTopic)
+            : null;
+
+        faqResponse = await getAssistantFaq(authUserName, topic, skip, pageSize);
+      }
+
+      if (faqResponse && faqResponse.result) {
+        setFaqs(faqResponse.result);
+        setHasMore(faqResponse.hasMore || false);
+        if (faqResponse.total !== undefined && faqResponse.total !== null) {
+          setTotal(faqResponse.total);
+        } else {
+          setTotal(faqResponse.result.length);
+        }
+      } else {
+        setFaqs([]);
+        setHasMore(false);
+        setTotal(0);
+      }
+    } catch (error) {
+      console.error('Error loading FAQs:', error);
+      message.error('Failed to load FAQs');
+      setFaqs([]);
+      setHasMore(false);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadFaqs = async () => {
     if (!isAuth || !authUserName) return;
@@ -91,21 +148,27 @@ const FAQTab = ({ intl }) => {
     setLoading(true);
 
     try {
-      const [topicsResponse, faqResponse] = await Promise.all([
-        getAssistantFaqTopics(authUserName),
-        (async () => {
-          const skip = (currentPage - 1) * pageSize;
-          const topic =
-            selectedTopic && selectedTopic !== 'All topics'
-              ? removeSpacesFromCamelCase(selectedTopic)
-              : null;
+      let faqResponse;
 
-          return getAssistantFaq(authUserName, topic, skip, pageSize);
-        })(),
-      ]);
+      if (search && search.trim()) {
+        faqResponse = await searchAssistantFaq(authUserName, search.trim());
+      } else {
+        const skip = (currentPage - 1) * pageSize;
+        const topic =
+          selectedTopic && selectedTopic !== 'All topics'
+            ? removeSpacesFromCamelCase(selectedTopic)
+            : null;
 
-      if (topicsResponse && topicsResponse.topics) {
-        setTopics(topicsResponse.topics.map(addSpacesToCamelCase));
+        faqResponse = await getAssistantFaq(authUserName, topic, skip, pageSize);
+      }
+
+      // Only request topics when not searching
+      if (!search || !search.trim()) {
+        const topicsResponse = await getAssistantFaqTopics(authUserName);
+
+        if (topicsResponse && topicsResponse.topics) {
+          setTopics(topicsResponse.topics.map(addSpacesToCamelCase));
+        }
       }
 
       if (faqResponse && faqResponse.result) {
@@ -115,10 +178,14 @@ const FAQTab = ({ intl }) => {
         if (faqResponse.total !== undefined && faqResponse.total !== null) {
           setTotal(faqResponse.total);
         } else if (faqResponse.result.length > 0) {
-          const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
+          if (search && search.trim()) {
+            setTotal(faqResponse.result.length);
+          } else {
+            const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
 
-          if (totalResponse && totalResponse.result) {
-            setTotal(totalResponse.result.length);
+            if (totalResponse && totalResponse.result) {
+              setTotal(totalResponse.result.length);
+            }
           }
         } else {
           setTotal(0);
@@ -140,8 +207,22 @@ const FAQTab = ({ intl }) => {
   };
 
   useEffect(() => {
-    loadFaqs();
-  }, [isAuth, authUserName, currentPage, pageSize, selectedTopic]);
+    const onlyPageChanged =
+      prevPageRef.current !== currentPage &&
+      prevPageSizeRef.current === pageSize &&
+      prevTopicRef.current === selectedTopic &&
+      !search;
+
+    if (onlyPageChanged) {
+      loadFaqsOnly();
+    } else {
+      loadFaqs();
+    }
+
+    prevPageRef.current = currentPage;
+    prevPageSizeRef.current = pageSize;
+    prevTopicRef.current = selectedTopic;
+  }, [isAuth, authUserName, currentPage, pageSize, selectedTopic, search]);
 
   const handleDeleteClick = record => {
     setFaqToDelete(record);
@@ -252,12 +333,8 @@ const FAQTab = ({ intl }) => {
   }, [isSearchActive, filteredFaqs.length, total]);
 
   const totalPages = useMemo(() => {
-    if (isSearchActive) {
-      return Math.ceil(totalFiltered / pageSize) || 1;
-    }
-
-    if (totalFiltered > 0) {
-      return Math.ceil(totalFiltered / pageSize) || 1;
+    if (total > 0) {
+      return Math.ceil(total / pageSize) || 1;
     }
 
     if (hasMore) {
@@ -265,33 +342,21 @@ const FAQTab = ({ intl }) => {
     }
 
     return currentPage;
-  }, [isSearchActive, totalFiltered, pageSize, hasMore, currentPage]);
+  }, [total, pageSize, hasMore, currentPage]);
 
-  const displayFaqs = useMemo(() => {
-    if (isSearchActive) {
-      const start = (currentPage - 1) * pageSize;
-      const end = start + pageSize;
-
-      return filteredFaqs.slice(start, end);
-    }
-
-    return faqs;
-  }, [isSearchActive, filteredFaqs, faqs, currentPage, pageSize]);
+  const displayFaqs = faqs;
 
   useEffect(() => {
-    if (totalFiltered > 0 && displayFaqs.length === 0 && currentPage > 1) {
-      const maxValidPage = Math.ceil(totalFiltered / pageSize) || 1;
+    if (total > 0 && displayFaqs.length === 0 && currentPage > 1) {
+      const maxValidPage = Math.ceil(total / pageSize) || 1;
 
       if (currentPage > maxValidPage) {
         setCurrentPage(1);
       }
     }
-  }, [totalFiltered, displayFaqs.length, currentPage, pageSize]);
-
-  const lastPage = useMemo(() => totalPages, [totalPages]);
+  }, [total, displayFaqs.length, currentPage, pageSize]);
 
   const canGoNext = isSearchActive ? currentPage < totalPages : hasMore || currentPage < totalPages;
-  const canGoLast = currentPage < totalPages;
 
   return (
     <div ref={containerRef} className="AdminPage min-width FAQTab">
@@ -317,71 +382,74 @@ const FAQTab = ({ intl }) => {
           </Button>
         </div>
 
-        {!loading && (
-          <div className="FAQTab__filters">
-            {/* <div className="FAQTab__filter-group"> */}
-            {/*   /!* eslint-disable-next-line jsx-a11y/label-has-for *!/ */}
-            {/*   <label className="FAQTab__filter-label">Search</label> */}
-            {/*   <Input */}
-            {/*     placeholder="Search question or answer..." */}
-            {/*     allowClear */}
-            {/*     onChange={e => handleSearch(e.target.value)} */}
-            {/*     className="FAQTab__search-input" */}
-            {/*   /> */}
-            {/* </div> */}
-
-            <div className="FAQTab__filter-group">
-              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-              <label className="FAQTab__filter-label">Topic</label>
-              <Select
-                value={selectedTopic}
-                onChange={value => {
-                  setSelectedTopic(value);
-                  setCurrentPage(1);
-                }}
-                className="FAQTab__select FAQTab__topic-select"
-                getPopupContainer={() => containerRef.current || document.body}
-                dropdownMatchSelectWidth={false}
-              >
-                {filteredTopics?.map(topic => (
-                  <Option key={topic} value={topic}>
-                    {topic}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-
-            <div className="FAQTab__filter-group">
-              {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-              <label className="FAQTab__filter-label">Page size</label>
-              <Select
-                value={pageSize}
-                onChange={value => {
-                  setPageSize(value);
-                  setCurrentPage(1);
-                  if (containerRef.current) {
-                    const scrollTop = containerRef.current.scrollTop;
-
-                    requestAnimationFrame(() => {
-                      if (containerRef.current) {
-                        containerRef.current.scrollTop = scrollTop;
-                      }
-                    });
-                  }
-                }}
-                className="FAQTab__select FAQTab__page-size-select"
-                getPopupContainer={() => containerRef.current || document.body}
-                dropdownMatchSelectWidth={false}
-              >
-                {PAGE_SIZES.map(size => (
-                  <Option key={size} value={size}>
-                    {size}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+        <div className="FAQTab__filters">
+          <div className="FAQTab__filter-group">
+            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+            <label className="FAQTab__filter-label">Search</label>
+            <Input
+              placeholder="Search question or answer..."
+              allowClear
+              value={searchInput}
+              onChange={e => handleSearch(e.target.value)}
+              onClear={() => {
+                setSearchInput('');
+                handleSearch('');
+              }}
+              className="FAQTab__search-input"
+            />
           </div>
-        )}
+
+          <div className="FAQTab__filter-group">
+            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+            <label className="FAQTab__filter-label">Topic</label>
+            <Select
+              value={selectedTopic}
+              onChange={value => {
+                setSelectedTopic(value);
+                setCurrentPage(1);
+              }}
+              className="FAQTab__select FAQTab__topic-select"
+              getPopupContainer={() => containerRef.current || document.body}
+              dropdownMatchSelectWidth={false}
+            >
+              {filteredTopics?.map(topic => (
+                <Option key={topic} value={topic}>
+                  {topic}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="FAQTab__filter-group">
+            {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+            <label className="FAQTab__filter-label">Page size</label>
+            <Select
+              value={pageSize}
+              onChange={value => {
+                setPageSize(value);
+                setCurrentPage(1);
+                if (containerRef.current) {
+                  const scrollTop = containerRef.current.scrollTop;
+
+                  requestAnimationFrame(() => {
+                    if (containerRef.current) {
+                      containerRef.current.scrollTop = scrollTop;
+                    }
+                  });
+                }
+              }}
+              className="FAQTab__select FAQTab__page-size-select"
+              getPopupContainer={() => containerRef.current || document.body}
+              dropdownMatchSelectWidth={false}
+            >
+              {PAGE_SIZES.map(size => (
+                <Option key={size} value={size}>
+                  {size}
+                </Option>
+              ))}
+            </Select>
+          </div>
+        </div>
       </div>
       {/* eslint-disable-next-line no-nested-ternary */}
       {loading ? (
@@ -533,22 +601,6 @@ const FAQTab = ({ intl }) => {
                 >
                   Next &gt;
                 </a>
-                <a
-                  className={`FAQTab__pagination-link ${
-                    !canGoLast
-                      ? 'FAQTab__pagination-link--disabled'
-                      : 'FAQTab__pagination-link--active'
-                  }`}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (canGoLast) {
-                      // Jump to the calculated last page
-                      setCurrentPage(lastPage);
-                    }
-                  }}
-                >
-                  Last &gt;&gt;
-                </a>
               </div>
             </div>
           )}
@@ -572,7 +624,7 @@ const FAQTab = ({ intl }) => {
         className="FAQTab__delete-modal"
         title={'Delete FAQ'}
       >
-        <p>Are you sure you want to delete this FAQ?</p>
+        <p className={'tc'}>Are you sure you want to delete this FAQ?</p>
       </Modal>
       <Modal
         visible={updateModalVisible}
