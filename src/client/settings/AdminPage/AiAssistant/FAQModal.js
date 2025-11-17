@@ -1,16 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Modal, Form, Input, Select, message } from 'antd';
 import PropTypes from 'prop-types';
 import { createAssistantFaq, patchAssistantFaq } from '../../../../waivioApi/ApiClient';
 import { addSpacesToCamelCase, removeSpacesFromCamelCase } from './FAQTab';
+import './FAQModal.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
+
+const SafeImage = ({ src, alt }) => {
+  const [error, setError] = useState(false);
+
+  if (error) {
+    return null;
+  }
+
+  return (
+    <div className="FAQModal__image-preview">
+      <a href={src} target="_blank" rel="noopener noreferrer" className="FAQModal__image-link">
+        <img
+          src={src}
+          alt={alt}
+          height="86"
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setError(true)}
+          className="FAQModal__image"
+        />
+      </a>
+    </div>
+  );
+};
+
+SafeImage.propTypes = {
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string,
+};
+
+SafeImage.defaultProps = {
+  alt: 'image',
+};
 
 const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form, topics }) => {
   const [loading, setLoading] = useState(false);
   const [answerError, setAnswerError] = useState('');
   const [questionError, setQuestionError] = useState('');
+  const [answerValue, setAnswerValue] = useState('');
   const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = form;
 
   useEffect(() => {
@@ -23,6 +59,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
           answer: editingFaq.answer,
           topic: topicForDisplay,
         });
+        setAnswerValue(editingFaq.answer || '');
         if (editingFaq.answer && editingFaq.answer.length > 2000) {
           setAnswerError(
             'The maximum length is 2000 characters. Please make your answer more concise.',
@@ -40,6 +77,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       } else {
         resetFields();
         setFieldsValue({ topic: addSpacesToCamelCase('WaivioGeneral') });
+        setAnswerValue('');
         setAnswerError('');
         setQuestionError('');
       }
@@ -60,8 +98,55 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     setFieldsValue({ question: value });
   };
 
+  const extractImages = text => {
+    if (!text || typeof text !== 'string') return [];
+
+    const images = [];
+
+    const markdownRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    let match;
+
+    // eslint-disable-next-line no-cond-assign
+    while ((match = markdownRegex.exec(text)) !== null) {
+      let imageUrl = match[2].trim();
+
+      if (!imageUrl.startsWith('http')) {
+        imageUrl = `https://${imageUrl}`;
+      }
+      images.push({
+        url: imageUrl,
+        alt: match[1] || 'image',
+        type: 'markdown',
+      });
+    }
+
+    const imageUrlRegex = /(https?:\/\/[^\s]*waivio\.nyc3\.digitaloceanspaces[^\s]*)|(https?:\/\/[^\s]+\.(?:jpg|jpeg|png|webp|gif|svg))/gi;
+    const urlMatches = text.matchAll(imageUrlRegex);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const urlMatch of urlMatches) {
+      const imageUrl = urlMatch[0];
+      // Check if this URL is not already in images (from markdown)
+      const isAlreadyIncluded = images.some(img => img.url === imageUrl);
+
+      if (!isAlreadyIncluded) {
+        images.push({
+          url: imageUrl,
+          alt: 'image',
+          type: 'url',
+        });
+      }
+    }
+
+    return images;
+  };
+
+  const extractedImages = useMemo(() => extractImages(answerValue), [answerValue]);
+
   const handleAnswerChange = e => {
     const value = e.target.value;
+
+    setAnswerValue(value);
 
     if (value.length >= 2000) {
       setAnswerError(
@@ -155,6 +240,14 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
               onChange={handleAnswerChange}
               style={answerError ? { borderColor: '#ff4d4f' } : {}}
             />,
+          )}
+          {extractedImages.length > 0 && (
+            <div className="FAQModal__image-box">
+              {extractedImages.map((image, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <SafeImage key={`${image.url}-${index}`} src={image.url} alt={image.alt} />
+              ))}
+            </div>
           )}
         </Form.Item>
         <Form.Item label="Topic">
