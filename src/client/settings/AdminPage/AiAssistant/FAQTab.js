@@ -213,7 +213,13 @@ const FAQTab = ({ intl }) => {
       prevTopicRef.current === selectedTopic &&
       !search;
 
-    if (onlyPageChanged) {
+    const onlyTopicChanged =
+      prevTopicRef.current !== selectedTopic &&
+      prevPageRef.current === currentPage &&
+      prevPageSizeRef.current === pageSize &&
+      !search;
+
+    if (onlyPageChanged || onlyTopicChanged) {
       loadFaqsOnly();
     } else {
       loadFaqs();
@@ -480,8 +486,7 @@ const FAQTab = ({ intl }) => {
                           {expandedAnswers.has(record._id || record.id) ? (
                             <>
                               {record.answer}
-                              <Button
-                                type="link"
+                              <span
                                 onClick={() => {
                                   const newExpanded = new Set(expandedAnswers);
 
@@ -491,13 +496,12 @@ const FAQTab = ({ intl }) => {
                                 className="FAQTab__show-more-button"
                               >
                                 Show less
-                              </Button>
+                              </span>
                             </>
                           ) : (
                             <>
                               {record.answer.substring(0, 250)}...
-                              <Button
-                                type="link"
+                              <span
                                 onClick={() => {
                                   const newExpanded = new Set(expandedAnswers);
 
@@ -507,7 +511,7 @@ const FAQTab = ({ intl }) => {
                                 className="FAQTab__show-more-button"
                               >
                                 Show more
-                              </Button>
+                              </span>
                             </>
                           )}
                         </>
