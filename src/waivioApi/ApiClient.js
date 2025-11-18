@@ -5764,8 +5764,12 @@ export const deleteAssistantFaq = (currentUser, id) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getAssistantFaq = (currentUser, topic, skip = 0, limit) => {
-  const query = createQuery({ topic, skip, limit });
+export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 5) => {
+  const queryParams = { skip, limit };
+  if (topic) {
+    queryParams.topic = topic;
+  }
+  const query = createQuery(queryParams);
   return fetch(`${config.baseUrl}${config.assistant}${config.qna}?${query}`, {
     headers: {
       ...headers,
@@ -5818,12 +5822,24 @@ export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, 
 
     method: 'GET',
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        return res
+          .json()
+          .then(err => {
+            throw new Error(err.message || `HTTP ${res.status}: ${res.statusText}`);
+          })
+          .catch(() => {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          });
+      }
+      return res.json();
+    })
     .then(res => res)
     .catch(error => {
       console.error('API Client error:', error);
 
-      return error;
+      return { error: error.message || 'Failed to search FAQs' };
     });
 };
 

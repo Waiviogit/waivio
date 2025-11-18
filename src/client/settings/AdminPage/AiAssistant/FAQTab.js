@@ -135,7 +135,7 @@ const FAQTab = ({ intl }) => {
       }
     } catch (error) {
       console.error('Error loading FAQs:', error);
-      message.error('Failed to load FAQs');
+
       setFaqs([]);
       setHasMore(false);
       setTotal(0);
@@ -169,7 +169,9 @@ const FAQTab = ({ intl }) => {
       if (!search || !search.trim()) {
         const topicsResponse = await getAssistantFaqTopics(authUserName);
 
-        if (topicsResponse && topicsResponse.topics) {
+        if (topicsResponse && topicsResponse.error) {
+          console.warn('Failed to load topics:', topicsResponse.error);
+        } else if (topicsResponse && topicsResponse.topics) {
           setTopics(topicsResponse.topics.map(addSpacesToCamelCase));
         }
       }
@@ -186,7 +188,9 @@ const FAQTab = ({ intl }) => {
           } else {
             const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
 
-            if (totalResponse && totalResponse.result) {
+            if (totalResponse && totalResponse.error) {
+              console.warn('Failed to load total count:', totalResponse.error);
+            } else if (totalResponse && totalResponse.result) {
               setTotal(totalResponse.result.length);
             }
           }
@@ -202,7 +206,7 @@ const FAQTab = ({ intl }) => {
       }
     } catch (error) {
       console.error('Error loading FAQs:', error);
-      message.error('Failed to load FAQs');
+
       setFaqs([]);
       setTotal(0);
       setHasMore(false);
