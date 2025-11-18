@@ -29,12 +29,10 @@ const PAGE_SIZES = [5, 10, 20, 50];
 export const addSpacesToCamelCase = str => {
   if (!str) return str;
 
-  // If string already has spaces, return as-is
   if (str.includes(' ')) {
     return str;
   }
 
-  // Insert a space before each uppercase letter (except the first one)
   return str.replace(/([a-z])([A-Z])/g, '$1 $2');
 };
 
@@ -106,15 +104,16 @@ const FAQTab = ({ intl }) => {
     try {
       let faqResponse;
 
-      if (search && search.trim()) {
-        faqResponse = await searchAssistantFaq(authUserName, search.trim());
-      } else {
-        const skip = (currentPage - 1) * pageSize;
-        const topic =
-          selectedTopic && selectedTopic !== 'All topics'
-            ? removeSpacesFromCamelCase(selectedTopic)
-            : null;
+      const topic =
+        selectedTopic && selectedTopic !== 'All topics'
+          ? removeSpacesFromCamelCase(selectedTopic)
+          : null;
 
+      const skip = (currentPage - 1) * pageSize;
+
+      if (search && search.trim()) {
+        faqResponse = await searchAssistantFaq(authUserName, search.trim(), topic, skip, pageSize);
+      } else {
         faqResponse = await getAssistantFaq(authUserName, topic, skip, pageSize);
       }
 
@@ -150,19 +149,19 @@ const FAQTab = ({ intl }) => {
     try {
       let faqResponse;
 
-      if (search && search.trim()) {
-        faqResponse = await searchAssistantFaq(authUserName, search.trim());
-      } else {
-        const skip = (currentPage - 1) * pageSize;
-        const topic =
-          selectedTopic && selectedTopic !== 'All topics'
-            ? removeSpacesFromCamelCase(selectedTopic)
-            : null;
+      const topic =
+        selectedTopic && selectedTopic !== 'All topics'
+          ? removeSpacesFromCamelCase(selectedTopic)
+          : null;
 
+      const skip = (currentPage - 1) * pageSize;
+
+      if (search && search.trim()) {
+        faqResponse = await searchAssistantFaq(authUserName, search.trim(), topic, skip, pageSize);
+      } else {
         faqResponse = await getAssistantFaq(authUserName, topic, skip, pageSize);
       }
 
-      // Only request topics when not searching
       if (!search || !search.trim()) {
         const topicsResponse = await getAssistantFaqTopics(authUserName);
 
@@ -213,7 +212,13 @@ const FAQTab = ({ intl }) => {
       prevTopicRef.current === selectedTopic &&
       !search;
 
-    if (onlyPageChanged) {
+    const onlyTopicChanged =
+      prevTopicRef.current !== selectedTopic &&
+      prevPageRef.current === currentPage &&
+      prevPageSizeRef.current === pageSize &&
+      !search;
+
+    if (onlyPageChanged || onlyTopicChanged) {
       loadFaqsOnly();
     } else {
       loadFaqs();
@@ -222,7 +227,7 @@ const FAQTab = ({ intl }) => {
     prevPageRef.current = currentPage;
     prevPageSizeRef.current = pageSize;
     prevTopicRef.current = selectedTopic;
-  }, [isAuth, authUserName, currentPage, pageSize, selectedTopic, search]);
+  }, [authUserName, currentPage, pageSize, selectedTopic, search]);
 
   const handleDeleteClick = record => {
     setFaqToDelete(record);
@@ -269,7 +274,6 @@ const FAQTab = ({ intl }) => {
       setUpdateButtonDisabled(false);
     }, 30000);
 
-    // Proceed with API call in the background
     updateAssistantFaq(authUserName)
       .then(() => {
         message.success('AI Assistant updated successfully');
@@ -356,7 +360,21 @@ const FAQTab = ({ intl }) => {
     }
   }, [total, displayFaqs.length, currentPage, pageSize]);
 
-  const canGoNext = isSearchActive ? currentPage < totalPages : hasMore || currentPage < totalPages;
+  const canGoNext = useMemo(() => {
+    if (hasMore) {
+      return true;
+    }
+
+    if (isSearchActive) {
+      return currentPage < totalPages;
+    }
+
+    if (total > 0) {
+      return currentPage < totalPages;
+    }
+
+    return false;
+  }, [isSearchActive, currentPage, totalPages, total, hasMore]);
 
   return (
     <div ref={containerRef} className="AdminPage min-width FAQTab">
@@ -480,8 +498,7 @@ const FAQTab = ({ intl }) => {
                           {expandedAnswers.has(record._id || record.id) ? (
                             <>
                               {record.answer}
-                              <Button
-                                type="link"
+                              <span
                                 onClick={() => {
                                   const newExpanded = new Set(expandedAnswers);
 
@@ -491,13 +508,12 @@ const FAQTab = ({ intl }) => {
                                 className="FAQTab__show-more-button"
                               >
                                 Show less
-                              </Button>
+                              </span>
                             </>
                           ) : (
                             <>
                               {record.answer.substring(0, 250)}...
-                              <Button
-                                type="link"
+                              <span
                                 onClick={() => {
                                   const newExpanded = new Set(expandedAnswers);
 
@@ -507,7 +523,7 @@ const FAQTab = ({ intl }) => {
                                 className="FAQTab__show-more-button"
                               >
                                 Show more
-                              </Button>
+                              </span>
                             </>
                           )}
                         </>

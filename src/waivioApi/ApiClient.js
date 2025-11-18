@@ -5764,7 +5764,7 @@ export const deleteAssistantFaq = (currentUser, id) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 100) => {
+export const getAssistantFaq = (currentUser, topic, skip = 0, limit) => {
   const query = createQuery({ topic, skip, limit });
   return fetch(`${config.baseUrl}${config.assistant}${config.qna}?${query}`, {
     headers: {
@@ -5800,8 +5800,16 @@ export const getAssistantFaqTopics = currentUser =>
       return error;
     });
 
-export const searchAssistantFaq = (currentUser, search) =>
-  fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.search}?search=${search}`, {
+export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, limit = null) => {
+  const queryParams = { search, skip };
+  if (topic) {
+    queryParams.topic = topic;
+  }
+  if (limit) {
+    queryParams.limit = limit;
+  }
+  const query = createQuery(queryParams);
+  return fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.search}?${query}`, {
     headers: {
       ...headers,
       'Current-User': currentUser,
@@ -5817,5 +5825,6 @@ export const searchAssistantFaq = (currentUser, search) =>
 
       return error;
     });
+};
 
 export default null;
