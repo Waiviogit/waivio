@@ -77,6 +77,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
   const textAreaRef = useRef(null);
   const fileInputRef = useRef(null);
   const answerValueRef = useRef('');
+  const cursorPositionRef = useRef(null);
   const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = form;
 
   useEffect(() => {
@@ -197,7 +198,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     return images.filter(img => !failedImages.includes(img.url));
   }, [answerValue, failedImages]);
 
-  const handleImageUpload = (blob, linkMethod = false) => {
+  const handleImageUpload = (blob, linkMethod = false, cursorPos = null) => {
     setUploadingImage(true);
     message.info('Uploading image');
 
@@ -226,11 +227,35 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       .then(res => {
         const imageMarkdown = `![image](${res.image})`;
         const currentAnswer = answerValueRef.current || '';
-        const newAnswer = currentAnswer ? `${currentAnswer} ${imageMarkdown}` : imageMarkdown;
+        let newAnswer;
+        let newCursorPos;
+
+        // Insert at cursor position if provided, otherwise append
+        if (cursorPos !== null && cursorPos >= 0) {
+          const before = currentAnswer.substring(0, cursorPos);
+          const after = currentAnswer.substring(cursorPos);
+
+          newAnswer = `${before}${imageMarkdown}${after}`;
+          newCursorPos = cursorPos + imageMarkdown.length;
+        } else {
+          newAnswer = currentAnswer ? `${currentAnswer} ${imageMarkdown}` : imageMarkdown;
+          newCursorPos = newAnswer.length;
+        }
 
         setAnswerValue(newAnswer);
         answerValueRef.current = newAnswer;
         setFieldsValue({ answer: newAnswer });
+
+        // Restore cursor position after state update
+        setTimeout(() => {
+          const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+          if (textArea && newCursorPos !== null) {
+            textArea.setSelectionRange(newCursorPos, newCursorPos);
+            textArea.focus();
+          }
+        }, 0);
+
         setUploadingImage(false);
         message.success('Image uploaded successfully');
       })
@@ -259,59 +284,124 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     }
   };
 
-  const pasteImageAndText = blob => {
-    handleImageUpload(blob);
+  const pasteImageAndText = (blob, cursorPos) => {
+    handleImageUpload(blob, false, cursorPos);
+  };
+
+  const handlePaste = async e => {
+    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+    if (!textArea) return;
+
+    // Capture cursor position before processing paste
+    const cursorPos = textArea.selectionStart || 0;
+
+    cursorPositionRef.current = cursorPos;
+
+    // Get clipboard data from the paste event
+    const clipboardData = e.clipboardData || e.originalEvent?.clipboardData;
+
+    if (!clipboardData) return;
+
+    let imageBlob = null;
+
+    // Check clipboardData.items first (most reliable for paste events)
+    if (clipboardData.items && clipboardData.items.length > 0) {
+      const imageItem = clipboardData.items.find(
+        item => item.type && item.type.indexOf('image') !== -1,
+      );
+
+      if (imageItem) {
+        imageBlob = imageItem.getAsFile();
+      }
+    }
+
+    // Fallback: check clipboardData.files
+    if (!imageBlob && clipboardData.files && clipboardData.files.length > 0) {
+      const file = clipboardData.files[0];
+
+      if (file.type && file.type.startsWith('image/')) {
+        imageBlob = file;
+      }
+    }
+
+    // If we found an image, upload it and insert markdown
+    if (imageBlob) {
+      pasteImageAndText(imageBlob, cursorPos);
+      e.preventDefault();
+      e.stopPropagation();
+
+      return;
+    }
+
+    // Fallback: try Clipboard API (requires permissions)
+    try {
+      const clipboardItems = await navigator.clipboard.read();
+
+      if (clipboardItems && clipboardItems.length > 0) {
+        const item = clipboardItems[0];
+
+        if (item.types) {
+          // Check for image types using array methods instead of loop
+          const imageType = item.types.find(type => type.startsWith('image/'));
+
+          if (imageType) {
+            const blob = await item.getType(imageType);
+
+            pasteImageAndText(blob, cursorPos);
+            e.preventDefault();
+            e.stopPropagation();
+
+            return;
+          }
+
+          if (item.types.includes('text/html')) {
+            const htmlBlob = await item.getType('text/html');
+            const htmlText = await htmlBlob.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+            const img = doc.querySelector('img');
+
+            if (img?.src) {
+              if (img.src.startsWith('blob:')) {
+                const response = await fetch(img.src);
+                const blob = await response.blob();
+
+                pasteImageAndText(blob, cursorPos);
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      // Clipboard API might not be available or require permissions
+      // This is fine, we've already tried clipboardData
+    }
   };
 
   useEffect(() => {
     if (!visible) return;
 
-    const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+    // Use a small delay to ensure the textarea is fully mounted
+    const timeoutId = setTimeout(() => {
+      const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
-    if (!textArea) return;
+      if (!textArea) return;
 
-    const handlePaste = async e => {
-      const clipboardItems = await navigator.clipboard.read().catch(() => []);
-
-      if (!clipboardItems.length) return;
-
-      const item = clipboardItems[0];
-
-      if (item.types?.includes('image/png') || item.types?.includes('image/jpeg')) {
-        const type = item.types?.includes('image/png') ? 'image/png' : 'image/jpeg';
-        const blob = await item.getType(type);
-
-        pasteImageAndText(blob);
-
-        e.preventDefault();
-
-        return;
-      }
-
-      if (item.types?.includes('text/html')) {
-        const htmlBlob = await item.getType('text/html');
-        const htmlText = await htmlBlob.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const img = doc.querySelector('img');
-
-        if (img?.src) {
-          if (img.src?.startsWith('blob:')) {
-            const response = await fetch(img.src);
-            const blob = await response.blob();
-
-            pasteImageAndText(blob);
-          }
-
-          e.preventDefault();
-        }
-      }
-    };
-
-    textArea.addEventListener('paste', handlePaste);
+      textArea.addEventListener('paste', handlePaste, false);
+    }, 200);
 
     // eslint-disable-next-line consistent-return
-    return () => textArea.removeEventListener('paste', handlePaste);
+    return () => {
+      clearTimeout(timeoutId);
+      const textArea = textAreaRef.current?.resizableTextArea?.textArea;
+
+      if (textArea) {
+        textArea.removeEventListener('paste', handlePaste, false);
+      }
+    };
   }, [visible]);
 
   const handleAnswerChange = e => {
@@ -437,6 +527,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
                   showCount
                   maxLength={2000}
                   onChange={handleAnswerChange}
+                  onPaste={handlePaste}
                   style={answerError ? { borderColor: '#ff4d4f' } : {}}
                 />,
               )}
