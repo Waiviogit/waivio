@@ -12,7 +12,7 @@ const InstacartWidget = ({
   instacartAff,
   className,
   isProduct,
-  containerClassName,
+  // containerClassName,
   withDisclamer,
   marginBottom,
   inlineFlex,
@@ -34,33 +34,52 @@ const InstacartWidget = ({
   };
 
   return isNewInstacartProgram(instacartAff) ? (
-    <span className={containerClassName}>
+    <div
+      style={{
+        display: inlineFlex ? 'inline-flex' : 'flex',
+        flexDirection: 'column',
+        marginBottom: marginBottom || (isProduct ? '15px' : '10px'),
+      }}
+    >
       <button
         onClick={handleClick}
-        className={'AffiliatLink instacart'}
+        className={'AffiliatLink instacart instacart-new-button'}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#2b8a3e',
-          padding: '12px 20px',
+          gap: '8px',
+          backgroundColor: '#003D29',
+          color: '#FAF1E5',
+          padding: '16px 18px',
           cursor: loading ? 'not-allowed' : 'pointer',
-          width: '122px',
-          height: '60px',
+          height: '46px',
+          borderRadius: '8px',
+          border: 'none',
+          fontFamily: 'inherit',
+          fontSize: '14px',
+          fontWeight: 500,
+          whiteSpace: 'nowrap',
+          transition: 'opacity 0.2s',
         }}
+        disabled={loading}
       >
         {loading ? (
-          <Icon style={{ color: 'white' }} type="loading" />
+          <Icon style={{ color: '#FAF1E5' }} type="loading" />
         ) : (
-          <img
-            className={'instacart'}
-            src={'/images/Instacart-logo.svg'}
-            alt="Instacart logo"
-            style={{ height: '13px' }}
-          />
+          <>
+            <img
+              className={'instacart-logo'}
+              src={'/images/Instacart-logo.svg'}
+              alt="Instacart logo"
+              style={{ height: '22px', width: 'auto' }}
+            />
+            <span>Get Recipe Ingredients</span>
+          </>
         )}
       </button>
-    </span>
+      {withDisclamer && <EarnsCommissionsOnPurchases />}
+    </div>
   ) : (
     <div style={{ display: inlineFlex ? 'inline-flex' : 'flex', flexDirection: 'column' }}>
       <div
@@ -87,7 +106,7 @@ InstacartWidget.propTypes = {
     link: PropTypes.string,
   }),
   className: PropTypes.string,
-  containerClassName: PropTypes.string,
+  // containerClassName: PropTypes.string,
   isProduct: PropTypes.bool,
   withDisclamer: PropTypes.bool,
   marginBottom: PropTypes.string,
