@@ -1,0 +1,333 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.HeaderClean {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: #fff;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: background 0.3s ease;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    gap: 24px;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 18px;
+    color: #111;
+    text-decoration: none;
+
+    img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    span {
+      text-transform: capitalize;
+    }
+  }
+
+  &__search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 600px;
+
+    input {
+      border-radius: 30px;
+      border: 1px solid #ddd;
+      padding: 10px 18px;
+      width: 100%;
+      font-size: 15px;
+      outline: none;
+
+      &:focus {
+        border-color: #999;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  &__icon {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #555;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  &__modeBtn {
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 6px 14px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background: #f7f7f7;
+    }
+  }
+
+  &.dark {
+    background: #111;
+    color: #f2f2f2;
+
+    .HeaderClean__logo span {
+      color: #f2f2f2;
+    }
+    .HeaderClean__modeBtn {
+      background: #222;
+      color: #f2f2f2;
+      border-color: #333;
+    }
+  }
+  .HeaderClean__search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Переоформлюємо старий .Header__search, але тільки всередині нового хедера */
+  .Header__search {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    border-radius: 999px;
+    background: #f7f7f7;
+    padding-left: 36px; // під іконку
+  }
+
+  /* на всяк випадок — якщо десь searchBarActive не передадуть */
+  .Header__search--hidden {
+    display: flex;
+  }
+
+  /* сама оболонка AutoComplete */
+  .GeneralSearch__wrapper {
+    width: 100%;
+  }
+  /* === контент хедера === */
+  .HeaderClean {
+    &__search {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  /* === стилізація GeneralSearch ТІЛЬКИ всередині HeaderClean === */
+  /* контейнeр пошуку */
+  .Header__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    max-width: 900px;
+
+    height: 37px;
+    padding: 0 24px 0 48px; // місце під іконку
+
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 999px;
+
+    /* у clean-хедері пошук завжди показаний */
+    &--hidden {
+      display: flex !important;
+    }
+
+    &--long {
+      width: 100%;
+    }
+  }
+
+  /* іконка "лупа" */
+  .Header__search .icon-search {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #b7b7b7;
+  }
+
+  /* оболонка AutoComplete */
+  .GeneralSearch__wrapper {
+    width: 100%;
+
+    .ant-select {
+      width: 100%;
+    }
+
+    .ant-select-selection {
+      background: transparent;
+      border: none;
+      box-shadow: none !important;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+
+    /* Звичайний текст */
+    .ant-select-selection-selected-value,
+    .ant-select-selection__placeholder,
+    .ant-select-search__field__placeholder {
+      font-size: 18px;
+      line-height: 1.2;
+      color: #a0a0a0;
+      opacity: 1;
+    }
+
+    /* Фактичне поле вводу */
+    .ant-select-search__field {
+      font-size: 18px;
+      border: none;
+      outline: none !important;
+      padding: 0;
+    }
+
+    /* При фокусі — без синього обводу */
+    .ant-select-focused .ant-select-selection {
+      box-shadow: none !important;
+    }
+  }
+
+  .GeneralSearch__wrapper {
+    .ant-select-selection {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .ant-select-selection--single {
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .ant-select-search__field,
+    .ant-select-search__field:focus {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .GeneralSearch {
+      &__wrapper {
+        .ant-select-search__field__wrap .ant-input.ant-select-search__field {
+          padding-left: 30px !important;
+          &:focus {
+            border: none;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+
+    .ant-select-focused .ant-select-selection {
+      border: none !important;
+      box-shadow: none !important;
+    }
+  }
+
+  &__banner {
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
+    -webkit-box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
+    -moz-box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
+    height: 240px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h1 {
+      font-family: var(--template-font-heading, PlayfairDisplay, serif);
+      font-weight: 400;
+      margin: 0 0 8px;
+    }
+
+    h2 {
+      font-family: var(--template-font-body, 'Source Sans Pro', sans-serif);
+      font-weight: 400;
+      margin: 0 0 24px;
+    }
+  }
+
+  &__nav {
+    position: absolute;
+    bottom: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 1200px;
+    padding: 5px 0;
+
+    @media @small {
+      padding: 25px 40px;
+    }
+
+    .WebsiteTopNavigation {
+      width: 100%;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      justify-content: space-between;
+      &__link {
+        text-transform: none;
+        width: auto;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        padding: 10px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #2d2d2d;
+        background: #fff;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+
+        &::after {
+          display: none;
+        }
+
+        &:hover,
+        &--active {
+          background: linear-gradient(120deg, #ffd34d, #f9b000);
+          border-color: transparent;
+          color: #1a1300;
+          box-shadow: 0 12px 18px rgba(249, 176, 0, 0.35);
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { get } from 'lodash';
+import { SET_BASE_OBJECT } from '../wObjectStore/wobjectsActions';
 import * as appTypes from './appActions';
 import * as postActions from '../postsStore/postActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
@@ -88,6 +89,7 @@ export default (state = initialState, action) => {
         },
       };
     case appTypes.SET_MAIN_OBJ.SUCCESS:
+    case SET_BASE_OBJECT:
       return {
         ...state,
         mainObj: {

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { isEmpty, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -25,6 +25,8 @@ import ListDescription from '../ListDescription/ListDescription';
 import useQuery from '../../../hooks/useQuery';
 import GoogleAds from '../../adsenseAds/GoogleAds';
 import useAdLevelData from '../../../hooks/useAdsense';
+import useTemplateProvider, { useTemplateId } from '../../../designTemplates/TemplateProvider';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
@@ -33,12 +35,54 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const query = useQuery();
   const { name } = useParams();
   const { minimal, intensive, moderate } = useAdLevelData();
+  const templateComponents = useTemplateProvider();
+  const templateId = useTemplateId();
+  const TemplateListHero = templateComponents?.ListHero;
+  const isCleanTemplate = templateId === 'clean' && !!TemplateListHero;
+  const shouldRenderHero = isCleanTemplate && listType && !loading;
 
   const hasProducts = listItems && listItems.some(item => item.object_type !== 'list');
 
   let breadcrumbsFromQuery = query.get('breadcrumbs');
 
   breadcrumbsFromQuery = breadcrumbsFromQuery ? breadcrumbsFromQuery.split('/') : null;
+
+  const cleanListSummary = useMemo(() => {
+    if (!listType) return null;
+
+    const preparedDescription = removeEmptyLines(wobject?.description || '');
+    const { firstDescrPart } = shortenDescription(preparedDescription, 260);
+
+    return {
+      label: wobject?.name,
+      title: wobject?.title || getObjectName(wobject),
+      description: firstDescrPart,
+    };
+  }, [listType, wobject]);
+
+  const renderListSummary = () => {
+    if (loading || !listType) return null;
+
+    if (isCleanTemplate) {
+      if (!cleanListSummary) return null;
+
+      return (
+        <section className="Checklist__cleanSummary">
+          {cleanListSummary.label && (
+            <span className="Checklist__cleanSummaryLabel">{cleanListSummary.label}</span>
+          )}
+          {cleanListSummary.title && (
+            <h2 className="Checklist__cleanSummaryTitle">{cleanListSummary.title}</h2>
+          )}
+          {cleanListSummary.description && (
+            <p className="Checklist__cleanSummaryText">{cleanListSummary.description}</p>
+          )}
+        </section>
+      );
+    }
+
+    return <ListDescription wobject={wobject} />;
+  };
 
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
@@ -178,19 +222,24 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
     <div
       className={classNames('Checklist', {
         'Checklist--withoutMargin': wobject?.object_type === 'page',
+        'Checklist--clean': isCleanTemplate,
       })}
     >
-      <div className="Checklist__breadcrumbsContainre">
-        {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
-        {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
-      </div>
-      {listType && wobject?.background && !loading && (
+      {shouldRenderHero && <TemplateListHero wobject={wobject} />}
+      {!isCleanTemplate && (
+        <div className="Checklist__breadcrumbsContainre">
+          {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
+          {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
+        </div>
+      )}
+      {listType && wobject?.background && !loading && !isCleanTemplate && (
         <div className="Checklist__banner">
           <img src={wobject?.background} alt={'Promotional list banner'} />
         </div>
       )}
+      {isCleanTemplate && renderListSummary()}
       {loading ? <Loading /> : getMenuList()}
-      {listType && !loading && <ListDescription wobject={wobject} />}
+      {!isCleanTemplate && renderListSummary()}
       {(minimal || moderate || intensive) && listType && <GoogleAds inList />}
     </div>
   );
@@ -200,6 +249,9 @@ CheckListView.propTypes = {
   wobject: PropTypes.shape({
     object_type: PropTypes.string,
     author_permlink: PropTypes.string,
+    description: PropTypes.string,
+    name: PropTypes.string,
+    title: PropTypes.string,
     background: PropTypes.string,
     sortCustom: PropTypes.shape({
       include: PropTypes.arrayOf(PropTypes.string),

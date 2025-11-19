@@ -22,6 +22,27 @@
 }
 
 @font-face {
+  font-family: PlayfairDisplay;
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/PlayfairDisplay-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: PlayfairDisplay;
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/PlayfairDisplay-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: PlayfairDisplay;
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/PlayfairDisplay-Bold.woff') format('woff');
+}
+
+@font-face {
   font-family: 'Source Sans Pro';
   font-weight: 400;
   font-style: normal;
@@ -30,3 +51,10 @@
 }
 
 @font-text: 'Source Sans Pro', sans-serif;
+
+// Template font variables (defaults, can be overridden by template via useTemplateFonts hook)
+:root {
+  --template-font-heading: Whitney, 'Source Sans Pro', sans-serif;
+  --template-font-body: Whitney, 'Source Sans Pro', sans-serif;
+  --template-font-serif: PlayfairDisplay, serif;
+}
