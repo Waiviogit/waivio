@@ -1,14 +1,19 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { Modal, Form, Input, Select, message, Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { v4 as uuidv4 } from 'uuid';
+import { isEmpty, map } from 'lodash';
+import { useSelector } from 'react-redux';
 import { createAssistantFaq, patchAssistantFaq } from '../../../../waivioApi/ApiClient';
 import { addSpacesToCamelCase, removeSpacesFromCamelCase } from './FAQTab';
+import ImageSetter from '../../../components/ImageSetter/ImageSetter';
+import { getLastSelection } from '../../../../store/slateEditorStore/editorSelectors';
 import './FAQModal.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const SafeImage = ({ src, alt, onError }) => {
+const SafeImage = ({ src, alt, onError, onRemove }) => {
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
@@ -23,13 +28,17 @@ const SafeImage = ({ src, alt, onError }) => {
     setLoaded(true);
   };
 
-  // Don't render if error or if src is empty/invalid
   if (error || !src || src.trim() === '' || src === '()') {
     return null;
   }
 
   return (
     <div className="image-box__preview">
+      {onRemove && (
+        <div className="image-box__remove" onClick={() => onRemove(src)} role="presentation">
+          <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+        </div>
+      )}
       <a href={src} target="_blank" rel="noopener noreferrer">
         <img
           src={src}
@@ -61,6 +70,7 @@ SafeImage.propTypes = {
   src: PropTypes.string.isRequired,
   alt: PropTypes.string,
   onError: PropTypes.func,
+  onRemove: PropTypes.func,
 };
 
 SafeImage.defaultProps = {
@@ -72,67 +82,19 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
   const [answerError, setAnswerError] = useState('');
   const [questionError, setQuestionError] = useState('');
   const [answerValue, setAnswerValue] = useState('');
-  const [uploadingImage, setUploadingImage] = useState(false);
+  // const [uploadingImage, setUploadingImage] = useState(false);
   const [failedImages, setFailedImages] = useState([]);
+  const [currentImage, setCurrentImage] = useState([]);
+  const [isImageModal, setIsImageModal] = useState(false);
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [isOkayBtn, setIsOkayBtn] = useState(false);
+  const [loadedImages, setLoadedImages] = useState([]);
+  const lastSelection = useSelector(getLastSelection);
   const textAreaRef = useRef(null);
   const fileInputRef = useRef(null);
   const answerValueRef = useRef('');
   const cursorPositionRef = useRef(null);
   const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = form;
-
-  useEffect(() => {
-    if (visible) {
-      if (editingFaq) {
-        const topicForDisplay = addSpacesToCamelCase(editingFaq.topic || 'WaivioGeneral');
-
-        setFieldsValue({
-          question: editingFaq.question,
-          answer: editingFaq.answer,
-          topic: topicForDisplay,
-        });
-        const answer = editingFaq.answer || '';
-
-        setAnswerValue(answer);
-        answerValueRef.current = answer;
-        if (editingFaq.answer && editingFaq.answer.length > 2000) {
-          setAnswerError(
-            'The maximum length is 2000 characters. Please make your answer more concise.',
-          );
-        } else {
-          setAnswerError('');
-        }
-        if (editingFaq.question && editingFaq.question.length > 500) {
-          setQuestionError(
-            'The maximum length is 500 characters. Please make your question more concise.',
-          );
-        } else {
-          setQuestionError('');
-        }
-      } else {
-        resetFields();
-        setFieldsValue({ topic: addSpacesToCamelCase('WaivioGeneral') });
-        setAnswerValue('');
-        answerValueRef.current = '';
-        setAnswerError('');
-        setQuestionError('');
-        setFailedImages([]);
-      }
-    }
-  }, [visible, editingFaq, resetFields, setFieldsValue]);
-
-  const handleQuestionChange = e => {
-    const value = e.target.value;
-
-    if (value.length >= 500) {
-      setQuestionError(
-        'The maximum length is 500 characters. Please make your question more concise.',
-      );
-    } else {
-      setQuestionError('');
-    }
-
-    setFieldsValue({ question: value });
-  };
 
   const extractImages = text => {
     if (!text || typeof text !== 'string') return [];
@@ -192,14 +154,91 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     return images;
   };
 
+  useEffect(() => {
+    if (visible) {
+      if (editingFaq) {
+        const topicForDisplay = addSpacesToCamelCase(editingFaq.topic || 'WaivioGeneral');
+
+        setFieldsValue({
+          question: editingFaq.question,
+          answer: editingFaq.answer,
+          topic: topicForDisplay,
+        });
+        const answer = editingFaq.answer || '';
+
+        setAnswerValue(answer);
+        answerValueRef.current = answer;
+
+        const existingImages = extractImages(answer);
+
+        if (existingImages.length > 0) {
+          setCurrentImage(
+            existingImages.map(img => ({
+              id: uuidv4(),
+              src: img.url,
+            })),
+          );
+        } else {
+          setCurrentImage([]);
+        }
+        if (editingFaq.answer && editingFaq.answer.length > 2000) {
+          setAnswerError(
+            'The maximum length is 2000 characters. Please make your answer more concise.',
+          );
+        } else {
+          setAnswerError('');
+        }
+        if (editingFaq.question && editingFaq.question.length > 500) {
+          setQuestionError(
+            'The maximum length is 500 characters. Please make your question more concise.',
+          );
+        } else {
+          setQuestionError('');
+        }
+      } else {
+        resetFields();
+        setFieldsValue({ topic: addSpacesToCamelCase('WaivioGeneral') });
+        setAnswerValue('');
+        answerValueRef.current = '';
+        setAnswerError('');
+        setQuestionError('');
+        setFailedImages([]);
+        setCurrentImage([]);
+        setIsImageModal(false);
+        setIsLoadingImage(false);
+        setIsOkayBtn(false);
+        setLoadedImages([]);
+      }
+    }
+  }, [visible, editingFaq, resetFields, setFieldsValue]);
+
+  const handleQuestionChange = e => {
+    const value = e.target.value;
+
+    if (value.length >= 500) {
+      setQuestionError(
+        'The maximum length is 500 characters. Please make your question more concise.',
+      );
+    } else {
+      setQuestionError('');
+    }
+
+    setFieldsValue({ question: value });
+  };
+
   const extractedImages = useMemo(() => {
-    const images = extractImages(answerValue);
+    const formValue = form.getFieldValue('answer') || '';
+    const currentValue = answerValue || formValue;
+
+    if (!currentValue) return [];
+
+    const images = extractImages(currentValue);
 
     return images.filter(img => !failedImages.includes(img.url));
   }, [answerValue, failedImages]);
 
   const handleImageUpload = (blob, linkMethod = false, cursorPos = null) => {
-    setUploadingImage(true);
+    // setUploadingImage(true);
     message.info('Uploading image');
 
     const formData = new FormData();
@@ -225,12 +264,15 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     })
       .then(res => res.json())
       .then(res => {
+        const imageId = uuidv4();
+
+        setCurrentImage(prev => [...prev, { id: imageId, src: res.image }]);
+
         const imageMarkdown = `![image](${res.image})`;
         const currentAnswer = answerValueRef.current || '';
         let newAnswer;
         let newCursorPos;
 
-        // Insert at cursor position if provided, otherwise append
         if (cursorPos !== null && cursorPos >= 0) {
           const before = currentAnswer.substring(0, cursorPos);
           const after = currentAnswer.substring(cursorPos);
@@ -246,7 +288,6 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
         answerValueRef.current = newAnswer;
         setFieldsValue({ answer: newAnswer });
 
-        // Restore cursor position after state update
         setTimeout(() => {
           const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
@@ -256,13 +297,12 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
           }
         }, 0);
 
-        setUploadingImage(false);
+        // setUploadingImage(false);
         message.success('Image uploaded successfully');
       })
       .catch(error => {
         console.error('Component error:', error);
-        message.error("Couldn't upload image");
-        setUploadingImage(false);
+        // setUploadingImage(false);
       });
   };
 
@@ -278,7 +318,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     }
 
     handleImageUpload(file);
-    // Reset file input
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -288,35 +328,36 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     handleImageUpload(blob, false, cursorPos);
   };
 
-  const handlePaste = async e => {
+  const handlePaste = useCallback(async e => {
     const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
     if (!textArea) return;
 
-    // Capture cursor position before processing paste
     const cursorPos = textArea.selectionStart || 0;
 
     cursorPositionRef.current = cursorPos;
 
-    // Get clipboard data from the paste event
     const clipboardData = e.clipboardData || e.originalEvent?.clipboardData;
 
     if (!clipboardData) return;
 
     let imageBlob = null;
 
-    // Check clipboardData.items first (most reliable for paste events)
     if (clipboardData.items && clipboardData.items.length > 0) {
-      const imageItem = clipboardData.items.find(
-        item => item.type && item.type.indexOf('image') !== -1,
-      );
+      try {
+        for (let i = 0; i < clipboardData.items.length; i++) {
+          const item = clipboardData.items[i];
 
-      if (imageItem) {
-        imageBlob = imageItem.getAsFile();
+          if (item && item.type && item.type.indexOf('image') !== -1) {
+            imageBlob = item.getAsFile();
+            break;
+          }
+        }
+      } catch (err) {
+        console.warn('Error accessing clipboard items:', err);
       }
     }
 
-    // Fallback: check clipboardData.files
     if (!imageBlob && clipboardData.files && clipboardData.files.length > 0) {
       const file = clipboardData.files[0];
 
@@ -325,7 +366,6 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       }
     }
 
-    // If we found an image, upload it and insert markdown
     if (imageBlob) {
       pasteImageAndText(imageBlob, cursorPos);
       e.preventDefault();
@@ -334,15 +374,13 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       return;
     }
 
-    // Fallback: try Clipboard API (requires permissions)
     try {
       const clipboardItems = await navigator.clipboard.read();
 
       if (clipboardItems && clipboardItems.length > 0) {
         const item = clipboardItems[0];
 
-        if (item.types) {
-          // Check for image types using array methods instead of loop
+        if (item.types && Array.isArray(item.types)) {
           const imageType = item.types.find(type => type.startsWith('image/'));
 
           if (imageType) {
@@ -376,21 +414,19 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
         }
       }
     } catch (error) {
-      // Clipboard API might not be available or require permissions
-      // This is fine, we've already tried clipboardData
+      console.error(err => err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (!visible) return;
 
-    // Use a small delay to ensure the textarea is fully mounted
     const timeoutId = setTimeout(() => {
       const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
       if (!textArea) return;
 
-      textArea.addEventListener('paste', handlePaste, false);
+      textArea.addEventListener('paste', handlePaste, true);
     }, 200);
 
     // eslint-disable-next-line consistent-return
@@ -399,10 +435,35 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
       const textArea = textAreaRef.current?.resizableTextArea?.textArea;
 
       if (textArea) {
-        textArea.removeEventListener('paste', handlePaste, false);
+        textArea.removeEventListener('paste', handlePaste, true);
       }
     };
-  }, [visible]);
+  }, [visible, handlePaste]);
+
+  const handleRemoveImage = imageDetail => {
+    if (imageDetail && imageDetail.id) {
+      setCurrentImage(prev => prev.filter(img => img.id !== imageDetail.id));
+    }
+
+    const imageUrl = imageDetail.src || imageDetail;
+    let currentAnswer = answerValueRef.current || answerValue || '';
+
+    const escapedUrl = imageUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const markdownPattern = new RegExp(`!\\[[^\\]]*\\]\\(${escapedUrl}\\)`, 'g');
+
+    currentAnswer = currentAnswer.replace(markdownPattern, '');
+
+    const urlPattern = new RegExp(`\\s*${escapedUrl}\\s*`, 'g');
+
+    currentAnswer = currentAnswer.replace(urlPattern, ' ');
+
+    currentAnswer = currentAnswer.replace(/\s+/g, ' ').trim();
+
+    setAnswerValue(currentAnswer);
+    answerValueRef.current = currentAnswer;
+    setFieldsValue({ answer: currentAnswer });
+  };
 
   const handleAnswerChange = e => {
     const value = e.target.value;
@@ -419,6 +480,41 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
     }
 
     setFieldsValue({ answer: value });
+  };
+
+  const handleOpenImageModal = () => {
+    setIsImageModal(!isImageModal);
+    setIsOkayBtn(false);
+  };
+
+  const handleImageModalOk = () => {
+    if (loadedImages && loadedImages.length > 0) {
+      const newImages = loadedImages.map(img => ({
+        id: uuidv4(),
+        src: img.src || img.url,
+      }));
+
+      setCurrentImage(prev => [...prev, ...newImages]);
+
+      const imageMarkdowns = loadedImages.map(img => `![image](${img.src || img.url})`).join(' ');
+      const currentAnswer = answerValueRef.current || '';
+      const newAnswer = currentAnswer ? `${currentAnswer} ${imageMarkdowns}` : imageMarkdowns;
+
+      setAnswerValue(newAnswer);
+      answerValueRef.current = newAnswer;
+      setFieldsValue({ answer: newAnswer });
+    }
+
+    setIsOkayBtn(true);
+    setIsImageModal(false);
+    setIsLoadingImage(false);
+    setLoadedImages([]);
+  };
+
+  const onLoadingImage = value => setIsLoadingImage(value);
+
+  const getImages = image => {
+    setLoadedImages(image?.slice(0, 2) || []);
   };
 
   const handleSubmit = () => {
@@ -499,26 +595,11 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
               style={{ display: 'none' }}
               onChange={handleFileSelect}
             />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="md-sb-button-plus md-add-button md-add-button--comments"
-              type="button"
-              disabled={uploadingImage}
-            >
-              <Icon
-                type="plus-circle"
-                style={{
-                  fontSize: '26px',
-                  marginLeft: '16px',
-                  marginRight: '4px',
-                  background: 'white',
-                  borderRadius: '50%',
-                }}
-              />
-            </button>
+
             <div style={{ flex: 1, marginLeft: '8px' }}>
               {getFieldDecorator('answer', {
                 rules: [{ message: 'Please enter an answer', max: 2000 }],
+                onChange: handleAnswerChange,
               })(
                 <TextArea
                   ref={textAreaRef}
@@ -533,7 +614,30 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
               )}
             </div>
           </div>
-          {extractedImages.length > 0 && (
+          <div className={'ml2'}>
+            <a onClick={handleOpenImageModal} style={{ marginLeft: '8px' }}>
+              Add image
+            </a>
+          </div>
+          {!isEmpty(currentImage) && (
+            <div className="ImageSetter">
+              <div className="image-box">
+                {map(currentImage, image => (
+                  <div className="image-box__preview" key={image.id}>
+                    <div
+                      className="image-box__remove"
+                      onClick={() => handleRemoveImage(image)}
+                      role="presentation"
+                    >
+                      <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+                    </div>
+                    <img src={image.src} height="86" alt={image.src} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {extractedImages.length > 0 && isEmpty(currentImage) && (
             <div className="ImageSetter">
               <div className="image-box">
                 {extractedImages.map((image, index) => (
@@ -551,6 +655,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
                         return [...prev, image.url];
                       });
                     }}
+                    onRemove={handleRemoveImage}
                   />
                 ))}
               </div>
@@ -576,6 +681,26 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
           )}
         </Form.Item>
       </Form>
+      <Modal
+        wrapClassName="Settings__modal"
+        style={{ zIndex: 2500 }}
+        onCancel={handleOpenImageModal}
+        okButtonProps={{ disabled: isLoadingImage || isEmpty(loadedImages) }}
+        cancelButtonProps={{ disabled: isLoadingImage }}
+        visible={isImageModal}
+        onOk={handleImageModalOk}
+        title="Add Images"
+      >
+        <ImageSetter
+          isAiChat
+          onImageLoaded={getImages}
+          onLoadingImage={onLoadingImage}
+          isEditor={false}
+          isOkayBtn={isOkayBtn}
+          isModal={isImageModal}
+          lastSelection={lastSelection}
+        />
+      </Modal>
     </Modal>
   );
 };
@@ -595,6 +720,7 @@ FAQModal.propTypes = {
   authUserName: PropTypes.string.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func.isRequired,
+    getFieldValue: PropTypes.func.isRequired,
     resetFields: PropTypes.func.isRequired,
     validateFields: PropTypes.func.isRequired,
     setFieldsValue: PropTypes.func.isRequired,

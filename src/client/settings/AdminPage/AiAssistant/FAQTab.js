@@ -67,6 +67,7 @@ const FAQTab = ({ intl }) => {
   const [expandedAnswers, setExpandedAnswers] = useState(new Set());
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [updateButtonDisabled, setUpdateButtonDisabled] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   const authUserName = useSelector(getAuthenticatedUserName);
   const isAuth = useSelector(getIsAuthenticated);
@@ -125,17 +126,20 @@ const FAQTab = ({ intl }) => {
         } else {
           setTotal(faqResponse.result.length);
         }
+        setHasLoadedOnce(true);
       } else {
         setFaqs([]);
         setHasMore(false);
         setTotal(0);
+        setHasLoadedOnce(true);
       }
     } catch (error) {
       console.error('Error loading FAQs:', error);
-      message.error('Failed to load FAQs');
+
       setFaqs([]);
       setHasMore(false);
       setTotal(0);
+      setHasLoadedOnce(true);
     } finally {
       setLoading(false);
     }
@@ -165,7 +169,9 @@ const FAQTab = ({ intl }) => {
       if (!search || !search.trim()) {
         const topicsResponse = await getAssistantFaqTopics(authUserName);
 
-        if (topicsResponse && topicsResponse.topics) {
+        if (topicsResponse && topicsResponse.error) {
+          console.warn('Failed to load topics:', topicsResponse.error);
+        } else if (topicsResponse && topicsResponse.topics) {
           setTopics(topicsResponse.topics.map(addSpacesToCamelCase));
         }
       }
@@ -182,24 +188,29 @@ const FAQTab = ({ intl }) => {
           } else {
             const totalResponse = await getAssistantFaq(authUserName, null, 0, 100);
 
-            if (totalResponse && totalResponse.result) {
+            if (totalResponse && totalResponse.error) {
+              console.warn('Failed to load total count:', totalResponse.error);
+            } else if (totalResponse && totalResponse.result) {
               setTotal(totalResponse.result.length);
             }
           }
         } else {
           setTotal(0);
         }
+        setHasLoadedOnce(true);
       } else {
         setFaqs([]);
         setTotal(0);
         setHasMore(false);
+        setHasLoadedOnce(true);
       }
     } catch (error) {
       console.error('Error loading FAQs:', error);
-      message.error('Failed to load FAQs');
+
       setFaqs([]);
       setTotal(0);
       setHasMore(false);
+      setHasLoadedOnce(true);
     } finally {
       setLoading(false);
     }
@@ -469,155 +480,167 @@ const FAQTab = ({ intl }) => {
           </div>
         </div>
       </div>
-      {/* eslint-disable-next-line no-nested-ternary */}
-      {loading ? (
+      {loading && !hasLoadedOnce ? (
         <Loading />
-      ) : isEmpty(displayFaqs) ? (
-        <EmptyCampaing
-          emptyMessage={intl.formatMessage({
-            id: 'no_results',
-            defaultMessage: 'No FAQs found',
-          })}
-        />
       ) : (
         <>
-          <div className="FAQTab__table">
-            <div className="FAQTab__table-header">
-              <div className="FAQTab__table-header-cell FAQTab__table-cell--question">Question</div>
-              <div className="FAQTab__table-header-cell FAQTab__table-cell--topic">Topic</div>
-              <div className="FAQTab__table-header-cell FAQTab__table-cell--actions">Actions</div>
-            </div>
-            <div className="FAQTab__table-body">
-              {displayFaqs.map(record => (
-                <div key={record._id || record.id} className="FAQTab__table-row">
-                  <div className="FAQTab__table-cell FAQTab__table-cell--question">
-                    <div className="FAQTab__question-text">{record.question}</div>
-                    <div className="FAQTab__answer-text">
-                      {record.answer && record.answer.length > 250 ? (
-                        <>
-                          {expandedAnswers.has(record._id || record.id) ? (
-                            <>
-                              {record.answer}
-                              <span
-                                onClick={() => {
-                                  const newExpanded = new Set(expandedAnswers);
-
-                                  newExpanded.delete(record._id || record.id);
-                                  setExpandedAnswers(newExpanded);
-                                }}
-                                className="FAQTab__show-more-button"
-                              >
-                                Show less
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              {record.answer.substring(0, 250)}...
-                              <span
-                                onClick={() => {
-                                  const newExpanded = new Set(expandedAnswers);
-
-                                  newExpanded.add(record._id || record.id);
-                                  setExpandedAnswers(newExpanded);
-                                }}
-                                className="FAQTab__show-more-button"
-                              >
-                                Show more
-                              </span>
-                            </>
-                          )}
-                        </>
-                      ) : (
-                        record.answer
-                      )}
-                    </div>
+          {isEmpty(displayFaqs) && !loading ? (
+            <EmptyCampaing
+              emptyMessage={intl.formatMessage({
+                id: 'no_results',
+                defaultMessage: 'No FAQs found',
+              })}
+            />
+          ) : (
+            <div style={{ position: 'relative' }}>
+              {loading && (
+                <div className="FAQTab__loading-overlay">
+                  <Loading />
+                </div>
+              )}
+              <div className="FAQTab__table">
+                <div className="FAQTab__table-header">
+                  <div className="FAQTab__table-header-cell FAQTab__table-cell--question">
+                    Question
                   </div>
-                  <div className="FAQTab__table-cell FAQTab__table-cell--topic">
-                    <Tag
-                      className="FAQTab__topic-tag FAQTab__topic-tag--clickable"
-                      onClick={() => {
-                        const topicWithSpaces = addSpacesToCamelCase(record.topic || 'general');
-
-                        setSelectedTopic(topicWithSpaces);
-                        setCurrentPage(1);
-                      }}
-                    >
-                      {addSpacesToCamelCase(record.topic || 'general')}
-                    </Tag>
-                  </div>
-                  <div className="FAQTab__table-cell FAQTab__table-cell--actions">
-                    <div className="FAQTab__actions">
-                      <Button
-                        type="link"
-                        onClick={() => handleEdit(record)}
-                        className="FAQTab__edit-button"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        type="link"
-                        danger
-                        className="FAQTab__delete-button"
-                        onClick={() => handleDeleteClick(record)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
+                  <div className="FAQTab__table-header-cell FAQTab__table-cell--topic">Topic</div>
+                  <div className="FAQTab__table-header-cell FAQTab__table-cell--actions">
+                    Actions
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-          {totalFiltered > 0 && (
-            <div className="FAQTab__pagination">
-              <div className="FAQTab__pagination-controls">
-                <a
-                  className={`FAQTab__pagination-link ${
-                    currentPage === 1
-                      ? 'FAQTab__pagination-link--disabled'
-                      : 'FAQTab__pagination-link--active'
-                  }`}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                      setCurrentPage(1);
-                    }
-                  }}
-                >
-                  &lt;&lt; First
-                </a>
-                <a
-                  className={`FAQTab__pagination-link ${
-                    currentPage === 1
-                      ? 'FAQTab__pagination-link--disabled'
-                      : 'FAQTab__pagination-link--active'
-                  }`}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                      setCurrentPage(currentPage - 1);
-                    }
-                  }}
-                >
-                  &lt; Prev
-                </a>
-                <span className="FAQTab__pagination-page">Page {currentPage}</span>
-                <a
-                  className={`FAQTab__pagination-link ${
-                    !canGoNext
-                      ? 'FAQTab__pagination-link--disabled'
-                      : 'FAQTab__pagination-link--active'
-                  }`}
-                  onClick={e => {
-                    e.preventDefault();
-                    if (canGoNext) {
-                      setCurrentPage(currentPage + 1);
-                    }
-                  }}
-                >
-                  Next &gt;
-                </a>
+                <div className="FAQTab__table-body">
+                  {displayFaqs.map(record => (
+                    <div key={record._id || record.id} className="FAQTab__table-row">
+                      <div className="FAQTab__table-cell FAQTab__table-cell--question">
+                        <div className="FAQTab__question-text">{record.question}</div>
+                        <div className="FAQTab__answer-text">
+                          {record.answer && record.answer.length > 250 ? (
+                            <>
+                              {expandedAnswers.has(record._id || record.id) ? (
+                                <>
+                                  {record.answer}
+                                  <span
+                                    onClick={() => {
+                                      const newExpanded = new Set(expandedAnswers);
+
+                                      newExpanded.delete(record._id || record.id);
+                                      setExpandedAnswers(newExpanded);
+                                    }}
+                                    className="FAQTab__show-more-button"
+                                  >
+                                    Show less
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  {record.answer.substring(0, 250)}...
+                                  <span
+                                    onClick={() => {
+                                      const newExpanded = new Set(expandedAnswers);
+
+                                      newExpanded.add(record._id || record.id);
+                                      setExpandedAnswers(newExpanded);
+                                    }}
+                                    className="FAQTab__show-more-button"
+                                  >
+                                    Show more
+                                  </span>
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            record.answer
+                          )}
+                        </div>
+                      </div>
+                      <div className="FAQTab__table-cell FAQTab__table-cell--topic">
+                        <Tag
+                          className="FAQTab__topic-tag FAQTab__topic-tag--clickable"
+                          onClick={() => {
+                            const topicWithSpaces = addSpacesToCamelCase(record.topic || 'general');
+
+                            setSelectedTopic(topicWithSpaces);
+                            setCurrentPage(1);
+                          }}
+                        >
+                          {addSpacesToCamelCase(record.topic || 'general')}
+                        </Tag>
+                      </div>
+                      <div className="FAQTab__table-cell FAQTab__table-cell--actions">
+                        <div className="FAQTab__actions">
+                          <Button
+                            type="link"
+                            onClick={() => handleEdit(record)}
+                            className="FAQTab__edit-button"
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            type="link"
+                            danger
+                            className="FAQTab__delete-button"
+                            onClick={() => handleDeleteClick(record)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+              {totalFiltered > 0 && (
+                <div className="FAQTab__pagination">
+                  <div className="FAQTab__pagination-controls">
+                    <a
+                      className={`FAQTab__pagination-link ${
+                        currentPage === 1
+                          ? 'FAQTab__pagination-link--disabled'
+                          : 'FAQTab__pagination-link--active'
+                      }`}
+                      onClick={e => {
+                        e.preventDefault();
+                        if (currentPage > 1) {
+                          setCurrentPage(1);
+                        }
+                      }}
+                    >
+                      &lt;&lt; First
+                    </a>
+                    <a
+                      className={`FAQTab__pagination-link ${
+                        currentPage === 1
+                          ? 'FAQTab__pagination-link--disabled'
+                          : 'FAQTab__pagination-link--active'
+                      }`}
+                      onClick={e => {
+                        e.preventDefault();
+                        if (currentPage > 1) {
+                          setCurrentPage(currentPage - 1);
+                        }
+                      }}
+                    >
+                      &lt; Prev
+                    </a>
+                    <span className="FAQTab__pagination-page">Page {currentPage}</span>
+                    <a
+                      className={`FAQTab__pagination-link ${
+                        !canGoNext
+                          ? 'FAQTab__pagination-link--disabled'
+                          : 'FAQTab__pagination-link--active'
+                      }`}
+                      onClick={e => {
+                        e.preventDefault();
+                        if (canGoNext) {
+                          setCurrentPage(currentPage + 1);
+                        }
+                      }}
+                    >
+                      Next &gt;
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>
