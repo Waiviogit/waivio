@@ -654,11 +654,8 @@ const SocialProduct = ({
 
               {!isEmpty(affiliateLinks) &&
                 !affiliatLinks?.every(l => isNil(l)) &&
-                !(
-                  affiliateLinks.length === 1 &&
-                  instacardAff &&
-                  isOldInstacartProgram(instacardAff)
-                ) && (
+                !isOldInstacartProgram(instacardAff) &&
+                !(affiliateLinks.length === 1 && instacardAff) && (
                   <div className="SocialProduct__paddingBottom">
                     <div className="SocialProduct__subtitle">
                       <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
