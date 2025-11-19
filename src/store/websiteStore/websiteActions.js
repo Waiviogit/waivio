@@ -844,6 +844,7 @@ export const getWebsiteObjWithCoordinates = (
       payload: ApiClient.getPostsForMap({
         box,
         limit,
+        follower: userName,
       }),
     });
   }
