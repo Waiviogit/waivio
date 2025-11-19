@@ -16,6 +16,8 @@ const InstacartWidget = ({
   withDisclamer,
   marginBottom,
   inlineFlex,
+  buttonText,
+  isRecipe,
 }) => {
   const [loading, setLoading] = React.useState(false);
 
@@ -33,17 +35,26 @@ const InstacartWidget = ({
     });
   };
 
+  const getButtonText = () => {
+    if (buttonText) return buttonText;
+
+    if (isRecipe === false) return 'Get Ingredients';
+
+    return 'Get Recipe Ingredients';
+  };
+
   return isNewInstacartProgram(instacartAff) ? (
     <div
       style={{
         display: inlineFlex ? 'inline-flex' : 'flex',
         flexDirection: 'column',
+        gap: '8px',
         marginBottom: marginBottom || (isProduct ? '15px' : '10px'),
       }}
     >
       <button
         onClick={handleClick}
-        className={'AffiliatLink instacart instacart-new-button'}
+        className={'AffiliatLink instacart '}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -54,13 +65,14 @@ const InstacartWidget = ({
           padding: '16px 18px',
           cursor: loading ? 'not-allowed' : 'pointer',
           height: '46px',
-          borderRadius: '8px',
+          borderRadius: '24px',
           border: 'none',
           fontFamily: 'inherit',
-          fontSize: '14px',
+          fontSize: '16px',
           fontWeight: 500,
           whiteSpace: 'nowrap',
-          transition: 'opacity 0.2s',
+          margin: '0 auto',
+          minWidth: '250px',
         }}
         disabled={loading}
       >
@@ -69,12 +81,12 @@ const InstacartWidget = ({
         ) : (
           <>
             <img
-              className={'instacart-logo'}
-              src={'/images/Instacart-logo.svg'}
+              className={'instacart'}
+              src={'/images/Instacart-logo-carrot.svg'}
               alt="Instacart logo"
-              style={{ height: '22px', width: 'auto' }}
+              style={{ height: '22px', marginRight: '2px' }}
             />
-            <span>Get Recipe Ingredients</span>
+            <span>{getButtonText()}</span>
           </>
         )}
       </button>
@@ -111,6 +123,8 @@ InstacartWidget.propTypes = {
   withDisclamer: PropTypes.bool,
   marginBottom: PropTypes.string,
   inlineFlex: PropTypes.bool,
+  buttonText: PropTypes.string, // Custom button text: "Get Recipe Ingredients", "Get Ingredients", "Shop with Instacart", or "Order with Instacart"
+  isRecipe: PropTypes.bool, // Used to determine default button text
 };
 
 export default InstacartWidget;
