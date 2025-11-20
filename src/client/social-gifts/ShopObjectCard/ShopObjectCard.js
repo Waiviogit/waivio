@@ -12,8 +12,8 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import {
   createQueryBreadcrumbs,
   getObjectName,
-  isNewInstacartProgram,
   isOldInstacartProgram,
+  isNewInstacartProgram,
 } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
@@ -28,7 +28,6 @@ import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import './ShopObjectCard.less';
 import { getTagName } from '../../../common/helpers/tagsNamesList';
 import useQuery from '../../../hooks/useQuery';
-import InstacartWidget from '../../widgets/InstacartWidget';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -226,13 +225,14 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isNewInstacartProgram(affLink)
                 )
-                  return (
-                    <InstacartWidget
-                      key={affLink.link}
-                      instacartAff={affLink}
-                      wobjPerm={wObject?.author_permlink}
-                    />
-                  );
+                  return null;
+                //   return (
+                //     <InstacartWidget
+                //       key={affLink.link}
+                //       instacartAff={affLink}
+                //       wobjPerm={wObject?.author_permlink}
+                //     />
+                //   );
                 if (
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isOldInstacartProgram(affLink)

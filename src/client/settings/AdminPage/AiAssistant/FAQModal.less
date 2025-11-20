@@ -1,0 +1,33 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../components/ImageSetter/ImageSetter.less';
+@import (reference) '../../../components/EditorExtended/components/addbutton.less';
+
+.FAQModal {
+  .ImageSetter {
+    padding: 0;
+    margin-top: 12px;
+    margin-bottom: 0;
+
+    img {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .image-box__preview {
+    a {
+      display: block;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .md-add-button--comments {
+    margin-top: 7px;
+  }
+}
