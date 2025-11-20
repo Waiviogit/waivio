@@ -54,7 +54,9 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.STEEMCONNECT_HOST': JSON.stringify(
     process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
   ),
-  'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://anyx.io'),
+  'process.env.STEEMJS_URL': JSON.stringify(
+    process.env.STEEMJS_URL || 'https://api.hive-engine.com/rpc/',
+  ),
   'process.env.SIGNUP_URL': JSON.stringify(
     process.env.SIGNUP_URL || 'https://signup.hive.io/?ref=waivio',
   ),
