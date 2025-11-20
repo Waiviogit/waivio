@@ -25,7 +25,7 @@ export const getNumbersFromWobjPrice = wobj => {
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
 export const isOldInstacartProgram = instacartAff =>
-  instacartAff.type.toLowerCase() === 'instacart' &&
+  instacartAff?.type?.toLowerCase() === 'instacart' &&
   !instacartAff?.link?.includes('instacart-impact');
 
 export const isNewInstacartProgram = instacartAff =>
