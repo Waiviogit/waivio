@@ -2763,7 +2763,7 @@ export const getMapExperts = (userName, params) =>
 
 export const getPostsForMap = (params, follower) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
-    headers: { ...headers, follower },
+    headers: { ...headers, ...(follower !== undefined && { follower }) },
     body: JSON.stringify(params),
     method: 'POST',
   })
