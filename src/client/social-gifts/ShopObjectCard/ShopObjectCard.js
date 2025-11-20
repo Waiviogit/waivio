@@ -13,6 +13,7 @@ import {
   createQueryBreadcrumbs,
   getObjectName,
   isOldInstacartProgram,
+  isNewInstacartProgram,
 } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
@@ -220,10 +221,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
             {wObject.affiliateLinks
               .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
               .map(affLink => {
-                // if (
-                //   affLink.type.toLocaleLowerCase() === 'instacart' &&
-                //   isNewInstacartProgram(affLink)
-                // )
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isNewInstacartProgram(affLink)
+                )
+                  return null;
                 //   return (
                 //     <InstacartWidget
                 //       key={affLink.link}
