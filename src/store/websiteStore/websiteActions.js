@@ -841,11 +841,13 @@ export const getWebsiteObjWithCoordinates = (
   if (userType && !isUserMap) {
     return dispatch({
       type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-      payload: ApiClient.getPostsForMap({
-        box,
-        limit,
-        follower: userName,
-      }),
+      payload: ApiClient.getPostsForMap(
+        {
+          box,
+          limit,
+        },
+        userName,
+      ),
     });
   }
 
