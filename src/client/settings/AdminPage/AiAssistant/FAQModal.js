@@ -13,37 +13,35 @@ import './FAQModal.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
+const sanitizeImageUrl = url => url?.trim().replace(/[)\s]+$/g, '');
+
 const SafeImage = ({ src, alt, onError, onRemove }) => {
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   const handleError = () => {
     setError(true);
-    if (onError) {
-      onError();
-    }
+    onError?.();
   };
 
-  const handleLoad = () => {
-    setLoaded(true);
-  };
+  const handleLoad = () => setLoaded(true);
 
-  if (error || !src || src.trim() === '' || src === '()') {
-    return null;
-  }
+  if (!src || src.trim() === '' || src === '()') return null;
+
+  const safeSrc = sanitizeImageUrl(src);
 
   return (
     <div className="image-box__preview">
       {onRemove && (
-        <div className="image-box__remove" onClick={() => onRemove(src)} role="presentation">
+        <div className="image-box__remove" onClick={() => onRemove(safeSrc)} role="presentation">
           <i className="iconfont icon-delete_fill Image-box__remove-icon" />
         </div>
       )}
-      <a href={src} target="_blank" rel="noopener noreferrer">
+      <a href={safeSrc} target="_blank" rel="noopener noreferrer">
         <img
-          src={src}
+          src={safeSrc}
           height="86"
-          alt={alt || src}
+          alt={alt || safeSrc}
           onError={handleError}
           onLoad={handleLoad}
           style={{ display: loaded ? 'block' : 'none' }}
@@ -82,7 +80,6 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
   const [answerError, setAnswerError] = useState('');
   const [questionError, setQuestionError] = useState('');
   const [answerValue, setAnswerValue] = useState('');
-  // const [uploadingImage, setUploadingImage] = useState(false);
   const [failedImages, setFailedImages] = useState([]);
   const [currentImage, setCurrentImage] = useState([]);
   const [isImageModal, setIsImageModal] = useState(false);
@@ -107,21 +104,12 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
 
     // eslint-disable-next-line no-cond-assign
     while ((match = markdownRegex.exec(text)) !== null) {
-      let imageUrl = match[2].trim();
+      let imageUrl = sanitizeImageUrl(match[2]);
 
-      if (!imageUrl || imageUrl === '' || imageUrl === '()') {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
+      // eslint-disable-next-line no-continue
+      if (!imageUrl || seenUrls.has(imageUrl)) continue;
 
-      if (!imageUrl.startsWith('http')) {
-        imageUrl = `https://${imageUrl}`;
-      }
-
-      if (seenUrls.has(imageUrl)) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
+      if (!imageUrl.startsWith('http')) imageUrl = `https://${imageUrl}`;
 
       seenUrls.add(imageUrl);
       images.push({
@@ -136,19 +124,13 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
 
     // eslint-disable-next-line no-restricted-syntax
     for (const urlMatch of urlMatches) {
-      const imageUrl = urlMatch[0].trim();
+      const imageUrl = sanitizeImageUrl(urlMatch[0]);
 
-      if (!imageUrl || seenUrls.has(imageUrl)) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
+      // eslint-disable-next-line no-continue
+      if (!imageUrl || seenUrls.has(imageUrl)) continue;
 
       seenUrls.add(imageUrl);
-      images.push({
-        url: imageUrl,
-        alt: 'image',
-        type: 'url',
-      });
+      images.push({ url: imageUrl, alt: 'image', type: 'url' });
     }
 
     return images;
