@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isNewInstacartProgram } from '../../common/helpers/wObjectHelper';
 import { getInstacartLink, websiteStatisticsAction } from '../../waivioApi/ApiClient';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 import './AffiliatLinks/AffiliatLink.less';
 import EarnsCommissionsOnPurchases from '../statics/EarnsCommissionsOnPurchases';
@@ -50,6 +51,7 @@ const InstacartWidget = ({
         flexDirection: 'column',
         gap: '8px',
         marginBottom: marginBottom || (isProduct ? '15px' : '10px'),
+        width: isMobile() ? '100%' : undefined,
       }}
     >
       <button
@@ -93,7 +95,13 @@ const InstacartWidget = ({
       {withDisclamer && <EarnsCommissionsOnPurchases />}
     </div>
   ) : (
-    <div style={{ display: inlineFlex ? 'inline-flex' : 'flex', flexDirection: 'column' }}>
+    <div
+      style={{
+        display: inlineFlex ? 'inline-flex' : 'flex',
+        flexDirection: 'column',
+        width: isMobile() ? '100%' : undefined,
+      }}
+    >
       <div
         className={className}
         id="shop-with-instacart-v1"

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { debounce, isEmpty, isEqual, round, get, map } from 'lodash';
+import { debounce, isEmpty, isEqual, round, get, map, has } from 'lodash';
 import { Map } from 'pigeon-maps';
 import { useSelector } from 'react-redux';
 import Overlay from 'pigeon-overlay';
@@ -110,7 +110,7 @@ const MainMapView = props => {
         className="WebsiteBody__overlay"
       >
         <div className="WebsiteBody__overlay-wrap" role="presentation" onClick={setQueryInStorage}>
-          {usersType ? (
+          {usersType && has(wobject, 'post') ? (
             <PostOverlayCard wObject={wobject} />
           ) : (
             <ObjectOverlayCard
