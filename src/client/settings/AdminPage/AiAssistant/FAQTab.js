@@ -48,6 +48,7 @@ const FAQTab = ({ intl }) => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(null);
+  const [isRendering, setIsRendering] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('All topics');
   const [pageSize, setPageSize] = useState(5);
@@ -319,6 +320,16 @@ const FAQTab = ({ intl }) => {
     }
   }, [total, displayFaqs.length, currentPage, pageSize]);
 
+  useEffect(() => {
+    if (!loading) {
+      requestAnimationFrame(() => {
+        setIsRendering(false);
+      });
+    } else {
+      setIsRendering(true);
+    }
+  }, [loading]);
+
   const canGoNext =
     hasMore ||
     (isSearchActive && currentPage < totalPages) ||
@@ -417,7 +428,7 @@ const FAQTab = ({ intl }) => {
       </div>
 
       <>
-        {loading && !hasLoadedOnce && <Loading />}
+        {isRendering && <Loading />}
         {!loading && hasLoadedOnce && isEmpty(displayFaqs) ? (
           <EmptyCampaing
             emptyMessage={intl.formatMessage({
@@ -435,7 +446,7 @@ const FAQTab = ({ intl }) => {
             transition: 'opacity 0.15s linear',
           }}
         >
-          {loading && hasLoadedOnce && (
+          {isRendering && (
             <div className="FAQTab__loading-overlay">
               <Loading />
             </div>

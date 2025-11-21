@@ -578,7 +578,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
               onChange={handleFileSelect}
             />
 
-            <div style={{ flex: 1, marginLeft: '8px' }}>
+            <div style={{ flex: 1 }}>
               {getFieldDecorator('answer', {
                 rules: [{ message: 'Please enter an answer', max: 2000 }],
                 onChange: handleAnswerChange,
@@ -596,8 +596,8 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
               )}
             </div>
           </div>
-          <div className={'ml2'}>
-            <a onClick={handleOpenImageModal} style={{ marginLeft: '8px' }}>
+          <div>
+            <a onClick={handleOpenImageModal} style={{ marginLeft: '2px' }}>
               Add image
             </a>
           </div>
