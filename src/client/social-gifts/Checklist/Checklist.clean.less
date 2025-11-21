@@ -1,0 +1,101 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ChecklistClean {
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+  max-width: 1280px;
+
+  @media @small {
+    padding: 20px 40px 100px;
+  }
+
+  .Checklist__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .ShopObjectCardClean {
+    width: calc((100% - 72px) / 4);
+
+    @media (max-width: 1200px) and (min-width: 999px) {
+      width: calc((100% - 48px) / 3);
+    }
+
+    @media (max-width: 998px) and (min-width: 481px) {
+      width: calc((100% - 24px) / 2);
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+    }
+  }
+
+  .Checklist__listItems {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 24px;
+
+    a {
+      position: relative;
+      display: block;
+
+      /* затемнення знизу */
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 25%;
+        background: linear-gradient(to top, var(--website-color), transparent);
+        z-index: 2;
+        pointer-events: none;
+        transition: 0.3s;
+      }
+
+      &:hover {
+        &::after {
+          height: 35%;
+        }
+      }
+    }
+
+    .Checklist__itemsTitle {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      z-index: 3;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 500;
+      text-align: left;
+      font-family: var(--template-font-body, PlayfairDisplay, serif);
+    }
+  }
+
+  .Checklist__itemsAvatar {
+    border: none;
+    height: auto;
+    min-height: 220px;
+    border-radius: 24px;
+    overflow: hidden;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+
+  .Checklist__listItems .Checklist__itemsTitle {
+    background: transparent;
+    color: #000000;
+    text-align: left;
+    font-family: var(--template-font-body, PlayfairDisplay, serif);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}

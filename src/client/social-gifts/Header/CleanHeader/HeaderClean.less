@@ -17,7 +17,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 40px;
-    gap: 24px;
   }
 
   &__logo {
@@ -259,20 +258,23 @@
   &__banner {
     width: 100%;
     box-sizing: border-box;
-    box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
-    -webkit-box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
-    -moz-box-shadow: 1px -91px 20px -24px rgb(244, 244, 245) inset;
-    height: 240px;
+    box-shadow: 1px -91px 40px -24px white inset;
+    -webkit-box-shadow: 1px -91px 40px -24px white inset;
+    -moz-box-shadow: 1px -91px 40px -24px white inset;
+    height: 275px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
+    background-position: top;
     h1 {
       font-family: var(--template-font-heading, PlayfairDisplay, serif);
-      font-weight: 400;
-      margin: 0 0 8px;
+      font-size: clamp(32px, 4vw, 48px);
+      margin: 0 0 10px;
+      font-weight: 600;
+      color: #161616;
+      text-transform: capitalize;
     }
 
     h2 {
@@ -285,9 +287,6 @@
   &__nav {
     position: absolute;
     bottom: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     max-width: 1200px;
     padding: 5px 0;
 
@@ -302,8 +301,9 @@
       box-shadow: none;
       padding: 0;
       justify-content: space-between;
+
       &__link {
-        text-transform: none;
+        text-transform: capitalize;
         width: auto;
         border-radius: 999px;
         border: 1px solid rgba(15, 23, 42, 0.12);
@@ -315,6 +315,11 @@
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
+        margin-right: 5px;
+
+        &:last-child {
+          margin-right: 0;
+        }
 
         &::after {
           display: none;
@@ -322,10 +327,10 @@
 
         &:hover,
         &--active {
-          background: linear-gradient(120deg, #ffd34d, #f9b000);
+          background: var(--website-color);
           border-color: transparent;
           color: #1a1300;
-          box-shadow: 0 12px 18px rgba(249, 176, 0, 0.35);
+          box-shadow: 0 7px 11px var(--website-color);
         }
       }
     }

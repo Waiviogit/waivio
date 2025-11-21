@@ -1,5 +1,6 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
+@import './Checklist.clean.less';
 
 .Checklist {
   margin: 5px;
@@ -13,44 +14,6 @@
 
     @media @small {
       margin: 20px;
-    }
-  }
-
-  &--clean {
-    margin: 0 auto;
-    padding: 20px 16px 80px;
-    max-width: 1280px;
-
-    @media @small {
-      padding: 20px 40px 100px;
-    }
-
-    .Checklist__breadcrumbsContainre {
-      display: none;
-    }
-
-    .Checklist__list {
-      gap: 24px;
-    }
-
-    .Checklist__listItems {
-      border-radius: 24px;
-      background: #fff;
-      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-      overflow: hidden;
-    }
-
-    .Checklist__itemsAvatar {
-      border: none;
-      height: auto;
-      min-height: 220px;
-    }
-
-    .Checklist__listItems .Checklist__itemsTitle {
-      background: transparent;
-      color: #111;
-      text-align: center;
-      padding: 18px 0 24px;
     }
   }
 
@@ -69,6 +32,7 @@
     text-align: center;
     margin: 48px auto 32px;
     max-width: 760px;
+    font-family: var(--template-font-body, PlayfairDisplay, serif);
 
     &Label {
       display: inline-block;
@@ -130,6 +94,7 @@
     }
 
     .ShopObjectCard,
+    .ShopObjectCardClean,
     .Checklist__listItems {
       margin-right: 0;
       @media (min-width: 1201px) {

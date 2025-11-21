@@ -4,21 +4,16 @@ import PropTypes from 'prop-types';
 import store from 'store';
 import Cookie from 'js-cookie';
 import { filter, get, includes, isUndefined, size } from 'lodash';
-import { Icon, Menu } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { ReactEditor } from 'slate-react';
 import { setGoogleTagEvent } from '../../../common/helpers';
 import useTemplateProvider from '../../../designTemplates/TemplateProvider';
-import { initialColors } from '../../websites/constants/colors';
 
-import Popover from '../Popover';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import { getUserMetadata } from '../../../store/usersStore/usersActions';
 import { logout } from '../../../store/authStore/authActions';
-import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
-import LanguageSettings from '../Navigation/LanguageSettings';
 import { setCurrentPage } from '../../../store/appStore/appActions';
 import { getIsWaivio, getWebsiteColors } from '../../../store/appStore/appSelectors';
 import {
@@ -42,15 +37,7 @@ const HeaderButtons = props => {
   const showAdminTab = appAdmins?.includes(authUserName);
 
   const [notificationsPopoverVisible, setNotificationsPopoverVisible] = useState(false);
-  const {
-    intl,
-    username,
-    notifications,
-    userMetaData,
-    loadingNotifications,
-    history,
-    location,
-  } = props;
+  const { intl, username, notifications, userMetaData, loadingNotifications, history } = props;
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
 
   let popoverItems = [
@@ -213,73 +200,6 @@ const HeaderButtons = props => {
       store.set('currentPage', key);
     }
   };
-
-  if (!username) {
-    const next = location.pathname.length > 1 ? location.pathname : '';
-    const popoverNotAuthUserItems = [
-      <PopoverMenuItem key="reviews" topNav>
-        <FormattedMessage id="reviews" defaultMessage="Reviews" />
-      </PopoverMenuItem>,
-      <PopoverMenuItem key="legal" topNav>
-        <FormattedMessage id="legal" defaultMessage="Legal" />
-      </PopoverMenuItem>,
-    ];
-
-    if (props.aboutObject) {
-      popoverNotAuthUserItems.unshift(
-        <PopoverMenuItem key="about" topNav>
-          <FormattedMessage id="about" defaultMessage="About" />
-        </PopoverMenuItem>,
-      );
-    }
-
-    return (
-      <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
-        {props.isAuthenticating ? (
-          <div>
-            <Icon
-              style={{
-                color: props.colors?.mapMarkerBody || initialColors.marker,
-                fontSize: '20px',
-              }}
-              type="loading"
-            />
-          </div>
-        ) : (
-          <Menu className="Topnav__menu-container__menu" mode="horizontal">
-            <Menu.Item key="login">
-              <ModalSignIn isSocialGifts={props.isSocialGifts} domain={props.domain} next={next} />
-            </Menu.Item>
-            <Menu.Item key="language">
-              <LanguageSettings />
-            </Menu.Item>
-            {isMobile() && props.isWebsite && (
-              <Menu.Item key="more" className="Topnav__menu--icon">
-                <Popover
-                  placement="bottom"
-                  trigger="click"
-                  visible={popoverVisible}
-                  onVisibleChange={handleMoreMenuVisibleChange}
-                  overlayStyle={{ position: 'fixed' }}
-                  content={
-                    <PopoverMenu onSelect={handleMoreMenuSelect}>
-                      {popoverNotAuthUserItems}
-                    </PopoverMenu>
-                  }
-                  overlayClassName="Topnav__popover"
-                >
-                  <a className="Topnav__link-mt5">
-                    <Icon type="caret-down" />
-                    <Icon type="bars" />
-                  </a>
-                </Popover>
-              </Menu.Item>
-            )}
-          </Menu>
-        )}
-      </div>
-    );
-  }
 
   const { HeaderButtons: TemplateHeaderButtons } = useTemplateProvider();
 

@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { isEmpty, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -6,26 +5,21 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router';
-import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
-
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import Loading from '../../components/Icon/Loading';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import {
   createQueryBreadcrumbs,
   getObjectName,
   getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
+import GoogleAds from '../../adsenseAds/GoogleAds';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import PageContent from '../PageContent/PageContent';
 import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
-import ListDescription from '../ListDescription/ListDescription';
 import useQuery from '../../../hooks/useQuery';
-import GoogleAds from '../../adsenseAds/GoogleAds';
 import useAdLevelData from '../../../hooks/useAdsense';
-import useTemplateProvider, { useTemplateId } from '../../../designTemplates/TemplateProvider';
+import useTemplateProvider from '../../../designTemplates/TemplateProvider';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
@@ -36,10 +30,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const { name } = useParams();
   const { minimal, intensive, moderate } = useAdLevelData();
   const templateComponents = useTemplateProvider();
-  const templateId = useTemplateId();
-  const TemplateListHero = templateComponents?.ListHero;
-  const isCleanTemplate = templateId === 'clean' && !!TemplateListHero;
-  const shouldRenderHero = isCleanTemplate && listType && !loading;
+  const ChecklistLayout = templateComponents?.ChecklistLayout;
 
   const hasProducts = listItems && listItems.some(item => item.object_type !== 'list');
 
@@ -59,30 +50,6 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
       description: firstDescrPart,
     };
   }, [listType, wobject]);
-
-  const renderListSummary = () => {
-    if (loading || !listType) return null;
-
-    if (isCleanTemplate) {
-      if (!cleanListSummary) return null;
-
-      return (
-        <section className="Checklist__cleanSummary">
-          {cleanListSummary.label && (
-            <span className="Checklist__cleanSummaryLabel">{cleanListSummary.label}</span>
-          )}
-          {cleanListSummary.title && (
-            <h2 className="Checklist__cleanSummaryTitle">{cleanListSummary.title}</h2>
-          )}
-          {cleanListSummary.description && (
-            <p className="Checklist__cleanSummaryText">{cleanListSummary.description}</p>
-          )}
-        </section>
-      );
-    }
-
-    return <ListDescription wobject={wobject} />;
-  };
 
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
@@ -218,30 +185,22 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
     return <div className="Checklist__list">{injectAds(listItems, getListRow, hasProducts)}</div>;
   };
 
+  if (!ChecklistLayout) {
+    return null;
+  }
+
   return (
-    <div
-      className={classNames('Checklist', {
-        'Checklist--withoutMargin': wobject?.object_type === 'page',
-        'Checklist--clean': isCleanTemplate,
-      })}
-    >
-      {shouldRenderHero && <TemplateListHero wobject={wobject} />}
-      {!isCleanTemplate && (
-        <div className="Checklist__breadcrumbsContainre">
-          {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
-          {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
-        </div>
-      )}
-      {listType && wobject?.background && !loading && !isCleanTemplate && (
-        <div className="Checklist__banner">
-          <img src={wobject?.background} alt={'Promotional list banner'} />
-        </div>
-      )}
-      {isCleanTemplate && renderListSummary()}
-      {loading ? <Loading /> : getMenuList()}
-      {!isCleanTemplate && renderListSummary()}
-      {(minimal || moderate || intensive) && listType && <GoogleAds inList />}
-    </div>
+    <ChecklistLayout
+      wobject={wobject}
+      listType={listType}
+      loading={loading}
+      hideBreadCrumbs={hideBreadCrumbs}
+      getMenuList={getMenuList}
+      minimal={minimal}
+      moderate={moderate}
+      intensive={intensive}
+      cleanListSummary={cleanListSummary}
+    />
   );
 };
 

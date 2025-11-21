@@ -1,6 +1,8 @@
 import ClearHeaderButton from '../../client/components/HeaderButton/CleanHeaderButton/ClearHeaderButton';
 import ClearHeader from '../../client/social-gifts/Header/CleanHeader/ClearHeader';
 import CleanListHero from './components/ListHero';
+import CleanChecklistLayout from '../../client/social-gifts/Checklist/layouts/CleanChecklistLayout';
+import CleanShopObjectCardView from '../../client/social-gifts/ShopObjectCard/views/CleanShopObjectCardView';
 
 const cleanTemplate = {
   meta: {
@@ -16,6 +18,8 @@ const cleanTemplate = {
     Header: ClearHeader,
     HeaderButtons: ClearHeaderButton,
     ListHero: CleanListHero,
+    ChecklistLayout: CleanChecklistLayout,
+    ShopObjectCardView: CleanShopObjectCardView,
   },
 };
 

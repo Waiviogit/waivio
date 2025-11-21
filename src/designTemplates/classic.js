@@ -1,5 +1,7 @@
 import ClassicHeaderButton from '../client/components/HeaderButton/ClassicHeaderButton';
 import ClassicHeader from '../client/social-gifts/Header/ClassicHeader';
+import ClassicChecklistLayout from '../client/social-gifts/Checklist/layouts/ClassicChecklistLayout';
+import ClassicShopObjectCardView from '../client/social-gifts/ShopObjectCard/views/ClassicShopObjectCardView';
 
 const classicTemplate = {
   meta: {
@@ -15,6 +17,8 @@ const classicTemplate = {
     Header: ClassicHeader,
     HeaderButtons: ClassicHeaderButton,
     ListHero: undefined,
+    ChecklistLayout: ClassicChecklistLayout,
+    ShopObjectCardView: ClassicShopObjectCardView,
   },
 };
 

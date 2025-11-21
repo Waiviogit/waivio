@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { isEmpty, size, trimEnd, debounce } from 'lodash';
+import { isEmpty, size, trimEnd, debounce, unescape } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -9,13 +9,14 @@ import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message, Modal, Alert } from 'antd';
 import { analyzePastedCode } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import HtmlSandbox from '../../../components/HtmlSandbox';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
+import HtmlSandbox from '../../../components/HtmlSandbox';
+import IconButton from '../../components/IconButton';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
+import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 import {
   getAppendData,
   getLastPermlinksFromHash,
@@ -24,7 +25,6 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 import {
   getDraftPage,
@@ -33,7 +33,6 @@ import {
   validateAppend,
 } from '../../../waivioApi/ApiClient';
 import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
-import Loading from '../../components/Icon/Loading';
 import { getHtml } from '../../components/Story/Body';
 import { extractImageTags } from '../../../common/helpers/parser';
 import CatalogWrap from '../Catalog/CatalogWrap';
@@ -46,6 +45,7 @@ import {
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Loading from '../../components/Icon/Loading';
 
 import './ObjectOfTypePage.less';
 
@@ -378,6 +378,7 @@ const ObjectOfTypePage = props => {
 
   const getComponentEdit = () => (
     <React.Fragment>
+      <h2 className={'object-page-preview-title'}>{getObjectName(wobject)}</h2>
       {isReadyToPublish && (
         <div className="object-page-preview">
           <div className="object-page-preview__header">
