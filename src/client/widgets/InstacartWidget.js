@@ -10,6 +10,7 @@ import EarnsCommissionsOnPurchases from '../statics/EarnsCommissionsOnPurchases'
 
 const InstacartWidget = ({
   wobjPerm,
+  inCard,
   instacartAff,
   className,
   isProduct,
@@ -39,7 +40,7 @@ const InstacartWidget = ({
   const getButtonText = () => {
     if (buttonText) return buttonText;
 
-    if (isRecipe === false) return 'Get Ingredients';
+    if (!isRecipe || inCard) return 'Get Ingredients';
 
     return 'Get Recipe Ingredients';
   };
@@ -66,15 +67,15 @@ const InstacartWidget = ({
           color: '#FAF1E5',
           padding: '16px 18px',
           cursor: loading ? 'not-allowed' : 'pointer',
-          height: '46px',
+          height: inCard ? '40px' : '46px',
           borderRadius: '24px',
           border: 'none',
           fontFamily: 'inherit',
-          fontSize: '16px',
+          fontSize: inCard ? '13px' : '16px',
           fontWeight: 500,
           whiteSpace: 'nowrap',
           margin: '0 auto',
-          minWidth: '250px',
+          minWidth: inCard ? '150px' : '250px',
         }}
         disabled={loading}
       >
@@ -86,7 +87,7 @@ const InstacartWidget = ({
               className={'instacart'}
               src={'/images/Instacart-logo-carrot.svg'}
               alt="Instacart logo"
-              style={{ height: '22px', marginRight: '2px' }}
+              style={{ height: inCard ? '18px' : '22px', marginRight: '2px' }}
             />
             <span>{getButtonText()}</span>
           </>
@@ -131,8 +132,9 @@ InstacartWidget.propTypes = {
   withDisclamer: PropTypes.bool,
   marginBottom: PropTypes.string,
   inlineFlex: PropTypes.bool,
-  buttonText: PropTypes.string, // Custom button text: "Get Recipe Ingredients", "Get Ingredients", "Shop with Instacart", or "Order with Instacart"
-  isRecipe: PropTypes.bool, // Used to determine default button text
+  inCard: PropTypes.bool,
+  buttonText: PropTypes.string,
+  isRecipe: PropTypes.bool,
 };
 
 export default InstacartWidget;

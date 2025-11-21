@@ -28,6 +28,7 @@ import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import './ShopObjectCard.less';
 import { getTagName } from '../../../common/helpers/tagsNamesList';
 import useQuery from '../../../hooks/useQuery';
+import InstacartWidget from '../../widgets/InstacartWidget';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -225,14 +226,15 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isNewInstacartProgram(affLink)
                 )
-                  return null;
-                //   return (
-                //     <InstacartWidget
-                //       key={affLink.link}
-                //       instacartAff={affLink}
-                //       wobjPerm={wObject?.author_permlink}
-                //     />
-                //   );
+                  // return null;
+                  return (
+                    <InstacartWidget
+                      inCard
+                      key={affLink.link}
+                      instacartAff={affLink}
+                      wobjPerm={wObject?.author_permlink}
+                    />
+                  );
                 if (
                   affLink.type.toLocaleLowerCase() === 'instacart' &&
                   isOldInstacartProgram(affLink)
