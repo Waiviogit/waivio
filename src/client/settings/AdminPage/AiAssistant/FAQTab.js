@@ -48,7 +48,7 @@ const FAQTab = ({ intl }) => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(null);
-  const [isRendering, setIsRendering] = useState(true);
+  // const [isRendering, setIsRendering] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('All topics');
   const [pageSize, setPageSize] = useState(5);
@@ -320,15 +320,15 @@ const FAQTab = ({ intl }) => {
     }
   }, [total, displayFaqs.length, currentPage, pageSize]);
 
-  useEffect(() => {
-    if (!loading) {
-      requestAnimationFrame(() => {
-        setIsRendering(false);
-      });
-    } else {
-      setIsRendering(true);
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     requestAnimationFrame(() => {
+  //       setIsRendering(false);
+  //     });
+  //   } else {
+  //     setIsRendering(true);
+  //   }
+  // }, [loading]);
 
   const canGoNext =
     hasMore ||
@@ -428,7 +428,6 @@ const FAQTab = ({ intl }) => {
       </div>
 
       <>
-        {isRendering && <Loading />}
         {!loading && hasLoadedOnce && isEmpty(displayFaqs) ? (
           <EmptyCampaing
             emptyMessage={intl.formatMessage({
@@ -438,15 +437,8 @@ const FAQTab = ({ intl }) => {
           />
         ) : null}
 
-        <div
-          style={{
-            position: 'relative',
-            opacity: loading ? 0 : 1,
-            pointerEvents: loading ? 'none' : 'auto',
-            transition: 'opacity 0.15s linear',
-          }}
-        >
-          {isRendering && (
+        <div className="FAQTab__table-container">
+          {loading && (
             <div className="FAQTab__loading-overlay">
               <Loading />
             </div>
