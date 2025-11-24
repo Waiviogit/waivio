@@ -340,7 +340,10 @@ export const roundNumberToThousands = number => {
 };
 // const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
-const PRODUCTION_REQUEST_NODES = [
+const BLACKLISTED_NODES = ['anyx.io'];
+
+// Allowed Hive RPC nodes
+const ALLOWED_NODES = [
   'https://api.hive.blog',
   'https://api.deathwing.me',
   'https://hive-api.arcange.eu',
@@ -348,6 +351,18 @@ const PRODUCTION_REQUEST_NODES = [
   'https://techcoderx.com',
   'https://api.c0ff33a.uk',
 ];
+
+const filterBlacklistedNodes = nodes => {
+  return nodes.filter(node => {
+    const isBlacklisted = BLACKLISTED_NODES.some(blacklisted => node.includes(blacklisted));
+    if (isBlacklisted) {
+      console.warn(`Blocked blacklisted Hive RPC node: ${node}`);
+    }
+    return !isBlacklisted;
+  });
+};
+
+const PRODUCTION_REQUEST_NODES = filterBlacklistedNodes(ALLOWED_NODES);
 
 export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,
