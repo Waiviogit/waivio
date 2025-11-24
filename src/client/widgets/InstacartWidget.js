@@ -25,6 +25,7 @@ const InstacartWidget = ({
 
   const handleClick = e => {
     e.preventDefault();
+    e.stopPropagation();
     setLoading(true);
     getInstacartLink(wobjPerm).then(link => {
       setLoading(false);
