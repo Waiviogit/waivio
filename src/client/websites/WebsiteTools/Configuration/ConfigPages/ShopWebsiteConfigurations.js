@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Icon, message, Modal } from 'antd';
+import { Button, Form, Icon, message, Modal, Select } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
@@ -50,6 +50,7 @@ const ShopWebsiteConfigurations = ({
   const [openColorsModal, setOpenColorsModal] = useState('');
   const [openHeaderConfig, setOpenHeaderConfig] = useState('');
   const defaultHashtag = get(config, 'defaultHashtag', null);
+  const siteTemplate = get(config, 'siteTemplate', '') || 'classic';
   const [image, setImage] = useState('');
   const [paramsSaving, setParamsSaving] = useState(false);
   const classListHeaderConfig = classNames('WebsitesConfigurations__headers', {
@@ -133,6 +134,11 @@ const ShopWebsiteConfigurations = ({
   const handleSubmitHeader = headerConfig =>
     handleSubmit({
       header: headerConfig,
+    });
+
+  const handleSubmitTemplate = siteTemplateConfig =>
+    handleSubmit({
+      siteTemplate: siteTemplateConfig,
     });
 
   const handleModalState = key => {
@@ -350,6 +356,19 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage: 'Edit',
                 })}
               </Button>
+            </Form.Item>
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'template',
+                  defaultMessage: 'Template:',
+                })}
+              </h3>
+              <Select defaultValue={siteTemplate} onChange={handleSubmitTemplate}>
+                <Select.Option value={'classic'}>Standard</Select.Option>
+                <Select.Option value={'clean'}>Elegant</Select.Option>
+                <Select.Option value={'colorful'}>Colorful</Select.Option>
+              </Select>
             </Form.Item>
           </Form>
           {openHeaderConfig && (

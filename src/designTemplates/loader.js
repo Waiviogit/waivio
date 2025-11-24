@@ -1,7 +1,7 @@
 import classicTemplate from './classic';
 import cleanTemplate from './clean';
 
-export const DEFAULT_TEMPLATE_ID = cleanTemplate.meta.id;
+export const DEFAULT_TEMPLATE_ID = classicTemplate.meta.id;
 
 const templatesRegistry = [classicTemplate, cleanTemplate];
 
