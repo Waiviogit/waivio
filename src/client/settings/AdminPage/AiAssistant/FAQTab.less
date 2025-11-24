@@ -132,9 +132,10 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    color: @black-text;
+    font-weight: 500;
 
     @media @small {
-      color: @black-text;
       justify-content: space-between;
       align-items: center;
     }
@@ -178,6 +179,19 @@
     }
   }
 
+  &__loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 10;
+  }
+
   &__table {
     border-radius: 4px;
     width: 100%;
@@ -185,6 +199,7 @@
     text-align: center;
     font-size: 13px;
     transition: opacity 0.15s ease;
+    position: relative;
 
     @media @small {
       font-size: 16px;
@@ -194,17 +209,18 @@
   &__table-header {
     display: flex;
     border-bottom: 1px solid #d9d9d9;
+    font-weight: bold;
   }
 
   &__table-header-cell {
-    font-weight: 500;
-    color: @black-text;
+    color: @black-text-basic;
     padding: 8px 12px;
     border-right: 1px solid #d9d9d9;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 16px;
 
     &.FAQTab__table-cell--question {
       flex: 2;
@@ -287,7 +303,10 @@
     overflow-wrap: break-word;
     max-width: 100%;
   }
-
+  &__table-container {
+    position: relative;
+    min-height: 380px;
+  }
   &__show-more-button {
     padding: 0;
     margin-left: 4px;
@@ -295,9 +314,8 @@
     font-size: 13px;
     color: var(--website-color);
     line-height: 1.5;
-
     &:hover {
-      color: @blue-baliHai;
+      cursor: pointer;
     }
   }
 
@@ -309,17 +327,6 @@
     border: 1px solid #d9d9d9;
     font-size: 12px;
     margin: 0;
-
-    &--clickable {
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background-color: var(--website-color);
-        color: @white;
-        border-color: var(--website-color);
-      }
-    }
   }
 
   &__actions {
@@ -407,8 +414,8 @@
 
   &__pagination-page {
     margin: 0 8px;
-    font-weight: 600;
-    color: @outer-space;
+    font-weight: 500;
+    color: @black-text;
     font-size: 14px;
   }
 

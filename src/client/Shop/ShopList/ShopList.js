@@ -118,7 +118,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
 
   return (
     <div className="ShopList">
-      {hasActiveTags && (
+      {hasActiveTags && !isMobile() && (
         <div className="ShopList__tags">
           {activeFilters.tagCategory.map(category =>
             category.tags.map(tag => (

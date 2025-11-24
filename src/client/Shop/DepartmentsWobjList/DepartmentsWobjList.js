@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
-import { useLocation, useRouteMatch } from 'react-router';
+import { useHistory, useLocation, useRouteMatch } from 'react-router';
+import { Tag } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { getUserShopSchema } from '../../../common/helpers/shopHelper';
@@ -28,6 +29,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
 
   const match = useRouteMatch();
   const location = useLocation();
+  const history = useHistory();
   const query = useQuery();
   const list = useRef();
   const schema = getUserShopSchema(location?.pathname);
@@ -38,6 +40,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const department = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
     : match.params.department;
+
+  const activeFilters = parseQueryForFilters(query);
 
   useEffect(() => {
     getDepartmentsFeed(
@@ -89,8 +93,38 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
     });
   };
 
+  const handleRemoveTag = (categoryName, tag) => {
+    const currentTags = query.get(categoryName)?.split(',') || [];
+    const filteredTags = currentTags.filter(t => t !== tag);
+
+    if (isEmpty(filteredTags)) {
+      query.delete(categoryName);
+    } else {
+      query.set(categoryName, filteredTags.join(','));
+    }
+
+    history.push(`?${query.toString()}${location.hash}`);
+  };
+
+  const hasActiveTags = query.toString().length > 0;
+
   return (
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
+      {hasActiveTags && !isMobile() && (
+        <div className="DepartmentsWobjList__tags mt1">
+          {activeFilters.tagCategory.map(category =>
+            category.tags.map(tag => (
+              <Tag
+                key={`${category.categoryName}-${tag}`}
+                closable
+                onClose={() => handleRemoveTag(category.categoryName, tag)}
+              >
+                {tag}
+              </Tag>
+            )),
+          )}
+        </div>
+      )}
       {isEmpty(departmentInfo?.wobjects) ? (
         <EmptyCampaign emptyMessage={'There are no products available in this department.'} />
       ) : (

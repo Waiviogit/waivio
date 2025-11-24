@@ -279,6 +279,7 @@ const SocialProduct = ({
             key={affLink.link}
             wobjPerm={wobject?.author_permlink}
             instacartAff={affLink}
+            isRecipe={isRecipe}
           />
         );
       }
@@ -617,7 +618,7 @@ const SocialProduct = ({
               {!showPostModal &&
                 isRecipe &&
                 instacardAff &&
-                isOldInstacartProgram(instacardAff) && (
+                (isOldInstacartProgram(instacardAff) || isNewInstacartProgram(instacardAff)) && (
                   <InstacartWidget
                     isProduct
                     className={'SocialProduct__instacard'}
@@ -626,6 +627,7 @@ const SocialProduct = ({
                     withDisclamer
                     inlineFlex
                     marginBottom={'5px'}
+                    isRecipe={isRecipe}
                   />
                 )}
               {showRecipeFields && isRecipe && (
@@ -654,11 +656,9 @@ const SocialProduct = ({
 
               {!isEmpty(affiliateLinks) &&
                 !affiliatLinks?.every(l => isNil(l)) &&
-                !(
-                  affiliateLinks.length === 1 &&
-                  instacardAff &&
-                  isOldInstacartProgram(instacardAff)
-                ) && (
+                !isOldInstacartProgram(instacardAff) &&
+                !isNewInstacartProgram(instacardAff) &&
+                !(affiliateLinks.length === 1 && instacardAff) && (
                   <div className="SocialProduct__paddingBottom">
                     <div className="SocialProduct__subtitle">
                       <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:

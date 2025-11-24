@@ -9,7 +9,7 @@
     },
     "STEEMJS_URL": {
       "description": "Hive node URL",
-      "value": "https://anyx.io",
+      "value": "https://herpc.dtools.dev",
       "required": false
     }
   },

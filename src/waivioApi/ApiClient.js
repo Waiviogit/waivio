@@ -2761,9 +2761,9 @@ export const getMapExperts = (userName, params) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getPostsForMap = params =>
+export const getPostsForMap = (params, follower) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
-    headers,
+    headers: { ...headers, ...(follower !== undefined && { follower }) },
     body: JSON.stringify(params),
     method: 'POST',
   })
@@ -5764,8 +5764,12 @@ export const deleteAssistantFaq = (currentUser, id) =>
     .then(res => res.json())
     .catch(e => e);
 
-export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 100) => {
-  const query = createQuery({ topic, skip, limit });
+export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 5) => {
+  const queryParams = { skip, limit };
+  if (topic) {
+    queryParams.topic = topic;
+  }
+  const query = createQuery(queryParams);
   return fetch(`${config.baseUrl}${config.assistant}${config.qna}?${query}`, {
     headers: {
       ...headers,
@@ -5799,5 +5803,44 @@ export const getAssistantFaqTopics = currentUser =>
 
       return error;
     });
+
+export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, limit = null) => {
+  const queryParams = { search, skip };
+  if (topic) {
+    queryParams.topic = topic;
+  }
+  if (limit) {
+    queryParams.limit = limit;
+  }
+  const query = createQuery(queryParams);
+  return fetch(`${config.baseUrl}${config.assistant}${config.qna}${config.search}?${query}`, {
+    headers: {
+      ...headers,
+      'Current-User': currentUser,
+      ...getAuthHeaders(),
+    },
+
+    method: 'GET',
+  })
+    .then(res => {
+      if (!res.ok) {
+        return res
+          .json()
+          .then(err => {
+            throw new Error(err.message || `HTTP ${res.status}: ${res.statusText}`);
+          })
+          .catch(() => {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          });
+      }
+      return res.json();
+    })
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return { error: error.message || 'Failed to search FAQs' };
+    });
+};
 
 export default null;
