@@ -1,0 +1,59 @@
+.HeaderCleanButtons {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  &--hidden {
+    display: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__iconBtn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    i {
+      font-size: 22px;
+      color: #555;
+    }
+
+    &:hover i {
+      color: #111;
+    }
+
+    &--bag {
+      position: relative;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -4px;
+    right: -10px;
+    min-width: 20px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--website-color);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+  }
+
+  .ModalSignIn__link-type {
+    border: none !important;
+  }
+}

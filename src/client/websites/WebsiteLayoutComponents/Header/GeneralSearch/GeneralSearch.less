@@ -1,17 +1,20 @@
 @import (reference) '../../../../styles/custom.less';
 @import (reference) '../../../../styles/modules/variables.less';
+
 .GeneralSearch {
   &__wrapper {
     .ant-select-search__field__wrap .ant-input.ant-select-search__field {
       padding-left: 30px !important;
       &:focus {
-        box-shadow: 0 0 5px 0 var(--website-color) !important;
+        box-shadow: 0 0 5px 0 var(--website-color);
       }
     }
   }
+
   .ant-select-dropdown-menu {
     max-height: 450px;
   }
+
   &.ant-select-dropdown {
     .ant-select-dropdown-menu-item.ant-select-dropdown-menu-item-active {
       background: @white-smoke !important;

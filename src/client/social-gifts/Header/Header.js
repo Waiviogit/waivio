@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { has, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
-import HeaderButton from '../../components/HeaderButton/HeaderButton';
+import useTemplateProvider from '../../../designTemplates/TemplateProvider';
 import {
   getConfigurationValues,
   getWebsiteLogo,
@@ -12,10 +11,7 @@ import {
   getMainObj,
   getHostAddress,
 } from '../../../store/appStore/appSelectors';
-import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
-import WebsiteTopNavigation, { userMenuTabsList } from './TopNavigation/WebsiteTopNavigation';
-
-import './Header.less';
+import { userMenuTabsList } from './TopNavigation/WebsiteTopNavigation';
 
 const Header = ({ hideSignIn, hideHeader }) => {
   const [searchBarActive, setSearchBarActive] = useState(false);
@@ -57,71 +53,24 @@ const Header = ({ hideSignIn, hideHeader }) => {
   if (to?.includes('/active-campaigns')) {
     to = '/active-campaigns';
   }
+  const props = {
+    hideSignIn,
+    searchBarActive,
+    to,
+    logoClassList,
+    hideHeader,
+    logo,
+    mainObj,
+    currHost,
+    header,
+    handleMobileSearchButtonClick,
+    config,
+  };
+  const { Header: TemplateHeader } = useTemplateProvider();
 
-  return (
-    <React.Fragment>
-      {!hideSignIn && (
-        <React.Fragment>
-          <div className="Header">
-            {!searchBarActive && (
-              <Link
-                to={to}
-                className={logoClassList}
-                title={mainObj?.title || mainObj?.description || currHost}
-              >
-                {logo && (
-                  <img
-                    alt={`Social Gifts - ${header || config.host || currHost} `}
-                    src={logo}
-                    className="Header__img"
-                  />
-                )}
-                <span>{header || config.host || currHost}</span>
-              </Link>
-            )}
-            {typeof window !== 'undefined' && (
-              <React.Fragment>
-                <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
-                <div className={'Header__rightWrap'}>
-                  <button
-                    className={classNames('Header__mobile-search', {
-                      'Header__mobile-search-close': searchBarActive,
-                    })}
-                    onClick={handleMobileSearchButtonClick}
-                  >
-                    <i
-                      className={classNames('iconfont', {
-                        'icon-close': searchBarActive,
-                        'icon-search': !searchBarActive,
-                      })}
-                    />
-                  </button>
-                  {!searchBarActive && typeof window !== 'undefined' && (
-                    <HeaderButton
-                      isSocialGifts
-                      domain={currHost}
-                      searchBarActive={searchBarActive}
-                    />
-                  )}
-                </div>
-              </React.Fragment>
-            )}
-          </div>
-          {config.mainBanner && (
-            <img
-              id="socialGiftsMainBanner"
-              alt={`Promotional banner for ${header || config.host || currHost}`}
-              src={config.mainBanner}
-              style={{
-                width: '100%',
-              }}
-            />
-          )}
-        </React.Fragment>
-      )}
-      {!hideHeader && <WebsiteTopNavigation shopSettings={config.shopSettings} />}
-    </React.Fragment>
-  );
+  if (!TemplateHeader) return null;
+
+  return <TemplateHeader {...props} />;
 };
 
 Header.propTypes = {
