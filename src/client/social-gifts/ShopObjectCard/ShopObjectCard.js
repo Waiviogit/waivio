@@ -1,34 +1,21 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { get, has, isEmpty, truncate, uniq } from 'lodash';
+import { get, has, isEmpty, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useParams, useHistory } from 'react-router';
 import moment from 'moment';
-
-import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import {
-  createQueryBreadcrumbs,
-  getObjectName,
-  isOldInstacartProgram,
-  isNewInstacartProgram,
-} from '../../../common/helpers/wObjectHelper';
-import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
-import HeartButton from '../../widgets/HeartButton';
-import USDDisplay from '../../components/Utils/USDDisplay';
+import { createQueryBreadcrumbs, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import useTemplateProvider from '../../../designTemplates/TemplateProvider';
+import useQuery from '../../../hooks/useQuery';
 
 import './ShopObjectCard.less';
-import { getTagName } from '../../../common/helpers/tagsNamesList';
-import useQuery from '../../../hooks/useQuery';
-import InstacartWidget from '../../widgets/InstacartWidget';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -136,117 +123,37 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     [link, history],
   );
 
-  return (
-    <div onClick={onClick} className={shopObjectCardClassList}>
-      {withRewards && (
-        <h3
-          className={
-            isEnLocale ? 'ShopObjectCard__rewardTitle' : 'ShopObjectCard__rewardTitle--small'
-          }
-        >
-          {isSpecialCampaign ? (
-            <>
-              <USDDisplay value={specialAmount} currencyDisplay="symbol" />{' '}
-              {isGiveawayCampaign ? 'Giveaway' : 'Contest'}
-              {daysLeft !== null && getCampaignText(isGiveawayCampaign, daysLeft)}
-            </>
-          ) : (
-            <>
-              <FormattedMessage
-                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-                defaultMessage={`Share {minPhotos} photo${
-                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
-                } & earn`}
-                values={{ minPhotos: proposition?.requirements?.minPhotos }}
-              />{' '}
-              {isEnLocale ? (
-                <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-              ) : (
-                <div>
-                  {' '}
-                  <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-                </div>
-              )}
-            </>
-          )}
-        </h3>
-      )}
-      <div className="ShopObjectCard__topInfoWrap">
-        <HeartButton wobject={wObject} size={'20px'} />
-        <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCard__avatarWrap">
-          <img className="ShopObjectCard__avatarWrap" src={url} alt={altText} />
-        </a>
-      </div>
-      <a
-        href={objLink}
-        onClick={e => e.preventDefault()}
-        title={
-          wObject?.description
-            ? truncate(wObject?.description, { length: 200 })
-            : getObjectName(wObject)
-        }
-        className="ShopObjectCard__name"
-      >
-        {truncate(wobjName, {
-          length: isSocialProduct && isMobile() ? 35 : 110,
-          separator: '...',
-        })}
-      </a>
-      {!isEmpty(rating) && (
-        <RatingsWrap
-          ratings={[rating]}
-          username={username}
-          wobjId={wObject.author_permlink}
-          wobjName={wobjName}
-        />
-      )}
-      <span className="ObjectCardView__tag-text">
-        {wObject.price && (
-          <span className="ShopObjectCard__price" title={wObject.price}>
-            {wObject.price}
-          </span>
-        )}
-        {tags.map((tag, index) => (
-          <span key={tag}>
-            {index === 0 && !wObject.price ? (
-              getTagName(tag)
-            ) : (
-              <span>&nbsp;&middot;{` ${getTagName(tag)}`}</span>
-            )}
-          </span>
-        ))}
-      </span>
-      {!isEmpty(wObject.affiliateLinks) && (
-        <div className="ShopObjectCard__affiliatLinksWrap">
-          <div className="ShopObjectCard__affiliatLinks">
-            {wObject.affiliateLinks
-              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-              .map(affLink => {
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isNewInstacartProgram(affLink)
-                )
-                  // return null;
-                  return (
-                    <InstacartWidget
-                      inCard
-                      key={affLink.link}
-                      instacartAff={affLink}
-                      wobjPerm={wObject?.author_permlink}
-                    />
-                  );
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isOldInstacartProgram(affLink)
-                )
-                  return null;
+  const templateComponents = useTemplateProvider();
+  const ShopObjectCardView = templateComponents?.ShopObjectCardView;
 
-                return <AffiliatLink key={affLink.link} link={affLink} />;
-              })}
-          </div>
-        </div>
-      )}
-    </div>
+  if (!ShopObjectCardView) {
+    return null;
+  }
+
+  return (
+    <ShopObjectCardView
+      wObject={wObject}
+      isChecklist={isChecklist}
+      isSocialProduct={isSocialProduct}
+      username={username}
+      url={url}
+      altText={altText}
+      objLink={objLink}
+      wobjName={wobjName}
+      rating={rating}
+      tags={tags}
+      withRewards={withRewards}
+      isEnLocale={isEnLocale}
+      shopObjectCardClassList={shopObjectCardClassList}
+      proposition={proposition}
+      isSpecialCampaign={isSpecialCampaign}
+      isGiveawayCampaign={isGiveawayCampaign}
+      daysLeft={daysLeft}
+      specialAmount={specialAmount}
+      rewardAmount={rewardAmount}
+      getCampaignText={getCampaignText}
+      onClick={onClick}
+    />
   );
 };
 

@@ -27,6 +27,37 @@
     }
   }
 
+  &__cleanSummary {
+    text-align: center;
+    margin: 48px auto 32px;
+    max-width: 760px;
+    font-family: var(--template-font-body, PlayfairDisplay, serif);
+
+    &Label {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--website-color, #111);
+      margin-bottom: 12px;
+    }
+
+    &Title {
+      font-size: clamp(32px, 4vw, 48px);
+      margin: 0 0 12px;
+      font-weight: 600;
+      color: #161616;
+    }
+
+    &Text {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #4b5563;
+      margin: 0 auto;
+    }
+  }
+
   .FeedMasonry {
     padding: 0;
     margin-top: 20px;
@@ -62,6 +93,7 @@
     }
 
     .ShopObjectCard,
+    .ShopObjectCardClean,
     .Checklist__listItems {
       margin-right: 0;
       @media (min-width: 1201px) {
@@ -175,3 +207,5 @@
     font-size: 18px;
   }
 }
+
+@import './Checklist.clean.less';

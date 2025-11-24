@@ -3,26 +3,17 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
 import Cookie from 'js-cookie';
-import classNames from 'classnames';
 import { filter, get, includes, isUndefined, size } from 'lodash';
-import { Icon, Menu } from 'antd';
-import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
 import { ReactEditor } from 'slate-react';
 import { setGoogleTagEvent } from '../../../common/helpers';
-import { initialColors } from '../../websites/constants/colors';
+import useTemplateProvider from '../../../designTemplates/TemplateProvider';
 
-import BTooltip from '../BTooltip';
-import Popover from '../Popover';
-import Notifications from '../Navigation/Notifications/Notifications';
-import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import { getUserMetadata } from '../../../store/usersStore/usersActions';
 import { logout } from '../../../store/authStore/authActions';
-import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
-import LanguageSettings from '../Navigation/LanguageSettings';
 import { setCurrentPage } from '../../../store/appStore/appActions';
 import { getIsWaivio, getWebsiteColors } from '../../../store/appStore/appSelectors';
 import {
@@ -46,15 +37,7 @@ const HeaderButtons = props => {
   const showAdminTab = appAdmins?.includes(authUserName);
 
   const [notificationsPopoverVisible, setNotificationsPopoverVisible] = useState(false);
-  const {
-    intl,
-    username,
-    notifications,
-    userMetaData,
-    loadingNotifications,
-    history,
-    location,
-  } = props;
+  const { intl, username, notifications, userMetaData, loadingNotifications, history } = props;
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
 
   let popoverItems = [
@@ -218,153 +201,32 @@ const HeaderButtons = props => {
     }
   };
 
-  if (!username) {
-    const next = location.pathname.length > 1 ? location.pathname : '';
-    const popoverNotAuthUserItems = [
-      <PopoverMenuItem key="reviews" topNav>
-        <FormattedMessage id="reviews" defaultMessage="Reviews" />
-      </PopoverMenuItem>,
-      <PopoverMenuItem key="legal" topNav>
-        <FormattedMessage id="legal" defaultMessage="Legal" />
-      </PopoverMenuItem>,
-    ];
+  const { HeaderButtons: TemplateHeaderButtons } = useTemplateProvider();
 
-    if (props.aboutObject) {
-      popoverNotAuthUserItems.unshift(
-        <PopoverMenuItem key="about" topNav>
-          <FormattedMessage id="about" defaultMessage="About" />
-        </PopoverMenuItem>,
-      );
-    }
+  if (!TemplateHeaderButtons) return null;
 
-    return (
-      <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
-        {props.isAuthenticating ? (
-          <div>
-            <Icon
-              style={{
-                color: props.colors?.mapMarkerBody || initialColors.marker,
-                fontSize: '20px',
-              }}
-              type="loading"
-            />
-          </div>
-        ) : (
-          <Menu className="Topnav__menu-container__menu" mode="horizontal">
-            <Menu.Item key="login">
-              <ModalSignIn isSocialGifts={props.isSocialGifts} domain={props.domain} next={next} />
-            </Menu.Item>
-            <Menu.Item key="language">
-              <LanguageSettings />
-            </Menu.Item>
-            {isMobile() && props.isWebsite && (
-              <Menu.Item key="more" className="Topnav__menu--icon">
-                <Popover
-                  placement="bottom"
-                  trigger="click"
-                  visible={popoverVisible}
-                  onVisibleChange={handleMoreMenuVisibleChange}
-                  overlayStyle={{ position: 'fixed' }}
-                  content={
-                    <PopoverMenu onSelect={handleMoreMenuSelect}>
-                      {popoverNotAuthUserItems}
-                    </PopoverMenu>
-                  }
-                  overlayClassName="Topnav__popover"
-                >
-                  <a className="Topnav__link-mt5">
-                    <Icon type="caret-down" />
-                    <Icon type="bars" />
-                  </a>
-                </Popover>
-              </Menu.Item>
-            )}
-          </Menu>
-        )}
-      </div>
-    );
-  }
+  const componentProps = {
+    username,
+    lastSeenTimestamp,
+    popoverVisible,
+    displayBadge,
+    intl,
+    loadingNotifications,
+    notificationsPopoverVisible,
+    notificationsCountDisplay,
+    searchBarActive: props.searchBarActive,
+    handleMoreMenuVisibleChange,
+    handleMoreMenuSelect,
+    handleCloseNotificationsPopover,
+    handleScrollToTop,
+    handleNotificationsPopoverVisibleChange,
+    handleEditor,
+    getUserMetadata,
+    notifications,
+    popoverItems,
+  };
 
-  return (
-    <div
-      className={classNames('Topnav__menu-container', {
-        'Topnav__mobile-hidden': props.searchBarActive,
-      })}
-    >
-      <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-        <Menu.Item key="write">
-          <BTooltip
-            placement="bottom"
-            title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-            mouseEnterDelay={1}
-            overlayClassName={classNames('Topnav__notifications-tooltip', {
-              'Topnav__notifications-tooltip--hide': isMobile(),
-            })}
-          >
-            <Link to="/editor" className="Topnav__link Topnav__link--action" onClick={handleEditor}>
-              <i className="iconfont icon-write" />
-            </Link>
-          </BTooltip>
-        </Menu.Item>
-        <Menu.Item key="notifications" className="Topnav__item--badge">
-          <BTooltip
-            placement="bottom"
-            title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-            overlayClassName="Topnav__notifications-tooltip"
-            mouseEnterDelay={1}
-          >
-            <Popover
-              placement="bottomRight"
-              trigger="click"
-              content={
-                <Notifications
-                  notifications={notifications}
-                  onNotificationClick={handleCloseNotificationsPopover}
-                  currentAuthUsername={username}
-                  lastSeenTimestamp={lastSeenTimestamp}
-                  loadingNotifications={loadingNotifications}
-                  getUpdatedUserMetadata={props.getUserMetadata}
-                />
-              }
-              visible={notificationsPopoverVisible}
-              onVisibleChange={handleNotificationsPopoverVisibleChange}
-              overlayClassName="Notifications__popover-overlay"
-              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
-            >
-              <a className="Topnav__link Topnav__link--light Topnav__link--action">
-                {displayBadge ? (
-                  <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
-                ) : (
-                  <i className="iconfont icon-remind" />
-                )}
-              </a>
-            </Popover>
-          </BTooltip>
-        </Menu.Item>
-        <Menu.Item key="user" className="Topnav__item-user">
-          <Link className="Topnav__user" to={`/@${username}`} onClick={handleScrollToTop}>
-            <Avatar username={username} size={36} />
-          </Link>
-        </Menu.Item>
-        <Menu.Item key="more" className="Topnav__menu--icon">
-          <Popover
-            placement="bottom"
-            trigger="click"
-            visible={popoverVisible}
-            onVisibleChange={handleMoreMenuVisibleChange}
-            overlayStyle={{ position: 'fixed' }}
-            content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
-            overlayClassName="Topnav__popover"
-          >
-            <a className="Topnav__link">
-              <Icon type="caret-down" />
-              <Icon type="bars" />
-            </a>
-          </Popover>
-        </Menu.Item>
-      </Menu>
-    </div>
-  );
+  return <TemplateHeaderButtons {...componentProps} />;
 };
 
 HeaderButtons.propTypes = {

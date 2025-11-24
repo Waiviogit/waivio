@@ -10,6 +10,28 @@ body {
   height: 100%;
 }
 
+// Clean template global styles
+.template-clean {
+  font-family: var(--template-font-body, PlayfairDisplay, serif);
+
+  // Apply PlayfairDisplay to all new clean template components
+  .HeaderClean,
+  .HeaderCleanButtons,
+  .HeaderClean__banner,
+  .HeaderClean__nav,
+  .HeaderClean__logo,
+  .HeaderClean__search,
+  .HeaderClean__actions {
+    font-family: var(--template-font-body, PlayfairDisplay, serif);
+  }
+
+  // Navigation buttons in clean template
+  .HeaderClean__nav .WebsiteTopNavigation__link {
+    font-family: var(--template-font-body, PlayfairDisplay, serif);
+    text-transform: capitalize;
+  }
+}
+
 #app {
   width: 100%;
   height: 100%;
