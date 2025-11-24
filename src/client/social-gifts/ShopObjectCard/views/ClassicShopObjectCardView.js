@@ -13,6 +13,7 @@ import {
 } from '../../../../common/helpers/wObjectHelper';
 import { getTagName } from '../../../../common/helpers/tagsNamesList';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import InstacartWidget from '../../../widgets/InstacartWidget';
 
 const ClassicShopObjectCardView = ({
   wObject,
@@ -125,14 +126,14 @@ const ClassicShopObjectCardView = ({
                 affLink.type.toLocaleLowerCase() === 'instacart' &&
                 isNewInstacartProgram(affLink)
               )
-                return null;
-              //   return (
-              //     <InstacartWidget
-              //       key={affLink.link}
-              //       instacartAff={affLink}
-              //       wobjPerm={wObject?.author_permlink}
-              //     />
-              //   );
+                return (
+                  <InstacartWidget
+                    inCard
+                    key={affLink.link}
+                    instacartAff={affLink}
+                    wobjPerm={wObject?.author_permlink}
+                  />
+                );
               if (
                 affLink.type.toLocaleLowerCase() === 'instacart' &&
                 isOldInstacartProgram(affLink)
