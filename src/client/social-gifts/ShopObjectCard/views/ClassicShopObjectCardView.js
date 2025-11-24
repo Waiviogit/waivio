@@ -9,11 +9,10 @@ import USDDisplay from '../../../components/Utils/USDDisplay';
 import {
   isNewInstacartProgram,
   isOldInstacartProgram,
+  getObjectName,
 } from '../../../../common/helpers/wObjectHelper';
 import { getTagName } from '../../../../common/helpers/tagsNamesList';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-
-import InstacartWidget from '../../../widgets/InstacartWidget';
 
 const ClassicShopObjectCardView = ({
   wObject,
@@ -37,7 +36,7 @@ const ClassicShopObjectCardView = ({
   getCampaignText,
   onClick,
 }) => (
-  <div className={shopObjectCardClassList} onClick={onClick}>
+  <div onClick={onClick} className={shopObjectCardClassList}>
     {withRewards && (
       <h3
         className={
@@ -80,7 +79,11 @@ const ClassicShopObjectCardView = ({
     <a
       href={objLink}
       onClick={e => e.preventDefault()}
-      title={wObject?.description ? truncate(wObject?.description, { length: 200 }) : wobjName}
+      title={
+        wObject?.description
+          ? truncate(wObject?.description, { length: 200 })
+          : getObjectName(wObject)
+      }
       className="ShopObjectCard__name"
     >
       {truncate(wobjName, {
@@ -122,13 +125,14 @@ const ClassicShopObjectCardView = ({
                 affLink.type.toLocaleLowerCase() === 'instacart' &&
                 isNewInstacartProgram(affLink)
               )
-                return (
-                  <InstacartWidget
-                    key={affLink.link}
-                    instacartAff={affLink}
-                    wobjPerm={wObject?.author_permlink}
-                  />
-                );
+                return null;
+              //   return (
+              //     <InstacartWidget
+              //       key={affLink.link}
+              //       instacartAff={affLink}
+              //       wobjPerm={wObject?.author_permlink}
+              //     />
+              //   );
               if (
                 affLink.type.toLocaleLowerCase() === 'instacart' &&
                 isOldInstacartProgram(affLink)
