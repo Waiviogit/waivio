@@ -30,6 +30,7 @@ import NotFound from '../statics/NotFound';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import DEFAULTS from '../object/const/defaultValues';
+import { getProxyImageURL } from '../../common/helpers/image';
 import Loading from '../components/Icon/Loading';
 import {
   getAppUrl,
@@ -176,10 +177,25 @@ const User = props => {
   }
 
   const hasCover = !!coverImage;
-  const image = getAvatarURL(name) || DEFAULTS.AVATAR;
+
+  let image = coverImage;
+  if (!image && profile?.profile_image) {
+    image = profile.profile_image.includes('images.hive.blog')
+      ? profile.profile_image
+      : getProxyImageURL(profile.profile_image);
+  }
+  if (!image) {
+    image = getAvatarURL(name, 200, authenticatedUser);
+  }
+  if (!image) {
+    image =
+      DEFAULTS.AVATAR ||
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+  }
+
   const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
   const canonical = `${canonicalUrl}${getQueryString(query)}`;
-  const title = `${displayedUsername} ${getTitle(tab)}`;
+  const title = `${displayedUsername || name || 'User'} ${getTitle(tab)}`.trim();
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';
   const isGuest = name?.startsWith(GUEST_PREFIX) || name?.startsWith(BXY_GUEST_PREFIX);
@@ -198,21 +214,19 @@ const User = props => {
         <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
-        <meta
-          name="twitter:image"
-          content={
-            image ||
-            'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79'
-          }
-        />
+        <meta name="twitter:image" content={image} />
+        <meta name="twitter:image:src" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonical} />
         <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:alt" content={`${displayedUsername || name}'s profile image`} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
         <meta property="og:site_name" content={siteName} />
+        <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       {!isEmpty(user) && !user.id && !user.fetching ? (
