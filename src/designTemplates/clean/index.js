@@ -3,6 +3,7 @@ import ClearHeader from '../../client/social-gifts/Header/CleanHeader/ClearHeade
 import CleanListHero from './components/ListHero';
 import CleanChecklistLayout from '../../client/social-gifts/Checklist/layouts/CleanChecklistLayout';
 import CleanShopObjectCardView from '../../client/social-gifts/ShopObjectCard/views/CleanShopObjectCardView';
+import CleanSocialProductView from '../../client/social-gifts/SocialProduct/views/CleanSocialProductView';
 
 const cleanTemplate = {
   meta: {
@@ -20,6 +21,7 @@ const cleanTemplate = {
     ListHero: CleanListHero,
     ChecklistLayout: CleanChecklistLayout,
     ShopObjectCardView: CleanShopObjectCardView,
+    SocialProductView: CleanSocialProductView,
   },
 };
 
