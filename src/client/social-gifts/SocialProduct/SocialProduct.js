@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
-import { get, has, isEmpty, isNil, reduce, uniq } from 'lodash';
+import { get, has, isEmpty, reduce, uniq } from 'lodash';
 import {
   getObjectInfo,
   getObjectsRewards,
@@ -22,10 +22,8 @@ import {
   getUsedLocale,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
-import EarnsCommissionsOnPurchases from '../../statics/EarnsCommissionsOnPurchases';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
-import { isMobile } from '../../../common/helpers/apiHelpers';
-import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
+
 import {
   getNumbersFromWobjPrice,
   getObjectAvatar,
@@ -37,21 +35,10 @@ import {
   isNewInstacartProgram,
   getPreferredInstacartItem,
 } from '../../../common/helpers/wObjectHelper';
-import Options from '../../object/Options/Options';
-import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
-import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
-import PicturesSlider from './PicturesSlider/PicturesSlider';
 import DEFAULTS from '../../object/const/defaultValues';
-import ProductDetails from './ProductDetails/ProductDetails';
-import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
-import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
-import SocialMenuItems from './SocialMenuItems/SocialMenuItems';
 import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
-import SocialProductActions from './SocialProductActions/SocialProductActions';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
-import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
-import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
 import {
   getAddOns,
   getSimilarObjects,
@@ -72,25 +59,20 @@ import {
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
-import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-import SocialListItem from './SocialListItem/SocialListItem';
-import { objectFields } from '../../../common/constants/listOfFields';
-import RecipeDetails from './RecipeDetails/RecipeDetails';
 import { getObjectPosts } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getFeedFromState } from '../../../common/helpers/stateHelpers';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
-import RecipePost from './RecipePost/RecipePost';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
-import './SocialProduct.less';
 import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import useAdLevelData from '../../../hooks/useAdsense';
-import GoogleAds from '../../adsenseAds/GoogleAds';
+import useTemplateProvider from '../../../designTemplates/TemplateProvider';
+
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -162,6 +144,8 @@ const SocialProduct = ({
   const [menuItemsArray, setMenuItemsArray] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const { minimal, intensive, moderate } = useAdLevelData();
+  const templateComponents = useTemplateProvider();
+  const SocialProductView = templateComponents?.SocialProductView;
   const affiliateLinks = wobject?.affiliateLinks || [];
   const isRecipe = wobject?.object_type === 'recipe';
   const isProduct = wobject?.object_type === 'product';
@@ -446,337 +430,79 @@ const SocialProduct = ({
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
-        <div className="SocialProduct">
-          {history.location.search && (
-            <div className="SocialProduct__column">
-              <Breadcrumbs inProduct />
-            </div>
-          )}
-          <div className="SocialProduct__column SocialProduct__column-wrapper">
-            {isMobile() && (
-              <h1
-                className={
-                  isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(currBrand)
-                    ? 'SocialProduct__wobjName'
-                    : 'SocialProduct__bookWobjName'
-                }
-              >
-                {isRecipe ? <span itemProp="name">{wobject?.name}</span> : wobject?.name}
-              </h1>
-            )}
-            {isMobile() && !isEmpty(currBrand) && (
-              <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
-                <SocialListItem
-                  fieldName={objectFields.brand}
-                  field={currBrand}
-                  showTitle={false}
-                />
-              </div>
-            )}
-            {isMobile() && !isEmpty(wobjTitle) && (
-              <div className="SocialProduct__title">{wobjTitle}</div>
-            )}
-            {isMobile() && !isEmpty(productAuthors) && (
-              <SocialBookAuthors authors={productAuthors} />
-            )}
-            {isMobile() && (
-              <div className="SocialProduct__ratings">
-                {' '}
-                {!isEmpty(wobject?.rating) &&
-                  wobject?.rating?.map(rating => (
-                    <div key={rating.permlink} className="SocialProduct__ratings-item">
-                      <RatingsWrap
-                        isSocialProduct
-                        ratings={[rating]}
-                        username={userName}
-                        wobjId={wobject?.author_permlink}
-                        wobjName={wobject?.name}
-                      />
-                    </div>
-                  ))}
-              </div>
-            )}
-            {isMobile() && authenticated && !isEmpty(wobject) && (
-              <div className="SocialProduct__socialActions">
-                <SocialProductActions
-                  toggleViewEditMode={toggleViewEditMode}
-                  isEditMode={isEditMode}
-                  authenticated={authenticated}
-                />
-              </div>
-            )}
-            {showGallery && (
-              <div className="SocialProduct__row">
-                <div className="SocialProduct__carouselWrapper">
-                  <PicturesSlider
-                    albums={albums}
-                    altText={description}
-                    currentWobj={wobject}
-                    hoveredOption={hoveredOption}
-                    activeOption={activeOption}
-                    activeCategory={activeCategory}
-                  />
-                </div>
-                <div className="SocialProduct__reward-wrap">
-                  <ProductRewardCard isSocialProduct reward={reward} />
-                </div>
-              </div>
-            )}
-            <div className="SocialProduct__row SocialProduct__right-row">
-              {!isMobile() && (
-                <h1
-                  className={
-                    isEmpty(productAuthors) && isEmpty(wobjTitle) && isEmpty(currBrand)
-                      ? 'SocialProduct__wobjName'
-                      : 'SocialProduct__bookWobjName'
-                  }
-                >
-                  {!showPostModal && isRecipe ? (
-                    <span itemProp="name">{wobject?.name}</span>
-                  ) : (
-                    wobject?.name
-                  )}
-                </h1>
-              )}
-              {!isMobile() && !isEmpty(brand) && (
-                <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
-                  <SocialListItem
-                    fieldName={objectFields.brand}
-                    field={currBrand}
-                    showTitle={false}
-                  />
-                </div>
-              )}
-              {!isMobile() && !isEmpty(wobjTitle) && (
-                <div className="SocialProduct__title">{wobjTitle}</div>
-              )}
-              {!isMobile() && !isEmpty(productAuthors) && (
-                <SocialBookAuthors authors={productAuthors} />
-              )}
-              {!isMobile() && authenticated && !isEmpty(wobject) && (
-                <div className="SocialProduct__socialActions">
-                  <SocialProductActions
-                    currentWobj={wobject}
-                    toggleViewEditMode={toggleViewEditMode}
-                    isEditMode={isEditMode}
-                    authenticated={authenticated}
-                  />
-                </div>
-              )}
-              {!isMobile() && (
-                <div className="SocialProduct__ratings">
-                  {' '}
-                  {!isEmpty(wobject?.rating) &&
-                    wobject?.rating?.map(rating => (
-                      <div key={rating.permlink} className="SocialProduct__ratings-item">
-                        <RatingsWrap
-                          isSocialProduct
-                          ratings={[rating]}
-                          username={userName}
-                          wobjId={wobject?.author_permlink}
-                          wobjName={wobject?.name}
-                        />
-                      </div>
-                    ))}
-                </div>
-              )}
-              <div className="flex flex-row">
-                {compareAtPrice && (
-                  <div
-                    className={
-                      // eslint-disable-next-line no-nested-ternary
-                      isNil(compareAtPrice) && !isEmpty(wobject?.options)
-                        ? 'SocialProduct__price-no'
-                        : price
-                        ? 'SocialProduct__price--old'
-                        : 'SocialProduct__price'
-                    }
-                  >
-                    {compareAtPrice}
-                  </div>
-                )}
-                <div
-                  className={
-                    // eslint-disable-next-line no-nested-ternary
-                    isNil(price) && !isEmpty(wobject?.options)
-                      ? 'SocialProduct__price-no'
-                      : sale
-                      ? 'SocialProduct__price--old'
-                      : 'SocialProduct__price'
-                  }
-                >
-                  {price}
-                </div>
-                {sale && (
-                  <div>
-                    {' '}
-                    <span className={'SocialProduct__price'}>{sale}</span>{' '}
-                    <button className="SocialProduct__sale-button">Sale</button>
-                  </div>
-                )}
-              </div>
-              {!showPostModal &&
-                isRecipe &&
-                instacardAff &&
-                (isOldInstacartProgram(instacardAff) || isNewInstacartProgram(instacardAff)) && (
-                  <InstacartWidget
-                    isProduct
-                    className={'SocialProduct__instacard'}
-                    instacartAff={instacardAff}
-                    wobjPerm={wobject?.author_permlink}
-                    withDisclamer
-                    inlineFlex
-                    marginBottom={'5px'}
-                    isRecipe={isRecipe}
-                  />
-                )}
-              {showRecipeFields && isRecipe && (
-                <RecipeDetails
-                  wobject={wobject}
-                  history={history}
-                  departments={departments}
-                  productIdBody={productIdBody}
-                  isEditMode={isEditMode}
-                  calories={calories}
-                  nutrition={nutrition}
-                  cookingTime={cookingTime}
-                  recipeIngredients={recipeIngredients}
-                />
-              )}
-              {!isEmpty(wobject?.options) && (
-                <div className="SocialProduct__paddingBottom">
-                  <Options
-                    isSocialProduct
-                    setHoveredOption={option => setHoveredOption(option)}
-                    isEditMode={false}
-                    wobject={wobject}
-                  />
-                </div>
-              )}
-
-              {!isEmpty(affiliateLinks) &&
-                !affiliatLinks?.every(l => isNil(l)) &&
-                !isOldInstacartProgram(instacardAff) &&
-                !isNewInstacartProgram(instacardAff) &&
-                !(affiliateLinks.length === 1 && instacardAff) && (
-                  <div className="SocialProduct__paddingBottom">
-                    <div className="SocialProduct__subtitle">
-                      <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                    </div>
-                    <div className="SocialProduct__affiliateContainer">{affiliatLinks}</div>
-                    <EarnsCommissionsOnPurchases align={'left'} />
-                  </div>
-                )}
-              {intensive && <GoogleAds limitWidth />}
-              {isEmpty(wobject?.preview_gallery) && (
-                <ProductRewardCard isSocialProduct reward={reward} />
-              )}
-            </div>
-          </div>
-          <div className="SocialProduct__column">
-            {!isEmpty(wobject?.description) && (
-              <div className="SocialProduct__aboutItem">
-                <div className="SocialProduct__heading">
-                  {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
-                </div>
-                <SocialProductDescription
-                  objectType={wobject?.object_type}
-                  description={wobject?.description}
-                  pictures={photosAlbum.items}
-                  authorPermlink={wobject?.author_permlink}
-                />
-              </div>
-            )}
-            {(minimal || moderate || intensive) && <GoogleAds inList />}
-            {recipePost && isRecipe && !showPostModal && (
-              <div className={'SocialProduct__postWrapper PageContent social'}>
-                <RecipePost signature={signature} recipePost={recipePost} />
-                <br />
-              </div>
-            )}
-            {!isEmpty(menuItem) && (
-              <SocialMenuItems
-                customSort={customSort}
-                sortExclude={sortExclude}
-                menuItem={menuItem}
-                customVisibility={customVisibility}
-                isProduct
-                wobject={wobject}
-              />
-            )}
-            {showProductDetails && (
-              <ProductDetails
-                setLinkSafety={setLinkSafety}
-                website={website}
-                locale={locale}
-                publisher={publisher}
-                publisherObject={publisherObject}
-                printLength={printLength}
-                publicationDate={publicationDate}
-                language={language}
-                ageRange={ageRange}
-                wobject={wobject}
-                groupId={groupId}
-                history={history}
-                productWeight={productWeight}
-                dimensions={dimensions}
-                productIdBody={productIdBody}
-                departments={departments}
-                fields={{ manufacturerObject, merchantObject }}
-                parent={parent}
-              />
-            )}
-            {intensive && <GoogleAds inList />}
-            <ObjectsSlider
-              objects={addOns}
-              title={intl.formatMessage({
-                id: 'bought_together',
-                defaultMessage: 'Bought together / Add-on',
-              })}
-              name={'addOn'}
-            />
-            {!isEmpty(features) && (
-              <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">
-                  {intl.formatMessage({ id: 'features', defaultMessage: 'Features' })}
-                </div>
-                <div className="SocialProduct__centralContent">
-                  <ObjectFeatures
-                    isSocialGifts
-                    features={features}
-                    isEditMode={false}
-                    wobjPermlink={wobject?.author_permlink}
-                  />
-                </div>
-              </div>
-            )}
-            <ObjectsSlider
-              objects={similarObjects}
-              title={intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
-              name={'similar'}
-            />
-            <ObjectsSlider
-              objects={relatedObjects}
-              title={intl.formatMessage({ id: 'related_items', defaultMessage: 'Related items' })}
-              name={'related'}
-            />
-            {!isEmpty(references) &&
-              references?.map(ref => (
-                <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
-              ))}
-            {!isEmpty(tagCategoriesList) && (
-              <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">
-                  {intl.formatMessage({ id: 'tags', defaultMessage: 'Tags' })}
-                </div>
-                <div className="SocialProduct__centralContent">
-                  <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
-                </div>
-              </div>
-            )}
-            {!isEmpty(wobject) && <SocialProductReviews wobject={wobject} authors={authors} />}
-          </div>
-        </div>
+        SocialProductView && (
+          <SocialProductView
+            history={history}
+            wobject={wobject}
+            isRecipe={isRecipe}
+            productAuthors={productAuthors}
+            wobjTitle={wobjTitle}
+            currBrand={currBrand}
+            authenticated={authenticated}
+            userName={userName}
+            toggleViewEditMode={toggleViewEditMode}
+            isEditMode={isEditMode}
+            showGallery={showGallery}
+            albums={albums}
+            description={description}
+            hoveredOption={hoveredOption}
+            activeOption={activeOption}
+            activeCategory={activeCategory}
+            reward={reward}
+            showPostModal={showPostModal}
+            brand={brand}
+            compareAtPrice={compareAtPrice}
+            price={price}
+            sale={sale}
+            instacardAff={instacardAff}
+            isOldInstacartProgram={isOldInstacartProgram}
+            isNewInstacartProgram={isNewInstacartProgram}
+            showRecipeFields={showRecipeFields}
+            departments={departments}
+            productIdBody={productIdBody}
+            calories={calories}
+            nutrition={nutrition}
+            cookingTime={cookingTime}
+            recipeIngredients={recipeIngredients}
+            setHoveredOption={option => setHoveredOption(option)}
+            affiliateLinks={affiliateLinks}
+            affiliatLinks={affiliatLinks}
+            intensive={intensive}
+            minimal={minimal}
+            moderate={moderate}
+            photosAlbum={photosAlbum}
+            recipePost={recipePost}
+            signature={signature}
+            menuItem={menuItem}
+            customSort={customSort}
+            sortExclude={sortExclude}
+            customVisibility={customVisibility}
+            showProductDetails={showProductDetails}
+            setLinkSafety={setLinkSafety}
+            website={website}
+            locale={locale}
+            publisher={publisher}
+            publisherObject={publisherObject}
+            printLength={printLength}
+            publicationDate={publicationDate}
+            language={language}
+            ageRange={ageRange}
+            groupId={groupId}
+            productWeight={productWeight}
+            dimensions={dimensions}
+            manufacturerObject={manufacturerObject}
+            merchantObject={merchantObject}
+            parent={parent}
+            addOns={addOns}
+            features={features}
+            similarObjects={similarObjects}
+            relatedObjects={relatedObjects}
+            references={references}
+            tagCategoriesList={tagCategoriesList}
+            authors={authors}
+            intl={intl}
+          />
+        )
       )}
     </div>
   );
