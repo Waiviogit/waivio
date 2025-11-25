@@ -34,7 +34,7 @@ const PicturesSlider = ({
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
     currentSrc = hoveredOption?.avatar || activeOption[activeCategory]?.avatar;
   }
-  const limitToShow = isMobile() ? 6 : 8;
+  const limitToShow = isMobile() ? 4 : 6;
 
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
