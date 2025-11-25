@@ -4,8 +4,7 @@ import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
 import { get, size } from 'lodash';
-import { Client } from '@hiveio/dhive';
-
+import { Client, config } from '@hiveio/dhive';
 import formatter from '../../common/helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../../common/helpers/voteHelpers';
@@ -340,9 +339,6 @@ export const roundNumberToThousands = number => {
 };
 // const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
-const BLACKLISTED_NODES = ['anyx.io'];
-
-// Allowed Hive RPC nodes
 const ALLOWED_NODES = [
   'https://api.hive.blog',
   'https://api.deathwing.me',
@@ -352,17 +348,8 @@ const ALLOWED_NODES = [
   'https://api.c0ff33a.uk',
 ];
 
-const filterBlacklistedNodes = nodes => {
-  return nodes.filter(node => {
-    const isBlacklisted = BLACKLISTED_NODES.some(blacklisted => node.includes(blacklisted));
-    if (isBlacklisted) {
-      console.warn(`Blocked blacklisted Hive RPC node: ${node}`);
-    }
-    return !isBlacklisted;
-  });
-};
-
-const PRODUCTION_REQUEST_NODES = filterBlacklistedNodes(ALLOWED_NODES);
+const PRODUCTION_REQUEST_NODES = ALLOWED_NODES.filter(n => !n.includes('anyx.io'));
+config.node = PRODUCTION_REQUEST_NODES;
 
 export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,
