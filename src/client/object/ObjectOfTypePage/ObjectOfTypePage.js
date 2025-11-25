@@ -316,6 +316,7 @@ const ObjectOfTypePage = props => {
 
   const handleReadyPublishClick = e => {
     const { nestedWobject, breadcrumb } = props;
+
     e.preventDefault();
     if (isCode) {
       const pageContentField = {

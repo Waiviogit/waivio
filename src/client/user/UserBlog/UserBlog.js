@@ -5,10 +5,16 @@ import { isEmpty, get } from 'lodash';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Cookie from 'js-cookie';
+import { getProxyImageURL } from '../../../common/helpers/image';
 import { getMetadata } from '../../../common/helpers/postingMetadata';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
+import { getAppUrl, getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
+import { getQueryString } from '../../../waivioApi/helpers';
+import { getAvatarURL } from '../../components/Avatar';
 
 import Feed from '../../feed/Feed';
+import DEFAULTS from '../../object/const/defaultValues';
 import EmptyUserOwnProfile from '../../statics/EmptyUserOwnProfile';
 import EmptyUserProfile from '../../statics/EmptyUserProfile';
 import PostModal from '../../post/PostModalContainer';
@@ -18,7 +24,11 @@ import {
   getFeedHasMoreFromState,
   getFeedLoadingFromState,
 } from '../../../common/helpers/stateHelpers';
-import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  isGuestUser,
+  getAuthenticatedUser,
+} from '../../../store/authStore/authSelectors';
 import {
   getBlogFilters,
   getFeed,
@@ -56,6 +66,41 @@ const UserBlog = props => {
     (metadata && get(profile, 'about')) ||
     "Browse a rich collection of user-generated posts, covering a myriad of topics. Engage with our diverse community's insights, stories, and perspectives.";
 
+  const displayedUsername = profile?.name || name || '';
+
+  const ensureAbsoluteUrl = url => {
+    if (!url) return url;
+    if (typeof url !== 'string') return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    const baseUrl = props.appUrl || (typeof window !== 'undefined' ? window.location.origin : '');
+
+    return url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
+  };
+
+  let image = profile?.cover_image ? ensureAbsoluteUrl(profile.cover_image) : null;
+
+  if (!image && profile?.profile_image) {
+    const profileImg = profile.profile_image.includes('images.hive.blog')
+      ? profile.profile_image
+      : getProxyImageURL(profile.profile_image);
+
+    image = ensureAbsoluteUrl(profileImg);
+  }
+  if (!image) {
+    image = getAvatarURL(name, 200, user);
+  }
+  if (!image) {
+    image =
+      DEFAULTS.AVATAR ||
+      'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
+  }
+  image = ensureAbsoluteUrl(image);
+
+  const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
+  const canonical = `${canonicalUrl}${getQueryString(query)}`;
+
+  const title = `${displayedUsername || name || 'User'}`;
+
   useEffect(() => {
     if (isEmpty(content))
       props.getUserProfileBlogPosts(name, { limit, initialLoad: true }, queryTags).then(res => {
@@ -85,9 +130,27 @@ const UserBlog = props => {
   return (
     <div className="profile">
       <Helmet>
+        <title>{title}</title>
+        <link rel="canonical" href={canonical} />
         <meta name="description" content={description} />
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={`@${props.siteName}`} />
+        <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+        <meta name="twitter:image:src" content={image} />
+        <meta property="og:title" content={title} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:alt" content={`${displayedUsername || name}'s profile image`} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
         <meta property="og:description" content={description} />
+        <meta property="og:site_name" content={props.siteName} />
+        <link rel="image_src" href={image} />
+        <link id="favicon" rel="icon" href={props.helmetIcon} type="image/x-icon" />
       </Helmet>
       {mentions.main && <Campaing campain={mentions.main} secondary={mentions?.secondary} />}
       {!isEmpty(mentions.secondary) &&
@@ -109,6 +172,9 @@ const UserBlog = props => {
 
 UserBlog.propTypes = {
   authenticatedUserName: PropTypes.string,
+  helmetIcon: PropTypes.string,
+  siteName: PropTypes.string,
+  appUrl: PropTypes.string,
   feed: PropTypes.shape(),
   isGuest: PropTypes.bool,
   tagsCondition: PropTypes.arrayOf(PropTypes.string),
@@ -125,6 +191,10 @@ export default withRouter(
       feed: getFeed(state),
       isGuest: isGuestUser(state),
       tagsCondition: getBlogFilters(state),
+      authenticatedUser: getAuthenticatedUser(state),
+      appUrl: getAppUrl(state),
+      helmetIcon: getHelmetIcon(state),
+      siteName: getSiteName(state),
     }),
     {
       getUserProfileBlogPosts,
