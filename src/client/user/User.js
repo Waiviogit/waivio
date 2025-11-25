@@ -179,6 +179,7 @@ const User = props => {
   const hasCover = !!coverImage;
 
   let image = coverImage;
+
   if (!image && profile?.profile_image) {
     image = profile.profile_image.includes('images.hive.blog')
       ? profile.profile_image
