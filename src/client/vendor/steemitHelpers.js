@@ -349,7 +349,6 @@ const ALLOWED_NODES = [
 ];
 
 const PRODUCTION_REQUEST_NODES = ALLOWED_NODES.filter(n => !n.includes('anyx.io'));
-config.node = PRODUCTION_REQUEST_NODES;
 
 export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,
