@@ -149,14 +149,14 @@ function htmlArrayToSlateList(htmlArray) {
   htmlArray.forEach(node => {
     if (node.type === 'html' && node.value === '<ol>') {
       currentList = { type: 'orderedList', children: [] };
-    } else if (node.type === 'html' && node.value === '<ul>') {
+    } else if (node?.type === 'html' && node.value === '<ul>') {
       currentList = { type: 'unorderedList', children: [] };
-    } else if (node.type === 'html' && ['</ol>', '</ul>'].includes(node.value)) {
+    } else if (node?.type === 'html' && ['</ol>', '</ul>'].includes(node.value)) {
       if (currentList) {
         slateList.push(currentList);
         currentList = null;
       }
-    } else if (node.type === 'html' && node.value === '<li>') {
+    } else if (node?.type === 'html' && node.value === '<li>') {
       if (currentList && Array.isArray(currentList.children)) {
         currentList.children.push({
           type: 'listItem',
@@ -232,31 +232,31 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
             const nextEl = node.children[i + 1];
 
             if (
-              (child.type === 'html' && isIgnoredHtmlTag(child.value)) ||
+              (child?.type === 'html' && isIgnoredHtmlTag(child.value)) ||
               (prevEl?.type === 'html' &&
                 prevEl?.value !== '<br />' &&
-                child.type === 'text' &&
+                child?.type === 'text' &&
                 nextEl?.type === 'html' &&
                 prevEl?.value !== '<br />')
             ) {
               return acc;
             }
 
-            if (child.type === 'html' && child.value === '<p />') {
+            if (child?.type === 'html' && child.value === '<p />') {
               return [...acc, emptyParagraph];
             }
 
-            if (child.type === 'html' && ['<ol>', '<ul>'].includes(child.value)) {
+            if (child?.type === 'html' && ['<ol>', '<ul>'].includes(child.value)) {
               const list = htmlArrayToSlateList(node.children);
 
               return [...acc, ...list];
             }
 
-            if (child.type === 'html' && ['<h1>', '<h2>', '<h3>', '<h4>'].includes(child.value)) {
+            if (child?.type === 'html' && ['<h1>', '<h2>', '<h3>', '<h4>'].includes(child.value)) {
               return [...acc, createHeaderNode(child.value, node.children, i)];
             }
 
-            if (child.type === 'html' && child.value === '<blockquote>') {
+            if (child?.type === 'html' && child.value === '<blockquote>') {
               return [...acc, createBlockquoteNode(node.children, i)];
             }
 
@@ -345,14 +345,14 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
           const children = [];
 
           for (let i = 0; i < node.children.length; i++) {
-            if (node.children[i].type === 'html' && node.children[i].value === '<u>') {
+            if (node.children[i]?.type === 'html' && node.children[i].value === '<u>') {
               let text = '';
               let withClose = false;
               let j = i + 1;
               const position = { start: node.children[i].position.start, end: null };
 
               for (; j < node.children.length; j++) {
-                if (node.children[j].type === 'html' && node.children[j].value === '</u>') {
+                if (node.children[j]?.type === 'html' && node.children[j].value === '</u>') {
                   withClose = true;
                   position.end = node.children[j].position.end;
                   break;
@@ -363,7 +363,8 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
                 children.push({ underline: true, value: text, type: 'underline', position });
               i = j + 1;
             }
-            if (node.children[i].type === 'html' && node.children[i].value === '</hr>') {
+
+            if (node.children[i]?.type === 'html' && node.children[i].value === '</hr>') {
               children.push({ children: [{ text: '' }], type: 'thematicBreak' });
               i++;
             }

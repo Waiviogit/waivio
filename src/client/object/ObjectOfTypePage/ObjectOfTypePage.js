@@ -315,6 +315,7 @@ const ObjectOfTypePage = props => {
   };
 
   const handleReadyPublishClick = e => {
+    const { nestedWobject, breadcrumb } = props;
     e.preventDefault();
     if (isCode) {
       const pageContentField = {
@@ -322,8 +323,13 @@ const ObjectOfTypePage = props => {
         body: content,
         locale,
       };
-
-      const postData = getAppendData(userName, wobject, '', pageContentField);
+      const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
+      const fieldsCount = getFieldsCount(wobj, objectFields.htmlContent);
+      const safeCount = Number(fieldsCount) || 0;
+      const bodyMessage = isCode
+        ? `@${userName} added ${objectFields.htmlContent} (${locale}): site ${safeCount + 1}`
+        : '';
+      const postData = getAppendData(userName, wobject, bodyMessage, pageContentField);
 
       setValidationScript(true);
       validateAppend(postData)
@@ -333,7 +339,7 @@ const ObjectOfTypePage = props => {
             setValidationScript(false);
           } else {
             setValidationScript(false);
-            message.error('Something went wrong. Please try again later.');
+            if (res.message) message.error(res.message);
           }
         })
         .catch(() => {
