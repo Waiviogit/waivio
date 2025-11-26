@@ -92,7 +92,7 @@ export const getAllFollowing = (username, isGuest) =>
 export const defaultAccountLimit = 500;
 
 const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
-  SteemAPI.sendAsync('get_account_history', [account, from, limit]);
+  dHive.database.call('get_account_history', [account, from, limit]);
 
 const getGuestAccountHistory = (
   account,
