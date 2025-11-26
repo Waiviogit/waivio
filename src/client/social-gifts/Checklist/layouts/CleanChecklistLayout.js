@@ -32,7 +32,7 @@ const CleanChecklistLayout = ({
       {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
     </div>
     {loading ? <Loading /> : getMenuList()}
-    <CleanListHero wobject={wobject} />
+    {listType && <CleanListHero wobject={wobject} />}
     {(minimal || moderate || intensive) && listType && <GoogleAds inList />}
   </div>
 );

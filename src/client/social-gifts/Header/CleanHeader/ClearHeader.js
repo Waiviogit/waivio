@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import GeneralSearch from '../../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
@@ -22,18 +22,16 @@ const ClearHeader = memo(
     handleMobileSearchButtonClick,
     config,
   }) => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const title = useMemo(
       () => header || config?.host || currHost || mainObj?.title || mainObj?.description || '',
       [config?.host, currHost, header, mainObj?.description, mainObj?.title],
     );
-    const handleToggleMode = () => setIsDarkMode(prev => !prev);
 
     if (hideSignIn) return null;
 
     return (
       <>
-        <header className={classNames('HeaderClean', { dark: isDarkMode })}>
+        <header className={classNames('HeaderClean')}>
           <div className="HeaderClean__inner">
             {!searchBarActive && (
               <Link
@@ -64,26 +62,21 @@ const ClearHeader = memo(
                 />
               </button>
               <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
-              <button type="button" className="HeaderClean__modeBtn" onClick={handleToggleMode}>
-                {isDarkMode ? 'Light mode' : 'Dark mode'}
-              </button>
             </div>
           </div>
         </header>
-        {config?.mainBanner && (
-          <div
-            className="HeaderClean__banner"
-            style={{ backgroundImage: `url(${config?.mainBanner})` }}
-          >
-            <h1>{mainObj?.name || 'Your name'}</h1>
-            <h2>{mainObj?.title || 'Your title of the best site by Lucy'}</h2>
-            {!hideHeader && (
-              <div className="HeaderClean__nav">
-                <WebsiteTopNavigation shopSettings={config?.shopSettings} />
-              </div>
-            )}
-          </div>
-        )}
+        <div
+          className="HeaderClean__banner"
+          style={{ backgroundImage: `url(${config?.mainBanner})` }}
+        >
+          <h1>{mainObj?.name || 'Your name'}</h1>
+          <h2>{mainObj?.title || 'Your title of the best site by Lucy'}</h2>
+          {!hideHeader && (
+            <div className="HeaderClean__nav">
+              <WebsiteTopNavigation shopSettings={config?.shopSettings} />
+            </div>
+          )}
+        </div>
       </>
     );
   },
