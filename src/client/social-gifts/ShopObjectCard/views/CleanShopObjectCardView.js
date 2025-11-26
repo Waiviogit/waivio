@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { isEmpty, truncate } from 'lodash';
 import { Icon } from 'antd';
 import HeartButton from '../../../widgets/HeartButton';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { averageRate } from '../../../components/Sidebar/Rate/rateHelper';
+import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
+import InstacartWidget from '../../../widgets/InstacartWidget';
+import {
+  isNewInstacartProgram,
+  isOldInstacartProgram,
+} from '../../../../common/helpers/wObjectHelper';
 
 import '../ShopObjectCard.clean.less';
 
@@ -22,6 +29,8 @@ const CleanShopObjectCardView = ({
   isGiveawayCampaign,
   specialAmount,
   rewardAmount,
+  proposition,
+  daysLeft,
   onClick,
 }) => (
   <div className="ShopObjectCardClean" onClick={onClick}>
@@ -33,11 +42,18 @@ const CleanShopObjectCardView = ({
             <>
               <USDDisplay value={specialAmount} currencyDisplay="symbol" />
               {isGiveawayCampaign ? ' Giveaway' : ' Contest'}
+              {daysLeft !== null && daysLeft <= 3 && ` - ${daysLeft}d`}
             </>
           ) : (
             <>
+              <FormattedMessage
+                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+                defaultMessage={`Share {minPhotos} photo${
+                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
+                } & earn`}
+                values={{ minPhotos: proposition?.requirements?.minPhotos }}
+              />{' '}
               <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-              <span className="ShopObjectCardClean__rewardText">Reward</span>
             </>
           )}
         </div>
@@ -70,6 +86,33 @@ const CleanShopObjectCardView = ({
             {wObject.price}
           </span>
         )}
+        {!isEmpty(wObject.affiliateLinks) && (
+          <div className="ShopObjectCardClean__affiliatLinks">
+            {wObject.affiliateLinks
+              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+              .map(affLink => {
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isNewInstacartProgram(affLink)
+                )
+                  return (
+                    <InstacartWidget
+                      inCard
+                      key={affLink.link}
+                      instacartAff={affLink}
+                      wobjPerm={wObject?.author_permlink}
+                    />
+                  );
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isOldInstacartProgram(affLink)
+                )
+                  return null;
+
+                return <AffiliatLink key={affLink.link} link={affLink} />;
+              })}
+          </div>
+        )}
       </div>
     </div>
   </div>
@@ -94,6 +137,8 @@ CleanShopObjectCardView.propTypes = {
   isGiveawayCampaign: PropTypes.bool,
   specialAmount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   rewardAmount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  proposition: PropTypes.shape(),
+  daysLeft: PropTypes.number,
   onClick: PropTypes.func,
 };
 
