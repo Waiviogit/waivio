@@ -5,11 +5,11 @@
     "DEBUG": {
       "description": "Debug namespaces for https://github.com/visionmedia/debug.",
       "value": "busy:server",
-      "required": false,
+      "required": false
     },
     "STEEMJS_URL": {
       "description": "Hive node URL",
-      "value": "https://anyx.io",
+      "value": "https://herpc.dtools.dev",
       "required": false
     }
   },

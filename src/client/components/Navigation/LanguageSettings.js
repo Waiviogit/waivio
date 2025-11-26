@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { Icon } from 'antd';
 import Cookie from 'js-cookie';
 import LANGUAGES from '../../../common/translations/languages';
 import { getLanguageText } from '../../../common/translations';
@@ -28,11 +29,15 @@ class LanguageSettings extends React.Component {
     usedLocale: PropTypes.string,
     setLocale: PropTypes.func,
     setUsedLocale: PropTypes.func,
+    triggerButtonClass: PropTypes.string,
+    iconClassName: PropTypes.string,
+    useGlobalIcon: PropTypes.bool,
   };
 
   static defaultProps = {
     usedLocale: 'en-US',
     setLocale: () => {},
+    useGlobalIcon: false,
   };
 
   constructor(props) {
@@ -62,8 +67,19 @@ class LanguageSettings extends React.Component {
   }
 
   render() {
-    const { usedLocale } = this.props;
+    const { usedLocale, triggerButtonClass, iconClassName, useGlobalIcon } = this.props;
     const { languageSettingsVisible } = this.state;
+
+    const buttonClassName = triggerButtonClass || 'Topnav__link Topnav__link--light';
+
+    // eslint-disable-next-line no-nested-ternary
+    const iconElement = useGlobalIcon ? (
+      <Icon type="global" />
+    ) : iconClassName ? (
+      <i className={iconClassName} />
+    ) : (
+      <i className="iconfont icon-language" />
+    );
 
     return (
       <Popover
@@ -89,9 +105,7 @@ class LanguageSettings extends React.Component {
           </PopoverMenu>
         }
       >
-        <a className="Topnav__link Topnav__link--light">
-          <i className="iconfont icon-language" />
-        </a>
+        <a className={buttonClassName}>{iconElement}</a>
       </Popover>
     );
   }

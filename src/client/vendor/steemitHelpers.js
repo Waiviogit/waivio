@@ -4,8 +4,7 @@ import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import * as steem from 'steem';
 import { get, size } from 'lodash';
-import { Client } from '@hiveio/dhive';
-
+import { Client, config } from '@hiveio/dhive';
 import formatter from '../../common/helpers/steemitFormatter';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getDownvotes } from '../../common/helpers/voteHelpers';
@@ -340,7 +339,7 @@ export const roundNumberToThousands = number => {
 };
 // const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'staging';
 
-const PRODUCTION_REQUEST_NODES = [
+const ALLOWED_NODES = [
   'https://api.hive.blog',
   'https://api.deathwing.me',
   'https://hive-api.arcange.eu',
@@ -348,6 +347,8 @@ const PRODUCTION_REQUEST_NODES = [
   'https://techcoderx.com',
   'https://api.c0ff33a.uk',
 ];
+
+const PRODUCTION_REQUEST_NODES = ALLOWED_NODES.filter(n => !n.includes('anyx.io'));
 
 export const dHive = new Client(PRODUCTION_REQUEST_NODES, {
   timeout: 5000,

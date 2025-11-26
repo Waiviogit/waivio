@@ -1,53 +1,54 @@
+import { Button, Form, Icon, message, Modal, Alert } from 'antd';
 import classNames from 'classnames';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { isEmpty, size, trimEnd, debounce } from 'lodash';
-import { withRouter } from 'react-router-dom';
-import { connect, useSelector } from 'react-redux';
+import { isEmpty, size, trimEnd, debounce, unescape } from 'lodash';
 import PropTypes from 'prop-types';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message, Modal, Alert } from 'antd';
+import { connect, useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { objectFields } from '../../../common/constants/listOfFields';
 import { analyzePastedCode } from '../../../common/helpers/htmlContent';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import HtmlSandbox from '../../../components/HtmlSandbox';
-import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
-import Editor from '../../components/EditorExtended/EditorExtendedComponent';
-import BodyContainer from '../../containers/Story/BodyContainer';
-import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
-import LikeSection from '../LikeSection';
-import FollowObjectForm from '../FollowObjectForm';
+import { extractImageTags } from '../../../common/helpers/parser';
 import {
   getAppendData,
   getLastPermlinksFromHash,
   getObjectName,
   hasType,
 } from '../../../common/helpers/wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
+import HtmlSandbox from '../../../components/HtmlSandbox';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import IconButton from '../../components/IconButton';
-import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-import {
-  getDraftPage,
-  getObject,
-  saveDraftPage,
-  validateAppend,
-} from '../../../waivioApi/ApiClient';
-import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
-import Loading from '../../components/Icon/Loading';
-import { getHtml } from '../../components/Story/Body';
-import { extractImageTags } from '../../../common/helpers/parser';
-import CatalogWrap from '../Catalog/CatalogWrap';
+import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
+import { setEditMode, setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import {
   getBreadCrumbs,
   getIsEditMode,
   getLoadingFlag,
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
-import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getDraftPage,
+  getObject,
+  saveDraftPage,
+  validateAppend,
+} from '../../../waivioApi/ApiClient';
+import Editor from '../../components/EditorExtended/EditorExtendedComponent';
+import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
+import Loading from '../../components/Icon/Loading';
+import IconButton from '../../components/IconButton';
+import { getHtml } from '../../components/Story/Body';
+import BodyContainer from '../../containers/Story/BodyContainer';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+import CatalogWrap from '../Catalog/CatalogWrap';
+import FollowObjectForm from '../FollowObjectForm';
+import LikeSection from '../LikeSection';
 
 import './ObjectOfTypePage.less';
+import { getFieldsCount } from '../wObjectHelper';
 
 const ObjectOfTypePage = props => {
   const { intl, form, isEditMode, locale, wobject, followingList, isLoadingFlag, userName } = props;
@@ -247,17 +248,18 @@ const ObjectOfTypePage = props => {
 
       if (!err) {
         const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
-
-        // pack body: for code pages we send JSON with flags
-        const bodyOut = content;
-
+        const fieldsCount = getFieldsCount(wobj, objectFields.htmlContent);
+        const safeCount = Number(fieldsCount) || 0;
+        const bodyMessage = isCode
+          ? `@${userName} added ${objectFields.htmlContent} (${locale}): site ${safeCount + 1}`
+          : '';
         const pageContentField = {
           name: isCode ? objectFields.htmlContent : objectFields.pageContent,
-          body: bodyOut,
+          body: content,
           locale,
         };
 
-        const postData = getAppendData(userName, wobj, '', pageContentField);
+        const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
 
         setLoadingForButton(true);
         appendPageContent(postData, {
@@ -313,6 +315,8 @@ const ObjectOfTypePage = props => {
   };
 
   const handleReadyPublishClick = e => {
+    const { nestedWobject, breadcrumb } = props;
+
     e.preventDefault();
     if (isCode) {
       const pageContentField = {
@@ -320,8 +324,13 @@ const ObjectOfTypePage = props => {
         body: content,
         locale,
       };
-
-      const postData = getAppendData(userName, wobject, '', pageContentField);
+      const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
+      const fieldsCount = getFieldsCount(wobj, objectFields.htmlContent);
+      const safeCount = Number(fieldsCount) || 0;
+      const bodyMessage = isCode
+        ? `@${userName} added ${objectFields.htmlContent} (${locale}): site ${safeCount + 1}`
+        : '';
+      const postData = getAppendData(userName, wobject, bodyMessage, pageContentField);
 
       setValidationScript(true);
       validateAppend(postData)
@@ -331,7 +340,13 @@ const ObjectOfTypePage = props => {
             setValidationScript(false);
           } else {
             setValidationScript(false);
-            message.error('Something went wrong. Please try again later.');
+            res.json().then(result => {
+              if (result.message) {
+                message.error(result.message);
+              } else {
+                message.error('Something went wrong. Please try again later.');
+              }
+            });
           }
         })
         .catch(() => {
@@ -378,6 +393,7 @@ const ObjectOfTypePage = props => {
 
   const getComponentEdit = () => (
     <React.Fragment>
+      <h2 className={'object-page-preview-title'}>{getObjectName(wobject)}</h2>
       {isReadyToPublish && (
         <div className="object-page-preview">
           <div className="object-page-preview__header">

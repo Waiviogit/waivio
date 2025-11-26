@@ -30,7 +30,6 @@
     margin-bottom: 15px;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
 
     @media @small {
       margin-bottom: 10px;
@@ -40,7 +39,8 @@
   &__departments {
     &--isSocial {
       .ObjCardListViewSwitcherForShop__departmentsList {
-        .ShopObjectCard {
+        .ShopObjectCard,
+        .ShopObjectCardClean {
           width: calc((100% - 40px) / 5);
 
           &:nth-child(3n) {

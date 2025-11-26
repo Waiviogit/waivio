@@ -1,0 +1,95 @@
+.PageContentClean {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 20px 20px;
+  color: #1a1a1a;
+  line-height: 1.7;
+  background: transparent;
+  border: none;
+
+  .Body {
+    font-family: var(--template-font-body, 'Playfair Display', serif);
+  }
+
+  /* Заголовок сторінки */
+  &__title {
+    text-align: center;
+    font-family: var(--template-font-title, 'Playfair Display', serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 20px;
+  }
+
+  /* Контейнер контенту */
+  &__content {
+    font-size: 18px;
+    color: #3a3a3a;
+    max-width: 780px;
+    margin: 0 auto;
+
+    p {
+      margin-bottom: 24px;
+      font-family: var(--template-font-body, 'Inter', serif);
+    }
+
+    strong,
+    b {
+      font-family: var(--template-font-title, 'Playfair Display', serif);
+      font-weight: 600;
+      color: #111;
+    }
+  }
+
+  /* Превʼю під час Ready to publish */
+  &__preview {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  &__previewHeader {
+    font-size: 20px;
+    font-family: var(--template-font-title, 'Playfair Display', serif);
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__closeBtn {
+    cursor: pointer;
+  }
+
+  /* Кнопки */
+  &__actions {
+    margin-top: 40px;
+    text-align: center;
+
+    button {
+      height: 48px;
+      padding: 0 32px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: var(--template-font-body, 'Inter', serif);
+    }
+  }
+
+  /* Якщо порожня сторінка */
+  &__empty {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 20px;
+    font-family: var(--template-font-title, 'Playfair Display', serif);
+    opacity: 0.7;
+  }
+
+  .PageContentClean__title {
+    text-align: center;
+    font-family: var(--template-font-title, 'Playfair Display', serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 32px;
+  }
+}

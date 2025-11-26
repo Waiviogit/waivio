@@ -10,9 +10,11 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import { extractImageTags } from '../../../common/helpers/parser';
 import { getHtml } from '../../components/Story/Body';
+
 import './PageContent.less';
 
 const PageContent = ({ wobj, intl }) => {
@@ -23,6 +25,8 @@ const PageContent = ({ wobj, intl }) => {
   const location = useLocation();
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
   const isSocial = useSelector(getIsSocial);
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const parsedBody = getHtml(content, {}, 'text', { isPost: true });
   const contentDiv = useRef();
 
@@ -65,9 +69,13 @@ const PageContent = ({ wobj, intl }) => {
   return content ? (
     <div
       ref={contentDiv}
-      className={classnames('PageContent', { social: isSocial })}
+      className={classnames('PageContent', {
+        social: isSocial,
+        PageContentClean: isCleanTemplate,
+      })}
       onClick={handleContentClick}
     >
+      {isCleanTemplate && <h2 className={'PageContentClean__title'}>{getObjectName(wobj)}</h2>}
       <BodyContainer isPage full body={content} />
       {open && (
         <Lightbox

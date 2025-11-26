@@ -1,11 +1,12 @@
 import SteemAPI from '../../client/steemAPI';
+import { dHive } from '../../client/vendor/steemitHelpers';
 import { jsonParse } from './formatter';
 import * as accountHistoryConstants from '../constants/accountHistory';
 import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
 import { appleDevice, mobileUserAgents, safariDevice, androidDevice } from './regexHelpers';
 
 export const getAccount = username =>
-  SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
+  dHive.database.getAccounts([username]).then(result => {
     if (result.length) {
       const userAccount = result[0];
 
@@ -91,7 +92,7 @@ export const getAllFollowing = (username, isGuest) =>
 export const defaultAccountLimit = 500;
 
 const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
-  SteemAPI.sendAsync('get_account_history', [account, from, limit]);
+  dHive.database.call('get_account_history', [account, from, limit]);
 
 const getGuestAccountHistory = (
   account,
