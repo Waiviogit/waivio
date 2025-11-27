@@ -17,11 +17,20 @@ import {
   setUsedLocale,
   setAppUrl,
   getSafeLinksAction,
+  getWebsiteConfigForSSR,
 } from '../../store/appStore/appActions';
+import { setBaseObject } from '../../store/wObjectStore/wobjectsActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
+import {
+  getSettingsAdsense,
+  getSettingsWebsite,
+  waivioAPI,
+  getObject,
+  getUserAccount,
+} from '../../waivioApi/ApiClient';
+import { getMetadata } from '../../common/helpers/postingMetadata';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -136,6 +145,28 @@ export default function createSsrHandler(template) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
+        const configResult = await store.dispatch(getWebsiteConfigForSSR(hostname));
+        const configuration = configResult?.value;
+
+        if (configuration?.shopSettings?.value) {
+          const { type, value } = configuration.shopSettings;
+          let mainObj;
+
+          if (type === 'user') {
+            const user = await getUserAccount(value);
+            const metadata = getMetadata(user);
+            const profile = get(metadata, 'profile', {});
+
+            mainObj = {
+              name: user?.name,
+              description: profile?.about,
+            };
+          } else {
+            mainObj = await getObject(value);
+          }
+
+          store.dispatch(setBaseObject(mainObj));
+        }
       } catch (e) {
         console.error('fall settings requests str 70');
       }

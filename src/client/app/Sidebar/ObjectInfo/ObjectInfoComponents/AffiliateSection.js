@@ -19,7 +19,19 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
     ? wobject?.affiliateProductIdTypes
     : [];
   const affiliateGeoAreas = has(wobject, 'affiliateGeoArea') ? wobject?.affiliateGeoArea : [];
-  const affiliateCode = has(wobject, 'affiliateCode') ? JSON.parse(wobject?.affiliateCode) : [];
+  let affiliateCode = [];
+
+  if (has(wobject, 'affiliateCode')) {
+    try {
+      const parsed = JSON.parse(wobject?.affiliateCode);
+
+      if (Array.isArray(parsed)) {
+        affiliateCode = parsed;
+      }
+    } catch (e) {
+      affiliateCode = [];
+    }
+  }
   const [affiliateSite, affCode] = affiliateCode;
   const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate', '')
     ?.replace('$productId', 'PRODUCTID')
@@ -101,7 +113,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
 
 AffiliateSection.propTypes = {
   listItem: PropTypes.func.isRequired,
-  userName: PropTypes.func.isRequired,
+  userName: PropTypes.string.isRequired,
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
 };

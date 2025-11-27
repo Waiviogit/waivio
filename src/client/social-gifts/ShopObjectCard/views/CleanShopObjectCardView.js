@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, truncate } from 'lodash';
 import { Icon } from 'antd';
@@ -19,6 +20,7 @@ import '../ShopObjectCard.clean.less';
 const CleanShopObjectCardView = ({
   wObject,
   isSocialProduct,
+  isAuthenticated,
   url,
   altText,
   objLink,
@@ -41,8 +43,9 @@ const CleanShopObjectCardView = ({
           {isSpecialCampaign ? (
             <>
               <USDDisplay value={specialAmount} currencyDisplay="symbol" />
-              {isGiveawayCampaign ? ' Giveaway' : ' Contest'}
-              {daysLeft !== null && daysLeft <= 3 && ` - ${daysLeft}d`}
+              {isGiveawayCampaign
+                ? ` Giveaway${daysLeft !== null ? ` - ${daysLeft} Days Left!` : ''}`
+                : ` Contest${daysLeft !== null ? ` - Win in ${daysLeft} Days!` : ''}`}
             </>
           ) : (
             <>
@@ -58,7 +61,11 @@ const CleanShopObjectCardView = ({
           )}
         </div>
       )}
-      <div className="ShopObjectCardClean__heart">
+      <div
+        className={classNames('ShopObjectCardClean__heart', {
+          'ShopObjectCardClean__heart--no-border': !isAuthenticated,
+        })}
+      >
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
     </a>
@@ -74,18 +81,22 @@ const CleanShopObjectCardView = ({
           separator: '...',
         })}
       </a>
-      {!isEmpty(rating) && (
-        <div className="ShopObjectCardClean__rating">
-          <Icon type="star" theme="filled" className="ShopObjectCardClean__ratingStar" />
-          <span className="ShopObjectCardClean__ratingValue">{averageRate(rating).toFixed(1)}</span>
-        </div>
-      )}
       <div className="ShopObjectCardClean__meta">
-        {wObject.price && (
-          <span className="ShopObjectCardClean__price" title={wObject.price}>
-            {wObject.price}
-          </span>
-        )}
+        <div>
+          {!isEmpty(rating) && (
+            <div className="ShopObjectCardClean__rating">
+              <Icon type="star" theme="filled" className="ShopObjectCardClean__ratingStar" />
+              <span className="ShopObjectCardClean__ratingValue">
+                {averageRate(rating).toFixed(1)}
+              </span>
+            </div>
+          )}
+          {wObject.price && (
+            <span className="ShopObjectCardClean__price" title={wObject.price}>
+              {wObject.price}
+            </span>
+          )}
+        </div>
         {!isEmpty(wObject.affiliateLinks) && (
           <div className="ShopObjectCardClean__affiliatLinks">
             {wObject.affiliateLinks
@@ -127,6 +138,7 @@ CleanShopObjectCardView.propTypes = {
     affiliateLinks: PropTypes.arrayOf(PropTypes.shape()),
   }),
   isSocialProduct: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
   url: PropTypes.string,
   altText: PropTypes.string,
   objLink: PropTypes.string,

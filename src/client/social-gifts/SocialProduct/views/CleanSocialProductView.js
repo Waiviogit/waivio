@@ -6,7 +6,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import Options from '../../../object/Options/Options';
 import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
-import CleanRating from './CleanRating';
+import RatingsWrap from '../../../objectCard/RatingsWrap/RatingsWrap';
 import PicturesSlider from '../PicturesSlider/PicturesSlider';
 import ProductDetails from '../ProductDetails/ProductDetails';
 import SocialTagCategories from '../SocialTagCategories/SocialTagCategories';
@@ -35,7 +35,7 @@ const CleanSocialProductView = ({
   wobjTitle,
   currBrand,
   authenticated,
-  // userName,
+  userName,
   toggleViewEditMode,
   isEditMode,
   showGallery,
@@ -117,7 +117,11 @@ const CleanSocialProductView = ({
         </h1>
       )}
       {isMobile() && !isEmpty(currBrand) && (
-        <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
+        <div
+          className={`SocialProduct__brand ${
+            isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''
+          }`}
+        >
           <SocialListItem fieldName={objectFields.brand} field={currBrand} showTitle={false} />
         </div>
       )}
@@ -127,7 +131,13 @@ const CleanSocialProductView = ({
         <div className="SocialProduct__ratings">
           {wobject.rating.map(rating => (
             <div key={rating.permlink} className="SocialProduct__ratings-item">
-              <CleanRating rating={rating} />
+              <RatingsWrap
+                isSocialProduct
+                ratings={[rating]}
+                username={userName}
+                wobjId={wobject?.author_permlink}
+                wobjName={wobject?.name}
+              />
             </div>
           ))}
         </div>
@@ -175,7 +185,11 @@ const CleanSocialProductView = ({
           </h1>
         )}
         {!isMobile() && !isEmpty(brand) && (
-          <div className={isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''}>
+          <div
+            className={`SocialProduct__brand ${
+              isEmpty(wobjTitle) ? 'SocialProduct__paddingBottom' : ''
+            }`}
+          >
             <SocialListItem fieldName={objectFields.brand} field={currBrand} showTitle={false} />
           </div>
         )}
@@ -197,7 +211,13 @@ const CleanSocialProductView = ({
           <div className="SocialProduct__ratings">
             {wobject.rating.map(rating => (
               <div key={rating.permlink} className="SocialProduct__ratings-item">
-                <CleanRating rating={rating} />
+                <RatingsWrap
+                  isSocialProduct
+                  ratings={[rating]}
+                  username={userName}
+                  wobjId={wobject?.author_permlink}
+                  wobjName={wobject?.name}
+                />
               </div>
             ))}
           </div>
@@ -407,7 +427,7 @@ CleanSocialProductView.propTypes = {
   wobjTitle: PropTypes.string,
   currBrand: PropTypes.shape(),
   authenticated: PropTypes.bool,
-  // userName: PropTypes.string,
+  userName: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
   isEditMode: PropTypes.bool,
   showGallery: PropTypes.bool,
