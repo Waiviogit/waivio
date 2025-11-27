@@ -276,6 +276,18 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
       'Reservation period will be dynamically adjusted to match target days',
     ),
   },
+  sponsorName: {
+    name: 'sponsorName',
+    label: messageFactory('sponsor_name', 'Sponsor name'),
+  },
+  sponsorURL: {
+    name: 'sponsorURL',
+    label: messageFactory('sponsor_url', 'Sponsor URL'),
+    caption: messageFactory(
+      'sponsor_url_caption',
+      'The sponsor URL will be displayed in various locations to direct users to the sponsor’s website.',
+    ),
+  },
   minPhotos: {
     name: 'minPhotos',
     label: messageFactory('min_original_photos', 'Minimum number of original photos (per review)'),

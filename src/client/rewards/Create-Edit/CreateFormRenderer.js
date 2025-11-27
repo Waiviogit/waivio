@@ -138,6 +138,8 @@ const CreateFormRenderer = props => {
     match,
     handlers,
     campaignName,
+    sponsorName,
+    sponsorURL,
     campaignType,
     budget,
     reward,
@@ -704,7 +706,29 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.targetDays.caption}</div>
         </Form.Item>
+        <Form.Item>
+          <div className="CreateReward__createDuplicate">
+            <div className="CreateReward__second">{fields.sponsorName.label}</div>
+          </div>
 
+          {getFieldDecorator(fields.sponsorName.name, {
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            rules: fields.sponsorName.rules,
+            initialValue: sponsorName,
+          })(<Input />)}
+        </Form.Item>
+        <Form.Item>
+          <div className="CreateReward__createDuplicate">
+            <div className="CreateReward__second">{fields.sponsorURL.label}</div>
+          </div>
+
+          {getFieldDecorator(fields.sponsorURL.name, {
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
+            rules: fields.sponsorURL.rules,
+            initialValue: sponsorURL,
+          })(<Input />)}
+          <div className="CreateReward__field-caption">{fields.sponsorURL.caption}</div>
+        </Form.Item>
         <div className="CreateReward__block-title">
           {handlers.messageFactory('eligible_reviews', 'Eligible reviews (post requirements)')}:
         </div>
@@ -1018,6 +1042,8 @@ CreateFormRenderer.defaultProps = {
 
 CreateFormRenderer.propTypes = {
   campaignName: PropTypes.string,
+  sponsorName: PropTypes.string,
+  sponsorURL: PropTypes.string,
   campaignType: PropTypes.string,
   recurrenceRule: PropTypes.string,
   budget: PropTypes.number,

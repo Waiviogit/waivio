@@ -37,6 +37,8 @@ import '../../rewards/Create-Edit/CreateReward.less';
 
 const initialState = {
   campaignName: '',
+  sponsorName: '',
+  sponsorURL: '',
   campaignType: 'reviews',
   budget: null,
   reward: null,
@@ -262,6 +264,8 @@ class CreateRewards extends React.Component {
           loading: false,
           campaignName: `${isDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
+          sponsorURL: campaign.sponsorURL,
+          sponsorName: campaign.sponsorName,
           reachType: campaign.reach,
           budget: campaign.budget.toString(),
           reward: campaign.reward ? campaign.reward.toString() : '0',
@@ -376,6 +380,8 @@ class CreateRewards extends React.Component {
         ? { timezone: timezones?.find(o => o.label === data.timezone)?.value }
         : {}),
       budget,
+      sponsorURL: data.sponsorURL,
+      sponsorName: data.sponsorName,
       reward: Number(data.reward) || 0,
       requirements: {
         minPhotos: +data.minPhotos,
@@ -641,6 +647,8 @@ class CreateRewards extends React.Component {
       campaignName,
       campaignType,
       budget,
+      sponsorName,
+      sponsorURL,
       reward,
       primaryObject,
       secondaryObjectsList,
@@ -685,6 +693,8 @@ class CreateRewards extends React.Component {
         campaignType={campaignType}
         reachType={reachType}
         budget={budget}
+        sponsorURL={sponsorURL}
+        sponsorName={sponsorName}
         reward={reward}
         reservationPeriod={reservationPeriod}
         targetDays={targetDays}
