@@ -530,6 +530,7 @@ class StoryFull extends React.Component {
             {instacardAff && (
               <div className={'StoryFull__aff'}>
                 <InstacartWidget
+                  inCard={false}
                   className={'shop-with-instacart-v1'}
                   instacartAff={instacardAff}
                   wobjPerm={wobjWithAff?.author_permlink}
