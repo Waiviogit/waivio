@@ -387,7 +387,6 @@ const ObjectOfTypePage = props => {
 
   const getComponentEdit = () => (
     <React.Fragment>
-      <h2 className={'object-page-preview-title'}>{getObjectName(wobject)}</h2>
       {isReadyToPublish && (
         <div className="object-page-preview">
           <div className="object-page-preview__header">

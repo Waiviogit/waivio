@@ -54,6 +54,12 @@
     width: 30px !important;
     padding: 5px 5px 6px 4px;
     border: 1px solid #bcbcbc;
+
+    &--no-border {
+      border: none;
+      background: transparent;
+      backdrop-filter: none;
+    }
   }
 
   &__rewardBadge {
@@ -65,8 +71,8 @@
     background: var(--website-color);
     backdrop-filter: blur(8px);
     border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 13px;
+    padding: 6px 12px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--website-text-color, #fff);
     display: flex;
@@ -75,7 +81,7 @@
     gap: 4px;
     font-family: var(--template-font-body, PlayfairDisplay, serif);
     white-space: nowrap;
-    max-width: calc(100% - 24px);
+    max-width: calc(100% - 16px);
     text-align: center;
   }
 
@@ -148,9 +154,9 @@
 
     .AffiliatLink {
       border: 1px solid #e5e5e5;
-      border-radius: 8px;
-      max-width: 100px;
-      height: 32px;
+      border-radius: 20px;
+      max-width: 120px;
+      height: 40px;
       padding: 0;
       margin: 0;
 
@@ -158,21 +164,21 @@
       &__image,
       &__icon-amazon,
       &__image-amazon {
-        max-width: 100px;
-        height: 32px;
-        padding: 0 4px;
+        max-width: 120px;
+        height: 40px;
+        padding: 0 8px;
 
         div {
-          max-width: 100px;
-          height: 32px;
-          padding: 0 4px;
+          max-width: 120px;
+          height: 40px;
+          padding: 0 8px;
         }
       }
     }
 
     .instacart-widget {
-      max-width: 100px;
-      height: 32px;
+      max-width: 120px;
+      height: 40px;
     }
   }
 

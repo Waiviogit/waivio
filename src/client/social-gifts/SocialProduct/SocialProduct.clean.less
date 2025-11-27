@@ -3,6 +3,13 @@
 
 .SocialProductClean {
   font-family: var(--template-font-body, PlayfairDisplay, serif);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+
+  @media @small {
+    padding: 20px 40px 100px;
+  }
 
   .SocialProduct__column-wrapper {
     background: #ffffff;
@@ -21,10 +28,89 @@
     }
   }
 
-  .SocialProduct__carouselWrapper,
-  .SocialProduct__carouselWrapper img {
-    border-radius: 10px;
-    overflow: hidden;
+  .ShopObjectCardClean__affiliatLinks .AffiliatLink {
+    height: 40px;
+    line-height: 35px;
+    border-radius: 15px;
+  }
+
+  .SocialProduct__carouselWrapper {
+    overflow: visible;
+
+    img {
+      border-radius: 10px;
+    }
+  }
+
+  // Amazon-style gallery - thumbnails on left
+  .PicturesSlider {
+    display: flex;
+    flex-direction: column;
+
+    @media @small {
+      flex-direction: row-reverse;
+    }
+
+    // Main image
+    > div:first-child {
+      flex: 1;
+
+      img {
+        border-radius: 10px;
+      }
+    }
+
+    // Thumbnails carousel
+    .ant-carousel {
+      width: 100% !important;
+      margin: 16px 0 0 !important;
+      overflow: visible !important;
+
+      @media @small {
+        width: 80px !important;
+        min-width: 80px;
+        margin: 0 !important;
+      }
+    }
+
+    .slick-slider {
+      @media @small {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .slick-list {
+      @media @small {
+        height: auto !important;
+        overflow: visible !important;
+      }
+    }
+
+    .slick-track {
+      @media @small {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 80px !important;
+        transform: none !important;
+        overflow: visible !important;
+      }
+    }
+
+    .slick-slide {
+      @media @small {
+        width: 80px !important;
+        height: auto !important;
+        margin-bottom: 8px;
+      }
+    }
+
+    .slick-prev,
+    .slick-next {
+      @media @small {
+        display: none !important;
+      }
+    }
   }
 
   .PicturesSlider__thumbnail,
@@ -32,12 +118,19 @@
     height: 70px;
     width: 70px;
     object-fit: cover;
+    border-radius: 8px;
   }
 
   .PicturesSlider .slick-slide.slick-active {
     width: 70px !important;
     margin-right: 5px;
     border: none;
+
+    @media @small {
+      width: 70px !important;
+      margin-right: 0;
+      margin-bottom: 8px;
+    }
   }
 
   // About section - card style
@@ -57,6 +150,7 @@
     font-family: var(--template-font-heading, PlayfairDisplay, serif);
     margin-bottom: 20px;
     color: #1a1a1a;
+    text-align: center;
   }
 
   .SocialProduct__description {
@@ -65,101 +159,108 @@
     color: #4a4a4a;
   }
 
-  // Description layout - first image on top, then text, then remaining images
+  // Description layout - chess pattern with vertically centered text
   .SocialProductDescription {
-    &__paragraph-container,
-    &__paragraph-only-container,
-    &__single-paragraph-container {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 0;
-    }
-
-    // For multiple paragraphs - reorder first container
     &__paragraph-container {
-      &:first-of-type {
-        // Image div comes first
-        & > div:last-child {
-          order: 1;
-          margin-bottom: 24px;
-        }
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 24px;
 
-        // Paragraph comes after image
-        & > p {
-          order: 2;
+      @media @small {
+        flex-direction: row;
+        align-items: center;
+
+        &:nth-child(even) {
+          flex-direction: row-reverse;
         }
       }
     }
 
-    &__paragraph,
-    &__paragraph--only {
-      width: 100%;
-      padding: 0;
-      margin-bottom: 16px;
-      display: block;
-      float: none;
+    &__paragraph-only-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 24px;
+
+      @media @small {
+        flex-direction: row;
+        align-items: center;
+      }
     }
 
-    // Single paragraph with one image - image on top
     &__single-paragraph-container {
       display: flex;
       flex-direction: column;
-    }
-
-    &__single-paragraph {
-      width: 100%;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-
-      // Image div first
-      & > div:first-child {
-        order: 1;
-        margin-bottom: 24px;
-      }
-
-      // Text content after (all other elements)
-      & > *:not(:first-child) {
-        order: 2;
-        margin-bottom: 16px;
-      }
-    }
-
-    &__image,
-    &__single-image {
-      border: none;
-      border-radius: 8px;
-      float: none;
-      margin: 0;
-      max-width: 100%;
-      width: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    // First image - full width, horizontal
-    &__single-image,
-    &__paragraph-container:first-of-type &__image {
-      height: auto;
-      max-height: 400px;
-      border-radius: 8px;
       margin-bottom: 24px;
+
+      @media @small {
+        flex-direction: row;
+        align-items: center;
+      }
     }
 
-    // Remaining images - 3 in row
-    &__paragraph-container:not(:first-of-type) &__image {
-      height: 220px;
+    &__paragraph {
       margin-bottom: 16px;
 
       @media @small {
-        width: calc(33.333% - 12px);
-        display: inline-block;
-        margin-right: 16px;
-        vertical-align: top;
+        margin-bottom: 0;
+        padding: 0 24px;
+        width: 50%;
+      }
+    }
 
-        &:nth-child(3n) {
-          margin-right: 0;
-        }
+    &__paragraph--only,
+    &__paragraph-only {
+      width: 100%;
+      padding: 0;
+      margin-bottom: 16px;
+
+      @media @small {
+        padding: 0 24px;
+      }
+    }
+
+    &__single-paragraph {
+      display: flex;
+      flex-direction: column-reverse;
+      margin-bottom: 0;
+
+      @media @small {
+        display: block;
+        padding: 0 24px;
+        width: 50%;
+      }
+    }
+
+    &__image {
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 16px;
+      object-fit: cover;
+
+      @media @small {
+        margin-bottom: 0;
+        max-height: 400px;
+        width: 50%;
+      }
+    }
+
+    &__single-image {
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 16px;
+      object-fit: cover;
+
+      @media @small {
+        float: right;
+        margin: 0 0 20px 24px;
+        max-height: 400px;
+        max-width: 45%;
       }
     }
 
@@ -167,7 +268,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
-      margin-top: 24px;
+      justify-content: center;
     }
   }
 
@@ -198,6 +299,19 @@
 
         &::before {
           content: '•';
+          position: absolute;
+          left: 0;
+          color: #1a1a1a;
+          font-weight: bold;
+        }
+      }
+
+      .Department__socialLayout {
+        padding-left: 20px;
+        position: relative;
+
+        &::before {
+          content: '\2022';
           position: absolute;
           left: 0;
           color: #1a1a1a;
@@ -286,5 +400,9 @@
       font-size: 14px;
       margin: 0 8px 8px 0;
     }
+  }
+
+  .SocialProduct__brand {
+    margin-bottom: 20px;
   }
 }

@@ -43,9 +43,7 @@ const ClearHeader = memo(
                 <span>{title}</span>
               </Link>
             )}
-            <div className="HeaderClean__search">
-              <GeneralSearch searchBarActive isSocialProduct />
-            </div>
+            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
             <div className="HeaderClean__actions">
               <button
                 className={classNames('Header__mobile-search', {
