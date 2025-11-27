@@ -340,7 +340,13 @@ const ObjectOfTypePage = props => {
             setValidationScript(false);
           } else {
             setValidationScript(false);
-            if (res.message) message.error(res.message);
+            res.json().then(result => {
+              if (result.message) {
+                message.error(result.message);
+              } else {
+                message.error('Something went wrong. Please try again later.');
+              }
+            });
           }
         })
         .catch(() => {

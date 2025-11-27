@@ -47,8 +47,16 @@ const PropositionFooter = ({
   const isSocial = useSelector(getIsSocial);
   const signatureAuth = useSelector(getAuthUserSignature);
   const user = useSelector(getAuthenticatedUser);
-  const jsonMetadata = !isEmpty(user) ? JSON.parse(user?.posting_json_metadata) : {};
-  const signature = jsonMetadata?.profile?.signature || null;
+  let jsonMetadata = {};
+
+  if (user?.posting_json_metadata) {
+    try {
+      jsonMetadata = JSON.parse(user.posting_json_metadata);
+    } catch (e) {
+      jsonMetadata = {};
+    }
+  }
+  const signature = jsonMetadata?.profile?.signature || '';
   const sign = signatureAuth || signature;
 
   const isMentions = [
