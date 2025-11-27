@@ -23,4 +23,19 @@
     margin: 0 5px;
     color: @blue-gullGray;
   }
+
+  &--clean {
+    a,
+    span {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    .Breadcrumbs__home {
+      color: var(--website-color);
+
+      &:hover {
+        color: var(--website-hover-color);
+      }
+    }
+  }
 }

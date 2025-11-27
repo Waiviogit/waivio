@@ -30,6 +30,7 @@
     font-weight: bold;
     cursor: pointer;
     color: black;
+    font-family: var(--template-font-body, inherit);
   }
 
   &__departments {
@@ -94,6 +95,12 @@
   &__showMore {
     margin-top: 10px;
     display: inline-block;
+    color: var(--website-color);
+    font-family: var(--template-font-body, inherit);
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
   }
 }
 

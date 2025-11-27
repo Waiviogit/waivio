@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, truncate } from 'lodash';
-import { Icon } from 'antd';
 import HeartButton from '../../../widgets/HeartButton';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { averageRate } from '../../../components/Sidebar/Rate/rateHelper';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import InstacartWidget from '../../../widgets/InstacartWidget';
+import RatingsWrap from '../../../objectCard/RatingsWrap/RatingsWrap';
 import {
   isNewInstacartProgram,
   isOldInstacartProgram,
@@ -21,6 +20,7 @@ const CleanShopObjectCardView = ({
   wObject,
   isSocialProduct,
   isAuthenticated,
+  username,
   url,
   altText,
   objLink,
@@ -38,8 +38,68 @@ const CleanShopObjectCardView = ({
   <div className="ShopObjectCardClean" onClick={onClick}>
     <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCardClean__imageWrap">
       <img className="ShopObjectCardClean__image" src={url} alt={altText} />
+      <div
+        className={classNames('ShopObjectCardClean__heart', {
+          'ShopObjectCardClean__heart--no-border': !isAuthenticated,
+        })}
+      >
+        <HeartButton wobject={wObject} size={'20px'} />
+      </div>
+    </a>
+    <div className="ShopObjectCardClean__content">
+      <a
+        href={objLink}
+        onClick={e => e.preventDefault()}
+        title={wObject?.description ? truncate(wObject?.description, { length: 200 }) : wobjName}
+        className="ShopObjectCardClean__name"
+      >
+        {truncate(wobjName, {
+          length: isSocialProduct && isMobile() ? 35 : 110,
+          separator: '...',
+        })}
+      </a>
+      {!isEmpty(rating) && (
+        <RatingsWrap
+          ratings={[rating]}
+          username={username}
+          wobjId={wObject.author_permlink}
+          wobjName={wobjName}
+        />
+      )}
+      {wObject.price && (
+        <span className="ShopObjectCardClean__price" title={wObject.price}>
+          {wObject.price}
+        </span>
+      )}
+      {!isEmpty(wObject.affiliateLinks) && (
+        <div className="ShopObjectCardClean__affiliatLinks">
+          {wObject.affiliateLinks
+            .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+            .map(affLink => {
+              if (
+                affLink.type.toLocaleLowerCase() === 'instacart' &&
+                isNewInstacartProgram(affLink)
+              )
+                return (
+                  <InstacartWidget
+                    inCard
+                    key={affLink.link}
+                    instacartAff={affLink}
+                    wobjPerm={wObject?.author_permlink}
+                  />
+                );
+              if (
+                affLink.type.toLocaleLowerCase() === 'instacart' &&
+                isOldInstacartProgram(affLink)
+              )
+                return null;
+
+              return <AffiliatLink key={affLink.link} link={affLink} />;
+            })}
+        </div>
+      )}
       {withRewards && (
-        <div className="ShopObjectCardClean__rewardBadge">
+        <div className="ShopObjectCardClean__rewardText">
           {isSpecialCampaign ? (
             <>
               <USDDisplay value={specialAmount} currencyDisplay="symbol" />
@@ -61,70 +121,6 @@ const CleanShopObjectCardView = ({
           )}
         </div>
       )}
-      <div
-        className={classNames('ShopObjectCardClean__heart', {
-          'ShopObjectCardClean__heart--no-border': !isAuthenticated,
-        })}
-      >
-        <HeartButton wobject={wObject} size={'20px'} />
-      </div>
-    </a>
-    <div className="ShopObjectCardClean__content">
-      <a
-        href={objLink}
-        onClick={e => e.preventDefault()}
-        title={wObject?.description ? truncate(wObject?.description, { length: 200 }) : wobjName}
-        className="ShopObjectCardClean__name"
-      >
-        {truncate(wobjName, {
-          length: isSocialProduct && isMobile() ? 35 : 110,
-          separator: '...',
-        })}
-      </a>
-      <div className="ShopObjectCardClean__meta">
-        <div>
-          {!isEmpty(rating) && (
-            <div className="ShopObjectCardClean__rating">
-              <Icon type="star" theme="filled" className="ShopObjectCardClean__ratingStar" />
-              <span className="ShopObjectCardClean__ratingValue">
-                {averageRate(rating).toFixed(1)}
-              </span>
-            </div>
-          )}
-          {wObject.price && (
-            <span className="ShopObjectCardClean__price" title={wObject.price}>
-              {wObject.price}
-            </span>
-          )}
-        </div>
-        {!isEmpty(wObject.affiliateLinks) && (
-          <div className="ShopObjectCardClean__affiliatLinks">
-            {wObject.affiliateLinks
-              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-              .map(affLink => {
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isNewInstacartProgram(affLink)
-                )
-                  return (
-                    <InstacartWidget
-                      inCard
-                      key={affLink.link}
-                      instacartAff={affLink}
-                      wobjPerm={wObject?.author_permlink}
-                    />
-                  );
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isOldInstacartProgram(affLink)
-                )
-                  return null;
-
-                return <AffiliatLink key={affLink.link} link={affLink} />;
-              })}
-          </div>
-        )}
-      </div>
     </div>
   </div>
 );
@@ -139,6 +135,7 @@ CleanShopObjectCardView.propTypes = {
   }),
   isSocialProduct: PropTypes.bool,
   isAuthenticated: PropTypes.bool,
+  username: PropTypes.string,
   url: PropTypes.string,
   altText: PropTypes.string,
   objLink: PropTypes.string,
