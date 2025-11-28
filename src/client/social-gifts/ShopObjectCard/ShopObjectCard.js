@@ -5,7 +5,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useParams, useHistory } from 'react-router';
 import moment from 'moment';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import { createQueryBreadcrumbs, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
@@ -19,6 +22,7 @@ import './ShopObjectCard.less';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const isAuthenticated = useSelector(getIsAuthenticated);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
   const { name } = useParams();
@@ -136,6 +140,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       isChecklist={isChecklist}
       isSocialProduct={isSocialProduct}
       username={username}
+      isAuthenticated={isAuthenticated}
       url={url}
       altText={altText}
       objLink={objLink}

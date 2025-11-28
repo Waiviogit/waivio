@@ -48,7 +48,6 @@ const GeneralSearch = props => {
       'list',
       'recipe',
     ].includes(wobj.object_type);
-
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
       dispatch(
@@ -225,7 +224,7 @@ const GeneralSearch = props => {
     <div
       className={classNames('Header__search', {
         'Header__search--hidden': !props.searchBarActive,
-        'Header__search--long': props.isSocialProduct && props.searchBarActive,
+        'Header__search--long': props.isSocialProduct,
       })}
     >
       <i className={'iconfont icon-search'} />

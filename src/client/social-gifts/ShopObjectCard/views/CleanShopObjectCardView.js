@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, truncate } from 'lodash';
-import { Icon } from 'antd';
 import HeartButton from '../../../widgets/HeartButton';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { averageRate } from '../../../components/Sidebar/Rate/rateHelper';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import InstacartWidget from '../../../widgets/InstacartWidget';
+import RatingsWrap from '../../../objectCard/RatingsWrap/RatingsWrap';
 import {
   isNewInstacartProgram,
   isOldInstacartProgram,
@@ -19,6 +19,8 @@ import '../ShopObjectCard.clean.less';
 const CleanShopObjectCardView = ({
   wObject,
   isSocialProduct,
+  isAuthenticated,
+  username,
   url,
   altText,
   objLink,
@@ -36,29 +38,11 @@ const CleanShopObjectCardView = ({
   <div className="ShopObjectCardClean" onClick={onClick}>
     <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCardClean__imageWrap">
       <img className="ShopObjectCardClean__image" src={url} alt={altText} />
-      {withRewards && (
-        <div className="ShopObjectCardClean__rewardBadge">
-          {isSpecialCampaign ? (
-            <>
-              <USDDisplay value={specialAmount} currencyDisplay="symbol" />
-              {isGiveawayCampaign ? ' Giveaway' : ' Contest'}
-              {daysLeft !== null && daysLeft <= 3 && ` - ${daysLeft}d`}
-            </>
-          ) : (
-            <>
-              <FormattedMessage
-                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-                defaultMessage={`Share {minPhotos} photo${
-                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
-                } & earn`}
-                values={{ minPhotos: proposition?.requirements?.minPhotos }}
-              />{' '}
-              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-            </>
-          )}
-        </div>
-      )}
-      <div className="ShopObjectCardClean__heart">
+      <div
+        className={classNames('ShopObjectCardClean__heart', {
+          'ShopObjectCardClean__heart--no-border': !isAuthenticated,
+        })}
+      >
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
     </a>
@@ -75,45 +59,68 @@ const CleanShopObjectCardView = ({
         })}
       </a>
       {!isEmpty(rating) && (
-        <div className="ShopObjectCardClean__rating">
-          <Icon type="star" theme="filled" className="ShopObjectCardClean__ratingStar" />
-          <span className="ShopObjectCardClean__ratingValue">{averageRate(rating).toFixed(1)}</span>
+        <RatingsWrap
+          ratings={[rating]}
+          username={username}
+          wobjId={wObject.author_permlink}
+          wobjName={wobjName}
+        />
+      )}
+      {wObject.price && (
+        <span className="ShopObjectCardClean__price" title={wObject.price}>
+          {wObject.price}
+        </span>
+      )}
+      {!isEmpty(wObject.affiliateLinks) && (
+        <div className="ShopObjectCardClean__affiliatLinks">
+          {wObject.affiliateLinks
+            .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+            .map(affLink => {
+              if (
+                affLink.type.toLocaleLowerCase() === 'instacart' &&
+                isNewInstacartProgram(affLink)
+              )
+                return (
+                  <InstacartWidget
+                    inCard
+                    key={affLink.link}
+                    instacartAff={affLink}
+                    wobjPerm={wObject?.author_permlink}
+                  />
+                );
+              if (
+                affLink.type.toLocaleLowerCase() === 'instacart' &&
+                isOldInstacartProgram(affLink)
+              )
+                return null;
+
+              return <AffiliatLink key={affLink.link} link={affLink} />;
+            })}
         </div>
       )}
-      <div className="ShopObjectCardClean__meta">
-        {wObject.price && (
-          <span className="ShopObjectCardClean__price" title={wObject.price}>
-            {wObject.price}
-          </span>
-        )}
-        {!isEmpty(wObject.affiliateLinks) && (
-          <div className="ShopObjectCardClean__affiliatLinks">
-            {wObject.affiliateLinks
-              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-              .map(affLink => {
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isNewInstacartProgram(affLink)
-                )
-                  return (
-                    <InstacartWidget
-                      inCard
-                      key={affLink.link}
-                      instacartAff={affLink}
-                      wobjPerm={wObject?.author_permlink}
-                    />
-                  );
-                if (
-                  affLink.type.toLocaleLowerCase() === 'instacart' &&
-                  isOldInstacartProgram(affLink)
-                )
-                  return null;
-
-                return <AffiliatLink key={affLink.link} link={affLink} />;
-              })}
-          </div>
-        )}
-      </div>
+      {withRewards && (
+        <div className="ShopObjectCardClean__rewardText">
+          {isSpecialCampaign ? (
+            <>
+              <USDDisplay value={specialAmount} currencyDisplay="symbol" />
+              {isGiveawayCampaign
+                ? ` Giveaway${daysLeft !== null ? ` - ${daysLeft} Days Left!` : ''}`
+                : ` Contest${daysLeft !== null ? ` - Win in ${daysLeft} Days!` : ''}`}
+            </>
+          ) : (
+            <>
+              <FormattedMessage
+                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+                defaultMessage={`Share {minPhotos} photo${
+                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
+                } & earn`}
+                values={{ minPhotos: proposition?.requirements?.minPhotos }}
+              />{' '}
+              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
+            </>
+          )}
+        </div>
+      )}
     </div>
   </div>
 );
@@ -127,6 +134,8 @@ CleanShopObjectCardView.propTypes = {
     affiliateLinks: PropTypes.arrayOf(PropTypes.shape()),
   }),
   isSocialProduct: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
+  username: PropTypes.string,
   url: PropTypes.string,
   altText: PropTypes.string,
   objLink: PropTypes.string,

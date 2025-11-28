@@ -5,6 +5,7 @@ import { isEmpty, isNil } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   accessTypesArr,
@@ -29,6 +30,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import './Breadcrumbs.less';
 
@@ -40,6 +42,8 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const wobject = useSelector(getObject);
   const username = useSelector(getAuthenticatedUserName);
   const isAdministrator = useSelector(getUserAdministrator);
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
@@ -111,7 +115,15 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
   return (
     <div className={'flex '}>
-      <div className="Breadcrumbs">
+      <div className={classNames('Breadcrumbs', { 'Breadcrumbs--clean': isCleanTemplate })}>
+        {isCleanTemplate && (
+          <React.Fragment>
+            <Link to="/" className="Breadcrumbs__home">
+              Home
+            </Link>
+            {!isEmpty(breadcrumbs) && <Icon type="right" />}
+          </React.Fragment>
+        )}
         {breadcrumbs?.map((crumb, index) => {
           let comp;
 

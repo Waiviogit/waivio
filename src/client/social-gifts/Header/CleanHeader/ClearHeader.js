@@ -43,9 +43,7 @@ const ClearHeader = memo(
                 <span>{title}</span>
               </Link>
             )}
-            <div className="HeaderClean__search">
-              <GeneralSearch searchBarActive isSocialProduct />
-            </div>
+            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
             <div className="HeaderClean__actions">
               <button
                 className={classNames('Header__mobile-search', {
@@ -70,7 +68,7 @@ const ClearHeader = memo(
           style={{ backgroundImage: `url(${config?.mainBanner})` }}
         >
           <h1>{mainObj?.name || 'Your name'}</h1>
-          <h2>{mainObj?.title || 'Your title of the best site by Lucy'}</h2>
+          <h2>{mainObj?.title || mainObj?.description || 'Your title of the best site by Lucy'}</h2>
           {!hideHeader && (
             <div className="HeaderClean__nav">
               <WebsiteTopNavigation shopSettings={config?.shopSettings} />
