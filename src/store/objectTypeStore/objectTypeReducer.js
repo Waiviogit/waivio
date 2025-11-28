@@ -15,6 +15,8 @@ const initialState = {
   mapWobjects: [],
   updated: false,
   tagsForFilter: [],
+  tagCategories: [],
+  categoryTags: {},
 };
 const objectType = (state = initialState, action) => {
   switch (action.type) {
@@ -28,7 +30,6 @@ const objectType = (state = initialState, action) => {
         related_wobjects: relatedWobjects,
         hasMoreWobjects,
         filters,
-        tagsForFilter,
         ...data
       } = action.payload;
       const filteredRelatedWobjects = filter(relatedWobjects, wObj => {
@@ -43,9 +44,6 @@ const objectType = (state = initialState, action) => {
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(filtersList, (result, value, key) => ({ ...result, [key]: [] }), {})
         : { ...state.activeFilters };
-      const tagsForFilterList = isEmpty(state.tagsForFilter)
-        ? tagsForFilter
-        : [...state.tagsForFilter];
 
       const hasMap = !isEmpty(
         filter(relatedWobjects, object => get(object, ['map']) || get(object, ['parent', 'map'])),
@@ -55,7 +53,6 @@ const objectType = (state = initialState, action) => {
         ...state,
         data,
         filtersList,
-        tagsForFilter: tagsForFilterList,
         activeFilters,
         map: Boolean((filters && !isEmpty(filters?.map)) || hasMap),
         filteredObjects,
@@ -101,20 +98,121 @@ const objectType = (state = initialState, action) => {
       };
 
     case wobjTypeActions.SHOW_MORE_TAGS_FOR_FILTERS.SUCCESS: {
-      const { tags, hasMore } = action.payload;
-      const tagsFilter = [...state.tagsForFilter];
-      const matchIndex = tagsFilter.findIndex(category => category.tagCategory === action.meta);
-      const matchItem = tagsFilter[matchIndex];
+      const categoryName = action.meta;
+      const categoryData = action.payload || {};
 
-      tagsFilter.splice(matchIndex, 1, {
-        ...matchItem,
-        tags: uniq([...matchItem.tags, ...tags]),
-        hasMore,
+      const { tags: newTags = [], hasMore = false } = categoryData;
+
+      const existingCategoryData =
+        state.categoryTags[categoryName] ||
+        state.tagCategories.find(cat => {
+          const catName = typeof cat === 'object' ? cat.tagCategory : cat;
+
+          return catName === categoryName;
+        });
+
+      const existingTags =
+        existingCategoryData?.tags ||
+        (typeof existingCategoryData === 'object' ? existingCategoryData.tags : []);
+
+      const updatedTags = uniq([...existingTags, ...newTags]);
+
+      const tagsFilter = [...state.tagsForFilter];
+      const matchIndex = tagsFilter.findIndex(category => {
+        const catName = typeof category === 'object' ? category.tagCategory : category;
+
+        return catName === categoryName;
+      });
+
+      if (matchIndex !== -1) {
+        tagsFilter.splice(matchIndex, 1, {
+          tagCategory: categoryName,
+          tags: updatedTags,
+          hasMore,
+        });
+      } else {
+        tagsFilter.push({
+          tagCategory: categoryName,
+          tags: updatedTags,
+          hasMore,
+        });
+      }
+
+      const updatedCategoryTags = {
+        ...state.categoryTags,
+        [categoryName]: {
+          tags: updatedTags,
+          hasMore,
+        },
+      };
+
+      const updatedTagCategories = state.tagCategories.map(category => {
+        const catName = typeof category === 'object' ? category.tagCategory : category;
+
+        if (catName === categoryName) {
+          return { tagCategory: categoryName, tags: updatedTags, hasMore };
+        }
+
+        return category;
       });
 
       return {
         ...state,
         tagsForFilter: [...tagsFilter],
+        categoryTags: updatedCategoryTags,
+        tagCategories: updatedTagCategories,
+      };
+    }
+
+    case wobjTypeActions.GET_TAG_CATEGORIES.SUCCESS: {
+      const categories = action.payload || [];
+      const categoryTagsMap = {};
+
+      categories.forEach(category => {
+        categoryTagsMap[category.tagCategory] = {
+          tags: category.tags || [],
+          hasMore: category.hasMore || false,
+        };
+      });
+
+      return {
+        ...state,
+        tagCategories: categories,
+        categoryTags: categoryTagsMap,
+        tagsForFilter: categories,
+      };
+    }
+
+    case wobjTypeActions.GET_TAGS_BY_CATEGORY.SUCCESS: {
+      const categoryName = action.meta;
+      const tags = action.payload?.tags || [];
+      const hasMore = action.payload?.hasMore || false;
+
+      const updatedTagCategories = state.tagCategories.map(category => {
+        const catName = typeof category === 'object' ? category.tagCategory : category;
+
+        if (catName === categoryName) {
+          return { tagCategory: categoryName, tags, hasMore };
+        }
+
+        return category;
+      });
+
+      return {
+        ...state,
+        categoryTags: {
+          ...state.categoryTags,
+          [categoryName]: { tags, hasMore },
+        },
+        tagCategories: updatedTagCategories,
+        tagsForFilter: [
+          ...state.tagsForFilter.filter(item => {
+            const itemName = typeof item === 'object' ? item.tagCategory : item;
+
+            return itemName !== categoryName;
+          }),
+          { tagCategory: categoryName, tags, hasMore },
+        ],
       };
     }
 

@@ -5843,4 +5843,43 @@ export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, 
     });
 };
 
+export const getSearchTagByCategory = (objectTypeName, tagCategory, skip = 0, limit = 10) => {
+  const skipParam = skip > 0 ? `&skip=${skip}` : '';
+  const limitParam = `?limit=${limit}`;
+
+  return fetch(
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}`,
+    {
+      headers: {
+        ...headers,
+        ...getAuthHeaders(),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+};
+
+export const getSearchTagCategories = objectTypeName =>
+  fetch(`${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => {
+      console.error('API Client error:', error);
+
+      return error;
+    });
+
 export default null;

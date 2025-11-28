@@ -294,5 +294,6 @@
   "links": "/links",
   "qna": "/qna",
   "topics": "/topics",
-  "migrateToWeaviate": "/migrate-to-weaviate"
+  "migrateToWeaviate": "/migrate-to-weaviate",
+  "tagCategories": "/tag-categories"
 }
