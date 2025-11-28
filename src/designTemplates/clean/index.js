@@ -4,6 +4,7 @@ import CleanListHero from './components/ListHero';
 import CleanChecklistLayout from '../../client/social-gifts/Checklist/layouts/CleanChecklistLayout';
 import CleanShopObjectCardView from '../../client/social-gifts/ShopObjectCard/views/CleanShopObjectCardView';
 import CleanSocialProductView from '../../client/social-gifts/SocialProduct/views/CleanSocialProductView';
+import CleanBusinessObjectView from '../../client/social-gifts/BusinessObject/views/CleanBusinessObjectView';
 
 const cleanTemplate = {
   meta: {
@@ -22,6 +23,7 @@ const cleanTemplate = {
     ChecklistLayout: CleanChecklistLayout,
     ShopObjectCardView: CleanShopObjectCardView,
     SocialProductView: CleanSocialProductView,
+    BusinessObjectView: CleanBusinessObjectView,
   },
 };
 
