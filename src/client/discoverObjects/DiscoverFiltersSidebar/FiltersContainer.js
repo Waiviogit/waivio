@@ -14,17 +14,19 @@ import {
   setFiltersAndLoad,
   showMoreTags,
   setTagsFiltersAndLoad,
+  getTagsByCategory,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
   getTypeName,
+  getTagCategories,
+  getCategoryTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 
 const FiltersContainer = ({
   filters,
-  tagsFilters,
   history,
   location,
   activeFilters,
@@ -33,6 +35,9 @@ const FiltersContainer = ({
   dispatchSetActiveTagsFilters,
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
+  tagCategories,
+  categoryTags,
+  dispatchGetTagsByCategory,
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
   const { search: filterPath } = location;
@@ -46,6 +51,13 @@ const FiltersContainer = ({
       setCollapsed(collapsedFilters.filter(f => f !== filterName));
     } else {
       setCollapsed([...collapsedFilters, filterName]);
+      const isTagCategory = tagCategories?.some(
+        cat => (typeof cat === 'object' ? cat.tagCategory : cat) === filterName,
+      );
+
+      if (isTagCategory && !categoryTags[filterName]) {
+        dispatchGetTagsByCategory(activeObjectTypeName, filterName);
+      }
     }
   };
 
@@ -66,12 +78,16 @@ const FiltersContainer = ({
       checked,
     );
 
+    dispatchGetTagsByCategory(activeObjectTypeName, value);
     dispatchSetActiveTagsFilters(updateTagsFilters);
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };
 
-  const showMoreTagsHandler = filterValues => {
-    dispatchShowMoreTags(filterValues.tagCategory, activeObjectTypeName, size(filterValues.tags));
+  const showMoreTagsHandler = (categoryName, currentTags) => {
+    const skip = size(currentTags);
+    const limit = 10;
+
+    dispatchShowMoreTags(categoryName, activeObjectTypeName, skip, limit);
   };
 
   const isCollapsed = name => collapsedFilters?.includes(name);
@@ -90,20 +106,31 @@ const FiltersContainer = ({
               filterValues={filterValues}
             />
           ))}
-        {!isEmpty(tagsFilters) &&
-          tagsFilters.map(filterValues => (
-            <FilterItem
-              key={filterValues.tagCategory}
-              isCollapsed={isCollapsed(filterValues.tagCategory)}
-              filterName={filterValues.tagCategory}
-              handleDisplayFilter={handleDisplayFilter}
-              handleOnChangeCheckbox={handleOnChangeTagsCheckbox}
-              activeFilters={activeTagsFilters}
-              filterValues={filterValues.tags}
-              hasMore={filterValues.hasMore}
-              showMoreTags={() => showMoreTagsHandler(filterValues)}
-            />
-          ))}
+        {!isEmpty(tagCategories) &&
+          tagCategories.map(category => {
+            const categoryName = category.tagCategory || category;
+            // Use categoryTags if available (from getSearchTagByCategory), otherwise use initial data
+            const categoryData = categoryTags[categoryName] || {
+              tags: category.tags || [],
+              hasMore: category.hasMore || false,
+            };
+            const tags = categoryData.tags || [];
+            const hasMore = categoryData.hasMore || false;
+
+            return (
+              <FilterItem
+                key={categoryName}
+                isCollapsed={isCollapsed(categoryName)}
+                filterName={categoryName}
+                handleDisplayFilter={handleDisplayFilter}
+                handleOnChangeCheckbox={handleOnChangeTagsCheckbox}
+                activeFilters={activeTagsFilters}
+                filterValues={tags}
+                hasMore={hasMore}
+                showMoreTags={() => showMoreTagsHandler(categoryName, tags)}
+              />
+            );
+          })}
       </div>
     </div>
   );
@@ -114,7 +141,6 @@ FiltersContainer.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
   location: PropTypes.shape({
     search: PropTypes.string,
     pathname: PropTypes.string,
@@ -128,14 +154,28 @@ FiltersContainer.propTypes = {
   dispatchSetActiveTagsFilters: PropTypes.func.isRequired,
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
+  dispatchGetTagsByCategory: PropTypes.func.isRequired,
   activeFilters: PropTypes.shape({}),
   activeObjectTypeName: PropTypes.string.isRequired,
+  tagCategories: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        tagCategory: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string),
+        hasMore: PropTypes.bool,
+      }),
+    ]),
+  ),
+  categoryTags: PropTypes.shape({}),
 };
 
 FiltersContainer.defaultProps = {
   tagsFilters: [],
   filterPath: '',
   activeFilters: {},
+  tagCategories: [],
+  categoryTags: {},
 };
 
 export default connect(
@@ -143,11 +183,14 @@ export default connect(
     activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
     activeObjectTypeName: getTypeName(state),
+    tagCategories: getTagCategories(state),
+    categoryTags: getCategoryTags(state),
   }),
   {
     dispatchSetActiveTagsFilters: setTagsFiltersAndLoad,
     dispatchGetActiveFilters: getActiveFilters,
     dispatchShowMoreTags: showMoreTags,
     dispatchSetFiltersAndLoad: setFiltersAndLoad,
+    dispatchGetTagsByCategory: getTagsByCategory,
   },
 )(withRouter(FiltersContainer));

@@ -223,11 +223,28 @@ export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
   '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
 );
 
-export const showMoreTags = (category, objectType, skip, limit) => dispatch =>
+export const showMoreTags = (category, objectType, skip, limit = 10) => dispatch =>
   dispatch({
     type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
-    payload: ApiClient.showMoreTagsForFilters(category, objectType, skip, limit),
+    payload: ApiClient.getSearchTagByCategory(objectType, category, skip, limit),
     meta: category,
+  });
+
+export const GET_TAG_CATEGORIES = createAsyncActionType('@objectType/GET_TAG_CATEGORIES');
+
+export const getTagCategories = objectTypeName => dispatch =>
+  dispatch({
+    type: GET_TAG_CATEGORIES.ACTION,
+    payload: ApiClient.getSearchTagCategories(objectTypeName),
+  });
+
+export const GET_TAGS_BY_CATEGORY = createAsyncActionType('@objectType/GET_TAGS_BY_CATEGORY');
+
+export const getTagsByCategory = (objectTypeName, tagCategory) => dispatch =>
+  dispatch({
+    type: GET_TAGS_BY_CATEGORY.ACTION,
+    payload: ApiClient.getSearchTagByCategory(objectTypeName, tagCategory),
+    meta: tagCategory,
   });
 
 export const SET_ACTIVE_TAGS_FILTERS = '@objectType/SET_ACTIVE_TAGS_FILTERS';
