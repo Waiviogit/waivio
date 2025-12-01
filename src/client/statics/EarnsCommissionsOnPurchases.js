@@ -8,6 +8,7 @@ const EarnsCommissionsOnPurchases = ({ align, text, padding, marginBottom }) => 
       color: 'rgb(164 173 184)',
       textAlign: align || 'center',
       marginBottom: marginBottom || '15px',
+      fontFamily: 'var(--template-font-body, inherit)',
     }}
   >
     {text || 'Earns commissions on purchases'}

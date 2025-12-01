@@ -58,6 +58,21 @@ const CleanHeaderButton = memo(
           'HeaderCleanButtons--hidden': searchBarActive,
         })}
       >
+        {/* Editor button */}
+        <div className="HeaderCleanButtons__item">
+          <BTooltip
+            placement="bottom"
+            title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
+            mouseEnterDelay={1}
+            overlayClassName={classNames('Topnav__notifications-tooltip', {
+              'Topnav__notifications-tooltip--hide': isMobile(),
+            })}
+          >
+            <Link to="/editor" className="HeaderCleanButtons__iconBtn">
+              <Icon type="edit" />
+            </Link>
+          </BTooltip>
+        </div>
         <div className="HeaderCleanButtons__item">
           <BTooltip
             placement="bottom"

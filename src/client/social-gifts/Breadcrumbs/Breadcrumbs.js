@@ -116,14 +116,6 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   return (
     <div className={'flex '}>
       <div className={classNames('Breadcrumbs', { 'Breadcrumbs--clean': isCleanTemplate })}>
-        {isCleanTemplate && (
-          <React.Fragment>
-            <Link to="/" className="Breadcrumbs__home">
-              Home
-            </Link>
-            {!isEmpty(breadcrumbs) && <Icon type="right" />}
-          </React.Fragment>
-        )}
         {breadcrumbs?.map((crumb, index) => {
           let comp;
 
@@ -154,8 +146,13 @@ const Breadcrumbs = ({ inProduct, intl }) => {
           return (
             <React.Fragment key={crumb?.author_permlink}>
               {comp}
+              {/* eslint-disable-next-line no-nested-ternary */}
               {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
-                <Icon type="right" />
+                isCleanTemplate ? (
+                  <span className="Breadcrumbs__separator">/</span>
+                ) : (
+                  <Icon type="right" />
+                )
               ) : (
                 ''
               )}

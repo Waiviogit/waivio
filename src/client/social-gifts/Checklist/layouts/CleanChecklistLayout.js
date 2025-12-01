@@ -26,9 +26,15 @@ const CleanChecklistLayout = ({
       'Checklist--withoutMargin': wobject?.object_type === 'page',
     })}
   >
-    <CleanChecklistView cleanListSummary={cleanListSummary} listType={listType} loading={loading} />
+    <CleanChecklistView
+      cleanListSummary={cleanListSummary}
+      listType={listType}
+      loading={loading}
+      breadcrumbs={
+        !hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' ? <Breadcrumbs /> : null
+      }
+    />
     <div className="Checklist__breadcrumbsContainre">
-      {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
       {listType && <EarnsCommissionsOnPurchases align={'right'} marginBottom={'0px'} />}
     </div>
     {loading ? <Loading /> : getMenuList()}

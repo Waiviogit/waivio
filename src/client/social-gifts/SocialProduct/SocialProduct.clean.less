@@ -11,6 +11,10 @@
     padding: 20px 40px 100px;
   }
 
+  .SocialProduct__column {
+    padding: 0;
+  }
+
   .SocialProduct__column-wrapper {
     background: #ffffff;
     border-radius: 10px;
@@ -18,8 +22,6 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 40px;
 
     @media @small {
       display: flex;
@@ -42,94 +44,10 @@
     }
   }
 
-  // Amazon-style gallery - thumbnails on left
+  // Gallery slider - horizontal
   .PicturesSlider {
-    display: flex;
-    flex-direction: column;
-
-    @media @small {
-      flex-direction: row-reverse;
-    }
-
-    // Main image
-    > div:first-child {
-      flex: 1;
-
-      img {
-        border-radius: 10px;
-      }
-    }
-
-    // Thumbnails carousel
-    .ant-carousel {
-      width: 100% !important;
-      margin: 16px 0 0 !important;
-      overflow: visible !important;
-
-      @media @small {
-        width: 80px !important;
-        min-width: 80px;
-        margin: 0 !important;
-      }
-    }
-
-    .slick-slider {
-      @media @small {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-
-    .slick-list {
-      @media @small {
-        height: auto !important;
-        overflow: visible !important;
-      }
-    }
-
-    .slick-track {
-      @media @small {
-        display: flex !important;
-        flex-direction: column !important;
-        width: 80px !important;
-        transform: none !important;
-        overflow: visible !important;
-      }
-    }
-
-    .slick-slide {
-      @media @small {
-        width: 80px !important;
-        height: auto !important;
-        margin-bottom: 8px;
-      }
-    }
-
-    .slick-prev,
-    .slick-next {
-      @media @small {
-        display: none !important;
-      }
-    }
-  }
-
-  .PicturesSlider__thumbnail,
-  .PicturesSlider__thumbnail--active {
-    height: 70px;
-    width: 70px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  .PicturesSlider .slick-slide.slick-active {
-    width: 70px !important;
-    margin-right: 5px;
-    border: none;
-
-    @media @small {
-      width: 70px !important;
-      margin-right: 0;
-      margin-bottom: 8px;
+    &__previewImage {
+      border-radius: 10px;
     }
   }
 
@@ -143,6 +61,43 @@
     margin: 40px 0 40px;
   }
 
+  // Top Recipe section - card style (like About)
+  .SocialProduct__postWrapper {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    max-width: 100%;
+    margin: 40px 0 40px;
+
+    .StoryFull__title {
+      display: block;
+      text-transform: none;
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--template-font-heading, PlayfairDisplay, serif);
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    .RecipePost {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    // Headings in recipe content
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      font-family: var(--template-font-heading, PlayfairDisplay, serif);
+    }
+  }
+
   .SocialProduct__heading {
     text-transform: none;
     font-size: 22px;
@@ -154,58 +109,34 @@
   }
 
   .SocialProduct__description {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.75;
     color: #4a4a4a;
   }
 
-  // Description layout - chess pattern with vertically centered text
+  // Description layout - full width images
   .SocialProductDescription {
     &__paragraph-container {
       display: flex;
       flex-direction: column;
       margin-bottom: 24px;
-
-      @media @small {
-        flex-direction: row;
-        align-items: center;
-
-        &:nth-child(even) {
-          flex-direction: row-reverse;
-        }
-      }
     }
 
     &__paragraph-only-container {
       display: flex;
       flex-direction: column;
       margin-bottom: 24px;
-
-      @media @small {
-        flex-direction: row;
-        align-items: center;
-      }
     }
 
     &__single-paragraph-container {
       display: flex;
       flex-direction: column;
       margin-bottom: 24px;
-
-      @media @small {
-        flex-direction: row;
-        align-items: center;
-      }
     }
 
     &__paragraph {
       margin-bottom: 16px;
-
-      @media @small {
-        margin-bottom: 0;
-        padding: 0 24px;
-        width: 50%;
-      }
+      width: 100%;
     }
 
     &__paragraph--only,
@@ -213,55 +144,33 @@
       width: 100%;
       padding: 0;
       margin-bottom: 16px;
-
-      @media @small {
-        padding: 0 24px;
-      }
     }
 
     &__single-paragraph {
-      display: flex;
-      flex-direction: column-reverse;
-      margin-bottom: 0;
-
-      @media @small {
-        display: block;
-        padding: 0 24px;
-        width: 50%;
-      }
+      width: 100%;
+      margin-bottom: 16px;
     }
 
     &__image {
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      max-width: 100%;
+      width: 100%;
       height: auto;
       margin-bottom: 16px;
       object-fit: cover;
-
-      @media @small {
-        margin-bottom: 0;
-        max-height: 400px;
-        width: 50%;
-      }
+      max-height: 500px;
     }
 
     &__single-image {
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      max-width: 100%;
+      width: 100%;
       height: auto;
       margin-bottom: 16px;
       object-fit: cover;
-
-      @media @small {
-        float: right;
-        margin: 0 0 20px 24px;
-        max-height: 400px;
-        max-width: 45%;
-      }
+      max-height: 500px;
     }
 
     &__images-container {
@@ -292,7 +201,6 @@
       > div {
         position: relative;
         padding-left: 20px;
-        margin-bottom: 12px;
         font-size: 15px;
         line-height: 1.6;
         color: #4a4a4a;
@@ -404,5 +312,15 @@
 
   .SocialProduct__brand {
     margin-bottom: 20px;
+  }
+
+  .PicturesSlider__thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: fill;
+  }
+
+  .PicturesSlider .slick-slide.slick-active {
+    width: 125px;
   }
 }

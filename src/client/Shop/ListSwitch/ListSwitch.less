@@ -22,6 +22,18 @@
         color: var(--website-hover-color);
       }
     }
+
+    &--clean {
+      color: var(--website-color);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 1px;
+
+      &:hover {
+        color: var(--website-hover-color);
+      }
+    }
   }
 
   &__breadCrumbsWrap {
@@ -39,6 +51,13 @@
   &--clean {
     .ListSwitcher__breadCrumbsWrap {
       font-family: var(--template-font-body, inherit);
+      font-size: 14px;
+      color: var(--website-color);
+    }
+
+    .ListSwitcher__breadCrumbs--home {
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
   }
 }

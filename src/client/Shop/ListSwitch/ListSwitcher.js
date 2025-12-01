@@ -112,7 +112,7 @@ const ListSwitcher = props => {
             }}
           >
             {isCleanTemplate
-              ? 'Home'
+              ? 'Shop'
               : props.intl.formatMessage({
                   id: `${isRecipe ? 'categories' : 'departments'}`,
                   defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
@@ -128,10 +128,11 @@ const ListSwitcher = props => {
         </span>
         {match.params.department && (
           <React.Fragment>
-            <Icon type="right" />{' '}
+            {isCleanTemplate ? ' / ' : <Icon type="right" />}{' '}
             <Link
               className={classNames('ListSwitcher__breadCrumbs', {
                 'ListSwitcher__breadCrumbs--active': !history.location.hash,
+                'ListSwitcher__breadCrumbs--clean': isCleanTemplate,
               })}
               to={`${props.path}/${match.params.department}`}
             >
@@ -141,13 +142,13 @@ const ListSwitcher = props => {
         )}
         {getPermlinksFromHash(history.location.hash).map(crumb => (
           <span key={crumb}>
-            {' '}
-            &gt;{' '}
+            {isCleanTemplate ? ' / ' : ' > '}
             <Link
               className={classNames('ListSwitcher__breadCrumbs', {
                 'ListSwitcher__breadCrumbs--active':
                   getLastPermlinksFromHash(history.location.hash) === crumb ||
                   match.params.department === crumb,
+                'ListSwitcher__breadCrumbs--clean': isCleanTemplate,
               })}
               to={createHash(history.location.hash, crumb)}
             >
