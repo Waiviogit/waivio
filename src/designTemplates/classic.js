@@ -3,6 +3,7 @@ import ClassicHeader from '../client/social-gifts/Header/ClassicHeader';
 import ClassicChecklistLayout from '../client/social-gifts/Checklist/layouts/ClassicChecklistLayout';
 import ClassicShopObjectCardView from '../client/social-gifts/ShopObjectCard/views/ClassicShopObjectCardView';
 import ClassicSocialProductView from '../client/social-gifts/SocialProduct/views/ClassicSocialProductView';
+import ClassicBusinessObjectView from '../client/social-gifts/BusinessObject/views/ClassicBusinessObjectView';
 
 const classicTemplate = {
   meta: {
@@ -21,6 +22,7 @@ const classicTemplate = {
     ChecklistLayout: ClassicChecklistLayout,
     ShopObjectCardView: ClassicShopObjectCardView,
     SocialProductView: ClassicSocialProductView,
+    BusinessObjectView: ClassicBusinessObjectView,
   },
 };
 
