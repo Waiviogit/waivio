@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 import { isEmpty, truncate } from 'lodash';
 import HeartButton from '../../../widgets/HeartButton';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import InstacartWidget from '../../../widgets/InstacartWidget';
-import RatingsWrap from '../../../objectCard/RatingsWrap/RatingsWrap';
 import {
   isNewInstacartProgram,
   isOldInstacartProgram,
@@ -20,7 +20,6 @@ const CleanShopObjectCardView = ({
   wObject,
   isSocialProduct,
   isAuthenticated,
-  username,
   url,
   altText,
   objLink,
@@ -58,46 +57,49 @@ const CleanShopObjectCardView = ({
           separator: '...',
         })}
       </a>
-      {!isEmpty(rating) && (
-        <RatingsWrap
-          ratings={[rating]}
-          username={username}
-          wobjId={wObject.author_permlink}
-          wobjName={wobjName}
-        />
-      )}
-      {wObject.price && (
-        <span className="ShopObjectCardClean__price" title={wObject.price}>
-          {wObject.price}
-        </span>
-      )}
-      {!isEmpty(wObject.affiliateLinks) && (
-        <div className="ShopObjectCardClean__affiliatLinks">
-          {wObject.affiliateLinks
-            .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
-            .map(affLink => {
-              if (
-                affLink.type.toLocaleLowerCase() === 'instacart' &&
-                isNewInstacartProgram(affLink)
-              )
-                return (
-                  <InstacartWidget
-                    inCard
-                    key={affLink.link}
-                    instacartAff={affLink}
-                    wobjPerm={wObject?.author_permlink}
-                  />
-                );
-              if (
-                affLink.type.toLocaleLowerCase() === 'instacart' &&
-                isOldInstacartProgram(affLink)
-              )
-                return null;
 
-              return <AffiliatLink key={affLink.link} link={affLink} />;
-            })}
+      <div className="ShopObjectCardClean__priceRow">
+        <div>
+          {!isEmpty(rating) && (
+            <div className="ShopObjectCardClean__rating">
+              <Icon type="star" theme="filled" />
+              <span>{rating.average?.toFixed(1) || rating.rating_value}</span>
+            </div>
+          )}
+          {wObject.price && (
+            <span className="ShopObjectCardClean__price" title={wObject.price}>
+              {wObject.price}
+            </span>
+          )}
         </div>
-      )}
+        {!isEmpty(wObject.affiliateLinks) && (
+          <div className="ShopObjectCardClean__affiliatLinks">
+            {wObject.affiliateLinks
+              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
+              .map(affLink => {
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isNewInstacartProgram(affLink)
+                )
+                  return (
+                    <InstacartWidget
+                      inCard
+                      key={affLink.link}
+                      instacartAff={affLink}
+                      wobjPerm={wObject?.author_permlink}
+                    />
+                  );
+                if (
+                  affLink.type.toLocaleLowerCase() === 'instacart' &&
+                  isOldInstacartProgram(affLink)
+                )
+                  return null;
+
+                return <AffiliatLink key={affLink.link} link={affLink} />;
+              })}
+          </div>
+        )}
+      </div>
       {withRewards && (
         <div className="ShopObjectCardClean__rewardText">
           {isSpecialCampaign ? (
@@ -135,7 +137,6 @@ CleanShopObjectCardView.propTypes = {
   }),
   isSocialProduct: PropTypes.bool,
   isAuthenticated: PropTypes.bool,
-  username: PropTypes.string,
   url: PropTypes.string,
   altText: PropTypes.string,
   objLink: PropTypes.string,

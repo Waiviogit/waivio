@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty, take } from 'lodash';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation, useRouteMatch } from 'react-router';
-import { Icon, Tag } from 'antd';
+import { Tag } from 'antd';
 import classNames from 'classnames';
 import InfiniteScroll from 'react-infinite-scroller';
 
@@ -24,9 +23,11 @@ import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
-import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import GoogleAds from '../../adsenseAds/GoogleAds';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
+import ClassicShopListView from './views/ClassicShopListView';
+import CleanShopListView from './views/CleanShopListView';
 
 import './ShopList.less';
 import useAdLevelData from '../../../hooks/useAdsense';
@@ -38,6 +39,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
   const [loading, setLoading] = useState(false);
   const match = useRouteMatch();
   const authUser = useSelector(getAuthenticatedUserName);
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const excluded = useSelector(getExcludedDepartment);
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const departments = useSelector(getShopList);
@@ -116,8 +119,10 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
 
   const hasActiveTags = query.toString().length > 0;
 
+  const ShopListView = isCleanTemplate ? CleanShopListView : ClassicShopListView;
+
   return (
-    <div className="ShopList">
+    <div className={classNames('ShopList', { 'ShopList--clean': isCleanTemplate })}>
       {hasActiveTags && !isMobile() && (
         <div className="ShopList__tags">
           {activeFilters.tagCategory.map(category =>
@@ -150,7 +155,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
           useWindow={!isMobile()}
         >
           <div
-            className={classNames('ShopList__departments', {
+            className={classNames('ShopList__departments-wrapper', {
               'ShopList__departments--isSocial': isSocial,
               'ShopList__departments--hasQuery': hasActiveTags,
             })}
@@ -183,18 +188,14 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
               })();
 
               return (
-                <div key={dep.department} className="ShopList__departments">
-                  <Link to={getPath(dep.department)} className="ShopList__departments-title">
-                    {dep.department} <Icon size={12} type="right" />
-                  </Link>
-                  <ObjCardListViewSwitcherForShop isSocial={isSocial} wobjects={wobjectsWithAd} />
-                  {dep.hasMore && (
-                    <Link className="ShopList__showMore" to={getPath(dep.department)}>
-                      {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
-                      {dep.department}
-                    </Link>
-                  )}
-                </div>
+                <ShopListView
+                  key={dep.department}
+                  dep={dep}
+                  getPath={getPath}
+                  isSocial={isSocial}
+                  wobjectsWithAd={wobjectsWithAd}
+                  intl={intl}
+                />
               );
             })}
           </div>

@@ -18,6 +18,7 @@ const PicturesSlider = ({
   currentWobj,
   altText,
   albums,
+  showSliderCount,
 }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
@@ -34,7 +35,7 @@ const PicturesSlider = ({
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
     currentSrc = hoveredOption?.avatar || activeOption[activeCategory]?.avatar;
   }
-  const limitToShow = isMobile() ? 4 : 6;
+  const limitToShow = showSliderCount || isMobile() ? 4 : 6;
 
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
@@ -189,6 +190,7 @@ PicturesSlider.propTypes = {
   relatedAlbum: PropTypes.shape(),
   activeCategory: PropTypes.string,
   altText: PropTypes.string,
+  showSliderCount: PropTypes.number,
 };
 
 export default PicturesSlider;

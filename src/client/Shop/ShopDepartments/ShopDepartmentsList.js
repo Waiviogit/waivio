@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import DepartmentItem from './DepartmentItem';
@@ -11,8 +12,11 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 import './ShopDepartments.less';
 import { getDepartmentsList } from '../../../store/shopStore/shopSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, path, intl }) => {
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -34,7 +38,11 @@ const ShopDepartmentsList = ({ shopFilter, schema, onClose, getShopDepartments, 
 
   return (
     !isEmpty(departments) && (
-      <div className="ShopDepartmentsList">
+      <div
+        className={classNames('ShopDepartmentsList', {
+          'ShopDepartmentsList--clean': isCleanTemplate,
+        })}
+      >
         <NavLink
           isActive={() => match?.url === path}
           to={path}

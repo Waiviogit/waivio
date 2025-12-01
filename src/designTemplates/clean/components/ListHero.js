@@ -1,24 +1,32 @@
 import PropTypes from 'prop-types';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { removeEmptyLines, shortenDescription } from '../../../client/object/wObjectHelper';
 
 import './ListHero.less';
 
 const CleanListHero = ({ wobject }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const eyebrow = useMemo(() => getObjectName(wobject) || wobject?.name, [wobject, wobject?.name]);
 
   const heroTitle = useMemo(() => wobject?.title || getObjectName(wobject), [wobject]);
 
-  const heroDescription = useMemo(() => {
-    const source = removeEmptyLines(wobject?.description || '');
+  const fullDescription = useMemo(() => removeEmptyLines(wobject?.description || ''), [
+    wobject?.description,
+  ]);
 
-    if (!source) return '';
+  const shortDescription = useMemo(() => {
+    if (!fullDescription) return '';
 
-    const { firstDescrPart } = shortenDescription(source, 260);
+    const { firstDescrPart } = shortenDescription(fullDescription, 260);
 
     return firstDescrPart;
-  }, [wobject?.description]);
+  }, [fullDescription]);
+
+  const hasMoreText = fullDescription.length > 260;
+  const heroDescription = isExpanded ? fullDescription : shortDescription;
 
   const banner = wobject?.avatar;
 
@@ -30,8 +38,21 @@ const CleanListHero = ({ wobject }) => {
     <section className="CleanListHero">
       <div className="CleanListHero__content">
         {eyebrow && <p className="CleanListHero__eyebrow">{eyebrow}</p>}
-        {heroTitle && <h1 className="CleanListHero__title">{heroTitle}</h1>}
+        {heroTitle && <h2 className="CleanListHero__title">{heroTitle}</h2>}
         {heroDescription && <p className="CleanListHero__subtitle">{heroDescription}</p>}
+        {hasMoreText && (
+          <button
+            type="button"
+            className="CleanListHero__readMore"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? (
+              <FormattedMessage id="show_less" defaultMessage="show less" />
+            ) : (
+              <FormattedMessage id="read_more" defaultMessage="read more" />
+            )}
+          </button>
+        )}
       </div>
       {banner && (
         <div className="CleanListHero__banner">
