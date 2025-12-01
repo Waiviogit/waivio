@@ -285,8 +285,13 @@ export default (messageFactory, validators, userName, currency, campaingType) =>
     label: messageFactory('sponsor_url', 'Sponsor URL'),
     caption: messageFactory(
       'sponsor_url_caption',
-      'The sponsor URL will be displayed in various locations to direct users to the sponsor’s website.',
+      'The sponsor URL will be displayed in various locations to direct users to the sponsor&apos;s website.',
     ),
+    rules: [
+      {
+        validator: validators.checkSponsorURL,
+      },
+    ],
   },
   minPhotos: {
     name: 'minPhotos',

@@ -23,19 +23,28 @@ const InstacartWidget = ({
 }) => {
   const [loading, setLoading] = React.useState(false);
 
-  const handleClick = e => {
+  const handleClick = async e => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
-    getInstacartLink(wobjPerm).then(link => {
-      setLoading(false);
+
+    const tempWindow = isMobile() ? window.open('', '_self') : window.open('', '_blank');
+
+    try {
+      const link = await getInstacartLink(wobjPerm);
+
       websiteStatisticsAction().then(res => {
-        if (res.result && typeof window !== 'undefined' && window?.gtag) {
+        if (res.result && window?.gtag) {
           window.gtag('event', 'buy_now', { debug_mode: true });
         }
       });
-      window && window.open(link, '_blank');
-    });
+
+      tempWindow.location = link;
+    } catch (err) {
+      tempWindow.close();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getButtonText = () => {
