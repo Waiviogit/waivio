@@ -98,6 +98,14 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
   checkPrimaryObject: messageFactory('add_primary_object', 'Add primary object'),
   checkSecondaryObject: messageFactory('add_secondary_object', 'Add secondary object'),
   checkCompensationAccount: messageFactory('add_compensation_account', 'Add compensation account'),
+  sponsorURLDomainOnly: messageFactory(
+    'sponsor_url_domain_only',
+    'Only site domain is allowed in the format https://example.com',
+  ),
+  sponsorURLMustHaveHttps: messageFactory(
+    'sponsor_url_must_have_https',
+    'URL must include "https://".',
+  ),
 });
 
 export const validatorsCreator = (
@@ -245,5 +253,42 @@ export const validatorsCreator = (
 
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else callback();
+  },
+
+  // eslint-disable-next-line consistent-return
+  checkSponsorURL: (rule, value, callback) => {
+    if (!value || value.trim() === '') {
+      return callback();
+    }
+
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue.toLowerCase().startsWith('https://')) {
+      return callback(messages.sponsorURLMustHaveHttps);
+    }
+
+    try {
+      const url = new URL(trimmedValue);
+      const pathname = url.pathname;
+      const search = url.search;
+      const hash = url.hash;
+
+      if (pathname && pathname !== '/' && pathname.trim() !== '') {
+        return callback(messages.sponsorURLDomainOnly);
+      }
+      if (search && search.trim() !== '') {
+        return callback(messages.sponsorURLDomainOnly);
+      }
+      if (hash && hash.trim() !== '') {
+        return callback(messages.sponsorURLDomainOnly);
+      }
+
+      callback();
+    } catch (error) {
+      if (!trimmedValue.toLowerCase().startsWith('https://')) {
+        return callback(messages.sponsorURLMustHaveHttps);
+      }
+      callback();
+    }
   },
 });
