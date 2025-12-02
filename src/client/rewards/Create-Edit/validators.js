@@ -106,6 +106,10 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
     'sponsor_url_must_have_https',
     'URL must include "https://".',
   ),
+  sponsorURLInvalidFormat: messageFactory(
+    'sponsor_url_invalid_format',
+    'Invalid URL format. Please enter a valid URL in the format https://example.com',
+  ),
 });
 
 export const validatorsCreator = (
@@ -267,6 +271,24 @@ export const validatorsCreator = (
       return callback(messages.sponsorURLMustHaveHttps);
     }
 
+    // Extract domain part (before any path, query, or hash)
+    const urlWithoutProtocol = trimmedValue.replace(/^https:\/\//i, '');
+    const domainPart = urlWithoutProtocol
+      .split('/')[0]
+      .split('?')[0]
+      .split('#')[0];
+
+    // Check for trailing periods in domain
+    if (domainPart.endsWith('.')) {
+      return callback(messages.sponsorURLInvalidFormat);
+    }
+
+    // Check for invalid characters in domain (valid domain pattern)
+    const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!domainPattern.test(domainPart)) {
+      return callback(messages.sponsorURLInvalidFormat);
+    }
+
     try {
       const url = new URL(trimmedValue);
       const pathname = url.pathname;
@@ -288,7 +310,7 @@ export const validatorsCreator = (
       if (!trimmedValue.toLowerCase().startsWith('https://')) {
         return callback(messages.sponsorURLMustHaveHttps);
       }
-      callback();
+      return callback(messages.sponsorURLInvalidFormat);
     }
   },
 });
