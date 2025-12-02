@@ -715,7 +715,7 @@ const CreateFormRenderer = props => {
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
             rules: fields.sponsorName.rules,
             initialValue: sponsorName,
-          })(<Input />)}
+          })(<Input disabled={disabled} />)}
         </Form.Item>
         <Form.Item>
           <div className="CreateReward__createDuplicate">
@@ -726,7 +726,7 @@ const CreateFormRenderer = props => {
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
             rules: fields.sponsorURL.rules,
             initialValue: sponsorURL,
-          })(<Input />)}
+          })(<Input disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.sponsorURL.caption}</div>
         </Form.Item>
         <div className="CreateReward__block-title">

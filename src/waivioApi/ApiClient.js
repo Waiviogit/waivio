@@ -5843,12 +5843,19 @@ export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, 
     });
 };
 
-export const getSearchTagByCategory = (objectTypeName, tagCategory, skip = 0, limit = 10) => {
+export const getSearchTagByCategory = (
+  objectTypeName,
+  tagCategory,
+  skip = 0,
+  limit = 10,
+  searchString = '',
+) => {
   const skipParam = skip > 0 ? `&skip=${skip}` : '';
   const limitParam = `?limit=${limit}`;
+  const searchParam = searchString ? `&searchString=${encodeURIComponent(searchString)}` : '';
 
   return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}`,
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}${searchParam}`,
     {
       headers: {
         ...headers,
@@ -5866,14 +5873,19 @@ export const getSearchTagByCategory = (objectTypeName, tagCategory, skip = 0, li
     });
 };
 
-export const getSearchTagCategories = objectTypeName =>
-  fetch(`${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}`, {
-    headers: {
-      ...headers,
-      ...getAuthHeaders(),
+export const getSearchTagCategories = (objectTypeName, searchString = '') => {
+  const searchParam = searchString ? `?searchString=${encodeURIComponent(searchString)}` : '';
+
+  return fetch(
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}${searchParam}`,
+    {
+      headers: {
+        ...headers,
+        ...getAuthHeaders(),
+      },
+      method: 'GET',
     },
-    method: 'GET',
-  })
+  )
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
@@ -5881,5 +5893,6 @@ export const getSearchTagCategories = objectTypeName =>
 
       return error;
     });
+};
 
 export default null;

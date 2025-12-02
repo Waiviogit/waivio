@@ -102,6 +102,15 @@ const RewardsHeader = ({ proposition, intl }) => {
               </Link>
             </>
           )}
+          {!proposition.sponsorURL && !proposition.sponsorName && (
+            <>
+              {' '}
+              <Link to={`/@${proposition?.guideName}`}>
+                {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+              </Link>
+              <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
+            </>
+          )}
         </div>
         <div className="Proposition-new__infoItem">
           <span>
