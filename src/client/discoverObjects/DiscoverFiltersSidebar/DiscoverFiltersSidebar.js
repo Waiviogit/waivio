@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { isEmpty, memoize, get } from 'lodash';
+import { listOfMapObjectTypes } from '../../../common/constants/listOfObjectTypes';
 import { isNeedFilters } from '../helper';
 import {
   setFiltersAndLoad,
@@ -24,7 +25,6 @@ import {
   getFilteredObjects,
   getFilteredObjectsMap,
   getFiltersTags,
-  getHasMap,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
@@ -38,7 +38,8 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const filters = useSelector(getAvailableFilters);
   const filteredObjects = useSelector(getFilteredObjects);
   const activeFilters = useSelector(getActiveFilters);
-  const hasMap = useSelector(getHasMap);
+  // const hasMap = useSelector(getHasMap);
+  const hasMap = listOfMapObjectTypes.includes(match.params.typeName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const tagsFilters = useSelector(getFiltersTags);
   const [mapSettings, setMapSettings] = React.useState({

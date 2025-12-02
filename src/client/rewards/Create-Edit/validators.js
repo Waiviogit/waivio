@@ -285,6 +285,7 @@ export const validatorsCreator = (
 
     // Check for invalid characters in domain (valid domain pattern)
     const domainPattern = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
     if (!domainPattern.test(domainPart)) {
       return callback(messages.sponsorURLInvalidFormat);
     }
@@ -310,6 +311,7 @@ export const validatorsCreator = (
       if (!trimmedValue.toLowerCase().startsWith('https://')) {
         return callback(messages.sponsorURLMustHaveHttps);
       }
+
       return callback(messages.sponsorURLInvalidFormat);
     }
   },
