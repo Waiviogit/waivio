@@ -23,29 +23,44 @@ const InstacartWidget = ({
 }) => {
   const [loading, setLoading] = React.useState(false);
 
-  const handleClick = async e => {
+  const handleClick = e => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
-
-    const tempWindow = isMobile() ? window.open('', '_self') : window.open('', '_blank');
-
-    try {
-      const link = await getInstacartLink(wobjPerm);
-
+    getInstacartLink(wobjPerm).then(link => {
+      setLoading(false);
       websiteStatisticsAction().then(res => {
-        if (res.result && window?.gtag) {
+        if (res.result && typeof window !== 'undefined' && window?.gtag) {
           window.gtag('event', 'buy_now', { debug_mode: true });
         }
       });
-
-      tempWindow.location = link;
-    } catch (err) {
-      tempWindow.close();
-    } finally {
-      setLoading(false);
-    }
+      window && window.open(link, '_blank');
+    });
   };
+
+  // const handleClick = async e => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setLoading(true);
+  //
+  //   const tempWindow = isMobile() ? window.open('', '_self') : window.open('', '_blank');
+  //
+  //   try {
+  //     const link = await getInstacartLink(wobjPerm);
+  //
+  //     websiteStatisticsAction().then(res => {
+  //       if (res.result && window?.gtag) {
+  //         window.gtag('event', 'buy_now', { debug_mode: true });
+  //       }
+  //     });
+  //
+  //     tempWindow.location = link;
+  //   } catch (err) {
+  //     tempWindow.close();
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const getButtonText = () => {
     if (buttonText) return buttonText;
