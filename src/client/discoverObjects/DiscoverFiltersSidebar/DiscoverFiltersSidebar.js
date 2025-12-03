@@ -83,12 +83,13 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   };
 
   useEffect(() => {
-    setMapArea({
-      radius: mapSettings.radius,
-      coordinates: mapSettings.coordinates,
-      isMap: true,
-      firstMapLoad: true,
-    });
+    if (hasMap)
+      setMapArea({
+        radius: mapSettings.radius,
+        coordinates: mapSettings.coordinates,
+        isMap: true,
+        firstMapLoad: true,
+      });
   }, [history.location.search]);
 
   const handleMapSearchClick = map => {
