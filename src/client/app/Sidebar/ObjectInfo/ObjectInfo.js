@@ -9,6 +9,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { openLinkWithSafetyCheck } from '../../../../common/helpers/urlHelpers';
 import {
   accessTypesArr,
   getBlogItems,
@@ -1094,7 +1095,11 @@ class ObjectInfo extends React.Component {
               />{' '}
               <span
                 className={'main-color-button'}
-                onClick={() => this.props.setLinkSafetyInfo(linkUrl)}
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openLinkWithSafetyCheck(linkUrl, this.props.setLinkSafetyInfo);
+                }}
               >
                 {linkUrl}
               </span>
