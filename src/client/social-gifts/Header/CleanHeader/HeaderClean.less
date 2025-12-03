@@ -290,13 +290,22 @@
     box-shadow: 1px -91px 40px -24px white inset;
     -webkit-box-shadow: 1px -91px 40px -24px white inset;
     -moz-box-shadow: 1px -91px 40px -24px white inset;
-    height: 275px;
+    min-height: 275px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-position: top;
+    justify-content: flex-end;
+    padding-bottom: 80px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    @media @small {
+      min-height: 175px;
+      padding-bottom: 100px;
+      padding-top: 30px;
+    }
 
     h3 {
       font-family: var(--template-font-heading, PlayfairDisplay, serif);
@@ -305,6 +314,9 @@
       font-weight: 600;
       color: #161616;
       text-transform: capitalize;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
     }
 
     h2 {
@@ -313,6 +325,9 @@
       font-weight: 400;
       margin: 0 0 40px;
       text-align: center;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
 
       @media @small {
         display: block;

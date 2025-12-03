@@ -32,10 +32,10 @@ import {
   getObjectType,
   getObjectUrlForLink,
 } from '../../../../../common/helpers/wObjectHelper';
-
-import './WebsitesConfigurations.less';
 import AvatarComp from './AvatarComp';
 import { userMenuTabsList } from '../../../../social-gifts/Header/TopNavigation/WebsiteTopNavigation';
+
+import './WebsitesConfigurations.less';
 
 const ShopWebsiteConfigurations = ({
   intl,
@@ -161,6 +161,19 @@ const ShopWebsiteConfigurations = ({
             <FormattedMessage id="website_configuration" defaultMessage="Website configuration" />
           </h1>
           <Form className="WebsitesConfigurations center" id="WebsitesConfigurations">
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'template',
+                  defaultMessage: 'Template:',
+                })}
+              </h3>
+              <Select defaultValue={siteTemplate} onChange={handleSubmitTemplate}>
+                <Select.Option value={'classic'}>Standard</Select.Option>
+                <Select.Option value={'clean'}>Elegant</Select.Option>
+                {/* <Select.Option value={'colorful'}>Colorful</Select.Option> */}
+              </Select>
+            </Form.Item>
             <Form.Item>
               <SelectColorBlock
                 openColorsModal={openColorsModal}
@@ -356,19 +369,6 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage: 'Edit',
                 })}
               </Button>
-            </Form.Item>
-            <Form.Item>
-              <h3>
-                {intl.formatMessage({
-                  id: 'template',
-                  defaultMessage: 'Template:',
-                })}
-              </h3>
-              <Select defaultValue={siteTemplate} onChange={handleSubmitTemplate}>
-                <Select.Option value={'classic'}>Standard</Select.Option>
-                <Select.Option value={'clean'}>Elegant</Select.Option>
-                <Select.Option value={'colorful'}>Colorful</Select.Option>
-              </Select>
             </Form.Item>
           </Form>
           {openHeaderConfig && (

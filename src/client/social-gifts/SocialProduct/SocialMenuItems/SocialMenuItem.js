@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { has } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { Icon } from 'antd';
 import MenuItemContentSwitcher from './MenuItemContentSwitcher';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
+import useTemplateProvider from '../../../../designTemplates/TemplateProvider';
 
 const SocialMenuItem = ({ item, isOpen }) => {
+  const templateComponents = useTemplateProvider();
+  const SocialMenuItemView = templateComponents?.SocialMenuItemView;
   const [open, setOpen] = useState(isOpen);
   const history = useHistory();
   const itemBody = JSON.parse(item.body);
@@ -77,38 +79,25 @@ const SocialMenuItem = ({ item, isOpen }) => {
     }
   };
 
-  const content = (
-    <>
-      {' '}
-      {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '24px' }} />}
-      <div
-        className={
-          isNestedObjType ? 'SocialMenuItems__item-title--nested' : 'SocialMenuItems__item-title'
-        }
-      >
-        {isImageButton ? getimagesLayout() : itemBody.title}
-      </div>
-    </>
-  );
+  if (!SocialMenuItemView) return null;
 
   return (
-    <div className="SocialMenuItems__container">
-      {webLink ? (
-        <a
-          className="SocialMenuItems__item"
-          onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
-        >
-          {content}
-        </a>
-      ) : (
-        <div className="SocialMenuItems__item" onClick={handleOpenItem}>
-          {content}
-        </div>
-      )}
+    <>
+      <SocialMenuItemView
+        isNestedObjType={isNestedObjType}
+        open={open}
+        itemBody={itemBody}
+        isImageButton={isImageButton}
+        getimagesLayout={getimagesLayout}
+        handleOpenItem={handleOpenItem}
+        webLink={webLink}
+        dispatch={dispatch}
+        setLinkSafetyInfo={setLinkSafetyInfo}
+      />
       <div className={`SocialMenuItems__content ${open ? 'SocialMenuItems__content--open' : ''}`}>
         {open && <MenuItemContentSwitcher item={item} />}
       </div>
-    </div>
+    </>
   );
 };
 

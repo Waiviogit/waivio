@@ -49,22 +49,45 @@
 
   &__rightColumn {
     order: 1;
+    max-width: 100%;
 
     @media @small {
       order: 2;
       width: 340px;
+      max-width: 340px;
       flex-shrink: 0;
     }
 
     .PicturesSlider {
       width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+
+      &__previewImage {
+        width: 100%;
+        max-width: 100%;
+        height: 340px;
+        object-fit: cover;
+        border-radius: 12px;
+
+        @media @small {
+          height: 340px;
+        }
+      }
 
       .ant-carousel {
         margin-top: 12px;
+        width: 100% !important;
+        max-width: 100%;
+      }
+
+      .slick-list {
+        max-width: 100%;
       }
 
       .slick-slide img {
         border-radius: 12px;
+        max-width: 100%;
       }
     }
   }
@@ -117,17 +140,55 @@
     }
   }
 
+  &__price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+    font-family: var(--template-font-body, 'Inter', sans-serif);
+  }
+
+  &__urlContainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 5px 16px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+  }
+
+  &__urlIcon {
+    font-size: 16px;
+    color: #666;
+    flex-shrink: 0;
+    padding-top: 5px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      fill: #666;
+    }
+  }
+
+  &__urlLink {
+    color: var(--website-color, #4285f4);
+    cursor: pointer;
+    font-size: 14px;
+    font-family: var(--template-font-body, 'Inter', sans-serif);
+    word-break: break-all;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   &__contactInfo {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 16px;
-
-    @media @small {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
   }
 
   &__contactItem {
@@ -136,6 +197,7 @@
     gap: 8px;
     font-size: 14px;
     color: #4a4a4a;
+    font-family: var(--template-font-body, 'Inter', sans-serif);
 
     a {
       color: var(--website-color, #4285f4);
@@ -158,6 +220,20 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  &__socialLinks {
+    margin: 16px 0;
+  }
+
+  &__wallets {
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  &__companyId {
+    margin: 16px 0;
+    font-size: 14px;
   }
 
   &__actions {
@@ -195,12 +271,12 @@
 
   &__detailsTitle {
     font-family: var(--template-font-title, 'Playfair Display', serif);
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: none;
     color: #1a1a1a;
     margin-bottom: 12px;
+    text-align: center;
   }
 
   &__detailsContent {
@@ -252,12 +328,41 @@
   }
 
   &__sectionContent {
-    font-size: 15px;
+    font-size: 16px;
     color: #4a4a4a;
     line-height: 1.7;
 
     .SocialProduct__descr-wrap {
       font-family: var(--template-font-body, 'Inter', sans-serif);
+    }
+
+    // Images styling - vertical layout
+    .SocialProductDescription {
+      &__paragraph-container,
+      &__single-paragraph-container,
+      &__paragraph-only-container {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 24px;
+      }
+
+      &__paragraph,
+      &__single-paragraph,
+      &__paragraph-only {
+        margin: 0 0 16px;
+      }
+
+      &__image,
+      &__single-image {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        max-height: 400px;
+        border-radius: 12px;
+        object-fit: cover;
+        margin: 0 auto 16px;
+        display: block;
+      }
     }
   }
 
@@ -279,68 +384,76 @@
       font-size: 20px;
       font-weight: 700;
       color: #1a1a1a;
-      text-align: left;
+      text-align: center;
       margin-bottom: 20px;
+      text-transform: none;
     }
 
     .Slider__wrapper-experts {
       position: relative;
+      overflow: visible;
+      padding: 0;
 
       .ant-carousel {
         .slick-list {
-          display: flex;
-          justify-content: center;
-        }
-
-        .slick-track {
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
+          padding: 0;
         }
 
         .slick-slide {
           width: 132px !important;
-
-          > div {
-            display: flex;
-            justify-content: center;
-          }
         }
 
         .slick-prev,
         .slick-next {
-          width: 32px;
-          height: 32px;
+          width: 25px;
+          height: 25px;
           background: #fff;
           border: 1px solid #e0e0e0;
           border-radius: 50%;
-          display: flex !important;
-          align-items: center;
-          justify-content: center;
           z-index: 10;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s ease;
 
           &::before {
-            display: none;
+            display: none !important;
           }
 
+          &.slick-disabled {
+            opacity: 0;
+            pointer-events: none;
+          }
+
+          i,
+          svg,
           .anticon {
-            font-size: 14px;
-            color: #333;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px !important;
+            color: #666 !important;
+            margin: 0 !important;
           }
 
-          &:hover {
-            background: #f5f5f5;
-            border-color: #ccc;
+          &:hover:not(.slick-disabled) {
+            background: var(--website-color);
+            border-color: var(--website-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+            i,
+            svg,
+            .anticon {
+              color: #fff !important;
+            }
           }
         }
 
         .slick-prev {
-          left: -16px;
+          left: -30px;
         }
 
         .slick-next {
-          right: -16px;
+          right: -30px;
         }
       }
     }
@@ -419,6 +532,26 @@
       color: #1a1a1a;
       text-align: center;
       margin-bottom: 20px;
+    }
+
+    &__heading {
+      text-transform: none;
+      font-family: var(--template-font-title, 'Playfair Display', serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    &__link {
+      text-transform: none;
+      font-family: var(--template-font-body, 'Inter', sans-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--website-color);
+
+      @media @small {
+        text-transform: none;
+      }
     }
   }
 }

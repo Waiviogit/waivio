@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { ReactSVG } from 'react-svg';
+import { identity, isEmpty, pickBy } from 'lodash';
 import { Icon } from 'antd';
+import SocialLinks from '../../../components/SocialLinks/SocialLinks';
 import RatingsWrap from '../../../objectCard/RatingsWrap/RatingsWrap';
 import SocialProductActions from '../../SocialProduct/SocialProductActions/SocialProductActions';
 import PicturesSlider from '../../SocialProduct/PicturesSlider/PicturesSlider';
@@ -13,9 +15,12 @@ import Breadcrumbs from '../../Breadcrumbs/Breadcrumbs';
 import Experts from '../Experts/Experts';
 import SocialMenuItems from '../../SocialProduct/SocialMenuItems/SocialMenuItems';
 import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
+import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
+import CompanyId from '../../../app/Sidebar/CompanyId';
 import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { linkFields } from '../../../../common/constants/listOfFields';
 
 import '../BusinessObject.clean.less';
 
@@ -52,10 +57,34 @@ const CleanBusinessObjectView = ({
   pictures,
   intl,
   companyIdBody,
+  price,
+  linkField,
+  walletAddress,
+  linkUrl,
+  linkUrlHref,
 }) => {
   const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
   const googleObject = companyIdBody?.find(i => i.companyIdType === 'googleMaps');
   const placeId = googleObject?.companyId;
+
+  const profile = linkField
+    ? {
+        facebook: linkField[linkFields.linkFacebook] || '',
+        twitter: linkField[linkFields.linkTwitter] || '',
+        youtube: linkField[linkFields.linkYouTube] || '',
+        tiktok: linkField[linkFields.linkTikTok] || '',
+        reddit: linkField[linkFields.linkReddit] || '',
+        linkedin: linkField[linkFields.linkLinkedIn] || '',
+        telegram: linkField[linkFields.linkTelegram] || '',
+        whatsapp: linkField[linkFields.linkWhatsApp] || '',
+        pinterest: linkField[linkFields.linkPinterest] || '',
+        twitch: linkField[linkFields.linkTwitch] || '',
+        snapchat: linkField[linkFields.linkSnapchat] || '',
+        instagram: linkField[linkFields.linkInstagram] || '',
+        github: linkField[linkFields.linkGitHub] || '',
+        hive: linkField[linkFields.linkHive] || '',
+      }
+    : {};
 
   return (
     <div className="BusinessObjectClean">
@@ -87,13 +116,35 @@ const CleanBusinessObjectView = ({
                 ))}
             </div>
 
+            {price && <div className="BusinessObjectClean__price">{price}</div>}
+
+            {wobject.object_type === 'link' && linkUrl && (
+              <div className="BusinessObjectClean__urlContainer">
+                <ReactSVG
+                  className="BusinessObjectClean__urlIcon"
+                  src="/images/icons/link-icon.svg"
+                  wrapper="span"
+                />
+                <span
+                  className="BusinessObjectClean__urlLink"
+                  onClick={() => setLinkSafety(linkUrlHref)}
+                >
+                  {linkUrl}
+                </span>
+              </div>
+            )}
+
             <div className="BusinessObjectClean__contactInfo">
-              {phones?.length > 0 && (
-                <div className="BusinessObjectClean__contactItem">
-                  <Icon type="phone" className="BusinessObjectClean__contactIcon" />
-                  <a href={`tel:${phones[0].number}`}>{phones[0].number}</a>
-                </div>
-              )}
+              {phones?.length > 0 &&
+                phones.map(phone => (
+                  <div key={phone.number} className="BusinessObjectClean__contactItem">
+                    <Icon type="phone" className="BusinessObjectClean__contactIcon" />
+                    <a href={`tel:${phone.number}`}>
+                      {phone.body && `${phone.body} `}
+                      {phone.number}
+                    </a>
+                  </div>
+                ))}
               {email && (
                 <div className="BusinessObjectClean__contactItem">
                   <Icon type="mail" className="BusinessObjectClean__contactIcon" />
@@ -118,6 +169,24 @@ const CleanBusinessObjectView = ({
                 })}
             </div>
 
+            {!isEmpty(pickBy(profile, identity)) && (
+              <div className="BusinessObjectClean__socialLinks">
+                <SocialLinks isSocial profile={pickBy(profile, identity)} />
+              </div>
+            )}
+
+            {!isEmpty(walletAddress) && (
+              <div className="BusinessObjectClean__wallets">
+                <WalletAddress walletAddress={walletAddress} isSocial />
+              </div>
+            )}
+
+            {!isEmpty(companyIdBody) && (
+              <div className="BusinessObjectClean__companyId">
+                <CompanyId companyIdBody={companyIdBody} isSocial />
+              </div>
+            )}
+
             {authenticated && !isEmpty(wobject) && (
               <div className="BusinessObjectClean__actions">
                 <SocialProductActions
@@ -140,6 +209,7 @@ const CleanBusinessObjectView = ({
                 hoveredOption={hoveredOption}
                 activeOption={activeOption}
                 activeCategory={activeCategory}
+                showSliderCount={6}
               />
             </div>
           )}
@@ -320,6 +390,11 @@ CleanBusinessObjectView.propTypes = {
   pictures: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   companyIdBody: PropTypes.arrayOf(PropTypes.shape()),
+  price: PropTypes.string,
+  linkField: PropTypes.shape(),
+  walletAddress: PropTypes.arrayOf(PropTypes.shape()),
+  linkUrl: PropTypes.string,
+  linkUrlHref: PropTypes.string,
 };
 
 export default CleanBusinessObjectView;
