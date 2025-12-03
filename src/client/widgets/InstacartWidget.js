@@ -1,5 +1,4 @@
-import { Icon } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isNewInstacartProgram } from '../../common/helpers/wObjectHelper';
 import { getInstacartLink, websiteStatisticsAction } from '../../waivioApi/ApiClient';
@@ -10,57 +9,29 @@ import EarnsCommissionsOnPurchases from '../statics/EarnsCommissionsOnPurchases'
 
 const InstacartWidget = ({
   wobjPerm,
-  inCard,
   instacartAff,
   className,
   isProduct,
-  // containerClassName,
   withDisclamer,
   marginBottom,
   inlineFlex,
+  inCard,
   buttonText,
   isRecipe,
 }) => {
-  const [loading, setLoading] = React.useState(false);
+  const [link, setLink] = useState('');
 
-  const handleClick = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLoading(true);
-    getInstacartLink(wobjPerm).then(link => {
-      setLoading(false);
-      websiteStatisticsAction().then(res => {
-        if (res.result && typeof window !== 'undefined' && window?.gtag) {
-          window.gtag('event', 'buy_now', { debug_mode: true });
-        }
-      });
-      window && window.open(link, '_blank');
+  useEffect(() => {
+    getInstacartLink(wobjPerm).then(url => setLink(url));
+  }, [wobjPerm]);
+
+  const handleClick = () => {
+    websiteStatisticsAction().then(res => {
+      if (res.result && typeof window !== 'undefined' && window?.gtag) {
+        window.gtag('event', 'buy_now', { debug_mode: true });
+      }
     });
   };
-
-  // const handleClick = async e => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   setLoading(true);
-  //
-  //   const tempWindow = isMobile() ? window.open('', '_self') : window.open('', '_blank');
-  //
-  //   try {
-  //     const link = await getInstacartLink(wobjPerm);
-  //
-  //     websiteStatisticsAction().then(res => {
-  //       if (res.result && window?.gtag) {
-  //         window.gtag('event', 'buy_now', { debug_mode: true });
-  //       }
-  //     });
-  //
-  //     tempWindow.location = link;
-  //   } catch (err) {
-  //     tempWindow.close();
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const getButtonText = () => {
     if (buttonText) return buttonText;
@@ -70,57 +41,60 @@ const InstacartWidget = ({
     return 'Get Recipe Ingredients';
   };
 
-  return isNewInstacartProgram(instacartAff) ? (
-    <div
-      style={{
-        display: inlineFlex ? 'inline-flex' : 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        marginBottom: marginBottom || (isProduct ? '15px' : '10px'),
-        width: isMobile() ? '100%' : undefined,
-      }}
-    >
-      <button
-        onClick={handleClick}
-        className={'AffiliatLink instacart '}
+  if (isNewInstacartProgram(instacartAff)) {
+    return (
+      <div
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: inlineFlex ? 'inline-flex' : 'flex',
+          flexDirection: 'column',
           gap: '8px',
-          backgroundColor: '#003D29',
-          color: '#FAF1E5',
-          padding: '16px 18px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          height: inCard ? '40px' : '46px',
-          borderRadius: '24px',
-          border: 'none',
-          fontFamily: 'inherit',
-          fontSize: inCard ? '13px' : '16px',
-          fontWeight: 500,
-          whiteSpace: 'nowrap',
-          margin: '0 auto',
-          minWidth: inCard ? '150px' : '250px',
+          marginBottom: marginBottom || (isProduct ? '15px' : '10px'),
+          width: isMobile() ? '100%' : undefined,
         }}
-        disabled={loading}
       >
-        {loading ? (
-          <Icon style={{ color: '#FAF1E5' }} type="loading" />
-        ) : (
-          <>
+        <div className="container">
+          <a
+            className="btn btn-acct AffiliatLink instacart"
+            href={link || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleClick}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              backgroundColor: '#003D29',
+              color: '#FAF1E5',
+              padding: '16px 18px',
+              cursor: link ? 'pointer' : 'not-allowed',
+              height: inCard ? '40px' : '46px',
+              borderRadius: '24px',
+              border: 'none',
+              fontFamily: 'inherit',
+              fontSize: inCard ? '13px' : '16px',
+              fontWeight: 500,
+              whiteSpace: 'nowrap',
+              margin: '0 auto',
+              minWidth: inCard ? '150px' : '250px',
+              textDecoration: 'none',
+            }}
+          >
             <img
-              className={'instacart'}
-              src={'/images/Instacart-logo-carrot.svg'}
+              className="instacart"
+              src="/images/Instacart-logo-carrot.svg"
               alt="Instacart logo"
               style={{ height: inCard ? '18px' : '22px', marginRight: '2px' }}
             />
             <span>{getButtonText()}</span>
-          </>
-        )}
-      </button>
-      {withDisclamer && <EarnsCommissionsOnPurchases />}
-    </div>
-  ) : (
+          </a>
+        </div>
+        {withDisclamer && <EarnsCommissionsOnPurchases />}
+      </div>
+    );
+  }
+
+  return (
     <div
       style={{
         display: inlineFlex ? 'inline-flex' : 'flex',
@@ -152,7 +126,6 @@ InstacartWidget.propTypes = {
     link: PropTypes.string,
   }),
   className: PropTypes.string,
-  // containerClassName: PropTypes.string,
   isProduct: PropTypes.bool,
   withDisclamer: PropTypes.bool,
   marginBottom: PropTypes.string,

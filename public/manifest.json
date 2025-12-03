@@ -4,7 +4,7 @@
   "description": "Waivio is a decentralized social network based on Steem blockchain",
   "theme_color": "#4757b2",
   "background_color": "#fcfcff",
-  "display": "browser",
+  "display": "standalone",
   "Scope": "/",
   "start_url": "/",
   "icons": [
