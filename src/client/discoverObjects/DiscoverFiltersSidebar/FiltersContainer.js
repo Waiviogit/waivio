@@ -78,7 +78,7 @@ const FiltersContainer = ({
       checked,
     );
 
-    dispatchGetTagsByCategory(activeObjectTypeName, value);
+    // dispatchGetTagsByCategory(activeObjectTypeName, value);
     dispatchSetActiveTagsFilters(updateTagsFilters);
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };

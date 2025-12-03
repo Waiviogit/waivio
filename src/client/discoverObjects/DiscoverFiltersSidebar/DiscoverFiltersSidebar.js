@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { isEmpty, memoize, get } from 'lodash';
+import { isEmpty, memoize, get, isArray } from 'lodash';
 import { listOfMapObjectTypes } from '../../../common/constants/listOfObjectTypes';
 import { isNeedFilters } from '../helper';
 import {
@@ -30,6 +30,21 @@ import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { SORT_OPTIONS } from '../DiscoverObjectsContent';
 
+const normalizeCoordinates = coords => {
+  if (!coords) return null;
+  if (isArray(coords)) return coords;
+
+  if (coords.lat !== undefined && coords.lon !== undefined) {
+    return [Number(coords.lat), Number(coords.lon)];
+  }
+
+  if (coords.latitude !== undefined && coords.longitude !== undefined) {
+    return [Number(coords.latitude), Number(coords.longitude)];
+  }
+
+  return coords;
+};
+
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store
   const dispatch = useDispatch();
@@ -45,14 +60,14 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const [mapSettings, setMapSettings] = React.useState({
     zoom: DEFAULT_ZOOM,
     radius: DEFAULT_RADIUS,
-    coordinates: userLocation,
+    coordinates: normalizeCoordinates(userLocation),
   });
 
   if (isEmpty(userLocation)) dispatch(getCoordinates());
 
   useEffect(() => {
     if (isEmpty(mapSettings.coordinates) || !mapSettings.coordinates) {
-      setMapSettings(prev => ({ ...prev, coordinates: userLocation }));
+      setMapSettings(prev => ({ ...prev, coordinates: normalizeCoordinates(userLocation) }));
     }
   }, [userLocation]);
 
@@ -65,7 +80,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
       setMapSettings({
         zoom: zoom || DEFAULT_ZOOM,
         radius: radius || DEFAULT_RADIUS,
-        coordinates: coordinates || userLocation,
+        coordinates: normalizeCoordinates(coordinates) || normalizeCoordinates(userLocation),
       });
       dispatch(setObjectSortType(SORT_OPTIONS.PROXIMITY));
     }
@@ -79,14 +94,19 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   };
   const setMapArea = ({ radius, coordinates }) => {
     if (isEmpty(activeFilters))
-      dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+      dispatch(
+        getObjectTypeMap(
+          { radius, coordinates: normalizeCoordinates(coordinates) },
+          isFullscreenMode,
+        ),
+      );
   };
 
   useEffect(() => {
     if (hasMap)
       setMapArea({
         radius: mapSettings.radius,
-        coordinates: mapSettings.coordinates,
+        coordinates: normalizeCoordinates(mapSettings.coordinates),
         isMap: true,
         firstMapLoad: true,
       });
@@ -111,7 +131,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             onMarkerClick={handleMapMarkerClick}
             getAreaSearchData={setSearchArea}
             setMapArea={setMapArea}
-            userLocation={mapSettings.coordinates}
+            userLocation={normalizeCoordinates(mapSettings.coordinates)}
             customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
             onCustomControlClick={handleMapSearchClick}
             match={match}
