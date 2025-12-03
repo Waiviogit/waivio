@@ -9,7 +9,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { openLinkWithSafetyCheck } from '../../../../common/helpers/urlHelpers';
+
 import {
   accessTypesArr,
   getBlogItems,
@@ -727,6 +727,7 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
+    const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showGroupSection = hasType(wobject, OBJECT_TYPE.GROUP);
     const showLRecipeSection = hasType(wobject, OBJECT_TYPE.RECIPE);
@@ -1095,11 +1096,7 @@ class ObjectInfo extends React.Component {
               />{' '}
               <span
                 className={'main-color-button'}
-                onClick={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  openLinkWithSafetyCheck(linkUrl, this.props.setLinkSafetyInfo);
-                }}
+                onClick={() => this.props.setLinkSafetyInfo(linkUrlHref)}
               >
                 {linkUrl}
               </span>
