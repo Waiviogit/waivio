@@ -323,4 +323,27 @@
   .PicturesSlider .slick-slide.slick-active {
     width: 125px;
   }
+
+  // Reviews styling
+  .SocialProductReviews {
+    &__heading {
+      text-transform: none;
+      font-family: var(--template-font-title, 'Playfair Display', serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    &__link {
+      text-transform: none;
+      font-family: var(--template-font-body, inherit);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--website-color);
+
+      @media @small {
+        text-transform: none;
+      }
+    }
+  }
 }

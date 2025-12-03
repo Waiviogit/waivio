@@ -5,6 +5,10 @@ import CleanChecklistLayout from '../../client/social-gifts/Checklist/layouts/Cl
 import CleanShopObjectCardView from '../../client/social-gifts/ShopObjectCard/views/CleanShopObjectCardView';
 import CleanSocialProductView from '../../client/social-gifts/SocialProduct/views/CleanSocialProductView';
 import CleanBusinessObjectView from '../../client/social-gifts/BusinessObject/views/CleanBusinessObjectView';
+import CleanSocialLinksView from '../../client/components/SocialLinks/views/CleanSocialLinksView';
+import CleanWalletAddressView from '../../client/app/Sidebar/WalletAddress/views/CleanWalletAddressView';
+import CleanSocialMenuItemView from '../../client/social-gifts/SocialProduct/SocialMenuItems/views/CleanSocialMenuItemView';
+import CleanSocialCampaignCardView from '../../client/social-gifts/ShopObjectCard/ProductRewardCard/views/CleanSocialCampaignCardView';
 
 const cleanTemplate = {
   meta: {
@@ -24,6 +28,10 @@ const cleanTemplate = {
     ShopObjectCardView: CleanShopObjectCardView,
     SocialProductView: CleanSocialProductView,
     BusinessObjectView: CleanBusinessObjectView,
+    SocialLinksView: CleanSocialLinksView,
+    WalletAddressView: CleanWalletAddressView,
+    SocialMenuItemView: CleanSocialMenuItemView,
+    SocialCampaignCardView: CleanSocialCampaignCardView,
   },
 };
 

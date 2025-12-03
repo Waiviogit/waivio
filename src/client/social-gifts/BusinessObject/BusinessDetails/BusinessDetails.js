@@ -10,10 +10,10 @@ import {
   parseWobjectField,
 } from '../../../../common/helpers/wObjectHelper';
 
-import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
+import SocialLinks from '../../../components/SocialLinks/SocialLinks';
 import EmailDraft from '../../../widgets/EmailDraft/EmailDraft';
 
 const BusinessDetails = ({

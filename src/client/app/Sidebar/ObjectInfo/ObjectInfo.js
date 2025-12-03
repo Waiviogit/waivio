@@ -23,7 +23,7 @@ import {
   parseWobjectField,
 } from '../../../../common/helpers/wObjectHelper';
 import { getWobjectAuthors } from '../../../../store/wObjectStore/wObjectSelectors';
-import SocialLinks from '../../../components/SocialLinks';
+import SocialLinks from '../../../components/SocialLinks/SocialLinks';
 import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../../object/wObjectHelper';
 import {
   linkFields,

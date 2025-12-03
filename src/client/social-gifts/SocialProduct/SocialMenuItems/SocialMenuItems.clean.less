@@ -1,0 +1,31 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.SocialMenuItemsClean__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-top: 1px solid @white-gainsboro;
+  cursor: pointer;
+  font-family: var(--template-font-body, inherit);
+
+  &:hover {
+    background: #f9f9f9;
+  }
+}
+
+.SocialMenuItemsClean__item-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 18px;
+  color: @black;
+  font-family: var(--template-font-body, inherit);
+}
+
+.SocialMenuItemsClean__icon {
+  font-size: 24px;
+  color: var(--website-color) !important;
+  margin-left: 16px;
+  flex-shrink: 0;
+}
