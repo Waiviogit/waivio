@@ -610,6 +610,16 @@ class CreateRewards extends React.Component {
           submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
             .then(res => {
               if (res.message) {
+                if (res.message.toLowerCase().includes('sponsorurl')) {
+                  const sponsorURLValue = values.sponsorURL || '';
+
+                  this.props.form.setFields({
+                    sponsorURL: {
+                      value: sponsorURLValue,
+                      errors: [new Error(res.message)],
+                    },
+                  });
+                }
                 message.error(res.message);
               } else {
                 message.success(
