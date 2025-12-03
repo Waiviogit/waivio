@@ -274,13 +274,15 @@ class DiscoverObjectsContent extends Component {
   };
 
   resetNameSearchFilter = () => {
-    const { history, activeFilters, location, dispatchSetActiveFilters } = this.props;
+    const { history, activeFilters, location, dispatchSetActiveFilters, typeName } = this.props;
     const updatedFilters = { ...activeFilters };
 
     delete updatedFilters.searchString;
 
-    dispatchSetActiveFilters(updatedFilters);
     changeUrl(updatedFilters, history, location);
+
+    dispatchSetActiveFilters(updatedFilters);
+    this.props.getTagCategories(typeName);
   };
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);

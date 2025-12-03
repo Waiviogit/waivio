@@ -369,17 +369,11 @@ class CreateRewards extends React.Component {
       budget = data.winnersNumber * data.reward;
     }
 
-    // Only include sponsorURL if it's a non-empty string
-    const sponsorURL =
-      data.sponsorURL && typeof data.sponsorURL === 'string' && data.sponsorURL.trim()
-        ? data.sponsorURL.trim().replace(/\/+$/, '')
-        : undefined;
+    const sponsorURL = !isEmpty(data.sponsorURL)
+      ? data.sponsorURL.trim().replace(/\/+$/, '')
+      : undefined;
 
-    // Only include sponsorName if it's a non-empty string
-    const sponsorName =
-      data.sponsorName && typeof data.sponsorName === 'string' && data.sponsorName.trim()
-        ? data.sponsorName.trim()
-        : undefined;
+    const sponsorName = !isEmpty(data.sponsorName) ? data.sponsorName.trim() : undefined;
 
     const preparedObject = {
       requiredObject,
