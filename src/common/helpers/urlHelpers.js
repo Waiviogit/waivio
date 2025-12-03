@@ -3,6 +3,8 @@
  * Handles URL encoding/decoding issues, especially for @ symbols
  */
 
+import { isMobile } from './apiHelpers';
+
 /**
  * Decodes URL parameters, specifically handling %40 (@ symbol) encoding
  * @param {string} param - The URL parameter to decode
@@ -103,4 +105,21 @@ export const decodeRouteParams = params => {
   });
 
   return decoded;
+};
+
+export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
+  if (isMobile()) {
+    const newWindow = window.open('', '_blank');
+    const fallback = !newWindow;
+
+    const action = await safetyCheckFn(url);
+    const data = action?.payload || {};
+    const { showModal } = data;
+
+    if (showModal) return;
+    if (!fallback) newWindow.location = url;
+    else window.location.href = url;
+  } else {
+    safetyCheckFn(url);
+  }
 };
