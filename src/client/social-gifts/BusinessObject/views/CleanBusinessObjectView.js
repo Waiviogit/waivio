@@ -17,6 +17,7 @@ import SocialMenuItems from '../../SocialProduct/SocialMenuItems/SocialMenuItems
 import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
 import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
 import CompanyId from '../../../app/Sidebar/CompanyId';
+import EmailDraft from '../../../widgets/EmailDraft/EmailDraft';
 import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -98,9 +99,17 @@ const CleanBusinessObjectView = ({
         <div className="BusinessObjectClean__mainContent">
           <div className="BusinessObjectClean__leftColumn">
             <h1 className="BusinessObjectClean__name">{wobject.name}</h1>
-
             {!isEmpty(wobjTitle) && <div className="BusinessObjectClean__title">{wobjTitle}</div>}
-
+            {authenticated && !isEmpty(wobject) && (
+              <div className="BusinessObjectClean__actions">
+                <SocialProductActions
+                  currentWobj={wobject}
+                  toggleViewEditMode={toggleViewEditMode}
+                  isEditMode={isEditMode}
+                  authenticated={authenticated}
+                />
+              </div>
+            )}
             <div className="BusinessObjectClean__ratings">
               {!isEmpty(wobject.rating) &&
                 wobject.rating.map(rating => (
@@ -146,10 +155,14 @@ const CleanBusinessObjectView = ({
                   </div>
                 ))}
               {email && (
-                <div className="BusinessObjectClean__contactItem">
-                  <Icon type="mail" className="BusinessObjectClean__contactIcon" />
-                  <a href={`mailto:${email}`}>{email}</a>
-                </div>
+                <EmailDraft
+                  accessExtend={authenticated}
+                  email={email}
+                  name={wobject.name}
+                  permlink={wobject.author_permlink}
+                  mapObjPermlink={mapObjPermlink}
+                  center={map ? [Number(map.latitude), Number(map.longitude)] : []}
+                />
               )}
               {website &&
                 website.map(w => {
@@ -168,33 +181,19 @@ const CleanBusinessObjectView = ({
                   );
                 })}
             </div>
-
-            {!isEmpty(pickBy(profile, identity)) && (
-              <div className="BusinessObjectClean__socialLinks">
-                <SocialLinks isSocial profile={pickBy(profile, identity)} />
-              </div>
-            )}
-
-            {!isEmpty(walletAddress) && (
-              <div className="BusinessObjectClean__wallets">
-                <WalletAddress walletAddress={walletAddress} isSocial />
-              </div>
-            )}
-
             {!isEmpty(companyIdBody) && (
               <div className="BusinessObjectClean__companyId">
                 <CompanyId companyIdBody={companyIdBody} isSocial />
               </div>
             )}
-
-            {authenticated && !isEmpty(wobject) && (
-              <div className="BusinessObjectClean__actions">
-                <SocialProductActions
-                  currentWobj={wobject}
-                  toggleViewEditMode={toggleViewEditMode}
-                  isEditMode={isEditMode}
-                  authenticated={authenticated}
-                />
+            {!isEmpty(pickBy(profile, identity)) && (
+              <div className="BusinessObjectClean__socialLinks">
+                <SocialLinks isSocial profile={pickBy(profile, identity)} />
+              </div>
+            )}
+            {!isEmpty(walletAddress) && (
+              <div className="BusinessObjectClean__wallets">
+                <WalletAddress walletAddress={walletAddress} isSocial />
               </div>
             )}
           </div>
