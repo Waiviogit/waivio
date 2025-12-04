@@ -4,6 +4,7 @@ import { get, size } from 'lodash';
 
 import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { openLinkWithSafetyCheck } from '../../common/helpers/urlHelpers';
 import {
   checkLinkSafety,
   getAuthorsChildWobjects,
@@ -359,7 +360,10 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-export const setLinkSafetyInfo = url => async (dispatch, getState) => {
+export const setLinkSafetyInfo = url => async (dispatch, getState) =>
+  openLinkWithSafetyCheck(url, safeUrl => originalSetLinkSafetyInfo(safeUrl)(dispatch, getState));
+
+export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
   const isAuth = getIsAuthenticated(getState());
   const checkLinks = getExitPageSetting(getState());

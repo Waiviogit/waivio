@@ -78,7 +78,7 @@ const FiltersContainer = ({
       checked,
     );
 
-    dispatchGetTagsByCategory(activeObjectTypeName, value);
+    // dispatchGetTagsByCategory(activeObjectTypeName, value);
     dispatchSetActiveTagsFilters(updateTagsFilters);
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
   };
@@ -109,7 +109,7 @@ const FiltersContainer = ({
         {!isEmpty(tagCategories) &&
           tagCategories.map(category => {
             const categoryName = category.tagCategory || category;
-            // Use categoryTags if available (from getSearchTagByCategory), otherwise use initial data
+
             const categoryData = categoryTags[categoryName] || {
               tags: category.tags || [],
               hasMore: category.hasMore || false,
