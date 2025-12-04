@@ -149,7 +149,9 @@ const LinkSafetyModal = props => {
 
   useEffect(() => {
     if (isEmpty(props.objectTypes)) props.getObjectTypes();
+    // Only auto-redirect if modal should not be shown
     if (
+      !props.info?.showModal &&
       ((props.info?.checkLinks && props.info?.rating > 8) ||
         (!props.info?.checkLinks && props.info?.rating > 4) ||
         (!props.info?.checkLinks && props.info?.rating === 0) ||
@@ -157,7 +159,7 @@ const LinkSafetyModal = props => {
       props.info?.url
     )
       goToSite();
-  }, [props.info?.triggerId, props.info?.url]);
+  }, [props.info?.triggerId, props.info?.url, props.info?.showModal]);
   const ratingClassList = classNames({
     myvote: hasVoted,
   });
