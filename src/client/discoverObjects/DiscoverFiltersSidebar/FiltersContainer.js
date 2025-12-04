@@ -109,7 +109,7 @@ const FiltersContainer = ({
         {!isEmpty(tagCategories) &&
           tagCategories.map(category => {
             const categoryName = category.tagCategory || category;
-            // Use categoryTags if available (from getSearchTagByCategory), otherwise use initial data
+
             const categoryData = categoryTags[categoryName] || {
               tags: category.tags || [],
               hasMore: category.hasMore || false,

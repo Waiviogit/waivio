@@ -189,6 +189,33 @@
     flex-direction: column;
     gap: 10px;
     margin-bottom: 16px;
+
+    .BusinessObject__email {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #4a4a4a;
+
+      .text-icon {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      span {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      a {
+        color: var(--website-color);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 
   &__contactItem {
@@ -237,7 +264,7 @@
   }
 
   &__actions {
-    margin-top: 16px;
+    margin: 16px 0;
   }
 
   &__detailsRow {
@@ -336,32 +363,35 @@
       font-family: var(--template-font-body, 'Inter', sans-serif);
     }
 
-    // Images styling - vertical layout
+    // Images styling - vertical layout: full width image, then text, no wrapping
     .SocialProductDescription {
       &__paragraph-container,
       &__single-paragraph-container,
       &__paragraph-only-container {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 24px;
+        display: flex !important;
+        flex-direction: column !important;
+        margin-bottom: 24px !important;
       }
 
       &__paragraph,
       &__single-paragraph,
       &__paragraph-only {
-        margin: 0 0 16px;
+        width: 100% !important;
+        margin: 0 0 16px !important;
+        padding: 0 !important;
       }
 
       &__image,
       &__single-image {
-        width: 100%;
-        max-width: 600px;
-        height: auto;
-        max-height: 400px;
-        border-radius: 12px;
-        object-fit: cover;
-        margin: 0 auto 16px;
-        display: block;
+        width: 100% !important;
+        max-width: 600px !important;
+        height: auto !important;
+        max-height: 400px !important;
+        border-radius: 12px !important;
+        object-fit: cover !important;
+        margin: 0 auto 16px !important;
+        display: block !important;
+        float: none !important;
       }
     }
   }
@@ -553,5 +583,9 @@
         text-transform: none;
       }
     }
+  }
+
+  .SocialProductDescription__paragraph {
+    width: 100%;
   }
 }

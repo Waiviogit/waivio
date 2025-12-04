@@ -9,7 +9,7 @@ import { sortByExpertOrder } from '../../../../common/helpers/wObjectHelper';
 import './Experts.less';
 
 const Experts = ({ title, experts, name }) => {
-  // const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [expertsArr, setExpertsArr] = useState(experts);
   const slideWidth = 240;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
@@ -20,17 +20,17 @@ const Experts = ({ title, experts, name }) => {
     arrows: !isTabletOrMobile,
     lazyLoad: false,
     rows: 1,
-    nextArrow: <Icon type="caret-right" />,
-    prevArrow: <Icon type="caret-left" />,
+    nextArrow: currentSlide >= experts.length - slidesToShow ? null : <Icon type="caret-right" />,
+    prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
     slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
     swipeToSlide: isTabletOrMobile,
     infinite: false,
     slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
   };
 
-  // const onSlideChange = (curr, next) => {
-  //   setCurrentSlide(next);
-  // };
+  const onSlideChange = (curr, next) => {
+    setCurrentSlide(next);
+  };
 
   useEffect(() => {
     setExpertsArr([]);
@@ -50,7 +50,7 @@ const Experts = ({ title, experts, name }) => {
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
-          <Carousel {...carouselSettings}>
+          <Carousel {...carouselSettings} beforeChange={onSlideChange}>
             {expertsArr?.map(expert => (
               <ExpertCard key={expert.name} expert={expert} />
             ))}

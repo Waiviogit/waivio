@@ -96,6 +96,7 @@ const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => 
         loadMore={loadMore}
         loading={isFetching}
         writeReview={handleWriteReviewClick}
+        postCountShow={4}
       />
     </div>
   );
