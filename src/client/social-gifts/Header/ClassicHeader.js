@@ -42,7 +42,7 @@ const ClassicHeader = ({
           )}
           {typeof window !== 'undefined' && (
             <React.Fragment>
-              <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
+              <GeneralSearch searchBarActive={searchBarActive} />
               <div className={'Header__rightWrap'}>
                 <button
                   className={classNames('Header__mobile-search', {
