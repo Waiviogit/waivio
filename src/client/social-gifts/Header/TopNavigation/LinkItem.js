@@ -6,8 +6,12 @@ import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
+import { useTemplateId } from '../../../../designTemplates/TemplateProvider';
 
 const LinkItem = ({ link, index, intl }) => {
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
+  const uppercase = !isCleanTemplate;
   const history = useHistory();
   const dispatch = useDispatch();
   const directObjTypes = ['person'];
@@ -21,7 +25,7 @@ const LinkItem = ({ link, index, intl }) => {
   if (linkTo?.includes('/active-campaigns')) {
     return (
       <a key={link.link} className="WebsiteTopNavigation__link" rel="noreferrer" href={link.link}>
-        {getMenuLinkTitle(link, intl, 24)}
+        {getMenuLinkTitle(link, intl, 24, uppercase)}
       </a>
     );
   }
@@ -32,7 +36,7 @@ const LinkItem = ({ link, index, intl }) => {
       className="WebsiteTopNavigation__link"
       onClick={() => dispatch(setLinkSafetyInfo(link.link))}
     >
-      {getMenuLinkTitle(link, intl, 24)}
+      {getMenuLinkTitle(link, intl, 24, uppercase)}
     </a>
   ) : (
     <NavLink
@@ -46,7 +50,7 @@ const LinkItem = ({ link, index, intl }) => {
       to={linkTo}
     >
       {' '}
-      {getMenuLinkTitle(link, intl, 24)}
+      {getMenuLinkTitle(link, intl, 24, uppercase)}
     </NavLink>
   );
 };

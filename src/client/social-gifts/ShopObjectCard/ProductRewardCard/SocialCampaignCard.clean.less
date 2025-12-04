@@ -1,0 +1,160 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.SocialCampaignCardClean {
+  position: relative;
+  margin-bottom: 30px;
+
+  &__card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    position: relative;
+    overflow: hidden;
+    margin: 15px 0;
+    font-family: var(--template-font-body, inherit);
+    border: 1px solid #e8e8e8;
+  }
+
+  &__badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 4px 12px;
+    background: rgba(var(--website-color-rgb, 255, 107, 0), 0.15);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--website-color);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: var(--template-font-body, inherit);
+  }
+
+  &__avatar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 1;
+    padding: 3px;
+    background: linear-gradient(
+      135deg,
+      var(--website-color) 0%,
+      var(--website-hover-color, var(--website-color)) 100%
+    );
+    border-radius: 50%;
+
+    .Avatar {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border: 2px solid #fff;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 25px 0 16px;
+    line-height: 1.4;
+    font-family: var(--template-font-heading, inherit);
+  }
+
+  &__amount {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--website-color);
+    font-family: var(--template-font-heading, inherit);
+  }
+
+  &__days {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 4px;
+    color: #666;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__participateBtn {
+    padding: 12px 24px;
+    background: linear-gradient(
+      135deg,
+      var(--website-color) 0%,
+      var(--website-hover-color, var(--website-color)) 100%
+    );
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--template-font-body, inherit);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &__reservedButtons {
+    display: flex;
+    align-items: center;
+
+    button {
+      background: linear-gradient(
+        135deg,
+        var(--website-color) 0%,
+        var(--website-hover-color, var(--website-color)) 100%
+      );
+      color: #fff;
+      border: none;
+      font-family: var(--template-font-body, inherit);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  &__details {
+    color: var(--website-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+    font-family: var(--template-font-body, inherit);
+
+    &:hover {
+      color: var(--website-hover-color, var(--website-color));
+      text-decoration: underline;
+    }
+
+    .anticon {
+      font-size: 12px;
+    }
+  }
+}

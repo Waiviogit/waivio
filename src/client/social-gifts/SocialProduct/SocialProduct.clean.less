@@ -3,6 +3,17 @@
 
 .SocialProductClean {
   font-family: var(--template-font-body, PlayfairDisplay, serif);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+
+  @media @small {
+    padding: 20px 40px 100px;
+  }
+
+  .SocialProduct__column {
+    padding: 0;
+  }
 
   .SocialProduct__column-wrapper {
     background: #ffffff;
@@ -11,8 +22,6 @@
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 40px;
 
     @media @small {
       display: flex;
@@ -21,23 +30,25 @@
     }
   }
 
-  .SocialProduct__carouselWrapper,
-  .SocialProduct__carouselWrapper img {
-    border-radius: 10px;
-    overflow: hidden;
+  .ShopObjectCardClean__affiliatLinks .AffiliatLink {
+    height: 40px;
+    line-height: 35px;
+    border-radius: 15px;
   }
 
-  .PicturesSlider__thumbnail,
-  .PicturesSlider__thumbnail--active {
-    height: 70px;
-    width: 70px;
-    object-fit: cover;
+  .SocialProduct__carouselWrapper {
+    overflow: visible;
+
+    img {
+      border-radius: 10px;
+    }
   }
 
-  .PicturesSlider .slick-slide.slick-active {
-    width: 70px !important;
-    margin-right: 5px;
-    border: none;
+  // Gallery slider - horizontal
+  .PicturesSlider {
+    &__previewImage {
+      border-radius: 10px;
+    }
   }
 
   // About section - card style
@@ -50,6 +61,43 @@
     margin: 40px 0 40px;
   }
 
+  // Top Recipe section - card style (like About)
+  .SocialProduct__postWrapper {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    max-width: 100%;
+    margin: 40px 0 40px;
+
+    .StoryFull__title {
+      display: block;
+      text-transform: none;
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--template-font-heading, PlayfairDisplay, serif);
+      margin-bottom: 20px;
+      color: #1a1a1a;
+      text-align: center;
+    }
+
+    .RecipePost {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    // Headings in recipe content
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    strong,
+    b {
+      font-family: var(--template-font-heading, PlayfairDisplay, serif);
+    }
+  }
+
   .SocialProduct__heading {
     text-transform: none;
     font-size: 22px;
@@ -57,117 +105,79 @@
     font-family: var(--template-font-heading, PlayfairDisplay, serif);
     margin-bottom: 20px;
     color: #1a1a1a;
+    text-align: center;
   }
 
   .SocialProduct__description {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.75;
     color: #4a4a4a;
   }
 
-  // Description layout - first image on top, then text, then remaining images
+  // Description layout - full width images
   .SocialProductDescription {
-    &__paragraph-container,
-    &__paragraph-only-container,
+    &__paragraph-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 24px;
+    }
+
+    &__paragraph-only-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 24px;
+    }
+
     &__single-paragraph-container {
       display: flex;
       flex-direction: column;
-      margin-bottom: 0;
+      margin-bottom: 24px;
     }
 
-    // For multiple paragraphs - reorder first container
-    &__paragraph-container {
-      &:first-of-type {
-        // Image div comes first
-        & > div:last-child {
-          order: 1;
-          margin-bottom: 24px;
-        }
-
-        // Paragraph comes after image
-        & > p {
-          order: 2;
-        }
-      }
+    &__paragraph {
+      margin-bottom: 16px;
+      width: 100%;
     }
 
-    &__paragraph,
-    &__paragraph--only {
+    &__paragraph--only,
+    &__paragraph-only {
       width: 100%;
       padding: 0;
       margin-bottom: 16px;
-      display: block;
-      float: none;
-    }
-
-    // Single paragraph with one image - image on top
-    &__single-paragraph-container {
-      display: flex;
-      flex-direction: column;
     }
 
     &__single-paragraph {
       width: 100%;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-
-      // Image div first
-      & > div:first-child {
-        order: 1;
-        margin-bottom: 24px;
-      }
-
-      // Text content after (all other elements)
-      & > *:not(:first-child) {
-        order: 2;
-        margin-bottom: 16px;
-      }
+      margin-bottom: 16px;
     }
 
-    &__image,
+    &__image {
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      height: auto;
+      margin-bottom: 16px;
+      object-fit: cover;
+      max-height: 500px;
+    }
+
     &__single-image {
       border: none;
-      border-radius: 8px;
-      float: none;
-      margin: 0;
-      max-width: 100%;
+      border-radius: 12px;
+      cursor: pointer;
       width: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    // First image - full width, horizontal
-    &__single-image,
-    &__paragraph-container:first-of-type &__image {
       height: auto;
-      max-height: 400px;
-      border-radius: 8px;
-      margin-bottom: 24px;
-    }
-
-    // Remaining images - 3 in row
-    &__paragraph-container:not(:first-of-type) &__image {
-      height: 220px;
       margin-bottom: 16px;
-
-      @media @small {
-        width: calc(33.333% - 12px);
-        display: inline-block;
-        margin-right: 16px;
-        vertical-align: top;
-
-        &:nth-child(3n) {
-          margin-right: 0;
-        }
-      }
+      object-fit: cover;
+      max-height: 500px;
     }
 
     &__images-container {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
-      margin-top: 24px;
+      justify-content: center;
     }
   }
 
@@ -191,13 +201,25 @@
       > div {
         position: relative;
         padding-left: 20px;
-        margin-bottom: 12px;
         font-size: 15px;
         line-height: 1.6;
         color: #4a4a4a;
 
         &::before {
           content: '•';
+          position: absolute;
+          left: 0;
+          color: #1a1a1a;
+          font-weight: bold;
+        }
+      }
+
+      .Department__socialLayout {
+        padding-left: 20px;
+        position: relative;
+
+        &::before {
+          content: '\2022';
           position: absolute;
           left: 0;
           color: #1a1a1a;
@@ -250,20 +272,6 @@
       margin-bottom: 24px;
     }
 
-    .ShopObjectCard,
-    .ShopObjectCardClean {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-      border: none;
-      margin: 0 8px;
-      padding: 16px;
-
-      &:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      }
-    }
-
     .slick-list {
       padding: 8px 0;
     }
@@ -285,6 +293,43 @@
       padding: 6px 16px;
       font-size: 14px;
       margin: 0 8px 8px 0;
+    }
+  }
+
+  .SocialProduct__brand {
+    margin-bottom: 20px;
+  }
+
+  .PicturesSlider__thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: fill;
+  }
+
+  .PicturesSlider .slick-slide.slick-active {
+    width: 125px;
+  }
+
+  // Reviews styling
+  .SocialProductReviews {
+    &__heading {
+      text-transform: none;
+      font-family: var(--template-font-title, 'Playfair Display', serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    &__link {
+      text-transform: none;
+      font-family: var(--template-font-body, inherit);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--website-color);
+
+      @media @small {
+        text-transform: none;
+      }
     }
   }
 }

@@ -163,7 +163,6 @@ const SocialProduct = ({
   const postsIds = uniq(getFeedFromState('objectPosts', wobject?.author_permlink, feed));
   const recipePost = postsList[postsIds?.[0]];
   const website = parseWobjectField(wobject, 'website');
-  const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
   const ageRange = get(wobject, 'ageRange');
   const language = get(wobject, 'language');
@@ -201,7 +200,6 @@ const SocialProduct = ({
     recipeIngredients ||
     !isEmpty(productIdBody) ||
     !isEmpty(departments);
-  const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
 
   const menuItem = !has(wobject, 'sortCustom')
@@ -275,9 +273,9 @@ const SocialProduct = ({
 
   const showProductDetails =
     !isRecipe &&
-    (!isEmpty(brand) ||
-      !isEmpty(manufacturer) ||
-      !isEmpty(merchant) ||
+    (!isEmpty(publisherObject) ||
+      !isEmpty(manufacturerObject) ||
+      !isEmpty(merchantObject) ||
       !isEmpty(parent) ||
       !isEmpty(productWeight) ||
       !isEmpty(dimensions) ||
@@ -287,7 +285,6 @@ const SocialProduct = ({
       !isEmpty(language) ||
       !isEmpty(wobject?.publicationDate) ||
       !isEmpty(printLength) ||
-      !isEmpty(publisher) ||
       !isEmpty(website) ||
       !isEmpty(ageRange));
 

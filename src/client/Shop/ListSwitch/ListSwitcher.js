@@ -9,6 +9,7 @@ import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 import DepartmentsWobjList from '../DepartmentsWobjList/DepartmentsWobjList';
 import UserShoppingList from '../ShopList/UserShoppingList';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
@@ -43,6 +44,8 @@ const ListSwitcher = props => {
   const authenticated = useSelector(getIsAuthenticated);
   const isEditMode = useSelector(getIsEditMode);
   const isAdministrator = useSelector(getUserAdministrator);
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
@@ -96,20 +99,24 @@ const ListSwitcher = props => {
   ]);
 
   return (
-    <div className={'ListSwitcher'}>
+    <div className={classNames('ListSwitcher', { 'ListSwitcher--clean': isCleanTemplate })}>
       <h3 className={'ListSwitcher__breadCrumbsWrap'}>
         <span>
           <span
-            className={'ListSwitcher__breadCrumbs'}
+            className={classNames('ListSwitcher__breadCrumbs', {
+              'ListSwitcher__breadCrumbs--home': isCleanTemplate,
+            })}
             onClick={() => {
               dispatch(resetBreadCrumb());
               history.push(props.path);
             }}
           >
-            {props.intl.formatMessage({
-              id: `${isRecipe ? 'categories' : 'departments'}`,
-              defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
-            })}
+            {isCleanTemplate
+              ? 'Shop'
+              : props.intl.formatMessage({
+                  id: `${isRecipe ? 'categories' : 'departments'}`,
+                  defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,
+                })}
           </span>{' '}
           {props.type === 'wobject' && accessExtend && authenticated && (
             <div className="Breadcrumbs__edit-container">
@@ -121,10 +128,11 @@ const ListSwitcher = props => {
         </span>
         {match.params.department && (
           <React.Fragment>
-            <Icon type="right" />{' '}
+            {isCleanTemplate ? ' / ' : <Icon type="right" />}{' '}
             <Link
               className={classNames('ListSwitcher__breadCrumbs', {
                 'ListSwitcher__breadCrumbs--active': !history.location.hash,
+                'ListSwitcher__breadCrumbs--clean': isCleanTemplate,
               })}
               to={`${props.path}/${match.params.department}`}
             >
@@ -134,13 +142,13 @@ const ListSwitcher = props => {
         )}
         {getPermlinksFromHash(history.location.hash).map(crumb => (
           <span key={crumb}>
-            {' '}
-            &gt;{' '}
+            {isCleanTemplate ? ' / ' : ' > '}
             <Link
               className={classNames('ListSwitcher__breadCrumbs', {
                 'ListSwitcher__breadCrumbs--active':
                   getLastPermlinksFromHash(history.location.hash) === crumb ||
                   match.params.department === crumb,
+                'ListSwitcher__breadCrumbs--clean': isCleanTemplate,
               })}
               to={createHash(history.location.hash, crumb)}
             >

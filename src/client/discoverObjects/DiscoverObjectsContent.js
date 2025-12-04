@@ -21,6 +21,7 @@ import {
   setTagsFiltersAndLoad,
   setActiveTagsFilters,
   setObjectSortType,
+  getTagCategories,
 } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -89,6 +90,7 @@ export const SORT_OPTIONS = {
     setActiveTagsFilters,
     setTagsFiltersAndLoad,
     setObjectSortType,
+    getTagCategories,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -117,6 +119,7 @@ class DiscoverObjectsContent extends Component {
     setActiveFilters: PropTypes.func.isRequired,
     setActiveTagsFilters: PropTypes.func.isRequired,
     setTagsFiltersAndLoad: PropTypes.func.isRequired,
+    getTagCategories: PropTypes.func.isRequired,
     activeTagsFilters: PropTypes.shape({}),
     tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
     location: PropTypes.shape({
@@ -179,6 +182,7 @@ class DiscoverObjectsContent extends Component {
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
     dispatchGetObjectType(typeName, { skip: 0 });
+    this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
@@ -270,13 +274,15 @@ class DiscoverObjectsContent extends Component {
   };
 
   resetNameSearchFilter = () => {
-    const { history, activeFilters, location, dispatchSetActiveFilters } = this.props;
+    const { history, activeFilters, location, dispatchSetActiveFilters, typeName } = this.props;
     const updatedFilters = { ...activeFilters };
 
     delete updatedFilters.searchString;
 
-    dispatchSetActiveFilters(updatedFilters);
     changeUrl(updatedFilters, history, location);
+
+    dispatchSetActiveFilters(updatedFilters);
+    this.props.getTagCategories(typeName);
   };
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);

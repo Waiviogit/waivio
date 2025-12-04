@@ -5,6 +5,7 @@ import { isEmpty, isNil } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   accessTypesArr,
@@ -29,6 +30,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import './Breadcrumbs.less';
 
@@ -40,6 +42,8 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const wobject = useSelector(getObject);
   const username = useSelector(getAuthenticatedUserName);
   const isAdministrator = useSelector(getUserAdministrator);
+  const templateId = useTemplateId();
+  const isCleanTemplate = templateId === 'clean';
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
@@ -111,7 +115,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
   return (
     <div className={'flex '}>
-      <div className="Breadcrumbs">
+      <div className={classNames('Breadcrumbs', { 'Breadcrumbs--clean': isCleanTemplate })}>
         {breadcrumbs?.map((crumb, index) => {
           let comp;
 
@@ -142,8 +146,13 @@ const Breadcrumbs = ({ inProduct, intl }) => {
           return (
             <React.Fragment key={crumb?.author_permlink}>
               {comp}
+              {/* eslint-disable-next-line no-nested-ternary */}
               {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
-                <Icon type="right" />
+                isCleanTemplate ? (
+                  <span className="Breadcrumbs__separator">/</span>
+                ) : (
+                  <Icon type="right" />
+                )
               ) : (
                 ''
               )}

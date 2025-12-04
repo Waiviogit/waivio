@@ -32,6 +32,10 @@ export const getObjectTypeSorting = createSelector([objectTypeState], state => s
 
 export const getFiltersTags = createSelector([objectTypeState], state => state.tagsForFilter);
 
+export const getTagCategories = createSelector([objectTypeState], state => state.tagCategories);
+
+export const getCategoryTags = createSelector([objectTypeState], state => state.categoryTags);
+
 export const getActiveFiltersTags = createSelector(
   [objectTypeState],
   state => state.activeTagsFilters,

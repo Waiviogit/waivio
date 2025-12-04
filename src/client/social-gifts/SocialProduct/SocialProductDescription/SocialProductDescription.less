@@ -12,6 +12,7 @@
     @media @small {
       justify-content: space-around;
       flex-direction: row;
+      flex-wrap: nowrap;
       margin-bottom: 20px;
       &:nth-child(even) {
         flex-direction: row-reverse;
@@ -24,6 +25,7 @@
 
     @media @small {
       flex-direction: row;
+      flex-wrap: nowrap;
       margin-bottom: 50px;
     }
   }
@@ -35,6 +37,7 @@
     @media @small {
       justify-content: space-around;
       flex-direction: row;
+      flex-wrap: nowrap;
       margin-bottom: 20px;
       padding: 20px;
     }
@@ -42,10 +45,13 @@
 
   &__paragraph {
     margin-bottom: 20px;
+
     @media @small {
       margin-bottom: 0;
-      padding: 20px;
+      padding: 0 20px 20px;
       width: 50%;
+      flex: 0 0 50%;
+      box-sizing: border-box;
     }
   }
   &__single-paragraph {
@@ -73,14 +79,16 @@
     max-width: 100%;
     height: auto;
     margin-bottom: 20px;
-    width: -webkit-fill-available;
     width: auto;
+
     @media @small {
       margin: 20px;
       margin-bottom: 0;
       object-fit: contain;
       max-height: 500px;
       max-width: 95%;
+      flex: 0 0 50%;
+      box-sizing: border-box;
     }
   }
   &__single-image {

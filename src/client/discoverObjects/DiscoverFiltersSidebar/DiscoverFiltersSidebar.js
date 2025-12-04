@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { isEmpty, memoize, get } from 'lodash';
+import { isEmpty, memoize, get, isArray } from 'lodash';
+import { listOfMapObjectTypes } from '../../../common/constants/listOfObjectTypes';
 import { isNeedFilters } from '../helper';
 import {
   setFiltersAndLoad,
@@ -24,11 +25,25 @@ import {
   getFilteredObjects,
   getFilteredObjectsMap,
   getFiltersTags,
-  getHasMap,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { SORT_OPTIONS } from '../DiscoverObjectsContent';
+
+const normalizeCoordinates = coords => {
+  if (!coords) return null;
+  if (isArray(coords)) return coords;
+
+  if (coords.lat !== undefined && coords.lon !== undefined) {
+    return [Number(coords.lat), Number(coords.lon)];
+  }
+
+  if (coords.latitude !== undefined && coords.longitude !== undefined) {
+    return [Number(coords.latitude), Number(coords.longitude)];
+  }
+
+  return coords;
+};
 
 const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   // redux-store
@@ -38,20 +53,22 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const filters = useSelector(getAvailableFilters);
   const filteredObjects = useSelector(getFilteredObjects);
   const activeFilters = useSelector(getActiveFilters);
-  const hasMap = useSelector(getHasMap);
+  // const hasMap = useSelector(getHasMap);
+  const hasMap = listOfMapObjectTypes.includes(match.params.typeName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const tagsFilters = useSelector(getFiltersTags);
   const [mapSettings, setMapSettings] = React.useState({
     zoom: DEFAULT_ZOOM,
     radius: DEFAULT_RADIUS,
-    coordinates: userLocation,
+    coordinates: normalizeCoordinates(userLocation),
   });
+  const prevSearchRef = useRef(null);
 
   if (isEmpty(userLocation)) dispatch(getCoordinates());
 
   useEffect(() => {
     if (isEmpty(mapSettings.coordinates) || !mapSettings.coordinates) {
-      setMapSettings(prev => ({ ...prev, coordinates: userLocation }));
+      setMapSettings(prev => ({ ...prev, coordinates: normalizeCoordinates(userLocation) }));
     }
   }, [userLocation]);
 
@@ -64,7 +81,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
       setMapSettings({
         zoom: zoom || DEFAULT_ZOOM,
         radius: radius || DEFAULT_RADIUS,
-        coordinates: coordinates || userLocation,
+        coordinates: normalizeCoordinates(coordinates) || normalizeCoordinates(userLocation),
       });
       dispatch(setObjectSortType(SORT_OPTIONS.PROXIMITY));
     }
@@ -78,16 +95,48 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   };
   const setMapArea = ({ radius, coordinates }) => {
     if (isEmpty(activeFilters))
-      dispatch(getObjectTypeMap({ radius, coordinates }, isFullscreenMode));
+      dispatch(
+        getObjectTypeMap(
+          { radius, coordinates: normalizeCoordinates(coordinates) },
+          isFullscreenMode,
+        ),
+      );
   };
 
   useEffect(() => {
-    setMapArea({
-      radius: mapSettings.radius,
-      coordinates: mapSettings.coordinates,
-      isMap: true,
-      firstMapLoad: true,
-    });
+    if (hasMap) {
+      const currentSearch = history.location.search;
+      const searchParams = new URLSearchParams(currentSearch);
+      const mapX = searchParams.get('mapX');
+      const mapY = searchParams.get('mapY');
+      const radius = searchParams.get('radius');
+      const zoom = searchParams.get('zoom');
+      const currentMapParams =
+        mapX && mapY ? `${mapX},${mapY},${radius || ''},${zoom || ''}` : null;
+      const prevSearch = prevSearchRef.current;
+      const prevSearchParams = prevSearch ? new URLSearchParams(prevSearch) : null;
+      const prevMapX = prevSearchParams?.get('mapX');
+      const prevMapY = prevSearchParams?.get('mapY');
+      const prevMapParams =
+        prevMapX && prevMapY
+          ? `${prevMapX},${prevMapY},${prevSearchParams.get('radius') || ''},${prevSearchParams.get(
+              'zoom',
+            ) || ''}`
+          : null;
+      const mapParamsChanged = currentMapParams !== null && currentMapParams !== prevMapParams;
+      // const isInitialLoad = !prevSearch && isEmpty(activeFilters);
+
+      if (mapParamsChanged) {
+        setMapArea({
+          radius: mapSettings.radius,
+          coordinates: normalizeCoordinates(mapSettings.coordinates),
+          isMap: true,
+          firstMapLoad: true,
+        });
+      }
+
+      prevSearchRef.current = currentSearch;
+    }
   }, [history.location.search]);
 
   const handleMapSearchClick = map => {
@@ -109,7 +158,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
             onMarkerClick={handleMapMarkerClick}
             getAreaSearchData={setSearchArea}
             setMapArea={setMapArea}
-            userLocation={mapSettings.coordinates}
+            userLocation={normalizeCoordinates(mapSettings.coordinates)}
             customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
             onCustomControlClick={handleMapSearchClick}
             match={match}

@@ -16,7 +16,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 40px;
+    padding: 10px;
+
+    @media @small {
+      padding: 10px 40px;
+    }
   }
 
   &__logo {
@@ -42,9 +46,18 @@
 
   &__search {
     flex: 1;
-    display: flex;
+    display: none;
     justify-content: center;
     max-width: 600px;
+
+    @media @small {
+      display: flex;
+    }
+
+    &--active {
+      display: flex;
+      flex: 1;
+    }
 
     input {
       border-radius: 30px;
@@ -62,10 +75,14 @@
     .ant-select-selection__placeholder {
       padding: 0;
     }
+  }
 
-    .ant-select-auto-complete.ant-select .ant-select-selection__rendered {
-      width: 100%;
-    }
+  .Header__search .ant-select-selection__clear {
+    right: -10px;
+  }
+
+  .ant-select-auto-complete.ant-select .ant-select-selection__rendered {
+    width: 100%;
   }
 
   &__actions {
@@ -118,26 +135,26 @@
     justify-content: center;
   }
 
-  /* Переоформлюємо старий .Header__search, але тільки всередині нового хедера */
   .Header__search {
     width: 100%;
     max-width: 720px;
-    margin: 0 auto;
+    margin: 0 5px;
     border-radius: 999px;
     background: #f7f7f7;
-    padding-left: 36px; // під іконку
+
+    @media @small {
+      margin: 0 30px;
+    }
   }
 
-  /* на всяк випадок — якщо десь searchBarActive не передадуть */
   .Header__search--hidden {
     display: flex;
   }
 
-  /* сама оболонка AutoComplete */
   .GeneralSearch__wrapper {
     width: 100%;
   }
-  /* === контент хедера === */
+
   .HeaderClean {
     &__search {
       flex: 1;
@@ -146,26 +163,24 @@
     }
   }
 
-  /* === стилізація GeneralSearch ТІЛЬКИ всередині HeaderClean === */
-  /* контейнeр пошуку */
   .Header__search {
     position: relative;
     display: flex;
     align-items: center;
-
     width: 100%;
     max-width: 900px;
-
     height: 37px;
-    padding: 0 24px 0 48px; // місце під іконку
-
+    padding: 0 20px 0 30px;
     background: #fff;
     border: 1px solid #e5e5e5;
     border-radius: 999px;
 
-    /* у clean-хедері пошук завжди показаний */
     &--hidden {
-      display: flex !important;
+      display: none;
+
+      @media @small {
+        display: block;
+      }
     }
 
     &--long {
@@ -173,17 +188,20 @@
     }
   }
 
-  /* іконка "лупа" */
   .Header__search .icon-search {
+    display: none;
     position: absolute;
-    left: 20px;
+    left: 5px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
     color: #b7b7b7;
+
+    @media @small {
+      display: block;
+    }
   }
 
-  /* оболонка AutoComplete */
   .GeneralSearch__wrapper {
     width: 100%;
 
@@ -201,7 +219,6 @@
       padding: 0;
     }
 
-    /* Звичайний текст */
     .ant-select-selection-selected-value,
     .ant-select-selection__placeholder,
     .ant-select-search__field__placeholder {
@@ -211,7 +228,6 @@
       opacity: 1;
     }
 
-    /* Фактичне поле вводу */
     .ant-select-search__field {
       font-size: 18px;
       border: none;
@@ -248,7 +264,12 @@
     .GeneralSearch {
       &__wrapper {
         .ant-select-search__field__wrap .ant-input.ant-select-search__field {
-          padding-left: 30px !important;
+          padding-left: 10px !important;
+
+          @media @small {
+            padding-left: 30px !important;
+          }
+
           &:focus {
             border: none;
             box-shadow: none;
@@ -269,26 +290,48 @@
     box-shadow: 1px -91px 40px -24px white inset;
     -webkit-box-shadow: 1px -91px 40px -24px white inset;
     -moz-box-shadow: 1px -91px 40px -24px white inset;
-    height: 275px;
+    min-height: 275px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-position: top;
-    h1 {
+    justify-content: flex-end;
+    padding-bottom: 80px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    @media @small {
+      min-height: 175px;
+      padding-bottom: 100px;
+      padding-top: 30px;
+    }
+
+    h3 {
       font-family: var(--template-font-heading, PlayfairDisplay, serif);
       font-size: clamp(32px, 4vw, 48px);
       margin: 0 0 10px;
       font-weight: 600;
       color: #161616;
       text-transform: capitalize;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
     }
 
     h2 {
+      display: none;
       font-family: var(--template-font-body, 'Source Sans Pro', sans-serif);
       font-weight: 400;
-      margin: 0 0 24px;
+      margin: 0 0 40px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.8);
+
+      @media @small {
+        display: block;
+      }
     }
   }
 
@@ -296,10 +339,12 @@
     position: absolute;
     bottom: 0;
     max-width: 1200px;
-    padding: 5px 0;
+    padding: 5px 10px;
+    width: 100%;
 
     @media @small {
       padding: 25px 40px;
+      width: auto;
     }
 
     .WebsiteTopNavigation {
@@ -307,23 +352,39 @@
       background: transparent;
       border: none;
       box-shadow: none;
-      padding: 0;
-      justify-content: space-between;
+      padding: 10px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+
+      @media @small {
+        justify-content: space-between;
+        gap: 0;
+      }
 
       &__link {
-        text-transform: capitalize;
+        text-transform: none;
         width: auto;
         border-radius: 999px;
         border: 1px solid rgba(15, 23, 42, 0.12);
-        padding: 10px 24px;
-        font-size: 16px;
+        padding: 8px 16px;
+        font-size: 14px;
         font-weight: 600;
         color: #2d2d2d;
         background: #fff;
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
-        margin-right: 5px;
+        margin-right: 0;
+        white-space: nowrap;
+        flex-shrink: 0;
+
+        @media @small {
+          padding: 10px 24px;
+          font-size: 16px;
+          margin-right: 5px;
+        }
 
         &:last-child {
           margin-right: 0;
@@ -340,6 +401,22 @@
           color: #1a1300;
           box-shadow: 0 7px 11px var(--website-color);
         }
+      }
+
+      // Hide MORE dropdown on mobile, show all items
+      .ant-dropdown-trigger {
+        padding: 8px 16px;
+        font-size: 14px;
+
+        @media @small {
+          padding: 10px 24px;
+          font-size: 16px;
+        }
+      }
+
+      .BurgerMenu {
+        display: inline-flex;
+        align-items: center;
       }
     }
   }

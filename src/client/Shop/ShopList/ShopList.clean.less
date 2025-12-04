@@ -1,0 +1,47 @@
+@import (reference) '../../styles/modules/variables.less';
+
+// Clean template wrapper
+.ShopList.ShopList--clean {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 5px -10px !important;
+
+  @media @small {
+    margin: 0;
+  }
+}
+
+// Clean template department item
+.ShopListClean__departments {
+  padding: 15px 0 0;
+}
+
+.ShopListClean__departments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+a.ShopListClean__departments-title {
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  color: black;
+  font-family: var(--template-font-body, inherit);
+
+  .anticon.anticon-right {
+    font-size: 12px;
+  }
+}
+
+.ShopListClean__showMore {
+  font-size: 16px;
+  color: var(--website-color);
+  font-family: var(--template-font-body, inherit);
+
+  &:hover {
+    color: var(--website-hover-color);
+  }
+}

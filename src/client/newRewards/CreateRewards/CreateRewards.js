@@ -37,6 +37,8 @@ import '../../rewards/Create-Edit/CreateReward.less';
 
 const initialState = {
   campaignName: '',
+  sponsorName: '',
+  sponsorURL: '',
   campaignType: 'reviews',
   budget: null,
   reward: null,
@@ -262,6 +264,8 @@ class CreateRewards extends React.Component {
           loading: false,
           campaignName: `${isDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
+          sponsorURL: campaign.sponsorURL,
+          sponsorName: campaign.sponsorName,
           reachType: campaign.reach,
           budget: campaign.budget.toString(),
           reward: campaign.reward ? campaign.reward.toString() : '0',
@@ -365,6 +369,12 @@ class CreateRewards extends React.Component {
       budget = data.winnersNumber * data.reward;
     }
 
+    const sponsorURL = !isEmpty(data.sponsorURL)
+      ? data.sponsorURL.trim().replace(/\/+$/, '')
+      : undefined;
+
+    const sponsorName = !isEmpty(data.sponsorName) ? data.sponsorName.trim() : undefined;
+
     const preparedObject = {
       requiredObject,
       guideName: userName,
@@ -376,6 +386,8 @@ class CreateRewards extends React.Component {
         ? { timezone: timezones?.find(o => o.label === data.timezone)?.value }
         : {}),
       budget,
+      ...(sponsorURL ? { sponsorURL } : {}),
+      ...(sponsorName ? { sponsorName } : {}),
       reward: Number(data.reward) || 0,
       requirements: {
         minPhotos: +data.minPhotos,
@@ -598,6 +610,16 @@ class CreateRewards extends React.Component {
           submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
             .then(res => {
               if (res.message) {
+                if (res.message.toLowerCase().includes('sponsorurl')) {
+                  const sponsorURLValue = values.sponsorURL || '';
+
+                  this.props.form.setFields({
+                    sponsorURL: {
+                      value: sponsorURLValue,
+                      errors: [new Error(res.message)],
+                    },
+                  });
+                }
                 message.error(res.message);
               } else {
                 message.success(
@@ -641,6 +663,8 @@ class CreateRewards extends React.Component {
       campaignName,
       campaignType,
       budget,
+      sponsorName,
+      sponsorURL,
       reward,
       primaryObject,
       secondaryObjectsList,
@@ -685,6 +709,8 @@ class CreateRewards extends React.Component {
         campaignType={campaignType}
         reachType={reachType}
         budget={budget}
+        sponsorURL={sponsorURL}
+        sponsorName={sponsorName}
         reward={reward}
         reservationPeriod={reservationPeriod}
         targetDays={targetDays}

@@ -30,11 +30,10 @@
     font-weight: bold;
     cursor: pointer;
     color: black;
+    font-family: var(--template-font-body, inherit);
   }
 
-  &__departments {
-    padding: 15px 0 0;
-
+  &__departments-wrapper {
     &--hasQuery {
       padding: 0;
     }
@@ -91,9 +90,19 @@
     }
   }
 
+  &__departments {
+    padding: 15px 0 0;
+  }
+
   &__showMore {
     margin-top: 10px;
     display: inline-block;
+    color: var(--website-color);
+    font-family: var(--template-font-body, inherit);
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
   }
 }
 

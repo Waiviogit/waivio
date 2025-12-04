@@ -53,10 +53,64 @@ const RewardsHeader = ({ proposition, intl }) => {
       <p className="Proposition-new__title">{getTitle()}</p>
       <div className="Proposition-new__sponsorInfo">
         <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
-          <Link to={`/@${proposition?.guideName}`}>
-            {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
-          </Link>
-          <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
+          {proposition?.sponsorName && proposition.sponsorURL && (
+            <>
+              {' '}
+              <a
+                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+              </a>
+              <a
+                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                @{proposition?.guideName} {`(${proposition?.sponsorName})`}
+              </a>
+            </>
+          )}
+          {proposition.sponsorURL && !proposition.sponsorName && (
+            <>
+              {' '}
+              <a
+                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+              </a>
+              <a
+                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
+                target={'_blank'}
+                rel="noreferrer"
+              >
+                @{proposition?.guideName}
+              </a>
+            </>
+          )}
+          {!proposition.sponsorURL && proposition.sponsorName && (
+            <>
+              {' '}
+              <Link to={`/@${proposition?.guideName}`} target={'_blank'} rel="noreferrer">
+                {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+              </Link>
+              <Link to={`/@${proposition?.guideName}`} target={'_blank'} rel="noreferrer">
+                @{proposition?.guideName} {`(${proposition?.sponsorName})`}
+              </Link>
+            </>
+          )}
+          {!proposition.sponsorURL && !proposition.sponsorName && (
+            <>
+              {' '}
+              <Link to={`/@${proposition?.guideName}`}>
+                {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+              </Link>
+              <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
+            </>
+          )}
         </div>
         <div className="Proposition-new__infoItem">
           <span>
@@ -75,6 +129,8 @@ const RewardsHeader = ({ proposition, intl }) => {
 RewardsHeader.propTypes = {
   proposition: PropTypes.shape({
     guideName: PropTypes.string,
+    sponsorURL: PropTypes.string,
+    sponsorName: PropTypes.string,
     reward: PropTypes.number,
     budget: PropTypes.number,
     type: PropTypes.string,

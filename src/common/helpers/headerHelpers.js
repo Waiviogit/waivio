@@ -1,21 +1,25 @@
 import React from 'react';
 import { truncate } from 'lodash';
 
-export const getMenuLinkTitle = (i, intl, length) => {
+const capitalizeFirst = str => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+export const getMenuLinkTitle = (i, intl, length, uppercase = true) => {
+  const transform = text => (uppercase ? text.toUpperCase() : capitalizeFirst(text));
+
   switch (i.name) {
     case 'Legal':
-      return (
-        <div>{intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }).toUpperCase()} </div>
-      );
+      return <div>{transform(intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }))} </div>;
     case 'Home':
-      return <div>{intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()} </div>;
+      return <div>{transform(intl.formatMessage({ id: 'home', defaultMessage: 'Home' }))} </div>;
     default:
       return (
         <div>
-          {truncate(i.name, {
-            length,
-            separator: '...',
-          }).toUpperCase()}
+          {transform(
+            truncate(i.name, {
+              length,
+              separator: '...',
+            }),
+          )}
         </div>
       );
   }

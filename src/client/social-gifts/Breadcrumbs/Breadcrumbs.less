@@ -23,4 +23,32 @@
     margin: 0 5px;
     color: @blue-gullGray;
   }
+
+  &--clean {
+    a,
+    span {
+      font-family: var(--template-font-body, inherit);
+      color: var(--website-color);
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 1px;
+
+      &:hover {
+        color: var(--website-hover-color);
+      }
+    }
+
+    .Breadcrumbs__home {
+      color: var(--website-color);
+
+      &:hover {
+        color: var(--website-hover-color);
+      }
+    }
+
+    .Breadcrumbs__separator {
+      margin: 0 8px;
+      color: var(--website-color);
+    }
+  }
 }

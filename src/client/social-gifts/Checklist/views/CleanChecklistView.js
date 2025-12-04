@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CleanChecklistView = ({ cleanListSummary, listType, loading }) => {
+const CleanChecklistView = ({ cleanListSummary, listType, loading, breadcrumbs }) => {
   if (loading || !listType) return null;
   if (!cleanListSummary) return null;
 
   return (
     <section className="Checklist__cleanSummary">
-      {cleanListSummary.label && (
-        <span className="Checklist__cleanSummaryLabel">{cleanListSummary.label}</span>
-      )}
+      {breadcrumbs && <div className="Checklist__cleanSummaryBreadcrumbs">{breadcrumbs}</div>}
       {cleanListSummary.title && (
         <h2 className="Checklist__cleanSummaryTitle">{cleanListSummary.title}</h2>
       )}
@@ -28,6 +26,7 @@ CleanChecklistView.propTypes = {
   }),
   listType: PropTypes.bool,
   loading: PropTypes.bool,
+  breadcrumbs: PropTypes.node,
 };
 
 export default CleanChecklistView;

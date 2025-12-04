@@ -2,6 +2,8 @@ import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
+import { Link } from 'react-router-dom';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import BTooltip from '../../BTooltip';
 import LanguageSettings from '../../Navigation/LanguageSettings';
 import ModalSignIn from '../../Navigation/ModlaSignIn/ModalSignIn';
@@ -56,20 +58,20 @@ const CleanHeaderButton = memo(
           'HeaderCleanButtons--hidden': searchBarActive,
         })}
       >
+        {/* Editor button */}
         <div className="HeaderCleanButtons__item">
-          <Popover
-            placement="bottomRight"
-            trigger="click"
-            visible={popoverVisible}
-            onVisibleChange={handleMoreMenuVisibleChange}
-            overlayStyle={{ position: 'fixed' }}
-            content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
-            overlayClassName="Topnav__popover"
+          <BTooltip
+            placement="bottom"
+            title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
+            mouseEnterDelay={1}
+            overlayClassName={classNames('Topnav__notifications-tooltip', {
+              'Topnav__notifications-tooltip--hide': isMobile(),
+            })}
           >
-            <button type="button" className="HeaderCleanButtons__iconBtn" aria-label="User menu">
-              <Icon type="user" />
-            </button>
-          </Popover>
+            <Link to="/editor" className="HeaderCleanButtons__iconBtn">
+              <Icon type="edit" />
+            </Link>
+          </BTooltip>
         </div>
         <div className="HeaderCleanButtons__item">
           <BTooltip
@@ -111,6 +113,36 @@ const CleanHeaderButton = memo(
               </button>
             </Popover>
           </BTooltip>
+        </div>
+        {/* User profile link */}
+        <div className="HeaderCleanButtons__item">
+          <BTooltip
+            placement="bottom"
+            title={intl.formatMessage({ id: 'profile', defaultMessage: 'Profile' })}
+            mouseEnterDelay={1}
+            overlayClassName={classNames('Topnav__notifications-tooltip', {
+              'Topnav__notifications-tooltip--hide': isMobile(),
+            })}
+          >
+            <Link to={`/@${username}`} className="HeaderCleanButtons__iconBtn">
+              <Icon type="user" />
+            </Link>
+          </BTooltip>
+        </div>
+        <div className="HeaderCleanButtons__item">
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            visible={popoverVisible}
+            onVisibleChange={handleMoreMenuVisibleChange}
+            overlayStyle={{ position: 'fixed' }}
+            content={<PopoverMenu onSelect={handleMoreMenuSelect}>{popoverItems}</PopoverMenu>}
+            overlayClassName="Topnav__popover"
+          >
+            <button type="button" className="HeaderCleanButtons__iconBtn" aria-label="Menu">
+              <Icon type="more" />
+            </button>
+          </Popover>
         </div>
       </div>
     );

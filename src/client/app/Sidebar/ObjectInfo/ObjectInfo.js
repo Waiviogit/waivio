@@ -9,6 +9,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+
 import {
   accessTypesArr,
   getBlogItems,
@@ -23,7 +24,7 @@ import {
   parseWobjectField,
 } from '../../../../common/helpers/wObjectHelper';
 import { getWobjectAuthors } from '../../../../store/wObjectStore/wObjectSelectors';
-import SocialLinks from '../../../components/SocialLinks';
+import SocialLinks from '../../../components/SocialLinks/SocialLinks';
 import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../../object/wObjectHelper';
 import {
   linkFields,
@@ -726,6 +727,7 @@ class ObjectInfo extends React.Component {
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
     const linkUrl = get(wobject, 'url', '');
+    const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
     const showLinkSection = hasType(wobject, OBJECT_TYPE.LINK);
     const showGroupSection = hasType(wobject, OBJECT_TYPE.GROUP);
     const showLRecipeSection = hasType(wobject, OBJECT_TYPE.RECIPE);
@@ -1094,7 +1096,7 @@ class ObjectInfo extends React.Component {
               />{' '}
               <span
                 className={'main-color-button'}
-                onClick={() => this.props.setLinkSafetyInfo(linkUrl)}
+                onClick={() => this.props.setLinkSafetyInfo(linkUrlHref)}
               >
                 {linkUrl}
               </span>
