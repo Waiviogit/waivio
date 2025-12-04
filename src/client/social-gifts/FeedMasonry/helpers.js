@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import { getImageForPreview, getVideoForPreview } from '../../../common/helpers/postHelpers';
 import { getVideoPostsPriview } from '../../../waivioApi/ApiClient';
 
-export const breakpointColumnsObj = (length, count) => ({
+export const breakpointColumnsObj = (length, count = 5) => ({
   default: length < count ? length : count,
   1240: length < 4 ? length : 4,
   999: length < 3 ? length : 3,

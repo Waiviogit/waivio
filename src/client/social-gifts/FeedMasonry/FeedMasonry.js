@@ -25,7 +25,6 @@ const FeedMasonry = ({
   firstLoading,
   isReviewsPage,
   className,
-  postCountShow,
 }) => {
   const [unavailableTikTokPosts, setUnavailableTikTokPosts] = useState([]);
   const { frequency } = useAdLevelData();
@@ -54,7 +53,7 @@ const FeedMasonry = ({
         loadMore={loadMore}
       >
         <Masonry
-          breakpointCols={breakpointColumnsObj(posts?.length, postCountShow)}
+          breakpointCols={breakpointColumnsObj(posts?.length)}
           className={`${className} FeedMasonry my-masonry-grid`}
           columnClassName="my-masonry-grid_column"
           key={'my-masonry-grid_column'}
@@ -107,7 +106,6 @@ FeedMasonry.propTypes = {
   firstLoading: PropTypes.bool,
   emptyLable: PropTypes.string,
   className: PropTypes.string,
-  postCountShow: PropTypes.number,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape(),
