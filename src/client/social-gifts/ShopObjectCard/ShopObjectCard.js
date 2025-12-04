@@ -119,8 +119,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const onClick = useCallback(
     e => {
       const isInstacartButton = e.target?.className?.includes('instacart');
+      const isHeartButton = e.target?.closest(
+        '.HeartButton, .ShopObjectCardClean__heart, .HeartButtonContainer',
+      );
 
-      if (!isInstacartButton) {
+      if (!isInstacartButton && !isHeartButton) {
         history.push(link);
       }
     },

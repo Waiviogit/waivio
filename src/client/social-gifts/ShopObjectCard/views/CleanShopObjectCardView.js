@@ -35,8 +35,35 @@ const CleanShopObjectCardView = ({
   onClick,
 }) => (
   <div className="ShopObjectCardClean" onClick={onClick}>
-    <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCardClean__imageWrap">
-      <img className="ShopObjectCardClean__image" src={url} alt={altText} />
+    <div className="ShopObjectCardClean__imageWrap">
+      <a href={objLink} onClick={e => e.preventDefault()}>
+        <img className="ShopObjectCardClean__image" src={url} alt={altText} />
+        {withRewards && (
+          <div className="ShopObjectCardClean__rewardText">
+            {isSpecialCampaign ? (
+              <>
+                <USDDisplay value={specialAmount} currencyDisplay="symbol" />
+                {isGiveawayCampaign
+                  ? ` Giveaway${daysLeft !== null ? ` - ${daysLeft} Days Left!` : ''}`
+                  : ` Contest${daysLeft !== null ? ` - Win in ${daysLeft} Days!` : ''}`}
+              </>
+            ) : (
+              <>
+                <FormattedMessage
+                  id={`share_photo${
+                    proposition?.requirements?.minPhotos === 1 ? '' : 's'
+                  }_and_earn`}
+                  defaultMessage={`Share {minPhotos} photo${
+                    proposition?.requirements?.minPhotos === 1 ? '' : 's'
+                  } & earn`}
+                  values={{ minPhotos: proposition?.requirements?.minPhotos }}
+                />{' '}
+                <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
+              </>
+            )}
+          </div>
+        )}
+      </a>
       <div
         className={classNames('ShopObjectCardClean__heart', {
           'ShopObjectCardClean__heart--no-border': !isAuthenticated,
@@ -44,7 +71,7 @@ const CleanShopObjectCardView = ({
       >
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-    </a>
+    </div>
     <div className="ShopObjectCardClean__content">
       <a
         href={objLink}
@@ -100,29 +127,6 @@ const CleanShopObjectCardView = ({
           </div>
         )}
       </div>
-      {withRewards && (
-        <div className="ShopObjectCardClean__rewardText">
-          {isSpecialCampaign ? (
-            <>
-              <USDDisplay value={specialAmount} currencyDisplay="symbol" />
-              {isGiveawayCampaign
-                ? ` Giveaway${daysLeft !== null ? ` - ${daysLeft} Days Left!` : ''}`
-                : ` Contest${daysLeft !== null ? ` - Win in ${daysLeft} Days!` : ''}`}
-            </>
-          ) : (
-            <>
-              <FormattedMessage
-                id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
-                defaultMessage={`Share {minPhotos} photo${
-                  proposition?.requirements?.minPhotos === 1 ? '' : 's'
-                } & earn`}
-                values={{ minPhotos: proposition?.requirements?.minPhotos }}
-              />{' '}
-              <USDDisplay value={rewardAmount} currencyDisplay={'symbol'} />
-            </>
-          )}
-        </div>
-      )}
     </div>
   </div>
 );
