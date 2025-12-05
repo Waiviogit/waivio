@@ -55,6 +55,7 @@ import {
   getManufacturerObject,
   getMerchantObject,
   getPublisherObject,
+  getShopBreadCrumbs,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
@@ -137,6 +138,7 @@ const SocialProduct = ({
   intl,
   signature,
   showPostModal,
+  breadcrumbs,
 }) => {
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
@@ -498,6 +500,7 @@ const SocialProduct = ({
             tagCategoriesList={tagCategoriesList}
             authors={authors}
             intl={intl}
+            breadcrumbs={breadcrumbs}
           />
         )
       )}
@@ -538,6 +541,7 @@ SocialProduct.propTypes = {
   setLinkSafety: PropTypes.func,
   getProductInfoAction: PropTypes.func,
   intl: PropTypes.shape().isRequired,
+  breadcrumbs: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 const mapStateToProps = state => {
@@ -564,6 +568,7 @@ const mapStateToProps = state => {
     merchantObject: getMerchantObject(state),
     publisherObject: getPublisherObject(state),
     user: getUser(state, userName),
+    breadcrumbs: getShopBreadCrumbs(state),
   };
 };
 
