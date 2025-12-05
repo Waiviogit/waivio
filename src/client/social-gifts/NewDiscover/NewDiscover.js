@@ -10,10 +10,13 @@ import {
   getObjectsTypeByTypesName,
   getObjectsTypeByTypesNameMore,
   resetObjects,
+  getTagCategories,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
   getWobjectsList,
   getWobjectsHasMore,
+  getActiveFilters,
+  getActiveFiltersTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
@@ -22,6 +25,8 @@ import { searchUsers } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import UserDynamicList from '../../user/UserDynamicList';
+import NewDiscoverFilters from './NewDiscoverFilters';
+import { createFilterBody } from '../../discoverObjects/helper';
 import './NewDiscover.less';
 
 const wobjects_count = 20;
@@ -39,6 +44,8 @@ const NewDiscover = () => {
   const dispatch = useDispatch();
   const objects = useSelector(getWobjectsList);
   const hasMoreObjects = useSelector(getWobjectsHasMore);
+  const activeFilters = useSelector(getActiveFilters);
+  const activeTagsFilters = useSelector(getActiveFiltersTags);
   const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
   const tag = query.get('tag')?.replaceAll('%26%', '&');
@@ -58,10 +65,12 @@ const NewDiscover = () => {
   useEffect(() => {
     const ac = new AbortController();
 
-    if (!discoverUsers) {
+    if (!discoverUsers && type) {
       setLoading(true);
+      dispatch(resetObjects());
+      dispatch(getTagCategories(type));
 
-      const filter = {};
+      const filter = { ...activeFilters };
 
       if (search) filter.searchString = search;
       if (tag && category) {
@@ -71,6 +80,12 @@ const NewDiscover = () => {
             tags: [tag],
           },
         ];
+      } else {
+        const tagCategoryBody = createFilterBody(activeTagsFilters);
+
+        if (tagCategoryBody && tagCategoryBody.length > 0) {
+          filter.tagCategory = tagCategoryBody;
+        }
       }
 
       dispatch(getObjectsTypeByTypesName(type, filter, wobjects_count, ac)).then(() => {
@@ -79,10 +94,10 @@ const NewDiscover = () => {
     }
 
     return () => ac.abort();
-  }, [search, type, user, tag, category]);
+  }, [search, type, user, tag, category, activeFilters, activeTagsFilters, dispatch]);
 
   const loadMore = () => {
-    const filter = {};
+    const filter = { ...activeFilters };
 
     if (search) filter.searchString = search;
 
@@ -93,6 +108,12 @@ const NewDiscover = () => {
           tags: [tag],
         },
       ];
+    } else {
+      const tagCategoryBody = createFilterBody(activeTagsFilters);
+
+      if (tagCategoryBody && tagCategoryBody.length > 0) {
+        filter.tagCategory = tagCategoryBody;
+      }
     }
 
     const skip = objects?.length || 0;
@@ -141,33 +162,44 @@ const NewDiscover = () => {
         <meta property="og:site_name" content={siteName} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
-        <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-        {(discoverUsers ? user : hasTag) && (
-          <Tag closable onClose={handleDeleteTag}>
-            {discoverUsers ? user : tagTitle}
-          </Tag>
+      <div className="NewDiscover__container">
+        {!discoverUsers && (
+          <div className="NewDiscover__sidebar">
+            <NewDiscoverFilters />
+          </div>
         )}
-      </div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          {discoverUsers ? (
-            <div className=" new-discover-content-margin">
-              <UserDynamicList hideSort limit={limit} fetcher={fetcher} searchLine={user} />
-            </div>
+        <div className="NewDiscover__content">
+          <div
+            className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}
+          >
+            <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+            {(discoverUsers ? user : hasTag) && (
+              <Tag closable onClose={handleDeleteTag}>
+                {discoverUsers ? user : tagTitle}
+              </Tag>
+            )}
+          </div>
+          {loading ? (
+            <Loading />
           ) : (
-            <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-              <div className="NewDiscover__list" key={'list'}>
-                {objects?.map(obj => (
-                  <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
-                ))}{' '}
-              </div>
-            </InfiniteSroll>
+            <>
+              {discoverUsers ? (
+                <div className=" new-discover-content-margin">
+                  <UserDynamicList hideSort limit={limit} fetcher={fetcher} searchLine={user} />
+                </div>
+              ) : (
+                <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+                  <div className="NewDiscover__list" key={'list'}>
+                    {objects?.map(obj => (
+                      <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+                    ))}{' '}
+                  </div>
+                </InfiniteSroll>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };
