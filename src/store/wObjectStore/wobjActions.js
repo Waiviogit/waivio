@@ -371,23 +371,29 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const rating = Math.round(result?.rating);
   const showModal = (isAuth && checkLinks) || (rating < 5 && rating > 0);
 
+  const payloadData = waivioLink
+    ? { showModal: false, isWaivioLink: true }
+    : { ...result, rating, showModal, checkLinks };
+
+  const promise = Promise.resolve(payloadData);
+
   if (waivioLink) {
-    return dispatch({
+    dispatch({
       type: SET_LINK_SAFETY.ACTION,
-      payload: {
-        promise: Promise.resolve({ showModal: false, isWaivioLink: true }),
-      },
+      payload: { promise },
       meta: url,
     });
+
+    return promise;
   }
 
-  return dispatch({
+  dispatch({
     type: SET_LINK_SAFETY.ACTION,
-    payload: {
-      promise: Promise.resolve({ ...result, rating, showModal, checkLinks }),
-    },
+    payload: { promise },
     meta: url,
   });
+
+  return promise;
 };
 
 export const resetLinkSafetyInfo = () => dispatch =>
