@@ -98,9 +98,9 @@ const CleanSocialProductView = ({
   authors,
   intl,
 }) => (
-  <div className="SocialProduct SocialProductClean">
+  <div className="SocialProductClean">
     {history.location.search && (
-      <div className="SocialProduct__column">
+      <div className="SocialProduct__column SocialProduct__breadcrumbs-center">
         <Breadcrumbs inProduct />
       </div>
     )}

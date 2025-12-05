@@ -15,6 +15,11 @@
     padding: 0;
   }
 
+  .SocialProduct__breadcrumbs-center {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
   .SocialProduct__column-wrapper {
     background: #ffffff;
     border-radius: 10px;
@@ -37,7 +42,10 @@
   }
 
   .SocialProduct__carouselWrapper {
-    overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
 
     img {
       border-radius: 10px;
@@ -46,8 +54,126 @@
 
   // Gallery slider - horizontal
   .PicturesSlider {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+
     &__previewImage {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: cover;
       border-radius: 10px;
+      cursor: pointer;
+    }
+
+    &__thumbnail {
+      width: 60px !important;
+      height: 60px !important;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--website-color);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--website-color);
+      }
+
+      &--active {
+        border-color: var(--website-color) !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+    }
+
+    .ant-carousel {
+      width: 100% !important;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .slick-list {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .slick-slide {
+      width: 60px !important;
+      height: 60px !important;
+      margin: 0 4px;
+
+      > div {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .slick-prev,
+    .slick-next {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 50%;
+      z-index: 10;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+
+      &:hover:not(.slick-disabled) {
+        background: var(--website-color);
+        border-color: var(--website-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        .anticon {
+          color: #fff !important;
+        }
+      }
+
+      &.slick-disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      .anticon {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+
+    .slick-prev {
+      left: -40px;
+    }
+
+    .slick-next {
+      right: -40px;
+    }
+
+    .MobileCarousel {
+      width: 100%;
+      overflow: hidden;
+
+      .slick-list {
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .slick-slide {
+        width: 100% !important;
+
+        img {
+          width: 100%;
+          height: auto;
+          max-height: 500px;
+          object-fit: contain;
+        }
+      }
     }
   }
 
@@ -137,6 +263,7 @@
     &__paragraph {
       margin-bottom: 16px;
       width: 100%;
+      font-size: 18px;
     }
 
     &__paragraph--only,
@@ -171,6 +298,7 @@
       margin-bottom: 16px;
       object-fit: cover;
       max-height: 500px;
+      object-position: top;
     }
 
     &__images-container {
@@ -191,7 +319,7 @@
     border-radius: 12px;
     padding: 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    margin-bottom: 40px;
+    margin: 40px 0;
 
     .SocialProduct__productDetails-content {
       padding-left: 0;

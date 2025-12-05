@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { memo, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { removeEmptyLines, shortenDescription } from '../../../client/object/wObjectHelper';
 
@@ -35,7 +36,11 @@ const CleanListHero = ({ wobject }) => {
   if (!hasContent) return null;
 
   return (
-    <section className="CleanListHero">
+    <section
+      className={classNames('CleanListHero', {
+        'CleanListHero--no-banner': !banner,
+      })}
+    >
       <div className="CleanListHero__content">
         {eyebrow && <p className="CleanListHero__eyebrow">{eyebrow}</p>}
         {heroTitle && <h2 className="CleanListHero__title">{heroTitle}</h2>}
