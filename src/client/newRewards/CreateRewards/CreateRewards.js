@@ -369,11 +369,9 @@ class CreateRewards extends React.Component {
       budget = data.winnersNumber * data.reward;
     }
 
-    const sponsorURL = !isEmpty(data.sponsorURL)
-      ? data.sponsorURL.trim().replace(/\/+$/, '')
-      : undefined;
+    const sponsorURL = !isEmpty(data.sponsorURL) ? data.sponsorURL.trim().replace(/\/+$/, '') : '';
 
-    const sponsorName = !isEmpty(data.sponsorName) ? data.sponsorName.trim() : undefined;
+    const sponsorName = !isEmpty(data.sponsorName) ? data.sponsorName.trim() : '';
 
     const preparedObject = {
       requiredObject,
@@ -386,8 +384,8 @@ class CreateRewards extends React.Component {
         ? { timezone: timezones?.find(o => o.label === data.timezone)?.value }
         : {}),
       budget,
-      ...(sponsorURL ? { sponsorURL } : {}),
-      ...(sponsorName ? { sponsorName } : {}),
+      sponsorName,
+      sponsorURL,
       reward: Number(data.reward) || 0,
       requirements: {
         minPhotos: +data.minPhotos,

@@ -113,7 +113,9 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
     const payloadData = await promise;
     const { showModal } = payloadData || {};
 
-    if (showModal) return;
+    if (showModal && payloadData.rating < 9) {
+      return;
+    }
     const newWindow = window.open('', '_blank');
     const fallback = !newWindow;
 
