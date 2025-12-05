@@ -118,6 +118,10 @@
 
   &__column {
     padding: 0 16px;
+
+    @media @small {
+      padding: 0 20px;
+    }
   }
 
   &__price {
@@ -180,7 +184,21 @@
   &__aboutItem,
   &__addOn-section,
   &__featuresContainer {
-    margin-bottom: @bottom;
+    margin-bottom: 30px;
+
+    @media @small {
+      margin-bottom: 30px;
+    }
+  }
+
+  &__aboutItem {
+    @media @small {
+      padding-top: 20px;
+
+      .SocialProduct__description {
+        padding-top: 20px;
+      }
+    }
   }
 
   &__productDetails-content {

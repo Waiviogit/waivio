@@ -9,7 +9,7 @@ const CleanChecklistView = ({ cleanListSummary, listType, loading, breadcrumbs }
     <section className="Checklist__cleanSummary">
       {breadcrumbs && <div className="Checklist__cleanSummaryBreadcrumbs">{breadcrumbs}</div>}
       {cleanListSummary.title && (
-        <h2 className="Checklist__cleanSummaryTitle">{cleanListSummary.title}</h2>
+        <h1 className="Checklist__cleanSummaryTitle">{cleanListSummary.title}</h1>
       )}
       {cleanListSummary.description && (
         <p className="Checklist__cleanSummaryText">{cleanListSummary.description}</p>

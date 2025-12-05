@@ -26,10 +26,17 @@ const CleanSocialCampaignCardView = ({
   daysLeft,
   getCampaignText,
   specialAmount,
+  buttonLabel,
   goToProducts,
 }) => (
   <div className="SocialCampaignCardClean">
-    <div className="SocialCampaignCardClean__card">
+    <div
+      className={
+        isCampaign
+          ? 'SocialCampaignCardClean__card SocialCampaignCardClean__card--primary'
+          : 'SocialCampaignCardClean__card'
+      }
+    >
       <div className="SocialCampaignCardClean__badge">
         {/* eslint-disable-next-line no-nested-ternary */}
         {isSpecialCampaign
@@ -45,7 +52,7 @@ const CleanSocialCampaignCardView = ({
       </div>
       <div className="SocialCampaignCardClean__avatar">
         <Link to={`/@${sponsor}`}>
-          <Avatar username={sponsor} size={50} />
+          <Avatar username={sponsor} size={36} />
         </Link>
       </div>
       <div className="SocialCampaignCardClean__content">
@@ -55,12 +62,10 @@ const CleanSocialCampaignCardView = ({
               <span className="SocialCampaignCardClean__amount">
                 <USDDisplay value={specialAmount} currencyDisplay="symbol" />
               </span>{' '}
-              {propositionGiveaway ? 'Giveaway' : 'Contest'}
-              {daysLeft !== null && (
-                <span className="SocialCampaignCardClean__days">
-                  {getCampaignText(propositionGiveaway, daysLeft)}
-                </span>
-              )}
+              <span className="SocialCampaignCardClean__campaignText">
+                {propositionGiveaway ? 'Giveaway' : 'Contest'}
+                {daysLeft !== null && getCampaignText(propositionGiveaway, daysLeft)}
+              </span>
             </>
           ) : (
             <>
@@ -78,8 +83,12 @@ const CleanSocialCampaignCardView = ({
         </h3>
         <div className="SocialCampaignCardClean__buttons">
           {isCampaign ? (
-            <button onClick={goToProducts} className="SocialCampaignCardClean__participateBtn">
-              Participate
+            <button
+              onClick={goToProducts}
+              className="SocialCampaignCardClean__participateBtn SocialCampaignCardClean__earnBtn"
+            >
+              {buttonLabel || 'Earn'} <USDDisplay value={maxReward} />
+              <Icon type="right" />
             </button>
           ) : (
             <div className="SocialCampaignCardClean__reservedButtons">
@@ -107,9 +116,11 @@ const CleanSocialCampaignCardView = ({
               )}
             </div>
           )}
-          <span className="SocialCampaignCardClean__details" onClick={openDetailsModal}>
-            <FormattedMessage id="details" defaultMessage="Details" /> <Icon type="right" />
-          </span>
+          {!isCampaign && (
+            <span className="SocialCampaignCardClean__details" onClick={openDetailsModal}>
+              <FormattedMessage id="details" defaultMessage="Details" /> <Icon type="right" />
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -132,6 +143,7 @@ CleanSocialCampaignCardView.propTypes = {
   daysLeft: PropTypes.number,
   getCampaignText: PropTypes.func,
   specialAmount: PropTypes.number,
+  buttonLabel: PropTypes.string,
   goToProducts: PropTypes.func,
 };
 
