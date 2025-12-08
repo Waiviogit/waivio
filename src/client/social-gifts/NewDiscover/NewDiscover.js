@@ -218,7 +218,7 @@ const NewDiscover = () => {
       );
     }
 
-    if (isEmpty(objects)) {
+    if (isEmpty(objects) && !loading) {
       return <EmptyCampaing emptyMessage={'No results were found for your filters'} />;
     }
 
