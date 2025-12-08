@@ -66,10 +66,11 @@ const LinkSafetyModal = props => {
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
-    window.open(
-      props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
-      waivioLink ? '_self' : '_blank',
-    );
+    if (!isMobile() || isDangerous)
+      window.open(
+        props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
+        waivioLink ? '_self' : '_blank',
+      );
   };
 
   const openLink = () => {
@@ -149,9 +150,9 @@ const LinkSafetyModal = props => {
 
   useEffect(() => {
     if (isEmpty(props.objectTypes)) props.getObjectTypes();
-    // Only auto-redirect if modal should not be shown
+
     if (
-      !props.info?.showModal &&
+      // !props.info?.showModal &&
       ((props.info?.checkLinks && props.info?.rating > 8) ||
         (!props.info?.checkLinks && props.info?.rating > 4) ||
         (!props.info?.checkLinks && props.info?.rating === 0) ||
@@ -159,7 +160,7 @@ const LinkSafetyModal = props => {
       props.info?.url
     )
       goToSite();
-  }, [props.info?.triggerId, props.info?.url, props.info?.showModal]);
+  }, [props.info?.triggerId, props.info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
   });
