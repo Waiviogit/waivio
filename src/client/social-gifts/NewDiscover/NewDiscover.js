@@ -63,12 +63,17 @@ const NewDiscover = () => {
   const hasTag = (category && tag) || search;
 
   useEffect(() => {
+    if (!discoverUsers && type) {
+      dispatch(getTagCategories(type));
+    }
+  }, [type, dispatch, discoverUsers]);
+
+  useEffect(() => {
     const ac = new AbortController();
 
     if (!discoverUsers && type) {
       setLoading(true);
       dispatch(resetObjects());
-      dispatch(getTagCategories(type));
 
       const filter = { ...activeFilters };
 
@@ -94,7 +99,17 @@ const NewDiscover = () => {
     }
 
     return () => ac.abort();
-  }, [search, type, user, tag, category, activeFilters, activeTagsFilters, dispatch]);
+  }, [
+    search,
+    type,
+    user,
+    tag,
+    category,
+    activeFilters,
+    activeTagsFilters,
+    dispatch,
+    discoverUsers,
+  ]);
 
   const loadMore = () => {
     const filter = { ...activeFilters };

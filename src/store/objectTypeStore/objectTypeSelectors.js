@@ -34,6 +34,11 @@ export const getFiltersTags = createSelector([objectTypeState], state => state.t
 
 export const getTagCategories = createSelector([objectTypeState], state => state.tagCategories);
 
+export const getTagCategoriesLoading = createSelector(
+  [objectTypeState],
+  state => state.tagCategoriesFetching,
+);
+
 export const getCategoryTags = createSelector([objectTypeState], state => state.categoryTags);
 
 export const getActiveFiltersTags = createSelector(
