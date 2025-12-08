@@ -63,12 +63,8 @@ const ClearHeader = memo(
             </div>
           </div>
         </header>
-        <div
-          className="HeaderClean__banner"
-          style={{ backgroundImage: `url(${config?.mainBanner})` }}
-        >
-          <h3>{mainObj?.name}</h3>
-          <h2>{mainObj?.title}</h2>
+        <div className="HeaderClean__banner">
+          <img src={config?.mainBanner} alt={''} />
           {!hideHeader && (
             <div className="HeaderClean__nav">
               <WebsiteTopNavigation shopSettings={config?.shopSettings} />
