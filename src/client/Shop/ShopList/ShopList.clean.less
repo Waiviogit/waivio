@@ -10,6 +10,40 @@
   @media @small {
     margin: 0;
   }
+
+  &__tags {
+    margin-top: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: var(--template-font-body, inherit);
+
+    .ant-tag {
+      font-family: var(--template-font-body, inherit);
+      font-size: 14px;
+      border-radius: 20px;
+      padding: 4px 12px;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      color: #333;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--website-color);
+        color: var(--website-color);
+      }
+
+      .anticon-close {
+        color: #999;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: var(--website-color);
+        }
+      }
+    }
+  }
 }
 
 // Clean template department item
