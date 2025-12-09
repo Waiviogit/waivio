@@ -17,6 +17,7 @@ const initialState = {
   tagsForFilter: [],
   tagCategories: [],
   categoryTags: {},
+  tagCategoriesFetching: false,
 };
 const objectType = (state = initialState, action) => {
   switch (action.type) {
@@ -164,6 +165,12 @@ const objectType = (state = initialState, action) => {
       };
     }
 
+    case wobjTypeActions.GET_TAG_CATEGORIES.START:
+      return {
+        ...state,
+        tagCategoriesFetching: true,
+      };
+
     case wobjTypeActions.GET_TAG_CATEGORIES.SUCCESS: {
       const categories = action.payload || [];
       const categoryTagsMap = {};
@@ -180,8 +187,15 @@ const objectType = (state = initialState, action) => {
         tagCategories: categories,
         categoryTags: categoryTagsMap,
         tagsForFilter: categories,
+        tagCategoriesFetching: false,
       };
     }
+
+    case wobjTypeActions.GET_TAG_CATEGORIES.ERROR:
+      return {
+        ...state,
+        tagCategoriesFetching: false,
+      };
 
     case wobjTypeActions.GET_TAGS_BY_CATEGORY.SUCCESS: {
       const categoryName = action.meta;

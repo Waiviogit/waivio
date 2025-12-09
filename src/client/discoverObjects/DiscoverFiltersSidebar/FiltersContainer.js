@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { map, isEmpty, size } from 'lodash';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter, useRouteMatch } from 'react-router';
 
 import {
   changeUrl,
@@ -20,7 +20,6 @@ import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
-  getTypeName,
   getTagCategories,
   getCategoryTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
@@ -31,7 +30,6 @@ const FiltersContainer = ({
   location,
   activeFilters,
   activeTagsFilters,
-  activeObjectTypeName,
   dispatchSetActiveTagsFilters,
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
@@ -41,6 +39,8 @@ const FiltersContainer = ({
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
   const { search: filterPath } = location;
+  const match = useRouteMatch();
+  const activeObjectTypeName = match.params.type;
 
   useEffect(() => {
     if (filterPath) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
@@ -156,7 +156,7 @@ FiltersContainer.propTypes = {
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   dispatchGetTagsByCategory: PropTypes.func.isRequired,
   activeFilters: PropTypes.shape({}),
-  activeObjectTypeName: PropTypes.string.isRequired,
+
   tagCategories: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
@@ -182,7 +182,6 @@ export default connect(
   state => ({
     activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
-    activeObjectTypeName: getTypeName(state),
     tagCategories: getTagCategories(state),
     categoryTags: getCategoryTags(state),
   }),
