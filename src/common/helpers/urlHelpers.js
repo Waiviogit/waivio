@@ -109,15 +109,16 @@ export const decodeRouteParams = params => {
 
 export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   if (isMobile()) {
-    const promise = safetyCheckFn(url);
-    const payloadData = await promise;
+    const newWindow = window.open('about:blank', '_blank');
+    const fallback = !newWindow;
+    const payloadData = await safetyCheckFn(url);
     const { showModal } = payloadData || {};
 
     if (showModal && payloadData.rating < 9) {
+      if (!fallback) newWindow.close();
+
       return;
     }
-    const newWindow = window.open('', '_blank');
-    const fallback = !newWindow;
 
     if (!fallback) newWindow.location = url;
     else window.location.href = url;
