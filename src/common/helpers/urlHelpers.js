@@ -120,15 +120,17 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   if (isWaivioLink) {
     window.location.href = url;
 
-    return originalSetLinkSafetyInfo(url);
+    // eslint-disable-next-line consistent-return
+    return;
   }
 
   if (showModal && rating < 9) {
-    return originalSetLinkSafetyInfo(url);
+    // eslint-disable-next-line consistent-return
+    return;
   }
 
   if (newWindow) {
-    newWindow.location.href = url;
+    newWindow.location.replace(url);
   } else {
     window.location.href = url;
   }
