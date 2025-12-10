@@ -66,7 +66,7 @@ const LinkSafetyModal = props => {
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
-    if (!isMobile() || isDangerous)
+    if (!isMobile() || (isMobile() && !dangerous))
       window.open(
         props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
         waivioLink ? '_self' : '_blank',
