@@ -21,6 +21,7 @@
   display: flex;
   margin-top: 16px;
   margin-right: 4px; // for focus shadow
+  font-family: var(--template-font-body, inherit);
 
   &--focus {
     animation-timing-function: ease-in-out;
@@ -57,11 +58,13 @@
     width: calc(~'100% - (@{comment-text-offset-small})');
     margin-left: @comment-text-left-margin;
     overflow: unset;
+    font-family: var(--template-font-body, inherit);
 
     & > a > .ant-tag {
       font-weight: bold;
       font-size: 12px;
       vertical-align: 1px;
+      font-family: var(--template-font-body, inherit);
 
       &:first-of-type {
         margin-left: 4px;
@@ -77,6 +80,7 @@
     margin-left: 8px;
     font-size: 14px;
     color: @blue-botticelli;
+    font-family: var(--template-font-body, inherit);
   }
 
   &__content {
@@ -84,12 +88,15 @@
     word-wrap: break-word;
     word-break: break-word;
     hyphens: auto;
+    font-family: var(--template-font-body, inherit);
 
     //img {
     //  padding: 5px;
     //  max-width: 100%;
     //}
     .Body {
+      font-family: var(--template-font-body, inherit);
+
       img {
         margin: 0;
         max-width: 100%;
@@ -100,6 +107,7 @@
       font-weight: bold;
       color: @blue-botticelli;
       margin: 4px 0;
+      font-family: var(--template-font-body, inherit);
     }
 
     .QuickComment__add-img-icon {
