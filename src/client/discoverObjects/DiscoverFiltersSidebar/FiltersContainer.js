@@ -36,6 +36,7 @@ const FiltersContainer = ({
   tagCategories,
   categoryTags,
   dispatchGetTagsByCategory,
+  newDiscover,
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
   const { search: filterPath } = location;
@@ -98,6 +99,7 @@ const FiltersContainer = ({
         {!isEmpty(filters) &&
           map(filters, (filterValues, filterName) => (
             <FilterItem
+              newDiscover={newDiscover}
               isCollapsed={isCollapsed(filterName)}
               filterName={filterName}
               handleDisplayFilter={handleDisplayFilter}
@@ -119,6 +121,7 @@ const FiltersContainer = ({
 
             return (
               <FilterItem
+                newDiscover={newDiscover}
                 key={categoryName}
                 isCollapsed={isCollapsed(categoryName)}
                 filterName={categoryName}
@@ -138,6 +141,7 @@ const FiltersContainer = ({
 
 FiltersContainer.propTypes = {
   filters: PropTypes.shape().isRequired,
+  newDiscover: PropTypes.bool,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -176,6 +180,7 @@ FiltersContainer.defaultProps = {
   activeFilters: {},
   tagCategories: [],
   categoryTags: {},
+  newDiscover: false,
 };
 
 export default connect(

@@ -112,27 +112,25 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   if (!isMobile()) {
     return safetyCheckFn(url);
   }
-  const newWindow = window.open('', '_blank');
-  const fallback = !newWindow;
-  const payloadData = await safetyCheckFn(url);
-  const { showModal, rating } = payloadData || {};
 
-  if (showModal && rating < 9) {
-    if (!fallback) {
-      try {
-        newWindow.document.write('<html lang=""><body></body></html>');
-      } catch (e) {
-        newWindow.location = 'about:blank';
-      }
-    }
+  const payloadData = await safetyCheckFn(url);
+  const { showModal, rating, isWaivioLink } = payloadData || {};
+
+  if (isWaivioLink) {
+    window.location.href = url;
 
     // eslint-disable-next-line consistent-return
     return;
   }
 
-  if (!fallback) {
-    newWindow.location = url;
-  } else {
+  if (showModal && rating < 9) {
+    // eslint-disable-next-line consistent-return
+    return;
+  }
+
+  const newWindow = window.open(url, '_blank');
+
+  if (!newWindow) {
     window.location.href = url;
   }
 };

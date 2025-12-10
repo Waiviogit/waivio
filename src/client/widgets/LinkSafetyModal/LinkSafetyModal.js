@@ -61,16 +61,24 @@ const LinkSafetyModal = props => {
     props.resetLinkSafetyInfo();
   };
 
-  const goToSite = confirmClick => {
+  const goToSite = clicked => {
     const waivioLink =
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
-    if (!isMobile() || (isMobile() && confirmClick))
-      window.open(
-        props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
-        waivioLink ? '_self' : '_blank',
-      );
+    const finalUrl = props.info?.url?.endsWith('*')
+      ? props.info?.url?.slice(0, -1)
+      : props.info?.url;
+
+    if (isMobile() && clicked) {
+      if (props.info?.rating < 9 || waivioLink) {
+        window.open(finalUrl, waivioLink ? '_self' : '_blank');
+      }
+
+      return;
+    }
+
+    window.open(finalUrl, waivioLink ? '_self' : '_blank');
   };
 
   const openLink = () => {
