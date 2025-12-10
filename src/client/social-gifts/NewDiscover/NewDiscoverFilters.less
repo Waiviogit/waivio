@@ -2,23 +2,23 @@
 @import (reference) '../../styles/custom.less';
 
 .NewDiscoverFilters {
-  margin-bottom: 20px;
-
-  &__card {
-    background: @white;
-    border-radius: @border-radius-base;
-    padding: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
+  font-family: var(--template-font-body, inherit);
+  display: block;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
 
   &__title {
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
-    padding: 8px 16px;
     border-bottom: 1px solid @white-gainsboro;
-    font-weight: 600;
+    color: @blue-baliHai;
     font-size: 16px;
-    color: @black;
+    font-weight: 500;
+    margin-bottom: 10px;
 
     span {
       margin-left: 8px;
@@ -31,9 +31,20 @@
   }
 
   .SidebarContentBlock__content {
-    padding: 0 16px 16px;
+    padding: 0;
   }
+
   .FilterItem.collapsible-block__container {
     margin: 10px 0;
+  }
+  .SidebarContentBlock__content .collapsible-block__title span {
+    color: @black-text-basic;
+  }
+  .SidebarContentBlock__content .collapsible-block__item {
+    padding: 0;
+  }
+
+  &__skeleton {
+    padding: 0;
   }
 }

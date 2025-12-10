@@ -53,11 +53,20 @@
     color: #4b5563;
     max-width: 520px;
     margin: 0;
+
+    p {
+      margin: 0 0 16px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   &__readMore {
-    display: inline-block;
+    display: block;
     margin-top: 16px;
+    margin-left: auto;
     padding: 0;
     background: transparent;
     border: none;
@@ -68,6 +77,8 @@
     cursor: pointer;
     text-decoration: underline;
     transition: color 0.2s ease;
+    text-align: right;
+    width: fit-content;
 
     &:hover {
       color: var(--website-color);

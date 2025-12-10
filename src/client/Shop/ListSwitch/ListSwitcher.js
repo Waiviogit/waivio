@@ -112,7 +112,7 @@ const ListSwitcher = props => {
             }}
           >
             {isCleanTemplate
-              ? 'Shop'
+              ? 'Home'
               : props.intl.formatMessage({
                   id: `${isRecipe ? 'categories' : 'departments'}`,
                   defaultMessage: `${isRecipe ? 'Categories' : 'Departments'}`,

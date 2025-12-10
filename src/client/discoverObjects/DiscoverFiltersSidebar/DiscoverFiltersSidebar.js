@@ -20,12 +20,11 @@ import '../../components/Sidebar/SidebarContentBlock.less';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { getWobjectsForMap } from '../../object/wObjectHelper';
 import {
-  // getActiveFilters,
+  getActiveFilters,
   getAvailableFilters,
   getFilteredObjects,
   getFilteredObjectsMap,
   getFiltersTags,
-  getActiveFiltersTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
@@ -53,7 +52,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
   const userLocation = useSelector(getUserLocation);
   const filters = useSelector(getAvailableFilters);
   const filteredObjects = useSelector(getFilteredObjects);
-  const activeFilters = useSelector(getActiveFiltersTags);
+  const activeFilters = useSelector(getActiveFilters);
   // const hasMap = useSelector(getHasMap);
   const hasMap = listOfMapObjectTypes.includes(match.params.typeName);
   const isFullscreenMode = useSelector(getIsMapModalOpen);

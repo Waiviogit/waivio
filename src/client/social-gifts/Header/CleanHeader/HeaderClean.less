@@ -153,6 +153,15 @@
 
   .GeneralSearch__wrapper {
     width: 100%;
+
+    .ant-select-search__field__wrap .ant-input.ant-select-search__field {
+      padding-left: 0 !important;
+    }
+
+    .ant-select-selection__placeholder {
+      padding: 0;
+      margin-left: 0;
+    }
   }
 
   .HeaderClean {
@@ -170,10 +179,14 @@
     width: 100%;
     max-width: 900px;
     height: 37px;
-    padding: 0 20px 0 30px;
+    padding: 0 20px 0;
     background: #fff;
     border: 1px solid #e5e5e5;
     border-radius: 999px;
+
+    @media @small {
+      padding: 0 20px 0 35px;
+    }
 
     &--hidden {
       display: none;
@@ -265,10 +278,6 @@
       &__wrapper {
         .ant-select-search__field__wrap .ant-input.ant-select-search__field {
           padding-left: 10px !important;
-
-          @media @small {
-            padding-left: 30px !important;
-          }
 
           &:focus {
             border: none;
