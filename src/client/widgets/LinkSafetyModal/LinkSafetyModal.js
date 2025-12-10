@@ -61,12 +61,12 @@ const LinkSafetyModal = props => {
     props.resetLinkSafetyInfo();
   };
 
-  const goToSite = () => {
+  const goToSite = confirmClick => {
     const waivioLink =
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
-    if (!isMobile() || (isMobile() && !dangerous))
+    if (!isMobile() || (isMobile() && confirmClick))
       window.open(
         props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
         waivioLink ? '_self' : '_blank',
@@ -75,7 +75,7 @@ const LinkSafetyModal = props => {
 
   const openLink = () => {
     cancelModal();
-    goToSite();
+    goToSite(true);
   };
 
   const getVote = () =>
@@ -159,7 +159,7 @@ const LinkSafetyModal = props => {
         props.info?.isWaivioLink) &&
       props.info?.url
     )
-      goToSite();
+      goToSite(false);
   }, [props.info?.triggerId, props.info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
