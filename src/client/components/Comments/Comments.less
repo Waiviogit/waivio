@@ -5,7 +5,6 @@
   margin: 0 auto;
   overflow-x: visible;
   overflow-y: visible;
-  font-family: var(--template-font-body, inherit);
 
   &.quick-comments {
     border-top: @base-border;
@@ -18,14 +17,13 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: 16px;
-    font-family: var(--template-font-body, inherit);
   }
 
   &__empty {
     color: @tertiary-color;
     font-weight: bold;
     text-align: center;
-    font-family: var(--template-font-body, inherit);
   }
 }
 @import 'Comments-nightmode';
+@import './Comments.clean.less';
