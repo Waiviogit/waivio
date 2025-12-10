@@ -3,10 +3,8 @@
 @import (reference) '../../styles/fonts.less';
 
 .StoryFull {
-  font-family: var(--template-font-post, inherit);
-
   .Body {
-    font-family: var(--template-font-post, 'Source Serif Pro', serif);
+    font-family: 'Source Serif Pro', serif;
 
     img {
       min-width: 165px;
@@ -83,20 +81,15 @@
   }
 
   .ant-collapse {
-    font-family: var(--template-font-post, inherit);
-
     .ant-collapse-header {
-      font-family: var(--template-font-post, inherit);
     }
 
     .ant-collapse-item {
-      font-family: var(--template-font-post, inherit);
     }
   }
 
   .ant-collapse-content {
     background-color: @blue-alabaster;
-    font-family: var(--template-font-post, inherit);
   }
 
   &__bullet:after {
@@ -110,13 +103,11 @@
     border-radius: 4px;
     border: @base-border;
     padding: 16px 12px;
-    font-family: var(--template-font-post, inherit);
 
     & > &__title {
       color: #353535;
       font-weight: 700;
       line-height: 1.3em;
-      font-family: var(--template-font-post, inherit);
     }
   }
 
@@ -124,7 +115,6 @@
     color: @primary-color;
     font-weight: 500;
     margin-top: 8px;
-    font-family: var(--template-font-post, inherit);
   }
 
   &__topics {
@@ -147,16 +137,13 @@
     position: relative;
     display: flex;
     padding: 16px 0;
-    font-family: var(--template-font-post, inherit);
 
     &__text {
       margin-left: 16px;
-      font-family: var(--template-font-post, inherit);
 
       & > a {
         display: block;
         font-size: 20px;
-        font-family: var(--template-font-post, inherit);
 
         .ant-tag {
           font-weight: bold;
@@ -167,7 +154,6 @@
       &__date {
         color: #99aab5;
         font-size: 14px;
-        font-family: var(--template-font-post, inherit);
       }
     }
 
@@ -238,7 +224,6 @@
   line-height: 1.3em;
   font-size: 28px;
   word-break: break-word;
-  font-family: var(--template-font-post, inherit);
 
   @media @small {
     font-size: 34px;
@@ -255,3 +240,4 @@ div[data-dir='rtl'] .StoryFull {
 }
 
 @import 'StoryFull-nightmode';
+@import './StoryFull.clean.less';
