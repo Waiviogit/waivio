@@ -1,0 +1,20 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.template-clean {
+  .Story {
+    &__content {
+      &__title {
+        font-family: var(--template-font-post, inherit);
+
+        & > h2 {
+          font-family: var(--template-font-post, inherit);
+        }
+      }
+
+      &__preview {
+        font-family: var(--template-font-post, 'Source Serif Pro', serif);
+      }
+    }
+  }
+}
