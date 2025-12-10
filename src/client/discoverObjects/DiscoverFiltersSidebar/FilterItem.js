@@ -14,6 +14,7 @@ const FilterItem = ({
   filterValues,
   hasMore,
   showMoreTags,
+  newDiscover,
 }) => (
   <div key={filterName} className="FilterItem collapsible-block__container">
     <div
@@ -21,10 +22,12 @@ const FilterItem = ({
       role="presentation"
       onClick={handleDisplayFilter(filterName)}
     >
-      <span className="collapsible-block__title-text">{filterName}</span>
-      <span className="collapsible-block__title-icon">
-        <i className={`iconfont icon-${isCollapsed ? 'addition' : 'offline'}`} />
-      </span>
+      <span className="collapsible-block__title-text">{filterName}:</span>
+      {!newDiscover && (
+        <span className="collapsible-block__title-icon">
+          <i className={`iconfont icon-${isCollapsed ? 'addition' : 'offline'}`} />
+        </span>
+      )}
     </div>
     {!isCollapsed && (
       <div className="collapsible-block__content">
@@ -64,6 +67,7 @@ FilterItem.propTypes = {
   activeFilters: PropTypes.arrayOf(PropTypes.string),
   filterValues: PropTypes.arrayOf(PropTypes.string),
   hasMore: PropTypes.bool,
+  newDiscover: PropTypes.bool,
   showMoreTags: PropTypes.func,
 };
 
@@ -76,6 +80,7 @@ FilterItem.defaultProps = {
   activeFilters: [],
   filterValues: [],
   hasMore: false,
+  newDiscover: false,
 };
 
 export default FilterItem;

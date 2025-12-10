@@ -32,7 +32,7 @@ const NewDiscoverFilters = () => {
           <SkeletonRow rows={8} />
         </div>
       ) : (
-        <FiltersContainer filters={filters} tagsFilters={tagsFilters} />
+        <FiltersContainer filters={filters} tagsFilters={tagsFilters} newDiscover />
       )}
     </div>
   );

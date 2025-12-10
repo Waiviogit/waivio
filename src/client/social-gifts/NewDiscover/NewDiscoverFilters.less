@@ -2,7 +2,7 @@
 @import (reference) '../../styles/custom.less';
 
 .NewDiscoverFilters {
-  font-family: var(--template-font-body, inherit);
+  //font-family: var(--template-font-body, inherit);
   display: block;
   background: #fff;
   padding: 10px;
@@ -32,16 +32,22 @@
 
   .SidebarContentBlock__content {
     padding: 0;
+
+    .collapsible-block__title span {
+      color: @black-text-basic;
+    }
+
+    .collapsible-block__item {
+      padding: 0;
+    }
+
+    .collapsible-block__content {
+      font-weight: normal;
+    }
   }
 
   .FilterItem.collapsible-block__container {
     margin: 10px 0;
-  }
-  .SidebarContentBlock__content .collapsible-block__title span {
-    color: @black-text-basic;
-  }
-  .SidebarContentBlock__content .collapsible-block__item {
-    padding: 0;
   }
 
   &__skeleton {
