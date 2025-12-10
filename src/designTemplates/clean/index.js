@@ -9,6 +9,7 @@ import CleanSocialLinksView from '../../client/components/SocialLinks/views/Clea
 import CleanWalletAddressView from '../../client/app/Sidebar/WalletAddress/views/CleanWalletAddressView';
 import CleanSocialMenuItemView from '../../client/social-gifts/SocialProduct/SocialMenuItems/views/CleanSocialMenuItemView';
 import CleanSocialCampaignCardView from '../../client/social-gifts/ShopObjectCard/ProductRewardCard/views/CleanSocialCampaignCardView';
+import CleanShopListView from '../../client/Shop/ShopList/views/CleanShopListView';
 
 const cleanTemplate = {
   meta: {
@@ -32,6 +33,7 @@ const cleanTemplate = {
     WalletAddressView: CleanWalletAddressView,
     SocialMenuItemView: CleanSocialMenuItemView,
     SocialCampaignCardView: CleanSocialCampaignCardView,
+    ShopListView: CleanShopListView,
   },
 };
 

@@ -25,9 +25,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import GoogleAds from '../../adsenseAds/GoogleAds';
-import { useTemplateId } from '../../../designTemplates/TemplateProvider';
-import ClassicShopListView from './views/ClassicShopListView';
-import CleanShopListView from './views/CleanShopListView';
+import useTemplateProvider, { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import './ShopList.less';
 import useAdLevelData from '../../../hooks/useAdsense';
@@ -39,8 +37,9 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
   const [loading, setLoading] = useState(false);
   const match = useRouteMatch();
   const authUser = useSelector(getAuthenticatedUserName);
+  const templateComponents = useTemplateProvider();
   const templateId = useTemplateId();
-  const isCleanTemplate = templateId === 'clean';
+  const ShopListView = templateComponents?.ShopListView;
   const excluded = useSelector(getExcludedDepartment);
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const departments = useSelector(getShopList);
@@ -119,10 +118,15 @@ const ShopList = ({ userName, path, getShopFeed, isSocial, intl, isRecipe }) => 
 
   const hasActiveTags = query.toString().length > 0;
 
-  const ShopListView = isCleanTemplate ? CleanShopListView : ClassicShopListView;
+  if (!ShopListView) {
+    return null;
+  }
+
+  const isCleanTemplate = templateId === 'clean';
+  const containerClassName = isCleanTemplate ? 'ShopListClean' : 'ShopList';
 
   return (
-    <div className={classNames('ShopList', { 'ShopList--clean': isCleanTemplate })}>
+    <div className={containerClassName}>
       {hasActiveTags && !isMobile() && (
         <div className="ShopList__tags">
           {activeFilters.tagCategory.map(category =>

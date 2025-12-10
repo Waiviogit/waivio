@@ -8,6 +8,7 @@ import ClassicSocialLinksView from '../client/components/SocialLinks/views/Class
 import ClassicWalletAddressView from '../client/app/Sidebar/WalletAddress/views/ClassicWalletAddressView';
 import ClassicSocialMenuItemView from '../client/social-gifts/SocialProduct/SocialMenuItems/views/ClassicSocialMenuItemView';
 import ClassicSocialCampaignCardView from '../client/social-gifts/ShopObjectCard/ProductRewardCard/views/ClassicSocialCampaignCardView';
+import ClassicShopListView from '../client/Shop/ShopList/views/ClassicShopListView';
 
 const classicTemplate = {
   meta: {
@@ -31,6 +32,7 @@ const classicTemplate = {
     WalletAddressView: ClassicWalletAddressView,
     SocialMenuItemView: ClassicSocialMenuItemView,
     SocialCampaignCardView: ClassicSocialCampaignCardView,
+    ShopListView: ClassicShopListView,
   },
 };
 
