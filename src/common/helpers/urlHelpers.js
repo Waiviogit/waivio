@@ -129,7 +129,7 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
     return;
   }
 
-  if (newWindow) {
+  if (newWindow || rating > 8) {
     newWindow.location.href = url;
   } else {
     window.location.href = url;
