@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import classNames from 'classnames';
-import { useDispatch } from 'react-redux';
+
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
+import { setLinkSafetyInfo } from '../../../common/helpers/urlHelpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -18,7 +19,7 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
+
 import './Body.less';
 
 function parseGPSCoordinates(text) {
@@ -172,7 +173,6 @@ export function getHtml(
 const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
-  const dispatch = useDispatch();
 
   const openLink = e => {
     const anchor = e.target.closest('a');
@@ -182,7 +182,7 @@ const Body = props => {
       e.stopPropagation();
       const href = anchor.getAttribute('href');
 
-      dispatch(setLinkSafetyInfo(href));
+      setLinkSafetyInfo(href);
     }
   };
 

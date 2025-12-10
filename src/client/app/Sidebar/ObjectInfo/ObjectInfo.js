@@ -9,6 +9,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { setLinkSafetyInfo } from '../../../../common/helpers/urlHelpers';
 
 import {
   accessTypesArr,
@@ -65,7 +66,7 @@ import Department from '../../../object/Department/Department';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../../object/ObjectTypeShop/DepartmentsWobject';
-import { setAuthors, setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
+import { setAuthors } from '../../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
@@ -99,7 +100,6 @@ import './ObjectInfo.less';
     setStoreActiveOption,
     setAuthors,
     getCoordinates,
-    setLinkSafetyInfo,
   },
 )
 class ObjectInfo extends React.Component {
@@ -125,7 +125,6 @@ class ObjectInfo extends React.Component {
     children: PropTypes.node,
     setStoreActiveOption: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
-    setLinkSafetyInfo: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -1094,10 +1093,7 @@ class ObjectInfo extends React.Component {
                 src={'/images/icons/link-icon.svg'}
                 wrapper={'span'}
               />{' '}
-              <span
-                className={'main-color-button'}
-                onClick={() => this.props.setLinkSafetyInfo(linkUrlHref)}
-              >
+              <span className={'main-color-button'} onClick={() => setLinkSafetyInfo(linkUrlHref)}>
                 {linkUrl}
               </span>
             </span>
@@ -1414,7 +1410,7 @@ class ObjectInfo extends React.Component {
                     <i className="iconfont icon-link text-icon link" />
                     <span
                       className={'main-color-button'}
-                      onClick={() => this.props.setLinkSafetyInfo(body.link)}
+                      onClick={() => setLinkSafetyInfo(body.link)}
                     >
                       {body.title}
                     </span>

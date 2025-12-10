@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { setLinkSafetyInfo } from '../../../../../common/helpers/urlHelpers';
 
 const ClassicSocialMenuItemView = ({
   isNestedObjType,
@@ -10,8 +11,6 @@ const ClassicSocialMenuItemView = ({
   getimagesLayout,
   handleOpenItem,
   webLink,
-  dispatch,
-  setLinkSafetyInfo,
 }) => {
   const content = (
     <>
@@ -27,10 +26,7 @@ const ClassicSocialMenuItemView = ({
   );
 
   return webLink ? (
-    <a
-      className="SocialMenuItems__item"
-      onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
-    >
+    <a className="SocialMenuItems__item" onClick={() => setLinkSafetyInfo(itemBody.linkToWeb)}>
       {content}
     </a>
   ) : (
@@ -48,8 +44,6 @@ ClassicSocialMenuItemView.propTypes = {
   getimagesLayout: PropTypes.func.isRequired,
   handleOpenItem: PropTypes.func.isRequired,
   webLink: PropTypes.bool.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  setLinkSafetyInfo: PropTypes.func.isRequired,
 };
 
 export default ClassicSocialMenuItemView;

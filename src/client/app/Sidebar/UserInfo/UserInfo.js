@@ -6,6 +6,7 @@ import { Icon } from 'antd';
 import { get, truncate } from 'lodash';
 import { FormattedDate, FormattedMessage, FormattedTime, injectIntl } from 'react-intl';
 import urlParse from 'url-parse';
+import { setLinkSafetyInfo } from '../../../../common/helpers/urlHelpers';
 import SocialLinks from '../../../components/SocialLinks/SocialLinks';
 import { calcReputation, calculateDownVote } from '../../../vendor/steemitHelpers';
 import USDDisplay from '../../../components/Utils/USDDisplay';
@@ -18,25 +19,19 @@ import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
 import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
-import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 @injectIntl
-@connect(
-  (state, ownProps) => {
-    const user = getUser(state, ownProps.match.params.name);
+@connect((state, ownProps) => {
+  const user = getUser(state, ownProps.match.params.name);
 
-    return {
-      user,
-      rewardFund: getRewardFund(state),
-      rate: getRate(state),
-      weightValue: user.wobjects_weight,
-      sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
-    };
-  },
-  {
-    setLinkSafetyInfo,
-  },
-)
+  return {
+    user,
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
+    weightValue: user.wobjects_weight,
+    sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
+  };
+}, {})
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -44,7 +39,6 @@ class UserInfo extends React.Component {
     user: PropTypes.shape(),
     weightValue: PropTypes.number,
     sideBarLoading: PropTypes.bool,
-    setLinkSafetyInfo: PropTypes.func,
   };
 
   static defaultProps = {
@@ -117,10 +111,7 @@ class UserInfo extends React.Component {
               {website && (
                 <div>
                   <i className="iconfont icon-link text-icon link" />
-                  <span
-                    className={'main-color-button'}
-                    onClick={() => this.props.setLinkSafetyInfo(website)}
-                  >
+                  <span className={'main-color-button'} onClick={() => setLinkSafetyInfo(website)}>
                     {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
                   </span>
                 </div>
