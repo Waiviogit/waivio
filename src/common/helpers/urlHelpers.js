@@ -109,7 +109,11 @@ export const decodeRouteParams = params => {
 
 // eslint-disable-next-line consistent-return
 export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
-  if (!isMobile()) {
+  const isMobileDevice = isMobile();
+
+  const preWindow = isMobileDevice ? window.open('', '_blank') : null;
+
+  if (!isMobileDevice) {
     return safetyCheckFn(url);
   }
 
@@ -117,20 +121,26 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   const { showModal, rating, isWaivioLink } = payloadData || {};
 
   if (isWaivioLink) {
-    window.location.href = url;
+    if (preWindow) {
+      preWindow.location.href = url;
+    } else {
+      window.location.href = url;
+    }
 
     // eslint-disable-next-line consistent-return
     return;
   }
 
   if (showModal && rating < 9) {
+    if (preWindow) preWindow.close();
+
     // eslint-disable-next-line consistent-return
     return;
   }
 
-  const newWindow = window.open(url, '_blank');
-
-  if (!newWindow) {
+  if (preWindow) {
+    preWindow.location.href = url;
+  } else {
     window.location.href = url;
   }
 };
