@@ -112,6 +112,7 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   if (!isMobile()) {
     return safetyCheckFn(url);
   }
+  const newWindow = window.open('', '_blank');
 
   const payloadData = await safetyCheckFn(url);
   const { showModal, rating, isWaivioLink } = payloadData || {};
@@ -128,9 +129,9 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
     return;
   }
 
-  const newWindow = window.open(url, '_blank');
-
-  if (!newWindow) {
+  if (newWindow) {
+    newWindow.location.href = url;
+  } else {
     window.location.href = url;
   }
 };
