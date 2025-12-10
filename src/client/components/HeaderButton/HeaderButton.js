@@ -28,6 +28,7 @@ import {
 } from '../../../store/userStore/userSelectors';
 import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { saveNotificationsLastTimestamp } from '../../../common/helpers/metadata';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -118,8 +119,19 @@ const HeaderButtons = props => {
 
   const handleMoreMenuVisibleChange = visible => setPopoverVisible(visible);
 
-  const handleNotificationsPopoverVisibleChange = visible =>
+  const handleNotificationsPopoverVisibleChange = visible => {
     setNotificationsPopoverVisible(visible);
+
+    if (visible && notifications && notifications.length > 0 && username) {
+      const latestNotificationTimestamp = get(notifications, '[0].timestamp');
+
+      if (latestNotificationTimestamp && latestNotificationTimestamp > (lastSeenTimestamp || 0)) {
+        saveNotificationsLastTimestamp(latestNotificationTimestamp, username).then(() =>
+          props.getUserMetadata(),
+        );
+      }
+    }
+  };
 
   const handleEditor = () => {
     setGoogleTagEvent('click_editor');
