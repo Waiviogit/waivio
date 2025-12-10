@@ -1,10 +1,11 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
-import { setLinkSafetyInfo } from '../../../../common/helpers/urlHelpers';
+import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 import { useTemplateId } from '../../../../designTemplates/TemplateProvider';
 
 const LinkItem = ({ link, index, intl }) => {
@@ -12,6 +13,7 @@ const LinkItem = ({ link, index, intl }) => {
   const isCleanTemplate = templateId === 'clean';
   const uppercase = !isCleanTemplate;
   const history = useHistory();
+  const dispatch = useDispatch();
   const directObjTypes = ['person'];
 
   let linkTo = directObjTypes?.includes(link?.object_type || '')
@@ -32,7 +34,7 @@ const LinkItem = ({ link, index, intl }) => {
     <a
       key={link.link}
       className="WebsiteTopNavigation__link"
-      onClick={() => setLinkSafetyInfo(link.link)}
+      onClick={() => dispatch(setLinkSafetyInfo(link.link))}
     >
       {getMenuLinkTitle(link, intl, 24, uppercase)}
     </a>

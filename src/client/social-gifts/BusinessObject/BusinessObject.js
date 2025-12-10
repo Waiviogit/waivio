@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import { Helmet } from 'react-helmet';
-import { setLinkSafetyInfo } from '../../../common/helpers/urlHelpers';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -44,7 +43,7 @@ import {
   getObjectsRewards,
   getReferenceObjectsList,
 } from '../../../waivioApi/ApiClient';
-import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
 import { enrichMenuItems } from '../SocialProduct/SocialProduct';
 import useAdLevelData from '../../../hooks/useAdsense';
@@ -72,7 +71,7 @@ const BusinessObject = ({
   nearbyObjects,
   intl,
   resetWobjExpertise,
-
+  setLinkSafety,
   host,
 }) => {
   const [reward, setReward] = useState([]);
@@ -288,7 +287,7 @@ const BusinessObject = ({
           nearbyObjects={nearbyObjects}
           tagCategoriesList={tagCategoriesList}
           history={history}
-          setLinkSafety={setLinkSafetyInfo}
+          setLinkSafety={setLinkSafety}
           linkUrl={linkUrl}
           linkUrlHref={linkUrlHref}
           pictures={pictures}
@@ -323,7 +322,7 @@ BusinessObject.propTypes = {
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   resetWobjExpertise: PropTypes.func,
-
+  setLinkSafety: PropTypes.func,
   brandObject: PropTypes.shape({}),
   nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
@@ -355,6 +354,7 @@ const mapDispatchToProps = dispatch => ({
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));

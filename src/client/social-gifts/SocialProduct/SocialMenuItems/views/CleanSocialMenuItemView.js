@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 
-import { setLinkSafetyInfo } from '../../../../../common/helpers/urlHelpers';
 import '../SocialMenuItems.clean.less';
 
 const CleanSocialMenuItemView = ({
@@ -13,6 +12,8 @@ const CleanSocialMenuItemView = ({
   getimagesLayout,
   handleOpenItem,
   webLink,
+  dispatch,
+  setLinkSafetyInfo,
 }) => {
   const content = (
     <>
@@ -26,7 +27,10 @@ const CleanSocialMenuItemView = ({
   );
 
   return webLink ? (
-    <a className="SocialMenuItemsClean__item" onClick={() => setLinkSafetyInfo(itemBody.linkToWeb)}>
+    <a
+      className="SocialMenuItemsClean__item"
+      onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
+    >
       {content}
     </a>
   ) : (
@@ -44,6 +48,8 @@ CleanSocialMenuItemView.propTypes = {
   getimagesLayout: PropTypes.func.isRequired,
   handleOpenItem: PropTypes.func.isRequired,
   webLink: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  setLinkSafetyInfo: PropTypes.func.isRequired,
 };
 
 export default CleanSocialMenuItemView;

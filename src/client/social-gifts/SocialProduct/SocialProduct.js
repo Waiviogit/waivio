@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { connect, useSelector } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, reduce, uniq } from 'lodash';
-import { setLinkSafetyInfo } from '../../../common/helpers/urlHelpers';
 import {
   getObjectInfo,
   getObjectsRewards,
@@ -70,7 +69,7 @@ import { getFeedFromState } from '../../../common/helpers/stateHelpers';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
-import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import useAdLevelData from '../../../hooks/useAdsense';
 import useTemplateProvider from '../../../designTemplates/TemplateProvider';
 
@@ -118,6 +117,7 @@ const SocialProduct = ({
   optionClicked,
   helmetIcon,
   params,
+  setLinkSafety,
   history,
   setStoreActiveOpt,
   resetOptClicked,
@@ -477,7 +477,7 @@ const SocialProduct = ({
             sortExclude={sortExclude}
             customVisibility={customVisibility}
             showProductDetails={showProductDetails}
-            setLinkSafety={setLinkSafetyInfo}
+            setLinkSafety={setLinkSafety}
             website={website}
             locale={locale}
             publisher={publisher}
@@ -575,6 +575,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
   getObjectPosts: (username, object, lim) =>
     dispatch(getObjectPosts({ username, object, limit: lim })),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
