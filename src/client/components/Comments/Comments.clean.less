@@ -1,0 +1,84 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.template-clean {
+  .Comments {
+    font-family: var(--template-font-body, inherit);
+
+    &__header {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    &__empty {
+      font-family: var(--template-font-body, inherit);
+    }
+  }
+
+  .Comment {
+    font-family: var(--template-font-body, inherit);
+
+    &__text {
+      font-family: var(--template-font-body, inherit);
+
+      & > a > .ant-tag {
+        font-family: var(--template-font-body, inherit);
+      }
+    }
+
+    &__date {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    &__content {
+      font-family: var(--template-font-body, inherit);
+
+      .Body {
+        font-family: var(--template-font-body, inherit);
+      }
+
+      &__collapsed {
+        font-family: var(--template-font-body, inherit);
+      }
+    }
+  }
+
+  .CommentForm {
+    font-family: var(--template-font-body, inherit);
+
+    .ant-btn.ant-btn-link {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    .ant-btn > span {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    &__editor {
+      font-family: var(--template-font-body, inherit);
+
+      .Body--full {
+        font-family: var(--template-font-body, inherit);
+      }
+    }
+
+    &__text {
+      font-family: var(--template-font-body, inherit);
+    }
+
+    &__preview {
+      font-family: var(--template-font-body, inherit);
+
+      .Editor__label {
+        font-family: var(--template-font-body, inherit);
+      }
+    }
+  }
+
+  .QuickComment {
+    font-family: var(--template-font-body, inherit);
+
+    span[data-slate-placeholder='true'] {
+      font-family: var(--template-font-body, inherit);
+    }
+  }
+}
