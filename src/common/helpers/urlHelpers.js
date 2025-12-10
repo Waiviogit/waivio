@@ -3,6 +3,7 @@
  * Handles URL encoding/decoding issues, especially for @ symbols
  */
 
+import { originalSetLinkSafetyInfo } from '../../store/wObjectStore/wobjActions';
 import { isMobile } from './apiHelpers';
 
 /**
@@ -108,13 +109,13 @@ export const decodeRouteParams = params => {
 };
 
 // eslint-disable-next-line consistent-return
-export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
+export const setLinkSafetyInfo = async url => {
   if (!isMobile()) {
-    return safetyCheckFn(url);
+    return originalSetLinkSafetyInfo(url);
   }
   const newWindow = window.open('', '_blank');
 
-  const payloadData = await safetyCheckFn(url);
+  const payloadData = await originalSetLinkSafetyInfo(url);
   const { showModal, rating, isWaivioLink } = payloadData || {};
 
   if (isWaivioLink) {

@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { has } from 'lodash';
 import { useDispatch } from 'react-redux';
+import { setLinkSafetyInfo } from '../../../../common/helpers/urlHelpers';
 import MenuItemContentSwitcher from './MenuItemContentSwitcher';
-import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
+
 import useTemplateProvider from '../../../../designTemplates/TemplateProvider';
 
 const SocialMenuItem = ({ item, isOpen }) => {
@@ -46,7 +47,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
         return webLink ? (
           <div>
             <a
-              onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
+              onClick={() => setLinkSafetyInfo(itemBody.linkToWeb)}
               className="SocialMenuItems__link"
             >
               <img src={itemBody.image} className="SocialMenuItems__icon" alt="pic" />
@@ -67,7 +68,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
       case 'image':
         return webLink ? (
           <div>
-            <a onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}>
+            <a onClick={() => setLinkSafetyInfo(itemBody.linkToWeb)}>
               <img src={itemBody.image} className="SocialMenuItems__image" alt="pic" />
             </a>
           </div>
