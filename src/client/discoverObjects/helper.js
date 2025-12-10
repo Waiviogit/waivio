@@ -93,20 +93,33 @@ export const parseTagsFilters = url => {
 };
 
 export const changeUrl = (activeTags, history, location) => {
-  const newUrl = Object.keys(activeTags).reduce((acc, category) => {
+  const params = new URLSearchParams(location.search);
+
+  Object.keys(activeTags).forEach(category => {
     const filtersValue = activeTags[category];
-
-    if (isEmpty(filtersValue)) return acc;
-
-    const categoryInfo = isArray(filtersValue) ? filtersValue.join(',') : filtersValue;
     const categoryName = category === 'searchString' ? 'search' : category;
 
-    return acc ? `${acc}&${categoryName}=${categoryInfo}` : `?${categoryName}=${categoryInfo}`;
-  }, '');
+    if (isEmpty(filtersValue)) {
+      params.delete(categoryName);
+
+      return;
+    }
+
+    const value = isArray(filtersValue) ? filtersValue.join(',') : filtersValue;
+
+    params.set(categoryName, value);
+  });
+
+  const encoded = params.toString().replace(/\+/g, '%20');
+
+  const newUrl = encoded ? `?${encoded}` : '';
 
   if (newUrl !== location.search) {
-    if (newUrl) history.push(newUrl);
-    else history.push(location.pathname);
+    if (newUrl) {
+      history.push(`${location.pathname}${newUrl}`);
+    } else {
+      history.push(location.pathname);
+    }
   }
 };
 
