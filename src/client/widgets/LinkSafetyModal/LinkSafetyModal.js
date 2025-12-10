@@ -61,12 +61,12 @@ const LinkSafetyModal = props => {
     props.resetLinkSafetyInfo();
   };
 
-  const goToSite = confirmClick => {
+  const goToSite = () => {
     const waivioLink =
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
 
-    if (!isMobile() || (isMobile() && confirmClick))
+    if (!isMobile() || isDangerous)
       window.open(
         props.info?.url?.endsWith('*') ? props.info?.url?.slice(0, -1) : props.info?.url,
         waivioLink ? '_self' : '_blank',
@@ -75,7 +75,7 @@ const LinkSafetyModal = props => {
 
   const openLink = () => {
     cancelModal();
-    goToSite(true);
+    goToSite();
   };
 
   const getVote = () =>

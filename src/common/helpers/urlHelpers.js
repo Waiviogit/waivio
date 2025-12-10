@@ -107,32 +107,22 @@ export const decodeRouteParams = params => {
   return decoded;
 };
 
-// eslint-disable-next-line consistent-return
 export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
-  if (!isMobile()) {
-    return safetyCheckFn(url);
-  }
-  const newWindow = window.open('', '_blank');
-  const fallback = !newWindow;
-  const payloadData = await safetyCheckFn(url);
-  const { showModal, rating } = payloadData || {};
+  if (isMobile()) {
+    const newWindow = window.open('about:blank', '_blank');
+    const fallback = !newWindow;
+    const payloadData = await safetyCheckFn(url);
+    const { showModal } = payloadData || {};
 
-  if (showModal && rating < 9) {
-    if (!fallback) {
-      try {
-        newWindow.document.write('<html lang=""><body></body></html>');
-      } catch (e) {
-        newWindow.location = 'about:blank';
-      }
+    if (showModal && payloadData.rating < 9) {
+      if (!fallback) newWindow.close();
+
+      return;
     }
 
-    // eslint-disable-next-line consistent-return
-    return;
-  }
-
-  if (!fallback) {
-    newWindow.location = url;
+    if (!fallback) newWindow.location = url;
+    else window.location.href = url;
   } else {
-    window.location.href = url;
+    safetyCheckFn(url);
   }
 };
