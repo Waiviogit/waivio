@@ -4,7 +4,7 @@ import { get, size } from 'lodash';
 
 import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { openLinkWithSafetyCheck } from '../../common/helpers/urlHelpers';
+
 import {
   checkLinkSafety,
   getAuthorsChildWobjects,
@@ -370,9 +370,7 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   }
 
   // eslint-disable-next-line consistent-return
-  return openLinkWithSafetyCheck(url, safeUrl =>
-    originalSetLinkSafetyInfo(safeUrl)(dispatch, getState),
-  );
+  originalSetLinkSafetyInfo(url)(dispatch, getState);
 };
 
 export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
