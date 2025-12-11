@@ -178,7 +178,7 @@ const Body = props => {
     const anchor = e.target.closest('a');
 
     if (anchor) {
-      e.preventDefault();
+      // e.preventDefault();
       e.stopPropagation();
       const href = anchor.getAttribute('href');
 
