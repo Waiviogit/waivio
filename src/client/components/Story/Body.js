@@ -179,8 +179,8 @@ const Body = props => {
     const anchor = e.target.closest('a');
 
     if (anchor) {
-      if (!isIOS()) e.preventDefault();
-      e.stopPropagation();
+      if (!isIOS()) e.stopPropagation();
+      e.preventDefault();
       const href = anchor.getAttribute('href');
 
       dispatch(setLinkSafetyInfo(href));
