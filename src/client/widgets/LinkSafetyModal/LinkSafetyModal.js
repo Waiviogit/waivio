@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
+import { isIOS } from '../../../common/helpers';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
 import { rateObject, resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
@@ -51,17 +52,25 @@ const LinkSafetyModal = props => {
       status = 'Safe';
   }
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
-
   const isDangerous = status === 'Dangerous';
-  const dangerous = props.info?.rating < 9;
-  const infoText = isDangerous
-    ? 'Caution! This link has a low safety rating and may be dangerous.'
-    : 'Attention! This link is mostly safe, but minor risks may exist.';
+  const showModal = props.info?.rating < 9 || (isIOS() && props.info.rating >= 9);
+  let infoText;
+
+  if (isIOS() && props.info.rating >= 9) {
+    infoText = "You're about to leave the platform.";
+  } else if (isDangerous) {
+    infoText = 'Caution! This link has a low safety rating and may be dangerous.';
+  } else if (props.info.rating === 0) {
+    infoText = `Attention! You're about to leave the ${siteName} platform.`;
+  } else {
+    infoText = 'Attention! This link is mostly safe, but minor risks may exist.';
+  }
+
   const cancelModal = () => {
     props.resetLinkSafetyInfo();
   };
 
-  const goToSite = clicked => {
+  const goToSite = () => {
     const waivioLink =
       props.info?.url?.includes('/object/') ||
       (props.info?.url?.includes('/@') && !props.info?.url?.includes('http'));
@@ -70,20 +79,12 @@ const LinkSafetyModal = props => {
       ? props.info?.url?.slice(0, -1)
       : props.info?.url;
 
-    if (isMobile() && clicked) {
-      if (props.info?.rating < 9 || waivioLink) {
-        window.open(finalUrl, waivioLink ? '_self' : '_blank');
-      }
-
-      return;
-    }
-
     window.open(finalUrl, waivioLink ? '_self' : '_blank');
   };
 
   const openLink = () => {
     cancelModal();
-    goToSite(true);
+    goToSite();
   };
 
   const getVote = () =>
@@ -161,19 +162,19 @@ const LinkSafetyModal = props => {
 
     if (
       // !props.info?.showModal &&
-      ((props.info?.checkLinks && props.info?.rating > 8) ||
+      ((props.info?.checkLinks && props.info?.rating > 8 && !isIOS()) ||
         (!props.info?.checkLinks && props.info?.rating > 4) ||
         (!props.info?.checkLinks && props.info?.rating === 0) ||
         props.info?.isWaivioLink) &&
       props.info?.url
     )
-      goToSite(false);
+      goToSite();
   }, [props.info?.triggerId, props.info?.url]);
   const ratingClassList = classNames({
     myvote: hasVoted,
   });
 
-  return dangerous ? (
+  return showModal ? (
     <Modal
       title={'External link'}
       visible={props.info?.showModal}
@@ -182,11 +183,7 @@ const LinkSafetyModal = props => {
       okText={'Confirm'}
     >
       <div className={'flex items-center flex-column'}>
-        <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>
-          {props.info.rating === 0
-            ? `Attention! You're about to leave the ${siteName} platform.`
-            : infoText}
-        </div>
+        <div className={isMobile() ? 'mb2 bolder-fw-center' : 'mb2 bolder-fw'}>{infoText}</div>
         <div className={'mb2'}>Do you want to proceed to the external site?</div>
         <b
           className={'main-color-button '}
@@ -198,7 +195,7 @@ const LinkSafetyModal = props => {
       <br />
       <div className={'ml3'}>
         {' '}
-        {dangerous && props.info?.rating > 0 && (
+        {props.info?.rating < 9 && props.info?.rating > 0 && (
           <div className={'mb2'}>
             <b>Status:</b>{' '}
             <span className={isDangerous ? 'text-red' : 'text-yellow'}>{status}</span>
