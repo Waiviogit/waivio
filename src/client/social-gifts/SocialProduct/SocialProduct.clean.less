@@ -5,7 +5,7 @@
   font-family: var(--template-font-body, PlayfairDisplay, serif);
   max-width: 1280px;
   margin: 0 auto;
-  padding: 20px 16px 80px;
+  padding: 20px 5px 80px;
 
   @media @small {
     padding: 20px 40px 100px;
@@ -23,7 +23,7 @@
   .SocialProduct__column-wrapper {
     background: #ffffff;
     border-radius: 10px;
-    padding: 32px;
+    padding: 10px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 
     display: grid;
@@ -52,39 +52,27 @@
     }
   }
 
+  .SocialProduct__ratings {
+    flex-direction: column;
+
+    @media @small {
+      flex-direction: row;
+    }
+  }
+
   // Gallery slider - horizontal
   .PicturesSlider {
     width: 100%;
     max-width: 100%;
     overflow: hidden;
 
-    > div:first-child {
-      width: 100%;
-      height: 450px;
-      min-height: 450px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      @media @small {
-        height: 450px;
-        min-height: 450px;
-      }
-    }
-
     &__previewImage {
-      width: 100%;
-      max-width: 100%;
+      max-width: 450px;
       height: 450px;
       min-height: 450px;
       object-fit: cover;
       border-radius: 10px;
       cursor: pointer;
-
-      @media @small {
-        height: 450px;
-        min-height: 450px;
-      }
     }
 
     &__thumbnail {
