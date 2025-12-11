@@ -51,6 +51,7 @@ const CleanListHero = ({ wobject }) => {
     <section
       className={classNames('CleanListHero', {
         'CleanListHero--no-banner': !banner,
+        'CleanListHero--expanded': isExpanded,
       })}
     >
       <div className="CleanListHero__content">
@@ -58,10 +59,24 @@ const CleanListHero = ({ wobject }) => {
         {heroTitle && <h2 className="CleanListHero__title">{heroTitle}</h2>}
         {displayParagraphs.length > 0 && (
           <div className="CleanListHero__subtitle">
-            {displayParagraphs.map((paragraph, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <p key={index}>{paragraph}</p>
-            ))}
+            {displayParagraphs.map((paragraph, index) => {
+              if (isExpanded && index === 0) {
+                return (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <p key={index} className="CleanListHero__paragraph--first">
+                    {paragraph}
+                  </p>
+                );
+              }
+              if (isExpanded && index > 0) {
+                return null;
+              }
+
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <p key={index}>{paragraph}</p>
+              );
+            })}
           </div>
         )}
         {hasMoreText && (
@@ -78,6 +93,14 @@ const CleanListHero = ({ wobject }) => {
           </button>
         )}
       </div>
+      {isExpanded && displayParagraphs.length > 1 && (
+        <div className="CleanListHero__restParagraphs">
+          {displayParagraphs.slice(1).map((paragraph, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <p key={index + 1}>{paragraph}</p>
+          ))}
+        </div>
+      )}
       {banner && (
         <div className="CleanListHero__banner">
           <img src={banner} alt={heroTitle || eyebrow || 'Hero visual'} />

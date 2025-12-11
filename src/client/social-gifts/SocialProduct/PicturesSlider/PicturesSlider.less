@@ -58,14 +58,27 @@
     display: none;
     @media @small {
       font-size: 20px !important;
-      display: inline-block;
+      display: block !important;
       z-index: 1200;
       color: @silver-gray !important;
+      width: 30px;
+      height: 30px;
+
+      &:before {
+        font-size: 20px;
+      }
+
+      &.slick-disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
     }
   }
-  .slick-arrow.slick-next.slick-disabled,
-  .slick-arrow.slick-prev.slick-disabled {
-    //display: none !important;
+  .slick-prev {
+    left: -40px;
+  }
+  .slick-next {
+    right: -40px;
   }
   .MobileCarousel {
     .slick-slide.slick-active {
