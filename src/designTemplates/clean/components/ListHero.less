@@ -1,7 +1,7 @@
 .CleanListHero {
   display: flex;
   flex-wrap: wrap;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
   gap: 32px;
   padding: 48px 56px;
@@ -16,6 +16,19 @@
     border-radius: 24px;
   }
 
+  &--expanded {
+    align-items: start;
+    flex-wrap: wrap;
+
+    .CleanListHero__content {
+      flex: 1 1 320px;
+    }
+
+    .CleanListHero__banner {
+      flex: 1 1 320px;
+    }
+  }
+
   &--no-banner {
     max-width: 600px;
     padding: 32px 40px;
@@ -28,6 +41,7 @@
 
   &__content {
     flex: 1 1 320px;
+    order: 1;
   }
 
   &__eyebrow {
@@ -53,6 +67,33 @@
     color: #4b5563;
     max-width: 520px;
     margin: 0;
+
+    p {
+      margin: 0 0 16px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  &--expanded &__subtitle {
+    max-width: 520px;
+  }
+
+  &__paragraph--first {
+    max-width: 520px;
+  }
+
+  &__restParagraphs {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 100%;
+    order: 999;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-top: 16px;
 
     p {
       margin: 0 0 16px 0;
@@ -127,6 +168,7 @@
     flex: 1 1 320px;
     display: flex;
     justify-content: center;
+    order: 2;
 
     img {
       width: 100%;
