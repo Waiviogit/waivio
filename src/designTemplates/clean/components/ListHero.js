@@ -71,6 +71,7 @@ const CleanListHero = ({ wobject }) => {
               if (isExpanded && index > 0) {
                 return null;
               }
+
               return (
                 // eslint-disable-next-line react/no-array-index-key
                 <p key={index}>{paragraph}</p>
