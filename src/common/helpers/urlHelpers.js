@@ -3,8 +3,7 @@
  * Handles URL encoding/decoding issues, especially for @ symbols
  */
 
-import { isMobile } from './apiHelpers';
-
+import { isIOS } from '../helpers';
 /**
  * Decodes URL parameters, specifically handling %40 (@ symbol) encoding
  * @param {string} param - The URL parameter to decode
@@ -107,15 +106,47 @@ export const decodeRouteParams = params => {
   return decoded;
 };
 
+// // eslint-disable-next-line consistent-return
+// export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
+//   if (!isMobile()) {
+//     return safetyCheckFn(url);
+//   }
+//   const newWindow = window.open('', '_blank');
+//
+//   const payloadData = await safetyCheckFn(url);
+//   const { showModal, rating, isWaivioLink } = payloadData || {};
+//
+//   if (isWaivioLink) {
+//     window.location.href = url;
+//     if (newWindow) newWindow.close();
+//
+//     // eslint-disable-next-line consistent-return
+//     return;
+//   }
+//
+//   if (showModal && rating < 9) {
+//     if (newWindow) newWindow.close();
+//
+//     // eslint-disable-next-line consistent-return
+//     return;
+//   }
+//
+//   if (newWindow) {
+//     newWindow.location.replace(url);
+//   } else {
+//     window.location.href = url;
+//   }
+// };
+// eslint-disable-next-line consistent-return
+
 // eslint-disable-next-line consistent-return
 export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
-  if (!isMobile()) {
+  if (!isIOS()) {
     return safetyCheckFn(url);
   }
-  const newWindow = window.open('', '_blank');
 
   const payloadData = await safetyCheckFn(url);
-  const { showModal, rating, isWaivioLink } = payloadData || {};
+  const { showModal, isWaivioLink } = payloadData || {};
 
   if (isWaivioLink) {
     window.location.href = url;
@@ -124,14 +155,7 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
     return;
   }
 
-  if (showModal && rating < 9) {
+  if (showModal) {
     // eslint-disable-next-line consistent-return
-    return;
-  }
-
-  if (newWindow) {
-    newWindow.location.replace(url);
-  } else {
-    window.location.href = url;
   }
 };
