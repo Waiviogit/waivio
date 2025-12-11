@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -179,7 +178,7 @@ const Body = props => {
     const anchor = e.target.closest('a');
 
     if (anchor) {
-      if (!isIOS()) e.stopPropagation();
+      e.stopPropagation();
       e.preventDefault();
       const href = anchor.getAttribute('href');
 
