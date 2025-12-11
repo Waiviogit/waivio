@@ -1,0 +1,60 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.template-clean {
+  .StoryFull {
+    font-family: var(--template-font-post, inherit);
+
+    .Body {
+      font-family: var(--template-font-post, 'Source Serif Pro', serif);
+    }
+
+    .ant-collapse {
+      font-family: var(--template-font-post, inherit);
+
+      .ant-collapse-header {
+        font-family: var(--template-font-post, inherit);
+      }
+
+      .ant-collapse-item {
+        font-family: var(--template-font-post, inherit);
+      }
+    }
+
+    .ant-collapse-content {
+      font-family: var(--template-font-post, inherit);
+    }
+
+    &__reply {
+      font-family: var(--template-font-post, inherit);
+
+      & > &__title {
+        font-family: var(--template-font-post, inherit);
+      }
+    }
+
+    &__comments_title {
+      font-family: var(--template-font-post, inherit);
+    }
+
+    &__header {
+      font-family: var(--template-font-post, inherit);
+
+      &__text {
+        font-family: var(--template-font-post, inherit);
+
+        & > a {
+          font-family: var(--template-font-post, inherit);
+        }
+
+        &__date {
+          font-family: var(--template-font-post, inherit);
+        }
+      }
+    }
+  }
+
+  .StoryFull__title {
+    font-family: var(--template-font-post, inherit);
+  }
+}

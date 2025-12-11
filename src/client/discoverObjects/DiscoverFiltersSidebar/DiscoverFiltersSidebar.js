@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
@@ -62,7 +62,6 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     radius: DEFAULT_RADIUS,
     coordinates: normalizeCoordinates(userLocation),
   });
-  const prevSearchRef = useRef(null);
 
   if (isEmpty(userLocation)) dispatch(getCoordinates());
 
@@ -105,37 +104,12 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
 
   useEffect(() => {
     if (hasMap) {
-      const currentSearch = history.location.search;
-      const searchParams = new URLSearchParams(currentSearch);
-      const mapX = searchParams.get('mapX');
-      const mapY = searchParams.get('mapY');
-      const radius = searchParams.get('radius');
-      const zoom = searchParams.get('zoom');
-      const currentMapParams =
-        mapX && mapY ? `${mapX},${mapY},${radius || ''},${zoom || ''}` : null;
-      const prevSearch = prevSearchRef.current;
-      const prevSearchParams = prevSearch ? new URLSearchParams(prevSearch) : null;
-      const prevMapX = prevSearchParams?.get('mapX');
-      const prevMapY = prevSearchParams?.get('mapY');
-      const prevMapParams =
-        prevMapX && prevMapY
-          ? `${prevMapX},${prevMapY},${prevSearchParams.get('radius') || ''},${prevSearchParams.get(
-              'zoom',
-            ) || ''}`
-          : null;
-      const mapParamsChanged = currentMapParams !== null && currentMapParams !== prevMapParams;
-      // const isInitialLoad = !prevSearch && isEmpty(activeFilters);
-
-      if (mapParamsChanged) {
-        setMapArea({
-          radius: mapSettings.radius,
-          coordinates: normalizeCoordinates(mapSettings.coordinates),
-          isMap: true,
-          firstMapLoad: true,
-        });
-      }
-
-      prevSearchRef.current = currentSearch;
+      setMapArea({
+        radius: mapSettings.radius,
+        coordinates: normalizeCoordinates(mapSettings.coordinates),
+        isMap: true,
+        firstMapLoad: true,
+      });
     }
   }, [history.location.search]);
 

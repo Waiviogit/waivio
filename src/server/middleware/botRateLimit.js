@@ -42,10 +42,10 @@ const botRateLimit = async (req, res, next) => {
 
   if (!bot) return next();
 
-  // if (bot && NODE_ENV === 'staging') {
-  //   res.set('Retry-After', ttlTime);
-  //   return res.status(429).send(TOO_MANY_REQ_PAGE);
-  // }
+  if (bot && NODE_ENV === 'staging') {
+    res.set('Retry-After', ttlTime);
+    return res.status(429).send(TOO_MANY_REQ_PAGE);
+  }
 
   const socialSites = isInheritedHost(req.hostname);
   if (socialSites) return next();

@@ -21,6 +21,9 @@ const useTemplateFonts = () => {
     if (fonts.serif) {
       root.style.setProperty('--template-font-serif', fonts.serif);
     }
+    if (fonts.post) {
+      root.style.setProperty('--template-font-post', fonts.post);
+    }
 
     root.classList.add(`template-${templateId}`);
 

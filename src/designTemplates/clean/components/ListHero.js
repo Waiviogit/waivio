@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { memo, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { removeEmptyLines, shortenDescription } from '../../../client/object/wObjectHelper';
 
@@ -17,6 +18,12 @@ const CleanListHero = ({ wobject }) => {
     wobject?.description,
   ]);
 
+  const descriptionParagraphs = useMemo(() => {
+    if (!fullDescription) return [];
+
+    return wobject?.description.split('\n\n').filter(p => p.trim().length > 0);
+  }, [fullDescription]);
+
   const shortDescription = useMemo(() => {
     if (!fullDescription) return '';
 
@@ -25,21 +32,38 @@ const CleanListHero = ({ wobject }) => {
     return firstDescrPart;
   }, [fullDescription]);
 
+  const shortDescriptionParagraphs = useMemo(() => {
+    if (!shortDescription) return [];
+
+    return shortDescription.split('\n\n').filter(p => p.trim().length > 0);
+  }, [shortDescription]);
+
   const hasMoreText = fullDescription.length > 260;
-  const heroDescription = isExpanded ? fullDescription : shortDescription;
+  const displayParagraphs = isExpanded ? descriptionParagraphs : shortDescriptionParagraphs;
 
   const banner = wobject?.avatar;
 
-  const hasContent = heroTitle || heroDescription || banner;
+  const hasContent = heroTitle || fullDescription || banner;
 
   if (!hasContent) return null;
 
   return (
-    <section className="CleanListHero">
+    <section
+      className={classNames('CleanListHero', {
+        'CleanListHero--no-banner': !banner,
+      })}
+    >
       <div className="CleanListHero__content">
         {eyebrow && <p className="CleanListHero__eyebrow">{eyebrow}</p>}
         {heroTitle && <h2 className="CleanListHero__title">{heroTitle}</h2>}
-        {heroDescription && <p className="CleanListHero__subtitle">{heroDescription}</p>}
+        {displayParagraphs.length > 0 && (
+          <div className="CleanListHero__subtitle">
+            {displayParagraphs.map((paragraph, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
+        )}
         {hasMoreText && (
           <button
             type="button"

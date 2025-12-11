@@ -4,7 +4,7 @@ import { get, size } from 'lodash';
 
 import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-// import { openLinkWithSafetyCheck } from '../../common/helpers/urlHelpers';
+import { openLinkWithSafetyCheck } from '../../common/helpers/urlHelpers';
 import {
   checkLinkSafety,
   getAuthorsChildWobjects,
@@ -360,10 +360,22 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-// export const setLinkSafetyInfo = url => async (dispatch, getState) =>
-//   openLinkWithSafetyCheck(url, safeUrl => originalSetLinkSafetyInfo(safeUrl)(dispatch, getState));
-
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
+  const mainWaivioLink = 'https://www.waivio.com';
+
+  if (url?.includes(mainWaivioLink)) {
+    window.open(url, '_blank');
+
+    return;
+  }
+
+  // eslint-disable-next-line consistent-return
+  return openLinkWithSafetyCheck(url, safeUrl =>
+    originalSetLinkSafetyInfo(safeUrl)(dispatch, getState),
+  );
+};
+
+export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));
   const isAuth = getIsAuthenticated(getState());
   const checkLinks = getExitPageSetting(getState());
@@ -371,23 +383,29 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const rating = Math.round(result?.rating);
   const showModal = (isAuth && checkLinks) || (rating < 5 && rating > 0);
 
+  const payloadData = waivioLink
+    ? { showModal: false, isWaivioLink: true }
+    : { ...result, rating, showModal, checkLinks };
+
+  const promise = Promise.resolve(payloadData);
+
   if (waivioLink) {
-    return dispatch({
+    dispatch({
       type: SET_LINK_SAFETY.ACTION,
-      payload: {
-        promise: Promise.resolve({ showModal: false, isWaivioLink: true }),
-      },
+      payload: { promise },
       meta: url,
     });
+
+    return promise;
   }
 
-  return dispatch({
+  dispatch({
     type: SET_LINK_SAFETY.ACTION,
-    payload: {
-      promise: Promise.resolve({ ...result, rating, showModal, checkLinks }),
-    },
+    payload: { promise },
     meta: url,
   });
+
+  return promise;
 };
 
 export const resetLinkSafetyInfo = () => dispatch =>

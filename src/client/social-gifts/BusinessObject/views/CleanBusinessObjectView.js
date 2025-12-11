@@ -18,6 +18,7 @@ import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
 import WalletAddress from '../../../app/Sidebar/WalletAddress/WalletAddress';
 import CompanyId from '../../../app/Sidebar/CompanyId';
 import EmailDraft from '../../../widgets/EmailDraft/EmailDraft';
+import ProductRewardCard from '../../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import { parseWobjectField } from '../../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -63,11 +64,11 @@ const CleanBusinessObjectView = ({
   walletAddress,
   linkUrl,
   linkUrlHref,
+  reward,
 }) => {
   const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
   const googleObject = companyIdBody?.find(i => i.companyIdType === 'googleMaps');
   const placeId = googleObject?.companyId;
-
   const profile = linkField
     ? {
         facebook: linkField[linkFields.linkFacebook] || '',
@@ -208,8 +209,13 @@ const CleanBusinessObjectView = ({
                 hoveredOption={hoveredOption}
                 activeOption={activeOption}
                 activeCategory={activeCategory}
-                showSliderCount={6}
               />
+              {!isEmpty(reward) && <ProductRewardCard isSocialProduct reward={reward} />}
+            </div>
+          )}
+          {!showGallery && !isEmpty(reward) && (
+            <div className="BusinessObjectClean__rewardWrap">
+              <ProductRewardCard isSocialProduct reward={reward} />
             </div>
           )}
         </div>
@@ -386,6 +392,7 @@ CleanBusinessObjectView.propTypes = {
   tagCategoriesList: PropTypes.arrayOf(PropTypes.shape()),
   history: PropTypes.shape().isRequired,
   setLinkSafety: PropTypes.func,
+  reward: PropTypes.arrayOf(PropTypes.shape()),
   pictures: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   companyIdBody: PropTypes.arrayOf(PropTypes.shape()),
