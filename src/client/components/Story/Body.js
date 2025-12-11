@@ -279,7 +279,10 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
+      <div>
+        className={classNames('Body', { 'Body--full': props.full })}
+        onClick={isMobile() ? undefined : openLink}
+        onTouchStart={isMobile() ? openLink : undefined}
         {htmlSections}
       </div>
       {!isEmpty(withMap) &&
