@@ -186,6 +186,17 @@ const Body = props => {
     }
   };
 
+  useEffect(() => {
+    const anchors = document.querySelectorAll('.Body a');
+
+    anchors.forEach(a => {
+      // eslint-disable-next-line no-param-reassign
+      a.onclick = null;
+      // eslint-disable-next-line no-param-reassign
+      a.onclick = openLink;
+    });
+  }, [props.body]);
+
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (typeof document !== 'undefined') {
@@ -279,10 +290,10 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div>
+      <div
         className={classNames('Body', { 'Body--full': props.full })}
-        onClick={isMobile() ? undefined : openLink}
-        onTouchStart={isMobile() ? openLink : undefined}
+        // onClick={openLink}
+      >
         {htmlSections}
       </div>
       {!isEmpty(withMap) &&
