@@ -173,18 +173,27 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
+  const handleLinkClick = e => {
+    const a = e.target.closest('a[data-href]');
+    if (!a) return;
 
-  const openLink = e => {
-    const anchor = e.target.closest('a');
+    e.preventDefault();
+    e.stopPropagation();
 
-    if (anchor) {
-      e.stopPropagation();
-      e.preventDefault();
-      const href = anchor.getAttribute('href');
-
-      dispatch(setLinkSafetyInfo(href));
-    }
+    const href = a.dataset.href;
+    dispatch(setLinkSafetyInfo(href));
   };
+  // const openLink = e => {
+  //   const anchor = e.target.closest('a');
+  //
+  //   if (anchor) {
+  //     e.stopPropagation();
+  //     e.preventDefault();
+  //     const href = anchor.getAttribute('href');
+  //
+  //     dispatch(setLinkSafetyInfo(href));
+  //   }
+  // };
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -279,7 +288,7 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
+      <div className={classNames('Body', { 'Body--full': props.full })} onClick={handleLinkClick}>
         {htmlSections}
       </div>
       {!isEmpty(withMap) &&
