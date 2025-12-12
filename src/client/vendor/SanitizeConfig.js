@@ -399,7 +399,7 @@ export default ({
       };
     },
     a: (tagName, attribs) => {
-      const parsed = parseLink(
+      return parseLink(
         appUrl,
         location,
         isPage,
@@ -409,18 +409,6 @@ export default ({
         parsedJsonMetadata,
         safeLinks,
       )(tagName, attribs);
-
-      if (!parsed.attribs) return parsed;
-
-      const finalHref = parsed.attribs.href;
-
-      delete parsed.attribs.href;
-
-      parsed.attribs['data-href'] = finalHref;
-
-      parsed.attribs['style'] = 'cursor: pointer';
-
-      return parsed;
     },
   },
 });
