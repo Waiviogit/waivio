@@ -382,7 +382,7 @@ export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
   const result = waivioLink ? {} : await checkLinkSafety(url);
   const rating = Math.round(result?.rating);
   const showModal = (isAuth && checkLinks) || (rating < 5 && rating > 0);
-
+  // const showModal = (isAuth && checkLinks &&!isMobile()) || isMobile();
   const payloadData = waivioLink
     ? { showModal: false, isWaivioLink: true }
     : { ...result, rating, showModal, checkLinks };
