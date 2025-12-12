@@ -48,7 +48,7 @@
     .PicturesSlider {
       width: 100%;
       max-width: 100%;
-      overflow: hidden;
+      overflow: visible;
 
       > div:first-child {
         width: 100%;
@@ -107,7 +107,7 @@
         margin-top: 12px;
         width: 100% !important;
         max-width: 100%;
-        overflow: hidden;
+        overflow: visible;
       }
 
       .slick-list {
@@ -115,39 +115,43 @@
         overflow: hidden;
       }
 
+      .slick-track {
+        display: flex !important;
+        align-items: center;
+        flex-wrap: nowrap !important;
+      }
+
       .slick-slide {
-        width: 60px !important;
+        width: 68px !important;
         height: 60px !important;
-        margin: 0 4px;
+        margin: 0;
+        padding: 0 4px;
+        box-sizing: border-box;
+        flex-shrink: 0;
 
         > div {
           width: 100%;
           height: 100%;
         }
+
+        img {
+          width: 60px;
+          height: 60px;
+        }
       }
 
       .slick-prev,
       .slick-next {
-        width: 32px;
-        height: 32px;
-        background: #fff;
-        border: 1px solid #e8e8e8;
-        border-radius: 50%;
+        width: 25px;
+        height: 25px;
         z-index: 10;
         display: flex !important;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.2s ease;
 
-        &:hover:not(.slick-disabled) {
-          background: var(--website-color);
-          border-color: var(--website-color);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-          .anticon {
-            color: #fff !important;
-          }
+        @media @small {
+          display: flex !important;
         }
 
         &.slick-disabled {
@@ -162,11 +166,19 @@
       }
 
       .slick-prev {
-        left: -40px;
+        left: -24px;
+
+        @media screen and (max-width: 768px) {
+          left: -24px;
+        }
       }
 
       .slick-next {
-        right: -40px;
+        right: -24px;
+
+        @media screen and (max-width: 768px) {
+          right: -24px;
+        }
       }
 
       .MobileCarousel {

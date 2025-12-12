@@ -175,12 +175,14 @@ const Body = props => {
   const dispatch = useDispatch();
   const handleLinkClick = e => {
     const a = e.target.closest('a[data-href]');
+
     if (!a) return;
 
     e.preventDefault();
     e.stopPropagation();
 
     const href = a.dataset.href;
+
     dispatch(setLinkSafetyInfo(href));
   };
   // const openLink = e => {
