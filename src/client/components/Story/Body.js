@@ -173,27 +173,18 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
-  const handleLinkClick = e => {
-    const a = e.target.closest('a[data-href]');
-    if (!a) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+  const openLink = e => {
+    const anchor = e.target.closest('a');
 
-    const href = a.dataset.href;
-    dispatch(setLinkSafetyInfo(href));
+    if (anchor) {
+      e.stopPropagation();
+      e.preventDefault();
+      const href = anchor.getAttribute('href');
+
+      dispatch(setLinkSafetyInfo(href));
+    }
   };
-  // const openLink = e => {
-  //   const anchor = e.target.closest('a');
-  //
-  //   if (anchor) {
-  //     e.stopPropagation();
-  //     e.preventDefault();
-  //     const href = anchor.getAttribute('href');
-  //
-  //     dispatch(setLinkSafetyInfo(href));
-  //   }
-  // };
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -227,9 +218,26 @@ const Body = props => {
           };
         });
       };
+      const setupLinkClickHandlers = () => {
+        const anchors = document.body.querySelectorAll('a[data-href]');
+
+        anchors.forEach(a => {
+          if (a.dataset.clickHandled) return; // уникнути подвійного хендлера
+
+          a.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dispatch(setLinkSafetyInfo(a.dataset.href));
+          });
+
+          // eslint-disable-next-line no-param-reassign
+          a.dataset.clickHandled = 'true';
+        });
+      };
 
       // Setup handlers immediately
       setupImageErrorHandlers();
+      setupLinkClickHandlers();
 
       // Setup MutationObserver to handle new images added by React
       const observer = new MutationObserver(mutations => {
@@ -245,6 +253,9 @@ const Body = props => {
                   if (images.length > 0) {
                     setupImageErrorHandlers();
                   }
+                }
+                if (node.tagName === 'A' && node.dataset.href) {
+                  setupLinkClickHandlers();
                 }
               }
             });
@@ -288,7 +299,7 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={handleLinkClick}>
+      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
         {htmlSections}
       </div>
       {!isEmpty(withMap) &&
