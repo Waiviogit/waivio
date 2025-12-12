@@ -364,7 +364,7 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const mainWaivioLink = 'https://www.waivio.com';
 
   if (url?.includes(mainWaivioLink)) {
-    window.open(url, '_blank');
+    if (typeof window !== 'undefined') window.open(url, '_blank');
 
     return;
   }
