@@ -140,6 +140,8 @@ export function getHtml(
       safeLinks,
     }),
   );
+  parsedBody = parsedBody.replace(/<a([^>]+)href="([^"]+)"([^>]*)>/gi, '<a$1 data-href="$2"$3>');
+
   parsedBody = parsedBody.replace(
     MD_DATA_IMG,
     (_, alt, src) => `<img src="${src}" alt="${alt}" data-fallback-src="${src}">`,
@@ -175,15 +177,16 @@ const Body = props => {
   const dispatch = useDispatch();
 
   const openLink = e => {
-    const anchor = e.target.closest('a');
+    const anchor = e.target.closest('a[data-href]');
 
-    if (anchor) {
-      e.stopPropagation();
-      e.preventDefault();
-      const href = anchor.getAttribute('href');
+    if (!anchor) return;
 
-      dispatch(setLinkSafetyInfo(href));
-    }
+    e.preventDefault();
+    e.stopPropagation();
+
+    const href = anchor.dataset.href;
+
+    dispatch(setLinkSafetyInfo(href));
   };
 
   // eslint-disable-next-line consistent-return
@@ -218,27 +221,9 @@ const Body = props => {
           };
         });
       };
-      const setupLinkClickHandlers = () => {
-        const anchors = document.body.querySelectorAll('a[data-href]');
-
-        anchors.forEach(a => {
-          if (a.dataset.clickHandled) return; // уникнути подвійного хендлера
-
-          a.addEventListener('click', e => {
-            e.preventDefault();
-            e.stopPropagation();
-            dispatch(setLinkSafetyInfo(a.dataset.href));
-          });
-
-          // eslint-disable-next-line no-param-reassign
-          a.dataset.clickHandled = 'true';
-        });
-      };
 
       // Setup handlers immediately
       setupImageErrorHandlers();
-      setupLinkClickHandlers();
-
       // Setup MutationObserver to handle new images added by React
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
@@ -253,9 +238,6 @@ const Body = props => {
                   if (images.length > 0) {
                     setupImageErrorHandlers();
                   }
-                }
-                if (node.tagName === 'A' && node.dataset.href) {
-                  setupLinkClickHandlers();
                 }
               }
             });
@@ -299,9 +281,14 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
+      <div
+        className={classNames('Body', { 'Body--full': props.full })}
+        onMouseDown={openLink}
+        onTouchStart={openLink}
+      >
         {htmlSections}
       </div>
+
       {!isEmpty(withMap) &&
         withMap.map(map => {
           const center = parseGPSCoordinates(map);
