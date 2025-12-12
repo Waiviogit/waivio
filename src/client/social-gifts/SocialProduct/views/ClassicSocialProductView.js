@@ -304,7 +304,6 @@ const ClassicSocialProductView = ({
             </div>
           )}
         {intensive && <GoogleAds limitWidth />}
-        <ProductRewardCard isSocialProduct reward={reward} />
       </div>
     </div>
     <div className="SocialProduct__column">
