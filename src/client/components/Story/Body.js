@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
+import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -140,6 +141,8 @@ export function getHtml(
       safeLinks,
     }),
   );
+  parsedBody = parsedBody.replace(/<a([^>]+)href="([^"]+)"([^>]*)>/gi, '<a$1 data-href="$2"$3>');
+
   parsedBody = parsedBody.replace(
     MD_DATA_IMG,
     (_, alt, src) => `<img src="${src}" alt="${alt}" data-fallback-src="${src}">`,
@@ -173,29 +176,21 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
-  const handleLinkClick = e => {
-    const a = e.target.closest('a[data-href]');
 
-    if (!a) return;
+  const openLink = e => {
+    const anchor = e.target.closest('a[data-href]');
+
+    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+
+    if (!anchor) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const href = a.dataset.href;
+    const href = anchor.dataset.href;
 
     dispatch(setLinkSafetyInfo(href));
   };
-  // const openLink = e => {
-  //   const anchor = e.target.closest('a');
-  //
-  //   if (anchor) {
-  //     e.stopPropagation();
-  //     e.preventDefault();
-  //     const href = anchor.getAttribute('href');
-  //
-  //     dispatch(setLinkSafetyInfo(href));
-  //   }
-  // };
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -232,7 +227,6 @@ const Body = props => {
 
       // Setup handlers immediately
       setupImageErrorHandlers();
-
       // Setup MutationObserver to handle new images added by React
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
@@ -290,9 +284,14 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={handleLinkClick}>
+      <div
+        className={classNames('Body', { 'Body--full': props.full })}
+        onMouseDown={openLink}
+        onTouchStart={openLink}
+      >
         {htmlSections}
       </div>
+
       {!isEmpty(withMap) &&
         withMap.map(map => {
           const center = parseGPSCoordinates(map);
