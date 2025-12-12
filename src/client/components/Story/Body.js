@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
+import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -178,6 +179,8 @@ const Body = props => {
 
   const openLink = e => {
     const anchor = e.target.closest('a[data-href]');
+
+    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
 
     if (!anchor) return;
 
