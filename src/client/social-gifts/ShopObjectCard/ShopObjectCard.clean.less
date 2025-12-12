@@ -27,8 +27,8 @@
   }
 
   &__imageWrap {
-    width: 170px;
-    height: 170px;
+    width: 185px;
+    height: 185px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -37,8 +37,8 @@
     position: relative;
 
     @media @small {
-      height: 200px;
-      width: 200px;
+      height: 225px;
+      width: 225px;
     }
   }
 
@@ -58,12 +58,16 @@
     border-radius: 10px;
     position: absolute;
     bottom: 0;
-    padding: 8px;
+    padding: 8px 5px;
     left: 0;
     right: 0;
     z-index: 1;
     width: fit-content;
     margin: 15px auto;
+
+    @media @small {
+      padding: 8px;
+    }
   }
 
   &__heart {
@@ -93,6 +97,7 @@
     gap: 8px;
     flex: 1;
     min-height: 0;
+    width: 100%;
   }
 
   &__name {
@@ -136,6 +141,7 @@
       display: flex;
       align-items: baseline;
       flex-direction: column;
+      margin-right: 5px;
     }
   }
 
@@ -166,7 +172,7 @@
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       height: 44px;
-      padding: 6px 16px;
+      padding: 6px;
       margin: 0;
       cursor: pointer;
       transition: all 0.3s ease;
