@@ -209,6 +209,7 @@ const CleanBusinessObjectView = ({
                 hoveredOption={hoveredOption}
                 activeOption={activeOption}
                 activeCategory={activeCategory}
+                countShowSlide={6}
               />
               {!isEmpty(reward) && <ProductRewardCard isSocialProduct reward={reward} />}
             </div>
