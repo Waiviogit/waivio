@@ -25,7 +25,8 @@ const InstacartWidget = ({
     getInstacartLink(wobjPerm).then(url => setLink(url));
   }, [wobjPerm]);
 
-  const handleClick = () => {
+  const handleClick = e => {
+    e.stopPropagation();
     websiteStatisticsAction().then(res => {
       if (res.result && typeof window !== 'undefined' && window?.gtag) {
         window.gtag('event', 'buy_now', { debug_mode: true });
