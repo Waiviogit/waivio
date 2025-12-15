@@ -65,6 +65,8 @@ const PicturesSlider = ({
       setPictures(allPhotos);
       setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
       setPhotoIndex(0);
+      setLastSlideToShow(null);
+      setNextArrowClicked(false);
     });
   }, [authorPermlink, currentWobj.author_permlink, albums?.length]);
 
