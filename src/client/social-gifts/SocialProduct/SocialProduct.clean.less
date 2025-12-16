@@ -269,6 +269,10 @@
     max-width: 100%;
     margin: 40px 0 40px;
 
+    @media @small {
+      padding: 32px 120px;
+    }
+
     .StoryFull__title {
       display: block;
       text-transform: none;
@@ -570,6 +574,12 @@
 
   // Reviews styling
   .SocialProductReviews {
+    &__container {
+      span {
+        font-size: 20px;
+      }
+    }
+
     &__heading {
       text-transform: none;
       font-family: var(--template-font-title, 'Playfair Display', serif);
@@ -587,6 +597,25 @@
 
       @media @small {
         text-transform: none;
+      }
+    }
+  }
+
+  // Recipe ingredients - remove list bullets
+  .paddingBottom {
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+
+      li {
+        list-style: none !important;
+        padding-left: 10px;
+        margin-bottom: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
