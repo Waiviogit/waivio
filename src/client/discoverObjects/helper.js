@@ -42,13 +42,61 @@ export const createFilterBody = parseObject => {
   delete parseSearchParams.socialProvider;
   delete parseSearchParams.showPanel;
 
-  const mappedFilter = Object.keys(parseSearchParams).map(category => ({
-    categoryName: category.replace('%20', ' ').replace('+', ' '),
-    tags:
-      typeof parseSearchParams[category] === 'string'
-        ? parseSearchParams[category].split(',')
-        : parseSearchParams[category],
-  }));
+  const mappedFilter = Object.keys(parseSearchParams).map(category => {
+    let tags = parseSearchParams[category];
+
+    if (typeof tags === 'string') {
+      if (tags.includes('%')) {
+        try {
+          tags = decodeURIComponent(tags);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      tags = tags.replace(/^["']|["']$/g, '');
+
+      tags = tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+    } else if (isArray(tags)) {
+      const expandedTags = [];
+
+      tags.forEach(tag => {
+        if (typeof tag === 'string') {
+          let decodedTag = tag;
+
+          if (tag.includes('%')) {
+            try {
+              decodedTag = decodeURIComponent(tag);
+            } catch (error) {
+              decodedTag = tag;
+            }
+          }
+          decodedTag = decodedTag.replace(/^["']|["']$/g, '');
+          if (decodedTag.includes(',')) {
+            const splitTags = decodedTag
+              .split(',')
+              .map(t => t.trim())
+              .filter(t => t.length > 0);
+
+            expandedTags.push(...splitTags);
+          } else {
+            expandedTags.push(decodedTag.trim());
+          }
+        } else {
+          expandedTags.push(tag);
+        }
+      });
+      tags = expandedTags.filter(tag => tag && tag.length > 0);
+    }
+
+    return {
+      categoryName: category.replace('%20', ' ').replace('+', ' '),
+      tags,
+    };
+  });
 
   return mappedFilter.filter(filter => !isEmpty(filter.tags));
 };
@@ -83,13 +131,29 @@ export const parseTagsFilters = url => {
   delete parseSearchParams.radius;
   delete parseSearchParams.zoom;
 
-  return Object.keys(parseSearchParams).reduce(
-    (acc, category) => ({
+  return Object.keys(parseSearchParams).reduce((acc, category) => {
+    let value = parseSearchParams[category];
+
+    if (typeof value === 'string') {
+      if (value.includes('%')) {
+        try {
+          value = decodeURIComponent(value);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      value = value.replace(/^["']|["']$/g, '');
+      value = value
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+    }
+
+    return {
       ...acc,
-      [category.replace(' ', '%20')]: parseSearchParams[category].split(','),
-    }),
-    {},
-  );
+      [category.replace(' ', '%20')]: value,
+    };
+  }, {});
 };
 
 export const changeUrl = (activeTags, history, location) => {
