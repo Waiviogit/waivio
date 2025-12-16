@@ -41,7 +41,7 @@ const FiltersContainer = ({
   const [collapsedFilters, setCollapsed] = useState([]);
   const { search: filterPath } = location;
   const match = useRouteMatch();
-  const activeObjectTypeName = match.params.type;
+  const activeObjectTypeName = match.params.type || match.params.typeName;
 
   useEffect(() => {
     if (filterPath) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
