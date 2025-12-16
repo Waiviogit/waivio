@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { Carousel, Icon } from 'antd';
 import { useSelector } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
@@ -10,6 +10,36 @@ import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObje
 import './PicturesSlider.less';
 import { getWobjectGallery } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+
+const NextArrow = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
+  const hide = currentSlide >= slideCount - slidesToShow;
+
+  return (
+    <span
+      className={`PicturesSlider__arrow PicturesSlider__arrow--next ${
+        hide ? 'PicturesSlider__arrow--hidden' : ''
+      }`}
+      onClick={hide ? undefined : onClick}
+    >
+      <Icon type="caret-right" />
+    </span>
+  );
+};
+
+const PrevArrow = ({ onClick, currentSlide }) => {
+  const hide = currentSlide <= 0;
+
+  return (
+    <span
+      className={`PicturesSlider__arrow PicturesSlider__arrow--prev ${
+        hide ? 'PicturesSlider__arrow--hidden' : ''
+      }`}
+      onClick={hide ? undefined : onClick}
+    >
+      <Icon type="caret-left" />
+    </span>
+  );
+};
 
 const PicturesSlider = ({
   hoveredOption,
@@ -44,11 +74,21 @@ const PicturesSlider = ({
     setPhotoIndex(pictures?.indexOf(pic));
     isMobile() && slider.current.goTo(pictures?.indexOf(pic));
   };
-  const onSlideChange = (curr, next) => {
-    setLastSlideToShow(next + limitToShow - 1);
-    setPhotoIndex(next);
-    setNextArrowClicked(true);
-  };
+  const onSlideChange = useCallback(
+    (curr, next) => {
+      // next - це індекс першого видимого слайду після зміни
+      setLastSlideToShow(() => {
+        const newLastSlide = Math.min(next + limitToShow - 1, pictures.length - 1);
+
+        return newLastSlide;
+      });
+      setPhotoIndex(next);
+      if (next > 0) {
+        setNextArrowClicked(true);
+      }
+    },
+    [limitToShow, pictures.length],
+  );
 
   const MobileSlideChange = (curr, next) => {
     setPhotoIndex(next);
@@ -65,6 +105,8 @@ const PicturesSlider = ({
       setPictures(allPhotos);
       setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
       setPhotoIndex(0);
+      setLastSlideToShow(null);
+      setNextArrowClicked(false);
     });
   }, [authorPermlink, currentWobj.author_permlink, albums?.length]);
 
@@ -74,24 +116,29 @@ const PicturesSlider = ({
     }
   }, [photoIndex]);
 
-  const carouselSettings = pics => {
-    const slidesToShow = pics?.length > limitToShow ? limitToShow : pics?.length;
-    const showLeftArrow = photoIndex >= 0 && !nextArrowClicked;
+  const isMobileDevice = useMemo(() => isMobile(), []);
 
-    return {
+  const slidesToShow = Math.min(pictures.length, isMobileDevice ? 6 : countShowSlide || 8);
+
+  const carouselSettings = useMemo(
+    () => ({
       dots: false,
-      arrows: !isMobile(),
+      arrows: !isMobileDevice,
       lazyLoad: true,
       rows: 1,
-      nextArrow: lastSlideToShow >= pics?.length - 1 ? <></> : <Icon type="caret-right" />,
-      prevArrow: showLeftArrow ? <></> : <Icon type="caret-left" />,
       infinite: false,
       slidesToShow,
-      swipeToSlide: isMobile(),
+      swipeToSlide: isMobileDevice,
       slidesToScroll: 1,
-      beforeChange: onSlideChange,
-    };
-  };
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
+      afterChange: current => {
+        setPhotoIndex(current);
+        setCurrentImage(pictures[current]);
+      },
+    }),
+    [pictures, slidesToShow, isMobileDevice],
+  );
   const mobileSlider = {
     dots: false,
     arrows: false,
@@ -141,7 +188,7 @@ const PicturesSlider = ({
         </div>
       )}
       <br />
-      <Carousel {...carouselSettings(pictures)}>
+      <Carousel {...carouselSettings}>
         {map(pictures, (pic, i) => (
           <div key={pic._id}>
             <img

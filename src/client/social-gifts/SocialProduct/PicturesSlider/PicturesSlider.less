@@ -87,3 +87,25 @@
     }
   }
 }
+
+.PicturesSlider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.PicturesSlider__arrow--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.PicturesSlider__arrow--prev {
+  left: -20px;
+}
+
+.PicturesSlider__arrow--next {
+  right: -20px;
+}

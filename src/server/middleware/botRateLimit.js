@@ -1,9 +1,7 @@
 import { isbot, createIsbotFromList } from 'isbot';
-
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { getAsync, incrExpire } from '../redis/redisClient';
 import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
-import { isInheritedHost } from '../../common/helpers/redirectHelper';
 
 const { NODE_ENV } = process.env;
 
@@ -42,13 +40,7 @@ const botRateLimit = async (req, res, next) => {
 
   if (!bot) return next();
 
-  if (bot && NODE_ENV === 'staging') {
-    res.set('Retry-After', ttlTime);
-    return res.status(429).send(TOO_MANY_REQ_PAGE);
-  }
-
-  const socialSites = isInheritedHost(req.hostname);
-  if (socialSites) return next();
+  if (bot && NODE_ENV === 'staging') return res.status(403).send('Forbidden');
   if (dontApplyLimits(userAgent)) return next();
 
   const siteLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}:${hostname}`;

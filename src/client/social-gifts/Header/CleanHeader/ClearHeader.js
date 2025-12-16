@@ -63,14 +63,16 @@ const ClearHeader = memo(
             </div>
           </div>
         </header>
-        <div className="HeaderClean__banner">
-          <img src={config?.mainBanner} alt={''} />
-          {!hideHeader && (
-            <div className="HeaderClean__nav">
-              <WebsiteTopNavigation shopSettings={config?.shopSettings} />
-            </div>
-          )}
-        </div>
+        {config?.mainBanner && (
+          <div className="HeaderClean__banner">
+            <img src={config?.mainBanner} alt={''} />
+          </div>
+        )}
+        {!hideHeader && (
+          <div className="HeaderClean__nav">
+            <WebsiteTopNavigation shopSettings={config?.shopSettings} />
+          </div>
+        )}
       </>
     );
   },
