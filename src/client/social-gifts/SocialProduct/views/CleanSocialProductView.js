@@ -161,7 +161,7 @@ const CleanSocialProductView = ({
               hoveredOption={hoveredOption}
               activeOption={activeOption}
               activeCategory={activeCategory}
-              showSliderCount={4}
+              countShowSlide={6}
             />
           </div>
           <div className="SocialProduct__reward-wrap">

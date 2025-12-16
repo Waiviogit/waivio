@@ -70,7 +70,6 @@ import {
   getPreferredInstacartItem,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
-import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 class WobjectContainer extends React.PureComponent {
@@ -417,8 +416,8 @@ WobjectContainer.fetchData = async ({ store, match }) => {
       return Promise.allSettled(promises);
     }),
     store.dispatch(getObjectFollowersAction({ object: objName, skip: 0, limit: 5 })),
-    store.dispatch(getRate()),
-    store.dispatch(getRewardFund()),
+    // store.dispatch(getRate()),
+    // store.dispatch(getRewardFund()),
     store.dispatch(getNearbyObjectsAction(objName)),
     store.dispatch(getAlbums(objName)),
     store.dispatch(getRelatedAlbum(objName)),

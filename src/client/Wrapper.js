@@ -157,12 +157,6 @@ class Wrapper extends React.PureComponent {
     return Promise.all([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
-      // store.dispatch(getRate()),
-      // store.dispatch(getRewardFund()),
-      // store.dispatch(getGlobalProperties()),
-      // store.dispatch(getTokenRates('WAIV')),
-      // store.dispatch(getCryptoPriceHistory()),
-      // store.dispatch(getSwapEnginRates()),
     ]);
   }
 
