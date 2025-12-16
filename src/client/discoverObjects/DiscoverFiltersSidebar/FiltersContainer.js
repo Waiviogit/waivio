@@ -15,12 +15,13 @@ import {
   showMoreTags,
   setTagsFiltersAndLoad,
   getTagsByCategory,
+  getTagCategories,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
-  getTagCategories,
+  getTagCategories as getTagCategoriesAction,
   getCategoryTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 
@@ -36,6 +37,7 @@ const FiltersContainer = ({
   tagCategories,
   categoryTags,
   dispatchGetTagsByCategory,
+  dispatchGetTagCategories,
   newDiscover,
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
@@ -44,8 +46,8 @@ const FiltersContainer = ({
   const activeObjectTypeName = match.params.type || match.params.typeName;
 
   useEffect(() => {
-    if (filterPath) dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
-  }, []);
+    dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
+  }, [filterPath]);
 
   const handleDisplayFilter = filterName => () => {
     if (collapsedFilters?.includes(filterName)) {
@@ -79,9 +81,14 @@ const FiltersContainer = ({
       checked,
     );
 
-    // dispatchGetTagsByCategory(activeObjectTypeName, value);
     dispatchSetActiveTagsFilters(updateTagsFilters);
     changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
+
+    if (newDiscover && activeObjectTypeName) {
+      setTimeout(() => {
+        dispatchGetTagCategories(activeObjectTypeName);
+      }, 0);
+    }
   };
 
   const showMoreTagsHandler = (categoryName, currentTags) => {
@@ -159,6 +166,7 @@ FiltersContainer.propTypes = {
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   dispatchGetTagsByCategory: PropTypes.func.isRequired,
+  dispatchGetTagCategories: PropTypes.func,
   activeFilters: PropTypes.shape({}),
 
   tagCategories: PropTypes.arrayOf(
@@ -187,7 +195,7 @@ export default connect(
   state => ({
     activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
-    tagCategories: getTagCategories(state),
+    tagCategories: getTagCategoriesAction(state),
     categoryTags: getCategoryTags(state),
   }),
   {
@@ -196,5 +204,6 @@ export default connect(
     dispatchShowMoreTags: showMoreTags,
     dispatchSetFiltersAndLoad: setFiltersAndLoad,
     dispatchGetTagsByCategory: getTagsByCategory,
+    dispatchGetTagCategories: getTagCategories,
   },
 )(withRouter(FiltersContainer));
