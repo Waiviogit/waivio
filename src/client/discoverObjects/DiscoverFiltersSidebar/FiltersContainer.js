@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { map, isEmpty, size } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter, useRouteMatch } from 'react-router';
 
 import {
-  changeUrl,
-  parseTagsFilters,
+  parseDiscoverTagsFilters,
+  buildCanonicalSearch,
   updateActiveFilters,
   updateActiveTagsFilters,
 } from '../helper';
@@ -21,7 +21,7 @@ import FilterItem from './FilterItem';
 import {
   getActiveFilters,
   getActiveFiltersTags,
-  getTagCategories as getTagCategoriesAction,
+  getTagCategories as getTagCategoriesSelector,
   getCategoryTags,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 
@@ -31,74 +31,81 @@ const FiltersContainer = ({
   location,
   activeFilters,
   activeTagsFilters,
+  tagCategories,
+  categoryTags,
   dispatchSetActiveTagsFilters,
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
-  tagCategories,
-  categoryTags,
   dispatchGetTagsByCategory,
   dispatchGetTagCategories,
   newDiscover,
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
-  const { search: filterPath } = location;
   const match = useRouteMatch();
   const activeObjectTypeName = match.params.type || match.params.typeName;
 
   useEffect(() => {
-    dispatchSetActiveTagsFilters(parseTagsFilters(filterPath));
-  }, [filterPath]);
+    dispatchSetActiveTagsFilters(parseDiscoverTagsFilters(location.search));
+  }, [location.search]);
 
   const handleDisplayFilter = filterName => () => {
-    if (collapsedFilters?.includes(filterName)) {
-      setCollapsed(collapsedFilters.filter(f => f !== filterName));
-    } else {
-      setCollapsed([...collapsedFilters, filterName]);
-      const isTagCategory = tagCategories?.some(
-        cat => (typeof cat === 'object' ? cat.tagCategory : cat) === filterName,
-      );
+    setCollapsed(prev =>
+      prev.includes(filterName) ? prev.filter(f => f !== filterName) : [...prev, filterName],
+    );
 
-      if (isTagCategory && !categoryTags[filterName]) {
-        dispatchGetTagsByCategory(activeObjectTypeName, filterName);
-      }
+    const isTagCategory = tagCategories?.some(
+      cat => (typeof cat === 'object' ? cat.tagCategory : cat) === filterName,
+    );
+
+    if (isTagCategory && !categoryTags[filterName]) {
+      dispatchGetTagsByCategory(activeObjectTypeName, filterName);
     }
   };
 
   const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter, checked } = e.target;
+
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
 
     dispatchSetFiltersAndLoad(updatedFilters);
-    changeUrl({ ...updatedFilters, ...activeTagsFilters }, history, location);
+
+    const search = buildCanonicalSearch({
+      search: new URLSearchParams(location.search).get('search'),
+      category: new URLSearchParams(location.search).get('category'),
+      tagsByCategory: activeTagsFilters,
+    });
+
+    history.push(`${location.pathname}?${search}`);
   };
 
   const handleOnChangeTagsCheckbox = e => {
-    const { name: filterValue, value, checked } = e.target;
-    const updateTagsFilters = updateActiveTagsFilters(
-      activeTagsFilters,
-      filterValue,
-      value,
-      checked,
-    );
+    const { name: tag, value: category, checked } = e.target;
 
-    dispatchSetActiveTagsFilters(updateTagsFilters);
-    changeUrl({ ...activeFilters, ...updateTagsFilters }, history, location);
+    const updatedTags = updateActiveTagsFilters(activeTagsFilters, tag, category, checked);
+
+    dispatchSetActiveTagsFilters(updatedTags);
+
+    const search = buildCanonicalSearch({
+      search: new URLSearchParams(location.search).get('search'),
+      category: new URLSearchParams(location.search).get('category'),
+      tagsByCategory: updatedTags,
+    });
+
+    history.push(`${location.pathname}?${search}`);
 
     if (newDiscover && activeObjectTypeName) {
-      setTimeout(() => {
-        dispatchGetTagCategories(activeObjectTypeName);
-      }, 0);
+      dispatchGetTagCategories(activeObjectTypeName);
     }
   };
 
-  const showMoreTagsHandler = (categoryName, currentTags) => {
-    const skip = size(currentTags);
-    const limit = 10;
+  const showMoreTagsHandler = useCallback(
+    (categoryName, currentTags) => {
+      dispatchShowMoreTags(categoryName, activeObjectTypeName, size(currentTags), 10);
+    },
+    [activeObjectTypeName],
+  );
 
-    dispatchShowMoreTags(categoryName, activeObjectTypeName, skip, limit);
-  };
-
-  const isCollapsed = name => collapsedFilters?.includes(name);
+  const isCollapsed = name => collapsedFilters.includes(name);
 
   return (
     <div className="SidebarContentBlock__content">
@@ -106,6 +113,7 @@ const FiltersContainer = ({
         {!isEmpty(filters) &&
           map(filters, (filterValues, filterName) => (
             <FilterItem
+              key={filterName}
               newDiscover={newDiscover}
               isCollapsed={isCollapsed(filterName)}
               filterName={filterName}
@@ -115,29 +123,24 @@ const FiltersContainer = ({
               filterValues={filterValues}
             />
           ))}
+
         {!isEmpty(tagCategories) &&
           tagCategories.map(category => {
             const categoryName = category.tagCategory || category;
-
-            const categoryData = categoryTags[categoryName] || {
-              tags: category.tags || [],
-              hasMore: category.hasMore || false,
-            };
-            const tags = categoryData.tags || [];
-            const hasMore = categoryData.hasMore || false;
+            const data = categoryTags[categoryName] || category;
 
             return (
               <FilterItem
-                newDiscover={newDiscover}
                 key={categoryName}
+                newDiscover={newDiscover}
                 isCollapsed={isCollapsed(categoryName)}
                 filterName={categoryName}
                 handleDisplayFilter={handleDisplayFilter}
                 handleOnChangeCheckbox={handleOnChangeTagsCheckbox}
                 activeFilters={activeTagsFilters}
-                filterValues={tags}
-                hasMore={hasMore}
-                showMoreTags={() => showMoreTagsHandler(categoryName, tags)}
+                filterValues={data.tags || []}
+                hasMore={data.hasMore}
+                showMoreTags={() => showMoreTagsHandler(categoryName, data.tags || [])}
               />
             );
           })}
@@ -149,42 +152,20 @@ const FiltersContainer = ({
 FiltersContainer.propTypes = {
   filters: PropTypes.shape().isRequired,
   newDiscover: PropTypes.bool,
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }).isRequired,
-  location: PropTypes.shape({
-    search: PropTypes.string,
-    pathname: PropTypes.string,
-  }).isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      typeName: PropTypes.string,
-    }),
-  }).isRequired,
+  history: PropTypes.shape().isRequired,
+  location: PropTypes.shape().isRequired,
+  activeFilters: PropTypes.shape({}),
   activeTagsFilters: PropTypes.shape({}).isRequired,
+  tagCategories: PropTypes.arrayOf(),
+  categoryTags: PropTypes.shape({}),
   dispatchSetActiveTagsFilters: PropTypes.func.isRequired,
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   dispatchGetTagsByCategory: PropTypes.func.isRequired,
-  dispatchGetTagCategories: PropTypes.func,
-  activeFilters: PropTypes.shape({}),
-
-  tagCategories: PropTypes.arrayOf(
-    PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.shape({
-        tagCategory: PropTypes.string,
-        tags: PropTypes.arrayOf(PropTypes.string),
-        hasMore: PropTypes.bool,
-      }),
-    ]),
-  ),
-  categoryTags: PropTypes.shape({}),
+  dispatchGetTagCategories: PropTypes.func.isRequired,
 };
 
 FiltersContainer.defaultProps = {
-  tagsFilters: [],
-  filterPath: '',
   activeFilters: {},
   tagCategories: [],
   categoryTags: {},
@@ -193,14 +174,13 @@ FiltersContainer.defaultProps = {
 
 export default connect(
   state => ({
-    activeTagsFilters: getActiveFiltersTags(state),
     activeFilters: getActiveFilters(state),
-    tagCategories: getTagCategoriesAction(state),
+    activeTagsFilters: getActiveFiltersTags(state),
+    tagCategories: getTagCategoriesSelector(state),
     categoryTags: getCategoryTags(state),
   }),
   {
     dispatchSetActiveTagsFilters: setTagsFiltersAndLoad,
-    dispatchGetActiveFilters: getActiveFilters,
     dispatchShowMoreTags: showMoreTags,
     dispatchSetFiltersAndLoad: setFiltersAndLoad,
     dispatchGetTagsByCategory: getTagsByCategory,

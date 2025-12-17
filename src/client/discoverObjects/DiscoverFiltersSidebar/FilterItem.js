@@ -20,7 +20,7 @@ const FilterItem = ({
     <div
       className="collapsible-block__title"
       role="presentation"
-      onClick={handleDisplayFilter(filterName)}
+      onClick={newDiscover ? undefined : handleDisplayFilter(filterName)}
     >
       <span className="collapsible-block__title-text">{filterName}:</span>
       {!newDiscover && (

@@ -187,6 +187,67 @@ export const changeUrl = (activeTags, history, location) => {
   }
 };
 
+export const parseDiscoverTagsFilters = search => {
+  const params = new URLSearchParams(search);
+  const result = {};
+
+  const explicitCategory = params.get('category');
+  const explicitTag = params.get('tag');
+
+  if (explicitCategory && explicitTag) {
+    result[explicitCategory] = explicitTag
+      .split(',')
+      .map(t => decodeURIComponent(t).trim())
+      .filter(Boolean);
+  }
+
+  params.forEach((value, key) => {
+    if (['search', 'category', 'tag'].includes(key)) return;
+
+    const tags = decodeURIComponent(value)
+      .split(',')
+      .map(t => t.trim())
+      .filter(Boolean);
+
+    if (!result[key]) {
+      result[key] = [];
+    }
+
+    tags.forEach(tag => {
+      if (!result[key].includes(tag)) {
+        result[key].push(tag);
+      }
+    });
+  });
+
+  return result;
+};
+
+export const parseDiscoverQuery = search => {
+  const params = new URLSearchParams(search);
+
+  return {
+    search: params.get('search') || '',
+    category: params.get('category') || null,
+    tagsByCategory: parseDiscoverTagsFilters(search),
+  };
+};
+
+export const buildCanonicalSearch = ({ search, category, tagsByCategory }) => {
+  const params = new URLSearchParams();
+
+  if (search) params.set('search', search);
+  if (category) params.set('category', category);
+
+  Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
+    if (tags?.length) {
+      params.set(cat, tags.join(','));
+    }
+  });
+
+  return params.toString();
+};
+
 export default {
   updateActiveFilters,
   isNeedFilters,
