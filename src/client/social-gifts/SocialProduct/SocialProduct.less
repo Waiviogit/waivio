@@ -466,17 +466,13 @@
 
     .slick-prev,
     .slick-next {
-      display: none;
+      display: block;
+      z-index: 1200;
+      color: #bebebe !important;
 
-      @media @small {
-        display: inline-block;
-        z-index: 1200;
-        color: #bebebe !important;
-
-        svg {
-          height: auto;
-          width: 30px;
-        }
+      svg {
+        height: auto;
+        width: 30px;
       }
     }
 
@@ -489,6 +485,38 @@
     }
 
     .ant-carousel .slick-next {
+      right: -25px;
+    }
+
+    .ObjectsSlider__arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      font-size: 20px;
+      color: #bebebe;
+
+      &:hover {
+        color: var(--website-color, #bebebe);
+      }
+    }
+
+    .ObjectsSlider__arrow--hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .ObjectsSlider__arrow--prev {
+      left: -35px;
+
+      @media @small {
+        left: -40px;
+      }
+    }
+
+    .ObjectsSlider__arrow--next {
       right: -25px;
     }
 
