@@ -6,9 +6,54 @@
     display: flex;
     flex-wrap: wrap;
     padding: 0 5px;
+    justify-content: center;
+    max-width: 100%;
+    margin: 0 auto;
 
-    @media @xsmall {
-      .ShopCardWidth();
+    @media (min-width: 1201px) {
+      .ShopObjectCard,
+      .ShopObjectCardClean {
+        width: calc((100% - 40px) / 5);
+
+        &:nth-child(5n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media (max-width: 1200px) and (min-width: 999px) {
+      .ShopObjectCard,
+      .ShopObjectCardClean {
+        width: calc((100% - 30px) / 4);
+
+        &:nth-child(4n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media (max-width: 998px) and (min-width: 481px) {
+      .ShopObjectCard,
+      .ShopObjectCardClean {
+        width: calc((100% - 20px) / 3);
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 20px;
+      justify-content: center;
+
+      .ShopObjectCard,
+      .ShopObjectCardClean {
+        width: 100%;
+        max-width: 100%;
+        margin-right: 0;
+        margin-left: 0;
+      }
     }
   }
 
@@ -19,6 +64,31 @@
     padding: 15px;
     color: #99aab5;
     font-family: var(--template-font-body, inherit);
+    flex-wrap: wrap;
+    gap: 8px;
+
+    @media (max-width: 768px) {
+      overflow-x: auto;
+      overflow-y: hidden;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      padding: 15px 10px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+
+      &::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #99aab5;
+        border-radius: 2px;
+      }
+    }
 
     a {
       display: inline-block;
@@ -27,6 +97,13 @@
       text-transform: capitalize;
       position: relative;
       font-size: 18px;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      @media (max-width: 768px) {
+        font-size: 16px;
+        padding: 0 8px;
+      }
 
       &:first-child {
         &::before {
@@ -43,6 +120,11 @@
         width: 1px;
         height: 18px;
         background-color: #99aab5;
+
+        @media (max-width: 768px) {
+          height: 14px;
+          top: 3px;
+        }
       }
     }
   }
