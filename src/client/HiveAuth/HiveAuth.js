@@ -1,4 +1,4 @@
-import { Button, message, Select, Input } from 'antd';
+import { Button, message, Select, Input, Alert } from 'antd';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import Cookie from 'js-cookie';
@@ -15,6 +15,8 @@ import { getNotifications } from '../../store/userStore/userActions';
 import { chechExistUser } from '../../waivioApi/ApiClient';
 import Avatar from '../components/Avatar';
 import HAS from './hive-auth-wrapper';
+import { hasKeychain } from '../services/hive/keychain';
+import { login as keychainLogin } from '../services/hive/signer';
 
 import './HiveAuth.less';
 
@@ -94,18 +96,56 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
     [],
   );
 
-  const handleAuth = () => {
-    const auth = parseJSON(Cookie.get('auth'));
+  const handleAuth = async () => {
+    const username = user.toLowerCase().trim();
+
+    if (!username) {
+      message.error('Please enter a username');
+
+      return;
+    }
 
     setGoogleTagEvent('click_sign_in_hiveauth');
+
+    // Try Keychain first if available
+    // DO NOT open new window - use extension API which shows its own popup
+    if (hasKeychain()) {
+      try {
+        const result = await chechExistUser(username);
+
+        if (!result) {
+          message.error('Account name not found');
+
+          return;
+        }
+
+        const accounts = store.get('accounts') || [];
+
+        if (!accounts?.includes(username)) store.set('accounts', [username, ...accounts]);
+
+        // This calls requestSignBuffer which triggers extension popup (not a new browser window)
+        await keychainLogin({ username });
+        dispatch(login()).then(() => {
+          dispatch(busyLogin());
+          dispatch(getNotifications(username));
+        });
+        onCloseSingIn(false);
+      } catch (error) {
+        message.error(error.message || 'Login failed');
+      }
+
+      return;
+    }
+
+    // Fallback to HiveAuth QR flow (only if Keychain is not available)
+    const auth = parseJSON(Cookie.get('auth'));
+
     if (auth) {
       authorizeUserHAS({
         auth,
         cbWait: generateQrCode,
       });
     } else {
-      const username = user.toLowerCase().trim();
-
       chechExistUser(username).then(result => {
         if (result) {
           const accounts = store.get('accounts') || [];
@@ -121,6 +161,8 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
       });
     }
   };
+
+  const keychainAvailable = hasKeychain();
 
   return (
     <div className="HiveAuth" style={style}>
@@ -192,9 +234,17 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
       ) : (
         <span style={buttonStyle} onClick={() => setShowInput(true)}>
           {isSite && intl.formatMessage({ id: 'continue_with', defaultMessage: 'Continue with' })}{' '}
-          HiveAuth
+          Keychain
         </span>
       )}
+      {/* {!keychainAvailable && ( */}
+      {/*   <Alert */}
+      {/*     message="Keychain not installed — using QR" */}
+      {/*     type="info" */}
+      {/*     showIcon */}
+      {/*     style={{ marginBottom: '10px' }} */}
+      {/*   /> */}
+      {/* )} */}
     </div>
   );
 };
