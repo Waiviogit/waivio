@@ -62,6 +62,11 @@
           height: 450px;
           min-height: 450px;
         }
+
+        @media screen and (max-width: 768px) {
+          height: auto;
+          min-height: 300px;
+        }
       }
 
       &__previewImage {
@@ -184,20 +189,50 @@
       .MobileCarousel {
         width: 100%;
         overflow: hidden;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .ant-carousel {
+          width: 100%;
+        }
 
         .slick-list {
           width: 100%;
           overflow: hidden;
+          min-height: 300px;
+        }
+
+        .slick-track {
+          display: flex !important;
+          align-items: center;
+          min-height: 300px;
         }
 
         .slick-slide {
           width: 100% !important;
+          height: auto;
+          min-height: 300px;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+
+          > div {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+          }
 
           img {
             width: 100%;
             height: auto;
             max-height: 500px;
+            min-height: 300px;
             object-fit: contain;
+            display: block;
           }
         }
       }
