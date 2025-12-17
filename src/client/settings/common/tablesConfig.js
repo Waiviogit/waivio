@@ -21,16 +21,20 @@ export const buttonsConfig = (intl, setInformationForModal) => ({
       </div>
     );
   },
-  link: item => (
-    <a
-      href={`https://hiveonboard.com/create-account?ticket=${item.ticket}&redirect_url=https%3A%2F%2F${location?.hostname}&creator=vancouverdining`}
-    >
-      {intl.formatMessage({
-        id: 'apply',
-        defaultMessage: 'apply',
-      })}
-    </a>
-  ),
+  link: item => {
+    const hostname = typeof location !== 'undefined' ? location.hostname : '';
+
+    return (
+      <a
+        href={`https://hiveonboard.com/create-account?ticket=${item.ticket}&redirect_url=https%3A%2F%2F${hostname}&creator=vancouverdining`}
+      >
+        {intl.formatMessage({
+          id: 'apply',
+          defaultMessage: 'apply',
+        })}
+      </a>
+    );
+  },
   share: item => (
     <a role="presentation" onClick={() => setInformationForModal(item)}>
       {intl.formatMessage({

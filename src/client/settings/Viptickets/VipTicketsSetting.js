@@ -40,7 +40,8 @@ const VipTicketsSetting = props => {
   const [note, setNote] = useState(null);
   const [showMoreLoading, setShowMoreLoading] = useState({});
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
-  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https%3A%2F%2F${location?.hostname}&creator=vancouverdining`;
+  const hostname = typeof location !== 'undefined' ? location.hostname : '';
+  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https%3A%2F%2F${hostname}&creator=vancouverdining`;
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
