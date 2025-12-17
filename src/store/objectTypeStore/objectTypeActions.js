@@ -223,13 +223,55 @@ export const SHOW_MORE_TAGS_FOR_FILTERS = createAsyncActionType(
   '@objectType/SHOW_MORE_TAGS_FOR_FILTERS',
 );
 
+const extractTagsFromUrl = queryString => {
+  if (!queryString) return [];
+
+  const params = new URLSearchParams(queryString);
+  const excludedParams = ['search', 'rating', 'mapX', 'mapY', 'showPanel', 'radius', 'zoom'];
+  const tags = [];
+
+  params.forEach((value, key) => {
+    if (!excludedParams.includes(key)) {
+      let decodedValue = value;
+
+      if (value.includes('%')) {
+        try {
+          decodedValue = decodeURIComponent(value);
+        } catch (error) {
+          decodedValue = value;
+        }
+      }
+
+      decodedValue = decodedValue.replace(/^["']|["']$/g, '');
+
+      const tagValues = decodedValue
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
+      tags.push(...tagValues);
+    }
+  });
+
+  return tags;
+};
+
 export const showMoreTags = (category, objectType, skip, limit = 10) => (dispatch, getState) => {
   const state = getState();
-  const searchString = new URLSearchParams(getQueryString(state)).get('search') || '';
+  const queryString = getQueryString(state);
+  const searchString = new URLSearchParams(queryString).get('search') || '';
+  const selectedTags = extractTagsFromUrl(queryString);
 
   return dispatch({
     type: SHOW_MORE_TAGS_FOR_FILTERS.ACTION,
-    payload: ApiClient.getSearchTagByCategory(objectType, category, skip, limit, searchString),
+    payload: ApiClient.getSearchTagByCategory(
+      objectType,
+      category,
+      skip,
+      limit,
+      searchString,
+      selectedTags,
+    ),
     meta: category,
   });
 };
@@ -238,11 +280,13 @@ export const GET_TAG_CATEGORIES = createAsyncActionType('@objectType/GET_TAG_CAT
 
 export const getTagCategories = objectTypeName => (dispatch, getState) => {
   const state = getState();
-  const searchString = new URLSearchParams(getQueryString(state)).get('search') || '';
+  const queryString = getQueryString(state);
+  const searchString = new URLSearchParams(queryString).get('search') || '';
+  const selectedTags = extractTagsFromUrl(queryString);
 
   return dispatch({
     type: GET_TAG_CATEGORIES.ACTION,
-    payload: ApiClient.getSearchTagCategories(objectTypeName, searchString),
+    payload: ApiClient.getSearchTagCategories(objectTypeName, searchString, selectedTags),
   });
 };
 
@@ -250,11 +294,20 @@ export const GET_TAGS_BY_CATEGORY = createAsyncActionType('@objectType/GET_TAGS_
 
 export const getTagsByCategory = (objectTypeName, tagCategory) => (dispatch, getState) => {
   const state = getState();
-  const searchString = new URLSearchParams(getQueryString(state)).get('search') || '';
+  const queryString = getQueryString(state);
+  const searchString = new URLSearchParams(queryString).get('search') || '';
+  const selectedTags = extractTagsFromUrl(queryString);
 
   return dispatch({
     type: GET_TAGS_BY_CATEGORY.ACTION,
-    payload: ApiClient.getSearchTagByCategory(objectTypeName, tagCategory, 0, 10, searchString),
+    payload: ApiClient.getSearchTagByCategory(
+      objectTypeName,
+      tagCategory,
+      0,
+      10,
+      searchString,
+      selectedTags,
+    ),
     meta: tagCategory,
   });
 };
