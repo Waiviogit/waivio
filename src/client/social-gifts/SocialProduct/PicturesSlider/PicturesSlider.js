@@ -118,7 +118,6 @@ const PicturesSlider = ({
       prevArrow: <PrevArrow />,
       afterChange: current => {
         setPhotoIndex(current);
-        setCurrentImage(pictures[current]);
       },
     }),
     [pictures, slidesToShow, isMobileDevice],

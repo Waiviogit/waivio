@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
@@ -8,7 +8,6 @@ import { isTabletOrMobile } from '../socialProductHelper';
 // import { getSettingsAds } from '../../../../store/websiteStore/websiteSelectors';
 
 const ObjectsSlider = ({ title, objects, name }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   // const { frequency = 5 } = useAdLevelData();
@@ -27,29 +26,28 @@ const ObjectsSlider = ({ title, objects, name }) => {
   //       }, [])
   //     : objects;
 
-  const carouselSettings = {
-    dots: false,
-    arrows: !isTabletOrMobile,
-    lazyLoad: false,
-    rows: 1,
-    nextArrow: currentSlide >= objects.length - slidesToShow ? null : <Icon type="caret-right" />,
-    prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
-    slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
-    swipeToSlide: isTabletOrMobile,
-    infinite: false,
-    slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
-  };
-
-  const onSlideChange = (curr, next) => {
-    setCurrentSlide(next);
-  };
+  const carouselSettings = useMemo(
+    () => ({
+      dots: false,
+      arrows: !isTabletOrMobile,
+      lazyLoad: false,
+      rows: 1,
+      nextArrow: <Icon type="caret-right" />,
+      prevArrow: <Icon type="caret-left" />,
+      slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
+      swipeToSlide: isTabletOrMobile,
+      infinite: false,
+      slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
+    }),
+    [slidesToShow],
+  );
 
   return (
     !isEmpty(objects) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
-          <Carousel {...carouselSettings} beforeChange={onSlideChange}>
+          <Carousel {...carouselSettings}>
             {objects.map(
               (item, idx) => (
                 // item?.isAd ? (
