@@ -28,7 +28,7 @@
     flex-shrink: 0;
 
     @media (max-width: 768px) {
-      width: 100%;
+      display: none;
     }
   }
 
@@ -54,6 +54,31 @@
     text-transform: capitalize;
     color: @blue-gullGray;
     font-size: 18px;
+  }
+
+  &__filters-inline {
+    display: none;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: @black-text-basic;
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+
+  &__filters-inline-label {
+    font-weight: 600;
+    color: @black-text-basic;
+  }
+
+  &__filters-inline-link {
+    text-decoration: underline;
+    color: @black-text-basic;
+    text-transform: lowercase;
   }
 
   &__empty-message {
@@ -112,6 +137,12 @@
     border-color: var(--website-hover-color) !important;
     background: var(--website-hover-color) !important;
     color: var(--website-text-color) !important;
+  }
+}
+
+.NewDiscoverFiltersModal {
+  .ant-modal-body {
+    padding: 0;
   }
 }
 .new-discover-content-margin {
