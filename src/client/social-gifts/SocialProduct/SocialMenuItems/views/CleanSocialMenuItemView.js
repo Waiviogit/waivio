@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import { checkAndOpenWaivioLink } from '../../../../../common/helpers/urlHelpers';
 
 import '../SocialMenuItems.clean.less';
 
@@ -30,11 +29,7 @@ const CleanSocialMenuItemView = ({
   return webLink ? (
     <a
       className="SocialMenuItemsClean__item"
-      onClick={() => {
-        if (!checkAndOpenWaivioLink(itemBody.linkToWeb)) {
-          dispatch(setLinkSafetyInfo(itemBody.linkToWeb));
-        }
-      }}
+      onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
     >
       {content}
     </a>

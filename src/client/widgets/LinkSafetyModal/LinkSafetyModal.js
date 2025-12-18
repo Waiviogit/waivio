@@ -160,8 +160,8 @@ const LinkSafetyModal = props => {
     if (isEmpty(props.objectTypes)) props.getObjectTypes();
 
     if (
-      !isMobile() &&
-      ((props.info?.checkLinks && props.info?.rating > 8) ||
+      // !props.info?.showModal &&
+      ((props.info?.checkLinks && props.info?.rating > 8 && !isMobile()) ||
         (!props.info?.checkLinks && props.info?.rating > 4) ||
         (!props.info?.checkLinks && props.info?.rating === 0) ||
         props.info?.isWaivioLink) &&

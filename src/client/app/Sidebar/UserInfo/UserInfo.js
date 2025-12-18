@@ -18,7 +18,6 @@ import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
 import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
-import { checkAndOpenWaivioLink } from '../../../../common/helpers/urlHelpers';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 @injectIntl
@@ -120,11 +119,7 @@ class UserInfo extends React.Component {
                   <i className="iconfont icon-link text-icon link" />
                   <span
                     className={'main-color-button'}
-                    onClick={() => {
-                      if (!checkAndOpenWaivioLink(website)) {
-                        this.props.setLinkSafetyInfo(website);
-                      }
-                    }}
+                    onClick={() => this.props.setLinkSafetyInfo(website)}
                   >
                     {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
                   </span>

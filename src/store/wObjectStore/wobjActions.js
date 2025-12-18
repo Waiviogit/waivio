@@ -360,8 +360,20 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
-export const setLinkSafetyInfo = url => (dispatch, getState) =>
-  openLinkWithSafetyCheck(url, safeUrl => originalSetLinkSafetyInfo(safeUrl)(dispatch, getState));
+export const setLinkSafetyInfo = url => async (dispatch, getState) => {
+  const mainWaivioLink = 'https://www.waivio.com';
+
+  if (url?.includes(mainWaivioLink)) {
+    if (typeof window !== 'undefined') window.open(url, '_blank');
+
+    return;
+  }
+
+  // eslint-disable-next-line consistent-return
+  return openLinkWithSafetyCheck(url, safeUrl =>
+    originalSetLinkSafetyInfo(safeUrl)(dispatch, getState),
+  );
+};
 
 export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
   const waivioLink = url?.includes('/object/') || (url?.includes('/@') && !url?.includes('http'));

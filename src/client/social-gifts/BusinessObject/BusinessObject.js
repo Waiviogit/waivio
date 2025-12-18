@@ -43,7 +43,6 @@ import {
   getObjectsRewards,
   getReferenceObjectsList,
 } from '../../../waivioApi/ApiClient';
-import { checkAndOpenWaivioLink } from '../../../common/helpers/urlHelpers';
 import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './BusinessObject.less';
 import { enrichMenuItems } from '../SocialProduct/SocialProduct';
@@ -355,11 +354,7 @@ const mapDispatchToProps = dispatch => ({
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
-  setLinkSafety: url => {
-    if (!checkAndOpenWaivioLink(url)) {
-      dispatch(setLinkSafetyInfo(url));
-    }
-  },
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));
