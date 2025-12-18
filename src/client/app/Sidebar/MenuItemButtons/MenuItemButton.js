@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
-import { checkAndOpenWaivioLink } from '../../../../common/helpers/urlHelpers';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const MenuItemButton = ({ item, show }) => {
@@ -52,14 +51,7 @@ const MenuItemButton = ({ item, show }) => {
       case 'icon':
         return webLink ? (
           <div>
-            <a
-              onClick={() => {
-                if (!checkAndOpenWaivioLink(url)) {
-                  dispatch(setLinkSafetyInfo(url));
-                }
-              }}
-              className="MenuItemButtons__link "
-            >
+            <a onClick={() => dispatch(setLinkSafetyInfo(url))} className="MenuItemButtons__link ">
               <img src={itemBody.image} className="MenuItemButtons__icon" alt={itemBody.title} />
             </a>
             <a target={linkTarget} href={url} className="MenuItemButtons__link">
@@ -81,13 +73,7 @@ const MenuItemButton = ({ item, show }) => {
       case 'image':
         return webLink ? (
           <div>
-            <a
-              onClick={() => {
-                if (!checkAndOpenWaivioLink(url)) {
-                  dispatch(setLinkSafetyInfo(url));
-                }
-              }}
-            >
+            <a onClick={() => dispatch(setLinkSafetyInfo(url))}>
               <img src={itemBody.image} className="MenuItemButtons__image" alt={linkTarget} />
             </a>
           </div>
@@ -103,11 +89,7 @@ const MenuItemButton = ({ item, show }) => {
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
               <a
-                onClick={() => {
-                  if (!checkAndOpenWaivioLink(url)) {
-                    dispatch(setLinkSafetyInfo(url));
-                  }
-                }}
+                onClick={() => dispatch(setLinkSafetyInfo(url))}
                 className="MenuItemButtons__hideLongTitle"
               >
                 {itemBody.title}

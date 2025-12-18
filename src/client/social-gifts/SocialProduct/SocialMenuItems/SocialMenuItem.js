@@ -4,7 +4,6 @@ import { useHistory } from 'react-router';
 import { has } from 'lodash';
 import { useDispatch } from 'react-redux';
 import MenuItemContentSwitcher from './MenuItemContentSwitcher';
-import { checkAndOpenWaivioLink } from '../../../../common/helpers/urlHelpers';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 import useTemplateProvider from '../../../../designTemplates/TemplateProvider';
 
@@ -47,11 +46,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
         return webLink ? (
           <div>
             <a
-              onClick={() => {
-                if (!checkAndOpenWaivioLink(itemBody.linkToWeb)) {
-                  dispatch(setLinkSafetyInfo(itemBody.linkToWeb));
-                }
-              }}
+              onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
               className="SocialMenuItems__link"
             >
               <img src={itemBody.image} className="SocialMenuItems__icon" alt="pic" />
@@ -72,13 +67,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
       case 'image':
         return webLink ? (
           <div>
-            <a
-              onClick={() => {
-                if (!checkAndOpenWaivioLink(itemBody.linkToWeb)) {
-                  dispatch(setLinkSafetyInfo(itemBody.linkToWeb));
-                }
-              }}
-            >
+            <a onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}>
               <img src={itemBody.image} className="SocialMenuItems__image" alt="pic" />
             </a>
           </div>

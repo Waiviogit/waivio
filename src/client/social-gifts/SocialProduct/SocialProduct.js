@@ -69,7 +69,6 @@ import { getFeedFromState } from '../../../common/helpers/stateHelpers';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import InstacartWidget from '../../widgets/InstacartWidget';
-import { checkAndOpenWaivioLink } from '../../../common/helpers/urlHelpers';
 import { resetWobjectExpertise, setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import useAdLevelData from '../../../hooks/useAdsense';
 import useTemplateProvider from '../../../designTemplates/TemplateProvider';
@@ -575,11 +574,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
-  setLinkSafety: url => {
-    if (!checkAndOpenWaivioLink(url)) {
-      dispatch(setLinkSafetyInfo(url));
-    }
-  },
+  setLinkSafety: url => dispatch(setLinkSafetyInfo(url)),
   getObjectPosts: (username, object, lim) =>
     dispatch(getObjectPosts({ username, object, limit: lim })),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
