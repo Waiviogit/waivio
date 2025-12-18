@@ -189,35 +189,22 @@ export const changeUrl = (activeTags, history, location) => {
 
 export const parseDiscoverTagsFilters = search => {
   const params = new URLSearchParams(search);
+  const categories = params.getAll('category');
+  const tags = params.getAll('tag');
+
   const result = {};
 
-  const explicitCategory = params.get('category');
-  const explicitTag = params.get('tag');
+  categories.forEach((cat, index) => {
+    const tag = tags[index];
+    if (!cat || !tag) return;
 
-  if (explicitCategory && explicitTag) {
-    result[explicitCategory] = explicitTag
-      .split(',')
-      .map(t => decodeURIComponent(t).trim())
-      .filter(Boolean);
-  }
-
-  params.forEach((value, key) => {
-    if (['search', 'category', 'tag'].includes(key)) return;
-
-    const tags = decodeURIComponent(value)
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
-
-    if (!result[key]) {
-      result[key] = [];
+    if (!result[cat]) {
+      result[cat] = [];
     }
 
-    tags.forEach(tag => {
-      if (!result[key].includes(tag)) {
-        result[key].push(tag);
-      }
-    });
+    if (!result[cat].includes(tag)) {
+      result[cat].push(tag);
+    }
   });
 
   return result;
@@ -233,16 +220,20 @@ export const parseDiscoverQuery = search => {
   };
 };
 
-export const buildCanonicalSearch = ({ search, category, tagsByCategory }) => {
+export const buildCanonicalSearch = ({ search, tagsByCategory }) => {
   const params = new URLSearchParams();
 
-  if (search) params.set('search', search);
-  if (category) params.set('category', category);
+  if (search) {
+    params.set('search', search);
+  }
 
   Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
-    if (tags?.length) {
-      params.set(cat, tags.join(','));
-    }
+    (tags || []).forEach(tag => {
+      if (tag) {
+        params.append('category', cat);
+        params.append('tag', tag);
+      }
+    });
   });
 
   return params.toString();

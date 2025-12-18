@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams, useRouteMatch, useLocation } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import { isEmpty } from 'lodash';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import { getHelmetIcon, getAppHost, getSiteName } from '../../../store/appStore/appSelectors';
 import {
@@ -12,11 +13,13 @@ import {
   getObjectsTypeByTypesNameMore,
   resetObjects,
   getTagCategories,
+  setTagsFiltersAndLoad,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
   getWobjectsList,
   getWobjectsHasMore,
   getActiveFilters,
+  getTagCategories as getTagCategoriesSelector,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { parseDiscoverQuery, buildCanonicalSearch } from '../../discoverObjects/helper';
 import EmptyCampaing from '../../statics/EmptyCampaign';
@@ -39,7 +42,7 @@ const NewDiscover = () => {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const activeObjectTypeName = match.params.type || match.params.typeName;
   const favicon = useSelector(getHelmetIcon);
   const host = useSelector(getAppHost);
   const siteName = useSelector(getSiteName);
@@ -49,8 +52,10 @@ const NewDiscover = () => {
   const activeFilters = useSelector(getActiveFilters);
   const objects = useSelector(getWobjectsList);
   const hasMoreObjects = useSelector(getWobjectsHasMore);
+  const tagCategories = useSelector(getTagCategoriesSelector);
 
   const [loading, setLoading] = useState(false);
+  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
 
   const discoverUsers = match.url?.includes('discover-users');
 
@@ -88,18 +93,6 @@ const NewDiscover = () => {
   useEffect(() => {
     if (discoverUsers || !type) return;
 
-    const canonical = buildCanonicalSearch({
-      search,
-      category,
-      tagsByCategory,
-    });
-
-    if (canonical !== location.search.replace('?', '')) {
-      history.replace(`${location.pathname}?${canonical}`);
-
-      return;
-    }
-
     const ac = new AbortController();
 
     setLoading(true);
@@ -111,7 +104,7 @@ const NewDiscover = () => {
 
     // eslint-disable-next-line consistent-return
     return () => ac.abort();
-  }, [search, category, tagsByCategory, type, discoverUsers]);
+  }, [location.search, type, discoverUsers]);
 
   const loadMore = () => {
     const skip = objects?.length || 0;
@@ -126,7 +119,9 @@ const NewDiscover = () => {
       tagsByCategory,
     });
 
+    dispatch(setTagsFiltersAndLoad(tagsByCategory));
     history.push(`${location.pathname}?${canonical}`);
+    // dispatch(getTagCategories(activeObjectTypeName))
   };
 
   const removeTag = (cat, tag) => {
@@ -139,12 +134,17 @@ const NewDiscover = () => {
 
     const canonical = buildCanonicalSearch({
       search,
-      category,
       tagsByCategory: updated,
     });
 
+    dispatch(setTagsFiltersAndLoad(updated));
     history.push(`${location.pathname}?${canonical}`);
+    // dispatch(getTagCategories(activeObjectTypeName))
   };
+
+  useEffect(() => {
+    dispatch(getTagCategories(activeObjectTypeName));
+  }, [location.search]);
 
   const fetcher = async (users, authUser, sort, skip) => {
     const response = await searchUsers(user, userName, limit, !isGuest, skip);
@@ -206,13 +206,23 @@ const NewDiscover = () => {
       </Helmet>
 
       <div className="NewDiscover__container">
-        {!discoverUsers && (
+        {!discoverUsers && !isMobile() && !isEmpty(tagCategories) && (
           <div className="NewDiscover__sidebar">
             <NewDiscoverFilters />
           </div>
         )}
 
         <div className="NewDiscover__content">
+          {!discoverUsers && isMobile() && (
+            <div
+              className="NewDiscover__filters-inline"
+              role="presentation"
+              onClick={() => setIsFiltersModalOpen(true)}
+            >
+              <span className="NewDiscover__filters-inline-label">Filters:</span>
+              <span className="NewDiscover__filters-inline-link">add</span>
+            </div>
+          )}
           <div className="NewDiscover__wrap">
             <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
 
@@ -234,6 +244,16 @@ const NewDiscover = () => {
           {renderContent()}
         </div>
       </div>
+      <Modal
+        className="NewDiscoverFiltersModal"
+        title={null}
+        footer={null}
+        visible={isFiltersModalOpen}
+        onCancel={() => setIsFiltersModalOpen(false)}
+        destroyOnClose
+      >
+        <NewDiscoverFilters />
+      </Modal>
     </div>
   );
 };
