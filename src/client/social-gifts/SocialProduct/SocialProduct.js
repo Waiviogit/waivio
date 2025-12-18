@@ -224,8 +224,7 @@ const SocialProduct = ({
 
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-  const showGallery =
-    !isEmpty(wobject?.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
+  const showGallery = !isEmpty(wobject?.preview_gallery) || !isEmpty(getObjectAvatar(wobject));
   const tagCategoriesForDescr = reduce(
     wobject?.tagCategory || [],
     (acc, curr) => {

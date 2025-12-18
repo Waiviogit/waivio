@@ -89,10 +89,15 @@ const PicturesSlider = ({
 
   useEffect(() => {
     getWobjectGallery(authorPermlink, locale).then(async al => {
-      const allPhotos = al
-        ?.flatMap(alb => alb?.items)
-        ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+      let allPhotos =
+        al
+          ?.flatMap(alb => alb?.items)
+          ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar')) || [];
       const avatar = getObjectAvatar(currentWobj);
+
+      if (avatar && !allPhotos.some(p => p.body === avatar)) {
+        allPhotos = [{ body: avatar, name: 'avatar', _id: 'avatar' }, ...allPhotos];
+      }
 
       setPictures(allPhotos);
       setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
@@ -156,24 +161,35 @@ const PicturesSlider = ({
         </div>
       ) : (
         <div className={'MobileCarousel'}>
-          <Carousel ref={slider} {...mobileSlider}>
-            {map(pictures, pic => (
-              <div key={pic._id}>
-                <img
-                  className="PicturesSlider__previewImage"
-                  src={getProxyImageURL(pic.body)}
-                  alt={altText}
-                  onClick={() => setIsOpen(true)}
-                />
-              </div>
-            ))}
-          </Carousel>
+          {pictures.length > 1 ? (
+            <Carousel key={pictures.length} ref={slider} {...mobileSlider}>
+              {map(pictures, pic => (
+                <div key={pic._id || pic.id || pic.body} className="PicturesSlider__mobile-item">
+                  <img
+                    className="PicturesSlider__previewImage"
+                    src={getProxyImageURL(pic.body)}
+                    alt={altText}
+                    onClick={() => setIsOpen(true)}
+                  />
+                </div>
+              ))}
+            </Carousel>
+          ) : (
+            <div className="PicturesSlider__mobile-item">
+              <img
+                className="PicturesSlider__previewImage"
+                src={getProxyImageURL(pictures[0]?.body)}
+                alt={altText}
+                onClick={() => setIsOpen(true)}
+              />
+            </div>
+          )}
         </div>
       )}
       <br />
       <Carousel {...carouselSettings}>
         {map(pictures, (pic, i) => (
-          <div key={pic._id}>
+          <div key={pic._id || pic.id || pic.body}>
             <img
               onClick={e => onImgClick(e, pic)}
               onMouseOver={() => {

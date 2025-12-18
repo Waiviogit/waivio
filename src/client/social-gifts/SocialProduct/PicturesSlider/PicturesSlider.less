@@ -6,13 +6,18 @@
   //justify-content: center;
   &__previewImage {
     object-fit: contain;
-    width: 350px;
-    height: 350px;
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    max-height: 500px;
     cursor: pointer;
+    display: block;
+    margin: 0 auto;
 
     @media @small {
       width: 500px;
       height: 500px;
+      object-fit: cover;
     }
   }
 

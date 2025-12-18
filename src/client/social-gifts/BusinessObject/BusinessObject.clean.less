@@ -11,6 +11,14 @@
     padding: 20px 24px;
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
   &__breadcrumbs {
     margin-bottom: 20px;
   }
@@ -26,216 +34,38 @@
   &__mainContent {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    min-width: 0;
 
     @media @small {
       flex-direction: row;
+      align-items: flex-start;
     }
   }
 
   &__leftColumn {
-    width: 50%;
-    padding: 0 15px 0 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0;
+
+    @media @small {
+      flex: 0 0 50%;
+      max-width: 50%;
+      padding-right: 24px;
+    }
   }
 
   &__rightColumn {
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
+    margin-top: 20px;
 
     @media @small {
-      width: 50%;
+      flex: 0 0 50%;
       max-width: 50%;
-    }
-
-    .PicturesSlider {
-      width: 100%;
-      max-width: 100%;
-      overflow: visible;
-
-      > div:first-child {
-        width: 100%;
-        height: 450px;
-        min-height: 450px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        @media @small {
-          height: 450px;
-          min-height: 450px;
-        }
-
-        @media screen and (max-width: 768px) {
-          height: auto;
-          min-height: 300px;
-        }
-      }
-
-      &__previewImage {
-        width: 100%;
-        max-width: 100%;
-        height: 450px;
-        min-height: 450px;
-        object-fit: cover;
-        border-radius: 12px;
-
-        @media @small {
-          height: 450px;
-          min-height: 450px;
-        }
-      }
-
-      &__thumbnail {
-        width: 60px !important;
-        height: 60px !important;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &--active {
-          width: 60px !important;
-          height: 60px !important;
-          object-fit: cover;
-          border-radius: 8px;
-        }
-
-        &:hover {
-          border-color: var(--website-color);
-        }
-
-        &--active {
-          border-color: var(--website-color) !important;
-        }
-      }
-
-      .ant-carousel {
-        margin-top: 12px;
-        width: 100% !important;
-        max-width: 100%;
-        overflow: visible;
-      }
-
-      .slick-list {
-        max-width: 100%;
-        overflow: hidden;
-      }
-
-      .slick-track {
-        display: flex !important;
-        align-items: center;
-        flex-wrap: nowrap !important;
-      }
-
-      .slick-slide {
-        width: 68px !important;
-        height: 60px !important;
-        margin: 0;
-        padding: 0 4px;
-        box-sizing: border-box;
-        flex-shrink: 0;
-
-        > div {
-          width: 100%;
-          height: 100%;
-        }
-
-        img {
-          width: 60px;
-          height: 60px;
-        }
-      }
-
-      .slick-prev,
-      .slick-next {
-        width: 25px;
-        height: 25px;
-        z-index: 10;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-
-        @media @small {
-          display: flex !important;
-        }
-
-        &.slick-disabled {
-          opacity: 0.3;
-          pointer-events: none;
-        }
-
-        .anticon {
-          font-size: 14px;
-          color: #333;
-        }
-      }
-
-      .slick-prev {
-        left: -24px;
-
-        @media screen and (max-width: 768px) {
-          left: -24px;
-        }
-      }
-
-      .slick-next {
-        right: -24px;
-
-        @media screen and (max-width: 768px) {
-          right: -24px;
-        }
-      }
-
-      .MobileCarousel {
-        width: 100%;
-        overflow: hidden;
-        min-height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        .ant-carousel {
-          width: 100%;
-        }
-
-        .slick-list {
-          width: 100%;
-          overflow: hidden;
-          min-height: 300px;
-        }
-
-        .slick-track {
-          display: flex !important;
-          align-items: center;
-          min-height: 300px;
-        }
-
-        .slick-slide {
-          width: 100% !important;
-          height: auto;
-          min-height: 300px;
-          display: flex !important;
-          align-items: center;
-          justify-content: center;
-
-          > div {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 300px;
-          }
-
-          img {
-            width: 100%;
-            height: auto;
-            max-height: 500px;
-            min-height: 300px;
-            object-fit: contain;
-            display: block;
-          }
-        }
-      }
+      margin-top: 0;
     }
   }
 
@@ -246,6 +76,15 @@
     color: #1a1a1a;
     margin: 0 0 8px;
     line-height: 1.3;
+    word-break: break-word;
+
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      white-space: normal !important;
+      word-wrap: break-word !important;
+      overflow: visible !important;
+      text-overflow: unset !important;
+    }
 
     @media @small {
       font-size: 28px;
@@ -303,6 +142,7 @@
     background: #f9f9f9;
     border-radius: 8px;
     border: 1px solid #e8e8e8;
+    max-width: 100%;
   }
 
   &__urlIcon {
@@ -452,13 +292,9 @@
   }
 
   &__detailsRow {
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-bottom: 24px;
-
-    @media @small {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -8px 24px;
   }
 
   &__detailsCard {
@@ -466,6 +302,14 @@
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    width: 100%;
+    box-sizing: border-box;
+    margin: 8px;
+
+    @media @small {
+      width: calc(33.333% - 16px);
+    }
 
     &--map {
       .BusinessObjectClean__mapWrapper {
@@ -586,7 +430,7 @@
   &__section {
     background: #fff;
     border-radius: 16px;
-    padding: 24px;
+    padding: 5px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin-bottom: 24px;
 
@@ -619,7 +463,6 @@
       font-family: var(--template-font-body, 'Inter', sans-serif);
     }
 
-    // About section - classic layout (50/50 with alternating direction)
     .SocialProductDescription {
       &__paragraph-container {
         display: flex;
@@ -746,7 +589,6 @@
     }
   }
 
-  // Tags styling
   .SocialProduct__featuresContainer,
   .SocialTagCategories {
     .ant-tag {
@@ -757,7 +599,6 @@
     }
   }
 
-  // Experts styling
   .SocialProduct__addOn-section {
     .SocialProduct__heading {
       font-family: var(--template-font-title, 'Playfair Display', serif);
@@ -876,7 +717,6 @@
     }
   }
 
-  // Sliders styling
   .ObjectsSlider {
     margin-bottom: 24px;
     padding: 0;
@@ -908,6 +748,10 @@
         transition: all 0.2s ease;
         color: #333 !important;
 
+        @media screen and (max-width: 768px) {
+          top: 40%;
+        }
+
         &::before {
           display: none !important;
         }
@@ -931,16 +775,31 @@
       }
 
       .slick-prev {
-        left: -40px;
+        left: -30px;
+
+        @media screen and (max-width: 768px) {
+          left: -10px;
+        }
+
+        @media @small {
+          left: -40px;
+        }
       }
 
       .slick-next {
-        right: -40px;
+        right: -20px;
+
+        @media screen and (max-width: 768px) {
+          right: -10px;
+        }
+
+        @media @small {
+          right: -40px;
+        }
       }
     }
   }
 
-  // Sliders styling
   .Slider__wrapper-featured,
   .Slider__wrapper-nearby {
     position: relative;
@@ -1004,7 +863,6 @@
     }
   }
 
-  // Reviews styling
   .SocialProductReviews {
     .SocialProduct__heading {
       font-family: var(--template-font-title, 'Playfair Display', serif);
@@ -1042,6 +900,55 @@
 
   &__rewardWrap {
     margin-top: 20px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .BusinessObjectClean {
+      &__rightColumn {
+        .PicturesSlider {
+          /* slick ріже стрілки — відкриваємо overflow */
+          .ant-carousel {
+            overflow: visible !important;
+          }
+
+          .slick-list {
+            overflow: visible !important;
+          }
+
+          .slick-track {
+            overflow: visible !important;
+          }
+
+          /* самі стрілки */
+          .slick-prev,
+          .slick-next {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            z-index: 100;
+          }
+
+          /* позиція стрілок */
+          .slick-prev {
+            left: -24px !important;
+          }
+
+          .slick-next {
+            right: -24px !important;
+          }
+
+          /* disabled — видно, але приглушено */
+          .slick-prev.slick-disabled,
+          .slick-next.slick-disabled {
+            opacity: 0.3 !important;
+            pointer-events: none !important;
+          }
+        }
+      }
+    }
   }
 }
 
