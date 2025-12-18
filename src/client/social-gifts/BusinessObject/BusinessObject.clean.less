@@ -748,6 +748,10 @@
         transition: all 0.2s ease;
         color: #333 !important;
 
+        @media screen and (max-width: 768px) {
+          top: 40%;
+        }
+
         &::before {
           display: none !important;
         }
@@ -771,11 +775,27 @@
       }
 
       .slick-prev {
-        left: -40px;
+        left: -30px;
+
+        @media screen and (max-width: 768px) {
+          left: -10px;
+        }
+
+        @media @small {
+          left: -40px;
+        }
       }
 
       .slick-next {
-        right: -40px;
+        right: -20px;
+
+        @media screen and (max-width: 768px) {
+          right: -10px;
+        }
+
+        @media @small {
+          right: -40px;
+        }
       }
     }
   }
@@ -880,6 +900,55 @@
 
   &__rewardWrap {
     margin-top: 20px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .BusinessObjectClean {
+      &__rightColumn {
+        .PicturesSlider {
+          /* slick ріже стрілки — відкриваємо overflow */
+          .ant-carousel {
+            overflow: visible !important;
+          }
+
+          .slick-list {
+            overflow: visible !important;
+          }
+
+          .slick-track {
+            overflow: visible !important;
+          }
+
+          /* самі стрілки */
+          .slick-prev,
+          .slick-next {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            z-index: 100;
+          }
+
+          /* позиція стрілок */
+          .slick-prev {
+            left: -24px !important;
+          }
+
+          .slick-next {
+            right: -24px !important;
+          }
+
+          /* disabled — видно, але приглушено */
+          .slick-prev.slick-disabled,
+          .slick-next.slick-disabled {
+            opacity: 0.3 !important;
+            pointer-events: none !important;
+          }
+        }
+      }
+    }
   }
 }
 
