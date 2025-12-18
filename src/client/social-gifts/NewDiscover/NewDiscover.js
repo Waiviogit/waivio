@@ -20,6 +20,7 @@ import {
   getWobjectsHasMore,
   getActiveFilters,
   getTagCategories as getTagCategoriesSelector,
+  getTagCategoriesLoading,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
 import { parseDiscoverQuery, buildCanonicalSearch } from '../../discoverObjects/helper';
 import EmptyCampaing from '../../statics/EmptyCampaign';
@@ -53,6 +54,7 @@ const NewDiscover = () => {
   const objects = useSelector(getWobjectsList);
   const hasMoreObjects = useSelector(getWobjectsHasMore);
   const tagCategories = useSelector(getTagCategoriesSelector);
+  const isTagsLoading = useSelector(getTagCategoriesLoading);
 
   const [loading, setLoading] = useState(false);
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
@@ -206,26 +208,35 @@ const NewDiscover = () => {
       </Helmet>
 
       <div className="NewDiscover__container">
-        {!discoverUsers && !isMobile() && !isEmpty(tagCategories) && (
-          <div className="NewDiscover__sidebar">
-            <NewDiscoverFilters />
-          </div>
+        {!discoverUsers && !isMobile() && (
+          <>
+            {isTagsLoading && (
+              <div className="NewDiscover__sidebar">
+                <Loading />
+              </div>
+            )}
+
+            {!isTagsLoading && !isEmpty(tagCategories) && (
+              <div className="NewDiscover__sidebar">
+                <NewDiscoverFilters />
+              </div>
+            )}
+          </>
         )}
 
         <div className="NewDiscover__content">
-          {!discoverUsers && isMobile() && (
-            <div
-              className="NewDiscover__filters-inline"
-              role="presentation"
-              onClick={() => setIsFiltersModalOpen(true)}
-            >
-              <span className="NewDiscover__filters-inline-label">Filters:</span>
-              <span className="NewDiscover__filters-inline-link">add</span>
-            </div>
-          )}
           <div className="NewDiscover__wrap">
             <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-
+            {!discoverUsers && isMobile() && (
+              <div
+                className="NewDiscover__filters-inline"
+                role="presentation"
+                onClick={() => setIsFiltersModalOpen(true)}
+              >
+                <span className="NewDiscover__filters-inline-label">Filters:</span>
+                <span className="NewDiscover__filters-inline-link">add</span>
+              </div>
+            )}
             {search && (
               <Tag closable onClose={removeSearch}>
                 Search: {search}
@@ -247,12 +258,12 @@ const NewDiscover = () => {
       <Modal
         className="NewDiscoverFiltersModal"
         title={null}
-        footer={null}
         visible={isFiltersModalOpen}
         onCancel={() => setIsFiltersModalOpen(false)}
+        onOk={() => setIsFiltersModalOpen(false)}
         destroyOnClose
       >
-        <NewDiscoverFilters />
+        {isTagsLoading ? <Loading /> : <NewDiscoverFilters />}
       </Modal>
     </div>
   );
