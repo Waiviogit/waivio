@@ -1,8 +1,9 @@
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, size } from 'lodash';
+import { isIOS } from '../../common/helpers';
 
-import { getAllFollowing, isMobile } from '../../common/helpers/apiHelpers';
+import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { openLinkWithSafetyCheck } from '../../common/helpers/urlHelpers';
 import {
@@ -381,7 +382,7 @@ export const originalSetLinkSafetyInfo = url => async (dispatch, getState) => {
   const checkLinks = getExitPageSetting(getState());
   const result = waivioLink ? {} : await checkLinkSafety(url);
   const rating = Math.round(result?.rating);
-  const showModal = isMobile() || (isAuth && checkLinks) || (rating < 5 && rating > 0);
+  const showModal = isIOS() || (isAuth && checkLinks) || (rating < 5 && rating > 0);
 
   const payloadData = waivioLink
     ? { showModal: false, isWaivioLink: true }

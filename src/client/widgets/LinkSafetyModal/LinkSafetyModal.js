@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import classNames from 'classnames';
+import { isIOS } from '../../../common/helpers';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getLinkSafetyInfo } from '../../../store/wObjectStore/wObjectSelectors';
 import { rateObject, resetLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
@@ -52,10 +53,10 @@ const LinkSafetyModal = props => {
   }
   // const noInfo = info?.rating === 0 && !info?.linkWaivio;
   const isDangerous = status === 'Dangerous';
-  const showModal = props.info?.rating < 9 || (isMobile() && props.info.rating >= 9);
+  const showModal = props.info?.rating < 9 || (isIOS() && props.info.rating >= 9);
   let infoText;
 
-  if (isMobile() && props.info.rating >= 9) {
+  if (isIOS() && props.info.rating >= 9) {
     infoText = "You're about to leave the platform.";
   } else if (isDangerous) {
     infoText = 'Caution! This link has a low safety rating and may be dangerous.';
@@ -161,7 +162,7 @@ const LinkSafetyModal = props => {
 
     if (
       // !props.info?.showModal &&
-      ((props.info?.checkLinks && props.info?.rating > 8 && !isMobile()) ||
+      ((props.info?.checkLinks && props.info?.rating > 8 && !isIOS()) ||
         (!props.info?.checkLinks && props.info?.rating > 4) ||
         (!props.info?.checkLinks && props.info?.rating === 0) ||
         props.info?.isWaivioLink) &&

@@ -196,6 +196,7 @@ export const parseDiscoverTagsFilters = search => {
 
   categories.forEach((cat, index) => {
     const tag = tags[index];
+
     if (!cat || !tag) return;
 
     if (!result[cat]) {
