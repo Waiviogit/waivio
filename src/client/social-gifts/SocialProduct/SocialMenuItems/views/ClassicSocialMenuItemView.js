@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { checkAndOpenWaivioLink } from '../../../../../common/helpers/urlHelpers';
 
 const ClassicSocialMenuItemView = ({
   isNestedObjType,
@@ -29,7 +30,11 @@ const ClassicSocialMenuItemView = ({
   return webLink ? (
     <a
       className="SocialMenuItems__item"
-      onClick={() => dispatch(setLinkSafetyInfo(itemBody.linkToWeb))}
+      onClick={() => {
+        if (!checkAndOpenWaivioLink(itemBody.linkToWeb)) {
+          dispatch(setLinkSafetyInfo(itemBody.linkToWeb));
+        }
+      }}
     >
       {content}
     </a>
