@@ -22,6 +22,7 @@ import {
   getTagCategories as getTagCategoriesSelector,
   getTagCategoriesLoading,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
+import SkeletonRow from '../../components/Skeleton/SkeletonRow';
 import { parseDiscoverQuery, buildCanonicalSearch } from '../../discoverObjects/helper';
 import EmptyCampaing from '../../statics/EmptyCampaign';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
@@ -208,20 +209,22 @@ const NewDiscover = () => {
       </Helmet>
 
       <div className="NewDiscover__container">
-        {!discoverUsers && !isMobile() && (
-          <>
-            {isTagsLoading && (
-              <div className="NewDiscover__sidebar">
-                <Loading />
+        {!discoverUsers && !isMobile() && (isTagsLoading || !isEmpty(tagCategories)) && (
+          <div className="NewDiscover__sidebar">
+            {isTagsLoading ? (
+              <div className="NewDiscoverFilters">
+                <div className="NewDiscoverFilters__title">
+                  <i className="iconfont icon-trysearchlist NewDiscoverFilters__icon" />
+                  <span>Filters</span>
+                </div>
+                <div className="NewDiscoverFilters__skeleton">
+                  <SkeletonRow rows={8} />
+                </div>
               </div>
+            ) : (
+              <NewDiscoverFilters />
             )}
-
-            {!isTagsLoading && !isEmpty(tagCategories) && (
-              <div className="NewDiscover__sidebar">
-                <NewDiscoverFilters />
-              </div>
-            )}
-          </>
+          </div>
         )}
 
         <div className="NewDiscover__content">
@@ -263,7 +266,7 @@ const NewDiscover = () => {
         onOk={() => setIsFiltersModalOpen(false)}
         destroyOnClose
       >
-        {isTagsLoading ? <Loading /> : <NewDiscoverFilters />}
+        <NewDiscoverFilters />
       </Modal>
     </div>
   );
