@@ -123,7 +123,7 @@ const BusinessObject = ({
   const linkUrl = get(wobject, 'url', '');
   const linkUrlHref = linkUrl?.endsWith('*') ? linkUrl?.slice(0, -1) : linkUrl;
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-  const showGallery = !isEmpty(wobject.preview_gallery);
+  const showGallery = !isEmpty(wobject.preview_gallery) || !isEmpty(getObjectAvatar(wobject));
   const groupId = wobject.groupId;
   const productIdBody = wobject.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))

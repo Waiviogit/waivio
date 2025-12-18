@@ -68,26 +68,9 @@
     gap: 8px;
 
     @media (max-width: 768px) {
-      overflow-x: auto;
-      overflow-y: hidden;
-      justify-content: flex-start;
-      flex-wrap: nowrap;
+      justify-content: center;
+      flex-wrap: wrap;
       padding: 15px 10px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-
-      &::-webkit-scrollbar {
-        height: 4px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: #99aab5;
-        border-radius: 2px;
-      }
     }
 
     a {
@@ -98,11 +81,12 @@
       position: relative;
       font-size: 18px;
       white-space: nowrap;
-      flex-shrink: 0;
 
       @media (max-width: 768px) {
         font-size: 16px;
         padding: 0 8px;
+        white-space: normal;
+        text-align: center;
       }
 
       &:first-child {
