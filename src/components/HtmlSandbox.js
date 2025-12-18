@@ -351,16 +351,10 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000 }) =
       },
       allowProtocolRelative: false,
       transformTags: {
-        a: (tagName, attribs) => {
-          const out = { ...attribs };
-
-          // якщо відкриття в новому контексті — підстрахуємось rel
-          if (out.target && out.target !== '_self') {
-            out.rel = out.rel || 'noopener nofollow ugc';
-          }
-
-          return { tagName: 'a', attribs: out };
-        },
+        a: (tagName, attribs) => ({
+          tagName: 'a',
+          attribs: { ...attribs, rel: 'noopener nofollow ugc', target: '_blank' },
+        }),
         link: (tagName, attribs) => {
           const rel = (attribs.rel || '').toLowerCase();
 
