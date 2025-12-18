@@ -12,7 +12,9 @@ const SocialTagCategories = ({ tagCategoriesList, wobject }) => {
         {tags.map(item => (
           <span key={item.body}>
             <Tag key={`${category}/${item.body}`} className="SocialProduct__tag-item">
-              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+              <Link to={`/discover-objects/${type}?category=${category}&tag=${item.body}`}>
+                {item.body}
+              </Link>
             </Tag>{' '}
           </span>
         ))}

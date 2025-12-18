@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import moment from 'moment/moment';
 import Loading from '../../../components/Icon/Loading';
 import { getHtml } from '../../../components/Story/Body';
+import { checkAndOpenWaivioLink } from '../../../../common/helpers/urlHelpers';
 import { setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 
 const AdminSpamDetails = ({
@@ -47,7 +48,9 @@ const AdminSpamDetails = ({
       e.stopPropagation();
       const href = anchor.getAttribute('href');
 
-      dispatch(setLinkSafetyInfo(href));
+      if (!checkAndOpenWaivioLink(href)) {
+        dispatch(setLinkSafetyInfo(href));
+      }
     }
   };
 

@@ -159,3 +159,14 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
     // eslint-disable-next-line consistent-return
   }
 };
+export const checkAndOpenWaivioLink = url => {
+  const mainWaivioLink = 'https://www.waivio.com';
+
+  if (url?.includes(mainWaivioLink)) {
+    if (typeof window !== 'undefined') window.open(url, '_blank');
+
+    return true;
+  }
+
+  return false;
+};
