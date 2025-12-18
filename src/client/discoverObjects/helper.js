@@ -187,6 +187,58 @@ export const changeUrl = (activeTags, history, location) => {
   }
 };
 
+export const parseDiscoverTagsFilters = search => {
+  const params = new URLSearchParams(search);
+  const categories = params.getAll('category');
+  const tags = params.getAll('tag');
+
+  const result = {};
+
+  categories.forEach((cat, index) => {
+    const tag = tags[index];
+    if (!cat || !tag) return;
+
+    if (!result[cat]) {
+      result[cat] = [];
+    }
+
+    if (!result[cat].includes(tag)) {
+      result[cat].push(tag);
+    }
+  });
+
+  return result;
+};
+
+export const parseDiscoverQuery = search => {
+  const params = new URLSearchParams(search);
+
+  return {
+    search: params.get('search') || '',
+    category: params.get('category') || null,
+    tagsByCategory: parseDiscoverTagsFilters(search),
+  };
+};
+
+export const buildCanonicalSearch = ({ search, tagsByCategory }) => {
+  const params = new URLSearchParams();
+
+  if (search) {
+    params.set('search', search);
+  }
+
+  Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
+    (tags || []).forEach(tag => {
+      if (tag) {
+        params.append('category', cat);
+        params.append('tag', tag);
+      }
+    });
+  });
+
+  return params.toString();
+};
+
 export default {
   updateActiveFilters,
   isNeedFilters,

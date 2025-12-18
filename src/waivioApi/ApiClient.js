@@ -5852,14 +5852,13 @@ export const getSearchTagByCategory = (
   selectedTags = [],
 ) => {
   const skipParam = skip > 0 ? `&skip=${skip}` : '';
-  const limitParam = `?limit=${limit}`;
   const searchParam = searchString ? `&searchString=${encodeURIComponent(searchString)}` : '';
   const selectedTagsParams = selectedTags
     .map(tag => `&selectedTags=${encodeURIComponent(tag)}`)
     .join('');
 
   return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}${searchParam}${selectedTagsParams}`,
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}?limit=${limit}${skipParam}${searchParam}${selectedTagsParams}`,
     {
       headers: {
         ...headers,
@@ -5878,7 +5877,7 @@ export const getSearchTagByCategory = (
 };
 
 export const getSearchTagCategories = (objectTypeName, searchString = '', selectedTags = []) => {
-  const params = [];
+  const params = ['tagsLimit=10'];
 
   if (searchString) {
     params.push(`searchString=${encodeURIComponent(searchString)}`);

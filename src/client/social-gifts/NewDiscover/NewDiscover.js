@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useParams, useRouteMatch } from 'react-router';
+import { useHistory, useParams, useRouteMatch, useLocation } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import { isEmpty } from 'lodash';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import { getHelmetIcon, getAppHost, getSiteName } from '../../../store/appStore/appSelectors';
 import {
@@ -12,21 +13,24 @@ import {
   getObjectsTypeByTypesNameMore,
   resetObjects,
   getTagCategories,
+  setTagsFiltersAndLoad,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
   getWobjectsList,
   getWobjectsHasMore,
   getActiveFilters,
+  getTagCategories as getTagCategoriesSelector,
 } from '../../../store/objectTypeStore/objectTypeSelectors';
+import { parseDiscoverQuery, buildCanonicalSearch } from '../../discoverObjects/helper';
 import EmptyCampaing from '../../statics/EmptyCampaign';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
-import useQuery from '../../../hooks/useQuery';
-import { searchUsers } from '../../../waivioApi/ApiClient';
+
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import UserDynamicList from '../../user/UserDynamicList';
 import NewDiscoverFilters from './NewDiscoverFilters';
+import { searchUsers } from '../../../waivioApi/ApiClient';
 import './NewDiscover.less';
 
 const wobjects_count = 20;
@@ -34,48 +38,51 @@ const limit = 30;
 
 const NewDiscover = () => {
   const { type, user } = useParams();
-
+  const match = useRouteMatch();
+  const history = useHistory();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const activeObjectTypeName = match.params.type || match.params.typeName;
   const favicon = useSelector(getHelmetIcon);
   const host = useSelector(getAppHost);
   const siteName = useSelector(getSiteName);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
+
   const activeFilters = useSelector(getActiveFilters);
   const objects = useSelector(getWobjectsList);
   const hasMoreObjects = useSelector(getWobjectsHasMore);
-
-  const match = useRouteMatch();
-  const history = useHistory();
-  const query = useQuery();
-  const dispatch = useDispatch();
+  const tagCategories = useSelector(getTagCategoriesSelector);
 
   const [loading, setLoading] = useState(false);
+  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
 
   const discoverUsers = match.url?.includes('discover-users');
-  const search = query.get('search') || '';
 
-  const queryEntries = [...query.entries()];
-  const dynamicEntry = queryEntries.find(([key]) => key !== 'search');
+  const { search, category, tagsByCategory } = useMemo(() => parseDiscoverQuery(location.search), [
+    location.search,
+  ]);
 
-  const category = dynamicEntry?.[0] || null;
-  const rawTags = dynamicEntry?.[1] || '';
+  const buildFilter = () => {
+    const filter = { ...activeFilters };
 
-  const parsedTags = useMemo(() => {
-    if (!category || !rawTags) return [];
+    if (search) {
+      filter.searchString = search;
+    }
 
-    return decodeURIComponent(rawTags)
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
-  }, [category, rawTags]);
+    const tagCategory = Object.entries(tagsByCategory || {})
+      .map(([categoryName, tags]) => ({
+        categoryName,
+        tags,
+      }))
+      .filter(item => item.tags?.length);
 
-  const desc = 'All objects are located here. Discover new objects!';
-  const image =
-    'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
+    if (tagCategory.length) {
+      filter.tagCategory = tagCategory;
+    }
 
-  const { canonicalUrl } = useSeoInfo();
-  const canonical = `https://${host}${canonicalUrl}?${query?.toString() || ''}`;
-  const title = 'Discover - Waivio';
+    return filter;
+  };
 
   useEffect(() => {
     if (!discoverUsers && type) {
@@ -84,75 +91,68 @@ const NewDiscover = () => {
   }, [type, discoverUsers]);
 
   useEffect(() => {
+    if (discoverUsers || !type) return;
+
     const ac = new AbortController();
 
-    if (!discoverUsers && type) {
-      setLoading(true);
-      dispatch(resetObjects());
+    setLoading(true);
+    dispatch(resetObjects());
 
-      const filter = { ...activeFilters };
+    dispatch(getObjectsTypeByTypesName(type, buildFilter(), wobjects_count, ac)).finally(() =>
+      setLoading(false),
+    );
 
-      if (search) {
-        filter.searchString = search;
-      }
-
-      if (category && parsedTags.length) {
-        filter.tagCategory = [
-          {
-            categoryName: category,
-            tags: parsedTags,
-          },
-        ];
-      }
-
-      dispatch(getObjectsTypeByTypesName(type, filter, wobjects_count, ac)).finally(() =>
-        setLoading(false),
-      );
-    }
-
+    // eslint-disable-next-line consistent-return
     return () => ac.abort();
-  }, [search, type, category, parsedTags, activeFilters, discoverUsers, dispatch]);
+  }, [location.search, type, discoverUsers]);
 
   const loadMore = () => {
-    const filter = { ...activeFilters };
-
-    if (search) {
-      filter.searchString = search;
-    }
-
-    if (category && parsedTags.length) {
-      filter.tagCategory = [
-        {
-          categoryName: category,
-          tags: parsedTags,
-        },
-      ];
-    }
-
     const skip = objects?.length || 0;
 
-    dispatch(getObjectsTypeByTypesNameMore(type, filter, wobjects_count, skip, filter.tagCategory));
+    dispatch(getObjectsTypeByTypesNameMore(type, buildFilter(), wobjects_count, skip));
   };
 
-  const handleDeleteSingleTag = removedTag => {
-    const remainingTags = parsedTags.filter(t => t !== removedTag);
+  const removeSearch = () => {
+    const canonical = buildCanonicalSearch({
+      search: '',
+      category,
+      tagsByCategory,
+    });
 
-    if (!remainingTags.length) {
-      history.push(`/discover-objects/${type}`);
-
-      return;
-    }
-
-    history.push(
-      `/discover-objects/${type}?${category}=${encodeURIComponent(remainingTags.join(','))}`,
-    );
+    dispatch(setTagsFiltersAndLoad(tagsByCategory));
+    history.push(`${location.pathname}?${canonical}`);
+    // dispatch(getTagCategories(activeObjectTypeName))
   };
+
+  const removeTag = (cat, tag) => {
+    const updated = {
+      ...tagsByCategory,
+      [cat]: tagsByCategory[cat].filter(t => t !== tag),
+    };
+
+    if (!updated[cat].length) delete updated[cat];
+
+    const canonical = buildCanonicalSearch({
+      search,
+      tagsByCategory: updated,
+    });
+
+    dispatch(setTagsFiltersAndLoad(updated));
+    history.push(`${location.pathname}?${canonical}`);
+    // dispatch(getTagCategories(activeObjectTypeName))
+  };
+
+  useEffect(() => {
+    dispatch(getTagCategories(activeObjectTypeName));
+  }, [location.search]);
 
   const fetcher = async (users, authUser, sort, skip) => {
     const response = await searchUsers(user, userName, limit, !isGuest, skip);
-    const newUsers = response.users.map(u => ({ ...u, name: u.account }));
 
-    return { users: newUsers, hasMore: response.hasMore };
+    return {
+      users: response.users.map(u => ({ ...u, name: u.account })),
+      hasMore: response.hasMore,
+    };
   };
 
   const renderContent = () => {
@@ -171,15 +171,22 @@ const NewDiscover = () => {
     }
 
     return (
-      <InfiniteScroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+      <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
         <div className="NewDiscover__list">
           {objects.map(obj => (
-            <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+            <ShopObjectCard key={obj.author_permlink} wObject={obj} />
           ))}
         </div>
       </InfiniteScroll>
     );
   };
+
+  const desc = 'All objects are located here. Discover new objects!';
+  const image =
+    'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71';
+  const { canonicalUrl } = useSeoInfo();
+  const canonical = `https://${host}${canonicalUrl}?${location.search.replace('?', '')}`;
+  const title = 'Discover - Waivio';
 
   return (
     <div className="NewDiscover">
@@ -195,70 +202,60 @@ const NewDiscover = () => {
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={image} />
-        <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
+        <link rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
+
       <div className="NewDiscover__container">
-        {!discoverUsers && (
+        {!discoverUsers && !isMobile() && !isEmpty(tagCategories) && (
           <div className="NewDiscover__sidebar">
             <NewDiscoverFilters />
           </div>
         )}
+
         <div className="NewDiscover__content">
-          <div
-            className={`NewDiscover__wrap ${discoverUsers ? 'new-discover-content-margin' : ''}`}
-          >
+          {!discoverUsers && isMobile() && (
+            <div
+              className="NewDiscover__filters-inline"
+              role="presentation"
+              onClick={() => setIsFiltersModalOpen(true)}
+            >
+              <span className="NewDiscover__filters-inline-label">Filters:</span>
+              <span className="NewDiscover__filters-inline-link">add</span>
+            </div>
+          )}
+          <div className="NewDiscover__wrap">
             <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
 
-            {!discoverUsers &&
-              parsedTags.map(t => (
-                <Tag key={`${category}-${t}`} closable onClose={() => handleDeleteSingleTag(t)}>
-                  {`${category}: ${t}`}
+            {search && (
+              <Tag closable onClose={removeSearch}>
+                Search: {search}
+              </Tag>
+            )}
+
+            {Object.entries(tagsByCategory).map(([cat, tags]) =>
+              tags.map(tag => (
+                <Tag key={`${cat}-${tag}`} closable onClose={() => removeTag(cat, tag)}>
+                  {`${cat}: ${tag}`}
                 </Tag>
-              ))}
+              )),
+            )}
           </div>
 
           {renderContent()}
         </div>
       </div>
+      <Modal
+        className="NewDiscoverFiltersModal"
+        title={null}
+        footer={null}
+        visible={isFiltersModalOpen}
+        onCancel={() => setIsFiltersModalOpen(false)}
+        destroyOnClose
+      >
+        <NewDiscoverFilters />
+      </Modal>
     </div>
   );
-};
-
-NewDiscover.fetchData = ({ match, store, query }) => {
-  const { type } = match.params;
-  const filter = {};
-
-  const search = query?.get('search');
-
-  if (search) {
-    filter.searchString = search;
-  }
-
-  const queryEntries = [...query.entries()];
-  const dynamicEntry = queryEntries.find(([key]) => key !== 'search');
-
-  const category = dynamicEntry?.[0];
-  const rawTags = dynamicEntry?.[1];
-
-  if (category && rawTags) {
-    const tags = decodeURIComponent(rawTags)
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
-
-    if (tags.length) {
-      filter.tagCategory = [
-        {
-          categoryName: category,
-          tags,
-        },
-      ];
-    }
-  }
-
-  return Promise.allSettled([
-    store.dispatch(getObjectsTypeByTypesName(type, filter, 20, wobjects_count, filter.tagCategory)),
-  ]);
 };
 
 export default NewDiscover;
