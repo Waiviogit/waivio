@@ -26,6 +26,8 @@ const ObjectsSlider = ({ title, objects, name }) => {
   //       }, [])
   //     : objects;
 
+  const isMobileDevice = typeof window !== 'undefined' && window.innerWidth <= 768;
+
   const carouselSettings = useMemo(
     () => ({
       dots: false,
@@ -37,9 +39,9 @@ const ObjectsSlider = ({ title, objects, name }) => {
       slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
       swipeToSlide: isTabletOrMobile,
       infinite: false,
-      slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
+      slidesToShow: isMobileDevice ? 1 : isTabletOrMobile ? 2 : slidesToShow,
     }),
-    [slidesToShow],
+    [slidesToShow, isMobileDevice],
   );
 
   return (
