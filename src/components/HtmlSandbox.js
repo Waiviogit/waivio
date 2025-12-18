@@ -164,6 +164,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000 }) =
         'fespecularlighting',
         'femorphology',
         'feconvolvematrix',
+        'canvas',
       ],
       disallowedTagsMode: 'discard',
       exclusiveFilter: frame => {
@@ -252,6 +253,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000 }) =
           'disabled',
           'title',
         ],
+        canvas: ['id', 'width', 'height', 'class', 'style', 'role', 'aria-label'],
         svg: [
           'viewbox',
           'width',

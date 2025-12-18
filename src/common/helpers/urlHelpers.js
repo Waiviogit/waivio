@@ -149,7 +149,7 @@ export const openLinkWithSafetyCheck = async (url, safetyCheckFn) => {
   const { showModal, isWaivioLink } = payloadData || {};
 
   if (isWaivioLink) {
-    window.location.href = url;
+    if (typeof window !== 'undefined') window.location.href = url;
 
     // eslint-disable-next-line consistent-return
     return;

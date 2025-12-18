@@ -42,7 +42,8 @@ const ClassicHeaderButton = memo(
     colors,
   }) => {
     if (!username) {
-      const next = location.pathname.length > 1 ? location.pathname : '';
+      const next =
+        typeof location !== 'undefined' && location.pathname.length > 1 ? location.pathname : '';
       const popoverNotAuthUserItems = [
         <PopoverMenuItem key="reviews" topNav>
           <FormattedMessage id="reviews" defaultMessage="Reviews" />

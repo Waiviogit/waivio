@@ -17,7 +17,7 @@ const AppHost = ({ history }) => {
 
   return (
     <ConnectedRouter history={history}>
-      {routes(page, location?.hostname, parentHost)}
+      {routes(page, typeof location !== 'undefined' && location?.hostname, parentHost)}
     </ConnectedRouter>
   );
 };

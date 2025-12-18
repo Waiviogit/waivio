@@ -6,13 +6,18 @@
   //justify-content: center;
   &__previewImage {
     object-fit: contain;
-    width: 350px;
-    height: 350px;
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    max-height: 500px;
     cursor: pointer;
+    display: block;
+    margin: 0 auto;
 
     @media @small {
       width: 500px;
       height: 500px;
+      object-fit: cover;
     }
   }
 
@@ -86,4 +91,26 @@
       cursor: pointer;
     }
   }
+}
+
+.PicturesSlider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.PicturesSlider__arrow--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.PicturesSlider__arrow--prev {
+  left: -20px;
+}
+
+.PicturesSlider__arrow--next {
+  right: -20px;
 }

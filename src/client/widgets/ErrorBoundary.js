@@ -26,7 +26,11 @@ const ErrorBoundary = ComposedComponent => {
         hasError: true,
       });
 
-      if (typeof WebSocket !== 'undefined' && !location.href?.includes('localhost')) {
+      if (
+        typeof WebSocket !== 'undefined' &&
+        typeof location !== 'undefined' &&
+        !location.href?.includes('localhost')
+      ) {
         const socket = new WebSocket(
           `wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`,
         );

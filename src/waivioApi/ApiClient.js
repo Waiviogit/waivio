@@ -5849,13 +5849,16 @@ export const getSearchTagByCategory = (
   skip = 0,
   limit = 10,
   searchString = '',
+  selectedTags = [],
 ) => {
   const skipParam = skip > 0 ? `&skip=${skip}` : '';
-  const limitParam = `?limit=${limit}`;
   const searchParam = searchString ? `&searchString=${encodeURIComponent(searchString)}` : '';
+  const selectedTagsParams = selectedTags
+    .map(tag => `&selectedTags=${encodeURIComponent(tag)}`)
+    .join('');
 
   return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}${searchParam}`,
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}?limit=${limit}${skipParam}${searchParam}${selectedTagsParams}`,
     {
       headers: {
         ...headers,
@@ -5873,11 +5876,21 @@ export const getSearchTagByCategory = (
     });
 };
 
-export const getSearchTagCategories = (objectTypeName, searchString = '') => {
-  const searchParam = searchString ? `?searchString=${encodeURIComponent(searchString)}` : '';
+export const getSearchTagCategories = (objectTypeName, searchString = '', selectedTags = []) => {
+  const params = ['tagsLimit=10'];
+
+  if (searchString) {
+    params.push(`searchString=${encodeURIComponent(searchString)}`);
+  }
+
+  selectedTags.forEach(tag => {
+    params.push(`selectedTags=${encodeURIComponent(tag)}`);
+  });
+
+  const queryParams = params.length > 0 ? `?${params.join('&')}` : '';
 
   return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}${searchParam}`,
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}${queryParams}`,
     {
       headers: {
         ...headers,

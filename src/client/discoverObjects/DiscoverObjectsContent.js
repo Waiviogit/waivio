@@ -278,8 +278,8 @@ class DiscoverObjectsContent extends Component {
     const updatedFilters = { ...activeFilters };
 
     delete updatedFilters.searchString;
-
-    changeUrl(updatedFilters, history, location);
+    // ensure search param is removed from URL
+    changeUrl({ ...updatedFilters, searchString: '' }, history, location);
 
     dispatchSetActiveFilters(updatedFilters);
     this.props.getTagCategories(typeName);

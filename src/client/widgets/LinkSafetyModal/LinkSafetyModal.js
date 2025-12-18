@@ -79,7 +79,7 @@ const LinkSafetyModal = props => {
       ? props.info?.url?.slice(0, -1)
       : props.info?.url;
 
-    window.open(finalUrl, waivioLink ? '_self' : '_blank');
+    if (typeof window !== 'undefined') window.open(finalUrl, waivioLink ? '_self' : '_blank');
   };
 
   const openLink = () => {

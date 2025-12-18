@@ -12,7 +12,7 @@ import PercentChanger from './PercentChanger';
 import { createCodesList } from '../../../websites/WebsiteTools/AffiliateCodes/helpers';
 
 const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl, setFieldsValue }) => {
-  const host = location.hostname;
+  const host = typeof location !== 'undefined' && location.hostname;
   const [context, setContext] = useState([host, 'PERSONAL']);
   const [items, setItem] = useState([]);
   const [percents, setPercents] = useState([]);
