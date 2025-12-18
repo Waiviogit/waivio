@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -19,6 +18,7 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { checkAndOpenWaivioLink } from '../../../common/helpers/urlHelpers';
 import { setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
 import './Body.less';
 
@@ -180,7 +180,7 @@ const Body = props => {
   const openLink = e => {
     const anchor = e.target.closest('a[data-href]');
 
-    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+    if (isMobile() && e.type === 'mousedown') return;
 
     if (!anchor) return;
 
@@ -189,7 +189,9 @@ const Body = props => {
 
     const href = anchor.dataset.href;
 
-    dispatch(setLinkSafetyInfo(href));
+    if (!checkAndOpenWaivioLink(href)) {
+      dispatch(setLinkSafetyInfo(href));
+    }
   };
 
   // eslint-disable-next-line consistent-return

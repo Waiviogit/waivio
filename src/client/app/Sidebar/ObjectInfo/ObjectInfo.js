@@ -65,6 +65,7 @@ import Department from '../../../object/Department/Department';
 import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../../object/ObjectTypeShop/DepartmentsWobject';
+import { checkAndOpenWaivioLink } from '../../../../common/helpers/urlHelpers';
 import { setAuthors, setLinkSafetyInfo } from '../../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
@@ -1096,7 +1097,11 @@ class ObjectInfo extends React.Component {
               />{' '}
               <span
                 className={'main-color-button'}
-                onClick={() => this.props.setLinkSafetyInfo(linkUrlHref)}
+                onClick={() => {
+                  if (!checkAndOpenWaivioLink(linkUrlHref)) {
+                    this.props.setLinkSafetyInfo(linkUrlHref);
+                  }
+                }}
               >
                 {linkUrl}
               </span>
@@ -1414,7 +1419,11 @@ class ObjectInfo extends React.Component {
                     <i className="iconfont icon-link text-icon link" />
                     <span
                       className={'main-color-button'}
-                      onClick={() => this.props.setLinkSafetyInfo(body.link)}
+                      onClick={() => {
+                        if (!checkAndOpenWaivioLink(body.link)) {
+                          this.props.setLinkSafetyInfo(body.link);
+                        }
+                      }}
                     >
                       {body.title}
                     </span>
