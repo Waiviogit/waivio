@@ -240,13 +240,18 @@ const NewDiscover = () => {
                 <span className="NewDiscover__filters-inline-link">add</span>
               </div>
             )}
-            {search && (
-              <div>
+            {search &&
+              (isMobile() ? (
+                <div>
+                  <Tag closable onClose={removeSearch}>
+                    Search: {search}
+                  </Tag>
+                </div>
+              ) : (
                 <Tag closable onClose={removeSearch}>
                   Search: {search}
                 </Tag>
-              </div>
-            )}
+              ))}
 
             {Object.entries(tagsByCategory).map(([cat, tags]) =>
               tags.map(tag => (
