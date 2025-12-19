@@ -80,6 +80,26 @@
   .slick-next {
     right: -40px;
   }
+
+  .MobileCarousel {
+    width: 350px;
+    height: 350px;
+    margin: 0 auto;
+
+    .slick-slide {
+      height: 350px !important;
+      width: 350px !important;
+      cursor: pointer;
+
+      img,
+      .PicturesSlider__thumbnail,
+      .PicturesSlider__thumbnail--active {
+        width: 350px !important;
+        height: 350px !important;
+        object-fit: contain;
+      }
+    }
+  }
 }
 
 .PicturesSlider__arrow {

@@ -125,6 +125,25 @@ const PicturesSlider = ({
     [pictures, slidesToShow, isMobileDevice],
   );
 
+  const mobileCarouselSettings = useMemo(
+    () => ({
+      dots: false,
+      arrows: false,
+      lazyLoad: true,
+      rows: 1,
+      infinite: false,
+      slidesToShow: 1,
+      swipeToSlide: isMobileDevice,
+      slidesToScroll: 1,
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
+      afterChange: current => {
+        setPhotoIndex(current);
+      },
+    }),
+    [pictures, slidesToShow, isMobileDevice],
+  );
+
   const onClosePicture = () => {
     setIsOpen(false);
     setPhotoIndex(
@@ -137,14 +156,39 @@ const PicturesSlider = ({
 
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
-      <div>
-        <img
-          className="PicturesSlider__previewImage"
-          src={getProxyImageURL(currentSrc)}
-          alt={altText}
-          onClick={() => setIsOpen(true)}
-        />
-      </div>
+      {isMobile() ? (
+        <Carousel {...mobileCarouselSettings} ref={slider} className={'MobileCarousel'}>
+          {map(pictures, (pic, i) => (
+            <div key={pic._id || pic.id || pic.body}>
+              <img
+                onClick={e => onImgClick(e, pic)}
+                onMouseOver={() => {
+                  setHoveredPic(pic);
+                }}
+                onMouseOut={() => {
+                  setHoveredPic({});
+                }}
+                src={getProxyImageURL(pic?.body)}
+                className={
+                  pic?.body === currentImage?.body
+                    ? 'PicturesSlider__thumbnail--active'
+                    : 'PicturesSlider__thumbnail'
+                }
+                alt={`${i} ${getObjectName(currentWobj)}`}
+              />
+            </div>
+          ))}
+        </Carousel>
+      ) : (
+        <div>
+          <img
+            className="PicturesSlider__previewImage"
+            src={getProxyImageURL(currentSrc)}
+            alt={altText}
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
+      )}
       <br />
       <Carousel {...carouselSettings}>
         {map(pictures, (pic, i) => (
