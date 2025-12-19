@@ -162,6 +162,7 @@ const CleanSocialProductView = ({
               activeOption={activeOption}
               activeCategory={activeCategory}
               countShowSlide={6}
+              countShowMobile={4}
             />
           </div>
           <div className="SocialProduct__reward-wrap">
