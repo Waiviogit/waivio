@@ -6,11 +6,14 @@ import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+
 import UserSearchItem from '../../../../search/SearchItems/UserSearchItem';
-import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
 import ObjectSearchItem from '../../../../search/SearchItems/ObjectSearchItem';
+
+import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
 import { getTranformSearchCountData, pendingSearch } from '../../../../search/helpers';
 import listOfObjectTypes from '../../../../../common/constants/listOfObjectTypes';
+
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
@@ -27,14 +30,18 @@ const markers = {
 };
 
 const GeneralSearch = props => {
-  const [searchBarValue, setSeachValue] = useState();
+  const [searchBarValue, setSeachValue] = useState('');
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState('');
-  const searchResults = useSelector(getAutoCompleteSearchResults);
-  const loading = useSelector(getIsStartSearchAutoComplete);
+  const [type, setType] = useState(false);
+
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const searchResults = useSelector(getAutoCompleteSearchResults);
+  const loading = useSelector(getIsStartSearchAutoComplete);
+
   const getSocialLink = obj => `/object/${obj.author_permlink}`;
+
   const isSocialWobj = wobj =>
     props.isSocialProduct &&
     [
@@ -48,7 +55,8 @@ const GeneralSearch = props => {
       'list',
       'recipe',
     ].includes(wobj.object_type);
-  const handleAutoCompleteSearchDebounce = useCallback(
+
+  const debouncedSearch = useCallback(
     debounce(value => {
       dispatch(
         searchAutoComplete(value, 5, 15, undefined, true, [
@@ -68,11 +76,9 @@ const GeneralSearch = props => {
 
   const handleAutoCompleteSearch = value => {
     setSeachValue(value);
-    setType(null);
-    if (value) setOpen(true);
-    else setOpen(false);
-
-    handleAutoCompleteSearchDebounce(value);
+    setType(false);
+    setOpen(Boolean(value));
+    debouncedSearch(value);
   };
 
   const searchSelectBar = () => {
@@ -80,25 +86,23 @@ const GeneralSearch = props => {
 
     return (
       <AutoComplete.OptGroup className="Header__itemWrap">
-        {map(options, option => {
-          if (option.name === 'Types') return null;
-
-          return (
-            <AutoComplete.Option
-              marker={'searchSelectBar'}
-              key={option.name}
-              value={option.name}
-              className={classNames({ 'Header__item--active': option.name === 'Types' && type })}
-            >
-              {`${option.name}(${option.count})`}
-            </AutoComplete.Option>
-          );
-        })}
+        {map(options, option => (
+          <AutoComplete.Option
+            marker={markers.SELECT_BAR}
+            key={`select${option.name}`}
+            value={option.name}
+            className={classNames({
+              'Header__item--active': option.name === 'Types' && type,
+            })}
+          >
+            {`${option.name}(${option.count})`}
+          </AutoComplete.Option>
+        ))}
       </AutoComplete.OptGroup>
     );
   };
 
-  const usersSearchLayout = accounts => (
+  const usersSearchLayout = users => (
     <AutoComplete.OptGroup
       key="usersTitle"
       label={props.intl.formatMessage({
@@ -106,14 +110,14 @@ const GeneralSearch = props => {
         defaultMessage: 'Users',
       })}
     >
-      {map(accounts, option => (
+      {map(users, user => (
         <AutoComplete.Option
-          marker={'user'}
-          key={option.account}
-          value={option.account}
+          marker={markers.USER}
+          key={`user${user.account}`}
+          value={`user${user.account}`}
           className="Topnav__search-autocomplete"
         >
-          <UserSearchItem user={option} />
+          <UserSearchItem user={user} />
         </AutoComplete.Option>
       ))}
     </AutoComplete.OptGroup>
@@ -127,16 +131,20 @@ const GeneralSearch = props => {
         defaultMessage: 'Objects',
       })}
     >
-      {map(wobjects, option => (
-        <AutoComplete.Option
-          marker={markers.WOBJ}
-          key={getObjectName(option)}
-          value={isSocialWobj(option) ? getSocialLink(option) : option.defaultShowLink}
-          className="Topnav__search-autocomplete"
-        >
-          <ObjectSearchItem wobj={option} />
-        </AutoComplete.Option>
-      ))}
+      {map(wobjects, wobj => {
+        const link = isSocialWobj(wobj) ? getSocialLink(wobj) : wobj.defaultShowLink;
+
+        return (
+          <AutoComplete.Option
+            marker={markers.WOBJ}
+            key={`wobj${getObjectName(wobj)}`}
+            value={`wobj${link}`}
+            className="Topnav__search-autocomplete"
+          >
+            <ObjectSearchItem wobj={wobj} />
+          </AutoComplete.Option>
+        );
+      })}
     </AutoComplete.OptGroup>
   );
 
@@ -148,14 +156,14 @@ const GeneralSearch = props => {
         defaultMessage: 'Types',
       })}
     >
-      {map(objectTypes, option => (
+      {map(objectTypes, typeItem => (
         <AutoComplete.Option
           marker={markers.TYPE}
-          key={option.name}
-          value={option.name}
+          key={`type${typeItem.name}`}
+          value={`type${typeItem.name}`}
           className="Header__item"
         >
-          <div>{option.name}</div>
+          {typeItem.name}
         </AutoComplete.Option>
       ))}
     </AutoComplete.OptGroup>
@@ -164,59 +172,58 @@ const GeneralSearch = props => {
   const prepareOptions = () => {
     const dataSource = [];
 
-    if (!isEmpty(searchResults)) dataSource.push(searchSelectBar(searchResults));
+    if (!isEmpty(searchResults)) dataSource.push(searchSelectBar());
+    if (!type) {
+      if (!isEmpty(searchResults.wobjects))
+        dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 15)));
+      if (!isEmpty(searchResults.users)) dataSource.push(usersSearchLayout(searchResults.users));
+      if (!isEmpty(searchResults.objectTypes))
+        dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
+    }
 
-    if (!isEmpty(searchResults.wobjects))
-      dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 15)));
-    if (!isEmpty(searchResults.users)) dataSource.push(usersSearchLayout(searchResults.users));
-    if (!isEmpty(searchResults.objectTypes))
-      dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
-
-    return type ? [searchSelectBar(searchResults)] : dataSource;
+    return dataSource;
   };
 
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
-    if (typeof window !== 'undefined' && window?.gtag)
-      window.gtag('event', 'use_search', { debug_mode: false });
     let redirectUrl = '';
 
     switch (data.props.marker) {
       case markers.USER:
-        redirectUrl = `/@${value}`;
+        redirectUrl = `/@${value.replace('user', '')}`;
         break;
+
       case markers.WOBJ:
-        redirectUrl = value;
+        redirectUrl = value.replace('wobj', '');
         break;
+
+      case markers.TYPE:
+        redirectUrl = `/discover-objects/${value.replace('type', '')}`;
+        break;
+
       case markers.SELECT_BAR: {
-        if (value !== 'Types') {
-          const isUsers = value === 'Users';
-          const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
-          let search = searchBarValue ? `?search=${searchBarValue}` : '';
+        if (value === 'Types') {
+          setType(prev => !prev);
 
-          if (isUsers && searchBarValue) {
-            search = `/${searchBarValue}`;
-          }
-
-          redirectUrl = `${mainLink}${search}`;
-        } else {
-          setType(type ? null : markers.TYPE);
-          setSeachValue(searchBarValue);
+          return;
         }
 
+        const isUsers = value === 'Users';
+        const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
+        const search = searchBarValue ? `?search=${searchBarValue}` : '';
+
+        redirectUrl = `${mainLink}${search}`;
         break;
       }
 
-      default: {
-        setType(null);
-        redirectUrl = `/discover-objects/${value.replace('type', '')}`;
-      }
+      default:
+        break;
     }
 
     if (redirectUrl) {
       history.push(redirectUrl);
       setSeachValue('');
       setOpen(false);
-      if (typeof document !== 'undefined') document.activeElement.blur();
+      document?.activeElement?.blur();
     }
   };
 
@@ -227,24 +234,27 @@ const GeneralSearch = props => {
         'Header__search--long': props.isSocialProduct,
       })}
     >
-      <i className={'iconfont icon-search'} />
+      <i className="iconfont icon-search" />
+
       <AutoComplete
-        className={'GeneralSearch__wrapper'}
+        className="GeneralSearch__wrapper"
+        value={searchBarValue}
         open={open}
         onChange={handleAutoCompleteSearch}
         onSelect={handleSelectOnAutoCompleteDropdown}
+        onFocus={() => setOpen(Boolean(searchBarValue))}
+        onBlur={() => setOpen(false)}
+        allowClear
+        backfill={false}
+        defaultActiveFirstOption={false}
+        optionLabelProp="value"
+        dropdownClassName="GeneralSearch"
         placeholder={props.intl.formatMessage({
           id: 'search_placeholder',
           defaultMessage: 'What are you looking for?',
         })}
-        dropdownClassName={'GeneralSearch'}
-        allowClear
-        optionLabelProp="value"
         dataSource={loading ? pendingSearch('', props.intl) : prepareOptions()}
-        value={searchBarValue}
-        onBlur={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-      />{' '}
+      />
     </div>
   );
 };
