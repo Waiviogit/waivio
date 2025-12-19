@@ -227,33 +227,24 @@ const extractTagsFromUrl = queryString => {
   if (!queryString) return [];
 
   const params = new URLSearchParams(queryString);
-  const excludedParams = ['search', 'rating', 'mapX', 'mapY', 'showPanel', 'radius', 'zoom'];
-  const tags = [];
 
-  params.forEach((value, key) => {
-    if (!excludedParams.includes(key)) {
-      let decodedValue = value;
+  return params.getAll('tag').flatMap(value => {
+    let decoded = value;
 
-      if (value.includes('%')) {
-        try {
-          decodedValue = decodeURIComponent(value);
-        } catch (error) {
-          decodedValue = value;
-        }
+    if (value.includes('%')) {
+      try {
+        decoded = decodeURIComponent(value);
+      } catch (e) {
+        decoded = value;
       }
-
-      decodedValue = decodedValue.replace(/^["']|["']$/g, '');
-
-      const tagValues = decodedValue
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-
-      tags.push(...tagValues);
     }
-  });
 
-  return tags;
+    return decoded
+      .replace(/^["']|["']$/g, '')
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(Boolean);
+  });
 };
 
 export const showMoreTags = (category, objectType, skip, limit = 10) => (dispatch, getState) => {
