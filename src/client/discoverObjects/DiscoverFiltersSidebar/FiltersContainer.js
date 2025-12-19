@@ -37,7 +37,6 @@ const FiltersContainer = ({
   dispatchShowMoreTags,
   dispatchSetFiltersAndLoad,
   dispatchGetTagsByCategory,
-  dispatchGetTagCategories,
   newDiscover,
 }) => {
   const [collapsedFilters, setCollapsed] = useState([]);
@@ -93,9 +92,9 @@ const FiltersContainer = ({
 
     history.push(`${location.pathname}?${search}`);
 
-    if (newDiscover && activeObjectTypeName) {
-      dispatchGetTagCategories(activeObjectTypeName);
-    }
+    // if (newDiscover && activeObjectTypeName) {
+    //   dispatchGetTagCategories(activeObjectTypeName);
+    // }
   };
 
   const showMoreTagsHandler = useCallback(
@@ -162,7 +161,6 @@ FiltersContainer.propTypes = {
   dispatchShowMoreTags: PropTypes.func.isRequired,
   dispatchSetFiltersAndLoad: PropTypes.func.isRequired,
   dispatchGetTagsByCategory: PropTypes.func.isRequired,
-  dispatchGetTagCategories: PropTypes.func.isRequired,
 };
 
 FiltersContainer.defaultProps = {
