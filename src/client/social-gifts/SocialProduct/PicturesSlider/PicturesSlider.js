@@ -62,6 +62,7 @@ const PicturesSlider = ({
   altText,
   albums,
   countShowSlide,
+  countShowMobile,
 }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [hoveredPic, setHoveredPic] = useState({});
@@ -81,10 +82,6 @@ const PicturesSlider = ({
     setCurrentImage(pic);
     setPhotoIndex(pictures?.indexOf(pic));
     isMobile() && slider.current.goTo(pictures?.indexOf(pic));
-  };
-  const MobileSlideChange = (curr, next) => {
-    setPhotoIndex(next);
-    setCurrentImage(pictures[next]);
   };
 
   useEffect(() => {
@@ -107,7 +104,7 @@ const PicturesSlider = ({
 
   const isMobileDevice = useMemo(() => isMobile(), []);
 
-  const slidesToShow = Math.min(pictures.length, isMobileDevice ? 6 : countShowSlide || 8);
+  const slidesToShow = Math.min(pictures.length, isMobileDevice ? countShowMobile : countShowSlide);
 
   const carouselSettings = useMemo(
     () => ({
@@ -127,16 +124,6 @@ const PicturesSlider = ({
     }),
     [pictures, slidesToShow, isMobileDevice],
   );
-  const mobileSlider = {
-    dots: false,
-    arrows: false,
-    lazyLoad: true,
-    rows: 1,
-    infinite: false,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    beforeChange: MobileSlideChange,
-  };
 
   const onClosePicture = () => {
     setIsOpen(false);
@@ -150,42 +137,14 @@ const PicturesSlider = ({
 
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
-      {!isMobile() ? (
-        <div>
-          <img
-            className="PicturesSlider__previewImage"
-            src={getProxyImageURL(currentSrc)}
-            alt={altText}
-            onClick={() => setIsOpen(true)}
-          />
-        </div>
-      ) : (
-        <div className={'MobileCarousel'}>
-          {pictures.length > 1 ? (
-            <Carousel key={pictures.length} ref={slider} {...mobileSlider}>
-              {map(pictures, pic => (
-                <div key={pic._id || pic.id || pic.body} className="PicturesSlider__mobile-item">
-                  <img
-                    className="PicturesSlider__previewImage"
-                    src={getProxyImageURL(pic.body)}
-                    alt={altText}
-                    onClick={() => setIsOpen(true)}
-                  />
-                </div>
-              ))}
-            </Carousel>
-          ) : (
-            <div className="PicturesSlider__mobile-item">
-              <img
-                className="PicturesSlider__previewImage"
-                src={getProxyImageURL(pictures[0]?.body)}
-                alt={altText}
-                onClick={() => setIsOpen(true)}
-              />
-            </div>
-          )}
-        </div>
-      )}
+      <div>
+        <img
+          className="PicturesSlider__previewImage"
+          src={getProxyImageURL(currentSrc)}
+          alt={altText}
+          onClick={() => setIsOpen(true)}
+        />
+      </div>
       <br />
       <Carousel {...carouselSettings}>
         {map(pictures, (pic, i) => (
@@ -239,6 +198,12 @@ PicturesSlider.propTypes = {
   activeCategory: PropTypes.string,
   altText: PropTypes.string,
   countShowSlide: PropTypes.number,
+  countShowMobile: PropTypes.number,
+};
+
+PicturesSlider.defaultProps = {
+  countShowSlide: 8,
+  countShowMobile: 6,
 };
 
 export default PicturesSlider;

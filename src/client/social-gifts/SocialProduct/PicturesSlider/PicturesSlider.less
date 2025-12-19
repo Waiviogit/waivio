@@ -2,8 +2,6 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .PicturesSlider {
-  //display: flex;
-  //justify-content: center;
   &__previewImage {
     object-fit: contain;
     width: 100%;
@@ -54,10 +52,7 @@
   .slick-track {
     justify-content: center !important;
   }
-  .slick-slide.slick-active {
-    width: 58px !important;
-    cursor: pointer;
-  }
+
   .slick-prev,
   .slick-next {
     display: none;
@@ -84,12 +79,6 @@
   }
   .slick-next {
     right: -40px;
-  }
-  .MobileCarousel {
-    .slick-slide.slick-active {
-      width: 350px !important;
-      cursor: pointer;
-    }
   }
 }
 
