@@ -108,12 +108,14 @@
         &:hover {
           border-color: var(--website-color);
         }
+
         &--active {
           width: 60px !important;
           height: 60px !important;
           object-fit: cover;
           border-radius: 8px;
-          border-color: var(--website-color) !important;
+          cursor: pointer;
+          border: 1px solid var(--website-color);
         }
       }
       .ant-carousel {
@@ -479,12 +481,14 @@
   &__section {
     background: #fff;
     border-radius: 16px;
-    padding: 5px;
+    padding: 10px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin-bottom: 24px;
+
     @media @small {
       padding: 32px;
     }
+
     .SocialProduct__addOn-section {
       padding: 0;
       background: transparent;
@@ -510,12 +514,14 @@
       &__paragraph-container {
         display: flex;
         flex-direction: column;
+
         @media @small {
           justify-content: space-around;
           flex-direction: row;
           flex-wrap: nowrap;
           align-items: center;
           margin-bottom: 20px;
+
           &:nth-child(even) {
             flex-direction: row-reverse;
           }
