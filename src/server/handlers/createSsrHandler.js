@@ -228,7 +228,7 @@ export default function createSsrHandler(template) {
         }
       });
 
-      await createTimeout(ssrTimeout, Promise.all(promises));
+      await createTimeout(ssrTimeout, Promise.allSettled(promises));
 
       if (res.headersSent) return null;
 
