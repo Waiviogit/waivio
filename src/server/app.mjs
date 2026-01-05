@@ -14,7 +14,8 @@ const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
 // Load pre-built SSR handler (CommonJS bundle)
-const createSsrHandler = require('../../build/ssrHandler.js');
+const ssrModule = require('../../build/ssrHandler.js');
+const createSsrHandler = ssrModule.default || ssrModule;
 
 // Load CommonJS steemAPI
 const steemAPI = require('./steemAPI.js');

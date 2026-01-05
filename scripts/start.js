@@ -2,18 +2,17 @@
 
 process.env.NODE_ENV = 'development';
 
-const { spawn } = require('child_process');
-const webpack = require('webpack');
-const DevServer = require('webpack-dev-server');
-const paths = require('./paths');
+const { spawn, execSync } = require('child_process');
+const { createServer, build: viteBuild } = require('vite');
+const path = require('path');
+const fs = require('fs');
 
-const createClientConfig = require('../webpack/client');
-const createSsrHandlerConfig = require('../webpack/ssrHandler');
-
-const { CONTENT_PORT } = require('../webpack/configUtils');
+const rootDir = path.resolve(__dirname, '..');
+const buildDir = path.join(rootDir, 'build');
 
 let serverProcess = null;
 let isRestarting = false;
+let viteServer = null;
 
 function killServer() {
   return new Promise(resolve => {
@@ -23,19 +22,16 @@ function killServer() {
     }
 
     const pid = serverProcess.pid;
-    
+
     serverProcess.once('exit', () => {
       serverProcess = null;
-      // Wait a bit for port to be released
       setTimeout(resolve, 500);
     });
 
-    // On Windows, use taskkill to kill the process tree
     if (process.platform === 'win32') {
       spawn('taskkill', ['/pid', pid, '/f', '/t'], { stdio: 'ignore' });
     } else {
       serverProcess.kill('SIGTERM');
-      // Force kill after 2 seconds if still running
       setTimeout(() => {
         if (serverProcess) {
           serverProcess.kill('SIGKILL');
@@ -54,10 +50,13 @@ async function startServer() {
     await killServer();
   }
 
-  serverProcess = spawn('node', ['./src/server/index.mjs'], {
+  serverProcess = spawn('node', [
+    '--experimental-require-module',
+    './src/server/index.mjs'
+  ], {
     stdio: 'inherit',
     env: { ...process.env, NODE_ENV: 'development' },
-    shell: false,  // Don't use shell on Windows to get correct PID
+    shell: false,
   });
 
   serverProcess.on('error', err => {
@@ -73,109 +72,120 @@ async function startServer() {
   isRestarting = false;
 }
 
+async function buildSsrHandler() {
+  console.log('📦 Building SSR handler with Vite...');
+  try {
+    await viteBuild({
+      configFile: path.join(rootDir, 'vite.ssr.config.js'),
+      mode: 'development',
+      logLevel: 'warn',
+    });
+    console.log('✅ SSR handler built');
+  } catch (err) {
+    console.error('SSR build error:', err);
+    throw err;
+  }
+}
+
+// Generate dev assets.json for SSR
+function generateDevAssets(viteServer) {
+  const port = viteServer.config.server.port;
+  const origin = `http://localhost:${port}`;
+  
+  const assets = {
+    // Vite client for HMR
+    viteClient: `${origin}/@vite/client`,
+    // Main entry
+    main: {
+      js: `${origin}/src/client/index.js`,
+    },
+  };
+
+  fs.mkdirSync(buildDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(buildDir, 'assets.json'),
+    JSON.stringify(assets, null, 2)
+  );
+}
+
 async function main() {
-  const clientConfig = createClientConfig('dev');
-  const ssrHandlerConfig = createSsrHandlerConfig();
+  console.log('🚀 Starting development server...\n');
 
-  // Override SSR handler config for development (watch mode, no optimization)
-  ssrHandlerConfig.mode = 'development';
+  // Ensure build directory exists
+  fs.mkdirSync(buildDir, { recursive: true });
 
-  const clientCompiler = webpack(clientConfig);
-  const ssrHandlerCompiler = webpack(ssrHandlerConfig);
+  // Start Vite dev server for client
+  console.log('📦 Starting Vite dev server...');
+  viteServer = await createServer({
+    configFile: path.join(rootDir, 'vite.config.js'),
+    mode: 'development',
+  });
 
-  let isFirstClientBuild = true;
-  let isFirstSsrBuild = true;
-  let clientReady = false;
-  let ssrReady = false;
-  let restartTimeout = null;
+  await viteServer.listen();
+  console.log(`✅ Vite dev server running at http://localhost:${viteServer.config.server.port}`);
 
-  function tryStartServer() {
-    if (clientReady && ssrReady) {
-      startServer();
-    }
-  }
+  // Generate assets.json pointing to Vite dev server
+  generateDevAssets(viteServer);
 
-  // Debounced restart to avoid rapid restarts
-  function scheduleRestart() {
-    if (restartTimeout) {
-      clearTimeout(restartTimeout);
-    }
-    restartTimeout = setTimeout(() => {
-      startServer();
-    }, 500);
-  }
+  // Build SSR handler initially
+  await buildSsrHandler();
 
-  // Client compiler - notify when first build is done
-  clientCompiler.hooks.done.tap('StartServer', stats => {
-    if (stats.hasErrors()) return;
+  // Start the Express server
+  await startServer();
+
+  // Watch for SSR handler source changes
+  const chokidar = await import('chokidar');
+  let rebuildTimeout = null;
+
+  const watcher = chokidar.watch([
+    'src/server/handlers/**/*.js',
+    'src/store/**/*.js',
+    'src/routes/**/*.js',
+    'src/common/**/*.js',
+    'src/client/components/**/*.js',
+    'src/waivioApi/**/*.js',
+  ], {
+    cwd: rootDir,
+    ignoreInitial: true,
+  });
+
+  watcher.on('change', (filePath) => {
+    console.log(`\n📝 Changed: ${filePath}`);
     
-    if (isFirstClientBuild) {
-      isFirstClientBuild = false;
-      clientReady = true;
-      console.log('✅ Client build ready');
-      tryStartServer();
-    }
+    // Debounce rebuild
+    if (rebuildTimeout) clearTimeout(rebuildTimeout);
+    rebuildTimeout = setTimeout(async () => {
+      try {
+        await buildSsrHandler();
+        await startServer();
+      } catch (err) {
+        console.error('Rebuild failed:', err);
+      }
+    }, 500);
   });
 
-  // Watch SSR handler and restart server on changes
-  ssrHandlerCompiler.watch({}, (err, stats) => {
-    if (err) {
-      console.error('SSR handler build error:', err);
-      return;
-    }
-
-    if (stats.hasErrors()) {
-      console.error(
-        'SSR handler build errors:',
-        stats.toString({
-          colors: true,
-          chunks: false,
-          children: false,
-        }),
-      );
-      return;
-    }
-
-    console.log('✅ SSR handler rebuilt');
-
-    if (isFirstSsrBuild) {
-      isFirstSsrBuild = false;
-      ssrReady = true;
-      tryStartServer();
-    } else {
-      // Debounced restart on subsequent builds
-      scheduleRestart();
-    }
-  });
-
-  const clientDevServer = new DevServer(clientCompiler, {
-    port: CONTENT_PORT,
-    hot: true,
-    compress: true,
-    noInfo: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    historyApiFallback: {
-      disableDotRule: true,
-    },
-  });
-
-  clientDevServer.listen(CONTENT_PORT, () => {
-    console.log(`📦 Client dev server started on port ${CONTENT_PORT}`);
-  });
+  console.log('\n✨ Development server ready!');
+  console.log(`   - App: http://localhost:${process.env.PORT || 3000}`);
+  console.log(`   - Vite: http://localhost:${viteServer.config.server.port}`);
 
   // Handle process termination
   process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down...');
+    watcher.close();
+    await viteServer.close();
     await killServer();
     process.exit(0);
   });
 
   process.on('SIGTERM', async () => {
+    watcher.close();
+    await viteServer.close();
     await killServer();
     process.exit(0);
   });
 }
 
-main();
+main().catch(err => {
+  console.error('Failed to start:', err);
+  process.exit(1);
+});

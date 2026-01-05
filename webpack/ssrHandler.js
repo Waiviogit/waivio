@@ -65,6 +65,13 @@ module.exports = function createConfig() {
       __filename: true,
       __dirname: true,
     },
+    resolve: {
+      alias: {
+        // Use @ant-design/compatible for Form.create support
+        'antd/lib/form': '@ant-design/compatible/lib/form',
+        'antd/es/form': '@ant-design/compatible/es/form',
+      },
+    },
     module: {
       rules: [
         {

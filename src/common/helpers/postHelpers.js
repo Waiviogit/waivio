@@ -33,7 +33,8 @@ import steemEmbed from '../../client/vendor/embedMedia';
 import { getProxyImageURL } from './image';
 import { getBodyLink } from '../../client/components/EditorExtended/util/videoHelper';
 
-const appVersion = require('../../../package.json').version;
+// Version is injected by build process or fallback
+const appVersion = process.env.APP_VERSION || '3.0.0';
 
 const getTagsFromBody = text => {
   const regex = /#\w+/g;

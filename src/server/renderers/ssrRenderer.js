@@ -29,10 +29,22 @@ export default function renderSsrPage(
     scripts = `<script>window.__PRELOADED_STATE__ = {}</script>`;
   }
 
+  const isDev = process.env.NODE_ENV === 'development';
+  
+  // In dev mode with Vite, inject Vite client for HMR
+  if (isDev && assets.viteClient) {
+    scripts += `<script type="module" src="${assets.viteClient}"></script>`;
+  }
+
   Object.keys(assets).forEach(key => {
-    if (key) {
+    if (key && key !== 'viteClient') {
       if (assets[key].css) header += `<link rel="stylesheet" href="${assets[key].css}" />`;
-      if (assets[key].js) scripts += `<script src="${assets[key].js}" defer></script>`;
+      if (assets[key].js) {
+        // Use module type for Vite dev server URLs
+        const isModule = isDev && assets[key].js.includes('localhost');
+        const scriptType = isModule ? 'type="module"' : 'defer';
+        scripts += `<script ${scriptType} src="${assets[key].js}"></script>`;
+      }
     }
   });
 

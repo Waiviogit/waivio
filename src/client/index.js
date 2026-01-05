@@ -1,4 +1,7 @@
-import 'babel-polyfill';
+// Polyfills for older browsers (Vite handles most modern features)
+import 'regenerator-runtime/runtime';
+// antd v5 compatibility - must be imported before any antd components
+require('./antdCompat');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -68,7 +71,11 @@ const render = async Component => {
       store.dispatch(setScreenSize(screenSize(window.screen.width))),
     );
   }
-  const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
+
+  // Use hydrate for SSR, render for dev with Vite (HMR)
+  const isDev = process.env.NODE_ENV === 'development';
+  const hasServerRenderedContent = document.getElementById('app')?.innerHTML?.trim();
+  const renderMethod = isDev && !hasServerRenderedContent ? ReactDOM.render : ReactDOM.hydrate;
 
   renderMethod(
     <Provider store={store}>
@@ -79,3 +86,8 @@ const render = async Component => {
 };
 
 render(AppHost);
+
+// Vite HMR
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}

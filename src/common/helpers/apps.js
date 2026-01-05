@@ -1,4 +1,4 @@
-const appsList = require('steemscript/apps.json');
+import appsList from 'steemscript/apps.json';
 
 const waivioApplist = {
   waivio: {
