@@ -24,6 +24,7 @@ import { getRobotsTxtContent } from '../common/helpers/robots-helper.js';
 import { webPage, sitemap } from './seo-service/seoServiceApi.js';
 import botRateLimit from './middleware/botRateLimit.js';
 import urlDecodeMiddleware from './middleware/urlDecodeMiddleware.js';
+import hostRedirect from './middleware/hostRedirect.mjs';
 import { restartHandler } from '../common/services/errorNotifier.js';
 
 // Paths configuration
@@ -72,6 +73,9 @@ if (IS_DEV) {
   app.use(express.static(buildPublicPath, { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);
 }
+
+// Host redirect middleware - checks if host is valid, redirects unknown hosts in production
+app.use(hostRedirect);
 
 app.get('/callback', (req, res) => {
   const accessToken = req.query.access_token;
