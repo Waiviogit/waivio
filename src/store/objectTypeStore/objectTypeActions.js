@@ -247,6 +247,121 @@ const extractTagsFromUrl = queryString => {
   });
 };
 
+const extractTagsByCategoryFromUrl = queryString => {
+  if (!queryString) return [];
+
+  const params = new URLSearchParams(queryString);
+  const result = [];
+
+  const categories = params.getAll('category');
+  const tags = params.getAll('tag');
+
+  if (categories.length > 0 && tags.length > 0) {
+    const categoryTagMap = {};
+
+    categories.forEach((cat, index) => {
+      const tag = tags[index];
+
+      if (cat && tag) {
+        let decodedTag = tag;
+        let decodedCat = cat;
+
+        if (tag.includes('%')) {
+          try {
+            decodedTag = decodeURIComponent(tag);
+          } catch (e) {
+            decodedTag = tag;
+          }
+        }
+
+        if (cat.includes('%')) {
+          try {
+            decodedCat = decodeURIComponent(cat);
+          } catch (e) {
+            decodedCat = cat;
+          }
+        }
+
+        decodedTag = decodedTag.replace(/^["']|["']$/g, '').trim();
+        decodedCat = decodedCat.replace(/^["']|["']$/g, '').trim();
+
+        if (decodedTag && decodedCat) {
+          if (!categoryTagMap[decodedCat]) {
+            categoryTagMap[decodedCat] = [];
+          }
+          if (!categoryTagMap[decodedCat].includes(decodedTag)) {
+            categoryTagMap[decodedCat].push(decodedTag);
+          }
+        }
+      }
+    });
+
+    Object.keys(categoryTagMap).forEach(categoryName => {
+      if (categoryTagMap[categoryName].length > 0) {
+        result.push({
+          categoryName,
+          tags: categoryTagMap[categoryName],
+        });
+      }
+    });
+  } else {
+    const excludedParams = [
+      'search',
+      'rating',
+      'mapX',
+      'mapY',
+      'showPanel',
+      'radius',
+      'zoom',
+      'category',
+      'tag',
+    ];
+
+    params.forEach((value, key) => {
+      if (!excludedParams.includes(key) && value) {
+        let decoded = value;
+
+        if (value.includes('%')) {
+          try {
+            decoded = decodeURIComponent(value);
+          } catch (e) {
+            decoded = value;
+          }
+        }
+
+        const tagsList = decoded
+          .replace(/^["']|["']$/g, '')
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(Boolean);
+
+        if (tagsList.length > 0) {
+          let decodedCategory = key;
+
+          if (key.includes('%')) {
+            try {
+              decodedCategory = decodeURIComponent(key);
+            } catch (e) {
+              decodedCategory = key;
+            }
+          }
+          decodedCategory = decodedCategory
+            .replace(/%20/g, ' ')
+            .replace(/\+/g, ' ')
+            .trim();
+
+          result.push({
+            categoryName: decodedCategory,
+            tags: tagsList,
+          });
+        }
+      }
+    });
+  }
+
+  return result;
+};
+
 export const showMoreTags = (category, objectType, skip, limit = 10) => (dispatch, getState) => {
   const state = getState();
   const queryString = getQueryString(state);
@@ -273,11 +388,11 @@ export const getTagCategories = objectTypeName => (dispatch, getState) => {
   const state = getState();
   const queryString = getQueryString(state);
   const searchString = new URLSearchParams(queryString).get('search') || '';
-  const selectedTags = extractTagsFromUrl(queryString);
+  const selectedTagsByCategory = extractTagsByCategoryFromUrl(queryString);
 
   return dispatch({
     type: GET_TAG_CATEGORIES.ACTION,
-    payload: ApiClient.getSearchTagCategories(objectTypeName, searchString, selectedTags),
+    payload: ApiClient.getSearchTagCategories(objectTypeName, searchString, selectedTagsByCategory),
   });
 };
 
