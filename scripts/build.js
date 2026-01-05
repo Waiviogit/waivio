@@ -10,7 +10,7 @@ const webpack = require('webpack');
 const paths = require('./paths');
 
 const createClientConfig = require('../webpack/client');
-const createServerConfig = require('../webpack/server');
+const createSsrHandlerConfig = require('../webpack/ssrHandler');
 
 function copyPublic() {
   fs.copySync(paths.public, paths.buildPublic, {
@@ -25,9 +25,9 @@ async function main() {
   copyPublic();
 
   const clientCompiler = webpack(createClientConfig('prod'));
-  const serverCompiler = webpack(createServerConfig('prod'));
+  const ssrHandlerCompiler = webpack(createSsrHandlerConfig());
 
-  // Build client first
+  // Build client first (generates assets.json needed by SSR handler at runtime)
   await new Promise((resolve, reject) => {
     clientCompiler.run((err, stats) => {
       if (err) {
@@ -54,29 +54,29 @@ async function main() {
     });
   });
 
-  // Then build server
+  // Then build SSR handler
   await new Promise((resolve, reject) => {
-    serverCompiler.run((err, stats) => {
+    ssrHandlerCompiler.run((err, stats) => {
       if (err) {
-        console.error('Server build failed:', err);
+        console.error('SSR handler build failed:', err);
         reject(err);
         return;
       }
 
       if (stats.hasErrors()) {
         console.error(
-          'Server build errors:',
+          'SSR handler build errors:',
           stats.toString({
             colors: true,
             chunks: false,
             children: false,
           }),
         );
-        reject(new Error('Server build failed with errors'));
+        reject(new Error('SSR handler build failed with errors'));
         return;
       }
 
-      console.log('Server build completed successfully');
+      console.log('SSR handler build completed successfully');
       resolve();
     });
   });

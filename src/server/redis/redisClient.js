@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-import { REDIS_CLIENT_DB } from '../../common/constants/ssrData';
+import { REDIS_CLIENT_DB } from '../../common/constants/ssrData.js';
 
 const redisClient = createClient();
 redisClient.on('error', e => console.log(e));

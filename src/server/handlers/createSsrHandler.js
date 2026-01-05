@@ -41,9 +41,6 @@ import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHe
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebsites';
 
-// eslint-disable-next-line import/no-dynamic-require
-const assets = require(process.env.MANIFEST_PATH);
-
 const ssrTimeout = 5000;
 
 function createTimeout(timeout, promise) {
@@ -70,7 +67,7 @@ const isPageExistSitemap = async ({ url = '', host }) => {
   return sismember({ key, member });
 };
 
-export default function createSsrHandler(template) {
+export default function createSsrHandler(template, assets) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
     const isWaivio = hostname?.includes('waivio');
