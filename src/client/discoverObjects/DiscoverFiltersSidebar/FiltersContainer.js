@@ -82,7 +82,7 @@ const FiltersContainer = ({
 
     const updatedTags = updateActiveTagsFilters(activeTagsFilters, tag, category, checked);
 
-    dispatchSetActiveTagsFilters(updatedTags);
+    // dispatchSetActiveTagsFilters(updatedTags);
 
     const search = buildCanonicalSearch({
       search: new URLSearchParams(location.search).get('search'),
