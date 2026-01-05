@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Carousel, Icon } from 'antd';
 import { useSelector } from 'react-redux';
@@ -105,7 +106,6 @@ const PicturesSlider = ({
   const isMobileDevice = useMemo(() => isMobile(), []);
 
   const slidesToShow = Math.min(pictures.length, isMobileDevice ? countShowMobile : countShowSlide);
-
   const carouselSettings = useMemo(
     () => ({
       dots: false,
@@ -118,6 +118,7 @@ const PicturesSlider = ({
       slidesToScroll: 1,
       nextArrow: <NextArrow slidesToShow={slidesToShow} />,
       prevArrow: <PrevArrow />,
+      variableWidth: true,
       afterChange: current => {
         setPhotoIndex(current);
       },
@@ -169,11 +170,9 @@ const PicturesSlider = ({
                   setHoveredPic({});
                 }}
                 src={getProxyImageURL(pic?.body)}
-                className={
-                  pic?.body === currentImage?.body
-                    ? 'PicturesSlider__thumbnail--active'
-                    : 'PicturesSlider__thumbnail'
-                }
+                className={classNames('PicturesSlider__thumbnail', {
+                  'PicturesSlider__thumbnail--active': pic?.body === currentImage?.body,
+                })}
                 alt={`${i} ${getObjectName(currentWobj)}`}
               />
             </div>
@@ -202,11 +201,9 @@ const PicturesSlider = ({
                 setHoveredPic({});
               }}
               src={getProxyImageURL(pic?.body)}
-              className={
-                pic?.body === currentImage?.body
-                  ? 'PicturesSlider__thumbnail--active'
-                  : 'PicturesSlider__thumbnail'
-              }
+              className={classNames('PicturesSlider__thumbnail', {
+                'PicturesSlider__thumbnail--active': pic?.body === currentImage?.body,
+              })}
               alt={`${i} ${getObjectName(currentWobj)}`}
             />
           </div>

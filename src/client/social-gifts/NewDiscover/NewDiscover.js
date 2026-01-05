@@ -243,7 +243,7 @@ const NewDiscover = () => {
             {search &&
               (isMobile() ? (
                 <div>
-                  <Tag closable onClose={removeSearch}>
+                  <Tag closable onClose={removeSearch} className={'mb1'}>
                     Search: {search}
                   </Tag>
                 </div>
@@ -254,7 +254,7 @@ const NewDiscover = () => {
               ))}
 
             {Object.entries(tagsByCategory).map(([cat, tags]) => (
-              <div key={`${cat}}`}>
+              <div className={'NewDiscover__tags-container'} key={`${cat}}`}>
                 {tags.map(tag => (
                   <Tag
                     key={`${cat}-${tag}`}

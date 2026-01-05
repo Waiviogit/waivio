@@ -5876,34 +5876,31 @@ export const getSearchTagByCategory = (
     });
 };
 
-export const getSearchTagCategories = (objectTypeName, searchString = '', selectedTags = []) => {
-  const params = ['tagsLimit=10'];
+export const getSearchTagCategories = (
+  objectTypeName,
+  searchString,
+  selectedTagsByCategory = [],
+) => {
+  const body = {
+    tagsLimit: 10,
+    searchString: isEmpty(searchString) ? undefined : searchString,
+    tagCategory: selectedTagsByCategory.map(({ categoryName, tags }) => ({
+      categoryName,
+      tags,
+    })),
+  };
 
-  if (searchString) {
-    params.push(`searchString=${encodeURIComponent(searchString)}`);
-  }
-
-  selectedTags.forEach(tag => {
-    params.push(`selectedTags=${encodeURIComponent(tag)}`);
-  });
-
-  const queryParams = params.length > 0 ? `?${params.join('&')}` : '';
-
-  return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}${queryParams}`,
-    {
-      headers: {
-        ...headers,
-        ...getAuthHeaders(),
-      },
-      method: 'GET',
+  return fetch(`${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
     },
-  )
+    body: JSON.stringify(body),
+  })
     .then(res => res.json())
-    .then(res => res)
     .catch(error => {
       console.error('API Client error:', error);
-
       return error;
     });
 };

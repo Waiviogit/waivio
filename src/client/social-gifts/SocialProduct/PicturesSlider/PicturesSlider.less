@@ -25,13 +25,18 @@
     height: 50px;
     border: 1px solid @silver-gray;
     border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+
     &--active {
       object-fit: contain;
       width: 50px;
       height: 50px;
       border: 1px solid var(--website-color);
       border-radius: 4px;
+      cursor: pointer;
     }
+
     @media @small {
       &:hover {
         object-fit: contain;
@@ -50,7 +55,7 @@
     }
   }
   .slick-track {
-    justify-content: center !important;
+    justify-content: flex-start !important;
   }
 
   .slick-prev,
