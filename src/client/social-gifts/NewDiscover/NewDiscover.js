@@ -253,18 +253,20 @@ const NewDiscover = () => {
                 </Tag>
               ))}
 
-            {Object.entries(tagsByCategory).map(([cat, tags]) =>
-              tags.map(tag => (
-                <Tag
-                  key={`${cat}-${tag}`}
-                  closable
-                  className={isMobile ? 'ml2' : ''}
-                  onClose={() => removeTag(cat, tag)}
-                >
-                  {`${cat}: ${tag}`}
-                </Tag>
-              )),
-            )}
+            {Object.entries(tagsByCategory).map(([cat, tags]) => (
+              <div key={`${cat}}`}>
+                {tags.map(tag => (
+                  <Tag
+                    key={`${cat}-${tag}`}
+                    closable
+                    className={isMobile() ? 'mb1' : ''}
+                    onClose={() => removeTag(cat, tag)}
+                  >
+                    {`${cat}: ${tag}`}
+                  </Tag>
+                ))}
+              </div>
+            ))}
           </div>
 
           {renderContent()}
