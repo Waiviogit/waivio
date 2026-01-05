@@ -1,6 +1,7 @@
 import pkg from 'uuid';
-const { v4: uuidv4 } = pkg;
 import wsSocketClient from './wsClient.js';
+
+const { v4: uuidv4 } = pkg;
 
 // Telegram max length message 4096 + we add additional text on notifier
 const maxLength = 4096 - 200;
