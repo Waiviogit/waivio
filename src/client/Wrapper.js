@@ -31,6 +31,7 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { listOfWaivioSites } from './social-gifts/listOfSocialWebsites';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import { handleRefAuthUser } from '../store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
@@ -178,6 +179,8 @@ class Wrapper extends React.PureComponent {
     const userName = querySelectorSearchParams.get('userName');
     const nightmode = Cookie.get('nightmode');
 
+    this.checkVipticketRedirect();
+
     if (typeof document !== 'undefined') {
       if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
@@ -247,7 +250,7 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
     const refName = getSessionData('refUser');
@@ -266,7 +269,22 @@ class Wrapper extends React.PureComponent {
     }
     if (this.props.isAuthenticated && widgetLink && userName)
       removeSessionData('userName', 'isWidget');
+    if (prevProps.location.search !== this.props.location.search) {
+      this.checkVipticketRedirect();
+    }
   }
+  checkVipticketRedirect = () => {
+    if (typeof window === 'undefined') return;
+
+    const query = new URLSearchParams(this.props.location.search);
+    const nextUrl = query.get('vipticket_redirect_url');
+    const hostname = window.location.hostname;
+    const isWaivio = listOfWaivioSites.includes(hostname);
+
+    if (nextUrl && isWaivio) {
+      window.location.href = nextUrl;
+    }
+  };
 
   async loadLocale(locale) {
     const lang = await loadLanguage(locale);
