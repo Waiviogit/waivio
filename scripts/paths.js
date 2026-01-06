@@ -12,7 +12,7 @@ module.exports = {
   buildPublic: resolveApp('./build/public'),
   templates: resolveApp('./templates'),
   assets: resolveApp('./build/assets.json'),
-  server: resolveApp('./src/server/index.js'),
+  server: resolveApp('./src/server/index.mjs'),
   client: resolveApp('./src/client/index.js'),
   sw: resolveApp('./build/public/service-worker.js'),
   publicRuntime: () => resolveRuntime('./public'),

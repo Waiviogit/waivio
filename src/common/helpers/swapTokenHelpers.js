@@ -1,4 +1,4 @@
-const BigNumber = require('bignumber.js');
+import BigNumber from 'bignumber.js';
 
 export const getUpdatedPoolStats = ({ pool, baseAdjusted, quoteAdjusted }) => {
   const uPool = { ...pool };

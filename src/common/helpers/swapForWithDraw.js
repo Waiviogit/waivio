@@ -1,6 +1,5 @@
 import { getDiffPercent, getUpdatedPoolStats } from './swapTokenHelpers';
-
-const BigNumber = require('bignumber.js');
+import BigNumber from 'bignumber.js';
 
 const operationForJson = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount }) => ({
   contractName: 'marketpools',

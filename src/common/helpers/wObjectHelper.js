@@ -3,7 +3,7 @@ import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/lis
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
 import { getFeedContentByObject, getPinnedPostsByObject } from '../../waivioApi/ApiClient';
-import { getHtml } from '../../client/components/Story/Body';
+// Note: getHtml is imported dynamically in getBrandName to avoid circular dependency
 
 export const getObjectName = (wobj = {}) =>
   get(wobj, 'name') ||
@@ -595,7 +595,15 @@ export const isObjectReviewTab = (wobject, match) => {
   return false;
 };
 
-export const getBrandName = brand =>
-  brand.name?.includes('<font')
-    ? getHtml(brand.name, {}, 'text')?.replace(/<\/?p>/g, '')
-    : brand.name;
+export const getBrandName = brand => {
+  if (!brand.name?.includes('<font')) return brand.name;
+  // Simple HTML stripping for brand names - avoids circular dependency with Body.js
+  return brand.name
+    .replace(/<[^>]*>/g, '') // Strip all HTML tags
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
+};

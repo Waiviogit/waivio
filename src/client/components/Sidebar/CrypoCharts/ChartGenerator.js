@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { LineChart } from 'react-easy-chart';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import USDDisplay from '../../Utils/USDDisplay';
+
+// Lazy load LineChart to avoid blocking the app if react-easy-chart has issues
+const LineChart = lazy(() => 
+  import('react-easy-chart').then(module => ({ default: module.LineChart })).catch(() => ({
+    default: () => <div className="chart-error">Chart unavailable</div>
+  }))
+);
 
 const ChartGenerator = props => {
   const [chartConfig, setChartConfig] = useState({
@@ -52,7 +58,9 @@ const ChartGenerator = props => {
 
   return (
     <div>
-      <LineChart {...config} />
+      <Suspense fallback={<div className="chart-loading">Loading chart...</div>}>
+        <LineChart {...config} />
+      </Suspense>
       {chartConfig.showTooltip && (
         <p className="linechart-tooltip" style={{ top: chartConfig.top, left: chartConfig.left }}>
           {chartConfig.x}: <USDDisplay value={chartConfig.y} currencyDisplay={'symbol'} />

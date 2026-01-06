@@ -37,12 +37,9 @@ import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler';
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
-import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
+import { isInheritedHost } from '../../common/helpers/redirectHelper';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebsites';
-
-// eslint-disable-next-line import/no-dynamic-require
-const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
 
@@ -70,17 +67,12 @@ const isPageExistSitemap = async ({ url = '', host }) => {
   return sismember({ key, member });
 };
 
-export default function createSsrHandler(template) {
+export default function createSsrHandler(template, assets) {
   return async function serverSideResponse(req, res) {
     const hostname = req.hostname;
     const isWaivio = hostname?.includes('waivio');
     const userAgent = req.get('User-Agent');
     const inheritedHost = isInheritedHost(hostname);
-
-    if (inheritedHost) {
-      const { redirect, redirectPath, status } = await checkAppStatus(hostname);
-      if (redirect) return res.redirect(status, redirectPath);
-    }
 
     if (req.url?.includes('/checklist/'))
       return res.redirect(301, req.url.replace('/checklist/', '/object/'));

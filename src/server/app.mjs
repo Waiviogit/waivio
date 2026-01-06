@@ -1,17 +1,39 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import Handlebars from 'handlebars';
-import paths from '../../scripts/paths';
-import createSsrHandler from './handlers/createSsrHandler';
-// import createAmpHandler from './handlers/createAmpHandler';
-import steemAPI from './steemAPI';
-import { getRobotsTxtContent } from '../common/helpers/robots-helper';
-import { webPage, sitemap } from './seo-service/seoServiceApi';
-import botRateLimit from './middleware/botRateLimit';
-import urlDecodeMiddleware from './middleware/urlDecodeMiddleware';
-import path from 'path';
-import { restartHandler } from '../common/services/errorNotifier';
+
+// ESM equivalents for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// For loading CommonJS modules
+const require = createRequire(import.meta.url);
+
+// Load pre-built SSR handler (CommonJS bundle)
+const ssrModule = require('../../build/ssrHandler.js');
+const createSsrHandler = ssrModule.default || ssrModule;
+
+// Load CommonJS steemAPI
+const steemAPI = require('./steemAPI.js');
+
+// Import ES modules
+import { getRobotsTxtContent } from '../common/helpers/robots-helper.js';
+import { webPage, sitemap } from './seo-service/seoServiceApi.js';
+import botRateLimit from './middleware/botRateLimit.js';
+import urlDecodeMiddleware from './middleware/urlDecodeMiddleware.js';
+import hostRedirect from './middleware/hostRedirect.mjs';
+import { restartHandler } from '../common/services/errorNotifier.js';
+
+// Paths configuration
+const rootDir = path.resolve(__dirname, '../..');
+const templatesPath = path.join(rootDir, 'templates');
+const buildPath = path.join(rootDir, 'build');
+const publicPath = path.join(rootDir, 'public');
+const buildPublicPath = path.join(buildPath, 'public');
 
 /**
  * Helper function to preserve query parameters in redirects
@@ -22,14 +44,17 @@ const preserveQueryParams = url => {
   return url?.includes('?') ? url?.substring(url?.indexOf('?')) : '';
 };
 
-const indexPath = `${paths.templates}/index.hbs`;
+// Load template
+const indexPath = path.join(templatesPath, 'index.hbs');
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
 const template = Handlebars.compile(indexHtml);
 
-// const ampIndexPath = `${paths.templates}/amp_index.hbs`;
-// const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
-// const ampTemplate = Handlebars.compile(ampIndexHtml);
-const ssrHandler = createSsrHandler(template);
+// Load assets manifest
+const assetsPath = path.join(buildPath, 'assets.json');
+const assets = JSON.parse(fs.readFileSync(assetsPath, 'utf-8'));
+
+// Create SSR handler with template and assets
+const ssrHandler = createSsrHandler(template, assets);
 
 const CACHE_AGE = 1000 * 60 * 60 * 24 * 7;
 
@@ -43,12 +68,15 @@ app.use(cookieParser());
 app.use(urlDecodeMiddleware);
 
 if (IS_DEV) {
-  app.use(express.static(paths.publicRuntime(), { index: false }));
+  app.use(express.static(publicPath, { index: false }));
 } else {
   process.on('uncaughtExceptionMonitor', restartHandler);
-  app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
+  app.use(express.static(buildPublicPath, { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);
 }
+
+// Host redirect middleware - checks if host is valid, redirects unknown hosts in production
+app.use(hostRedirect);
 
 app.get('/callback', (req, res) => {
   const accessToken = req.query.access_token;
@@ -205,3 +233,4 @@ app.get('/%40:author/:permlink', (req, res) => {
 app.get('/*', ssrHandler);
 
 export default app;
+

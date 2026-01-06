@@ -1,7 +1,7 @@
 import { isbot, createIsbotFromList } from 'isbot';
-import { REDIS_KEYS } from '../../common/constants/ssrData';
-import { getAsync, incrExpire } from '../redis/redisClient';
-import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
+import { REDIS_KEYS } from '../../common/constants/ssrData.js';
+import { getAsync, incrExpire } from '../redis/redisClient.js';
+import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage.js';
 
 const { NODE_ENV } = process.env;
 

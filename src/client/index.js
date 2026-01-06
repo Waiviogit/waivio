@@ -1,4 +1,11 @@
-import 'babel-polyfill';
+// Polyfill global.crypto for libraries like object-hash used by react-easy-chart
+if (typeof globalThis !== 'undefined' && !globalThis.crypto) {
+  globalThis.crypto = window.crypto;
+}
+// Polyfills for older browsers (Vite handles most modern features)
+import 'regenerator-runtime/runtime';
+// antd v5 compatibility - must be imported before any antd components
+import './antdCompat';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -32,10 +39,13 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-process.on('unhandledRejection', error => {
-  sendSentryNotification();
-  Sentry.captureException(error);
-});
+// Browser-compatible unhandled rejection handler
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', event => {
+    sendSentryNotification();
+    Sentry.captureException(event.reason);
+  });
+}
 
 const store = getStore(steemConnectAPI, waivioAPI, '/', history);
 
@@ -68,7 +78,11 @@ const render = async Component => {
       store.dispatch(setScreenSize(screenSize(window.screen.width))),
     );
   }
-  const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
+
+  // Use hydrate for SSR, render for dev with Vite (HMR)
+  const isDev = process.env.NODE_ENV === 'development';
+  const hasServerRenderedContent = document.getElementById('app')?.innerHTML?.trim();
+  const renderMethod = isDev && !hasServerRenderedContent ? ReactDOM.render : ReactDOM.hydrate;
 
   renderMethod(
     <Provider store={store}>
@@ -79,3 +93,8 @@ const render = async Component => {
 };
 
 render(AppHost);
+
+// Vite HMR
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}

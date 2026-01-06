@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Polyfill global.crypto for object-hash used by react-easy-chart -->
+  <script>if(typeof globalThis!=='undefined'&&!globalThis.crypto){globalThis.crypto=window.crypto;}</script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   {{#if googleAnalytics}} {{{googleAnalytics}}}{{/if}}
   {{#if googleEventSnippet}} {{{googleEventSnippet}}}{{/if}}
