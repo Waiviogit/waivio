@@ -5,6 +5,7 @@ import QRCode from 'qrcode.react';
 import { Input, InputNumber, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isNumber, debounce, isEmpty, size, round } from 'lodash';
+import { getAppHost } from '../../../store/appStore/appSelectors';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import Transfer from '../../wallet/Transfer/Transfer';
 import CopyButton from '../../widgets/CopyButton/CopyButton';
@@ -41,7 +42,20 @@ const VipTicketsSetting = props => {
   const [showMoreLoading, setShowMoreLoading] = useState({});
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
   const hostname = typeof location !== 'undefined' ? location.hostname : '';
-  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https%3A%2F%2F${hostname}&creator=vancouverdining`;
+  // const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https://${hostname}&creator=vancouverdining`;
+  const socialSite = `https://${props.appHost}`;
+
+  const waivioRedirect = new URL(`https://${hostname}/`);
+
+  waivioRedirect.searchParams.set('next', socialSite);
+
+  const hiveUrl = new URL('https://hiveonboard.com/create-account');
+
+  hiveUrl.searchParams.set('ticket', activeTicketInfo?.ticket ?? '');
+  hiveUrl.searchParams.set('creator', 'vancouverdining');
+  hiveUrl.searchParams.set('redirect_url', waivioRedirect.toString());
+
+  const ticketAddress = hiveUrl.toString();
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
@@ -279,6 +293,7 @@ VipTicketsSetting.propTypes = {
   addNoteInTicket: PropTypes.func.isRequired,
   getMoreVipTickets: PropTypes.func.isRequired,
   price: PropTypes.string.isRequired,
+  appHost: PropTypes.string.isRequired,
   showMoreActiveTickets: PropTypes.bool.isRequired,
   visibleTransfer: PropTypes.bool.isRequired,
   showMoreConsumedTickets: PropTypes.bool.isRequired,
@@ -299,6 +314,7 @@ export default connect(
     showMoreConsumedTickets: getShowMoreConsumedTickets(state),
     rates: getRatesList(state),
     visibleTransfer: getIsTransferVisible(state),
+    appHost: getAppHost(state),
   }),
   { getVipTickets, openTransfer, addNoteInTicket, getMoreVipTickets },
 )(injectIntl(VipTicketsSetting));
