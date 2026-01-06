@@ -4,20 +4,20 @@
  * This patches antd Form to add back Form.create() for compatibility with v3 code.
  * Import this file BEFORE any components that use Form.create()
  */
-const antd = require('antd');
-const React = require('react');
+import { Form } from 'antd';
+import React from 'react';
 
 function createFormWrapper(options = {}) {
   return function wrapWithForm(WrappedComponent) {
     const FormWrapper = React.forwardRef((props, ref) => {
-      const [form] = antd.Form.useForm();
+      const [form] = Form.useForm();
       
       // Create legacy form API
       const legacyForm = {
         getFieldDecorator: (name, fieldOptions = {}) => (element) => {
           const { rules, initialValue, valuePropName = 'value', trigger = 'onChange', getValueFromEvent } = fieldOptions;
           
-          return React.createElement(antd.Form.Item, {
+          return React.createElement(Form.Item, {
             name,
             rules,
             initialValue,
@@ -106,7 +106,7 @@ function createFormWrapper(options = {}) {
         submit: () => form.submit(),
       };
       
-      return React.createElement(antd.Form, { form, component: false },
+      return React.createElement(Form, { form, component: false },
         React.createElement(WrappedComponent, { ...props, form: legacyForm, ref })
       );
     });
@@ -118,11 +118,10 @@ function createFormWrapper(options = {}) {
 }
 
 // Patch Form.create
-if (!antd.Form.create) {
-  antd.Form.create = createFormWrapper;
+if (!Form.create) {
+  Form.create = createFormWrapper;
   console.log('[antd-compat] Form.create polyfill installed');
 }
 
-module.exports = antd.Form;
-module.exports.default = antd.Form;
-
+export { Form };
+export default Form;

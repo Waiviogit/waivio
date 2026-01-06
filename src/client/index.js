@@ -1,7 +1,11 @@
+// Polyfill global.crypto for libraries like object-hash used by react-easy-chart
+if (typeof globalThis !== 'undefined' && !globalThis.crypto) {
+  globalThis.crypto = window.crypto;
+}
 // Polyfills for older browsers (Vite handles most modern features)
 import 'regenerator-runtime/runtime';
 // antd v5 compatibility - must be imported before any antd components
-require('./antdCompat');
+import './antdCompat';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -35,10 +39,13 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-process.on('unhandledRejection', error => {
-  sendSentryNotification();
-  Sentry.captureException(error);
-});
+// Browser-compatible unhandled rejection handler
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', event => {
+    sendSentryNotification();
+    Sentry.captureException(event.reason);
+  });
+}
 
 const store = getStore(steemConnectAPI, waivioAPI, '/', history);
 

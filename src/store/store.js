@@ -51,9 +51,9 @@ export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
 
   const store = createStore(createReducer(history), preloadedState, enhancer);
 
-  // Hot reloading
-  if (module.hot) {
-    module.hot.accept('./reducers', () => {
+  // Hot reloading (Vite-compatible)
+  if (import.meta.hot) {
+    import.meta.hot.accept('./reducers', () => {
       store.replaceReducer(createReducer(history));
     });
   }

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { hot } from 'react-hot-loader';
 import { ConnectedRouter } from 'connected-react-router';
 import { useSelector } from 'react-redux';
 import { getWebsiteStartPage, getWebsiteParentHost } from '../store/appStore/appSelectors';
@@ -26,4 +25,4 @@ AppHost.propTypes = {
   history: PropTypes.shape().isRequired,
 };
 
-export default hot(module)(AppHost);
+export default AppHost;

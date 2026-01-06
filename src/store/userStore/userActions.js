@@ -16,8 +16,7 @@ import {
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getUserProfileBlogPosts } from '../feedStore/feedActions';
 import { MUTE_CURRENT_USER } from '../usersStore/usersActions';
-
-require('isomorphic-fetch');
+import 'isomorphic-fetch';
 
 // region Followings
 export const FOLLOW_USER = '@user/FOLLOW_USER';

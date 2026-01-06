@@ -185,6 +185,7 @@ export default defineConfig(({ command, mode }) => {
     
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
+      'process.env.BABEL_ENV': JSON.stringify('react'), // Required for pigeon-overlay to use React instead of Inferno
       'process.env.HIVE_AUTH': JSON.stringify('ea77153b-b08a-4e5e-b2b6-e175b41e3776'),
       'process.env.PAYPAL_CLIENT_ID': JSON.stringify(
         envConfig.PAYPAL_CLIENT_ID || 'Ab1PkIju8eYhVG7dwometncm_FgN0IA7ZP1TvjHuSdoXZWQCocEPazBkaFoqze1YvA4r45Xi0oQ_rdWe'
@@ -206,6 +207,8 @@ export default defineConfig(({ command, mode }) => {
         'lodash/default': 'lodash',
         // Handle ~ prefix for node_modules imports in Less
         '~': path.resolve(__dirname, 'node_modules'),
+        // Alias for project src/client
+        '@': path.resolve(__dirname, 'src/client'),
         // Use @ant-design/compatible for Form.create support
         'antd/lib/form': '@ant-design/compatible/lib/form',
         'antd/es/form': '@ant-design/compatible/lib/form',
@@ -213,6 +216,63 @@ export default defineConfig(({ command, mode }) => {
     },
 
     plugins: [
+      // Transform Icon imports from antd to compatibility component
+      {
+        name: 'transform-antd-icon',
+        enforce: 'pre',
+        transform(code, id) {
+          // Only process project files
+          if (!id.includes('src/') || !id.endsWith('.js')) return;
+          
+          // Don't transform the Icon compatibility component itself
+          if (id.includes('components/Icon/index.js')) return;
+          
+          // Check if file imports Icon from antd
+          const iconImportRegex = /import\s*\{([^}]*\bIcon\b[^}]*)\}\s*from\s*['"]antd['"]/;
+          const match = code.match(iconImportRegex);
+          
+          if (!match) return;
+          
+          // Parse the imports
+          const imports = match[1].split(',').map(s => s.trim());
+          const hasIcon = imports.some(i => i === 'Icon' || i.startsWith('Icon '));
+          
+          if (!hasIcon) return;
+          
+          // Remove Icon from the antd import and add separate Icon import
+          const otherImports = imports.filter(i => i !== 'Icon' && !i.startsWith('Icon '));
+          
+          let newCode = code;
+          
+          if (otherImports.length > 0) {
+            // Replace import to remove Icon
+            newCode = newCode.replace(
+              iconImportRegex,
+              `import { ${otherImports.join(', ')} } from 'antd'`
+            );
+          } else {
+            // Remove the entire antd import if Icon was the only import
+            newCode = newCode.replace(
+              /import\s*\{[^}]*\bIcon\b[^}]*\}\s*from\s*['"]antd['"];?\n?/,
+              ''
+            );
+          }
+          
+          // Add Icon import using the alias (defined below)
+          const iconImport = "import Icon from '@/components/Icon';\n";
+          
+          // Insert Icon import at the beginning, after 'use strict' if present
+          if (newCode.startsWith("'use strict'") || newCode.startsWith('"use strict"')) {
+            const endOfUseStrict = newCode.indexOf(';') + 1;
+            newCode = newCode.slice(0, endOfUseStrict) + '\n' + iconImport + newCode.slice(endOfUseStrict);
+          } else {
+            newCode = iconImport + newCode;
+          }
+          
+          return newCode;
+        },
+      },
+      
       // Node.js polyfills for browser (Buffer, process, crypto, etc.)
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream', 'crypto'],
@@ -220,7 +280,31 @@ export default defineConfig(({ command, mode }) => {
           Buffer: true,
           process: true,
         },
+        // Ensure crypto is polyfilled in the browser
+        overrides: {
+          crypto: 'crypto-browserify',
+        },
       }),
+      // Inject crypto polyfill into HTML before any module loads
+      {
+        name: 'inject-crypto-polyfill',
+        transformIndexHtml(html) {
+          // This script runs before any modules load, setting up globalThis.crypto
+          const polyfillScript = `<script>
+            // Polyfill for libraries that expect global.crypto (like react-easy-chart's object-hash)
+            if (typeof globalThis !== 'undefined' && typeof window !== 'undefined') {
+              // Create a proxy for globalThis that redirects crypto access to window.crypto
+              if (!globalThis.crypto && window.crypto) {
+                Object.defineProperty(globalThis, 'crypto', {
+                  get: function() { return window.crypto; },
+                  configurable: true
+                });
+              }
+            }
+          </script>`;
+          return html.replace('<head>', '<head>' + polyfillScript);
+        },
+      },
       // Transform antd Icon/Form imports for compatibility
       antdCompatTransformPlugin(),
       // Transform JSX in .js files before anything else
@@ -294,13 +378,19 @@ export default defineConfig(({ command, mode }) => {
 
     optimizeDeps: {
       include: ['react', 'react-dom', 'react-redux', 'redux', 'lodash', 'antd', '@ant-design/icons', 'pigeon-overlay', 'steem'],
+      // Exclude react-easy-chart - it uses bundled crypto-browserify that accesses global.crypto
+      // We lazy-load it in ChartGenerator.js to avoid blocking the app
+      exclude: ['react-easy-chart'],
       esbuildOptions: {
         define: {
           global: 'globalThis',
+          'process.env.BABEL_ENV': JSON.stringify('react'),
         },
         loader: {
           '.js': 'jsx',
         },
+        // Inject global.crypto shim for object-hash
+        inject: [path.resolve(__dirname, 'src/client/globalShim.js')],
         // Ignore optional dependencies that aren't installed
         plugins: [
           {
@@ -311,6 +401,21 @@ export default defineConfig(({ command, mode }) => {
                 path: 'inferno',
                 external: true,
               }));
+            },
+          },
+          {
+            name: 'fix-react-easy-chart-crypto',
+            setup(build) {
+              // Patch react-easy-chart which has its own bundled crypto code
+              build.onLoad({ filter: /node_modules\/react-easy-chart\/lib\/index\.js$/ }, async (args) => {
+                const fs = await import('fs');
+                let contents = fs.readFileSync(args.path, 'utf8');
+                // The react-easy-chart bundle has crypto-browserify which references global.crypto
+                // Replace all instances of global.crypto with (typeof crypto !== 'undefined' ? crypto : window.crypto)
+                // This is a workaround for the fact that globalThis is window in browsers
+                contents = contents.replace(/([^a-zA-Z_$])global\.crypto/g, '$1(typeof crypto !== "undefined" ? crypto : (typeof window !== "undefined" ? window.crypto : undefined))');
+                return { contents, loader: 'js' };
+              });
             },
           },
         ],

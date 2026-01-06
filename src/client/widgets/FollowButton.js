@@ -2,10 +2,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import withAuthAction from '../auth/withAuthActions';
-import { bellNotifications } from '../../store/userStore/userActions';
-import { wobjectBellNotification } from '../../store/wObjectStore/wobjActions';
 import Follow from '../components/Button/Follow';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
+// Lazy-load actions to avoid circular dependency
+let userActionsPromise = null;
+let wobjActionsPromise = null;
+
+const loadUserActions = () => {
+  if (!userActionsPromise) {
+    userActionsPromise = import('../../store/userStore/userActions');
+  }
+  return userActionsPromise;
+};
+
+const loadWobjActions = () => {
+  if (!wobjActionsPromise) {
+    wobjActionsPromise = import('../../store/wObjectStore/wobjActions');
+  }
+  return wobjActionsPromise;
+};
+
+// Thunk-style action creators that lazy-load the actual actions
+const lazyBellNotifications = (...args) => async dispatch => {
+  const actions = await loadUserActions();
+  return dispatch(actions.bellNotifications(...args));
+};
+
+const lazyWobjectBellNotification = (...args) => async dispatch => {
+  const actions = await loadWobjActions();
+  return dispatch(actions.wobjectBellNotification(...args));
+};
 
 @withAuthAction
 @connect(
@@ -13,8 +40,8 @@ import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
     authenticatedUserName: getAuthenticatedUserName(state),
   }),
   {
-    bellNotifications,
-    wobjectBellNotification,
+    bellNotifications: lazyBellNotifications,
+    wobjectBellNotification: lazyWobjectBellNotification,
   },
 )
 class FollowButton extends React.Component {

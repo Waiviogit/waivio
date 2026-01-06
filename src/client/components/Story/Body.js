@@ -19,7 +19,11 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { setLinkSafetyInfo } from '../../../store/wObjectStore/wobjActions';
+// Import deferred to avoid circular dependency
+let setLinkSafetyInfo;
+import('../../../store/wObjectStore/wobjActions').then(module => {
+  setLinkSafetyInfo = module.setLinkSafetyInfo;
+});
 import './Body.less';
 
 function parseGPSCoordinates(text) {
@@ -189,7 +193,9 @@ const Body = props => {
 
     const href = anchor.dataset.href;
 
-    dispatch(setLinkSafetyInfo(href));
+    if (setLinkSafetyInfo) {
+      dispatch(setLinkSafetyInfo(href));
+    }
   };
 
   // eslint-disable-next-line consistent-return

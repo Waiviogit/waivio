@@ -8,13 +8,32 @@ import { injectIntl } from 'react-intl';
 import { getSuitableLanguage } from '../../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../../common/helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
-import { voteObject, followObject } from '../../../store/wObjectStore/wobjActions';
 import { getObjectPermlink } from '../../vendor/steemitHelpers';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
+
+// Lazy-load actions to avoid circular dependency
+let wobjActionsPromise = null;
+const loadWobjActions = () => {
+  if (!wobjActionsPromise) {
+    wobjActionsPromise = import('../../../store/wObjectStore/wobjActions');
+  }
+  return wobjActionsPromise;
+};
+
+// Thunk-style action creators that lazy-load the actual actions
+const lazyVoteObject = (...args) => async dispatch => {
+  const actions = await loadWobjActions();
+  return dispatch(actions.voteObject(...args));
+};
+
+const lazyFollowObject = (...args) => async dispatch => {
+  const actions = await loadWobjActions();
+  return dispatch(actions.followObject(...args));
+};
 
 export default function withEditor(WrappedComponent) {
   @connect(
@@ -23,8 +42,8 @@ export default function withEditor(WrappedComponent) {
       locale: getSuitableLanguage(state),
     }),
     {
-      voteObject,
-      followObject,
+      voteObject: lazyVoteObject,
+      followObject: lazyFollowObject,
     },
   )
   @injectIntl

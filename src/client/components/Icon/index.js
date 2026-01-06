@@ -1,554 +1,322 @@
-/**
- * Icon compatibility layer for antd v3 -> v4 migration
- * Maps old Icon type prop to new @ant-design/icons components
- */
 import React from 'react';
-import * as AntdIcons from '@ant-design/icons';
+import PropTypes from 'prop-types';
+import * as Icons from '@ant-design/icons';
 
-// Map of old icon type names to new component names
-const iconMap = {
-  // Navigation
-  'menu': 'MenuOutlined',
-  'menu-fold': 'MenuFoldOutlined',
-  'menu-unfold': 'MenuUnfoldOutlined',
-  'close': 'CloseOutlined',
-  'close-circle': 'CloseCircleOutlined',
-  'close-circle-o': 'CloseCircleOutlined',
-  'close-square': 'CloseSquareOutlined',
-  'check': 'CheckOutlined',
-  'check-circle': 'CheckCircleOutlined',
-  'check-circle-o': 'CheckCircleOutlined',
-  'check-square': 'CheckSquareOutlined',
+// Map old icon type names to new @ant-design/icons components
+const iconTypeMap = {
+  // Navigation icons
+  'menu': Icons.MenuOutlined,
+  'menu-fold': Icons.MenuFoldOutlined,
+  'menu-unfold': Icons.MenuUnfoldOutlined,
+  'close': Icons.CloseOutlined,
+  'close-circle': Icons.CloseCircleOutlined,
+  'close-circle-o': Icons.CloseCircleOutlined,
+  'check': Icons.CheckOutlined,
+  'check-circle': Icons.CheckCircleOutlined,
+  'check-circle-o': Icons.CheckCircleOutlined,
   
   // Arrows
-  'arrow-left': 'ArrowLeftOutlined',
-  'arrow-right': 'ArrowRightOutlined',
-  'arrow-up': 'ArrowUpOutlined',
-  'arrow-down': 'ArrowDownOutlined',
-  'left': 'LeftOutlined',
-  'right': 'RightOutlined',
-  'up': 'UpOutlined',
-  'down': 'DownOutlined',
-  'caret-left': 'CaretLeftOutlined',
-  'caret-right': 'CaretRightOutlined',
-  'caret-up': 'CaretUpOutlined',
-  'caret-down': 'CaretDownOutlined',
-  'double-left': 'DoubleLeftOutlined',
-  'double-right': 'DoubleRightOutlined',
-  'swap': 'SwapOutlined',
-  'swap-right': 'SwapRightOutlined',
-  'swap-left': 'SwapLeftOutlined',
+  'arrow-left': Icons.ArrowLeftOutlined,
+  'arrow-right': Icons.ArrowRightOutlined,
+  'arrow-up': Icons.ArrowUpOutlined,
+  'arrow-down': Icons.ArrowDownOutlined,
+  'left': Icons.LeftOutlined,
+  'right': Icons.RightOutlined,
+  'up': Icons.UpOutlined,
+  'down': Icons.DownOutlined,
+  'caret-down': Icons.CaretDownOutlined,
+  'caret-up': Icons.CaretUpOutlined,
+  'caret-left': Icons.CaretLeftOutlined,
+  'caret-right': Icons.CaretRightOutlined,
+  'double-left': Icons.DoubleLeftOutlined,
+  'double-right': Icons.DoubleRightOutlined,
+  
+  // User and people
+  'user': Icons.UserOutlined,
+  'user-add': Icons.UserAddOutlined,
+  'team': Icons.TeamOutlined,
   
   // Actions
-  'plus': 'PlusOutlined',
-  'plus-circle': 'PlusCircleOutlined',
-  'plus-circle-o': 'PlusCircleOutlined',
-  'plus-square': 'PlusSquareOutlined',
-  'minus': 'MinusOutlined',
-  'minus-circle': 'MinusCircleOutlined',
-  'minus-circle-o': 'MinusCircleOutlined',
-  'minus-square': 'MinusSquareOutlined',
-  'edit': 'EditOutlined',
-  'form': 'FormOutlined',
-  'copy': 'CopyOutlined',
-  'delete': 'DeleteOutlined',
-  'scissor': 'ScissorOutlined',
-  'search': 'SearchOutlined',
-  'zoom-in': 'ZoomInOutlined',
-  'zoom-out': 'ZoomOutOutlined',
-  'fullscreen': 'FullscreenOutlined',
-  'fullscreen-exit': 'FullscreenExitOutlined',
-  'expand': 'ExpandOutlined',
-  'compress': 'CompressOutlined',
-  
-  // Files
-  'file': 'FileOutlined',
-  'file-text': 'FileTextOutlined',
-  'file-add': 'FileAddOutlined',
-  'file-excel': 'FileExcelOutlined',
-  'file-word': 'FileWordOutlined',
-  'file-pdf': 'FilePdfOutlined',
-  'file-image': 'FileImageOutlined',
-  'file-done': 'FileDoneOutlined',
-  'folder': 'FolderOutlined',
-  'folder-add': 'FolderAddOutlined',
-  'folder-open': 'FolderOpenOutlined',
-  'picture': 'PictureOutlined',
-  'paper-clip': 'PaperClipOutlined',
-  'upload': 'UploadOutlined',
-  'download': 'DownloadOutlined',
-  'cloud': 'CloudOutlined',
-  'cloud-upload': 'CloudUploadOutlined',
-  'cloud-download': 'CloudDownloadOutlined',
-  
-  // Communication
-  'mail': 'MailOutlined',
-  'message': 'MessageOutlined',
-  'bell': 'BellOutlined',
-  'notification': 'NotificationOutlined',
-  'phone': 'PhoneOutlined',
-  'mobile': 'MobileOutlined',
-  'comment': 'CommentOutlined',
-  'wechat': 'WechatOutlined',
-  'qq': 'QqOutlined',
-  'weibo': 'WeiboOutlined',
-  'twitter': 'TwitterOutlined',
-  'facebook': 'FacebookOutlined',
-  'instagram': 'InstagramOutlined',
-  'youtube': 'YoutubeOutlined',
-  'github': 'GithubOutlined',
-  'gitlab': 'GitlabOutlined',
-  'linkedin': 'LinkedinOutlined',
-  'google': 'GoogleOutlined',
-  
-  // Media
-  'play-circle': 'PlayCircleOutlined',
-  'play-circle-o': 'PlayCircleOutlined',
-  'pause': 'PauseOutlined',
-  'pause-circle': 'PauseCircleOutlined',
-  'stop': 'StopOutlined',
-  'caret-right': 'CaretRightOutlined',
-  'step-backward': 'StepBackwardOutlined',
-  'step-forward': 'StepForwardOutlined',
-  'backward': 'BackwardOutlined',
-  'forward': 'ForwardOutlined',
-  'sound': 'SoundOutlined',
-  'camera': 'CameraOutlined',
-  'camera-o': 'CameraOutlined',
-  'video-camera': 'VideoCameraOutlined',
-  
-  // Data
-  'database': 'DatabaseOutlined',
-  'pie-chart': 'PieChartOutlined',
-  'bar-chart': 'BarChartOutlined',
-  'dot-chart': 'DotChartOutlined',
-  'line-chart': 'LineChartOutlined',
-  'area-chart': 'AreaChartOutlined',
-  'stock': 'StockOutlined',
-  'rise': 'RiseOutlined',
-  'fall': 'FallOutlined',
-  'fund': 'FundOutlined',
-  'table': 'TableOutlined',
-  
-  // User
-  'user': 'UserOutlined',
-  'user-add': 'UserAddOutlined',
-  'user-delete': 'UserDeleteOutlined',
-  'team': 'TeamOutlined',
-  'solution': 'SolutionOutlined',
-  'idcard': 'IdcardOutlined',
-  'contacts': 'ContactsOutlined',
-  
-  // UI
-  'setting': 'SettingOutlined',
-  'tool': 'ToolOutlined',
-  'filter': 'FilterOutlined',
-  'appstore': 'AppstoreOutlined',
-  'appstore-o': 'AppstoreOutlined',
-  'layout': 'LayoutOutlined',
-  'block': 'BlockOutlined',
-  'build': 'BuildOutlined',
-  'control': 'ControlOutlined',
-  'dashboard': 'DashboardOutlined',
-  'home': 'HomeOutlined',
-  'shop': 'ShopOutlined',
-  'shopping': 'ShoppingOutlined',
-  'shopping-cart': 'ShoppingCartOutlined',
-  'gift': 'GiftOutlined',
-  'calendar': 'CalendarOutlined',
-  'clock-circle': 'ClockCircleOutlined',
-  'clock-circle-o': 'ClockCircleOutlined',
-  'schedule': 'ScheduleOutlined',
+  'search': Icons.SearchOutlined,
+  'plus': Icons.PlusOutlined,
+  'plus-circle': Icons.PlusCircleOutlined,
+  'plus-circle-o': Icons.PlusCircleOutlined,
+  'minus': Icons.MinusOutlined,
+  'minus-circle': Icons.MinusCircleOutlined,
+  'minus-circle-o': Icons.MinusCircleOutlined,
+  'edit': Icons.EditOutlined,
+  'delete': Icons.DeleteOutlined,
+  'setting': Icons.SettingOutlined,
+  'reload': Icons.ReloadOutlined,
+  'sync': Icons.SyncOutlined,
+  'save': Icons.SaveOutlined,
+  'undo': Icons.UndoOutlined,
+  'redo': Icons.RedoOutlined,
+  'copy': Icons.CopyOutlined,
+  'scissor': Icons.ScissorOutlined,
+  'loading': Icons.LoadingOutlined,
   
   // Status
-  'info': 'InfoOutlined',
-  'info-circle': 'InfoCircleOutlined',
-  'info-circle-o': 'InfoCircleOutlined',
-  'question': 'QuestionOutlined',
-  'question-circle': 'QuestionCircleOutlined',
-  'question-circle-o': 'QuestionCircleOutlined',
-  'exclamation': 'ExclamationOutlined',
-  'exclamation-circle': 'ExclamationCircleOutlined',
-  'exclamation-circle-o': 'ExclamationCircleOutlined',
-  'warning': 'WarningOutlined',
-  'loading': 'LoadingOutlined',
-  'loading-3-quarters': 'Loading3QuartersOutlined',
-  'sync': 'SyncOutlined',
-  'reload': 'ReloadOutlined',
-  'redo': 'RedoOutlined',
-  'undo': 'UndoOutlined',
+  'info': Icons.InfoOutlined,
+  'info-circle': Icons.InfoCircleOutlined,
+  'info-circle-o': Icons.InfoCircleOutlined,
+  'exclamation': Icons.ExclamationOutlined,
+  'exclamation-circle': Icons.ExclamationCircleOutlined,
+  'exclamation-circle-o': Icons.ExclamationCircleOutlined,
+  'question': Icons.QuestionOutlined,
+  'question-circle': Icons.QuestionCircleOutlined,
+  'question-circle-o': Icons.QuestionCircleOutlined,
+  'warning': Icons.WarningOutlined,
   
-  // Shapes
-  'star': 'StarOutlined',
-  'star-o': 'StarOutlined',
-  'heart': 'HeartOutlined',
-  'heart-o': 'HeartOutlined',
-  'like': 'LikeOutlined',
-  'like-o': 'LikeOutlined',
-  'dislike': 'DislikeOutlined',
-  'dislike-o': 'DislikeOutlined',
-  'fire': 'FireOutlined',
-  'thunderbolt': 'ThunderboltOutlined',
-  'trophy': 'TrophyOutlined',
-  'crown': 'CrownOutlined',
-  'rocket': 'RocketOutlined',
-  'flag': 'FlagOutlined',
-  'tag': 'TagOutlined',
-  'tags': 'TagsOutlined',
-  'tags-o': 'TagsOutlined',
-  'pushpin': 'PushpinOutlined',
-  'pushpin-o': 'PushpinOutlined',
-  'book': 'BookOutlined',
-  'read': 'ReadOutlined',
-  'link': 'LinkOutlined',
-  'disconnect': 'DisconnectOutlined',
-  'branches': 'BranchesOutlined',
-  'fork': 'ForkOutlined',
-  'share-alt': 'ShareAltOutlined',
-  'highlight': 'HighlightOutlined',
+  // Media
+  'picture': Icons.PictureOutlined,
+  'camera': Icons.CameraOutlined,
+  'video-camera': Icons.VideoCameraOutlined,
+  'play-circle': Icons.PlayCircleOutlined,
+  'play-circle-o': Icons.PlayCircleOutlined,
+  'pause-circle': Icons.PauseCircleOutlined,
+  'pause-circle-o': Icons.PauseCircleOutlined,
+  'sound': Icons.SoundOutlined,
+  'file': Icons.FileOutlined,
+  'file-text': Icons.FileTextOutlined,
+  'folder': Icons.FolderOutlined,
+  'folder-open': Icons.FolderOpenOutlined,
+  
+  // Communication
+  'mail': Icons.MailOutlined,
+  'message': Icons.MessageOutlined,
+  'notification': Icons.NotificationOutlined,
+  'bell': Icons.BellOutlined,
+  'bell-o': Icons.BellOutlined,
+  'comment': Icons.CommentOutlined,
+  'send': Icons.SendOutlined,
+  
+  // Social
+  'heart': Icons.HeartOutlined,
+  'heart-o': Icons.HeartOutlined,
+  'star': Icons.StarOutlined,
+  'star-o': Icons.StarOutlined,
+  'like': Icons.LikeOutlined,
+  'like-o': Icons.LikeOutlined,
+  'dislike': Icons.DislikeOutlined,
+  'dislike-o': Icons.DislikeOutlined,
+  'share': Icons.ShareAltOutlined,
+  'share-alt': Icons.ShareAltOutlined,
+  'link': Icons.LinkOutlined,
+  'disconnect': Icons.DisconnectOutlined,
+  
+  // Commerce
+  'shopping-cart': Icons.ShoppingCartOutlined,
+  'shopping': Icons.ShoppingOutlined,
+  'wallet': Icons.WalletOutlined,
+  'dollar': Icons.DollarOutlined,
+  'dollar-circle': Icons.DollarCircleOutlined,
+  'pay-circle': Icons.PayCircleOutlined,
+  'pay-circle-o': Icons.PayCircleOutlined,
+  'credit-card': Icons.CreditCardOutlined,
+  'gift': Icons.GiftOutlined,
+  'tag': Icons.TagOutlined,
+  'tags': Icons.TagsOutlined,
+  
+  // Common UI
+  'home': Icons.HomeOutlined,
+  'global': Icons.GlobalOutlined,
+  'bars': Icons.BarsOutlined,
+  'appstore': Icons.AppstoreOutlined,
+  'appstore-o': Icons.AppstoreOutlined,
+  'desktop': Icons.DesktopOutlined,
+  'laptop': Icons.LaptopOutlined,
+  'tablet': Icons.TabletOutlined,
+  'mobile': Icons.MobileOutlined,
+  'qrcode': Icons.QrcodeOutlined,
+  'scan': Icons.ScanOutlined,
+  'eye': Icons.EyeOutlined,
+  'eye-o': Icons.EyeOutlined,
+  'eye-invisible': Icons.EyeInvisibleOutlined,
+  'eye-invisible-o': Icons.EyeInvisibleOutlined,
+  'lock': Icons.LockOutlined,
+  'unlock': Icons.UnlockOutlined,
+  'key': Icons.KeyOutlined,
+  'poweroff': Icons.PoweroffOutlined,
+  'login': Icons.LoginOutlined,
+  'logout': Icons.LogoutOutlined,
+  'vertical-left': Icons.VerticalLeftOutlined,
+  'vertical-right': Icons.VerticalRightOutlined,
+  'fullscreen': Icons.FullscreenOutlined,
+  'fullscreen-exit': Icons.FullscreenExitOutlined,
+  'shrink': Icons.ShrinkOutlined,
+  'arrows-alt': Icons.ArrowsAltOutlined,
+  
+  // Calendar and time
+  'calendar': Icons.CalendarOutlined,
+  'clock-circle': Icons.ClockCircleOutlined,
+  'clock-circle-o': Icons.ClockCircleOutlined,
+  'schedule': Icons.ScheduleOutlined,
+  
+  // Form elements
+  'filter': Icons.FilterOutlined,
+  'sort-ascending': Icons.SortAscendingOutlined,
+  'sort-descending': Icons.SortDescendingOutlined,
   
   // Location
-  'environment': 'EnvironmentOutlined',
-  'environment-o': 'EnvironmentOutlined',
-  'global': 'GlobalOutlined',
-  'compass': 'CompassOutlined',
-  'aim': 'AimOutlined',
+  'environment': Icons.EnvironmentOutlined,
+  'environment-o': Icons.EnvironmentOutlined,
+  'pushpin': Icons.PushpinOutlined,
+  'pushpin-o': Icons.PushpinOutlined,
+  'compass': Icons.CompassOutlined,
+  
+  // Chart and data
+  'area-chart': Icons.AreaChartOutlined,
+  'pie-chart': Icons.PieChartOutlined,
+  'bar-chart': Icons.BarChartOutlined,
+  'line-chart': Icons.LineChartOutlined,
+  'dot-chart': Icons.DotChartOutlined,
+  'rise': Icons.RiseOutlined,
+  'fall': Icons.FallOutlined,
+  'stock': Icons.StockOutlined,
+  'fund': Icons.FundOutlined,
   
   // Misc
-  'lock': 'LockOutlined',
-  'unlock': 'UnlockOutlined',
-  'key': 'KeyOutlined',
-  'eye': 'EyeOutlined',
-  'eye-o': 'EyeOutlined',
-  'eye-invisible': 'EyeInvisibleOutlined',
-  'safety': 'SafetyOutlined',
-  'safety-certificate': 'SafetyCertificateOutlined',
-  'insurance': 'InsuranceOutlined',
-  'audit': 'AuditOutlined',
-  'qrcode': 'QrcodeOutlined',
-  'barcode': 'BarcodeOutlined',
-  'scan': 'ScanOutlined',
-  'wifi': 'WifiOutlined',
-  'api': 'ApiOutlined',
-  'code': 'CodeOutlined',
-  'code-sandbox': 'CodeSandboxOutlined',
-  'bug': 'BugOutlined',
-  'robot': 'RobotOutlined',
-  'experiment': 'ExperimentOutlined',
-  'bulb': 'BulbOutlined',
-  'smile': 'SmileOutlined',
-  'smile-o': 'SmileOutlined',
-  'frown': 'FrownOutlined',
-  'frown-o': 'FrownOutlined',
-  'meh': 'MehOutlined',
-  'meh-o': 'MehOutlined',
+  'robot': Icons.RobotOutlined,
+  'bulb': Icons.BulbOutlined,
+  'experiment': Icons.ExperimentOutlined,
+  'fire': Icons.FireOutlined,
+  'thunderbolt': Icons.ThunderboltOutlined,
+  'highlight': Icons.HighlightOutlined,
+  'trophy': Icons.TrophyOutlined,
+  'crown': Icons.CrownOutlined,
+  'flag': Icons.FlagOutlined,
+  'safety-certificate': Icons.SafetyCertificateOutlined,
+  'audit': Icons.AuditOutlined,
+  'api': Icons.ApiOutlined,
+  'cloud': Icons.CloudOutlined,
+  'cloud-upload': Icons.CloudUploadOutlined,
+  'cloud-download': Icons.CloudDownloadOutlined,
+  'cloud-o': Icons.CloudOutlined,
+  'upload': Icons.UploadOutlined,
+  'download': Icons.DownloadOutlined,
+  'paper-clip': Icons.PaperClipOutlined,
+  'attachment': Icons.PaperClipOutlined,
+  'book': Icons.BookOutlined,
+  'read': Icons.ReadOutlined,
+  'form': Icons.FormOutlined,
+  'table': Icons.TableOutlined,
+  'profile': Icons.ProfileOutlined,
+  'solution': Icons.SolutionOutlined,
+  'layout': Icons.LayoutOutlined,
+  'build': Icons.BuildOutlined,
+  'tool': Icons.ToolOutlined,
+  'block': Icons.BlockOutlined,
+  'database': Icons.DatabaseOutlined,
+  'cluster': Icons.ClusterOutlined,
+  'code': Icons.CodeOutlined,
+  'code-o': Icons.CodeOutlined,
+  'file-add': Icons.FileAddOutlined,
+  'file-done': Icons.FileDoneOutlined,
+  'file-excel': Icons.FileExcelOutlined,
+  'file-image': Icons.FileImageOutlined,
+  'file-markdown': Icons.FileMarkdownOutlined,
+  'file-pdf': Icons.FilePdfOutlined,
+  'file-ppt': Icons.FilePptOutlined,
+  'file-word': Icons.FileWordOutlined,
+  'file-zip': Icons.FileZipOutlined,
+  'file-unknown': Icons.FileUnknownOutlined,
+  'more': Icons.MoreOutlined,
+  'ellipsis': Icons.EllipsisOutlined,
+  'retweet': Icons.RetweetOutlined,
+  'swap': Icons.SwapOutlined,
+  'swap-left': Icons.SwapLeftOutlined,
+  'swap-right': Icons.SwapRightOutlined,
+  'rollback': Icons.RollbackOutlined,
+  'enter': Icons.EnterOutlined,
+  'import': Icons.ImportOutlined,
+  'export': Icons.ExportOutlined,
+  'verticalLeft': Icons.VerticalLeftOutlined,
+  'verticalRight': Icons.VerticalRightOutlined,
   
-  // Edit
-  'bold': 'BoldOutlined',
-  'italic': 'ItalicOutlined',
-  'underline': 'UnderlineOutlined',
-  'strikethrough': 'StrikethroughOutlined',
-  'font-size': 'FontSizeOutlined',
-  'font-colors': 'FontColorsOutlined',
-  'bg-colors': 'BgColorsOutlined',
-  'align-left': 'AlignLeftOutlined',
-  'align-center': 'AlignCenterOutlined',
-  'align-right': 'AlignRightOutlined',
-  'ordered-list': 'OrderedListOutlined',
-  'unordered-list': 'UnorderedListOutlined',
-  'menu': 'MenuOutlined',
-  'bars': 'BarsOutlined',
-  'more': 'MoreOutlined',
-  'ellipsis': 'EllipsisOutlined',
-  'drag': 'DragOutlined',
-  'holder': 'HolderOutlined',
-  
-  // Money
-  'dollar': 'DollarOutlined',
-  'dollar-circle': 'DollarCircleOutlined',
-  'euro': 'EuroOutlined',
-  'euro-circle': 'EuroCircleOutlined',
-  'pound': 'PoundOutlined',
-  'pound-circle': 'PoundCircleOutlined',
-  'money-collect': 'MoneyCollectOutlined',
-  'wallet': 'WalletOutlined',
-  'bank': 'BankOutlined',
-  'transaction': 'TransactionOutlined',
-  'pay-circle': 'PayCircleOutlined',
-  'credit-card': 'CreditCardOutlined',
-  'red-envelope': 'RedEnvelopeOutlined',
-  'account-book': 'AccountBookOutlined',
-  
-  // Filled versions (map -o suffix to Outlined)
-  'customer-service': 'CustomerServiceOutlined',
-  'man': 'ManOutlined',
-  'woman': 'WomanOutlined',
-  'login': 'LoginOutlined',
-  'logout': 'LogoutOutlined',
-  'poweroff': 'PoweroffOutlined',
-  'save': 'SaveOutlined',
-  'printer': 'PrinterOutlined',
-  'export': 'ExportOutlined',
-  'import': 'ImportOutlined',
-  'enter': 'EnterOutlined',
-  'rollback': 'RollbackOutlined',
-  'issues-close': 'IssuesCloseOutlined',
-  'pull-request': 'PullRequestOutlined',
-  'merge-cells': 'MergeCellsOutlined',
-  'split-cells': 'SplitCellsOutlined',
-  'vertical-align-top': 'VerticalAlignTopOutlined',
-  'vertical-align-middle': 'VerticalAlignMiddleOutlined',
-  'vertical-align-bottom': 'VerticalAlignBottomOutlined',
-  'sort-ascending': 'SortAscendingOutlined',
-  'sort-descending': 'SortDescendingOutlined',
-  'radius-setting': 'RadiusSettingOutlined',
-  'radius-upleft': 'RadiusUpleftOutlined',
-  'radius-upright': 'RadiusUprightOutlined',
-  'radius-bottomleft': 'RadiusBottomleftOutlined',
-  'radius-bottomright': 'RadiusBottomrightOutlined',
-};
-
-// Filled icon mappings
-const filledMap = {
-  'star': 'StarFilled',
-  'heart': 'HeartFilled',
-  'like': 'LikeFilled',
-  'dislike': 'DislikeFilled',
-  'check-circle': 'CheckCircleFilled',
-  'close-circle': 'CloseCircleFilled',
-  'info-circle': 'InfoCircleFilled',
-  'question-circle': 'QuestionCircleFilled',
-  'exclamation-circle': 'ExclamationCircleFilled',
-  'warning': 'WarningFilled',
-  'play-circle': 'PlayCircleFilled',
-  'pause-circle': 'PauseCircleFilled',
-  'clock-circle': 'ClockCircleFilled',
-  'plus-circle': 'PlusCircleFilled',
-  'minus-circle': 'MinusCircleFilled',
-  'dollar-circle': 'DollarCircleFilled',
-  'euro-circle': 'EuroCircleFilled',
-  'pound-circle': 'PoundCircleFilled',
-  'pay-circle': 'PayCircleFilled',
-  'eye': 'EyeFilled',
-  'eye-invisible': 'EyeInvisibleFilled',
-  'camera': 'CameraFilled',
-  'bell': 'BellFilled',
-  'fire': 'FireFilled',
-  'thunderbolt': 'ThunderboltFilled',
-  'trophy': 'TrophyFilled',
-  'crown': 'CrownFilled',
-  'rocket': 'RocketFilled',
-  'pushpin': 'PushpinFilled',
-  'flag': 'FlagFilled',
-  'smile': 'SmileFilled',
-  'frown': 'FrownFilled',
-  'meh': 'MehFilled',
-  'setting': 'SettingFilled',
-  'home': 'HomeFilled',
-  'appstore': 'AppstoreFilled',
-  'folder': 'FolderFilled',
-  'folder-open': 'FolderOpenFilled',
-  'file': 'FileFilled',
-  'file-text': 'FileTextFilled',
-  'picture': 'PictureFilled',
-  'calendar': 'CalendarFilled',
-  'environment': 'EnvironmentFilled',
-  'lock': 'LockFilled',
-  'unlock': 'UnlockFilled',
-  'sound': 'SoundFilled',
-  'notification': 'NotificationFilled',
-  'message': 'MessageFilled',
-  'mail': 'MailFilled',
-  'mobile': 'MobileFilled',
-  'phone': 'PhoneFilled',
-  'tag': 'TagFilled',
-  'tags': 'TagsFilled',
-  'book': 'BookFilled',
-  'bank': 'BankFilled',
-  'wallet': 'WalletFilled',
-  'credit-card': 'CreditCardFilled',
-  'red-envelope': 'RedEnvelopeFilled',
-  'gift': 'GiftFilled',
-  'shop': 'ShopFilled',
-  'shopping': 'ShoppingFilled',
-  'bulb': 'BulbFilled',
-  'bug': 'BugFilled',
-  'api': 'ApiFilled',
-  'database': 'DatabaseFilled',
-  'container': 'ContainerFilled',
-  'project': 'ProjectFilled',
-  'contacts': 'ContactsFilled',
-  'idcard': 'IdcardFilled',
-  'user': 'UserFilled',
-  'team': 'TeamFilled',
-  'safety-certificate': 'SafetyCertificateFilled',
-  'security-scan': 'SecurityScanFilled',
-  'insurance': 'InsuranceFilled',
-  'experiment': 'ExperimentFilled',
-  'robot': 'RobotFilled',
-};
-
-// TwoTone icon mappings
-const twoToneMap = {
-  'star': 'StarTwoTone',
-  'heart': 'HeartTwoTone',
-  'like': 'LikeTwoTone',
-  'dislike': 'DislikeTwoTone',
-  'check-circle': 'CheckCircleTwoTone',
-  'close-circle': 'CloseCircleTwoTone',
-  'info-circle': 'InfoCircleTwoTone',
-  'question-circle': 'QuestionCircleTwoTone',
-  'exclamation-circle': 'ExclamationCircleTwoTone',
-  'warning': 'WarningTwoTone',
-  'plus-circle': 'PlusCircleTwoTone',
-  'minus-circle': 'MinusCircleTwoTone',
-  'clock-circle': 'ClockCircleTwoTone',
-  'smile': 'SmileTwoTone',
-  'frown': 'FrownTwoTone',
-  'meh': 'MehTwoTone',
-  'setting': 'SettingTwoTone',
-  'home': 'HomeTwoTone',
-  'appstore': 'AppstoreTwoTone',
-  'folder': 'FolderTwoTone',
-  'folder-open': 'FolderOpenTwoTone',
-  'file': 'FileTwoTone',
-  'picture': 'PictureTwoTone',
-  'calendar': 'CalendarTwoTone',
-  'environment': 'EnvironmentTwoTone',
-  'lock': 'LockTwoTone',
-  'unlock': 'UnlockTwoTone',
-  'sound': 'SoundTwoTone',
-  'notification': 'NotificationTwoTone',
-  'camera': 'CameraTwoTone',
-  'fire': 'FireTwoTone',
-  'thunderbolt': 'ThunderboltTwoTone',
-  'trophy': 'TrophyTwoTone',
-  'crown': 'CrownTwoTone',
-  'rocket': 'RocketTwoTone',
-  'bulb': 'BulbTwoTone',
-  'gift': 'GiftTwoTone',
-  'shop': 'ShopTwoTone',
-  'tag': 'TagTwoTone',
-  'tags': 'TagsTwoTone',
-  'book': 'BookTwoTone',
-  'bank': 'BankTwoTone',
-  'wallet': 'WalletTwoTone',
-  'eye': 'EyeTwoTone',
-  'eye-invisible': 'EyeInvisibleTwoTone',
-  'highlight': 'HighlightTwoTone',
-  'edit': 'EditTwoTone',
-  'delete': 'DeleteTwoTone',
-  'tool': 'ToolTwoTone',
-  'experiment': 'ExperimentTwoTone',
-  'api': 'ApiTwoTone',
-  'database': 'DatabaseTwoTone',
-  'container': 'ContainerTwoTone',
-  'project': 'ProjectTwoTone',
-  'contacts': 'ContactsTwoTone',
-  'idcard': 'IdcardTwoTone',
-  'safety-certificate': 'SafetyCertificateTwoTone',
-  'security-scan': 'SecurityScanTwoTone',
-  'insurance': 'InsuranceTwoTone',
-  'robot': 'RobotTwoTone',
-  'dollar-circle': 'DollarCircleTwoTone',
-  'euro-circle': 'EuroCircleTwoTone',
-  'pound-circle': 'PoundCircleTwoTone',
-  'money-collect': 'MoneyCollectTwoTone',
-  'credit-card': 'CreditCardTwoTone',
-  'bell': 'BellTwoTone',
-  'mail': 'MailTwoTone',
-  'message': 'MessageTwoTone',
-  'phone': 'PhoneTwoTone',
-  'mobile': 'MobileTwoTone',
-  'play-circle': 'PlayCircleTwoTone',
-  'pause-circle': 'PauseCircleTwoTone',
-  'video-camera': 'VideoCameraTwoTone',
-  'code': 'CodeTwoTone',
-  'pie-chart': 'PieChartTwoTone',
-  'fund': 'FundTwoTone',
+  // Filled variants
+  'star-filled': Icons.StarFilled,
+  'heart-filled': Icons.HeartFilled,
+  'like-filled': Icons.LikeFilled,
+  'dislike-filled': Icons.DislikeFilled,
+  'check-circle-filled': Icons.CheckCircleFilled,
+  'close-circle-filled': Icons.CloseCircleFilled,
+  'info-circle-filled': Icons.InfoCircleFilled,
+  'exclamation-circle-filled': Icons.ExclamationCircleFilled,
+  'question-circle-filled': Icons.QuestionCircleFilled,
+  'warning-filled': Icons.WarningFilled,
+  'bell-filled': Icons.BellFilled,
 };
 
 /**
- * Get the component name for a given icon type
+ * Compatibility Icon component for antd v5
+ * Maps old <Icon type="xxx" /> usage to new @ant-design/icons components
  */
-function getIconComponentName(type, theme = 'outlined') {
+const Icon = ({ type, spin, rotate, twoToneColor, style, className, theme, onClick, ...rest }) => {
   if (!type) return null;
   
-  // Normalize type name (remove -o suffix for outlined, handle filled/twoTone)
-  let normalizedType = type.toLowerCase();
+  // Normalize the type name
+  let normalizedType = type.toLowerCase().replace(/_/g, '-');
   
-  // Handle -o suffix (old outlined icons)
-  if (normalizedType.endsWith('-o')) {
-    normalizedType = normalizedType.slice(0, -2);
+  // Handle theme suffix (outline, filled, twotone)
+  if (theme === 'filled' && !normalizedType.endsWith('-filled')) {
+    normalizedType = `${normalizedType}-filled`;
   }
   
-  // Select the right map based on theme
-  let componentName;
-  if (theme === 'filled') {
-    componentName = filledMap[normalizedType];
-  } else if (theme === 'twoTone') {
-    componentName = twoToneMap[normalizedType];
-  }
+  // Try to find the icon component
+  let IconComponent = iconTypeMap[normalizedType];
   
-  // Fall back to outlined
-  if (!componentName) {
-    componentName = iconMap[normalizedType];
-  }
-  
-  // If still not found, try to construct it
-  if (!componentName) {
-    // Convert kebab-case to PascalCase and add suffix
-    const pascalCase = normalizedType
+  // If not found, try to convert to PascalCase and find in Icons
+  if (!IconComponent) {
+    const pascalName = normalizedType
       .split('-')
       .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('');
-    
-    const suffix = theme === 'filled' ? 'Filled' : theme === 'twoTone' ? 'TwoTone' : 'Outlined';
-    componentName = pascalCase + suffix;
+      .join('') + 'Outlined';
+    IconComponent = Icons[pascalName];
   }
   
-  return componentName;
-}
-
-/**
- * Icon compatibility component
- * Supports old antd v3 Icon API: <Icon type="check" theme="filled" spin />
- * Maps to new @ant-design/icons components
- */
-const Icon = React.forwardRef(({ type, theme = 'outlined', spin, rotate, twoToneColor, style, className, onClick, ...props }, ref) => {
-  if (!type) {
-    console.warn('Icon component requires a type prop');
-    return null;
-  }
-  
-  const componentName = getIconComponentName(type, theme);
-  const IconComponent = AntdIcons[componentName];
-  
+  // If still not found, try filled version
   if (!IconComponent) {
-    console.warn(`Icon "${type}" (${componentName}) not found in @ant-design/icons`);
-    // Return a placeholder or fallback
-    return <span className={className} style={style} onClick={onClick} {...props}>?</span>;
+    const pascalNameFilled = normalizedType
+      .split('-')
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join('') + 'Filled';
+    IconComponent = Icons[pascalNameFilled];
+  }
+  
+  // Fallback to QuestionCircleOutlined for unknown icons
+  if (!IconComponent) {
+    console.warn(`Icon type "${type}" not found, using fallback`);
+    IconComponent = Icons.QuestionCircleOutlined;
   }
   
   return (
     <IconComponent
-      ref={ref}
       spin={spin}
       rotate={rotate}
       twoToneColor={twoToneColor}
       style={style}
       className={className}
       onClick={onClick}
-      {...props}
+      {...rest}
     />
   );
-});
+};
 
-Icon.displayName = 'Icon';
+Icon.propTypes = {
+  type: PropTypes.string,
+  spin: PropTypes.bool,
+  rotate: PropTypes.number,
+  twoToneColor: PropTypes.string,
+  style: PropTypes.object,
+  className: PropTypes.string,
+  theme: PropTypes.oneOf(['outlined', 'filled', 'twoTone']),
+  onClick: PropTypes.func,
+};
+
+Icon.defaultProps = {
+  spin: false,
+  theme: 'outlined',
+};
 
 export default Icon;
-
-// Also export named icons for direct imports
-export * from '@ant-design/icons';
-
-
