@@ -240,27 +240,24 @@ const NewDiscover = () => {
                 <span className="NewDiscover__filters-inline-link">add</span>
               </div>
             )}
-            {search &&
-              (isMobile() ? (
-                <div>
-                  <Tag closable onClose={removeSearch} className={'mb1'}>
-                    Search: {search}
-                  </Tag>
-                </div>
-              ) : (
-                <Tag closable onClose={removeSearch}>
+            <div className="NewDiscover__tags-bar">
+              {search && (
+                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag">
                   Search: {search}
                 </Tag>
-              ))}
-
-            <div className={`NewDiscover__tags-container ${isMobile() ? 'column' : 'row'}`}>
-              {Object.entries(tagsByCategory).map(([cat, tags]) =>
-                tags.map(tag => (
-                  <Tag key={`${cat}-${tag}`} closable onClose={() => removeTag(cat, tag)}>
-                    {`${cat}: ${tag}`}
-                  </Tag>
-                )),
               )}
+
+              <div className="NewDiscover__tags-container">
+                {Object.entries(tagsByCategory).map(([cat, tags]) => (
+                  <div key={cat} className="NewDiscover__tag-category">
+                    {tags.map(tag => (
+                      <Tag key={`${cat}-${tag}`} closable onClose={() => removeTag(cat, tag)}>
+                        {`${cat}: ${tag}`}
+                      </Tag>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

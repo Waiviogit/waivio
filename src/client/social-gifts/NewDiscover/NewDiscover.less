@@ -55,16 +55,39 @@
     color: @blue-gullGray;
     font-size: 18px;
   }
-  &__tags-container {
+  &__tags-bar {
     display: flex;
     flex-direction: column;
-    width: fit-content;
+    gap: 8px;
 
     @media @small {
       flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  }
+  &__search-tag {
+    max-width: fit-content;
+  }
+
+  &__tags-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @media @small {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
     }
   }
 
+  &__tag-category {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
   &__filters-inline {
     display: none;
     margin-bottom: 10px;
