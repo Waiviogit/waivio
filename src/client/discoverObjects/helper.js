@@ -159,6 +159,11 @@ export const parseTagsFilters = url => {
 export const changeUrl = (activeTags, history, location) => {
   const params = new URLSearchParams(location.search);
 
+  params.delete('category');
+  params.delete('tag');
+
+  const nonTagCategoryParams = ['searchString', 'rating', 'map', 'search'];
+
   Object.keys(activeTags).forEach(category => {
     const filtersValue = activeTags[category];
     const categoryName = category === 'searchString' ? 'search' : category;
@@ -171,7 +176,25 @@ export const changeUrl = (activeTags, history, location) => {
 
     const value = isArray(filtersValue) ? filtersValue.join(',') : filtersValue;
 
-    params.set(categoryName, value);
+    if (nonTagCategoryParams.includes(category)) {
+      params.set(categoryName, value);
+    } else if (isArray(filtersValue)) {
+      filtersValue.forEach(tag => {
+        if (tag) {
+          params.append('category', categoryName);
+          params.append('tag', tag);
+        }
+      });
+    } else if (value) {
+      value.split(',').forEach(tag => {
+        const trimmedTag = tag.trim();
+
+        if (trimmedTag) {
+          params.append('category', categoryName);
+          params.append('tag', trimmedTag);
+        }
+      });
+    }
   });
 
   const encoded = params.toString().replace(/\+/g, '%20');

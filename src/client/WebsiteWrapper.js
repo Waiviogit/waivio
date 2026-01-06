@@ -156,6 +156,8 @@ class WebsiteWrapper extends React.PureComponent {
     const locale = query.get('usedLocale');
     const nightmode = Cookie.get('nightmode');
 
+    this.checkVipticketRedirect();
+
     if (typeof document !== 'undefined') {
       if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
@@ -202,14 +204,30 @@ class WebsiteWrapper extends React.PureComponent {
     if (this.props.locale !== nextProps.locale) this.loadLocale(nextProps.locale);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const nightmode = Cookie.get('nightmode');
 
     if (typeof document !== 'undefined') {
       if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
     }
+
+    if (prevProps.location.search !== this.props.location.search) {
+      this.checkVipticketRedirect();
+    }
   }
+  checkVipticketRedirect = () => {
+    if (typeof window === 'undefined') return;
+
+    const query = new URLSearchParams(this.props.location.search);
+    const nextUrl = query.get('next');
+    const hostname = window.location.hostname;
+    const isWaivio = hostname.includes('waivio.com');
+
+    if (nextUrl && !isWaivio) {
+      window.location.href = nextUrl;
+    }
+  };
 
   loadLocale = async locale => {
     const lang = await loadLanguage(locale);
