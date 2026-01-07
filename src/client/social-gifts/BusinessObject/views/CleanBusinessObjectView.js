@@ -198,7 +198,6 @@ const CleanBusinessObjectView = ({
               </div>
             )}
           </div>
-
           {showGallery && (
             <div className="BusinessObjectClean__rightColumn">
               <PicturesSlider

@@ -41,7 +41,16 @@ const VipTicketsSetting = props => {
   const [showMoreLoading, setShowMoreLoading] = useState({});
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
   const hostname = typeof location !== 'undefined' ? location.hostname : '';
-  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${activeTicketInfo?.ticket}&redirect_url=https%3A%2F%2F${hostname}&creator=vancouverdining`;
+  const siteName = `https://${hostname}`;
+
+  let waivioRedirect = `https://www.waivio.com/`;
+
+  if (!siteName.includes('waivio.com'))
+    waivioRedirect = `https://www.waivio.com/?vipticket_redirect_url=${siteName}`;
+
+  const ticketAddress = `https://hiveonboard.com/create-account?ticket=${
+    activeTicketInfo?.ticket
+  }&redirect_url=${waivioRedirect.toString()}&creator=vancouverdining`;
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
