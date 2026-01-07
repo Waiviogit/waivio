@@ -68,10 +68,14 @@ import { hexToRgb } from '../../common/helpers';
 import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
-import { getObject, getObjectsByIds, getAllActiveSites } from '../../waivioApi/ApiClient';
+import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getAdsenseSettings, getWebsiteSettings } from '../../store/websiteStore/websiteActions';
+import {
+  getAdsenseSettings,
+  getWebsiteSettings,
+  getAllActiveSites,
+} from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
