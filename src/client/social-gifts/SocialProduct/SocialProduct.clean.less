@@ -23,6 +23,12 @@
     margin-bottom: 20px;
   }
 
+  .SocialProduct__row {
+    width: 100%;
+    max-width: 600px;
+    min-width: 50%;
+  }
+
   .SocialProduct__column-wrapper {
     background: #ffffff;
     border-radius: 10px;
@@ -61,6 +67,7 @@
   .SocialProduct__carouselWrapper {
     width: 100%;
     max-width: 100%;
+    min-width: 100%;
     //overflow: hidden;
     position: relative;
     padding: 0;
@@ -338,6 +345,7 @@
           padding: 20px;
         }
       }
+
       &__paragraph-only {
         margin-bottom: 20px;
         @media @small {
@@ -346,6 +354,7 @@
           width: 100%;
         }
       }
+
       &__image {
         border: 1px solid #e8e8e8;
         border-radius: 12px;
@@ -364,6 +373,7 @@
           box-sizing: border-box;
         }
       }
+
       &__single-image {
         border: 1px solid #e8e8e8;
         border-radius: 12px;
@@ -471,6 +481,8 @@
     .slick-prev,
     .slick-next {
       color: #1a1a1a !important;
+      font-size: 16px;
+      line-height: 16px;
     }
   }
   .SocialProduct__tag-item {

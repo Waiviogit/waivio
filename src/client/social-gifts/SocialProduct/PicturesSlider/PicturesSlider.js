@@ -126,6 +126,11 @@ const PicturesSlider = ({
     [pictures, slidesToShow, isMobileDevice],
   );
 
+  const MobileSlideChange = (curr, next) => {
+    setPhotoIndex(next);
+    setCurrentImage(pictures[next]);
+  };
+
   const mobileCarouselSettings = useMemo(
     () => ({
       dots: false,
@@ -138,9 +143,7 @@ const PicturesSlider = ({
       slidesToScroll: 1,
       nextArrow: <NextArrow slidesToShow={slidesToShow} />,
       prevArrow: <PrevArrow />,
-      afterChange: current => {
-        setPhotoIndex(current);
-      },
+      beforeChange: MobileSlideChange,
     }),
     [pictures, slidesToShow, isMobileDevice],
   );
@@ -162,7 +165,7 @@ const PicturesSlider = ({
           {map(pictures, (pic, i) => (
             <div key={pic._id || pic.id || pic.body}>
               <img
-                onClick={e => onImgClick(e, pic)}
+                onClick={() => setIsOpen(true)}
                 onMouseOver={() => {
                   setHoveredPic(pic);
                 }}
@@ -170,9 +173,6 @@ const PicturesSlider = ({
                   setHoveredPic({});
                 }}
                 src={getProxyImageURL(pic?.body)}
-                className={classNames('PicturesSlider__thumbnail', {
-                  'PicturesSlider__thumbnail--active': pic?.body === currentImage?.body,
-                })}
                 alt={`${i} ${getObjectName(currentWobj)}`}
               />
             </div>
