@@ -20,16 +20,16 @@ export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
   }
 
   const middleware = [
-    errorMiddleware,
-    createPromise({
-      promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR'],
-    }),
     thunk.withExtraArgument({
       steemAPI,
       waivioAPI,
       steemConnectAPI,
       busyAPI: createBusyAPI(),
     }),
+    createPromise({
+      promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR'],
+    }),
+    errorMiddleware,
     routerMiddleware(history),
   ];
 

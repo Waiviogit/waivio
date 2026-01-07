@@ -71,7 +71,11 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getAdsenseSettings, getWebsiteSettings } from '../../store/websiteStore/websiteActions';
+import {
+  getAdsenseSettings,
+  getWebsiteSettings,
+  getAllActiveSites,
+} from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
@@ -227,6 +231,7 @@ const SocialWrapper = props => {
     props.getRewardFund();
     props.getCoordinates();
     props.getGlobalProperties();
+    props.getAllActiveSites();
     props.getTokenRates('WAIV');
     props.getCryptoPriceHistory();
     props.getSwapEnginRates();
@@ -330,6 +335,7 @@ SocialWrapper.propTypes = {
   getRate: PropTypes.func,
   getRewardFund: PropTypes.func,
   getGlobalProperties: PropTypes.func,
+  getAllActiveSites: PropTypes.func,
   busyLogin: PropTypes.func,
   getCoordinates: PropTypes.func,
   setFavoriteObjectTypes: PropTypes.func,
@@ -583,6 +589,7 @@ export default ErrorBoundary(
         getRate,
         getRewardFund,
         getGlobalProperties,
+        getAllActiveSites,
         getTokenRates,
         getCryptoPriceHistory,
         getSwapEnginRates,

@@ -55,9 +55,9 @@ export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 const ua = typeof window !== 'undefined' && window?.navigator?.userAgent;
 
 export const isIOS = () => {
-  if (!ua) return null;
+  if (typeof navigator === 'undefined') return false;
 
-  return !!(ua.match(/iPad/i) || ua?.match(/iPhone/i));
+  return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
 };
 
 export function hexToRgb(color, opacity) {

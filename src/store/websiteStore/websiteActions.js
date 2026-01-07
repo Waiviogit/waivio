@@ -19,6 +19,14 @@ export const getParentDomainList = () => ({
   type: GET_PARENT_DOMAIN.ACTION,
   payload: { promise: ApiClient.getDomainList().then(r => r) },
 });
+export const GET_ALL_ACTIVE_SITES = createAsyncActionType('@website/GET_ALL_ACTIVE_SITES');
+
+export const getAllActiveSites = () => ({
+  type: GET_ALL_ACTIVE_SITES.ACTION,
+  payload: {
+    promise: ApiClient.getAllActiveSites().then(list => list.map(i => `https://${i.host}/`)),
+  },
+});
 
 export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
 
