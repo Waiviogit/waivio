@@ -72,14 +72,15 @@
 
   &__tags-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 8px;
 
-    @media @small {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    //@media @small {
+    //  flex-direction: row;
+    //  flex-wrap: wrap;
+    //  gap: 8px;
+    //}
   }
 
   &__tag-category {
