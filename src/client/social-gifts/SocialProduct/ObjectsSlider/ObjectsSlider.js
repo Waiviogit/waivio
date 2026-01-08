@@ -48,9 +48,10 @@ PrevArrow.propTypes = {
   currentSlide: PropTypes.number,
 };
 
-const ObjectsSlider = ({ title, objects, name }) => {
-  const slideWidth = 270;
-  const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
+const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
+  const slidesToShow = Math.floor(
+    typeof window !== 'undefined' && window.innerWidth / defaultSlideWidth,
+  );
   // const { frequency = 5 } = useAdLevelData();
   // const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   // const isAdInjectable = name === 'similar' || name === 'related';
@@ -110,6 +111,7 @@ ObjectsSlider.propTypes = {
   objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   title: PropTypes.string,
   name: PropTypes.string,
+  defaultSlideWidth: PropTypes.number,
 };
 
 export default ObjectsSlider;

@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 import { getIsSocial, getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getRequiredObject } from '../../../store/newRewards/newRewardsSelectors';
 import {
@@ -60,6 +61,8 @@ const DetailsModal = ({
   const isSocial = useSelector(getIsSocial);
   const locale = useSelector(getUsedLocale);
   const reduxRequiredObject = useSelector(getRequiredObject);
+  const template = useTemplateId();
+
   const stringRequiredObj =
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
@@ -226,7 +229,7 @@ const DetailsModal = ({
       onCancel={handleCancelModalBtn}
       maskClosable={false}
       visible={!isWidget && isModalDetailsOpen}
-      wrapClassName="DetailsModal"
+      wrapClassName={`DetailsModal ${template}`}
       footer={null}
       width={768}
     >
