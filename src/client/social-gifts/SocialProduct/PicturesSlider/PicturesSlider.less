@@ -2,8 +2,6 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .PicturesSlider {
-  //display: flex;
-  //justify-content: center;
   &__previewImage {
     object-fit: contain;
     width: 100%;
@@ -27,13 +25,18 @@
     height: 50px;
     border: 1px solid @silver-gray;
     border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+
     &--active {
       object-fit: contain;
       width: 50px;
       height: 50px;
       border: 1px solid var(--website-color);
       border-radius: 4px;
+      cursor: pointer;
     }
+
     @media @small {
       &:hover {
         object-fit: contain;
@@ -51,13 +54,11 @@
       width: 457px;
     }
   }
-  .slick-track {
+  .ant-carousel .slick-track {
+    display: flex;
     justify-content: center !important;
   }
-  .slick-slide.slick-active {
-    width: 58px !important;
-    cursor: pointer;
-  }
+
   .slick-prev,
   .slick-next {
     display: none;
@@ -85,10 +86,24 @@
   .slick-next {
     right: -40px;
   }
+
   .MobileCarousel {
-    .slick-slide.slick-active {
+    width: 350px;
+    height: 350px;
+    margin: 0 auto;
+
+    .slick-slide {
+      height: 350px !important;
       width: 350px !important;
       cursor: pointer;
+
+      img,
+      .PicturesSlider__thumbnail,
+      .PicturesSlider__thumbnail--active {
+        width: 350px !important;
+        height: 350px !important;
+        object-fit: contain;
+      }
     }
   }
 }

@@ -363,7 +363,10 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const mainWaivioLink = 'https://www.waivio.com';
+  // const activeSites = getAllActiveSitesList(getState());
+  // const domainNamesList = [...activeSites, mainWaivioLink];
 
+  // if (domainNamesList.includes(url)) {
   if (url?.includes(mainWaivioLink)) {
     if (typeof window !== 'undefined') window.open(url, '_blank');
 

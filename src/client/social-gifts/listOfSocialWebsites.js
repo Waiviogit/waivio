@@ -5,6 +5,7 @@ export const listOfSocialWebsites = [
   'www.social.gifts',
   'social.gifts',
 ];
+export const listOfWaivioSites = ['waivio.com', 'waiviodev.com', 'localhost'];
 
 export const socialDomens = ['socialgifts', 'social.gifts'];
 export const notCustomDomains = ['dining', 'waivio', 'webcache.googleusercontent'];

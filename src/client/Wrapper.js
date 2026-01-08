@@ -26,11 +26,14 @@ import {
   setAppUrl,
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
+import { getAllActiveSites } from '../store/websiteStore/websiteActions';
+
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { listOfWaivioSites } from './social-gifts/listOfSocialWebsites';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import { handleRefAuthUser } from '../store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
@@ -92,6 +95,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCoordinates,
     getGlobalProperties,
     getUserAccount,
+    getAllActiveSites,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -106,6 +110,7 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     getNotifications: PropTypes.func,
+    getAllActiveSites: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
@@ -154,7 +159,7 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    return Promise.all([
+    return Promise.allSettled([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
     ]);
@@ -178,6 +183,8 @@ class Wrapper extends React.PureComponent {
     const userName = querySelectorSearchParams.get('userName');
     const nightmode = Cookie.get('nightmode');
 
+    this.checkVipticketRedirect();
+
     if (typeof document !== 'undefined') {
       if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
@@ -186,6 +193,7 @@ class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getCoordinates();
     this.props.getGlobalProperties();
+    this.props.getAllActiveSites();
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
@@ -247,7 +255,7 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
     const refName = getSessionData('refUser');
@@ -266,7 +274,22 @@ class Wrapper extends React.PureComponent {
     }
     if (this.props.isAuthenticated && widgetLink && userName)
       removeSessionData('userName', 'isWidget');
+    if (prevProps.location.search !== this.props.location.search) {
+      this.checkVipticketRedirect();
+    }
   }
+  checkVipticketRedirect = () => {
+    if (typeof window === 'undefined') return;
+
+    const query = new URLSearchParams(this.props.location.search);
+    const nextUrl = query.get('vipticket_redirect_url');
+    const hostname = window.location.hostname;
+    const isWaivio = listOfWaivioSites.includes(hostname);
+
+    if (nextUrl && isWaivio) {
+      window.location.href = nextUrl;
+    }
+  };
 
   async loadLocale(locale) {
     const lang = await loadLanguage(locale);

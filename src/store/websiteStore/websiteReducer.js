@@ -5,6 +5,7 @@ import { getAvailableStatus } from '../../client/websites/helper';
 
 const initialState = {
   parentDomain: [],
+  activeSites: [],
   domainAvailableStatus: '',
   manage: {},
   reports: {},
@@ -51,6 +52,19 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         parentDomain: mappedParentDomainList,
+        loading: false,
+      };
+    }
+    case websiteAction.GET_ALL_ACTIVE_SITES.START: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
+    case websiteAction.GET_ALL_ACTIVE_SITES.SUCCESS: {
+      return {
+        ...state,
+        activeSites: action.payload,
         loading: false,
       };
     }
