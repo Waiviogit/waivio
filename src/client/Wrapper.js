@@ -27,6 +27,7 @@ import {
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
 import { getAllActiveSites } from '../store/websiteStore/websiteActions';
+import { getAllActiveSitesList } from '../store/websiteStore/websiteSelectors';
 
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -78,6 +79,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
     favoriteTypes: getFavoriteObjectTypes(state),
+    allSites: getAllActiveSitesList(state),
   }),
   {
     login,
@@ -107,6 +109,7 @@ class Wrapper extends React.PureComponent {
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
     translations: PropTypes.shape(),
+    allSites: PropTypes.arrayOf(),
     username: PropTypes.string,
     login: PropTypes.func,
     getNotifications: PropTypes.func,
@@ -286,7 +289,7 @@ class Wrapper extends React.PureComponent {
     const hostname = window.location.hostname;
     const isWaivio = listOfWaivioSites.includes(hostname);
 
-    if (nextUrl && isWaivio) {
+    if (nextUrl && isWaivio && this.props.allSites.includes(nextUrl)) {
       window.location.href = nextUrl;
     }
   };

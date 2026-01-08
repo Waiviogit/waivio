@@ -54,10 +54,16 @@ export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
 const ua = typeof window !== 'undefined' && window?.navigator?.userAgent;
 
-export const isIOS = () => {
-  if (typeof navigator === 'undefined') return false;
+// export const isIOS = () => {
+//   if (typeof navigator === 'undefined') return false;
+//
+//   return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+// };
 
-  return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+export const isIOS = () => {
+  if (!ua) return null;
+
+  return !!(ua.match(/iPad/i) || ua?.match(/iPhone/i));
 };
 
 export function hexToRgb(color, opacity) {
