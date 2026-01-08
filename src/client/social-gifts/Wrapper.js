@@ -231,7 +231,6 @@ const SocialWrapper = props => {
     props.getRewardFund();
     props.getCoordinates();
     props.getGlobalProperties();
-    props.getAllActiveSites();
     props.getTokenRates('WAIV');
     props.getCryptoPriceHistory();
     props.getSwapEnginRates();
@@ -335,7 +334,6 @@ SocialWrapper.propTypes = {
   getRate: PropTypes.func,
   getRewardFund: PropTypes.func,
   getGlobalProperties: PropTypes.func,
-  getAllActiveSites: PropTypes.func,
   busyLogin: PropTypes.func,
   getCoordinates: PropTypes.func,
   setFavoriteObjectTypes: PropTypes.func,

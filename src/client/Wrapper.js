@@ -26,7 +26,7 @@ import {
   setAppUrl,
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
-import { getAllActiveSites } from '../store/websiteStore/websiteActions';
+import { getAllActiveSites } from '../waivioApi/ApiClient';
 
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -110,7 +110,6 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     getNotifications: PropTypes.func,
-    getAllActiveSites: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
@@ -193,7 +192,6 @@ class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getCoordinates();
     this.props.getGlobalProperties();
-    this.props.getAllActiveSites();
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
@@ -286,20 +284,14 @@ class Wrapper extends React.PureComponent {
     const hostname = window.location.hostname;
     const isWaivio = listOfWaivioSites.includes(hostname);
 
-    try {
-      const cookieValue = Cookie.get('allActiveSites');
-      const allActiveSites = cookieValue ? JSON.parse(cookieValue) : [];
+    if (nextUrl && isWaivio) {
+      getAllActiveSites().then(list => {
+        const activeSites = list.map(i => `https://${i.host}/`);
 
-      if (
-        nextUrl &&
-        isWaivio &&
-        Array.isArray(allActiveSites) &&
-        allActiveSites.includes(nextUrl)
-      ) {
-        window.location.href = nextUrl;
-      }
-    } catch (error) {
-      console.error('Error parsing allActiveSites cookie:', error);
+        if (activeSites.includes(nextUrl)) {
+          window.location.href = nextUrl;
+        }
+      });
     }
   };
 
