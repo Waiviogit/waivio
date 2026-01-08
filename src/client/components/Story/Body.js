@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
@@ -176,21 +176,25 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
+  const bodyRef = useRef(null);
 
-  const openLink = e => {
-    const anchor = e.target.closest('a[data-href]');
+  const openLink = useCallback(
+    e => {
+      const anchor = e.target.closest('a[data-href]');
 
-    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+      if (isMobile() && !isIOS() && e.type === 'mousedown') return;
 
-    if (!anchor) return;
+      if (!anchor) return;
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
 
-    const href = anchor.dataset.href;
+      const href = anchor.dataset.href;
 
-    dispatch(setLinkSafetyInfo(href));
-  };
+      dispatch(setLinkSafetyInfo(href));
+    },
+    [dispatch],
+  );
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -258,6 +262,20 @@ const Body = props => {
       };
     }
   }, []);
+
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    const bodyElement = bodyRef.current;
+
+    if (bodyElement) {
+      bodyElement.addEventListener('touchstart', openLink, { passive: false });
+
+      return () => {
+        bodyElement.removeEventListener('touchstart', openLink);
+      };
+    }
+  }, [openLink]);
+
   const location = useLocation();
   const params = useParams();
   const options = {
@@ -285,9 +303,9 @@ const Body = props => {
   return (
     <React.Fragment>
       <div
+        ref={bodyRef}
         className={classNames('Body', { 'Body--full': props.full })}
         onMouseDown={openLink}
-        onTouchStart={openLink}
       >
         {htmlSections}
       </div>

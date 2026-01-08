@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import { createAction } from 'redux-actions';
 import { message } from 'antd';
 import { get, size } from 'lodash';
@@ -363,11 +364,12 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const mainWaivioLink = 'https://www.waivio.com';
-  // const activeSites = getAllActiveSitesList(getState());
-  // const domainNamesList = [...activeSites, mainWaivioLink];
+  const cookieValue = Cookie.get('allActiveSites');
+  const allActiveSites = cookieValue ? JSON.parse(cookieValue) : [];
+  const domainNamesList = [...allActiveSites, mainWaivioLink];
 
-  // if (domainNamesList.includes(url)) {
-  if (url?.includes(mainWaivioLink)) {
+  if (domainNamesList.includes(url)) {
+    // if (url?.includes(mainWaivioLink)) {
     if (typeof window !== 'undefined') window.open(url, '_blank');
 
     return;
