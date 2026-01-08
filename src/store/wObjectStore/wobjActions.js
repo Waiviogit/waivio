@@ -13,7 +13,6 @@ import {
 } from '../../waivioApi/ApiClient';
 import { BELL_USER_NOTIFICATION, followExpert, unfollowExpert } from '../userStore/userActions';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
-import { getAllActiveSitesList } from '../websiteStore/websiteSelectors';
 import {
   getRelatedObjectsSkip,
   getRelatedObjectsArray,
@@ -364,10 +363,11 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
 
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const mainWaivioLink = 'https://www.waivio.com';
-  const activeSites = getAllActiveSitesList(getState());
-  const domainNamesList = [...activeSites, mainWaivioLink];
+  // const activeSites = getAllActiveSitesList(getState());
+  // const domainNamesList = [...activeSites, mainWaivioLink];
 
-  if (domainNamesList.includes(url)) {
+  // if (domainNamesList.includes(url)) {
+  if (url?.includes(mainWaivioLink)) {
     if (typeof window !== 'undefined') window.open(url, '_blank');
 
     return;
