@@ -6,6 +6,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { Modal, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import { getHelmetIcon, getAppHost, getSiteName } from '../../../store/appStore/appSelectors';
 import {
@@ -50,6 +51,7 @@ const NewDiscover = () => {
   const siteName = useSelector(getSiteName);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
+  const template = useTemplateId();
 
   const activeFilters = useSelector(getActiveFilters);
   const objects = useSelector(getWobjectsList);
@@ -192,7 +194,7 @@ const NewDiscover = () => {
   const title = 'Discover - Waivio';
 
   return (
-    <div className="NewDiscover">
+    <div className={`NewDiscover ${template}`}>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={desc} />
