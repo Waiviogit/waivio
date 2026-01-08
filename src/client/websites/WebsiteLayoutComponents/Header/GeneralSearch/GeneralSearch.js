@@ -248,7 +248,7 @@ const GeneralSearch = props => {
         backfill={false}
         defaultActiveFirstOption={false}
         optionLabelProp="value"
-        dropdownClassName="GeneralSearch"
+        dropdownClassName={`GeneralSearch ${props.dropdownClassName}`}
         placeholder={props.intl.formatMessage({
           id: 'search_placeholder',
           defaultMessage: 'What are you looking for?',
@@ -265,6 +265,11 @@ GeneralSearch.propTypes = {
   }),
   searchBarActive: PropTypes.bool,
   isSocialProduct: PropTypes.bool,
+  dropdownClassName: PropTypes.string,
+};
+
+GeneralSearch.defaultProps = {
+  dropdownClassName: '',
 };
 
 export default injectIntl(GeneralSearch);

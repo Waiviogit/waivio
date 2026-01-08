@@ -72,21 +72,21 @@
 
   &__tags-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 8px;
 
-    @media @small {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    //@media @small {
+    //  flex-direction: row;
+    //  flex-wrap: wrap;
+    //  gap: 8px;
+    //}
   }
 
   &__tag-category {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 6px;
   }
   &__filters-inline {
     display: none;
@@ -181,4 +181,8 @@
   @media @small {
     margin: 20px 130px;
   }
+}
+
+.NewDiscover.clean {
+  font-family: var(--template-font-body, inherit);
 }
