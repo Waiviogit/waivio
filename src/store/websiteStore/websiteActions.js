@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { get, isEmpty, size } from 'lodash';
+import Cookie from 'js-cookie';
 
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -18,6 +19,19 @@ export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMA
 export const getParentDomainList = () => ({
   type: GET_PARENT_DOMAIN.ACTION,
   payload: { promise: ApiClient.getDomainList().then(r => r) },
+});
+export const GET_ALL_ACTIVE_SITES = createAsyncActionType('@website/GET_ALL_ACTIVE_SITES');
+
+export const getAllActiveSites = () => ({
+  type: GET_ALL_ACTIVE_SITES.ACTION,
+  payload: {
+    promise: ApiClient.getAllActiveSites().then(list => {
+      const activeSites = list.map(i => `https://${i.host}/`);
+
+      Cookie.set('allActiveSites', JSON.stringify(activeSites), { expires: 7 });
+      // return activeSites;
+    }),
+  },
 });
 
 export const GET_OWN_WEBSITE = createAsyncActionType('@website/GET_OWN_WEBSITE');
