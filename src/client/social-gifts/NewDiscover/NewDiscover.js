@@ -244,7 +244,7 @@ const NewDiscover = () => {
             )}
             <div className="NewDiscover__tags-bar">
               {search && (
-                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag">
+                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag mb2">
                   Search: {search}
                 </Tag>
               )}
@@ -253,7 +253,12 @@ const NewDiscover = () => {
                 {Object.entries(tagsByCategory).map(([cat, tags]) => (
                   <div key={cat} className="NewDiscover__tag-category">
                     {tags.map(tag => (
-                      <Tag key={`${cat}-${tag}`} closable onClose={() => removeTag(cat, tag)}>
+                      <Tag
+                        className=" mb2"
+                        key={`${cat}-${tag}`}
+                        closable
+                        onClose={() => removeTag(cat, tag)}
+                      >
                         {`${cat}: ${tag}`}
                       </Tag>
                     ))}
