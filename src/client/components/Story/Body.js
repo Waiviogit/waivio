@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -176,11 +175,20 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
+  const lastTouchTsRef = useRef(0);
 
   const openLink = e => {
-    const anchor = e.target.closest('a[data-href]');
+    const now = Date.now();
 
-    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+    if (e.type === 'touchstart') {
+      lastTouchTsRef.current = now;
+    } else if (now - lastTouchTsRef.current < 700) {
+      return;
+    }
+
+    const target = e.target?.nodeType === 3 ? e.target.parentElement : e.target;
+
+    const anchor = target?.closest?.('a[data-href]');
 
     if (!anchor) return;
 
