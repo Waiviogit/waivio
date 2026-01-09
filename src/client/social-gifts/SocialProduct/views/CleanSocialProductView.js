@@ -161,7 +161,7 @@ const CleanSocialProductView = ({
               hoveredOption={hoveredOption}
               activeOption={activeOption}
               activeCategory={activeCategory}
-              countShowSlide={5}
+              countShowSlide={6}
               countShowMobile={4}
             />
           </div>

@@ -1,11 +1,14 @@
+import { Button } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
+import { injectIntl } from 'react-intl';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useLocation } from 'react-router';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { appendObject } from '../../../store/appendStore/appendActions';
+import { getAuthorityList } from '../../../store/appendStore/appendSelectors';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import {
   getObject as getObjectState,
@@ -18,6 +21,9 @@ import {
   prepareAlbumData,
   prepareAlbumToStore,
   getTitleForLink,
+  haveAccess,
+  accessTypesArr,
+  hasDelegation,
 } from '../../../common/helpers/wObjectHelper';
 import SocialProduct from '../../social-gifts/SocialProduct/SocialProduct';
 import WidgetContent from '../../social-gifts/WidgetContent/WidgetContent';
@@ -25,13 +31,19 @@ import ObjectNewsFeed from '../../social-gifts/FeedMasonry/ObjectNewsFeed';
 import Checklist from '../../social-gifts/Checklist/Checklist';
 import Loading from '../../components/Icon/Loading';
 import WobjectView from './WobjectView';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
+import {
+  getHelmetIcon,
+  getSiteName,
+  getSiteTrusties,
+  getUserAdministrator,
+} from '../../../store/appStore/appSelectors';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import BusinessObject from '../../social-gifts/BusinessObject/BusinessObject';
 import ObjectOfTypeWebpage from '../ObjectOfTypeWebpage/ObjectOfTypeWebpage';
 import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import ObjShop from '../../Shop/ObjShop';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -42,11 +54,13 @@ const Wobj = ({
   isSocial,
   weightValue,
   showPostModal,
+  intl,
 }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const wobject = useSelector(getObjectState);
   const nestedWobject = useSelector(getWobjectNested);
+  const authenticated = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(typeof window !== 'undefined');
   const params = useParams();
@@ -87,6 +101,16 @@ const Wobj = ({
     const canonical = `${canonicalUrl}${location.search}`;
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
+    const trusties = useSelector(getSiteTrusties);
+    const authorityList = useSelector(getAuthorityList);
+    const activeHeart = authorityList[wobject.author_permlink];
+    const isAdministrator = useSelector(getUserAdministrator);
+    const isTrusty = trusties?.includes(userName);
+
+    const accessExtend =
+      (haveAccess(wobject, userName, accessTypesArr[0]) && isAdministrator) ||
+      hasDelegation(wobject, userName) ||
+      (activeHeart && isTrusty);
 
     if (isEmpty(wobject) || loading) {
       return (
@@ -202,6 +226,16 @@ const Wobj = ({
               <link rel="image_src" href={image} />
               <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
             </Helmet>
+            {accessExtend && authenticated && (
+              <Button
+                onClick={toggleViewEditMode}
+                style={{ position: 'absolute', left: '20px', top: '20px' }}
+              >
+                {isEditMode
+                  ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                  : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+              </Button>
+            )}
             <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />
           </React.Fragment>
         );
@@ -267,6 +301,7 @@ const Wobj = ({
 
 Wobj.propTypes = {
   route: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   authenticatedUserName: PropTypes.string,
   isEditMode: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
@@ -282,4 +317,4 @@ Wobj.defaultProps = {
   handleFollowClick: () => {},
 };
 
-export default Wobj;
+export default injectIntl(Wobj);
