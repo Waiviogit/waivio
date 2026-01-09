@@ -290,13 +290,27 @@ class Wrapper extends React.PureComponent {
     const isWaivio = listOfWaivioSites.includes(hostname);
 
     if (nextUrl && isWaivio) {
-      getAllActiveSites().then(list => {
-        const activeSites = list.map(i => `https://${i.host}/`);
+      if (!Cookie.get('allActiveSites')) {
+        getAllActiveSites().then(list => {
+          const activeSites = list.map(i => `https://${i.host}/`);
 
-        if (activeSites.includes(nextUrl)) {
-          window.location.href = nextUrl;
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        });
+      } else {
+        try {
+          const cookieValue = Cookie.get('allActiveSites');
+
+          const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
+
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        } catch (e) {
+          console.error('Invalid allActiveSites cookie', e);
         }
-      });
+      }
     }
   };
 
