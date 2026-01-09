@@ -22,7 +22,7 @@ export const getParentDomainList = () => ({
 });
 export const GET_ALL_ACTIVE_SITES = createAsyncActionType('@website/GET_ALL_ACTIVE_SITES');
 
-export const getAllActiveSites = () => ({
+export const getAllActiveSitesAction = () => ({
   type: GET_ALL_ACTIVE_SITES.ACTION,
   payload: {
     promise: ApiClient.getAllActiveSites().then(list => {

@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
@@ -6,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
@@ -26,6 +26,7 @@ import {
   setAppUrl,
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
+import { getAllActiveSitesAction } from '../store/websiteStore/websiteActions';
 import { getAllActiveSites } from '../waivioApi/ApiClient';
 
 import NotificationPopup from './notifications/NotificationPopup';
@@ -95,7 +96,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCoordinates,
     getGlobalProperties,
     getUserAccount,
-    getAllActiveSites,
+    getAllActiveSitesAction,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -113,6 +114,7 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
+    getAllActiveSitesAction: PropTypes.func,
     getRewardFund: PropTypes.func,
     getTokenRates: PropTypes.func,
     getCryptoPriceHistory: PropTypes.func,
@@ -195,6 +197,9 @@ class Wrapper extends React.PureComponent {
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
+    if (!Cookie.get('allActiveSites')) {
+      this.props.getAllActiveSitesAction();
+    }
     if (ref) setSessionData('refUser', ref);
     if (userName) {
       setSessionData('userName', userName);
