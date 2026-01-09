@@ -27,7 +27,7 @@ import './SocialProductReviews.less';
 
 let skip = 20;
 
-const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => {
+const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated, postCount }) => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
@@ -96,6 +96,7 @@ const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated }) => 
         loadMore={loadMore}
         loading={isFetching}
         writeReview={handleWriteReviewClick}
+        postCount={postCount}
       />
     </div>
   );
@@ -111,5 +112,6 @@ SocialProductReviews.propTypes = {
     formatMessage: PropTypes.func,
   }),
   onActionInitiated: PropTypes.func,
+  postCount: PropTypes.number,
 };
 export default injectIntl(withAuthActions(SocialProductReviews));

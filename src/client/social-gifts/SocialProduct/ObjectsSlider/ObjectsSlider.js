@@ -6,48 +6,6 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
 import { isTabletOrMobile } from '../socialProductHelper';
 
-const NextArrow = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
-  const hide = currentSlide >= slideCount - slidesToShow;
-
-  return (
-    <div
-      className={`slick-arrow slick-next ObjectsSlider__arrow ${
-        hide ? 'ObjectsSlider__arrow--hidden' : ''
-      }`}
-      onClick={onClick}
-    >
-      <Icon type="right" />
-    </div>
-  );
-};
-
-const PrevArrow = ({ onClick, currentSlide }) => {
-  const hide = currentSlide <= 0;
-
-  return (
-    <div
-      className={`slick-arrow slick-prev ObjectsSlider__arrow ${
-        hide ? 'ObjectsSlider__arrow--hidden' : ''
-      }`}
-      onClick={onClick}
-    >
-      <Icon type="left" />
-    </div>
-  );
-};
-
-NextArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-  slideCount: PropTypes.number,
-  slidesToShow: PropTypes.number,
-};
-
-PrevArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-};
-
 const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
   const slidesToShow = Math.floor(
     typeof window !== 'undefined' && window.innerWidth / defaultSlideWidth,
