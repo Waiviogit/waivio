@@ -195,56 +195,63 @@ const Body = props => {
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      const setupImageErrorHandlers = () => {
-        Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-          // Skip if already processed
-          if (imgNode.dataset.processed) return;
+      const BOUND_FLAG = 'onerrorBound';
 
-          // eslint-disable-next-line no-param-reassign
-          imgNode.onerror = () => {
-            // Use data-fallback-src if available, otherwise fall back to alt
-            const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+      const bindErrorHandler = imgNode => {
+        if (!imgNode || imgNode.dataset[BOUND_FLAG]) return;
 
-            // Prevent infinite loop by checking if we already tried the fallback
-            if (fallbackSrc && fallbackSrc !== imgNode.src) {
-              // Force React to recognize the change by removing and re-adding the src
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = fallbackSrc;
-              // Mark as processed to prevent infinite loops
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            } else {
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '/images/icons/no-image.png';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            }
-          };
-        });
+        // Mark as bound immediately (prevents repeated re-binding on every mutation)
+        // eslint-disable-next-line no-param-reassign
+        imgNode.dataset[BOUND_FLAG] = 'true';
+
+        // eslint-disable-next-line no-param-reassign
+        imgNode.onerror = () => {
+          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+
+          if (fallbackSrc && fallbackSrc !== imgNode.src) {
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = '';
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = fallbackSrc;
+            // eslint-disable-next-line no-param-reassign
+            imgNode.dataset.processed = 'true';
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = '/images/icons/no-image.png';
+            // eslint-disable-next-line no-param-reassign
+            imgNode.dataset.processed = 'true';
+          }
+        };
       };
 
-      // Setup handlers immediately
-      setupImageErrorHandlers();
-      // Setup MutationObserver to handle new images added by React
+      const bindForRoot = root => {
+        if (!root) return;
+
+        // If root itself is IMG
+        if (root.tagName === 'IMG') {
+          bindErrorHandler(root);
+
+          return;
+        }
+
+        // Otherwise bind only images inside this root
+        if (root.querySelectorAll) {
+          root.querySelectorAll('img').forEach(bindErrorHandler);
+        }
+      };
+
+      // Bind once for existing images
+      bindForRoot(document.body);
+
       const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === Node.ELEMENT_NODE) {
-                if (node.tagName === 'IMG') {
-                  setupImageErrorHandlers();
-                } else if (node.querySelectorAll) {
-                  const images = node.querySelectorAll('img');
+          if (mutation.type !== 'childList') return;
 
-                  if (images.length > 0) {
-                    setupImageErrorHandlers();
-                  }
-                }
-              }
-            });
-          }
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              bindForRoot(node);
+            }
+          });
         });
       });
 
@@ -258,6 +265,7 @@ const Body = props => {
       };
     }
   }, []);
+
   const location = useLocation();
   const params = useParams();
   const options = {
