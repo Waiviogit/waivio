@@ -362,14 +362,43 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
   });
 };
 
+const normalizeOrigin = value => {
+  if (!value) return null;
+
+  try {
+    const withProto = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    const u = new URL(withProto);
+
+    return u.origin.toLowerCase();
+  } catch (e) {
+    return null;
+  }
+};
+
+const isAllowedUrl = (url, allowedList) => {
+  const targetOrigin = normalizeOrigin(url);
+
+  if (!targetOrigin) return false;
+
+  const allowedOrigins = allowedList.map(normalizeOrigin).filter(Boolean);
+
+  if (allowedOrigins.includes(targetOrigin)) return true;
+
+  const stripWww = origin => origin.replace('://www.', '://');
+  const strippedTarget = stripWww(targetOrigin);
+
+  return allowedOrigins.some(o => stripWww(o) === strippedTarget);
+};
+
 export const setLinkSafetyInfo = url => async (dispatch, getState) => {
-  const mainWaivioLink = 'https://www.waivio.com';
+  const mainWaivioLink = 'https://www.waivio.com/';
+
   const cookieValue = Cookie.get('allActiveSites');
   const allActiveSites = cookieValue ? JSON.parse(cookieValue) : [];
-  const domainNamesList = [...allActiveSites, mainWaivioLink];
 
-  if (domainNamesList.includes(url)) {
-    // if (url?.includes(mainWaivioLink)) {
+  const allowed = [...allActiveSites, mainWaivioLink];
+
+  if (isAllowedUrl(url, allowed)) {
     if (typeof window !== 'undefined') window.open(url, '_blank');
 
     return;

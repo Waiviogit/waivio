@@ -58,17 +58,6 @@ export const getEmbed = link => {
   return embed;
 };
 
-// const addExplicitNumbersToLists = html =>
-//   html?.replace(/<ol>([\s\S]*?)<\/ol>/g, (match, listContent) => {
-//     let count = 1;
-//     const updatedList = listContent?.replace(
-//       /<li>([\s\S]*?)<\/li>/g,
-//       (_, item) => `<li>${count++}. ${item}</li>`, // Add numbers explicitly
-//     );
-//
-//     return `<ol>${updatedList}</ol>`;
-//   });
-
 export function getHtml(
   body,
   jsonMetadata = {},
@@ -165,7 +154,6 @@ export function getHtml(
 
   return (
     <div
-      key={(Math.random() + 1).toString(36).substring(7)}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: parsedBody }}
     />
@@ -178,102 +166,80 @@ const Body = props => {
   const dispatch = useDispatch();
   const bodyRef = useRef(null);
 
+  const lastTouchTsRef = useRef(0);
+
   const openLink = useCallback(
     e => {
-      const anchor = e.target.closest('a[data-href]');
-
-      if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+      const anchor = e.target?.closest?.('a[data-href]');
 
       if (!anchor) return;
+
+      if (isMobile() && !isIOS() && e.type === 'mousedown') {
+        const dt = Date.now() - lastTouchTsRef.current;
+
+        if (dt < 700) return;
+      }
+
+      if (e.type === 'touchstart') {
+        lastTouchTsRef.current = Date.now();
+      }
 
       e.preventDefault();
       e.stopPropagation();
 
-      const href = anchor.dataset.href;
+      let href = anchor.getAttribute('data-href') || anchor.getAttribute('href');
+
+      if (!href) return;
+
+      href = href.trim().replaceAll('&amp;', '&');
+      if (href.startsWith('//')) href = `https:${href}`;
 
       dispatch(setLinkSafetyInfo(href));
     },
     [dispatch],
   );
 
-  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const setupImageErrorHandlers = () => {
-        Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-          // Skip if already processed
-          if (imgNode.dataset.processed) return;
+    const container = bodyRef.current;
 
-          // eslint-disable-next-line no-param-reassign
-          imgNode.onerror = () => {
-            // Use data-fallback-src if available, otherwise fall back to alt
-            const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+    if (!container || typeof document === 'undefined') return;
 
-            // Prevent infinite loop by checking if we already tried the fallback
-            if (fallbackSrc && fallbackSrc !== imgNode.src) {
-              // Force React to recognize the change by removing and re-adding the src
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = fallbackSrc;
-              // Mark as processed to prevent infinite loops
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            } else {
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '/images/icons/no-image.png';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            }
-          };
-        });
-      };
+    const onImgErrorCapture = evt => {
+      const img = evt.target;
 
-      // Setup handlers immediately
-      setupImageErrorHandlers();
-      // Setup MutationObserver to handle new images added by React
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === Node.ELEMENT_NODE) {
-                if (node.tagName === 'IMG') {
-                  setupImageErrorHandlers();
-                } else if (node.querySelectorAll) {
-                  const images = node.querySelectorAll('img');
+      if (!img || img.tagName !== 'IMG') return;
+      if (img.dataset.processed) return;
 
-                  if (images.length > 0) {
-                    setupImageErrorHandlers();
-                  }
-                }
-              }
-            });
-          }
-        });
-      });
+      const fallbackSrc = img.getAttribute('data-fallback-src') || img.alt;
 
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
+      img.dataset.processed = 'true';
 
-      return () => {
-        observer.disconnect();
-      };
-    }
+      if (fallbackSrc && fallbackSrc !== img.src) {
+        img.src = fallbackSrc;
+      } else {
+        img.src = '/images/icons/no-image.png';
+      }
+    };
+
+    container.addEventListener('error', onImgErrorCapture, true);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      container.removeEventListener('error', onImgErrorCapture, true);
+    };
   }, []);
 
-  // eslint-disable-next-line consistent-return
   useEffect(() => {
     const bodyElement = bodyRef.current;
 
-    if (bodyElement) {
-      bodyElement.addEventListener('touchstart', openLink, { passive: false });
+    if (!bodyElement) return;
 
-      return () => {
-        bodyElement.removeEventListener('touchstart', openLink);
-      };
-    }
+    bodyElement.addEventListener('touchstart', openLink, { passive: false });
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      bodyElement.removeEventListener('touchstart', openLink);
+    };
   }, [openLink]);
 
   const location = useLocation();
@@ -297,7 +263,6 @@ const Body = props => {
     params.name,
     sendError,
     props.safeLinks,
-    props.full,
   );
 
   return (
