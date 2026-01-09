@@ -356,7 +356,7 @@ const CleanBusinessObjectView = ({
 
       {!isEmpty(wobject) && (
         <div className="BusinessObjectClean__section">
-          <SocialProductReviews wobject={wobject} />
+          <SocialProductReviews postCount={3} wobject={wobject} />
         </div>
       )}
     </div>
