@@ -75,6 +75,7 @@ import {
   getAdsenseSettings,
   getWebsiteSettings,
   getAllActiveSites,
+  getAllActiveSitesAction,
 } from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
@@ -235,6 +236,9 @@ const SocialWrapper = props => {
     props.getCryptoPriceHistory();
     props.getSwapEnginRates();
     props.setSocialFlag();
+    if (!Cookie.get('allActiveSites')) {
+      props.getAllActiveSitesAction();
+    }
     location && props.getWebsiteSettings(location?.hostname);
     location && props.getAdsenseSettings(location?.hostname);
     props.getCurrentAppSettings().then(res => {
@@ -333,6 +337,7 @@ SocialWrapper.propTypes = {
   getNotifications: PropTypes.func,
   getRate: PropTypes.func,
   getRewardFund: PropTypes.func,
+  getAllActiveSitesAction: PropTypes.func,
   getGlobalProperties: PropTypes.func,
   busyLogin: PropTypes.func,
   getCoordinates: PropTypes.func,
@@ -595,6 +600,7 @@ export default ErrorBoundary(
         getWebsiteSettings,
         getAdsenseSettings,
         getDraftsList,
+        getAllActiveSitesAction,
       },
     )(SocialWrapper),
   ),
