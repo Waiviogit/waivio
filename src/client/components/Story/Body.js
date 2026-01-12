@@ -292,11 +292,7 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div
-        className={classNames('Body', { 'Body--full': props.full })}
-        onMouseDown={openLink}
-        onTouchStart={openLink}
-      >
+      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
         {htmlSections}
       </div>
 
