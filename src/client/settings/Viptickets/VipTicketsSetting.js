@@ -47,7 +47,7 @@ const VipTicketsSetting = props => {
     typeof cookieValue === 'string' && cookieValue !== 'undefined' ? JSON.parse(cookieValue) : [];
 
   const allSites = [...activeSites, 'https://www.waivio.com'];
-  const siteName = `https://${hostname}`;
+  const siteName = `https://${hostname}/`;
 
   let waivioRedirect = `https://www.waivio.com/`;
 
