@@ -43,7 +43,9 @@ const VipTicketsSetting = props => {
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
   const hostname = typeof location !== 'undefined' ? location.hostname : '';
   const cookieValue = Cookie.get('allActiveSites');
-  const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
+  const activeSites =
+    typeof cookieValue === 'string' && cookieValue !== 'undefined' ? JSON.parse(cookieValue) : [];
+
   const allSites = [...activeSites, 'https://www.waivio.com'];
   const siteName = `https://${hostname}`;
 
