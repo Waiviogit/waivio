@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Carousel, Icon } from 'antd';
+import { Carousel } from 'antd';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
+import NextArrow from '../SliderButton/NextArrow';
+import PrevArrow from '../SliderButton/PrevArrow';
 import { isTabletOrMobile } from '../socialProductHelper';
 
 const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
@@ -32,8 +34,8 @@ const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
       arrows: !isTabletOrMobile,
       lazyLoad: false,
       rows: 1,
-      nextArrow: <Icon type="caret-right" />,
-      prevArrow: <Icon type="caret-left" />,
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
       slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
       swipeToSlide: isTabletOrMobile,
       infinite: false,
