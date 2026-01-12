@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
+import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -176,27 +177,17 @@ const Body = props => {
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
 
-  const lastHrefRef = React.useRef(null);
-  const lastTsRef = React.useRef(0);
-
   const openLink = e => {
-    const target = e.target;
+    const anchor = e.target.closest('a[data-href]');
 
-    if (!(target instanceof Element)) return;
-
-    const anchor = target.closest('a[data-href]');
+    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
 
     if (!anchor) return;
 
-    const href = anchor.dataset.href;
-    const now = Date.now();
-
-    if (lastHrefRef.current === href && now - lastTsRef.current < 400) return;
-    lastHrefRef.current = href;
-    lastTsRef.current = now;
-
     e.preventDefault();
     e.stopPropagation();
+
+    const href = anchor.dataset.href;
 
     dispatch(setLinkSafetyInfo(href));
   };
