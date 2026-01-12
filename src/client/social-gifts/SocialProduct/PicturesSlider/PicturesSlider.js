@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Carousel, Icon } from 'antd';
+import { Carousel } from 'antd';
 import { useSelector } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import { indexOf, isEmpty, map } from 'lodash';
@@ -10,50 +10,10 @@ import { getProxyImageURL } from '../../../../common/helpers/image';
 import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getWobjectGallery } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import NextArrow from '../SliderButton/NextArrow';
+import PrevArrow from '../SliderButton/PrevArrow';
 
 import './PicturesSlider.less';
-
-const NextArrow = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
-  const hide = currentSlide >= slideCount - slidesToShow;
-
-  return (
-    <span
-      className={`PicturesSlider__arrow PicturesSlider__arrow--next ${
-        hide ? 'PicturesSlider__arrow--hidden' : ''
-      }`}
-      onClick={hide ? undefined : onClick}
-    >
-      <Icon type="caret-right" />
-    </span>
-  );
-};
-
-NextArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-  slideCount: PropTypes.number,
-  slidesToShow: PropTypes.number,
-};
-
-const PrevArrow = ({ onClick, currentSlide }) => {
-  const hide = currentSlide <= 0;
-
-  return (
-    <span
-      className={`PicturesSlider__arrow PicturesSlider__arrow--prev ${
-        hide ? 'PicturesSlider__arrow--hidden' : ''
-      }`}
-      onClick={hide ? undefined : onClick}
-    >
-      <Icon type="caret-left" />
-    </span>
-  );
-};
-
-PrevArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-};
 
 const PicturesSlider = ({
   hoveredOption,
@@ -110,7 +70,7 @@ const PicturesSlider = ({
     () => ({
       dots: false,
       arrows: !isMobileDevice,
-      lazyLoad: true,
+      // lazyLoad: true,
       rows: 1,
       infinite: false,
       slidesToShow,
@@ -135,7 +95,7 @@ const PicturesSlider = ({
     () => ({
       dots: false,
       arrows: false,
-      lazyLoad: true,
+      // lazyLoad: true,
       rows: 1,
       infinite: false,
       slidesToShow: 1,
