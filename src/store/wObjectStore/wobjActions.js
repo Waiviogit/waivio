@@ -394,7 +394,18 @@ export const setLinkSafetyInfo = url => async (dispatch, getState) => {
   const mainWaivioLink = 'https://www.waivio.com/';
 
   const cookieValue = Cookie.get('allActiveSites');
-  const allActiveSites = cookieValue ? JSON.parse(cookieValue) : [];
+
+  let allActiveSites = [];
+
+  if (typeof cookieValue === 'string' && cookieValue && cookieValue !== 'undefined') {
+    try {
+      const parsed = JSON.parse(cookieValue);
+
+      allActiveSites = Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      allActiveSites = [];
+    }
+  }
 
   const allowed = [...allActiveSites, mainWaivioLink];
 

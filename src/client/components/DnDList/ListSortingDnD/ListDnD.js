@@ -247,10 +247,10 @@ class ListDnD extends Component {
               placeholder="Select sorting"
             >
               <Select.Option key="recency">
-                <FormattedMessage id="recency" defaultMessage="Recency" />
+                <FormattedMessage id="newest_first" defaultMessage="Newest first" />
               </Select.Option>
               <Select.Option key="reverse_recency">
-                <FormattedMessage id="reverse_recency" defaultMessage="Reverse recency" />
+                <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
               </Select.Option>
               <Select.Option key="rank">
                 <FormattedMessage id="rank" defaultMessage="Rank" />
