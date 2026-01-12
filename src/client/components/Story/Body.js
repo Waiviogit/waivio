@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
@@ -57,6 +57,17 @@ export const getEmbed = link => {
 
   return embed;
 };
+
+// const addExplicitNumbersToLists = html =>
+//   html?.replace(/<ol>([\s\S]*?)<\/ol>/g, (match, listContent) => {
+//     let count = 1;
+//     const updatedList = listContent?.replace(
+//       /<li>([\s\S]*?)<\/li>/g,
+//       (_, item) => `<li>${count++}. ${item}</li>`, // Add numbers explicitly
+//     );
+//
+//     return `<ol>${updatedList}</ol>`;
+//   });
 
 export function getHtml(
   body,
@@ -154,6 +165,7 @@ export function getHtml(
 
   return (
     <div
+      key={(Math.random() + 1).toString(36).substring(7)}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: parsedBody }}
     />
@@ -164,83 +176,95 @@ const Body = props => {
   const mapRegex = /\[\/\/\]:# \((.*?)\)/g;
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
-  const bodyRef = useRef(null);
 
-  const lastTouchTsRef = useRef(0);
+  const openLink = e => {
+    const anchor = e.target.closest('a[data-href]');
 
-  const openLink = useCallback(
-    e => {
-      const anchor = e.target?.closest?.('a[data-href]');
+    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
 
-      if (!anchor) return;
+    if (!anchor) return;
 
-      if (isMobile() && !isIOS() && e.type === 'mousedown') {
-        const dt = Date.now() - lastTouchTsRef.current;
+    e.preventDefault();
+    e.stopPropagation();
 
-        if (dt < 700) return;
-      }
+    const href = anchor.dataset.href;
 
-      if (e.type === 'touchstart') {
-        lastTouchTsRef.current = Date.now();
-      }
+    dispatch(setLinkSafetyInfo(href));
+  };
 
-      e.preventDefault();
-      e.stopPropagation();
-
-      let href = anchor.getAttribute('data-href') || anchor.getAttribute('href');
-
-      if (!href) return;
-
-      href = href.trim().replaceAll('&amp;', '&');
-      if (href.startsWith('//')) href = `https:${href}`;
-
-      dispatch(setLinkSafetyInfo(href));
-    },
-    [dispatch],
-  );
-
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    const container = bodyRef.current;
+    if (typeof document !== 'undefined') {
+      const BOUND_FLAG = 'onerrorBound';
 
-    if (!container || typeof document === 'undefined') return;
+      const bindErrorHandler = imgNode => {
+        if (!imgNode || imgNode.dataset[BOUND_FLAG]) return;
 
-    const onImgErrorCapture = evt => {
-      const img = evt.target;
+        // Mark as bound immediately (prevents repeated re-binding on every mutation)
+        // eslint-disable-next-line no-param-reassign
+        imgNode.dataset[BOUND_FLAG] = 'true';
 
-      if (!img || img.tagName !== 'IMG') return;
-      if (img.dataset.processed) return;
+        // eslint-disable-next-line no-param-reassign
+        imgNode.onerror = () => {
+          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
 
-      const fallbackSrc = img.getAttribute('data-fallback-src') || img.alt;
+          if (fallbackSrc && fallbackSrc !== imgNode.src) {
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = '';
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = fallbackSrc;
+            // eslint-disable-next-line no-param-reassign
+            imgNode.dataset.processed = 'true';
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            imgNode.src = '/images/icons/no-image.png';
+            // eslint-disable-next-line no-param-reassign
+            imgNode.dataset.processed = 'true';
+          }
+        };
+      };
 
-      img.dataset.processed = 'true';
+      const bindForRoot = root => {
+        if (!root) return;
 
-      if (fallbackSrc && fallbackSrc !== img.src) {
-        img.src = fallbackSrc;
-      } else {
-        img.src = '/images/icons/no-image.png';
-      }
-    };
+        // If root itself is IMG
+        if (root.tagName === 'IMG') {
+          bindErrorHandler(root);
 
-    container.addEventListener('error', onImgErrorCapture, true);
+          return;
+        }
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      container.removeEventListener('error', onImgErrorCapture, true);
-    };
+        // Otherwise bind only images inside this root
+        if (root.querySelectorAll) {
+          root.querySelectorAll('img').forEach(bindErrorHandler);
+        }
+      };
+
+      // Bind once for existing images
+      bindForRoot(document.body);
+
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.type !== 'childList') return;
+
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              bindForRoot(node);
+            }
+          });
+        });
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+
+      return () => {
+        observer.disconnect();
+      };
+    }
   }, []);
-
-  useEffect(() => {
-    const bodyElement = bodyRef.current;
-
-    if (!bodyElement) return;
-
-    bodyElement.addEventListener('touchstart', openLink, { passive: false });
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      bodyElement.removeEventListener('touchstart', openLink);
-    };
-  }, [openLink]);
 
   const location = useLocation();
   const params = useParams();
@@ -263,14 +287,15 @@ const Body = props => {
     params.name,
     sendError,
     props.safeLinks,
+    props.full,
   );
 
   return (
     <React.Fragment>
       <div
-        ref={bodyRef}
         className={classNames('Body', { 'Body--full': props.full })}
         onMouseDown={openLink}
+        onTouchStart={openLink}
       >
         {htmlSections}
       </div>

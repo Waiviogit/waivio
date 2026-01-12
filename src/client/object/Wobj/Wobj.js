@@ -229,7 +229,7 @@ const Wobj = ({
             {accessExtend && authenticated && (
               <Button
                 onClick={toggleViewEditMode}
-                style={{ position: 'absolute', left: '20px', top: '20px' }}
+                style={{ position: 'absolute', left: '20px', top: '70px' }}
               >
                 {isEditMode
                   ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })

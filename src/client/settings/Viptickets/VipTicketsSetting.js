@@ -1,11 +1,11 @@
+import Cookie from 'js-cookie';
 import React, { useCallback, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import QRCode from 'qrcode.react';
 import { Input, InputNumber, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isNumber, debounce, isEmpty, size, round } from 'lodash';
-import { getAllActiveSitesList } from '../../../store/websiteStore/websiteSelectors';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import Transfer from '../../wallet/Transfer/Transfer';
 import CopyButton from '../../widgets/CopyButton/CopyButton';
@@ -40,9 +40,12 @@ const VipTicketsSetting = props => {
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState(null);
   const [showMoreLoading, setShowMoreLoading] = useState({});
-  const activeSites = useSelector(getAllActiveSitesList);
   const ticketPrice = round(props.price / props?.rates?.WAIV, 8);
   const hostname = typeof location !== 'undefined' ? location.hostname : '';
+  const cookieValue = Cookie.get('allActiveSites');
+  const activeSites =
+    typeof cookieValue === 'string' && cookieValue !== 'undefined' ? JSON.parse(cookieValue) : [];
+
   const allSites = [...activeSites, 'https://www.waivio.com'];
   const siteName = `https://${hostname}`;
 
