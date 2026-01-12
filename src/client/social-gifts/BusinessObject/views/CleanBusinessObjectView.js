@@ -198,7 +198,6 @@ const CleanBusinessObjectView = ({
               </div>
             )}
           </div>
-
           {showGallery && (
             <div className="BusinessObjectClean__rightColumn">
               <PicturesSlider
@@ -210,6 +209,7 @@ const CleanBusinessObjectView = ({
                 activeOption={activeOption}
                 activeCategory={activeCategory}
                 countShowSlide={6}
+                countShowMobile={5}
               />
               {!isEmpty(reward) && <ProductRewardCard isSocialProduct reward={reward} />}
             </div>
@@ -356,7 +356,7 @@ const CleanBusinessObjectView = ({
 
       {!isEmpty(wobject) && (
         <div className="BusinessObjectClean__section">
-          <SocialProductReviews wobject={wobject} />
+          <SocialProductReviews postCount={3} wobject={wobject} />
         </div>
       )}
     </div>

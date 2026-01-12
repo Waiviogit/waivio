@@ -5849,13 +5849,16 @@ export const getSearchTagByCategory = (
   skip = 0,
   limit = 10,
   searchString = '',
+  selectedTags = [],
 ) => {
   const skipParam = skip > 0 ? `&skip=${skip}` : '';
-  const limitParam = `?limit=${limit}`;
   const searchParam = searchString ? `&searchString=${encodeURIComponent(searchString)}` : '';
+  const selectedTagsParams = selectedTags
+    .map(tag => `&selectedTags=${encodeURIComponent(tag)}`)
+    .join('');
 
   return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}${limitParam}${skipParam}${searchParam}`,
+    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}/${tagCategory}?limit=${limit}${skipParam}${searchParam}${selectedTagsParams}`,
     {
       headers: {
         ...headers,
@@ -5873,24 +5876,31 @@ export const getSearchTagByCategory = (
     });
 };
 
-export const getSearchTagCategories = (objectTypeName, searchString = '') => {
-  const searchParam = searchString ? `?searchString=${encodeURIComponent(searchString)}` : '';
+export const getSearchTagCategories = (
+  objectTypeName,
+  searchString,
+  selectedTagsByCategory = [],
+) => {
+  const body = {
+    tagsLimit: 10,
+    searchString: isEmpty(searchString) ? undefined : searchString,
+    tagCategory: selectedTagsByCategory.map(({ categoryName, tags }) => ({
+      categoryName,
+      tags,
+    })),
+  };
 
-  return fetch(
-    `${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}${searchParam}`,
-    {
-      headers: {
-        ...headers,
-        ...getAuthHeaders(),
-      },
-      method: 'GET',
+  return fetch(`${config.apiPrefix}${config.objectType}/${objectTypeName}${config.tagCategories}`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
     },
-  )
+    body: JSON.stringify(body),
+  })
     .then(res => res.json())
-    .then(res => res)
     .catch(error => {
       console.error('API Client error:', error);
-
       return error;
     });
 };

@@ -275,13 +275,14 @@
     .PostFeedEmbed__container--shotsSocial {
       height: 440px;
     }
+
     .PostFeedEmbed__container.PostFeedEmbed__container_instagram {
       height: 330px;
     }
 
     .PostFeedEmbed__container.PostFeedEmbed__container_instagram,
     .PostFeedEmbed__container.PostFeedEmbed__container_instagram-reel {
-      padding-bottom: 140%;
+      padding-bottom: 200%;
       left: 0;
 
       iframe {
@@ -291,6 +292,10 @@
         .PrimaryCTA {
           display: none;
         }
+      }
+
+      @media @small {
+        padding-bottom: 140%;
       }
     }
 

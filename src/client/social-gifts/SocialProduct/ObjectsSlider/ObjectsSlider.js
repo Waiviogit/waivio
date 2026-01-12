@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Carousel, Icon } from 'antd';
+import { Carousel } from 'antd';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
+import NextArrow from '../SliderButton/NextArrow';
+import PrevArrow from '../SliderButton/PrevArrow';
 import { isTabletOrMobile } from '../socialProductHelper';
-// import useAdLevelData from '../../../../hooks/useAdsense';
-// import { getSettingsAds } from '../../../../store/websiteStore/websiteSelectors';
 
-const ObjectsSlider = ({ title, objects, name }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slideWidth = 270;
-  const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
+const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
+  const slidesToShow = Math.floor(
+    typeof window !== 'undefined' && window.innerWidth / defaultSlideWidth,
+  );
   // const { frequency = 5 } = useAdLevelData();
   // const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   // const isAdInjectable = name === 'similar' || name === 'related';
@@ -27,29 +28,29 @@ const ObjectsSlider = ({ title, objects, name }) => {
   //       }, [])
   //     : objects;
 
-  const carouselSettings = {
-    dots: false,
-    arrows: !isTabletOrMobile,
-    lazyLoad: false,
-    rows: 1,
-    nextArrow: currentSlide >= objects.length - slidesToShow ? null : <Icon type="caret-right" />,
-    prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
-    slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
-    swipeToSlide: isTabletOrMobile,
-    infinite: false,
-    slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
-  };
-
-  const onSlideChange = (curr, next) => {
-    setCurrentSlide(next);
-  };
+  const carouselSettings = useMemo(
+    () => ({
+      dots: false,
+      arrows: !isTabletOrMobile,
+      lazyLoad: false,
+      rows: 1,
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
+      slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
+      swipeToSlide: isTabletOrMobile,
+      infinite: false,
+      // eslint-disable-next-line no-nested-ternary
+      slidesToShow: isMobile() ? 1 : isTabletOrMobile ? 2 : slidesToShow,
+    }),
+    [slidesToShow, isMobile()],
+  );
 
   return (
     !isEmpty(objects) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
-          <Carousel {...carouselSettings} beforeChange={onSlideChange}>
+          <Carousel {...carouselSettings}>
             {objects.map(
               (item, idx) => (
                 // item?.isAd ? (
@@ -70,6 +71,7 @@ ObjectsSlider.propTypes = {
   objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   title: PropTypes.string,
   name: PropTypes.string,
+  defaultSlideWidth: PropTypes.number,
 };
 
 export default ObjectsSlider;

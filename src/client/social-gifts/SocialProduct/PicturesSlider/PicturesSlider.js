@@ -1,5 +1,6 @@
+import classNames from 'classnames';
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { Carousel, Icon } from 'antd';
+import { Carousel } from 'antd';
 import { useSelector } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import { indexOf, isEmpty, map } from 'lodash';
@@ -9,50 +10,10 @@ import { getProxyImageURL } from '../../../../common/helpers/image';
 import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getWobjectGallery } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import NextArrow from '../SliderButton/NextArrow';
+import PrevArrow from '../SliderButton/PrevArrow';
 
 import './PicturesSlider.less';
-
-const NextArrow = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
-  const hide = currentSlide >= slideCount - slidesToShow;
-
-  return (
-    <span
-      className={`PicturesSlider__arrow PicturesSlider__arrow--next ${
-        hide ? 'PicturesSlider__arrow--hidden' : ''
-      }`}
-      onClick={hide ? undefined : onClick}
-    >
-      <Icon type="caret-right" />
-    </span>
-  );
-};
-
-NextArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-  slideCount: PropTypes.number,
-  slidesToShow: PropTypes.number,
-};
-
-const PrevArrow = ({ onClick, currentSlide }) => {
-  const hide = currentSlide <= 0;
-
-  return (
-    <span
-      className={`PicturesSlider__arrow PicturesSlider__arrow--prev ${
-        hide ? 'PicturesSlider__arrow--hidden' : ''
-      }`}
-      onClick={hide ? undefined : onClick}
-    >
-      <Icon type="caret-left" />
-    </span>
-  );
-};
-
-PrevArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-};
 
 const PicturesSlider = ({
   hoveredOption,
@@ -62,6 +23,7 @@ const PicturesSlider = ({
   altText,
   albums,
   countShowSlide,
+  countShowMobile,
 }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [hoveredPic, setHoveredPic] = useState({});
@@ -82,17 +44,18 @@ const PicturesSlider = ({
     setPhotoIndex(pictures?.indexOf(pic));
     isMobile() && slider.current.goTo(pictures?.indexOf(pic));
   };
-  const MobileSlideChange = (curr, next) => {
-    setPhotoIndex(next);
-    setCurrentImage(pictures[next]);
-  };
 
   useEffect(() => {
     getWobjectGallery(authorPermlink, locale).then(async al => {
-      const allPhotos = al
-        ?.flatMap(alb => alb?.items)
-        ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+      let allPhotos =
+        al
+          ?.flatMap(alb => alb?.items)
+          ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar')) || [];
       const avatar = getObjectAvatar(currentWobj);
+
+      if (avatar && !allPhotos.some(p => p.body === avatar)) {
+        allPhotos = [{ body: avatar, name: 'avatar', _id: 'avatar' }, ...allPhotos];
+      }
 
       setPictures(allPhotos);
       setCurrentImage(isEmpty(avatar) ? allPhotos[0] : { body: avatar });
@@ -102,13 +65,12 @@ const PicturesSlider = ({
 
   const isMobileDevice = useMemo(() => isMobile(), []);
 
-  const slidesToShow = Math.min(pictures.length, isMobileDevice ? 6 : countShowSlide || 8);
-
+  const slidesToShow = Math.min(pictures.length, isMobileDevice ? countShowMobile : countShowSlide);
   const carouselSettings = useMemo(
     () => ({
       dots: false,
       arrows: !isMobileDevice,
-      lazyLoad: true,
+      // lazyLoad: true,
       rows: 1,
       infinite: false,
       slidesToShow,
@@ -116,23 +78,35 @@ const PicturesSlider = ({
       slidesToScroll: 1,
       nextArrow: <NextArrow slidesToShow={slidesToShow} />,
       prevArrow: <PrevArrow />,
+      variableWidth: true,
       afterChange: current => {
         setPhotoIndex(current);
-        setCurrentImage(pictures[current]);
       },
     }),
     [pictures, slidesToShow, isMobileDevice],
   );
-  const mobileSlider = {
-    dots: false,
-    arrows: false,
-    lazyLoad: true,
-    rows: 1,
-    infinite: false,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    beforeChange: MobileSlideChange,
+
+  const MobileSlideChange = (curr, next) => {
+    setPhotoIndex(next);
+    setCurrentImage(pictures[next]);
   };
+
+  const mobileCarouselSettings = useMemo(
+    () => ({
+      dots: false,
+      arrows: false,
+      // lazyLoad: true,
+      rows: 1,
+      infinite: false,
+      slidesToShow: 1,
+      swipeToSlide: isMobileDevice,
+      slidesToScroll: 1,
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
+      beforeChange: MobileSlideChange,
+    }),
+    [pictures, slidesToShow, isMobileDevice],
+  );
 
   const onClosePicture = () => {
     setIsOpen(false);
@@ -146,7 +120,25 @@ const PicturesSlider = ({
 
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
-      {!isMobile() ? (
+      {isMobile() ? (
+        <Carousel {...mobileCarouselSettings} ref={slider} className={'MobileCarousel'}>
+          {map(pictures, (pic, i) => (
+            <div key={pic._id || pic.id || pic.body}>
+              <img
+                onClick={() => setIsOpen(true)}
+                onMouseOver={() => {
+                  setHoveredPic(pic);
+                }}
+                onMouseOut={() => {
+                  setHoveredPic({});
+                }}
+                src={getProxyImageURL(pic?.body)}
+                alt={`${i} ${getObjectName(currentWobj)}`}
+              />
+            </div>
+          ))}
+        </Carousel>
+      ) : (
         <div>
           <img
             className="PicturesSlider__previewImage"
@@ -155,26 +147,11 @@ const PicturesSlider = ({
             onClick={() => setIsOpen(true)}
           />
         </div>
-      ) : (
-        <div className={'MobileCarousel'}>
-          <Carousel ref={slider} {...mobileSlider}>
-            {map(pictures, pic => (
-              <div key={pic._id}>
-                <img
-                  className="PicturesSlider__previewImage"
-                  src={getProxyImageURL(pic.body)}
-                  alt={altText}
-                  onClick={() => setIsOpen(true)}
-                />
-              </div>
-            ))}
-          </Carousel>
-        </div>
       )}
       <br />
       <Carousel {...carouselSettings}>
         {map(pictures, (pic, i) => (
-          <div key={pic._id}>
+          <div key={pic._id || pic.id || pic.body}>
             <img
               onClick={e => onImgClick(e, pic)}
               onMouseOver={() => {
@@ -184,11 +161,9 @@ const PicturesSlider = ({
                 setHoveredPic({});
               }}
               src={getProxyImageURL(pic?.body)}
-              className={
-                pic?.body === currentImage?.body
-                  ? 'PicturesSlider__thumbnail--active'
-                  : 'PicturesSlider__thumbnail'
-              }
+              className={classNames('PicturesSlider__thumbnail', {
+                'PicturesSlider__thumbnail--active': pic?.body === currentImage?.body,
+              })}
               alt={`${i} ${getObjectName(currentWobj)}`}
             />
           </div>
@@ -224,6 +199,12 @@ PicturesSlider.propTypes = {
   activeCategory: PropTypes.string,
   altText: PropTypes.string,
   countShowSlide: PropTypes.number,
+  countShowMobile: PropTypes.number,
+};
+
+PicturesSlider.defaultProps = {
+  countShowSlide: 8,
+  countShowMobile: 6,
 };
 
 export default PicturesSlider;

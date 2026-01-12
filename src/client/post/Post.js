@@ -89,7 +89,7 @@ export default class Post extends React.Component {
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
 
-    return Promise.all([
+    return Promise.allSettled([
       store.dispatch(getContent(author, permlink), store.dispatch(getPostsByAuthor(author))),
       store.dispatch(getPostsByAuthor(author)),
     ]);

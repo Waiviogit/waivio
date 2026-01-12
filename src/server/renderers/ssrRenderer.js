@@ -19,10 +19,15 @@ export default function renderSsrPage(
   const baseHelmet = helmet.meta.toString() + helmet.title.toString() + helmet.link.toString();
 
   let header = baseHelmet;
-
-  let scripts = `<script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)
-    .replace(/\u2028/g, '\\n')
-    .replace(/</g, '\\u003c')}</script>`;
+  let scripts = '';
+  try {
+    scripts = `<script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)
+      .replace(/\u2028/g, '\\n')
+      .replace(/</g, '\\u003c')}</script>`;
+  } catch (e) {
+    console.error('Serialization error', e);
+    scripts = `<script>window.__PRELOADED_STATE__ = {}</script>`;
+  }
 
   Object.keys(assets).forEach(key => {
     if (key) {
@@ -37,7 +42,7 @@ export default function renderSsrPage(
   let googleGSCTag = isWaivio
     ? `<meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />`
     : googleGSC;
-  const verificationTags = verifTags?.join('\n');
+  const verificationTags = Array.isArray(verifTags) ? verifTags.join('\n') : '';
   let tag = '';
 
   if (isWaivio && production) tag = 'G-WRV0RFTWBX';

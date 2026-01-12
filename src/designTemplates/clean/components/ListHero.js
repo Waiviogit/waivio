@@ -43,7 +43,10 @@ const CleanListHero = ({ wobject }) => {
 
   const banner = wobject?.avatar;
 
-  const hasContent = heroTitle || fullDescription || banner;
+  const hasContent =
+    (heroTitle && banner) ||
+    (fullDescription && banner) ||
+    (heroTitle && banner && fullDescription);
 
   if (!hasContent) return null;
 

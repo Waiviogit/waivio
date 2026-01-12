@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
@@ -6,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
@@ -26,11 +26,15 @@ import {
   setAppUrl,
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
+import { getAllActiveSitesAction } from '../store/websiteStore/websiteActions';
+import { getAllActiveSites } from '../waivioApi/ApiClient';
+
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
+import { listOfWaivioSites } from './social-gifts/listOfSocialWebsites';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import { handleRefAuthUser } from '../store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
@@ -92,6 +96,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCoordinates,
     getGlobalProperties,
     getUserAccount,
+    getAllActiveSitesAction,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -109,6 +114,7 @@ class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
+    getAllActiveSitesAction: PropTypes.func,
     getRewardFund: PropTypes.func,
     getTokenRates: PropTypes.func,
     getCryptoPriceHistory: PropTypes.func,
@@ -154,7 +160,7 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    return Promise.all([
+    return Promise.allSettled([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
     ]);
@@ -178,6 +184,8 @@ class Wrapper extends React.PureComponent {
     const userName = querySelectorSearchParams.get('userName');
     const nightmode = Cookie.get('nightmode');
 
+    this.checkVipticketRedirect();
+
     if (typeof document !== 'undefined') {
       if (nightmode === 'true') document.body.classList.add('nightmode');
       else document.body.classList.remove('nightmode');
@@ -189,6 +197,9 @@ class Wrapper extends React.PureComponent {
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
+    if (!Cookie.get('allActiveSites')) {
+      this.props.getAllActiveSitesAction();
+    }
     if (ref) setSessionData('refUser', ref);
     if (userName) {
       setSessionData('userName', userName);
@@ -247,7 +258,7 @@ class Wrapper extends React.PureComponent {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const widgetLink = getSessionData('isWidget');
     const userName = getSessionData('userName');
     const refName = getSessionData('refUser');
@@ -266,7 +277,42 @@ class Wrapper extends React.PureComponent {
     }
     if (this.props.isAuthenticated && widgetLink && userName)
       removeSessionData('userName', 'isWidget');
+    if (prevProps.location.search !== this.props.location.search) {
+      this.checkVipticketRedirect();
+    }
   }
+  checkVipticketRedirect = () => {
+    if (typeof window === 'undefined') return;
+
+    const query = new URLSearchParams(this.props.location.search);
+    const nextUrl = query.get('vipticket_redirect_url');
+    const hostname = window.location.hostname;
+    const isWaivio = listOfWaivioSites.includes(hostname);
+
+    if (nextUrl && isWaivio) {
+      if (!Cookie.get('allActiveSites')) {
+        getAllActiveSites().then(list => {
+          const activeSites = list.map(i => `https://${i.host}/`);
+
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        });
+      } else {
+        try {
+          const cookieValue = Cookie.get('allActiveSites');
+
+          const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
+
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        } catch (e) {
+          console.error('Invalid allActiveSites cookie', e);
+        }
+      }
+    }
+  };
 
   async loadLocale(locale) {
     const lang = await loadLanguage(locale);

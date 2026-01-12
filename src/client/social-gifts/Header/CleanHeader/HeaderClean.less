@@ -151,8 +151,13 @@
     display: flex;
   }
 
+  &__dropdown {
+    font-family: var(--template-font-body, inherit);
+  }
+
   .GeneralSearch__wrapper {
     width: 100%;
+    font-family: var(--template-font-body, inherit);
 
     .ant-select-search__field__wrap .ant-input.ant-select-search__field {
       padding-left: 0 !important;
@@ -415,6 +420,7 @@
       .BurgerMenu {
         display: inline-flex;
         align-items: center;
+        width: fit-content;
       }
     }
   }

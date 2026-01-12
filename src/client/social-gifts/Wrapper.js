@@ -71,7 +71,11 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getAdsenseSettings, getWebsiteSettings } from '../../store/websiteStore/websiteActions';
+import {
+  getAdsenseSettings,
+  getWebsiteSettings,
+  getAllActiveSites,
+} from '../../store/websiteStore/websiteActions';
 import { getUserShopSchema } from '../../common/helpers/shopHelper';
 import { setFavoriteObjectTypes } from '../../store/favoritesStore/favoritesActions';
 import { getFavoriteObjectTypes } from '../../store/favoritesStore/favoritesSelectors';
@@ -583,6 +587,7 @@ export default ErrorBoundary(
         getRate,
         getRewardFund,
         getGlobalProperties,
+        getAllActiveSites,
         getTokenRates,
         getCryptoPriceHistory,
         getSwapEnginRates,

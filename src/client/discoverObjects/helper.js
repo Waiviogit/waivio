@@ -42,13 +42,61 @@ export const createFilterBody = parseObject => {
   delete parseSearchParams.socialProvider;
   delete parseSearchParams.showPanel;
 
-  const mappedFilter = Object.keys(parseSearchParams).map(category => ({
-    categoryName: category.replace('%20', ' ').replace('+', ' '),
-    tags:
-      typeof parseSearchParams[category] === 'string'
-        ? parseSearchParams[category].split(',')
-        : parseSearchParams[category],
-  }));
+  const mappedFilter = Object.keys(parseSearchParams).map(category => {
+    let tags = parseSearchParams[category];
+
+    if (typeof tags === 'string') {
+      if (tags.includes('%')) {
+        try {
+          tags = decodeURIComponent(tags);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      tags = tags.replace(/^["']|["']$/g, '');
+
+      tags = tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+    } else if (isArray(tags)) {
+      const expandedTags = [];
+
+      tags.forEach(tag => {
+        if (typeof tag === 'string') {
+          let decodedTag = tag;
+
+          if (tag.includes('%')) {
+            try {
+              decodedTag = decodeURIComponent(tag);
+            } catch (error) {
+              decodedTag = tag;
+            }
+          }
+          decodedTag = decodedTag.replace(/^["']|["']$/g, '');
+          if (decodedTag.includes(',')) {
+            const splitTags = decodedTag
+              .split(',')
+              .map(t => t.trim())
+              .filter(t => t.length > 0);
+
+            expandedTags.push(...splitTags);
+          } else {
+            expandedTags.push(decodedTag.trim());
+          }
+        } else {
+          expandedTags.push(tag);
+        }
+      });
+      tags = expandedTags.filter(tag => tag && tag.length > 0);
+    }
+
+    return {
+      categoryName: category.replace('%20', ' ').replace('+', ' '),
+      tags,
+    };
+  });
 
   return mappedFilter.filter(filter => !isEmpty(filter.tags));
 };
@@ -83,17 +131,38 @@ export const parseTagsFilters = url => {
   delete parseSearchParams.radius;
   delete parseSearchParams.zoom;
 
-  return Object.keys(parseSearchParams).reduce(
-    (acc, category) => ({
+  return Object.keys(parseSearchParams).reduce((acc, category) => {
+    let value = parseSearchParams[category];
+
+    if (typeof value === 'string') {
+      if (value.includes('%')) {
+        try {
+          value = decodeURIComponent(value);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      value = value.replace(/^["']|["']$/g, '');
+      value = value
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+    }
+
+    return {
       ...acc,
-      [category.replace(' ', '%20')]: parseSearchParams[category].split(','),
-    }),
-    {},
-  );
+      [category.replace(' ', '%20')]: value,
+    };
+  }, {});
 };
 
 export const changeUrl = (activeTags, history, location) => {
   const params = new URLSearchParams(location.search);
+
+  params.delete('category');
+  params.delete('tag');
+
+  const nonTagCategoryParams = ['searchString', 'rating', 'map', 'search'];
 
   Object.keys(activeTags).forEach(category => {
     const filtersValue = activeTags[category];
@@ -107,7 +176,25 @@ export const changeUrl = (activeTags, history, location) => {
 
     const value = isArray(filtersValue) ? filtersValue.join(',') : filtersValue;
 
-    params.set(categoryName, value);
+    if (nonTagCategoryParams.includes(category)) {
+      params.set(categoryName, value);
+    } else if (isArray(filtersValue)) {
+      filtersValue.forEach(tag => {
+        if (tag) {
+          params.append('category', categoryName);
+          params.append('tag', tag);
+        }
+      });
+    } else if (value) {
+      value.split(',').forEach(tag => {
+        const trimmedTag = tag.trim();
+
+        if (trimmedTag) {
+          params.append('category', categoryName);
+          params.append('tag', trimmedTag);
+        }
+      });
+    }
   });
 
   const encoded = params.toString().replace(/\+/g, '%20');
@@ -121,6 +208,59 @@ export const changeUrl = (activeTags, history, location) => {
       history.push(location.pathname);
     }
   }
+};
+
+export const parseDiscoverTagsFilters = search => {
+  const params = new URLSearchParams(search);
+  const categories = params.getAll('category');
+  const tags = params.getAll('tag');
+
+  const result = {};
+
+  categories.forEach((cat, index) => {
+    const tag = tags[index];
+
+    if (!cat || !tag) return;
+
+    if (!result[cat]) {
+      result[cat] = [];
+    }
+
+    if (!result[cat].includes(tag)) {
+      result[cat].push(tag);
+    }
+  });
+
+  return result;
+};
+
+export const parseDiscoverQuery = search => {
+  const params = new URLSearchParams(search);
+
+  return {
+    search: params.get('search') || '',
+    category: params.get('category') || null,
+    tagsByCategory: parseDiscoverTagsFilters(search),
+  };
+};
+
+export const buildCanonicalSearch = ({ search, tagsByCategory }) => {
+  const params = new URLSearchParams();
+
+  if (search) {
+    params.set('search', search);
+  }
+
+  Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
+    (tags || []).forEach(tag => {
+      if (tag) {
+        params.append('category', cat);
+        params.append('tag', tag);
+      }
+    });
+  });
+
+  return params.toString();
 };
 
 export default {

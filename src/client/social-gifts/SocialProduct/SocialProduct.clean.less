@@ -6,13 +6,16 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 20px 5px 80px;
-
   @media @small {
     padding: 20px 40px 100px;
   }
 
-  .SocialProduct__column {
-    padding: 0;
+  .SocialMenuItems {
+    margin: 0 5px 40px 5px;
+
+    @media @small {
+      margin: 0 20px 40px 20px;
+    }
   }
 
   .SocialProduct__breadcrumbs-center {
@@ -20,13 +23,21 @@
     margin-bottom: 20px;
   }
 
+  .SocialProduct__row {
+    width: 100%;
+    max-width: 600px;
+    min-width: 50%;
+  }
+
   .SocialProduct__column-wrapper {
     background: #ffffff;
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-
-    display: grid;
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
     @media @small {
       display: flex;
@@ -34,7 +45,6 @@
       padding: 20px;
     }
   }
-
   .SocialProduct__affiliateContainer .AffiliatLink {
     height: 40px;
     line-height: 35px;
@@ -47,7 +57,6 @@
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-
     &:hover {
       border-color: #d0d0d0;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -58,45 +67,49 @@
   .SocialProduct__carouselWrapper {
     width: 100%;
     max-width: 100%;
-    overflow: hidden;
+    min-width: 100%;
+    //overflow: hidden;
     position: relative;
-    padding: 0 30px;
+    padding: 0;
 
     @media @small {
       padding: 0 30px;
     }
-
     img {
       border-radius: 10px;
     }
   }
-
   .SocialProduct__ratings {
     flex-direction: column;
-
     @media @small {
       flex-direction: row;
     }
   }
 
-  // Gallery slider - horizontal
+  .SocialProduct__reward-wrap {
+    margin: 0 auto;
+  }
+
   .PicturesSlider {
     width: 100%;
     max-width: 100%;
 
-    > div:first-child {
-      width: 100%;
-      height: 450px;
-      min-height: 450px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      @media @small {
-        height: 450px;
-        min-height: 450px;
-      }
-    }
+    //> div:first-child:not(.MobileCarousel) {
+    //  width: 100%;
+    //  height: 450px;
+    //  min-height: 450px;
+    //  display: flex;
+    //  align-items: center;
+    //  justify-content: center;
+    //  @media @small {
+    //    height: 450px;
+    //    min-height: 450px;
+    //  }
+    //  @media screen and (max-width: 768px) {
+    //    height: auto;
+    //    min-height: 300px;
+    //  }
+    //}
 
     &__previewImage {
       width: 100%;
@@ -114,8 +127,8 @@
     }
 
     &__thumbnail {
-      width: 80px !important;
-      height: 80px !important;
+      width: 70px !important;
+      height: 70px !important;
       object-fit: cover;
       border-radius: 8px;
       border: 2px solid transparent;
@@ -129,11 +142,11 @@
       &--active {
         border-color: var(--website-color) !important;
         border-width: 2px !important;
-        width: 80px !important;
-        height: 80px !important;
+        width: 70px !important;
+        height: 70px !important;
         border-radius: 8px;
         object-fit: cover;
-        box-shadow: 0 0 0 2px rgba(var(--website-color-rgb, 255, 107, 0), 0.2);
+        box-shadow: 0 0 0 2px rgba(var(--website-color, 255, 107, 0), 0.2);
       }
     }
 
@@ -148,31 +161,23 @@
       margin: 0 -4px;
     }
 
-    .slick-track {
-      display: flex !important;
-      align-items: center;
-      flex-wrap: nowrap !important;
-    }
-
-    .slick-slide {
-      width: 85px !important;
-      height: 80px !important;
-      margin: 0;
-      padding: 0 4px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-
-      > div {
-        width: 100%;
-        height: 100%;
-      }
-
-      img {
-        width: 80px;
-        height: 80px;
-      }
-    }
-
+    //.slick-slide {
+    //  width: 85px !important;
+    //  height: 80px !important;
+    //  margin: 0;
+    //  padding: 0 4px;
+    //  box-sizing: border-box;
+    //  flex-shrink: 0;
+    //
+    //  > div {
+    //    width: 100%;
+    //    height: 100%;
+    //  }
+    //  img {
+    //    width: 80px;
+    //    height: 80px;
+    //  }
+    //}
     .slick-prev,
     .slick-next {
       width: 32px;
@@ -185,16 +190,13 @@
       transition: all 0.2s ease;
       opacity: 1 !important;
       visibility: visible !important;
-
       @media @small {
         display: flex !important;
       }
-
       &.slick-disabled {
         opacity: 0.3;
         pointer-events: none;
       }
-
       .anticon {
         font-size: 16px;
         color: #333;
@@ -202,41 +204,16 @@
         line-height: 1;
       }
     }
-
     .slick-prev {
       left: -24px;
-
       @media screen and (max-width: 768px) {
         left: -24px;
       }
     }
-
     .slick-next {
       right: -24px;
-
       @media screen and (max-width: 768px) {
         right: -24px;
-      }
-    }
-
-    .MobileCarousel {
-      width: 100%;
-      overflow: hidden;
-
-      .slick-list {
-        width: 100%;
-        overflow: hidden;
-      }
-
-      .slick-slide {
-        width: 100% !important;
-
-        img {
-          width: 100%;
-          height: auto;
-          max-height: 500px;
-          object-fit: contain;
-        }
       }
     }
   }
@@ -245,8 +222,6 @@
     background: var(--website-color) !important;
     border-color: var(--website-color) !important;
   }
-
-  // About section - card style
   .SocialProduct__aboutItem {
     background: #fff;
     border-radius: 16px;
@@ -254,13 +229,10 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     max-width: 100%;
     margin: 40px 0 40px;
-
     @media @small {
       padding: 32px;
     }
   }
-
-  // Top Recipe section - card style (like About)
   .SocialProduct__postWrapper {
     background: #fff;
     border-radius: 12px;
@@ -268,11 +240,9 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     max-width: 100%;
     margin: 40px 0 40px;
-
     @media @small {
       padding: 32px 120px;
     }
-
     .StoryFull__title {
       display: block;
       text-transform: none;
@@ -283,12 +253,9 @@
       color: #1a1a1a;
       text-align: center;
     }
-
     .RecipePost {
       font-family: var(--template-font-body, inherit);
     }
-
-    // Headings in recipe content
     h1,
     h2,
     h3,
@@ -306,9 +273,9 @@
     font-size: 20px;
     font-weight: 700;
     font-family: var(--template-font-title, 'Playfair Display', serif);
-    margin-bottom: 20px;
     color: #1a1a1a;
     text-align: center;
+    margin-bottom: 24px;
   }
 
   .SocialProduct__description {
@@ -317,30 +284,25 @@
     color: #4a4a4a;
   }
 
-  // Description layout - classic layout (50/50 with alternating direction) for About section
   .SocialProduct__aboutItem {
     .SocialProductDescription {
       &__paragraph-container {
         display: flex;
         flex-direction: column;
-
         @media @small {
           justify-content: space-around;
           flex-direction: row;
           flex-wrap: nowrap;
           margin-bottom: 20px;
           align-items: center;
-
           &:nth-child(even) {
             flex-direction: row-reverse;
           }
         }
       }
-
       &__paragraph-only-container {
         display: flex;
         flex-direction: column;
-
         @media @small {
           flex-direction: row;
           flex-wrap: nowrap;
@@ -348,12 +310,10 @@
           align-items: center;
         }
       }
-
       &__single-paragraph-container {
         display: flex;
         flex-direction: column;
         padding: 0 20px;
-
         @media @small {
           justify-content: space-around;
           flex-direction: row;
@@ -363,10 +323,8 @@
           align-items: center;
         }
       }
-
       &__paragraph {
         margin-bottom: 20px;
-
         @media @small {
           margin-bottom: 0;
           padding: 20px;
@@ -377,12 +335,10 @@
           align-items: center;
         }
       }
-
       &__single-paragraph {
         display: flex;
         flex-direction: column-reverse;
         margin-bottom: 0;
-
         @media @small {
           margin-bottom: 20px;
           display: block;
@@ -392,7 +348,6 @@
 
       &__paragraph-only {
         margin-bottom: 20px;
-
         @media @small {
           margin-bottom: 0;
           padding: 20px;
@@ -408,7 +363,6 @@
         height: auto;
         margin-bottom: 20px;
         width: auto;
-
         @media @small {
           margin: 20px;
           margin-bottom: 0;
@@ -430,19 +384,16 @@
         margin-bottom: 0;
         width: auto;
         max-width: 100%;
-
         @media @small {
           margin: 0 20px 20px 40px;
           object-fit: contain;
           max-height: 300px;
         }
-
         @media @medium {
           margin: 0 20px 40px 40px;
           max-height: 500px;
         }
       }
-
       &__images-container {
         display: flex;
         width: auto;
@@ -452,22 +403,17 @@
       }
     }
   }
-
   .SocialProduct__contentPaddingLeft {
     padding-left: 0;
   }
-
-  // Product Details - card style with bullet points
   .SocialProduct__productDetails {
     background: #fff;
     border-radius: 12px;
     padding: 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin: 40px 0;
-
     .SocialProduct__productDetails-content {
       padding-left: 0;
-
       .SocialListItem,
       .Department,
       > div {
@@ -476,7 +422,6 @@
         font-size: 15px;
         line-height: 1.6;
         color: #4a4a4a;
-
         &::before {
           content: '•';
           position: absolute;
@@ -485,11 +430,9 @@
           font-weight: bold;
         }
       }
-
       .Department__socialLayout {
         padding-left: 20px;
         position: relative;
-
         &::before {
           content: '\2022';
           position: absolute;
@@ -498,32 +441,25 @@
           font-weight: bold;
         }
       }
-
       a {
         color: var(--website-color);
-
         &:hover {
           text-decoration: underline;
         }
       }
     }
   }
-
-  // Features container - card style
   .SocialProduct__featuresContainer {
     background: #fff;
     border-radius: 12px;
     padding: 32px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin-bottom: 40px;
-
     .SocialProduct__centralContent {
       margin-left: 0;
       margin-right: 0;
     }
   }
-
-  // Sliders (Related, Similar, Add-ons)
   .Slider__wrapper-addOn,
   .Slider__wrapper-similar,
   .Slider__wrapper-related,
@@ -534,31 +470,28 @@
   .Slider__wrapper-featured,
   .Slider__wrapper-menuItems {
     margin-bottom: 40px;
-    padding: 0 16px;
+    padding: 0;
 
     @media @small {
-      padding: 0;
+      padding: 0 16px;
     }
-
-    .SocialProduct__heading {
-      margin-bottom: 24px;
-    }
-
     .slick-list {
       padding: 8px 0;
     }
-
     .slick-prev,
     .slick-next {
       color: #1a1a1a !important;
+      font-size: 16px;
+      line-height: 16px;
+    }
+
+    .ShopObjectCardClean {
+      width: calc(100% - 10px);
     }
   }
-
   .SocialProduct__tag-item {
     border-radius: 10px;
   }
-
-  // Tags section - card style
   .SocialProduct__featuresContainer:last-of-type {
     .ant-tag {
       border-radius: 20px;
@@ -567,19 +500,15 @@
       margin: 0 8px 8px 0;
     }
   }
-
   .SocialProduct__brand {
     margin-bottom: 20px;
   }
-
-  // Reviews styling
   .SocialProductReviews {
     &__container {
       span {
         font-size: 20px;
       }
     }
-
     &__heading {
       text-transform: none;
       font-family: var(--template-font-title, 'Playfair Display', serif);
@@ -587,32 +516,26 @@
       font-weight: 700;
       color: #1a1a1a;
     }
-
     &__link {
       text-transform: none;
       font-family: var(--template-font-body, inherit);
       font-size: 16px;
       font-weight: 600;
       color: var(--website-color);
-
       @media @small {
         text-transform: none;
       }
     }
   }
-
-  // Recipe ingredients - remove list bullets
   .paddingBottom {
     ul {
       list-style: none;
       padding-left: 0;
       margin: 0;
-
       li {
         list-style: none !important;
         padding-left: 10px;
         margin-bottom: 8px;
-
         &:last-child {
           margin-bottom: 0;
         }
