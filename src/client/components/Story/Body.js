@@ -165,7 +165,6 @@ export function getHtml(
 
   return (
     <div
-      key={(Math.random() + 1).toString(36).substring(7)}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: parsedBody }}
     />
@@ -194,76 +193,33 @@ const Body = props => {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const BOUND_FLAG = 'onerrorBound';
+    if (typeof document === 'undefined') return undefined;
 
-      const bindErrorHandler = imgNode => {
-        if (!imgNode || imgNode.dataset[BOUND_FLAG]) return;
+    const handler = e => {
+      const imgNode = e.target;
 
-        // Mark as bound immediately (prevents repeated re-binding on every mutation)
-        // eslint-disable-next-line no-param-reassign
-        imgNode.dataset[BOUND_FLAG] = 'true';
+      if (!imgNode || imgNode.tagName !== 'IMG') return;
 
-        // eslint-disable-next-line no-param-reassign
-        imgNode.onerror = () => {
-          const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+      // щоб не зациклитись
+      if (imgNode.dataset?.processed === 'true') return;
 
-          if (fallbackSrc && fallbackSrc !== imgNode.src) {
-            // eslint-disable-next-line no-param-reassign
-            imgNode.src = '';
-            // eslint-disable-next-line no-param-reassign
-            imgNode.src = fallbackSrc;
-            // eslint-disable-next-line no-param-reassign
-            imgNode.dataset.processed = 'true';
-          } else {
-            // eslint-disable-next-line no-param-reassign
-            imgNode.src = '/images/icons/no-image.png';
-            // eslint-disable-next-line no-param-reassign
-            imgNode.dataset.processed = 'true';
-          }
-        };
-      };
+      const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
 
-      const bindForRoot = root => {
-        if (!root) return;
+      imgNode.dataset.processed = 'true';
 
-        // If root itself is IMG
-        if (root.tagName === 'IMG') {
-          bindErrorHandler(root);
+      if (fallbackSrc && fallbackSrc !== imgNode.src) {
+        imgNode.src = fallbackSrc;
+      } else {
+        imgNode.src = '/images/icons/no-image.png';
+      }
+    };
 
-          return;
-        }
+    // capture=true — важливо
+    window.addEventListener('error', handler, true);
 
-        // Otherwise bind only images inside this root
-        if (root.querySelectorAll) {
-          root.querySelectorAll('img').forEach(bindErrorHandler);
-        }
-      };
-
-      // Bind once for existing images
-      bindForRoot(document.body);
-
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.type !== 'childList') return;
-
-          mutation.addedNodes.forEach(node => {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              bindForRoot(node);
-            }
-          });
-        });
-      });
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
-
-      return () => {
-        observer.disconnect();
-      };
-    }
+    return () => {
+      window.removeEventListener('error', handler, true);
+    };
   }, []);
 
   const location = useLocation();
@@ -292,7 +248,11 @@ const Body = props => {
 
   return (
     <React.Fragment>
-      <div className={classNames('Body', { 'Body--full': props.full })} onClick={openLink}>
+      <div
+        className={classNames('Body', { 'Body--full': props.full })}
+        onMouseDown={openLink}
+        onTouchStart={openLink}
+      >
         {htmlSections}
       </div>
 
