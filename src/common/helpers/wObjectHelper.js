@@ -117,6 +117,56 @@ export const generatePermlink = () =>
     .toString(36)
     .substring(2);
 
+export const splitContentIntoChunks = (content, maxChunkSize = 58000, maxParts = 10) => {
+  if (!content || typeof content !== 'string') {
+    return [{ body: content || '', partNumber: 1, totalParts: 1 }];
+  }
+
+  const contentSize = new Blob([content]).size;
+
+  if (contentSize <= maxChunkSize) {
+    return [{ body: content, partNumber: 1, totalParts: 1 }];
+  }
+
+  const totalParts = Math.min(Math.ceil(contentSize / maxChunkSize), maxParts);
+  const chunks = [];
+  const contentLength = content.length;
+  const avgBytesPerChar = contentSize / contentLength;
+  const targetCharsPerChunk = Math.max(1, Math.floor(maxChunkSize / avgBytesPerChar));
+
+  let currentStart = 0;
+
+  for (let i = 0; i < totalParts; i += 1) {
+    const isLastChunk = i === totalParts - 1;
+    let currentEnd = isLastChunk
+      ? contentLength
+      : Math.min(currentStart + targetCharsPerChunk, contentLength);
+
+    let chunkBody = content.substring(currentStart, currentEnd);
+    let chunkSize = new Blob([chunkBody]).size;
+
+    const safeChunkSize = Math.floor(maxChunkSize * 0.95);
+
+    while (chunkSize > safeChunkSize && currentEnd > currentStart + 1) {
+      const reduction = Math.max(1, Math.floor((chunkSize - safeChunkSize) / avgBytesPerChar));
+
+      currentEnd = Math.max(currentStart + 1, currentEnd - reduction);
+      chunkBody = content.substring(currentStart, currentEnd);
+      chunkSize = new Blob([chunkBody]).size;
+    }
+
+    chunks.push({
+      body: chunkBody,
+      partNumber: i + 1,
+      totalParts,
+    });
+
+    currentStart = currentEnd;
+  }
+
+  return chunks;
+};
+
 export const prepareAlbumData = (form, currentUsername, wObject, votePercent) => {
   const data = {};
 
