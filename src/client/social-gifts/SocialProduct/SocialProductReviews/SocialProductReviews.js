@@ -33,9 +33,12 @@ const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated, postC
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
+  const hash = history.location.hash || '';
+  const isReviewsHash =
+    hash === '#reviews' || hash.endsWith('/#reviews') || hash.endsWith('#reviews');
   const objName =
-    history.location.hash && wobject.object_type !== 'restaurant'
-      ? getLastPermlinksFromHash(history.location.hash)
+    hash && !isReviewsHash && wobject.object_type !== 'restaurant'
+      ? getLastPermlinksFromHash(hash)
       : name || wobject.author_permlink;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
@@ -75,7 +78,7 @@ const SocialProductReviews = ({ wobject, authors, intl, onActionInitiated, postC
   if (isEmpty(posts) && isFetching) return <Loading />;
 
   return (
-    <div>
+    <div id="user-reviews-section">
       <div className="SocialProductReviews__container">
         <div className="SocialProductReviews__heading">
           {intl.formatMessage({ id: 'user_reviews', defaultMessage: 'User reviews' })}
