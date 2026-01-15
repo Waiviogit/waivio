@@ -10,7 +10,7 @@ import './ListHero.less';
 const CleanListHero = ({ wobject }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const eyebrow = useMemo(() => getObjectName(wobject) || wobject?.name, [wobject, wobject?.name]);
+  const name = useMemo(() => getObjectName(wobject) || wobject?.name, [wobject, wobject?.name]);
 
   const heroTitle = useMemo(() => wobject?.title || getObjectName(wobject), [wobject]);
 
@@ -58,8 +58,7 @@ const CleanListHero = ({ wobject }) => {
       })}
     >
       <div className="CleanListHero__content">
-        {eyebrow && <p className="CleanListHero__eyebrow">{eyebrow}</p>}
-        {heroTitle && <h2 className="CleanListHero__title">{heroTitle}</h2>}
+        {name && <h2 className="CleanListHero__title">{name}</h2>}
         {displayParagraphs.length > 0 && (
           <div className="CleanListHero__subtitle">
             {displayParagraphs.map((paragraph, index) => {
@@ -106,7 +105,7 @@ const CleanListHero = ({ wobject }) => {
       )}
       {banner && (
         <div className="CleanListHero__banner">
-          <img src={banner} alt={heroTitle || eyebrow || 'Hero visual'} />
+          <img src={banner} alt={heroTitle || 'Hero visual'} />
         </div>
       )}
     </section>
