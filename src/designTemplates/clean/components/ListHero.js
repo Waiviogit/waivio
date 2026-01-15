@@ -27,7 +27,7 @@ const CleanListHero = ({ wobject }) => {
   const shortDescription = useMemo(() => {
     if (!fullDescription) return '';
 
-    const { firstDescrPart } = shortenDescription(fullDescription, 260);
+    const { firstDescrPart } = shortenDescription(fullDescription, 360);
 
     return firstDescrPart;
   }, [fullDescription]);
@@ -38,7 +38,7 @@ const CleanListHero = ({ wobject }) => {
     return shortDescription.split('\n\n').filter(p => p.trim().length > 0);
   }, [shortDescription]);
 
-  const hasMoreText = fullDescription.length > 260;
+  const hasMoreText = fullDescription.length > 360;
   const displayParagraphs = isExpanded ? descriptionParagraphs : shortDescriptionParagraphs;
 
   const banner = wobject?.avatar;

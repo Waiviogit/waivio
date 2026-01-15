@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 
 const CleanChecklistView = ({ cleanListSummary, listType, loading, breadcrumbs }) => {
   if (loading || !listType) return null;
@@ -9,7 +8,7 @@ const CleanChecklistView = ({ cleanListSummary, listType, loading, breadcrumbs }
   return (
     <section className="Checklist__cleanSummary">
       {breadcrumbs && <div className="Checklist__cleanSummaryBreadcrumbs">{breadcrumbs}</div>}
-      <h1 className="Checklist__cleanSummaryTitle">{getObjectName(cleanListSummary)}</h1>
+      <h1 className="Checklist__cleanSummaryTitle">{cleanListSummary.label}</h1>
       {cleanListSummary.title && (
         <p className="Checklist__cleanSummaryText">{cleanListSummary.title}</p>
       )}
