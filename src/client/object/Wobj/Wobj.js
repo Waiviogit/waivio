@@ -226,17 +226,19 @@ const Wobj = ({
               <link rel="image_src" href={image} />
               <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
             </Helmet>
-            {accessExtend && authenticated && (
-              <Button
-                onClick={toggleViewEditMode}
-                style={{ position: 'absolute', left: '20px', top: '70px' }}
-              >
-                {isEditMode
-                  ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
-                  : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
-              </Button>
-            )}
-            <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />
+            <div style={{ position: 'relative' }}>
+              {accessExtend && authenticated && (
+                <Button
+                  onClick={toggleViewEditMode}
+                  style={{ position: 'absolute', left: '20px', top: '70px', zIndex: 10 }}
+                >
+                  {isEditMode
+                    ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                    : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+                </Button>
+              )}
+              <HtmlSandbox fullPage wobject={wobject} html={wobject.code} />
+            </div>
           </React.Fragment>
         );
       }
