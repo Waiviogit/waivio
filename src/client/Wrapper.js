@@ -290,12 +290,14 @@ class Wrapper extends React.PureComponent {
     const isWaivio = listOfWaivioSites.includes(hostname);
 
     if (nextUrl && isWaivio) {
+      const normalizedNextUrl = nextUrl.endsWith('/') ? nextUrl : `${nextUrl}/`;
+
       if (!Cookie.get('allActiveSites')) {
         getAllActiveSites().then(list => {
           const activeSites = list.map(i => `https://${i.host}/`);
 
-          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
-            window.location.href = nextUrl;
+          if ([...activeSites, 'https://www.waivio.com'].includes(normalizedNextUrl)) {
+            window.location.href = normalizedNextUrl;
           }
         });
       } else {
@@ -303,9 +305,12 @@ class Wrapper extends React.PureComponent {
           const cookieValue = Cookie.get('allActiveSites');
 
           const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
+          const normalizedActiveSites = activeSites.map(site =>
+            site.endsWith('/') ? site : `${site}/`,
+          );
 
-          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
-            window.location.href = nextUrl;
+          if ([...normalizedActiveSites, 'https://www.waivio.com'].includes(normalizedNextUrl)) {
+            window.location.href = normalizedNextUrl;
           }
         } catch (e) {
           console.error('Invalid allActiveSites cookie', e);
