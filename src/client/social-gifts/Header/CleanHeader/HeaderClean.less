@@ -33,8 +33,8 @@
     text-decoration: none;
 
     img {
-      width: 36px;
-      height: 36px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -151,8 +151,13 @@
     display: flex;
   }
 
+  &__dropdown {
+    font-family: var(--template-font-body, inherit);
+  }
+
   .GeneralSearch__wrapper {
     width: 100%;
+    font-family: var(--template-font-body, inherit);
 
     .ant-select-search__field__wrap .ant-input.ant-select-search__field {
       padding-left: 0 !important;
@@ -178,7 +183,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: 900px;
+    max-width: 800px;
     height: 37px;
     padding: 0 20px 0;
     background: #fff;
@@ -396,7 +401,7 @@
         &--active {
           background: var(--website-color);
           border-color: transparent;
-          color: #1a1300;
+          color: var(--website-text-color);
           box-shadow: 0 7px 11px var(--website-color);
         }
       }

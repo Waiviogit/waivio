@@ -6,6 +6,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { Modal, Tag } from 'antd';
 import { isEmpty } from 'lodash';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { useTemplateId } from '../../../designTemplates/TemplateProvider';
 
 import { getHelmetIcon, getAppHost, getSiteName } from '../../../store/appStore/appSelectors';
 import {
@@ -50,6 +51,7 @@ const NewDiscover = () => {
   const siteName = useSelector(getSiteName);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
+  const template = useTemplateId();
 
   const activeFilters = useSelector(getActiveFilters);
   const objects = useSelector(getWobjectsList);
@@ -192,7 +194,7 @@ const NewDiscover = () => {
   const title = 'Discover - Waivio';
 
   return (
-    <div className="NewDiscover">
+    <div className={`NewDiscover ${template}`}>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={desc} />
@@ -242,7 +244,7 @@ const NewDiscover = () => {
             )}
             <div className="NewDiscover__tags-bar">
               {search && (
-                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag">
+                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag mb2">
                   Search: {search}
                 </Tag>
               )}
@@ -251,7 +253,12 @@ const NewDiscover = () => {
                 {Object.entries(tagsByCategory).map(([cat, tags]) => (
                   <div key={cat} className="NewDiscover__tag-category">
                     {tags.map(tag => (
-                      <Tag key={`${cat}-${tag}`} closable onClose={() => removeTag(cat, tag)}>
+                      <Tag
+                        className=" mb2"
+                        key={`${cat}-${tag}`}
+                        closable
+                        onClose={() => removeTag(cat, tag)}
+                      >
                         {`${cat}: ${tag}`}
                       </Tag>
                     ))}

@@ -35,3 +35,48 @@
 
   .ShopCardWidth();
 }
+
+.DepartmentSearch.clean {
+  font-family: var(--template-font-body, inherit);
+
+  .ShopObjectCardClean {
+    &__avatarWrap {
+      width: 150px;
+      height: 150px;
+      min-width: 150px;
+    }
+
+    @media (min-width: 1201px) {
+      width: calc((100% - 40px) / 5);
+
+      &:nth-child(5n) {
+        margin-right: 0;
+      }
+
+      &:nth-child(3n) {
+        margin-right: 10px;
+      }
+    }
+
+    @media (max-width: 1200px) and (min-width: 999px) {
+      width: calc((100% - 30px) / 4);
+
+      &:nth-child(4n) {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 998px) and (min-width: 481px) {
+      width: calc((100% - 20px) / 3);
+
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+      margin-right: 0;
+    }
+  }
+}

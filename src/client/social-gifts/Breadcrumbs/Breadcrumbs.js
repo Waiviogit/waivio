@@ -115,51 +115,53 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
   return (
     <div className={'flex '}>
-      <div className={classNames('Breadcrumbs', { 'Breadcrumbs--clean': isCleanTemplate })}>
-        {breadcrumbs?.map((crumb, index) => {
-          let comp;
+      {((isCleanTemplate && breadcrumbs?.length > 1) || (breadcrumbs && !isCleanTemplate)) && (
+        <div className={classNames('Breadcrumbs', { 'Breadcrumbs--clean': isCleanTemplate })}>
+          {breadcrumbs?.map((crumb, index) => {
+            let comp;
 
-          if (inProduct && match.params.name === crumb?.author_permlink)
-            comp = <span> {getTruncatedTitle(getObjectName(crumb))}</span>;
-          else {
-            const crumbs = createQueryBreadcrumbs(
-              crumb?.author_permlink || linkList[0],
-              linkList,
-              match.params.name,
-            );
+            if (inProduct && match.params.name === crumb?.author_permlink)
+              comp = <span> {getTruncatedTitle(getObjectName(crumb))}</span>;
+            else {
+              const crumbs = createQueryBreadcrumbs(
+                crumb?.author_permlink || linkList[0],
+                linkList,
+                match.params.name,
+              );
 
-            comp = (
-              <Link
-                to={{
-                  pathname: `/object/${crumb?.author_permlink}`,
-                  search:
-                    match.params.name === crumb?.author_permlink || !crumbs
-                      ? ''
-                      : `breadcrumbs=${crumbs}`,
-                }}
-              >
-                {getTruncatedTitle(getObjectName(crumb))}
-              </Link>
-            );
-          }
+              comp = (
+                <Link
+                  to={{
+                    pathname: `/object/${crumb?.author_permlink}`,
+                    search:
+                      match.params.name === crumb?.author_permlink || !crumbs
+                        ? ''
+                        : `breadcrumbs=${crumbs}`,
+                  }}
+                >
+                  {getTruncatedTitle(getObjectName(crumb))}
+                </Link>
+              );
+            }
 
-          return (
-            <React.Fragment key={crumb?.author_permlink}>
-              {comp}
-              {/* eslint-disable-next-line no-nested-ternary */}
-              {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
-                isCleanTemplate ? (
-                  <span className="Breadcrumbs__separator">/</span>
+            return (
+              <React.Fragment key={crumb?.author_permlink}>
+                {comp}
+                {/* eslint-disable-next-line no-nested-ternary */}
+                {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? (
+                  isCleanTemplate ? (
+                    <span className="Breadcrumbs__separator">/</span>
+                  ) : (
+                    <Icon type="right" />
+                  )
                 ) : (
-                  <Icon type="right" />
-                )
-              ) : (
-                ''
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
+                  ''
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      )}
       {accessExtend && authenticated && editObjTypes && (
         <div className="Breadcrumbs__edit-container">
           <Button onClick={editListClick}>

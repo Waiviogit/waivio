@@ -1,56 +1,17 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Carousel, Icon } from 'antd';
+import { Carousel } from 'antd';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import ShopObjectCard from '../../ShopObjectCard/ShopObjectCard';
+import NextArrow from '../SliderButton/NextArrow';
+import PrevArrow from '../SliderButton/PrevArrow';
 import { isTabletOrMobile } from '../socialProductHelper';
 
-const NextArrow = ({ onClick, currentSlide, slideCount, slidesToShow }) => {
-  const hide = currentSlide >= slideCount - slidesToShow;
-
-  return (
-    <div
-      className={`slick-arrow slick-next ObjectsSlider__arrow ${
-        hide ? 'ObjectsSlider__arrow--hidden' : ''
-      }`}
-      onClick={onClick}
-    >
-      <Icon type="right" />
-    </div>
+const ObjectsSlider = ({ title, objects, name, defaultSlideWidth = 270 }) => {
+  const slidesToShow = Math.floor(
+    typeof window !== 'undefined' && window.innerWidth / defaultSlideWidth,
   );
-};
-
-const PrevArrow = ({ onClick, currentSlide }) => {
-  const hide = currentSlide <= 0;
-
-  return (
-    <div
-      className={`slick-arrow slick-prev ObjectsSlider__arrow ${
-        hide ? 'ObjectsSlider__arrow--hidden' : ''
-      }`}
-      onClick={onClick}
-    >
-      <Icon type="left" />
-    </div>
-  );
-};
-
-NextArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-  slideCount: PropTypes.number,
-  slidesToShow: PropTypes.number,
-};
-
-PrevArrow.propTypes = {
-  onClick: PropTypes.func,
-  currentSlide: PropTypes.number,
-};
-
-const ObjectsSlider = ({ title, objects, name }) => {
-  const slideWidth = 270;
-  const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   // const { frequency = 5 } = useAdLevelData();
   // const unitCode = useSelector(getSettingsAds)?.displayUnitCode || '';
   // const isAdInjectable = name === 'similar' || name === 'related';
@@ -73,8 +34,8 @@ const ObjectsSlider = ({ title, objects, name }) => {
       arrows: !isTabletOrMobile,
       lazyLoad: false,
       rows: 1,
-      nextArrow: <Icon type="caret-right" />,
-      prevArrow: <Icon type="caret-left" />,
+      nextArrow: <NextArrow slidesToShow={slidesToShow} />,
+      prevArrow: <PrevArrow />,
       slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
       swipeToSlide: isTabletOrMobile,
       infinite: false,
@@ -110,6 +71,7 @@ ObjectsSlider.propTypes = {
   objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   title: PropTypes.string,
   name: PropTypes.string,
+  defaultSlideWidth: PropTypes.number,
 };
 
 export default ObjectsSlider;

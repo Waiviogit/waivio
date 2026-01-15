@@ -60,6 +60,12 @@ export const isIOS = () => {
   return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
 };
 
+// export const isIOS = () => {
+//   if (!ua) return null;
+//
+//   return !!(ua.match(/iPad/i) || ua?.match(/iPhone/i));
+// };
+
 export function hexToRgb(color, opacity) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
 

@@ -45,7 +45,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
     const { firstDescrPart } = shortenDescription(preparedDescription, 260);
 
     return {
-      label: wobject?.name,
+      label: getObjectName(wobject),
       title: wobject?.title || getObjectName(wobject),
       description: firstDescrPart,
     };

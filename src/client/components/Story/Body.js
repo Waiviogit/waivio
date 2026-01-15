@@ -165,7 +165,6 @@ export function getHtml(
 
   return (
     <div
-      key={(Math.random() + 1).toString(36).substring(7)}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: parsedBody }}
     />
@@ -194,70 +193,35 @@ const Body = props => {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const setupImageErrorHandlers = () => {
-        Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-          // Skip if already processed
-          if (imgNode.dataset.processed) return;
+    if (typeof document === 'undefined') return undefined;
 
-          // eslint-disable-next-line no-param-reassign
-          imgNode.onerror = () => {
-            // Use data-fallback-src if available, otherwise fall back to alt
-            const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
+    const handler = e => {
+      const imgNode = e.target;
 
-            // Prevent infinite loop by checking if we already tried the fallback
-            if (fallbackSrc && fallbackSrc !== imgNode.src) {
-              // Force React to recognize the change by removing and re-adding the src
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = fallbackSrc;
-              // Mark as processed to prevent infinite loops
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            } else {
-              // eslint-disable-next-line no-param-reassign
-              imgNode.src = '/images/icons/no-image.png';
-              // eslint-disable-next-line no-param-reassign
-              imgNode.dataset.processed = 'true';
-            }
-          };
-        });
-      };
+      if (!imgNode || imgNode.tagName !== 'IMG') return;
 
-      // Setup handlers immediately
-      setupImageErrorHandlers();
-      // Setup MutationObserver to handle new images added by React
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === Node.ELEMENT_NODE) {
-                if (node.tagName === 'IMG') {
-                  setupImageErrorHandlers();
-                } else if (node.querySelectorAll) {
-                  const images = node.querySelectorAll('img');
+      // щоб не зациклитись
+      if (imgNode.dataset?.processed === 'true') return;
 
-                  if (images.length > 0) {
-                    setupImageErrorHandlers();
-                  }
-                }
-              }
-            });
-          }
-        });
-      });
+      const fallbackSrc = imgNode.getAttribute('data-fallback-src') || imgNode.alt;
 
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
+      imgNode.dataset.processed = 'true';
 
-      return () => {
-        observer.disconnect();
-      };
-    }
+      if (fallbackSrc && fallbackSrc !== imgNode.src) {
+        imgNode.src = fallbackSrc;
+      } else {
+        imgNode.src = '/images/icons/no-image.png';
+      }
+    };
+
+    // capture=true — важливо
+    window.addEventListener('error', handler, true);
+
+    return () => {
+      window.removeEventListener('error', handler, true);
+    };
   }, []);
+
   const location = useLocation();
   const params = useParams();
   const options = {

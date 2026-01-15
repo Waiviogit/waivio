@@ -16,6 +16,7 @@ import {
   getLastPermlinksFromHash,
   getObjectName,
   hasType,
+  splitContentIntoChunks,
 } from '../../../common/helpers/wObjectHelper';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { appendObject } from '../../../store/appendStore/appendActions';
@@ -253,63 +254,149 @@ const ObjectOfTypePage = props => {
         const bodyMessage = isCode
           ? `@${userName} added ${objectFields.htmlContent} (${locale}): site ${safeCount + 1}`
           : '';
-        const pageContentField = {
-          name: isCode ? objectFields.htmlContent : objectFields.pageContent,
-          body: content,
-          locale,
-        };
 
-        const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
+        if (isCode) {
+          const chunks = splitContentIntoChunks(content);
+          const documentId = `article-${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 9)}`;
 
-        setLoadingForButton(true);
-        appendPageContent(postData, {
-          follow,
-          votePercent: votePercent * 100,
-          isLike: true,
-          isObjectPage: true,
-        })
-          .then(res => {
-            setLoadingForButton(false);
-            if (res.message) return Promise.reject(res);
-            saveDraftPage(
-              userName,
-              props.nestedWobject.author_permlink || wobject.author_permlink,
-            ).catch(error => {
-              console.error('Component error:', error);
-              // Ignore draft save errors
+          setLoadingForButton(true);
+
+          const sendParts = async () => {
+            try {
+              for (let i = 0; i < chunks.length; i += 1) {
+                const chunk = chunks[i];
+                const pageContentField = {
+                  name: objectFields.htmlContent,
+                  body: chunk.body,
+                  locale,
+                  id: documentId,
+                  totalParts: chunk.totalParts,
+                  partNumber: chunk.partNumber,
+                };
+
+                const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
+
+                // Check total transaction size (including metadata)
+                const transactionSize = new Blob([JSON.stringify(postData)]).size;
+                const BLOCKCHAIN_LIMIT = 65280;
+
+                if (transactionSize > BLOCKCHAIN_LIMIT) {
+                  throw new Error(
+                    `Transaction size ${transactionSize} bytes exceeds blockchain limit of ${BLOCKCHAIN_LIMIT} bytes. Please reduce content size.`,
+                  );
+                }
+
+                // eslint-disable-next-line no-await-in-loop
+                const res = await appendPageContent(postData, {
+                  follow: i === 0 ? follow : false, // Only follow on first part
+                  votePercent: i === chunks.length - 1 ? votePercent * 100 : 0, // Only vote on last part
+                  isLike: i === chunks.length - 1, // Only like on last part
+                  isObjectPage: true,
+                });
+
+                if (res.message) {
+                  throw new Error(res.message);
+                }
+              }
+
+              saveDraftPage(
+                userName,
+                props.nestedWobject.author_permlink || wobject.author_permlink,
+              ).catch(error => {
+                console.error('Component error:', error);
+              });
+
+              setLoadingForButton(false);
+              message.success(
+                intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: objectFields.pageContent,
+                    wobject: getObjectName(wobj),
+                  },
+                ),
+              );
+              props.setEditMode(!props.isEditMode);
+            } catch (error) {
+              console.error(error);
+              setLoadingForButton(false);
+              if (error.message) {
+                message.error(error.message);
+              } else {
+                message.error(
+                  intl.formatMessage({
+                    id: 'couldnt_append',
+                    defaultMessage: "Couldn't add the field to object.",
+                  }),
+                );
+              }
+            }
+          };
+
+          sendParts();
+        } else {
+          const pageContentField = {
+            name: objectFields.pageContent,
+            body: content,
+            locale,
+          };
+
+          const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
+
+          setLoadingForButton(true);
+          appendPageContent(postData, {
+            follow,
+            votePercent: votePercent * 100,
+            isLike: true,
+            isObjectPage: true,
+          })
+            .then(res => {
+              setLoadingForButton(false);
+              if (res.message) return Promise.reject(res);
+              saveDraftPage(
+                userName,
+                props.nestedWobject.author_permlink || wobject.author_permlink,
+              ).catch(error => {
+                console.error('Component error:', error);
+              });
+
+              return res;
+            })
+            .then(() => {
+              setLoadingForButton(false);
+              message.success(
+                intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: objectFields.pageContent,
+                    wobject: getObjectName(wobj),
+                  },
+                ),
+              );
+              props.setEditMode(!props.isEditMode);
+            })
+            // eslint-disable-next-line consistent-return
+            .catch(error => {
+              console.error(error);
+              if (error.message) return message.error(error.message);
+              setIsLoading(false);
+              message.error(
+                intl.formatMessage({
+                  id: 'couldnt_append',
+                  defaultMessage: "Couldn't add the field to object.",
+                }),
+              );
+              setLoadingForButton(false);
             });
-
-            return res;
-          })
-          .then(() => {
-            setLoadingForButton(false);
-            message.success(
-              intl.formatMessage(
-                {
-                  id: 'added_field_to_wobject',
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
-                },
-                {
-                  field: objectFields.pageContent,
-                  wobject: getObjectName(wobj),
-                },
-              ),
-            );
-            props.setEditMode(!props.isEditMode);
-          })
-          // eslint-disable-next-line consistent-return
-          .catch(error => {
-            console.error(error);
-            if (error.message) return message.error(error.message);
-            setIsLoading(false);
-            message.error(
-              intl.formatMessage({
-                id: 'couldnt_append',
-                defaultMessage: "Couldn't add the field to object.",
-              }),
-            );
-            setLoadingForButton(false);
-          });
+        }
       }
     });
   };
@@ -319,40 +406,65 @@ const ObjectOfTypePage = props => {
 
     e.preventDefault();
     if (isCode) {
-      const pageContentField = {
-        name: objectFields.htmlContent,
-        body: content,
-        locale,
-      };
       const wobj = breadcrumb.length && !isEmpty(nestedWobject) ? nestedWobject : wobject;
       const fieldsCount = getFieldsCount(wobj, objectFields.htmlContent);
       const safeCount = Number(fieldsCount) || 0;
-      const bodyMessage = isCode
-        ? `@${userName} added ${objectFields.htmlContent} (${locale}): site ${safeCount + 1}`
-        : '';
-      const postData = getAppendData(userName, wobject, bodyMessage, pageContentField);
+      const bodyMessage = `@${userName} added ${
+        objectFields.htmlContent
+      } (${locale}): site ${safeCount + 1}`;
+      const chunks = splitContentIntoChunks(content);
+      const documentId = `article-${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 9)}`;
 
       setValidationScript(true);
-      validateAppend(postData)
-        .then(res => {
-          if (res.status === 200) {
-            setIsReadyToPublish(!isReadyToPublish);
-            setValidationScript(false);
-          } else {
-            setValidationScript(false);
-            res.json().then(result => {
-              if (result.message) {
-                message.error(result.message);
-              } else {
-                message.error('Something went wrong. Please try again later.');
-              }
-            });
+      const validateParts = async () => {
+        try {
+          for (let i = 0; i < chunks.length; i += 1) {
+            const chunk = chunks[i];
+            const pageContentField = {
+              name: objectFields.htmlContent,
+              body: chunk.body,
+              locale,
+              id: documentId,
+              totalParts: chunk.totalParts,
+              partNumber: chunk.partNumber,
+            };
+            const postData = getAppendData(userName, wobject, bodyMessage, pageContentField);
+
+            const transactionSize = new Blob([JSON.stringify(postData)]).size;
+            const BLOCKCHAIN_LIMIT = 65280;
+
+            if (transactionSize > BLOCKCHAIN_LIMIT) {
+              throw new Error(
+                `Transaction size ${transactionSize} bytes exceeds blockchain limit of ${BLOCKCHAIN_LIMIT} bytes. Please reduce content size.`,
+              );
+            }
+
+            // eslint-disable-next-line no-await-in-loop
+            const res = await validateAppend(postData);
+
+            if (res.status !== 200) {
+              // eslint-disable-next-line no-await-in-loop
+              const result = await res.json();
+
+              message.error(result.message || 'Validation failed');
+            }
           }
-        })
-        .catch(() => {
+
+          setIsReadyToPublish(!isReadyToPublish);
           setValidationScript(false);
-          message.error('Something went wrong. Please try again later.');
-        });
+        } catch (error) {
+          setValidationScript(false);
+          if (error.message) {
+            message.error(error.message);
+          } else {
+            message.error('Something went wrong. Please try again later.');
+          }
+        }
+      };
+
+      validateParts();
     } else {
       setIsReadyToPublish(!isReadyToPublish);
     }

@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
@@ -6,7 +7,6 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
-import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import enUS from 'antd/es/locale/en_US';
 import ruRU from 'antd/es/locale/ru_RU';
@@ -26,7 +26,8 @@ import {
   setAppUrl,
   getCryptoPriceHistory,
 } from '../store/appStore/appActions';
-import { getAllActiveSites } from '../store/websiteStore/websiteActions';
+import { getAllActiveSitesAction } from '../store/websiteStore/websiteActions';
+import { getAllActiveSites } from '../waivioApi/ApiClient';
 
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -95,7 +96,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getCoordinates,
     getGlobalProperties,
     getUserAccount,
-    getAllActiveSites,
+    getAllActiveSitesAction,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -110,10 +111,10 @@ class Wrapper extends React.PureComponent {
     username: PropTypes.string,
     login: PropTypes.func,
     getNotifications: PropTypes.func,
-    getAllActiveSites: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     getRate: PropTypes.func,
+    getAllActiveSitesAction: PropTypes.func,
     getRewardFund: PropTypes.func,
     getTokenRates: PropTypes.func,
     getCryptoPriceHistory: PropTypes.func,
@@ -193,10 +194,12 @@ class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getCoordinates();
     this.props.getGlobalProperties();
-    this.props.getAllActiveSites();
     this.props.getTokenRates('WAIV');
     this.props.getCryptoPriceHistory();
     this.props.getSwapEnginRates();
+    if (!Cookie.get('allActiveSites')) {
+      this.props.getAllActiveSitesAction();
+    }
     if (ref) setSessionData('refUser', ref);
     if (userName) {
       setSessionData('userName', userName);
@@ -287,7 +290,27 @@ class Wrapper extends React.PureComponent {
     const isWaivio = listOfWaivioSites.includes(hostname);
 
     if (nextUrl && isWaivio) {
-      window.location.href = nextUrl;
+      if (!Cookie.get('allActiveSites')) {
+        getAllActiveSites().then(list => {
+          const activeSites = list.map(i => `https://${i.host}/`);
+
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        });
+      } else {
+        try {
+          const cookieValue = Cookie.get('allActiveSites');
+
+          const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
+
+          if ([...activeSites, 'https://www.waivio.com'].includes(nextUrl)) {
+            window.location.href = nextUrl;
+          }
+        } catch (e) {
+          console.error('Invalid allActiveSites cookie', e);
+        }
+      }
     }
   };
 

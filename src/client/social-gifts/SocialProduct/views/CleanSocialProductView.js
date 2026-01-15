@@ -371,6 +371,7 @@ const CleanSocialProductView = ({
       {intensive && <GoogleAds inList />}
       <ObjectsSlider
         objects={addOns}
+        defaultSlideWidth={340}
         title={intl.formatMessage({
           id: 'bought_together',
           defaultMessage: 'Bought together / Add-on',
@@ -394,6 +395,7 @@ const CleanSocialProductView = ({
       )}
       <ObjectsSlider
         objects={similarObjects}
+        defaultSlideWidth={340}
         title={intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
         name={'similar'}
       />
@@ -401,10 +403,17 @@ const CleanSocialProductView = ({
         objects={relatedObjects}
         title={intl.formatMessage({ id: 'related_items', defaultMessage: 'Related items' })}
         name={'related'}
+        defaultSlideWidth={340}
       />
       {!isEmpty(references) &&
         references?.map(ref => (
-          <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
+          <ObjectsSlider
+            defaultSlideWidth={340}
+            key={ref[0]}
+            objects={ref[1]}
+            title={`${ref[0]}s`}
+            name={ref[0]}
+          />
         ))}
       {!isEmpty(tagCategoriesList) && (
         <div className="SocialProduct__featuresContainer">
