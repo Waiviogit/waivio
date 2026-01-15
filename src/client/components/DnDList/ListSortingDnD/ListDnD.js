@@ -246,11 +246,11 @@ class ListDnD extends Component {
               value={this.state.sort || 'recency'}
               placeholder="Select sorting"
             >
-              <Select.Option key="recency">
-                <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
-              </Select.Option>
               <Select.Option key="reverse_recency">
                 <FormattedMessage id="newest_first" defaultMessage="Newest first" />
+              </Select.Option>
+              <Select.Option key="recency">
+                <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
               </Select.Option>
               <Select.Option key="rank">
                 <FormattedMessage id="rank" defaultMessage="Rank" />

@@ -328,6 +328,36 @@ const SocialProduct = ({
   }, [wobject?.author_permlink]);
 
   useEffect(() => {
+    const hash = history.location.hash || '';
+
+    if (hash === '#reviews' || hash.endsWith('/#reviews') || hash.endsWith('#reviews')) {
+      const scrollToReviews = () => {
+        const reviewsElement = document.getElementById('user-reviews-section');
+
+        if (reviewsElement) {
+          const header = document.querySelector('header');
+          const banner = document.getElementById('socialGiftsMainBanner');
+          const headerHeight = header ? header.offsetHeight : 0;
+          const bannerHeight = banner ? banner.offsetHeight : 0;
+          const offset = headerHeight + bannerHeight + 20;
+
+          const elementPosition = reviewsElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
+        } else {
+          setTimeout(scrollToReviews, 100);
+        }
+      };
+
+      setTimeout(scrollToReviews, 300);
+    }
+  }, [history.location.hash, wobject?.author_permlink]);
+
+  useEffect(() => {
     resetOptClicked();
   }, []);
 

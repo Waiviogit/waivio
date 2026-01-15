@@ -8,11 +8,11 @@ import SortSelector from '../../../components/SortSelector/SortSelector';
 const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
   !isEmpty(currWobject[objectFields.sorting]) ? (
     <SortSelector sort={sort} onChange={handleSortChange}>
-      <SortSelector.Item key="recency">
-        <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
-      </SortSelector.Item>
       <SortSelector.Item key="reverse_recency">
         <FormattedMessage id="newest_first" defaultMessage="Newest first" />
+      </SortSelector.Item>
+      <SortSelector.Item key="recency">
+        <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
       </SortSelector.Item>
       <SortSelector.Item key="custom">
         <FormattedMessage id="custom" defaultMessage="Custom" />
@@ -29,11 +29,11 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
     </SortSelector>
   ) : (
     <SortSelector sort={sort} onChange={handleSortChange}>
-      <SortSelector.Item key="recency">
-        <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
-      </SortSelector.Item>
       <SortSelector.Item key="reverse_recency">
         <FormattedMessage id="newest_first" defaultMessage="Newest first" />
+      </SortSelector.Item>
+      <SortSelector.Item key="recency">
+        <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
       </SortSelector.Item>
       <SortSelector.Item key="rank">
         <FormattedMessage id="rank" defaultMessage="Rank" />
