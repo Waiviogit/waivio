@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookie from 'js-cookie';
 
 export const buttonsConfig = (intl, setInformationForModal) => ({
   ticket: item => {
@@ -23,10 +24,24 @@ export const buttonsConfig = (intl, setInformationForModal) => ({
   },
   link: item => {
     const hostname = typeof location !== 'undefined' ? location.hostname : '';
+    const cookieValue = Cookie.get('allActiveSites');
+    const activeSites =
+      typeof cookieValue === 'string' && cookieValue !== 'undefined' ? JSON.parse(cookieValue) : [];
+
+    const allSites = [...activeSites, 'https://www.waivio.com'];
+    const siteName = `https://${hostname}/`;
+
+    let waivioRedirect = `https://www.waivio.com/`;
+
+    if (!siteName.includes('waivio.com') && allSites.includes(siteName)) {
+      waivioRedirect = `https://www.waivio.com/?vipticket_redirect_url=${siteName}`;
+    }
 
     return (
       <a
-        href={`https://hiveonboard.com/create-account?ticket=${item.ticket}&redirect_url=https%3A%2F%2F${hostname}&creator=vancouverdining`}
+        href={`https://hiveonboard.com/create-account?ticket=${
+          item.ticket
+        }&redirect_url=${waivioRedirect.toString()}&creator=vancouverdining`}
       >
         {intl.formatMessage({
           id: 'apply',
