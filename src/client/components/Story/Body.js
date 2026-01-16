@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { Map, Marker } from 'pigeon-maps';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
-import { isIOS } from '../../../common/helpers';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
@@ -176,20 +175,21 @@ const Body = props => {
   const withMap = props.body.match(mapRegex);
   const dispatch = useDispatch();
 
-  const openLink = e => {
-    const anchor = e.target.closest('a[data-href]');
+  const handleLinkClick = React.useCallback(
+    e => {
+      const anchor = e.target.closest('a[data-href]');
+      if (!anchor) return;
 
-    if (isMobile() && !isIOS() && e.type === 'mousedown') return;
+      e.preventDefault();
+      const href = anchor.dataset.href;
 
-    if (!anchor) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const href = anchor.dataset.href;
-
-    dispatch(setLinkSafetyInfo(href));
-  };
+      // Використовуємо таймаут, щоб дати браузеру обробити UI-подію
+      setTimeout(() => {
+        dispatch(setLinkSafetyInfo(href));
+      }, 0);
+    },
+    [dispatch],
+  );
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -224,35 +224,36 @@ const Body = props => {
 
   const location = useLocation();
   const params = useParams();
-  const options = {
-    appUrl: props.appUrl.replace('http://', 'https://'),
-    rewriteLinks: props.rewriteLinks,
-    secureLinks: props.exitPageSetting,
-    isPost: props.isPost,
-  };
-
-  const sendError = () => props.sendPostError(props.postId);
-
-  const htmlSections = getHtml(
-    props.body,
-    props.jsonMetadata,
-    'Object',
-    options,
-    location,
-    props.isPage,
-    params.name,
-    sendError,
-    props.safeLinks,
-    props.full,
+  const options = React.useMemo(
+    () => ({
+      appUrl: props.appUrl.replace('http://', 'https://'),
+      rewriteLinks: props.rewriteLinks,
+      secureLinks: props.exitPageSetting,
+      isPost: props.isPost,
+    }),
+    [props.appUrl, props.rewriteLinks, props.exitPageSetting, props.isPost],
   );
+
+  const htmlSections = React.useMemo(() => {
+    const sendError = () => props.sendPostError(props.postId);
+
+    return getHtml(
+      props.body,
+      props.jsonMetadata,
+      'Object',
+      options,
+      location,
+      props.isPage,
+      params.name,
+      sendError,
+      props.safeLinks,
+      props.full,
+    );
+  }, [props.body, props.jsonMetadata, options, props.safeLinks, props.postId, props.full]);
 
   return (
     <React.Fragment>
-      <div
-        className={classNames('Body', { 'Body--full': props.full })}
-        onMouseDown={openLink}
-        onTouchStart={openLink}
-      >
+      <div className={classNames('Body', { 'Body--full': props.full })} onClick={handleLinkClick}>
         {htmlSections}
       </div>
 
