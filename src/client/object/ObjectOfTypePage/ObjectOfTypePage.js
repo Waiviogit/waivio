@@ -19,7 +19,10 @@ import {
   splitContentIntoChunks,
 } from '../../../common/helpers/wObjectHelper';
 import HtmlSandbox from '../../../components/HtmlSandbox';
-import { appendObject } from '../../../store/appendStore/appendActions';
+import {
+  appendObject,
+  getChangedWobjectFieldWithoutSoket,
+} from '../../../store/appendStore/appendActions';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
@@ -264,6 +267,8 @@ const ObjectOfTypePage = props => {
           setLoadingForButton(true);
 
           const sendParts = async () => {
+            let firstChunkData = null;
+
             try {
               for (let i = 0; i < chunks.length; i += 1) {
                 const chunk = chunks[i];
@@ -278,7 +283,10 @@ const ObjectOfTypePage = props => {
 
                 const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
 
-                // Check total transaction size (including metadata)
+                if (i > 0) {
+                  postData.skipBroadcast = true;
+                }
+
                 const transactionSize = new Blob([JSON.stringify(postData)]).size;
                 const BLOCKCHAIN_LIMIT = 65280;
 
@@ -290,15 +298,35 @@ const ObjectOfTypePage = props => {
 
                 // eslint-disable-next-line no-await-in-loop
                 const res = await appendPageContent(postData, {
-                  follow: i === 0 ? follow : false, // Only follow on first part
-                  votePercent: i === chunks.length - 1 ? votePercent * 100 : 0, // Only vote on last part
-                  isLike: i === chunks.length - 1, // Only like on last part
+                  follow: i === 0 ? follow : false,
+                  votePercent: i === 0 ? votePercent * 100 : 0,
+                  isLike: i === 0,
                   isObjectPage: true,
                 });
 
                 if (res.message) {
                   throw new Error(res.message);
                 }
+
+                if (i === 0 && res.author) {
+                  firstChunkData = {
+                    author: res.author,
+                    permlink: res.permlink || postData.permlink,
+                  };
+                }
+              }
+
+              if (firstChunkData) {
+                setTimeout(() => {
+                  props.getChangedWobjectFieldWithoutSoket(
+                    wobj.author_permlink,
+                    objectFields.htmlContent,
+                    firstChunkData.author,
+                    firstChunkData.permlink,
+                    true,
+                    null,
+                  );
+                }, 5000);
               }
 
               saveDraftPage(
@@ -338,7 +366,17 @@ const ObjectOfTypePage = props => {
             }
           };
 
-          sendParts();
+          if (chunks.length > 0) {
+            sendParts();
+          } else {
+            setLoadingForButton(false);
+            message.error(
+              intl.formatMessage({
+                id: 'empty_content',
+                defaultMessage: 'Content cannot be empty.',
+              }),
+            );
+          }
         } else {
           const pageContentField = {
             name: objectFields.pageContent,
@@ -685,6 +723,7 @@ ObjectOfTypePage.propTypes = {
   location: PropTypes.shape(),
   isLoadingFlag: PropTypes.bool,
   appendPageContent: PropTypes.func.isRequired,
+  getChangedWobjectFieldWithoutSoket: PropTypes.func,
   setNestedWobj: PropTypes.func.isRequired,
   followingList: PropTypes.arrayOf(PropTypes.string),
 
@@ -720,6 +759,7 @@ const mapDispatchToProps = {
   appendPageContent: appendObject,
   setNestedWobj: setNestedWobject,
   setEditMode,
+  getChangedWobjectFieldWithoutSoket,
 };
 
 export default connect(

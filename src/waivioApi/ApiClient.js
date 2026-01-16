@@ -72,8 +72,6 @@ export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) 
     .then(res => res.json())
     .then(response => response.result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return { error };
     });
 
@@ -116,8 +114,6 @@ export const getRecommendedObjects = (locale = 'en-US') =>
     .then(handleErrors)
     .then(res => res.json())
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -145,8 +141,6 @@ export const getObjects = ({
   })
     .then(res => res.json())
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -222,8 +216,6 @@ export const getFeedContentByObject = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -241,8 +233,6 @@ export const getPinnedPostsByObject = (name, locale, follower, host) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -268,8 +258,6 @@ export const getMoreFeedContentByObject = ({
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -287,8 +275,6 @@ export const getFeedContent = (sortBy, locale, follower, queryData) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -305,8 +291,6 @@ export const getMentionsPosts = (authUserName, account, skip, limit) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -326,8 +310,6 @@ export const saveDraftPage = (user, authorPermlink, body) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -344,8 +326,6 @@ export const getDraftPage = (user, authorPermlink) => {
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -374,8 +354,6 @@ export const getUserProfileBlog = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -387,8 +365,6 @@ export const getUserLastActivity = userName =>
     .then(res => res.json())
     .then(res => res.lastActivity)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const chechExistUser = userName =>
@@ -399,8 +375,6 @@ export const chechExistUser = userName =>
     .then(res => res.json())
     .then(res => res.result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -419,8 +393,6 @@ export const getUserFeedContent = (feedUserName, limit = 10, user_languages, loc
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -445,8 +417,6 @@ export const getMoreUserFeedContent = ({
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 // endregion
@@ -460,8 +430,6 @@ export const postCreateWaivioObject = requestBody =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -475,8 +443,6 @@ export const validateAppend = requestBody =>
   })
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -491,8 +457,6 @@ export const getContent = (author, permlink = '', locale, follower) => {
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -564,8 +528,6 @@ export const searchUsers = (searchString, username, limit = 15, notGuest = false
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -588,8 +550,6 @@ export const postAppendWaivioObject = postData =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -608,8 +568,6 @@ export const getAllFollowingObjects = (username, skip, limit, authUser, locale) 
     .then(res => res.json())
     .then(res => res.map(obj => obj.author_permlink))
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -635,8 +593,6 @@ export const getWobjectFollowers = (
     .then(res => res.json())
     .then(result => result || [])
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -658,8 +614,6 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser, lo
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -676,8 +630,6 @@ export const getUserAccount = (username, withFollowings = false, authUser) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -697,8 +649,6 @@ export const getFollowingUpdates = (locale, userName, count = 5) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -717,8 +667,6 @@ export const getFollowingObjectsUpdates = (follower, objType, limit = 5, skip = 
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -733,8 +681,6 @@ export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 // endregion
@@ -751,8 +697,6 @@ export const getWobjectGallery = (wobject, locale, host) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -783,8 +727,6 @@ export const getWobjectsWithUserWeight = (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -803,8 +745,6 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30,
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -830,8 +770,6 @@ export const getWobjectsExpertiseWithNewsFilter = (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -850,8 +788,6 @@ export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -882,8 +818,6 @@ export const getAuthorsChildWobjects = (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -900,8 +834,6 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -917,8 +849,6 @@ export const getObjectType = (typeName, requestData, abortController, host) => {
     .then(res => res.json())
     .then(data => data)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -948,8 +878,6 @@ export const getSearchResult = (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -967,8 +895,6 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
     .then(res => res.json())
     .then(result => ({ data: result, type }))
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -983,8 +909,6 @@ export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {
     .then(res => res.json())
     .then(data => data)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1010,8 +934,6 @@ export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, pos
     .then(res => res.json())
     .then(response => response.campaign)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1027,8 +949,6 @@ export const getMatchBotRules = (guideName, limit, skip) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1088,8 +1008,6 @@ export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, l
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1107,8 +1025,6 @@ export const getReport = ({ guideName, userName, reservationPermlink }) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 // endregion
@@ -1164,8 +1080,6 @@ export const getGuestPaymentsHistory = async (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1720,8 +1634,6 @@ export const getChangedField = (
   )
     .then(res => res.json())
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1739,8 +1651,6 @@ export const getUpdateByBody = (authorPermlink, name, locale, body) =>
   })
     .then(res => res.json())
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1754,8 +1664,6 @@ export const getFollowingSponsorsRewards = ({ userName, skip }) => {
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1771,8 +1679,6 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1799,8 +1705,6 @@ export const showMoreTagsForUserFilters = (
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1818,8 +1722,6 @@ export const showMoreTagsForShopFilters = (tagCategory, path, skip = 0, limit = 
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1837,8 +1739,6 @@ export const getSocialInfoPost = (author, postPermlink) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1860,8 +1760,6 @@ export const getTransferHistory = (username, limit = 10, operationNum = -1) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1882,8 +1780,6 @@ export const getTransferHistoryTableView = (data, filterAcc) => {
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -1905,8 +1801,6 @@ export const getReferralDetails = () =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1921,8 +1815,6 @@ export const getUserIsBlackListed = username =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1937,8 +1829,6 @@ export const getUserStatusCards = (username, sort = 'recency', skip = 0, limit =
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1951,8 +1841,6 @@ export const getStatusSponsoredRewards = (referral, userName, type = 'referral_s
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -1970,8 +1858,6 @@ export const getRelatedPhotos = (authorPermlink, limit, skip, host) =>
     .then(res => res.json())
     .then(result => result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4070,8 +3956,6 @@ export const getNewsPermlinkByObjectName = ({
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4107,8 +3991,6 @@ export const getAuthorityFields = permlink =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4127,8 +4009,6 @@ export const getShopUserDepartments = (userName, name, excluded, path, host, sch
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4145,8 +4025,6 @@ export const getShopDepartments = (name, excluded, path, host) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4185,8 +4063,6 @@ export const getUserShopMainFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4223,8 +4099,6 @@ export const getShopMainFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4261,8 +4135,6 @@ export const getWobjectShopMainFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4283,8 +4155,6 @@ export const getWobjectShopDepartments = (authorPermlink, name, excluded, path, 
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4300,8 +4170,6 @@ export const getWobjectShopFilters = (authorPermlink, path) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4326,8 +4194,6 @@ export const getMoreTagsForWobjectShopFilters = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4362,8 +4228,6 @@ export const getDepartmentsFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4398,8 +4262,6 @@ export const getWobjectDepartmentsFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4434,8 +4296,6 @@ export const getShopDepartmentFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4450,8 +4310,6 @@ export const getDepartmentsFilters = path =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4464,8 +4322,6 @@ export const getDepartmentsUserFilters = (userName, path, schema) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4480,8 +4336,6 @@ export const getAffiliateCodesForWebsite = (userName, host) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4497,8 +4351,6 @@ export const getAffiliateObjectForWebsite = (userName, host) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4518,8 +4370,6 @@ export const safeAffiliateCodesForWebsite = (userName, host, links) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4534,8 +4384,6 @@ export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4560,8 +4408,6 @@ export const getReferenceObjectsListByType = ({
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4585,8 +4431,6 @@ export const getRelatedObjectsFromDepartments = (
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getAddOnObjectsFromDepartments = (
@@ -4609,8 +4453,6 @@ export const getAddOnObjectsFromDepartments = (
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4626,8 +4468,6 @@ export const getFeaturedObjects = (authorPermlink, userName, locale, skip = 0, l
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4651,8 +4491,6 @@ export const getSimilarObjectsFromDepartments = (
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4668,8 +4506,6 @@ export const sendTiktokPriview = (url, urlPreview) =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4686,8 +4522,6 @@ export const getVideoPostsPriview = urls => {
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -4699,8 +4533,6 @@ export const getChromeExtensionVersion = () =>
     .then(response => response.json())
     .then(data => data.version)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4715,8 +4547,6 @@ export const getMinMaxHiveAmount = outputCoinType =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4732,8 +4562,6 @@ export const getEstimatedHiveAmount = (amount, outputCoinType) =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4751,8 +4579,6 @@ export const getMinRejectVote = (userName, author, permlink, authorPermlink) =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4777,8 +4603,6 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -4803,8 +4627,6 @@ export const withdrawHive = (amount, outputCoinType, userName, address) => {
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -4833,8 +4655,6 @@ export const saveCommentDraft = async (user, author, permlink, body) => {
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -4858,8 +4678,6 @@ export const getCommentDraft = async (user, author, permlink) => {
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -4877,8 +4695,6 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, sort = 'latest') =>
@@ -4895,8 +4711,6 @@ export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, so
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort = 'latest') =>
@@ -4913,8 +4727,6 @@ export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort 
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) =>
@@ -4928,8 +4740,6 @@ export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getUserFavoritesObjectTypesList = userName =>
@@ -4940,8 +4750,6 @@ export const getUserFavoritesObjectTypesList = userName =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4958,8 +4766,6 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4971,8 +4777,6 @@ export const getEngineStatisticWaivOwners = () =>
     .then(res => res.json())
     .then(r => r.result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -4984,8 +4788,6 @@ export const getEngineStatisticWaivActiveUsers = () =>
     .then(res => res.json())
     .then(r => r.result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10, skip) =>
@@ -5002,8 +4804,6 @@ export const getUserFavoriteObjectsForMap = (authUserName, user, box, limit = 10
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5018,8 +4818,6 @@ export const getUsersAvatar = names =>
     .then(res => res.json())
     .then(r => r)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5045,8 +4843,6 @@ export const getObjectsForMapObjectType = (name, body, locale, follower) =>
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5080,8 +4876,6 @@ export const getGroupObjectUserList = (authorPermlink, follower, limit, cursor) 
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5117,8 +4911,6 @@ export const getObjectsForMapImportText = async (
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5153,8 +4945,6 @@ export const getObjectsForMapImportObjects = async (
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5181,8 +4971,6 @@ export const getObjectsForMapImportAvatars = async (userName, placesUrl) => {
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5206,8 +4994,6 @@ export const getObjPermlinkByCompanyId = async (id, idType) => {
     .then(res => res.json())
     .then(objects => objects)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5220,8 +5006,6 @@ export const getAppAdmins = () =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5233,8 +5017,6 @@ export const getWebsitesInfoForAdmins = userName =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5246,8 +5028,6 @@ export const getAdminVipTickets = userName =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5259,8 +5039,6 @@ export const getWhitelistForAdmins = userName =>
     .then(res => res.json())
     .then(res => res.result)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5279,8 +5057,6 @@ export const addUserToAdminWhitelist = (userName, name) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5300,8 +5076,6 @@ export const addCreditsByAdmin = (admin, userName, amount) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5322,8 +5096,6 @@ export const getAdminGuests = (admin, skip, limit, searchString) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5344,8 +5116,6 @@ export const getAdminSpam = (admin, skip, limit, searchString) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5365,8 +5135,6 @@ export const getAdminSpamUserDetails = (admin, user, skip = 0, limit = 5) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5386,8 +5154,6 @@ export const blockAdminSpamUser = (admin, name, blocked) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5406,8 +5172,6 @@ export const deleteUserFromAdminWhitelist = (userName, name) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5419,8 +5183,6 @@ export const getDraftsListAsync = ({ author }) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5436,8 +5198,6 @@ export const deleteDraftFromList = ({ author, ids }) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5450,8 +5210,6 @@ export const saveDraft = body =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5545,8 +5303,6 @@ export const getCreditsByAdminList = (admin, skip, limit = 50) =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5558,8 +5314,6 @@ export const getSubscriptionsByAdminList = admin =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5781,8 +5535,6 @@ export const getAssistantFaq = (currentUser, topic, skip = 0, limit = 5) => {
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5799,8 +5551,6 @@ export const getAssistantFaqTopics = currentUser =>
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 
@@ -5837,8 +5587,6 @@ export const searchAssistantFaq = (currentUser, search, topic = null, skip = 0, 
     })
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return { error: error.message || 'Failed to search FAQs' };
     });
 };
@@ -5870,8 +5618,6 @@ export const getSearchTagByCategory = (
     .then(res => res.json())
     .then(res => res)
     .catch(error => {
-      console.error('API Client error:', error);
-
       return error;
     });
 };
@@ -5900,7 +5646,6 @@ export const getSearchTagCategories = (
   })
     .then(res => res.json())
     .catch(error => {
-      console.error('API Client error:', error);
       return error;
     });
 };

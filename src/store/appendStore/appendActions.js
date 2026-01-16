@@ -621,11 +621,17 @@ export const appendObject = (
         return res;
       }
       const voter = getAuthenticatedUserName(getState());
+      const isHtmlContent = postData.field?.name === 'htmlContent';
+      const isFirstChunk = !postData.field?.partNumber || postData.field.partNumber === 1;
+      const shouldCallWebsocketCallback = !isHtmlContent || isFirstChunk;
+      const shouldVote = isLike && (!isHtmlContent || isFirstChunk);
+      const author = res.author;
+
       const websocketCallback = async () => {
         await dispatch(
           followAndLikeAfterCreateAppend(
-            { ...postData, votePower: votePercent, ...res },
-            isLike,
+            { ...postData, author, votePower: votePercent, ...res },
+            shouldVote,
             follow,
             isObjectPage,
             isUpdatesPage,
@@ -639,13 +645,18 @@ export const appendObject = (
         }
       };
 
-      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
-      busyAPI.instance.subscribe((datad, j) => {
-        if (j?.success && j?.permlink === res.transactionId) {
-          websocketCallback();
-          if (isUpdateReady) readyCb();
-        }
-      });
+      if (shouldCallWebsocketCallback) {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          voter,
+          res.transactionId,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === res.transactionId) {
+            websocketCallback();
+            if (isUpdateReady) readyCb();
+          }
+        });
+      }
       dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 
       return res;

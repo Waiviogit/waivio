@@ -294,6 +294,9 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+          <a href="/api/export/all" style={{ display: 'none' }} aria-hidden>
+            export
+          </a>
           {!signInPage &&
             !isSocialGifts &&
             !isWidget &&
