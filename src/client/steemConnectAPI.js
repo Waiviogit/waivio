@@ -5,7 +5,6 @@ import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { parseJSON } from '../common/helpers/parseJSON';
 import HAS from './HiveAuth/hive-auth-wrapper';
-import { hasKeychain } from './services/hive/keychain';
 import { broadcast as keychainBroadcast } from './services/hive/signer';
 
 function broadcast(operations, isReview, actionAuthor) {

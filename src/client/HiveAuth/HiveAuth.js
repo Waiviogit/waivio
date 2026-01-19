@@ -1,4 +1,4 @@
-import { Button, message, Select, Input, Alert } from 'antd';
+import { Button, message, Select, Input } from 'antd';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import Cookie from 'js-cookie';
@@ -107,8 +107,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
 
     setGoogleTagEvent('click_sign_in_hiveauth');
 
-    // Try Keychain first if available
-    // DO NOT open new window - use extension API which shows its own popup
     if (hasKeychain()) {
       try {
         const result = await chechExistUser(username);
@@ -161,8 +159,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
       });
     }
   };
-
-  const keychainAvailable = hasKeychain();
 
   return (
     <div className="HiveAuth" style={style}>

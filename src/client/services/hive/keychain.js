@@ -57,7 +57,6 @@ export const keychainBroadcast = (username, operations, keyType = 'Active') =>
       return;
     }
 
-    // This API call triggers extension popup - no window.open or redirect needed
     window.hive_keychain.requestBroadcast(
       username,
       operations,
