@@ -178,6 +178,7 @@ const Body = props => {
   const handleLinkClick = React.useCallback(
     e => {
       const anchor = e.target.closest('a[data-href]');
+
       if (!anchor) return;
 
       e.preventDefault();
