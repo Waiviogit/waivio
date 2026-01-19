@@ -20,7 +20,6 @@ import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors'
 import useQuery from '../../../hooks/useQuery';
 import useAdLevelData from '../../../hooks/useAdsense';
 import useTemplateProvider from '../../../designTemplates/TemplateProvider';
-import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isNested }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
@@ -41,13 +40,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs, isN
   const cleanListSummary = useMemo(() => {
     if (!listType) return null;
 
-    const preparedDescription = removeEmptyLines(wobject?.description || '');
-    const { firstDescrPart } = shortenDescription(preparedDescription, 260);
-
     return {
-      label: wobject?.name,
-      title: wobject?.title || getObjectName(wobject),
-      description: firstDescrPart,
+      label: getObjectName(wobject),
+      title: wobject?.title,
+      description: wobject?.description,
     };
   }, [listType, wobject]);
 

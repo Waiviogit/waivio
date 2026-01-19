@@ -53,6 +53,7 @@ const Header = ({ hideSignIn, hideHeader }) => {
   if (to?.includes('/active-campaigns')) {
     to = '/active-campaigns';
   }
+
   const props = {
     hideSignIn,
     searchBarActive,
