@@ -166,6 +166,7 @@ class StoryFull extends React.Component {
     const taggedObjects = [];
     const linkedObjects = [];
 
+    this.prepareImages(this.props.post.body, this.props.post.json_metadata);
     forEach(this.props.post.wobjects, wobj => {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
@@ -205,6 +206,17 @@ class StoryFull extends React.Component {
 
     if (element) element.remove();
   }
+
+  prepareImages = (body, jsonMetadata) => {
+    // Викликаємо getHtml ТІЛЬКИ для отримання тексту для галереї
+    const parsedBody = getHtml(body, jsonMetadata, 'text', { isPost: true });
+
+    // Оновлюємо список зображень для Lightbox
+    this.images = extractImageTags(parsedBody).map(image => ({
+      ...image,
+      src: getImagePathPost(unescape(image.src.replace('https://images.hive.blog/0x0/', ''))),
+    }));
+  };
 
   setInstacardScript = async wobjs => {
     const wobjWithAff = wobjs?.find(obj =>
@@ -327,14 +339,7 @@ class StoryFull extends React.Component {
       : null;
 
     const { open, index } = this.state.lightbox;
-    const getImagePath = item => getImagePathPost(item);
     const initialPostBody = newBody || post.body;
-    const parsedBody = getHtml(initialPostBody, post.json_metadata, 'text', { isPost: true });
-
-    this.images = extractImageTags(parsedBody).map(image => ({
-      ...image,
-      src: getImagePath(unescape(image.src.replace('https://images.hive.blog/0x0/', ''))),
-    }));
 
     const body = initialPostBody;
 
