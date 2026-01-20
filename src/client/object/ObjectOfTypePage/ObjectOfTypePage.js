@@ -268,6 +268,7 @@ const ObjectOfTypePage = props => {
 
           const sendParts = async () => {
             let firstChunkData = null;
+            let firstChunkAuthor = null;
 
             try {
               for (let i = 0; i < chunks.length; i += 1) {
@@ -283,8 +284,12 @@ const ObjectOfTypePage = props => {
 
                 const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
 
-                if (i > 0) {
+                if (chunk.partNumber > 1) {
                   postData.skipBroadcast = true;
+                  // Pass author from first chunk for subsequent parts
+                  if (firstChunkAuthor) {
+                    postData.firstChunkAuthor = firstChunkAuthor;
+                  }
                 }
 
                 const transactionSize = new Blob([JSON.stringify(postData)]).size;
@@ -309,6 +314,7 @@ const ObjectOfTypePage = props => {
                 }
 
                 if (i === 0 && res.author) {
+                  firstChunkAuthor = res.author;
                   firstChunkData = {
                     author: res.author,
                     permlink: res.permlink || postData.permlink,

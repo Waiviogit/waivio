@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight = 100000 }) => {
+const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
@@ -527,7 +527,7 @@ ${bodyHtml}
       const tight = Math.max(endBottomByOffset, bottomByRect, fallback, 0);
 
       if (tight > 0) {
-        const newH = Math.min(tight, maxHeight);
+        const newH = maxHeight ? Math.min(tight, maxHeight) : tight;
 
         iframe.style.height = `${newH}px`;
         updateVhVar();
@@ -546,12 +546,12 @@ ${bodyHtml}
     if (effectiveAutoSize) {
       const clamped = Math.max(300, Math.min(vp || 0, 900));
 
-      return Math.min(maxHeight || 100000, clamped);
+      return maxHeight ? Math.min(maxHeight, clamped) : clamped;
     }
     // режим зі скролом
     const clamped = Math.max(600, Math.min(vp || 0, 1000)) || 800;
 
-    return Math.min(maxHeight || 100000, clamped);
+    return maxHeight ? Math.min(maxHeight, clamped) : clamped;
   }, [effectiveAutoSize, maxHeight]);
 
   // --------- lifecycle ---------------------------------------------
