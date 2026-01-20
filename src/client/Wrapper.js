@@ -281,41 +281,56 @@ class Wrapper extends React.PureComponent {
       this.checkVipticketRedirect();
     }
   }
+
+  parseAllActiveSitesCookie = () => {
+    const raw = Cookie.get('allActiveSites');
+
+    if (!raw) return [];
+
+    try {
+      const decoded = /%[0-9A-Fa-f]{2}/.test(raw) ? decodeURIComponent(raw) : raw;
+
+      const parsed = JSON.parse(decoded);
+
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      console.error('Invalid allActiveSites cookie', e, { raw });
+
+      return [];
+    }
+  };
+
   checkVipticketRedirect = () => {
     if (typeof window === 'undefined') return;
 
     const query = new URLSearchParams(this.props.location.search);
     const nextUrl = query.get('vipticket_redirect_url');
-    const hostname = window.location.hostname;
-    const isWaivio = listOfWaivioSites.includes(hostname);
 
-    if (nextUrl && isWaivio) {
-      const normalizedNextUrl = nextUrl.endsWith('/') ? nextUrl : `${nextUrl}/`;
+    const hostname = window.location.hostname.replace(/^www\./, '');
+    const isWaivio =
+      listOfWaivioSites.includes(hostname) || listOfWaivioSites.includes(`www.${hostname}`);
 
-      if (!Cookie.get('allActiveSites')) {
-        getAllActiveSites().then(list => {
-          const activeSites = list.map(i => `https://${i.host}/`);
+    if (!nextUrl || !isWaivio) return;
 
-          if ([...activeSites, 'https://www.waivio.com'].includes(normalizedNextUrl)) {
-            window.location.href = normalizedNextUrl;
-          }
-        });
-      } else {
-        try {
-          const cookieValue = Cookie.get('allActiveSites');
+    const normalizedNextUrl = nextUrl.endsWith('/') ? nextUrl : `${nextUrl}/`;
 
-          const activeSites = Array.isArray(cookieValue) ? cookieValue : JSON.parse(cookieValue);
-          const normalizedActiveSites = activeSites.map(site =>
-            site.endsWith('/') ? site : `${site}/`,
-          );
+    if (!Cookie.get('allActiveSites')) {
+      getAllActiveSites().then(list => {
+        const activeSites = list.map(i => `https://${i.host}/`);
 
-          if ([...normalizedActiveSites, 'https://www.waivio.com'].includes(normalizedNextUrl)) {
-            window.location.href = normalizedNextUrl;
-          }
-        } catch (e) {
-          console.error('Invalid allActiveSites cookie', e);
+        if ([...activeSites, 'https://www.waivio.com/'].includes(normalizedNextUrl)) {
+          window.location.href = normalizedNextUrl;
         }
-      }
+      });
+
+      return;
+    }
+
+    const activeSites = this.parseAllActiveSitesCookie();
+    const normalizedActiveSites = activeSites.map(site => (site.endsWith('/') ? site : `${site}/`));
+
+    if ([...normalizedActiveSites, 'https://www.waivio.com/'].includes(normalizedNextUrl)) {
+      window.location.href = normalizedNextUrl;
     }
   };
 
