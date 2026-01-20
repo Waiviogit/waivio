@@ -280,10 +280,25 @@ class WobjectContainer extends React.PureComponent {
 
   render() {
     const name = this.props.match.params.name;
+    const wobject = this.props.wobject;
 
     const toggleViewEditMode = () => {
-      this.props.setEditMode(!this.props.isEdit);
-      if (!this.props.isEdit) setGoogleTagEvent('click_edit_object');
+      if (wobject?.object_type === 'html') {
+        if (!this.props.isEdit) {
+          const currentPath = this.props.location.pathname;
+
+          if (!currentPath?.includes('/code')) {
+            this.props.history.push(`/object/${name}/code`);
+          }
+          this.props.setEditMode(true);
+          setGoogleTagEvent('click_edit_object');
+        } else {
+          this.props.setEditMode(false);
+        }
+      } else {
+        this.props.setEditMode(!this.props.isEdit);
+        if (!this.props.isEdit) setGoogleTagEvent('click_edit_object');
+      }
     };
 
     if (this.props.failed)
@@ -320,11 +335,13 @@ WobjectContainer.propTypes = {
   controller: PropTypes.shape(),
   location: PropTypes.shape({
     hash: PropTypes.string,
+    pathname: PropTypes.string,
   }).isRequired,
   failed: PropTypes.bool,
   isSocial: PropTypes.bool,
   isEdit: PropTypes.bool,
   showPostModal: PropTypes.bool,
+  wobject: PropTypes.shape(),
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   resetWobjectExpertise: PropTypes.func.isRequired,
@@ -443,6 +460,7 @@ const mapStateToProps = state => ({
   currHost: getCurrentHost(state),
   isEdit: getIsEditMode(state),
   controller: getAbortController(state),
+  wobject: getObjectState(state),
 });
 
 const mapDispatchToProps = {
