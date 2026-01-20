@@ -50,10 +50,28 @@
     }
   }
 
+  &__header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
   &__type {
     text-transform: capitalize;
     color: @blue-gullGray;
     font-size: 18px;
+    margin: 0;
+  }
+
+  &__sorting {
+    flex-shrink: 0;
   }
   &__tags-bar {
     display: flex;

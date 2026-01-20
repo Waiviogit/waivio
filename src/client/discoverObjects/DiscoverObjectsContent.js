@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, omit, size, map, trimEnd } from 'lodash';
+import { isEmpty, omit, map, trimEnd } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import {
@@ -10,6 +10,8 @@ import {
   parseUrl,
   updateActiveFilters,
   updateActiveTagsFilters,
+  parseDiscoverQuery,
+  buildCanonicalSearch,
 } from './helper';
 import {
   getObjectTypeByStateFilters,
@@ -28,8 +30,8 @@ import Loading from '../components/Icon/Loading';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
-import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import DiscoverSorting from './DiscoverSorting/DiscoverSorting';
 
 import { getCoordinates } from '../../store/userStore/userActions';
 import { RADIUS, ZOOM } from '../../common/constants/map';
@@ -124,6 +126,7 @@ class DiscoverObjectsContent extends Component {
     tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
     location: PropTypes.shape({
       search: PropTypes.string,
+      pathname: PropTypes.string,
     }).isRequired,
   };
 
@@ -160,6 +163,7 @@ class DiscoverObjectsContent extends Component {
     const activeTagsFilter = parseTagsFilters(location.search);
     const query = new URLSearchParams(location.search);
     const search = query.get('search');
+    const { sort } = parseDiscoverQuery(location.search);
     const searchFilters = {};
 
     if (search) searchFilters.searchString = trimEnd(search);
@@ -176,6 +180,11 @@ class DiscoverObjectsContent extends Component {
 
     this.props.setActiveFilters(searchFilters);
 
+    // Sync sort from URL to Redux state
+    // Keep URL values as-is in Redux (reverse_recency, recency, rank)
+    // Mapping to API format happens in the action
+    this.props.dispatchChangeSorting(sort);
+
     if (searchFilters.map) {
       this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
     }
@@ -184,6 +193,16 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectType(typeName, { skip: 0 });
     this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location, typeName } = this.props;
+    const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
+    const { sort } = parseDiscoverQuery(location.search);
+
+    if (sort !== prevSort && typeName) {
+      this.props.dispatchChangeSorting(sort);
+    }
   }
 
   componentWillUnmount() {
@@ -235,7 +254,18 @@ class DiscoverObjectsContent extends Component {
 
   closeModal = () => this.setState({ isModalOpen: false });
 
-  handleChangeSorting = sorting => this.props.dispatchChangeSorting(sorting);
+  handleChangeSorting = sorting => {
+    const { history, location } = this.props;
+    const { search, tagsByCategory } = parseDiscoverQuery(location.search);
+
+    const canonical = buildCanonicalSearch({
+      search,
+      tagsByCategory,
+      sort: sorting,
+    });
+
+    history.push(`${location.pathname}?${canonical}`);
+  };
 
   handleRemoveTag = (filter, filterValue) => e => {
     const {
@@ -301,21 +331,15 @@ class DiscoverObjectsContent extends Component {
       hasMoreObjects,
       activeTagsFilters,
     } = this.props;
-    const sortSelector = hasMap ? (
-      <SortSelector sort={sort} onChange={this.handleChangeSorting}>
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-        <SortSelector.Item key={SORT_OPTIONS.PROXIMITY}>
-          {intl.formatMessage({ id: 'proximity', defaultMessage: 'Proximity' })}
-        </SortSelector.Item>
-      </SortSelector>
-    ) : (
-      <SortSelector sort="weight">
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-      </SortSelector>
+    const urlSort =
+      // eslint-disable-next-line no-nested-ternary
+      sort === 'weight' || sort === 'proximity'
+        ? 'rank'
+        : ['reverse_recency', 'recency', 'rank'].includes(sort)
+        ? sort
+        : 'reverse_recency';
+    const sortSelector = (
+      <DiscoverSorting sort={urlSort} handleSortChange={this.handleChangeSorting} />
     );
 
     return (
@@ -325,7 +349,7 @@ class DiscoverObjectsContent extends Component {
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
-          {size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+          {sortSelector}
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>

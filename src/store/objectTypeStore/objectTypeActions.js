@@ -53,6 +53,16 @@ export const getObjectType = (
   const appHost = getAppHost(state);
 
   const changeFilters = omit(filters, ['map.zoom']);
+
+  let apiSort = sort;
+
+  if (sort === 'reverse_recency') {
+    apiSort = 'newestFirst';
+  } else if (sort === 'recency') {
+    apiSort = 'oldestFirst';
+  } else if (sort === 'rank') {
+    apiSort = 'weight';
+  }
   const preparedData = {
     wobjects_count: limit,
     simplified,
@@ -61,7 +71,7 @@ export const getObjectType = (
       ...changeFilters,
       tagCategory: filterBody,
     },
-    sort,
+    sort: apiSort,
     locale,
   };
 

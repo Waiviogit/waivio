@@ -241,14 +241,19 @@ export const parseDiscoverQuery = search => {
     search: params.get('search') || '',
     category: params.get('category') || null,
     tagsByCategory: parseDiscoverTagsFilters(search),
+    sort: params.get('sort') || 'reverse_recency',
   };
 };
 
-export const buildCanonicalSearch = ({ search, tagsByCategory }) => {
+export const buildCanonicalSearch = ({ search, tagsByCategory, sort }) => {
   const params = new URLSearchParams();
 
   if (search) {
     params.set('search', search);
+  }
+
+  if (sort && sort !== 'reverse_recency') {
+    params.set('sort', sort);
   }
 
   Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
