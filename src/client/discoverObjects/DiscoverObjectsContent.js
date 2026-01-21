@@ -349,7 +349,7 @@ class DiscoverObjectsContent extends Component {
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
-          {sortSelector}
+          <div className="discover-objects-header__sorting">{sortSelector}</div>
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
