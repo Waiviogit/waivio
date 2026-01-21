@@ -219,7 +219,10 @@ export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
 
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    if (typeName) {
+      dispatch(resetObjects());
+      dispatch(getObjectTypeByStateFilters(typeName));
+    }
   });
 };
 

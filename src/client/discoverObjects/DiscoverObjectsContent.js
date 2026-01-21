@@ -18,6 +18,7 @@ import {
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
+  changeSorting,
   getObjectTypeMap,
   setActiveFilters,
   setTagsFiltersAndLoad,
@@ -84,6 +85,7 @@ export const SORT_OPTIONS = {
     dispatchGetObjectType: getObjectTypeByStateFilters,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
+    changeSorting,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
     getObjectTypeMap,
     getCoordinates,
@@ -101,7 +103,7 @@ class DiscoverObjectsContent extends Component {
     searchString: PropTypes.string,
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
-    sort: PropTypes.string.isRequired,
+    // sort: PropTypes.string.isRequired,
     theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -110,7 +112,7 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectType: PropTypes.func.isRequired,
     dispatchClearObjectTypeStore: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
-    dispatchChangeSorting: PropTypes.func.isRequired,
+    changeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
@@ -155,6 +157,7 @@ class DiscoverObjectsContent extends Component {
       radius: RADIUS,
       match: {},
     };
+    this.lastLoadedSortRef = null;
   }
 
   componentDidMount() {
@@ -180,16 +183,16 @@ class DiscoverObjectsContent extends Component {
 
     this.props.setActiveFilters(searchFilters);
 
-    // Sync sort from URL to Redux state
-    // Keep URL values as-is in Redux (reverse_recency, recency, rank)
-    // Mapping to API format happens in the action
-    this.props.dispatchChangeSorting(sort);
+    const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+    this.props.changeSorting(reduxSort);
 
     if (searchFilters.map) {
       this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
     }
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
+    this.lastLoadedSortRef = sort;
     dispatchGetObjectType(typeName, { skip: 0 });
     this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
@@ -200,8 +203,14 @@ class DiscoverObjectsContent extends Component {
     const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
     const { sort } = parseDiscoverQuery(location.search);
 
-    if (sort !== prevSort && typeName) {
-      this.props.dispatchChangeSorting(sort);
+    if (
+      sort !== prevSort &&
+      sort !== this.lastLoadedSortRef &&
+      typeName &&
+      prevProps.location.pathname === location.pathname &&
+      prevProps.location.search !== location.search
+    ) {
+      this.lastLoadedSortRef = sort;
     }
   }
 
@@ -326,18 +335,12 @@ class DiscoverObjectsContent extends Component {
       availableFilters,
       tagsFilters,
       activeFilters: { map: mapFilters },
-      sort,
       filteredObjects,
       hasMoreObjects,
       activeTagsFilters,
+      location,
     } = this.props;
-    const urlSort =
-      // eslint-disable-next-line no-nested-ternary
-      sort === 'weight' || sort === 'proximity'
-        ? 'rank'
-        : ['reverse_recency', 'recency', 'rank'].includes(sort)
-        ? sort
-        : 'reverse_recency';
+    const { sort: urlSort } = parseDiscoverQuery(location.search);
     const sortSelector = (
       <DiscoverSorting sort={urlSort} handleSortChange={this.handleChangeSorting} />
     );
@@ -394,6 +397,8 @@ class DiscoverObjectsContent extends Component {
             ) : null}
           </React.Fragment>
         ) : null}
+
+        <div className="discover-objects-header__sorting-mobile">{sortSelector}</div>
         {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"

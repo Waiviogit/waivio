@@ -47,6 +47,20 @@
     flex-shrink: 0;
     margin-left: auto;
     white-space: nowrap;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__sorting-mobile {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+      margin-bottom: 15px;
+      text-align: left;
+    }
   }
 }
 

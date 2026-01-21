@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams, useRouteMatch, useLocation } from 'react-router';
 import Helmet from 'react-helmet';
@@ -63,6 +63,7 @@ const NewDiscover = () => {
 
   const [loading, setLoading] = useState(false);
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+  const lastLoadedSortRef = useRef(null);
 
   const discoverUsers = match.url?.includes('discover-users');
 
@@ -79,6 +80,7 @@ const NewDiscover = () => {
     }
 
     const tagCategory = Object.entries(tagsByCategory || {})
+      .filter(([categoryName]) => categoryName !== 'sort')
       .map(([categoryName, tags]) => ({
         categoryName,
         tags,
@@ -101,16 +103,20 @@ const NewDiscover = () => {
   useEffect(() => {
     if (discoverUsers || !type) return;
 
-    dispatch(changeSorting(sort));
-  }, [sort, discoverUsers, type, dispatch]);
-
-  useEffect(() => {
-    if (discoverUsers || !type) return;
+    if (lastLoadedSortRef.current === sort && lastLoadedSortRef.current !== null) {
+      return;
+    }
 
     const ac = new AbortController();
 
     setLoading(true);
     dispatch(resetObjects());
+
+    const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+    dispatch(changeSorting(reduxSort));
+
+    lastLoadedSortRef.current = sort;
 
     dispatch(getObjectsTypeByTypesName(type, buildFilter(), wobjects_count, ac)).finally(() =>
       setLoading(false),
@@ -197,13 +203,20 @@ const NewDiscover = () => {
     }
 
     return (
-      <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
-        <div className="NewDiscover__list">
-          {objects.map(obj => (
-            <ShopObjectCard key={obj.author_permlink} wObject={obj} />
-          ))}
-        </div>
-      </InfiniteScroll>
+      <React.Fragment>
+        {isMobile() && !discoverUsers && (
+          <div className="NewDiscover__sorting-mobile">
+            <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+          </div>
+        )}
+        <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
+          <div className="NewDiscover__list">
+            {objects.map(obj => (
+              <ShopObjectCard key={obj.author_permlink} wObject={obj} />
+            ))}
+          </div>
+        </InfiniteScroll>
+      </React.Fragment>
     );
   };
 

@@ -41,62 +41,65 @@ export const createFilterBody = parseObject => {
   delete parseSearchParams.access_token;
   delete parseSearchParams.socialProvider;
   delete parseSearchParams.showPanel;
+  delete parseSearchParams.sort;
 
-  const mappedFilter = Object.keys(parseSearchParams).map(category => {
-    let tags = parseSearchParams[category];
+  const mappedFilter = Object.keys(parseSearchParams)
+    .filter(category => category !== 'sort')
+    .map(category => {
+      let tags = parseSearchParams[category];
 
-    if (typeof tags === 'string') {
-      if (tags.includes('%')) {
-        try {
-          tags = decodeURIComponent(tags);
-        } catch (error) {
-          console.error(error);
+      if (typeof tags === 'string') {
+        if (tags.includes('%')) {
+          try {
+            tags = decodeURIComponent(tags);
+          } catch (error) {
+            console.error(error);
+          }
         }
+
+        tags = tags.replace(/^["']|["']$/g, '');
+
+        tags = tags
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(tag => tag.length > 0);
+      } else if (isArray(tags)) {
+        const expandedTags = [];
+
+        tags.forEach(tag => {
+          if (typeof tag === 'string') {
+            let decodedTag = tag;
+
+            if (tag.includes('%')) {
+              try {
+                decodedTag = decodeURIComponent(tag);
+              } catch (error) {
+                decodedTag = tag;
+              }
+            }
+            decodedTag = decodedTag.replace(/^["']|["']$/g, '');
+            if (decodedTag.includes(',')) {
+              const splitTags = decodedTag
+                .split(',')
+                .map(t => t.trim())
+                .filter(t => t.length > 0);
+
+              expandedTags.push(...splitTags);
+            } else {
+              expandedTags.push(decodedTag.trim());
+            }
+          } else {
+            expandedTags.push(tag);
+          }
+        });
+        tags = expandedTags.filter(tag => tag && tag.length > 0);
       }
 
-      tags = tags.replace(/^["']|["']$/g, '');
-
-      tags = tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
-    } else if (isArray(tags)) {
-      const expandedTags = [];
-
-      tags.forEach(tag => {
-        if (typeof tag === 'string') {
-          let decodedTag = tag;
-
-          if (tag.includes('%')) {
-            try {
-              decodedTag = decodeURIComponent(tag);
-            } catch (error) {
-              decodedTag = tag;
-            }
-          }
-          decodedTag = decodedTag.replace(/^["']|["']$/g, '');
-          if (decodedTag.includes(',')) {
-            const splitTags = decodedTag
-              .split(',')
-              .map(t => t.trim())
-              .filter(t => t.length > 0);
-
-            expandedTags.push(...splitTags);
-          } else {
-            expandedTags.push(decodedTag.trim());
-          }
-        } else {
-          expandedTags.push(tag);
-        }
-      });
-      tags = expandedTags.filter(tag => tag && tag.length > 0);
-    }
-
-    return {
-      categoryName: category.replace('%20', ' ').replace('+', ' '),
-      tags,
-    };
-  });
+      return {
+        categoryName: category.replace('%20', ' ').replace('+', ' '),
+        tags,
+      };
+    });
 
   return mappedFilter.filter(filter => !isEmpty(filter.tags));
 };
@@ -130,6 +133,7 @@ export const parseTagsFilters = url => {
   delete parseSearchParams.showPanel;
   delete parseSearchParams.radius;
   delete parseSearchParams.zoom;
+  delete parseSearchParams.sort;
 
   return Object.keys(parseSearchParams).reduce((acc, category) => {
     let value = parseSearchParams[category];
@@ -158,6 +162,8 @@ export const parseTagsFilters = url => {
 
 export const changeUrl = (activeTags, history, location) => {
   const params = new URLSearchParams(location.search);
+
+  const sort = params.get('sort');
 
   params.delete('category');
   params.delete('tag');
@@ -197,6 +203,10 @@ export const changeUrl = (activeTags, history, location) => {
     }
   });
 
+  if (sort && sort !== 'reverse_recency') {
+    params.set('sort', sort);
+  }
+
   const encoded = params.toString().replace(/\+/g, '%20');
 
   const newUrl = encoded ? `?${encoded}` : '';
@@ -220,7 +230,7 @@ export const parseDiscoverTagsFilters = search => {
   categories.forEach((cat, index) => {
     const tag = tags[index];
 
-    if (!cat || !tag) return;
+    if (!cat || !tag || cat === 'sort') return;
 
     if (!result[cat]) {
       result[cat] = [];
@@ -257,6 +267,8 @@ export const buildCanonicalSearch = ({ search, tagsByCategory, sort }) => {
   }
 
   Object.entries(tagsByCategory || {}).forEach(([cat, tags]) => {
+    if (cat === 'sort') return;
+
     (tags || []).forEach(tag => {
       if (tag) {
         params.append('category', cat);
