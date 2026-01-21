@@ -15,6 +15,7 @@ import {
   resetObjects,
   getTagCategories,
   setTagsFiltersAndLoad,
+  changeSorting,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
   getWobjectsList,
@@ -34,6 +35,7 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 import UserDynamicList from '../../user/UserDynamicList';
 import NewDiscoverFilters from './NewDiscoverFilters';
 import { searchUsers } from '../../../waivioApi/ApiClient';
+import DiscoverSorting from '../../discoverObjects/DiscoverSorting/DiscoverSorting';
 import './NewDiscover.less';
 
 const wobjects_count = 20;
@@ -64,9 +66,10 @@ const NewDiscover = () => {
 
   const discoverUsers = match.url?.includes('discover-users');
 
-  const { search, category, tagsByCategory } = useMemo(() => parseDiscoverQuery(location.search), [
-    location.search,
-  ]);
+  const { search, category, tagsByCategory, sort } = useMemo(
+    () => parseDiscoverQuery(location.search),
+    [location.search],
+  );
 
   const buildFilter = () => {
     const filter = { ...activeFilters };
@@ -98,6 +101,12 @@ const NewDiscover = () => {
   useEffect(() => {
     if (discoverUsers || !type) return;
 
+    dispatch(changeSorting(sort));
+  }, [sort, discoverUsers, type, dispatch]);
+
+  useEffect(() => {
+    if (discoverUsers || !type) return;
+
     const ac = new AbortController();
 
     setLoading(true);
@@ -122,6 +131,7 @@ const NewDiscover = () => {
       search: '',
       category,
       tagsByCategory,
+      sort,
     });
 
     dispatch(setTagsFiltersAndLoad(tagsByCategory));
@@ -140,6 +150,7 @@ const NewDiscover = () => {
     const canonical = buildCanonicalSearch({
       search,
       tagsByCategory: updated,
+      sort,
     });
 
     dispatch(setTagsFiltersAndLoad(updated));
@@ -147,11 +158,21 @@ const NewDiscover = () => {
     // dispatch(getTagCategories(activeObjectTypeName))
   };
 
+  const handleSortChange = newSort => {
+    const canonical = buildCanonicalSearch({
+      search,
+      tagsByCategory,
+      sort: newSort,
+    });
+
+    history.push(`${location.pathname}?${canonical}`);
+  };
+
   useEffect(() => {
     dispatch(getTagCategories(activeObjectTypeName));
   }, [location.search]);
 
-  const fetcher = async (users, authUser, sort, skip) => {
+  const fetcher = async (users, authUser, sorting, skip) => {
     const response = await searchUsers(user, userName, limit, !isGuest, skip);
 
     return {
@@ -231,7 +252,14 @@ const NewDiscover = () => {
 
         <div className="NewDiscover__content">
           <div className="NewDiscover__wrap">
-            <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+            <div className="NewDiscover__header-row">
+              <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+              {!discoverUsers && (
+                <div className="NewDiscover__sorting">
+                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+                </div>
+              )}
+            </div>
             {!discoverUsers && isMobile() && (
               <div
                 className="NewDiscover__filters-inline"
