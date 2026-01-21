@@ -10,6 +10,15 @@
 .discover-objects-header {
   &__tags-block {
     .filters-tags-block();
+    flex: 1 1 auto;
+    min-width: 0;
+
+    &.common {
+      flex: 0 1 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: calc(100% - 200px); // Reserve space for Sort by
+    }
   }
 
   &__topic {
@@ -28,6 +37,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 10px;
+  }
+
+  &__sorting {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    margin-left: auto;
+    white-space: nowrap;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__sorting-mobile {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+      margin-bottom: 15px;
+      text-align: left;
+    }
   }
 }
 

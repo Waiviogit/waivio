@@ -6,6 +6,7 @@ import { withRouter, useRouteMatch } from 'react-router';
 
 import {
   parseDiscoverTagsFilters,
+  parseDiscoverQuery,
   buildCanonicalSearch,
   updateActiveFilters,
   updateActiveTagsFilters,
@@ -68,10 +69,12 @@ const FiltersContainer = ({
 
     dispatchSetFiltersAndLoad(updatedFilters);
 
+    const { sort } = parseDiscoverQuery(location.search);
     const search = buildCanonicalSearch({
       search: new URLSearchParams(location.search).get('search'),
       category: new URLSearchParams(location.search).get('category'),
       tagsByCategory: activeTagsFilters,
+      sort,
     });
 
     history.push(`${location.pathname}?${search}`);
@@ -84,10 +87,12 @@ const FiltersContainer = ({
 
     // dispatchSetActiveTagsFilters(updatedTags);
 
+    const { sort } = parseDiscoverQuery(location.search);
     const search = buildCanonicalSearch({
       search: new URLSearchParams(location.search).get('search'),
       category: new URLSearchParams(location.search).get('category'),
       tagsByCategory: updatedTags,
+      sort,
     });
 
     history.push(`${location.pathname}?${search}`);
