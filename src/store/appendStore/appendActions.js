@@ -239,7 +239,7 @@ export const voteAppends = (
       if (abortController && abortController.signal.aborted) {
         return Promise.reject(new Error('Request aborted'));
       }
-      if (data.error) throw new Error();
+      if (data?.error) throw new Error(data.error?.message || 'Vote error');
 
       return ApiClient.voteUpdatesPost(wobj.author_permlink, {
         voter,
@@ -275,8 +275,11 @@ export const voteAppends = (
         });
       });
     })
+
     .catch(e => {
-      steemConnectAPI
+      if (abortController?.signal?.aborted) return Promise.reject(e);
+
+      return steemConnectAPI
         .appendVote(voter, isGuest, author, permlink, weight)
         .then(res => {
           if (abortController && abortController.signal.aborted) {
@@ -625,8 +628,10 @@ export const appendObject = (
       const isFirstChunk = !postData.field?.partNumber || postData.field.partNumber === 1;
       const shouldCallWebsocketCallback = !isHtmlContent || isFirstChunk;
       const shouldVote = isLike && (!isHtmlContent || isFirstChunk);
-      const author = res.author;
-
+      const author =
+        isHtmlContent && postData.firstChunkAuthor
+          ? postData.firstChunkAuthor
+          : res.author || postData.author;
       const websocketCallback = async () => {
         await dispatch(
           followAndLikeAfterCreateAppend(

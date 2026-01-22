@@ -42,7 +42,8 @@ const POSTCSS_LOADER = {
 
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-  'process.env.HIVE_AUTH': JSON.stringify('ea77153b-b08a-4e5e-b2b6-e175b41e3776'),
+  'process.env.HIVE_AUTH':
+    process.env.HIVE_AUTH || JSON.stringify('ea77153b-b08a-4e5e-b2b6-e175b41e3776'),
   'process.env.PAYPAL_CLIENT_ID': JSON.stringify(
     process.env.PAYPAL_CLIENT_ID ||
       'Ab1PkIju8eYhVG7dwometncm_FgN0IA7ZP1TvjHuSdoXZWQCocEPazBkaFoqze1YvA4r45Xi0oQ_rdWe',

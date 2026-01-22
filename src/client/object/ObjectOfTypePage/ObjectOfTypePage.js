@@ -1,4 +1,5 @@
 import { Button, Form, Icon, message, Modal, Alert } from 'antd';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { isEmpty, size, trimEnd, debounce, unescape } from 'lodash';
 import PropTypes from 'prop-types';
@@ -243,6 +244,16 @@ const ObjectOfTypePage = props => {
 
   const handleVotePercentChange = percent => setVotePercent(percent);
 
+  const getVotePower = () => {
+    if (votePercent === null || votePercent === '' || votePercent === undefined) return null;
+
+    return Number(
+      BigNumber(votePercent)
+        .multipliedBy(100)
+        .toFixed(0),
+    );
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -268,6 +279,7 @@ const ObjectOfTypePage = props => {
 
           const sendParts = async () => {
             let firstChunkData = null;
+            let firstChunkAuthor = null;
 
             try {
               for (let i = 0; i < chunks.length; i += 1) {
@@ -283,8 +295,12 @@ const ObjectOfTypePage = props => {
 
                 const postData = getAppendData(userName, wobj, bodyMessage, pageContentField);
 
-                if (i > 0) {
+                if (chunk.partNumber > 1) {
                   postData.skipBroadcast = true;
+                  // Pass author from first chunk for subsequent parts
+                  if (firstChunkAuthor) {
+                    postData.firstChunkAuthor = firstChunkAuthor;
+                  }
                 }
 
                 const transactionSize = new Blob([JSON.stringify(postData)]).size;
@@ -299,7 +315,7 @@ const ObjectOfTypePage = props => {
                 // eslint-disable-next-line no-await-in-loop
                 const res = await appendPageContent(postData, {
                   follow: i === 0 ? follow : false,
-                  votePercent: i === 0 ? votePercent * 100 : 0,
+                  votePercent: i === 0 ? getVotePower() : 0,
                   isLike: i === 0,
                   isObjectPage: true,
                 });
@@ -309,6 +325,7 @@ const ObjectOfTypePage = props => {
                 }
 
                 if (i === 0 && res.author) {
+                  firstChunkAuthor = res.author;
                   firstChunkData = {
                     author: res.author,
                     permlink: res.permlink || postData.permlink,
@@ -389,7 +406,7 @@ const ObjectOfTypePage = props => {
           setLoadingForButton(true);
           appendPageContent(postData, {
             follow,
-            votePercent: votePercent * 100,
+            votePercent: getVotePower(),
             isLike: true,
             isObjectPage: true,
           })
@@ -458,6 +475,8 @@ const ObjectOfTypePage = props => {
       setValidationScript(true);
       const validateParts = async () => {
         try {
+          let validationFailed = false;
+
           for (let i = 0; i < chunks.length; i += 1) {
             const chunk = chunks[i];
             const pageContentField = {
@@ -487,13 +506,20 @@ const ObjectOfTypePage = props => {
               const result = await res.json();
 
               message.error(result.message || 'Validation failed');
+              validationFailed = true;
+              break;
             }
           }
 
-          setIsReadyToPublish(!isReadyToPublish);
+          if (!validationFailed) {
+            setIsReadyToPublish(!isReadyToPublish);
+          } else {
+            setIsReadyToPublish(false);
+          }
           setValidationScript(false);
         } catch (error) {
           setValidationScript(false);
+          setIsReadyToPublish(false);
           if (error.message) {
             message.error(error.message);
           } else {

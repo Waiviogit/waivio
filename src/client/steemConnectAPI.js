@@ -5,6 +5,7 @@ import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { parseJSON } from '../common/helpers/parseJSON';
 import HAS from './HiveAuth/hive-auth-wrapper';
+import { broadcast as keychainBroadcast } from './services/hive/signer';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
@@ -76,6 +77,9 @@ function sc2Extended() {
 
   const isHiveAuth = () => Boolean(Cookie.get('auth'));
 
+  const hasKeychain = () =>
+    typeof window !== 'undefined' && typeof window.hive_keychain !== 'undefined';
+
   const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
@@ -86,9 +90,36 @@ function sc2Extended() {
   sc2Proto.broadcastOp = sc2Proto.broadcast;
   sc2Proto.meOp = sc2Proto.me;
 
-  sc2Proto.broadcast = (operations, cb, keyType) => {
+  sc2Proto.broadcast = async (operations, cb, keyType) => {
     if (isGuest()) return broadcast(operations, cb);
-    if (isHiveAuth()) return hasBrodcast(operations, keyType, cb);
+    if (isHiveAuth()) {
+      const auth = parseJSON(Cookie.get('auth'));
+      const username = auth?.username;
+
+      // Use Keychain extension if available - triggers extension popup (not a new browser window)
+      // Otherwise fallback to HAS QR code flow
+      if (hasKeychain() && username) {
+        try {
+          const keychainKeyType = keyType === 'active' ? 'Active' : 'Posting';
+          // This calls requestBroadcast which triggers extension popup - no window.open or redirect
+          const result = await keychainBroadcast({
+            username,
+            operations,
+            keyType: keychainKeyType,
+          });
+
+          if (cb) cb();
+
+          return result;
+        } catch (error) {
+          // Fallback to HAS QR code if Keychain fails
+          return hasBrodcast(operations, keyType, cb);
+        }
+      }
+
+      // No Keychain available - use HAS QR code flow
+      return hasBrodcast(operations, keyType, cb);
+    }
 
     return sc2Proto.broadcastOp(operations);
   };

@@ -53,6 +53,16 @@ export const getObjectType = (
   const appHost = getAppHost(state);
 
   const changeFilters = omit(filters, ['map.zoom']);
+
+  let apiSort = sort;
+
+  if (sort === 'reverse_recency') {
+    apiSort = 'newestFirst';
+  } else if (sort === 'recency') {
+    apiSort = 'oldestFirst';
+  } else if (sort === 'rank') {
+    apiSort = 'weight';
+  }
   const preparedData = {
     wobjects_count: limit,
     simplified,
@@ -61,7 +71,7 @@ export const getObjectType = (
       ...changeFilters,
       tagCategory: filterBody,
     },
-    sort,
+    sort: apiSort,
     locale,
   };
 
@@ -209,7 +219,10 @@ export const changeSortingAndLoad = sorting => (dispatch, getState) => {
   dispatch(changeSorting(sorting)).then(() => {
     const typeName = getTypeName(getState());
 
-    if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
+    if (typeName) {
+      dispatch(resetObjects());
+      dispatch(getObjectTypeByStateFilters(typeName));
+    }
   });
 };
 
@@ -262,7 +275,7 @@ const extractTagsByCategoryFromUrl = queryString => {
     categories.forEach((cat, index) => {
       const tag = tags[index];
 
-      if (cat && tag) {
+      if (cat && tag && cat !== 'sort') {
         let decodedTag = tag;
         let decodedCat = cat;
 
@@ -315,6 +328,7 @@ const extractTagsByCategoryFromUrl = queryString => {
       'zoom',
       'category',
       'tag',
+      'sort',
     ];
 
     params.forEach((value, key) => {

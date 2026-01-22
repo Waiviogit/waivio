@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams, useRouteMatch, useLocation } from 'react-router';
 import Helmet from 'react-helmet';
@@ -14,7 +14,7 @@ import {
   getObjectsTypeByTypesNameMore,
   resetObjects,
   getTagCategories,
-  setTagsFiltersAndLoad,
+  changeSorting,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
   getWobjectsList,
@@ -34,6 +34,7 @@ import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/
 import UserDynamicList from '../../user/UserDynamicList';
 import NewDiscoverFilters from './NewDiscoverFilters';
 import { searchUsers } from '../../../waivioApi/ApiClient';
+import DiscoverSorting from '../../discoverObjects/DiscoverSorting/DiscoverSorting';
 import './NewDiscover.less';
 
 const wobjects_count = 20;
@@ -61,12 +62,14 @@ const NewDiscover = () => {
 
   const [loading, setLoading] = useState(false);
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+  const lastLoadedSearchRef = useRef(null);
 
   const discoverUsers = match.url?.includes('discover-users');
 
-  const { search, category, tagsByCategory } = useMemo(() => parseDiscoverQuery(location.search), [
-    location.search,
-  ]);
+  const { search, category, tagsByCategory, sort } = useMemo(
+    () => parseDiscoverQuery(location.search),
+    [location.search],
+  );
 
   const buildFilter = () => {
     const filter = { ...activeFilters };
@@ -76,6 +79,7 @@ const NewDiscover = () => {
     }
 
     const tagCategory = Object.entries(tagsByCategory || {})
+      .filter(([categoryName]) => categoryName !== 'sort')
       .map(([categoryName, tags]) => ({
         categoryName,
         tags,
@@ -98,10 +102,20 @@ const NewDiscover = () => {
   useEffect(() => {
     if (discoverUsers || !type) return;
 
+    if (lastLoadedSearchRef.current === location.search && lastLoadedSearchRef.current !== null) {
+      return;
+    }
+
     const ac = new AbortController();
 
     setLoading(true);
     dispatch(resetObjects());
+
+    const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+    dispatch(changeSorting(reduxSort));
+
+    lastLoadedSearchRef.current = location.search;
 
     dispatch(getObjectsTypeByTypesName(type, buildFilter(), wobjects_count, ac)).finally(() =>
       setLoading(false),
@@ -122,11 +136,11 @@ const NewDiscover = () => {
       search: '',
       category,
       tagsByCategory,
+      sort,
     });
 
-    dispatch(setTagsFiltersAndLoad(tagsByCategory));
+    // Update URL - useEffect will handle data loading
     history.push(`${location.pathname}?${canonical}`);
-    // dispatch(getTagCategories(activeObjectTypeName))
   };
 
   const removeTag = (cat, tag) => {
@@ -140,18 +154,28 @@ const NewDiscover = () => {
     const canonical = buildCanonicalSearch({
       search,
       tagsByCategory: updated,
+      sort,
     });
 
-    dispatch(setTagsFiltersAndLoad(updated));
+    // Update URL - useEffect will handle data loading
     history.push(`${location.pathname}?${canonical}`);
-    // dispatch(getTagCategories(activeObjectTypeName))
+  };
+
+  const handleSortChange = newSort => {
+    const canonical = buildCanonicalSearch({
+      search,
+      tagsByCategory,
+      sort: newSort,
+    });
+
+    history.push(`${location.pathname}?${canonical}`);
   };
 
   useEffect(() => {
     dispatch(getTagCategories(activeObjectTypeName));
   }, [location.search]);
 
-  const fetcher = async (users, authUser, sort, skip) => {
+  const fetcher = async (users, authUser, sorting, skip) => {
     const response = await searchUsers(user, userName, limit, !isGuest, skip);
 
     return {
@@ -176,13 +200,20 @@ const NewDiscover = () => {
     }
 
     return (
-      <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
-        <div className="NewDiscover__list">
-          {objects.map(obj => (
-            <ShopObjectCard key={obj.author_permlink} wObject={obj} />
-          ))}
-        </div>
-      </InfiniteScroll>
+      <React.Fragment>
+        {isMobile() && !discoverUsers && (
+          <div className="NewDiscover__sorting-mobile">
+            <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+          </div>
+        )}
+        <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
+          <div className="NewDiscover__list">
+            {objects.map(obj => (
+              <ShopObjectCard key={obj.author_permlink} wObject={obj} />
+            ))}
+          </div>
+        </InfiniteScroll>
+      </React.Fragment>
     );
   };
 
@@ -231,7 +262,14 @@ const NewDiscover = () => {
 
         <div className="NewDiscover__content">
           <div className="NewDiscover__wrap">
-            <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+            <div className="NewDiscover__header-row">
+              <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+              {!discoverUsers && (
+                <div className="NewDiscover__sorting">
+                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+                </div>
+              )}
+            </div>
             {!discoverUsers && isMobile() && (
               <div
                 className="NewDiscover__filters-inline"

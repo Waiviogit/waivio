@@ -40,7 +40,10 @@ const objectType = (state = initialState, action) => {
           !wobjStatus || (wobjStatus.title !== 'unavailable' && wobjStatus.title !== 'relisted')
         );
       });
-      const filteredObjects = [...state.filteredObjects, ...filteredRelatedWobjects];
+      const filteredObjects =
+        state.filteredObjects.length === 0
+          ? filteredRelatedWobjects
+          : [...state.filteredObjects, ...filteredRelatedWobjects];
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(filtersList, (result, value, key) => ({ ...result, [key]: [] }), {})
@@ -86,6 +89,8 @@ const objectType = (state = initialState, action) => {
       return {
         ...state,
         filteredObjects: [],
+        relatedObjects: [],
+        hasMoreRelatedObjects: true,
         sort: action.payload,
       };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:

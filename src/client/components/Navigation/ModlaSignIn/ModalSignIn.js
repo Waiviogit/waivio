@@ -265,7 +265,7 @@ const ModalSignIn = ({
 
                       setTimeoutId(id);
                     }}
-                    text={'HiveAuth'}
+                    text={'Keychain'}
                   />
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
                     <span>

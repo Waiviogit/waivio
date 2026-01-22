@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, omit, size, map, trimEnd } from 'lodash';
+import { isEmpty, omit, map, trimEnd } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import {
@@ -10,12 +10,15 @@ import {
   parseUrl,
   updateActiveFilters,
   updateActiveTagsFilters,
+  parseDiscoverQuery,
+  buildCanonicalSearch,
 } from './helper';
 import {
   getObjectTypeByStateFilters,
   clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
+  changeSorting,
   getObjectTypeMap,
   setActiveFilters,
   setTagsFiltersAndLoad,
@@ -28,8 +31,8 @@ import Loading from '../components/Icon/Loading';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
-import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import DiscoverSorting from './DiscoverSorting/DiscoverSorting';
 
 import { getCoordinates } from '../../store/userStore/userActions';
 import { RADIUS, ZOOM } from '../../common/constants/map';
@@ -82,6 +85,7 @@ export const SORT_OPTIONS = {
     dispatchGetObjectType: getObjectTypeByStateFilters,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
+    changeSorting,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
     getObjectTypeMap,
     getCoordinates,
@@ -99,7 +103,7 @@ class DiscoverObjectsContent extends Component {
     searchString: PropTypes.string,
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
-    sort: PropTypes.string.isRequired,
+    // sort: PropTypes.string.isRequired,
     theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -108,7 +112,7 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectType: PropTypes.func.isRequired,
     dispatchClearObjectTypeStore: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
-    dispatchChangeSorting: PropTypes.func.isRequired,
+    changeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
@@ -124,6 +128,7 @@ class DiscoverObjectsContent extends Component {
     tagsFilters: PropTypes.arrayOf(PropTypes.shape()),
     location: PropTypes.shape({
       search: PropTypes.string,
+      pathname: PropTypes.string,
     }).isRequired,
   };
 
@@ -152,6 +157,7 @@ class DiscoverObjectsContent extends Component {
       radius: RADIUS,
       match: {},
     };
+    this.lastLoadedSortRef = null;
   }
 
   componentDidMount() {
@@ -160,6 +166,7 @@ class DiscoverObjectsContent extends Component {
     const activeTagsFilter = parseTagsFilters(location.search);
     const query = new URLSearchParams(location.search);
     const search = query.get('search');
+    const { sort } = parseDiscoverQuery(location.search);
     const searchFilters = {};
 
     if (search) searchFilters.searchString = trimEnd(search);
@@ -176,14 +183,35 @@ class DiscoverObjectsContent extends Component {
 
     this.props.setActiveFilters(searchFilters);
 
+    const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+    this.props.changeSorting(reduxSort);
+
     if (searchFilters.map) {
       this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
     }
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
+    this.lastLoadedSortRef = sort;
     dispatchGetObjectType(typeName, { skip: 0 });
     this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location, typeName } = this.props;
+    const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
+    const { sort } = parseDiscoverQuery(location.search);
+
+    if (
+      sort !== prevSort &&
+      sort !== this.lastLoadedSortRef &&
+      typeName &&
+      prevProps.location.pathname === location.pathname &&
+      prevProps.location.search !== location.search
+    ) {
+      this.lastLoadedSortRef = sort;
+    }
   }
 
   componentWillUnmount() {
@@ -235,7 +263,22 @@ class DiscoverObjectsContent extends Component {
 
   closeModal = () => this.setState({ isModalOpen: false });
 
-  handleChangeSorting = sorting => this.props.dispatchChangeSorting(sorting);
+  handleChangeSorting = sorting => {
+    const { history, location } = this.props;
+    const { search, tagsByCategory } = parseDiscoverQuery(location.search);
+
+    const reduxSort = sorting === 'rank' ? 'weight' : sorting;
+
+    this.props.setObjectSortType(reduxSort);
+
+    const canonical = buildCanonicalSearch({
+      search,
+      tagsByCategory,
+      sort: sorting,
+    });
+
+    history.push(`${location.pathname}?${canonical}`);
+  };
 
   handleRemoveTag = (filter, filterValue) => e => {
     const {
@@ -296,26 +339,14 @@ class DiscoverObjectsContent extends Component {
       availableFilters,
       tagsFilters,
       activeFilters: { map: mapFilters },
-      sort,
       filteredObjects,
       hasMoreObjects,
       activeTagsFilters,
+      location,
     } = this.props;
-    const sortSelector = hasMap ? (
-      <SortSelector sort={sort} onChange={this.handleChangeSorting}>
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-        <SortSelector.Item key={SORT_OPTIONS.PROXIMITY}>
-          {intl.formatMessage({ id: 'proximity', defaultMessage: 'Proximity' })}
-        </SortSelector.Item>
-      </SortSelector>
-    ) : (
-      <SortSelector sort="weight">
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-      </SortSelector>
+    const { sort: urlSort } = parseDiscoverQuery(location.search);
+    const sortSelector = (
+      <DiscoverSorting sort={urlSort} handleSortChange={this.handleChangeSorting} />
     );
 
     return (
@@ -325,7 +356,7 @@ class DiscoverObjectsContent extends Component {
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
           </div>
-          {size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+          <div className="discover-objects-header__sorting">{sortSelector}</div>
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
@@ -370,6 +401,8 @@ class DiscoverObjectsContent extends Component {
             ) : null}
           </React.Fragment>
         ) : null}
+
+        <div className="discover-objects-header__sorting-mobile">{sortSelector}</div>
         {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"
