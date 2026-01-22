@@ -242,8 +242,8 @@ const SocialWrapper = props => {
     location && props.getWebsiteSettings(location?.hostname);
     location && props.getAdsenseSettings(location?.hostname);
     props.getCurrentAppSettings().then(res => {
-      const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
-      const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+      const mainColor = res?.configuration.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res?.configuration.colors?.mapMarkerText || initialColors.text;
 
       createWebsiteMenu(res.configuration);
 
