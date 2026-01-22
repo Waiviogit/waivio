@@ -41,6 +41,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 const analyticsSecret = process.env.ANALYTICS_SECRET;
 
 app.use(cookieParser());
+app.use(express.json());
 app.use(makeAnalyticsInjectMiddleware(analyticsSecret));
 
 // Add URL decode middleware to handle %40 encoding from external sources like ChatGPT
@@ -206,8 +207,8 @@ app.get('/%40:author/:permlink', (req, res) => {
   res.redirect(301, redirectUrl);
 });
 
-app.get('/*', ssrHandler);
 app.post('/analytics/ping', analyticsPing);
 app.get('/analytics/token', analyticsToken);
+app.get('/*', ssrHandler);
 
 export default app;

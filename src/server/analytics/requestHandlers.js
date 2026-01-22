@@ -1,5 +1,6 @@
 import { buildPingVarsForRequest } from './ssrInject';
 import { getBucket10m, uaHash, timingSafeEqualHex, signPingToken } from './cryptoTools';
+import { sadd, expire } from '../redis/redisClient';
 
 const analyticsSecret = process.env.ANALYTICS_SECRET;
 
