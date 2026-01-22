@@ -64,9 +64,9 @@ export const keychainBroadcast = (username, operations, keyType = 'Active') =>
       response => {
         if (response.success) {
           resolve(response);
-        } else {
-          reject(new Error(response.message || 'Broadcast failed'));
         }
+
+        reject(new Error(response.message || 'Broadcast failed'));
       },
       'waivio',
     );
