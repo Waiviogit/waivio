@@ -42,8 +42,6 @@ const sendPing = async () => {
       aid,
       bucket: pingBucket,
       token: pingToken,
-      ts: Date.now(),
-      path: location.pathname,
     };
 
     const body = JSON.stringify(payload);
