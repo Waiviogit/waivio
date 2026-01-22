@@ -38,6 +38,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
   const [user, setUser] = useState('');
   const [savedAcc, setSavedAcc] = useState(getSavedAcc());
   const { location } = useHistory();
+  const query = new URLSearchParams(location.search);
 
   const dispatch = useDispatch();
   const generateQrCode = evt => {
@@ -69,7 +70,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
         cbWait,
       ).then(res => {
         if (res.cmd === 'auth_ack') {
-          const query = new URLSearchParams(location.search);
           const url = query.get('host') || location.origin;
 
           if (query.get('host'))
@@ -110,6 +110,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
     if (hasKeychain()) {
       try {
         const result = await chechExistUser(username);
+        const url = query.get('host') || location.origin;
 
         if (!result) {
           message.error('Account name not found');
@@ -120,14 +121,18 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
         const accounts = store.get('accounts') || [];
 
         if (!accounts?.includes(username)) store.set('accounts', [username, ...accounts]);
+        const auth = await keychainLogin({ username });
 
-        // This calls requestSignBuffer which triggers extension popup (not a new browser window)
-        await keychainLogin({ username });
+        if (query.get('host'))
+          window.location.href = `https://${url}/?socialProvider=hiveAuth&auth=${JSON.stringify(
+            auth,
+          )}`;
+
         dispatch(login()).then(() => {
           dispatch(busyLogin());
           dispatch(getNotifications(username));
         });
-        onCloseSingIn(false);
+        // onCloseSingIn(false);
       } catch (error) {
         message.error(error.message || 'Login failed');
       }

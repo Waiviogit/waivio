@@ -149,7 +149,7 @@ const SocialSignInModalContent = ({
                 <HiveAuth
                   isSite
                   onCloseSingIn={open => {
-                    setIsModalOpen(open);
+                    setIsModalOpen && setIsModalOpen(open);
                     clearTimeout(timeOutId);
                   }}
                   style={isMobile() ? styles.mobileButton : styles.socialButton}
