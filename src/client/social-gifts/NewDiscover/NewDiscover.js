@@ -14,7 +14,6 @@ import {
   getObjectsTypeByTypesNameMore,
   resetObjects,
   getTagCategories,
-  setTagsFiltersAndLoad,
   changeSorting,
 } from '../../../store/objectTypeStore/objectTypeActions';
 import {
@@ -63,7 +62,7 @@ const NewDiscover = () => {
 
   const [loading, setLoading] = useState(false);
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
-  const lastLoadedSortRef = useRef(null);
+  const lastLoadedSearchRef = useRef(null);
 
   const discoverUsers = match.url?.includes('discover-users');
 
@@ -103,7 +102,7 @@ const NewDiscover = () => {
   useEffect(() => {
     if (discoverUsers || !type) return;
 
-    if (lastLoadedSortRef.current === sort && lastLoadedSortRef.current !== null) {
+    if (lastLoadedSearchRef.current === location.search && lastLoadedSearchRef.current !== null) {
       return;
     }
 
@@ -116,7 +115,7 @@ const NewDiscover = () => {
 
     dispatch(changeSorting(reduxSort));
 
-    lastLoadedSortRef.current = sort;
+    lastLoadedSearchRef.current = location.search;
 
     dispatch(getObjectsTypeByTypesName(type, buildFilter(), wobjects_count, ac)).finally(() =>
       setLoading(false),
@@ -140,9 +139,8 @@ const NewDiscover = () => {
       sort,
     });
 
-    dispatch(setTagsFiltersAndLoad(tagsByCategory));
+    // Update URL - useEffect will handle data loading
     history.push(`${location.pathname}?${canonical}`);
-    // dispatch(getTagCategories(activeObjectTypeName))
   };
 
   const removeTag = (cat, tag) => {
@@ -159,9 +157,8 @@ const NewDiscover = () => {
       sort,
     });
 
-    dispatch(setTagsFiltersAndLoad(updated));
+    // Update URL - useEffect will handle data loading
     history.push(`${location.pathname}?${canonical}`);
-    // dispatch(getTagCategories(activeObjectTypeName))
   };
 
   const handleSortChange = newSort => {

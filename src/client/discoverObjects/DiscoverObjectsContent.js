@@ -267,6 +267,10 @@ class DiscoverObjectsContent extends Component {
     const { history, location } = this.props;
     const { search, tagsByCategory } = parseDiscoverQuery(location.search);
 
+    const reduxSort = sorting === 'rank' ? 'weight' : sorting;
+
+    this.props.setObjectSortType(reduxSort);
+
     const canonical = buildCanonicalSearch({
       search,
       tagsByCategory,

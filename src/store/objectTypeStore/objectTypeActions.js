@@ -275,7 +275,7 @@ const extractTagsByCategoryFromUrl = queryString => {
     categories.forEach((cat, index) => {
       const tag = tags[index];
 
-      if (cat && tag) {
+      if (cat && tag && cat !== 'sort') {
         let decodedTag = tag;
         let decodedCat = cat;
 
@@ -328,6 +328,7 @@ const extractTagsByCategoryFromUrl = queryString => {
       'zoom',
       'category',
       'tag',
+      'sort',
     ];
 
     params.forEach((value, key) => {
