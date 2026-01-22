@@ -40,6 +40,12 @@
     border-radius: 24px;
     height: 220px;
 
+    @media @small-max {
+      width: 310px;
+      height: 310px;
+      margin: 0 auto;
+    }
+
     a {
       position: relative;
       display: block;
@@ -75,6 +81,10 @@
       font-weight: 500;
       text-align: left;
       font-family: var(--template-font-body, PlayfairDisplay, serif);
+
+      @media @small-max {
+        bottom: 8px;
+      }
     }
   }
 
@@ -85,6 +95,12 @@
     object-fit: cover;
     border-radius: 24px;
     overflow: hidden;
+
+    @media @small-max {
+      width: 310px;
+      height: 310px;
+      margin: 0 auto;
+    }
 
     &:hover {
       box-shadow: none;

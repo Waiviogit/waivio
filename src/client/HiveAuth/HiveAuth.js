@@ -162,11 +162,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
 
   return (
     <div className="HiveAuth" style={style}>
-      <img
-        alt={'Hive auth'}
-        className={'HiveAuth__icon'}
-        src={'/images/icons/hive-auth-logo.png'}
-      />
+      <img alt={'Hive auth'} className={'HiveAuth__icon'} src={'/images/icons/keychain_logo.png'} />
       {showInput ? (
         <React.Fragment>
           {!savedAcc ? (
