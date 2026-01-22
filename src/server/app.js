@@ -13,6 +13,7 @@ import urlDecodeMiddleware from './middleware/urlDecodeMiddleware';
 import path from 'path';
 import { restartHandler } from '../common/services/errorNotifier';
 import { makeAnalyticsInjectMiddleware } from './middleware/analyticsMiddleware';
+import { analyticsPing, analyticsToken } from './analytics/requestHandlers';
 
 /**
  * Helper function to preserve query parameters in redirects
@@ -206,5 +207,7 @@ app.get('/%40:author/:permlink', (req, res) => {
 });
 
 app.get('/*', ssrHandler);
+app.post('/analytics/ping', analyticsPing);
+app.get('/analytics/token', analyticsToken);
 
 export default app;

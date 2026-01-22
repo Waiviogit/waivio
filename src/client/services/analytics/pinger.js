@@ -21,7 +21,7 @@ let pingToken = window.__PING_TOKEN__ || '';
 let pingBucket = window.__PING_BUCKET__ || 0;
 
 const fetchNewToken = async aid => {
-  const r = await fetch(`/api/analytics/token?aid=${encodeURIComponent(aid)}`, {
+  const r = await fetch(`/analytics/token?aid=${encodeURIComponent(aid)}`, {
     credentials: 'include',
   });
   const j = await r.json();
@@ -51,9 +51,9 @@ const sendPing = async () => {
     if (navigator.sendBeacon) {
       const blob = new Blob([body], { type: 'application/json' });
 
-      navigator.sendBeacon('/api/analytics/ping', blob);
+      navigator.sendBeacon('/analytics/ping', blob);
     } else {
-      fetch('/api/analytics/ping', {
+      fetch('/analytics/ping', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body,
@@ -61,6 +61,7 @@ const sendPing = async () => {
         credentials: 'include',
       }).catch(() => {});
     }
+
     return null;
   } catch (error) {
     return null;
