@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { message } from 'antd';
@@ -14,6 +14,7 @@ import AppHost from './AppHost';
 import { getBrowserLocale, loadLanguage } from '../common/translations';
 import { setScreenSize, setUsedLocale } from '../store/appStore/appActions';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
+import startActivePinger from './services/analytics/pinger';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   navigator.serviceWorker.register('/service-worker.js');
@@ -51,6 +52,7 @@ const render = async Component => {
   if (activeLocale === 'auto') {
     activeLocale = Cookie.get('language') || getBrowserLocale() || 'en-US';
   }
+  useEffect(() => startActivePinger(), []);
 
   const lang = await loadLanguage(activeLocale);
   const screenSize = width => {
