@@ -45,8 +45,8 @@ const FiltersContainer = ({
   const activeObjectTypeName = match.params.type || match.params.typeName;
 
   useEffect(() => {
-    dispatchSetActiveTagsFilters(parseDiscoverTagsFilters(location.search));
-  }, [location.search]);
+    dispatchSetActiveTagsFilters(parseDiscoverTagsFilters(location.search), activeObjectTypeName);
+  }, [location.search, activeObjectTypeName]);
 
   const handleDisplayFilter = filterName => () => {
     setCollapsed(prev =>
