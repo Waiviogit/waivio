@@ -76,6 +76,7 @@ export default function createSsrHandler(template) {
     const isWaivio = hostname?.includes('waivio');
     const userAgent = req.get('User-Agent');
     const inheritedHost = isInheritedHost(hostname);
+    const analyticsInject = req.ssrInject?.analytics || '';
 
     if (inheritedHost) {
       const { redirect, redirectPath, status } = await checkAppStatus(hostname);
@@ -172,21 +173,26 @@ export default function createSsrHandler(template) {
       }
     }
 
+    const renderTags = {
+      googleTag: get(settings, 'googleAnalyticsTag', ''),
+      googleGSC: get(settings, 'googleGSCTag', ''),
+      verifTags: get(settings, 'verificationTags', []),
+      googleEventSnippetTag: get(settings, 'googleEventSnippet', ''),
+      googleAdsConfig: get(settings, 'googleAdsConfig', ''),
+      adSense: get(adsenseSettings, 'code', ''),
+    };
+
     if (isUser) {
       return res.send(
-        renderSsrPage(
+        renderSsrPage({
           store,
-          null,
+          html: null,
           assets,
           template,
           isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-          get(settings, 'googleGSCTag', ''),
-          get(settings, 'verificationTags', []),
-          get(settings, 'googleEventSnippet', ''),
-          get(settings, 'googleAdsConfig', ''),
-          get(adsenseSettings, 'code', ''),
-        ),
+          analyticsInject,
+          ...renderTags,
+        }),
       );
     }
 
@@ -244,19 +250,14 @@ export default function createSsrHandler(template) {
 
       if (context.status) res.status(context.status);
 
-      const page = renderSsrPage(
+      const page = renderSsrPage({
         store,
-        content,
+        html: content,
         assets,
         template,
         isWaivio,
-        get(settings, 'googleAnalyticsTag', ''),
-        get(settings, 'googleGSCTag', ''),
-        get(settings, 'verificationTags', []),
-        get(settings, 'googleEventSnippet', ''),
-        get(settings, 'googleAdsConfig', ''),
-        get(adsenseSettings, 'code', ''),
-      );
+        ...renderTags,
+      });
 
       if (searchBot) await setCachedPage({ page, req });
 
@@ -268,19 +269,14 @@ export default function createSsrHandler(template) {
       );
 
       return res.send(
-        renderSsrPage(
+        renderSsrPage({
           store,
-          null,
+          html: null,
           assets,
           template,
           isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-          get(settings, 'googleGSCTag', ''),
-          get(settings, 'verificationTags', []),
-          get(settings, 'googleEventSnippet', ''),
-          get(settings, 'googleAdsConfig', ''),
-          get(adsenseSettings, 'code', ''),
-        ),
+          ...renderTags,
+        }),
       );
     }
   };
