@@ -67,11 +67,11 @@ const sendPing = async () => {
 };
 
 const startActivePinger = () => {
-  if (!document) return () => {};
+  if (typeof document === 'undefined') return () => {};
   const pingNow = () => sendPing();
 
-  if (document.readyState === 'complete') pingNow();
-  else window.addEventListener('load', pingNow, { once: true });
+  // Fire as soon as the bundle runs (no wait for full load)
+  pingNow();
 
   const timer = setInterval(() => {
     if (document.visibilityState === 'visible') pingNow();
