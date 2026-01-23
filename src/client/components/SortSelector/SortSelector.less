@@ -4,6 +4,8 @@
   color: @blue-botticelli;
   text-align: right;
   font-family: var(--template-font-body, inherit);
+  display: inline-block;
+  width: auto;
 
   &__title {
     display: inline-block;
@@ -23,5 +25,11 @@
       font-size: 16px !important;
       vertical-align: -1px;
     }
+  }
+
+  @media (max-width: 768px) {
+    text-align: right;
+    width: 100%;
+    display: block;
   }
 }
