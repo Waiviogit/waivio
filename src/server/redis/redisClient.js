@@ -41,3 +41,23 @@ export const sismember = async ({ key, member }) => {
     return false;
   }
 };
+
+export const sadd = async ({ key, member }) => {
+  try {
+    const result = await redisClient.SADD(key, member);
+    return result;
+  } catch (error) {
+    console.log(error.message);
+    return 0;
+  }
+};
+
+export const expire = async ({ key, seconds }) => {
+  try {
+    const result = await redisClient.EXPIRE(key, seconds);
+    return !!result;
+  } catch (error) {
+    console.log(error.message);
+    return false;
+  }
+};
