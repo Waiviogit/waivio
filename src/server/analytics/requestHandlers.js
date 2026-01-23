@@ -16,6 +16,11 @@ const markActive = async (hostname, aid) => {
   const key = `aid_active:${getCurrentDateString()}:${hostname}`;
   await sadd({ key, member: aid });
   await expire({ key, seconds: 60 * 60 * 24 * 7 }); // 7 days
+
+  // Simple global set
+  const botDetectionKey = 'aid_active_recent';
+  await sadd({ key: botDetectionKey, member: aid });
+  await expire({ key: botDetectionKey, seconds: 60 * 60 * 24 });
 };
 
 export const analyticsToken = (req, res) => {
