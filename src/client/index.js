@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { message } from 'antd';
@@ -45,6 +45,9 @@ message.config({
   duration: 3,
 });
 
+// Start anonymous activity pinger once on app bootstrap
+startActivePinger();
+
 const render = async Component => {
   const state = store.getState();
   let activeLocale = getLocale(state);
@@ -52,7 +55,6 @@ const render = async Component => {
   if (activeLocale === 'auto') {
     activeLocale = Cookie.get('language') || getBrowserLocale() || 'en-US';
   }
-  useEffect(() => startActivePinger(), []);
 
   const lang = await loadLanguage(activeLocale);
   const screenSize = width => {
