@@ -148,14 +148,27 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
           comparator = (a, b) => {
             if (b.weight !== a.weight) return b.weight - a.weight;
 
-            return a.name.localeCompare(b.name);
+            const nameA = getObjectName(a) || '';
+            const nameB = getObjectName(b) || '';
+
+            return nameA.localeCompare(nameB);
           };
           break;
         case 'by-name-asc':
-          comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+          comparator = (a, b) => {
+            const nameA = getObjectName(a) || '';
+            const nameB = getObjectName(b) || '';
+
+            return nameA.localeCompare(nameB);
+          };
           break;
         case 'by-name-desc':
-          comparator = (a, b) => getObjectName(b).localeCompare(getObjectName(a));
+          comparator = (a, b) => {
+            const nameA = getObjectName(a) || '';
+            const nameB = getObjectName(b) || '';
+
+            return nameB.localeCompare(nameA);
+          };
           break;
         case 'recency':
           comparator = (a, b) => {
@@ -176,7 +189,12 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
           };
           break;
         default:
-          comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+          comparator = (a, b) => {
+            const nameA = getObjectName(a) || '';
+            const nameB = getObjectName(b) || '';
+
+            return nameA.localeCompare(nameB);
+          };
           break;
       }
 
@@ -198,7 +216,9 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
 
     if (!sortOrder || !sortOrder.include || sortOrder.include.length === 0) {
       const sorted = uniqBy(withoutExcluded, 'author_permlink').sort((a, b) => {
-        const cmp = getObjectName(a).localeCompare(getObjectName(b));
+        const nameA = getObjectName(a) || '';
+        const nameB = getObjectName(b) || '';
+        const cmp = nameA.localeCompare(nameB);
 
         if (cmp !== 0) return cmp;
         if (has(a, 'addedAt') && has(b, 'addedAt')) {
@@ -221,14 +241,27 @@ export const sortListItemsBy = (items, sortByParam = 'recency', sortOrder = null
       comparator = (a, b) => {
         if (b.weight !== a.weight) return b.weight - a.weight;
 
-        return a.name.localeCompare(b.name);
+        const nameA = getObjectName(a) || '';
+        const nameB = getObjectName(b) || '';
+
+        return nameA.localeCompare(nameB);
       };
       break;
     case 'by-name-asc':
-      comparator = (a, b) => getObjectName(a).localeCompare(getObjectName(b));
+      comparator = (a, b) => {
+        const nameA = getObjectName(a) || '';
+        const nameB = getObjectName(b) || '';
+
+        return nameA.localeCompare(nameB);
+      };
       break;
     case 'by-name-desc':
-      comparator = (a, b) => getObjectName(b).localeCompare(getObjectName(a));
+      comparator = (a, b) => {
+        const nameA = getObjectName(a) || '';
+        const nameB = getObjectName(b) || '';
+
+        return nameB.localeCompare(nameA);
+      };
       break;
     case 'recency':
       comparator = (a, b) => {
