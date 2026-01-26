@@ -10,7 +10,6 @@ Disallow: /@*/threads
 Disallow: /@*/comments
 Disallow: /@*/transfers
 Disallow: /@*/mentions
-Disallow: /api/export/all
 
 Sitemap: https://${host}/sitemap.xml
 `;
