@@ -209,12 +209,8 @@ const GeneralSearch = props => {
 
         const isUsers = value === 'Users';
         const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
-        const search =
-          searchBarValue && searchBarValue.toLowerCase() !== 'recipe'
-            ? `?search=${searchBarValue}`
-            : '';
 
-        redirectUrl = `${mainLink}${search}`;
+        redirectUrl = `${mainLink}`;
         break;
       }
 
