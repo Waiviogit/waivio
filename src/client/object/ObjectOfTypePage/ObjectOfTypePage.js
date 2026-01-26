@@ -23,6 +23,7 @@ import HtmlSandbox from '../../../components/HtmlSandbox';
 import {
   appendObject,
   getChangedWobjectFieldWithoutSoket,
+  voteAppends,
 } from '../../../store/appendStore/appendActions';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -280,6 +281,7 @@ const ObjectOfTypePage = props => {
           const sendParts = async () => {
             let firstChunkData = null;
             let firstChunkAuthor = null;
+            const hasMultipleChunks = chunks.length > 1;
 
             try {
               for (let i = 0; i < chunks.length; i += 1) {
@@ -312,11 +314,13 @@ const ObjectOfTypePage = props => {
                   );
                 }
 
+                const power = i === 0 ? getVotePower() : 0;
+
                 // eslint-disable-next-line no-await-in-loop
                 const res = await appendPageContent(postData, {
                   follow: i === 0 ? follow : false,
-                  votePercent: i === 0 ? getVotePower() : 0,
-                  isLike: i === 0,
+                  votePercent: hasMultipleChunks ? 0 : power,
+                  isLike: hasMultipleChunks ? false : i === 0,
                   isObjectPage: true,
                 });
 
@@ -330,6 +334,21 @@ const ObjectOfTypePage = props => {
                     author: res.author,
                     permlink: res.permlink || postData.permlink,
                   };
+                }
+              }
+
+              if (hasMultipleChunks && firstChunkData && getVotePower() !== null) {
+                try {
+                  await props.voteAppends(
+                    firstChunkData.author,
+                    firstChunkData.permlink,
+                    getVotePower(),
+                    objectFields.htmlContent,
+                    false,
+                    true,
+                  );
+                } catch (voteError) {
+                  console.error('Error voting on first append:', voteError);
                 }
               }
 
@@ -750,6 +769,7 @@ ObjectOfTypePage.propTypes = {
   isLoadingFlag: PropTypes.bool,
   appendPageContent: PropTypes.func.isRequired,
   getChangedWobjectFieldWithoutSoket: PropTypes.func,
+  voteAppends: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
   followingList: PropTypes.arrayOf(PropTypes.string),
 
@@ -786,6 +806,7 @@ const mapDispatchToProps = {
   setNestedWobj: setNestedWobject,
   setEditMode,
   getChangedWobjectFieldWithoutSoket,
+  voteAppends,
 };
 
 export default connect(

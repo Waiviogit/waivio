@@ -25,6 +25,7 @@ import {
   setActiveTagsFilters,
   setObjectSortType,
   getTagCategories,
+  resetObjects,
 } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -95,6 +96,7 @@ export const SORT_OPTIONS = {
     setTagsFiltersAndLoad,
     setObjectSortType,
     getTagCategories,
+    resetObjects,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -121,6 +123,7 @@ class DiscoverObjectsContent extends Component {
     setObjectSortType: PropTypes.func.isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
+    resetObjects: PropTypes.func.isRequired,
     setActiveTagsFilters: PropTypes.func.isRequired,
     setTagsFiltersAndLoad: PropTypes.func.isRequired,
     getTagCategories: PropTypes.func.isRequired,
@@ -199,7 +202,7 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { location, typeName } = this.props;
+    const { location, typeName, dispatchGetObjectType } = this.props;
     const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
     const { sort } = parseDiscoverQuery(location.search);
 
@@ -210,7 +213,15 @@ class DiscoverObjectsContent extends Component {
       prevProps.location.pathname === location.pathname &&
       prevProps.location.search !== location.search
     ) {
+      const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+      this.props.setObjectSortType(reduxSort);
+
       this.lastLoadedSortRef = sort;
+
+      this.props.resetObjects();
+
+      dispatchGetObjectType(typeName, { skip: 0 });
     }
   }
 
