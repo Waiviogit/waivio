@@ -161,6 +161,7 @@ class DiscoverObjectsContent extends Component {
       match: {},
     };
     this.lastLoadedSortRef = null;
+    this.lastLoadedSearchRef = null;
   }
 
   componentDidMount() {
@@ -196,13 +197,14 @@ class DiscoverObjectsContent extends Component {
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
     this.lastLoadedSortRef = sort;
+    this.lastLoadedSearchRef = location.search;
     dispatchGetObjectType(typeName, { skip: 0 });
     this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentDidUpdate(prevProps) {
-    const { location, typeName, dispatchGetObjectType } = this.props;
+    const { location, typeName, theType } = this.props;
     const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
     const { sort } = parseDiscoverQuery(location.search);
 
@@ -221,7 +223,16 @@ class DiscoverObjectsContent extends Component {
 
       this.props.resetObjects();
 
-      dispatchGetObjectType(typeName, { skip: 0 });
+      const reduxTypeName = theType?.name;
+      const isEmptyType = !theType || Object.keys(theType).length === 0;
+      const nameMismatch = reduxTypeName && reduxTypeName !== typeName;
+      const shouldCallSetTagsFilters = isEmptyType || !reduxTypeName || nameMismatch;
+
+      if (shouldCallSetTagsFilters) {
+        const { activeTagsFilters } = this.props;
+
+        this.props.setTagsFiltersAndLoad(activeTagsFilters, typeName);
+      }
     }
   }
 
