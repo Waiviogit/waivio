@@ -96,11 +96,13 @@ class ListDnD extends Component {
           sortedLists = lists.sort((a, b) => {
             const nameA = (a.name || a.default_name || '').toString();
             const nameB = (b.name || b.default_name || '').toString();
+
             return nameA.localeCompare(nameB);
           });
           sortedNonLists = nonLists.sort((a, b) => {
             const nameA = (a.name || a.default_name || '').toString();
             const nameB = (b.name || b.default_name || '').toString();
+
             return nameA.localeCompare(nameB);
           });
           break;
@@ -108,11 +110,13 @@ class ListDnD extends Component {
           sortedLists = lists.sort((a, b) => {
             const nameA = (a.name || a.default_name || '').toString();
             const nameB = (b.name || b.default_name || '').toString();
+
             return nameB.localeCompare(nameA);
           });
           sortedNonLists = nonLists.sort((a, b) => {
             const nameA = (a.name || a.default_name || '').toString();
             const nameB = (b.name || b.default_name || '').toString();
+
             return nameB.localeCompare(nameA);
           });
           break;
