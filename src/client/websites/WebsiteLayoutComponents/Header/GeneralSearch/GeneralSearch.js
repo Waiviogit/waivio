@@ -185,14 +185,12 @@ const GeneralSearch = props => {
     return dataSource;
   };
 
-  const isObjectTypeOrPlural = searchValue => {
-    const lowerSearch = searchValue.toLowerCase();
+  const isSameTypeOrPlural = (searchValue, selectedType) => {
+    if (!searchValue || !selectedType) return false;
+    const lowerSearch = searchValue.toLowerCase().trim();
+    const lowerType = selectedType.toLowerCase().trim();
 
-    return listOfObjectTypes.some(t => {
-      const lowerType = t.toLowerCase();
-
-      return lowerSearch === lowerType || lowerSearch === getPlural(t);
-    });
+    return lowerSearch === lowerType || lowerSearch === getPlural(lowerType);
   };
 
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
@@ -221,7 +219,7 @@ const GeneralSearch = props => {
         const isUsers = value === 'Users';
         const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
         const search =
-          searchBarValue && !isObjectTypeOrPlural(searchBarValue)
+          searchBarValue && (isUsers || !isSameTypeOrPlural(searchBarValue, value))
             ? `?search=${searchBarValue}`
             : '';
 
