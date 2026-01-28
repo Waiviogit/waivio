@@ -15,6 +15,7 @@ const LinkItem = ({ link, index, intl }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const directObjTypes = ['person'];
+  const hostname = window.location.hostname;
 
   let linkTo = directObjTypes?.includes(link?.object_type || '')
     ? `/object/${link.permlink}`
@@ -34,7 +35,13 @@ const LinkItem = ({ link, index, intl }) => {
     <a
       key={link.link}
       className="WebsiteTopNavigation__link"
-      onClick={() => dispatch(setLinkSafetyInfo(link.link))}
+      onClick={() => {
+        if (link?.link?.includes(hostname)) {
+          return window && window?.open(link.link, '_self');
+        }
+
+        return dispatch(setLinkSafetyInfo(link?.link));
+      }}
     >
       {getMenuLinkTitle(link, intl, 24, uppercase)}
     </a>
