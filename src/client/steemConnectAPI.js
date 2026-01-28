@@ -101,7 +101,6 @@ function sc2Extended() {
       if (hasKeychain() && username) {
         try {
           const keychainKeyType = keyType === 'active' ? 'Active' : 'Posting';
-          // This calls requestBroadcast which triggers extension popup - no window.open or redirect
           const result = await keychainBroadcast({
             username,
             operations,
@@ -112,7 +111,6 @@ function sc2Extended() {
 
           return result;
         } catch (error) {
-          // Fallback to HAS QR code if Keychain fails
           return hasBrodcast(operations, keyType, cb);
         }
       }
@@ -128,6 +126,34 @@ function sc2Extended() {
     if (isGuest() || isHiveAuth()) return getUserAccount(name);
 
     return sc2Proto.meOp();
+  };
+
+  sc2Proto.comment = async (
+    parentAuthor,
+    parentPermlink,
+    author,
+    permlink,
+    title,
+    body,
+    jsonMetadata,
+  ) => {
+    const operations = [
+      [
+        'comment',
+        {
+          parent_author: parentAuthor,
+          parent_permlink: parentPermlink,
+          author,
+          permlink,
+          title,
+          body,
+          json_metadata:
+            typeof jsonMetadata === 'string' ? jsonMetadata : JSON.stringify(jsonMetadata),
+        },
+      ],
+    ];
+
+    return sc2Proto.broadcast(operations, null, 'posting');
   };
 
   return Object.assign(

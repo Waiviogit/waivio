@@ -3,6 +3,8 @@
  * Provides functions to interact with Hive Keychain browser extension
  */
 
+import { message } from 'antd';
+
 /**
  * Check if Hive Keychain extension is available
  * @returns {boolean} True if Keychain extension is installed
@@ -17,7 +19,7 @@ export const hasKeychain = () => typeof window !== 'undefined' && !!window.hive_
  * @param {string} keyType - Key type (Posting, Active, Memo). Default: 'Posting'
  * @returns {Promise<{success: boolean, result: string, message?: string}>}
  */
-export const keychainSignBuffer = (username, message, keyType = 'Posting') =>
+export const keychainSignBuffer = (username, mess, keyType = 'Posting') =>
   new Promise((resolve, reject) => {
     if (!hasKeychain()) {
       reject(new Error('Hive Keychain extension is not installed'));
@@ -28,7 +30,7 @@ export const keychainSignBuffer = (username, message, keyType = 'Posting') =>
     // This API call triggers extension popup - no window.open or redirect needed
     window.hive_keychain.requestSignBuffer(
       username,
-      message,
+      mess,
       keyType,
       response => {
         if (response.success) {
@@ -64,9 +66,10 @@ export const keychainBroadcast = (username, operations, keyType = 'Active') =>
       response => {
         if (response.success) {
           resolve(response);
+        } else {
+          message.error('Transaction was rejected!');
+          reject(new Error(response.message || 'Broadcast failed'));
         }
-
-        reject(new Error(response.message || 'Broadcast failed'));
       },
       'waivio',
     );
