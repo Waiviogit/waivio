@@ -89,7 +89,6 @@ export const login = async ({ username }) => {
  */
 export const broadcast = async ({ username, operations, keyType = 'Active' }) => {
   if (hasKeychain()) {
-    // Use Keychain extension API - triggers extension popup, no window.open or redirect
     try {
       const response = await keychainBroadcast(username, operations, keyType);
 
@@ -101,11 +100,11 @@ export const broadcast = async ({ username, operations, keyType = 'Active' }) =>
     } catch (e) {
       return {
         error: 'User canceled request',
+        error_description: 'Transaction was rejected!',
       };
     }
   }
 
-  // Fallback to HiveAuth QR flow (only if Keychain is not available)
   const auth = parseJSON(Cookie.get('auth'));
 
   if (!auth) {
