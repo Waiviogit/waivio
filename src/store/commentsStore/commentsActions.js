@@ -262,8 +262,9 @@ export const sendComment = (
       parentPost.root_author,
     )
     .then(res => {
-      if (res.error) throw new Error();
-      if (res.ok || res.result) {
+      if (res?.error) throw new Error();
+
+      if (res?.ok || res?.result) {
         if (isThread) {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
             auth.user.name,
@@ -275,6 +276,7 @@ export const sendComment = (
             }
           });
         }
+
         dispatch(
           getFakeSingleComment(
             guestParentAuthor || parentAuthor,
@@ -303,7 +305,8 @@ export const sendComment = (
       return res;
     })
     .catch(err => {
-      if (err) dispatch(notify(err.error.message || err.error_description, 'error'));
+      if (err?.error?.message || err?.error_description || err?.message)
+        dispatch(notify(err?.error?.message || err?.error_description || err?.message, 'error'));
       dispatch(SEND_COMMENT_ERROR);
     });
 };

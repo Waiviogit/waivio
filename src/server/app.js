@@ -38,7 +38,7 @@ const CACHE_AGE = 1000 * 60 * 60 * 24 * 7;
 const app = express();
 
 const IS_DEV = process.env.NODE_ENV === 'development';
-const analyticsSecret = process.env.ANALYTICS_SECRET;
+const analyticsSecret = process.env.ANALYTICS_SECRET || 'change_me';
 
 app.use(cookieParser());
 app.use(express.json());
