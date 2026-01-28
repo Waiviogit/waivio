@@ -341,6 +341,32 @@ export const voteAppends = (
   // Race between the vote promise and abort promise
   return Promise.race([votePromise, abortPromise]);
 };
+
+export const waitForTransactionConfirmation = (username, transactionId, timeout = 30000) => (
+  dispatch,
+  getState,
+  { busyAPI },
+) =>
+  new Promise((resolve, reject) => {
+    if (!transactionId) {
+      resolve();
+
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      reject(new Error('Transaction confirmation timeout'));
+    }, timeout);
+
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [username, transactionId]);
+    busyAPI.instance.subscribe((datad, j) => {
+      if (j?.success && j?.permlink === transactionId) {
+        clearTimeout(timeoutId);
+        resolve();
+      }
+    });
+  });
+
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
 export const authorityVoteAppend = (author, authorPermlink, permlink, weight, isObjectPage) => (

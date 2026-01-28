@@ -24,6 +24,7 @@ import {
   appendObject,
   getChangedWobjectFieldWithoutSoket,
   voteAppends,
+  waitForTransactionConfirmation,
 } from '../../../store/appendStore/appendActions';
 import { getIsAddingAppendLoading } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -281,7 +282,9 @@ const ObjectOfTypePage = props => {
           const sendParts = async () => {
             let firstChunkData = null;
             let firstChunkAuthor = null;
+            let firstChunkTransactionId = null;
             const hasMultipleChunks = chunks.length > 1;
+            const votePower = getVotePower();
 
             try {
               for (let i = 0; i < chunks.length; i += 1) {
@@ -299,7 +302,7 @@ const ObjectOfTypePage = props => {
 
                 if (chunk.partNumber > 1) {
                   postData.skipBroadcast = true;
-                  // Pass author from first chunk for subsequent parts
+
                   if (firstChunkAuthor) {
                     postData.firstChunkAuthor = firstChunkAuthor;
                   }
@@ -314,13 +317,14 @@ const ObjectOfTypePage = props => {
                   );
                 }
 
-                const power = i === 0 ? getVotePower() : 0;
+                const power = i === 0 ? votePower : 0;
+                const shouldVoteInAppend = !hasMultipleChunks && i === 0 && power !== null;
 
                 // eslint-disable-next-line no-await-in-loop
                 const res = await appendPageContent(postData, {
                   follow: i === 0 ? follow : false,
-                  votePercent: hasMultipleChunks ? 0 : power,
-                  isLike: hasMultipleChunks ? false : i === 0,
+                  votePercent: shouldVoteInAppend ? power : 0,
+                  isLike: shouldVoteInAppend,
                   isObjectPage: true,
                 });
 
@@ -330,6 +334,7 @@ const ObjectOfTypePage = props => {
 
                 if (i === 0 && res.author) {
                   firstChunkAuthor = res.author;
+                  firstChunkTransactionId = res.transactionId;
                   firstChunkData = {
                     author: res.author,
                     permlink: res.permlink || postData.permlink,
@@ -337,12 +342,23 @@ const ObjectOfTypePage = props => {
                 }
               }
 
-              if (hasMultipleChunks && firstChunkData && getVotePower() !== null) {
+              if (chunks.length > 1 && firstChunkData && votePower !== null) {
+                // Wait for blockchain transaction to be confirmed before voting
+                // This prevents the vote from failing due to transaction not being confirmed yet
+                try {
+                  if (firstChunkTransactionId) {
+                    await props.waitForTransactionConfirmation(userName, firstChunkTransactionId);
+                  }
+                } catch (confirmationError) {
+                  console.error('Error waiting for transaction confirmation:', confirmationError);
+                  // Continue with vote attempt even if confirmation wait fails
+                }
+
                 try {
                   await props.voteAppends(
                     firstChunkData.author,
                     firstChunkData.permlink,
-                    getVotePower(),
+                    votePower,
                     objectFields.htmlContent,
                     false,
                     true,
@@ -770,6 +786,7 @@ ObjectOfTypePage.propTypes = {
   appendPageContent: PropTypes.func.isRequired,
   getChangedWobjectFieldWithoutSoket: PropTypes.func,
   voteAppends: PropTypes.func.isRequired,
+  waitForTransactionConfirmation: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
   followingList: PropTypes.arrayOf(PropTypes.string),
 
@@ -807,6 +824,7 @@ const mapDispatchToProps = {
   setEditMode,
   getChangedWobjectFieldWithoutSoket,
   voteAppends,
+  waitForTransactionConfirmation,
 };
 
 export default connect(
