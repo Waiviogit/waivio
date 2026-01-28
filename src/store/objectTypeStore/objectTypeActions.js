@@ -82,6 +82,7 @@ export const getObjectType = (
     payload: ApiClient.getObjectType(objectTypeName, preparedData, ac, appHost),
     meta: {
       locale,
+      skip,
     },
   });
 };

@@ -384,9 +384,6 @@ class Wrapper extends React.PureComponent {
               style={{ '--website-color': '#f87007' }}
               data-dir={language && language.rtl ? 'rtl' : 'ltr'}
             >
-              <a href="/api/export/all" style={{ display: 'none' }} aria-hidden>
-                export
-              </a>
               {!isWidget && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <Topnav username={user.name} />

@@ -1,24 +1,15 @@
 import { buildPingVarsForRequest } from './ssrInject';
 import { getBucket10m, uaHash, timingSafeEqualHex, signPingToken } from './cryptoTools';
-import { sadd, expire, setEx } from '../redis/redisClient';
+import { sadd, setEx } from '../redis/redisClient';
 
 const analyticsSecret = process.env.ANALYTICS_SECRET;
-
-const getCurrentDateString = () => {
-  const date = new Date();
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  return `${year}${month}${day}`;
-};
+const SITE_USERS_STATISTIC_KEY = 'aid_active';
 
 const markActive = async (hostname, aid) => {
-  const key = `aid_active:${getCurrentDateString()}:${hostname}`;
+  const key = `${SITE_USERS_STATISTIC_KEY}:${hostname.replace(/^www\./i, '')}`;
   await sadd({ key, member: aid });
-  await expire({ key, seconds: 60 * 60 * 24 * 7 }); // 7 days
-
   // Per-aid marker
-  const markerKey = `aid_active:${aid}`;
+  const markerKey = `${SITE_USERS_STATISTIC_KEY}:${aid}`;
   await setEx({ key: markerKey, seconds: 60 * 60, value: '1' }); // 1 hour TTL
 };
 

@@ -33,6 +33,7 @@ const objectType = (state = initialState, action) => {
         filters,
         ...data
       } = action.payload;
+      const skip = action.meta?.skip || 0;
       const filteredRelatedWobjects = filter(relatedWobjects, wObj => {
         const wobjStatus = parseWobjectField(wObj, 'status');
 
@@ -41,7 +42,7 @@ const objectType = (state = initialState, action) => {
         );
       });
       const filteredObjects =
-        state.filteredObjects.length === 0
+        skip === 0
           ? filteredRelatedWobjects
           : [...state.filteredObjects, ...filteredRelatedWobjects];
       const filtersList = filters ? omit(filters, ['map']) : {};
@@ -246,6 +247,8 @@ const objectType = (state = initialState, action) => {
       return {
         ...state,
         sort: action.payload,
+        filteredObjects: [],
+        hasMoreRelatedObjects: true,
       };
 
     case wobjTypeActions.GET_OBJECT_TYPE_BY_NAME.SUCCESS: {
@@ -271,7 +274,8 @@ const objectType = (state = initialState, action) => {
       return {
         ...state,
         relatedObjects: [],
-        hasMoreRelatedObjects: false,
+        filteredObjects: [],
+        hasMoreRelatedObjects: true,
       };
     }
 

@@ -25,6 +25,7 @@ import {
   setActiveTagsFilters,
   setObjectSortType,
   getTagCategories,
+  resetObjects,
 } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
@@ -95,6 +96,7 @@ export const SORT_OPTIONS = {
     setTagsFiltersAndLoad,
     setObjectSortType,
     getTagCategories,
+    resetObjects,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -121,6 +123,7 @@ class DiscoverObjectsContent extends Component {
     setObjectSortType: PropTypes.func.isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
+    resetObjects: PropTypes.func.isRequired,
     setActiveTagsFilters: PropTypes.func.isRequired,
     setTagsFiltersAndLoad: PropTypes.func.isRequired,
     getTagCategories: PropTypes.func.isRequired,
@@ -158,6 +161,7 @@ class DiscoverObjectsContent extends Component {
       match: {},
     };
     this.lastLoadedSortRef = null;
+    this.lastLoadedSearchRef = null;
   }
 
   componentDidMount() {
@@ -193,13 +197,14 @@ class DiscoverObjectsContent extends Component {
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
 
     this.lastLoadedSortRef = sort;
+    this.lastLoadedSearchRef = location.search;
     dispatchGetObjectType(typeName, { skip: 0 });
     this.props.getTagCategories(typeName);
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
 
   componentDidUpdate(prevProps) {
-    const { location, typeName } = this.props;
+    const { location, typeName, theType } = this.props;
     const { sort: prevSort } = parseDiscoverQuery(prevProps.location.search);
     const { sort } = parseDiscoverQuery(location.search);
 
@@ -210,7 +215,24 @@ class DiscoverObjectsContent extends Component {
       prevProps.location.pathname === location.pathname &&
       prevProps.location.search !== location.search
     ) {
+      const reduxSort = sort === 'rank' ? 'weight' : sort;
+
+      this.props.setObjectSortType(reduxSort);
+
       this.lastLoadedSortRef = sort;
+
+      this.props.resetObjects();
+
+      const reduxTypeName = theType?.name;
+      const isEmptyType = !theType || Object.keys(theType).length === 0;
+      const nameMismatch = reduxTypeName && reduxTypeName !== typeName;
+      const shouldCallSetTagsFilters = isEmptyType || !reduxTypeName || nameMismatch;
+
+      if (shouldCallSetTagsFilters) {
+        const { activeTagsFilters } = this.props;
+
+        this.props.setTagsFiltersAndLoad(activeTagsFilters, typeName);
+      }
     }
   }
 

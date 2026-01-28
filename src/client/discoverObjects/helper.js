@@ -280,6 +280,22 @@ export const buildCanonicalSearch = ({ search, tagsByCategory, sort }) => {
   return params.toString();
 };
 
+export const getPlural = word => {
+  const lowerWord = word.toLowerCase();
+
+  if (
+    lowerWord.endsWith('y') &&
+    !['ay', 'ey', 'iy', 'oy', 'uy'].some(ending => lowerWord.endsWith(ending))
+  ) {
+    return `${lowerWord.slice(0, -1)}ies`;
+  }
+  if (['s', 'x', 'z', 'ch', 'sh'].some(ending => lowerWord.endsWith(ending))) {
+    return `${lowerWord}es`;
+  }
+
+  return `${lowerWord}s`;
+};
+
 export default {
   updateActiveFilters,
   isNeedFilters,
