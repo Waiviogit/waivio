@@ -1,13 +1,14 @@
 import { buildPingVarsForRequest } from './ssrInject';
 import { getBucket10m, uaHash, timingSafeEqualHex, signPingToken } from './cryptoTools';
 import { sadd, setEx } from '../redis/redisClient';
+import { isbot } from 'isbot';
 
 const analyticsSecret = process.env.ANALYTICS_SECRET;
 const SITE_USERS_STATISTIC_KEY = 'aid_active';
 
-const markActive = async (hostname, aid) => {
+const markActive = async (hostname, aid, ua) => {
   const key = `${SITE_USERS_STATISTIC_KEY}:${hostname.replace(/^www\./i, '')}`;
-  await sadd({ key, member: aid });
+  if (!isbot(ua)) await sadd({ key, member: aid });
   // Per-aid marker
   const markerKey = `${SITE_USERS_STATISTIC_KEY}:${aid}`;
   await setEx({ key: markerKey, seconds: 60 * 60, value: '1' }); // 1 hour TTL
@@ -42,7 +43,7 @@ export const analyticsPing = async (req, res) => {
     if (!timingSafeEqualHex(token, expected)) {
       return res.status(204).end();
     }
-    await markActive(hostname, aid);
+    await markActive(hostname, aid, ua);
     return res.status(204).end();
   } catch {
     return res.status(204).end();
