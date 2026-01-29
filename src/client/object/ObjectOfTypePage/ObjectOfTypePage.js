@@ -74,6 +74,7 @@ const ObjectOfTypePage = props => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const appendAdding = useSelector(getIsAddingAppendLoading);
+  const latestEditorContentRef = useRef(null);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
   const isCode = currObj.object_type === 'html';
   const getContent = (obj, isWobjCode) => (isWobjCode ? obj.htmlContent : obj.pageContent);
@@ -96,9 +97,11 @@ const ObjectOfTypePage = props => {
 
       setCurrentContent(code);
       setContent(code);
+      latestEditorContentRef.current = code;
     } else {
       setCurrentContent(value);
       setContent(value);
+      latestEditorContentRef.current = value;
     }
   };
 
@@ -282,7 +285,7 @@ const ObjectOfTypePage = props => {
           const sendParts = async () => {
             let firstChunkData = null;
             let firstChunkAuthor = null;
-            let firstChunkTransactionId = null;
+            let lastChunkTransactionId = null;
             const hasMultipleChunks = chunks.length > 1;
             const votePower = getVotePower();
 
@@ -334,20 +337,20 @@ const ObjectOfTypePage = props => {
 
                 if (i === 0 && res.author) {
                   firstChunkAuthor = res.author;
-                  firstChunkTransactionId = res.transactionId;
                   firstChunkData = {
                     author: res.author,
                     permlink: res.permlink || postData.permlink,
                   };
                 }
+                if (res.transactionId) {
+                  lastChunkTransactionId = res.transactionId;
+                }
               }
 
               if (chunks.length > 1 && firstChunkData && votePower !== null) {
-                // Wait for blockchain transaction to be confirmed before voting
-                // This prevents the vote from failing due to transaction not being confirmed yet
                 try {
-                  if (firstChunkTransactionId) {
-                    await props.waitForTransactionConfirmation(userName, firstChunkTransactionId);
+                  if (lastChunkTransactionId) {
+                    await props.waitForTransactionConfirmation(userName, lastChunkTransactionId);
                   }
                 } catch (confirmationError) {
                   console.error('Error waiting for transaction confirmation:', confirmationError);

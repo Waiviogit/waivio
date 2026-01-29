@@ -342,7 +342,7 @@ export const voteAppends = (
   return Promise.race([votePromise, abortPromise]);
 };
 
-export const waitForTransactionConfirmation = (username, transactionId, timeout = 30000) => (
+export const waitForTransactionConfirmation = (username, transactionId, timeout = 300) => (
   dispatch,
   getState,
   { busyAPI },
