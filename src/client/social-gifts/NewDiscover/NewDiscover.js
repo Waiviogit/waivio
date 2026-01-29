@@ -74,6 +74,8 @@ const NewDiscover = () => {
   const buildFilter = () => {
     const filter = { ...activeFilters };
 
+    delete filter.searchString;
+
     if (search) {
       filter.searchString = search;
     }
