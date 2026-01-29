@@ -186,7 +186,7 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
         }
       })
       .catch(e => {
-        message.error(e.error_description);
+        if (e.error_description) message.error(e.error_description);
 
         dispatch({
           type: LIKE_POST.ERROR,
