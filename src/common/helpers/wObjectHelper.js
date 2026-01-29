@@ -1,4 +1,5 @@
 import { get, some, filter, isEmpty, compact, isEqual, has, isNil } from 'lodash';
+import { message } from 'antd';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
@@ -128,24 +129,28 @@ export const splitContentIntoChunks = (content, maxChunkSize = 58000, maxParts =
     return [{ body: content, partNumber: 1, totalParts: 1 }];
   }
 
-  const totalParts = Math.min(Math.ceil(contentSize / maxChunkSize), maxParts);
-  const chunks = [];
   const contentLength = content.length;
-  const avgBytesPerChar = contentSize / contentLength;
-  const targetCharsPerChunk = Math.max(1, Math.floor(maxChunkSize / avgBytesPerChar));
+  const avgBytesPerChar = contentSize / Math.max(1, contentLength);
+  const safeChunkSize = Math.floor(maxChunkSize * 0.95);
+  const targetCharsPerChunk = Math.max(1, Math.floor(safeChunkSize / avgBytesPerChar));
 
+  const estimatedParts = Math.ceil(contentLength / targetCharsPerChunk);
+
+  if (estimatedParts > maxParts) {
+    message.error(
+      `Content is too large: needs ~${estimatedParts} parts, but maxParts is ${maxParts}. ` +
+        `Please reduce content size.`,
+    );
+  }
+
+  const chunks = [];
   let currentStart = 0;
+  let partNumber = 1;
 
-  for (let i = 0; i < totalParts; i += 1) {
-    const isLastChunk = i === totalParts - 1;
-    let currentEnd = isLastChunk
-      ? contentLength
-      : Math.min(currentStart + targetCharsPerChunk, contentLength);
-
+  while (currentStart < contentLength) {
+    let currentEnd = Math.min(currentStart + targetCharsPerChunk, contentLength);
     let chunkBody = content.substring(currentStart, currentEnd);
     let chunkSize = new Blob([chunkBody]).size;
-
-    const safeChunkSize = Math.floor(maxChunkSize * 0.95);
 
     while (chunkSize > safeChunkSize && currentEnd > currentStart + 1) {
       const reduction = Math.max(1, Math.floor((chunkSize - safeChunkSize) / avgBytesPerChar));
@@ -155,16 +160,18 @@ export const splitContentIntoChunks = (content, maxChunkSize = 58000, maxParts =
       chunkSize = new Blob([chunkBody]).size;
     }
 
-    chunks.push({
-      body: chunkBody,
-      partNumber: i + 1,
-      totalParts,
-    });
-
+    chunks.push({ body: chunkBody, partNumber, totalParts: 0 });
     currentStart = currentEnd;
+    partNumber += 1;
+
+    if (partNumber > maxParts + 1) {
+      message.error(`Content is too large: exceeded maxParts=${maxParts}.`);
+    }
   }
 
-  return chunks;
+  const totalParts = chunks.length;
+
+  return chunks.map(c => ({ ...c, totalParts }));
 };
 
 export const prepareAlbumData = (form, currentUsername, wObject, votePercent) => {

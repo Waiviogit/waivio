@@ -82,6 +82,7 @@ export const getObjectType = (
     payload: ApiClient.getObjectType(objectTypeName, preparedData, ac, appHost),
     meta: {
       locale,
+      skip,
     },
   });
 };
@@ -443,9 +444,9 @@ export const setActiveTagsFilters = filters => dispatch => {
   return Promise.resolve();
 };
 
-export const setTagsFiltersAndLoad = filters => (dispatch, getState) => {
+export const setTagsFiltersAndLoad = (filters, typeNameFromUrl = null) => (dispatch, getState) => {
   dispatch(setActiveTagsFilters(filters)).then(() => {
-    const typeName = getTypeName(getState());
+    const typeName = typeNameFromUrl || getTypeName(getState());
 
     if (typeName) dispatch(getObjectTypeByStateFilters(typeName));
   });

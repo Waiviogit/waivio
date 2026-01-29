@@ -442,7 +442,7 @@ export default {
               uuid = req.uuid;
               expire = req.expire;
               // call back app to notify about pending request
-              if (cbWait) cbWait(req);
+              if (typeof cbWait === 'function') cbWait(req);
             } else if (err) {
               if (trace) console.log(`error found: ${JSON.stringify(err)}`);
               reject(err);

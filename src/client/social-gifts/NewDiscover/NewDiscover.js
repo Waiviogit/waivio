@@ -74,6 +74,8 @@ const NewDiscover = () => {
   const buildFilter = () => {
     const filter = { ...activeFilters };
 
+    delete filter.searchString;
+
     if (search) {
       filter.searchString = search;
     }
@@ -264,11 +266,6 @@ const NewDiscover = () => {
           <div className="NewDiscover__wrap">
             <div className="NewDiscover__header-row">
               <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
-              {!discoverUsers && (
-                <div className="NewDiscover__sorting">
-                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
-                </div>
-              )}
             </div>
             {!discoverUsers && isMobile() && (
               <div
@@ -280,29 +277,36 @@ const NewDiscover = () => {
                 <span className="NewDiscover__filters-inline-link">add</span>
               </div>
             )}
-            <div className="NewDiscover__tags-bar">
-              {search && (
-                <Tag closable onClose={removeSearch} className="NewDiscover__search-tag mb2">
-                  Search: {search}
-                </Tag>
-              )}
+            <div className="NewDiscover__tags-sort-row">
+              <div className="NewDiscover__tags-bar">
+                {search && (
+                  <Tag closable onClose={removeSearch} className="NewDiscover__search-tag mb2">
+                    Search: {search}
+                  </Tag>
+                )}
 
-              <div className="NewDiscover__tags-container">
-                {Object.entries(tagsByCategory).map(([cat, tags]) => (
-                  <div key={cat} className="NewDiscover__tag-category">
-                    {tags.map(tag => (
-                      <Tag
-                        className=" mb2"
-                        key={`${cat}-${tag}`}
-                        closable
-                        onClose={() => removeTag(cat, tag)}
-                      >
-                        {`${cat}: ${tag}`}
-                      </Tag>
-                    ))}
-                  </div>
-                ))}
+                <div className="NewDiscover__tags-container">
+                  {Object.entries(tagsByCategory).map(([cat, tags]) => (
+                    <div key={cat} className="NewDiscover__tag-category">
+                      {tags.map(tag => (
+                        <Tag
+                          className=" mb2"
+                          key={`${cat}-${tag}`}
+                          closable
+                          onClose={() => removeTag(cat, tag)}
+                        >
+                          {`${cat}: ${tag}`}
+                        </Tag>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
+              {!discoverUsers && (
+                <div className="NewDiscover__sorting">
+                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+                </div>
+              )}
             </div>
           </div>
 

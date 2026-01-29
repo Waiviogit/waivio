@@ -4,6 +4,11 @@
 .NewDiscover {
   margin: 5px;
 
+  @media (max-width: 767px) {
+    margin: 0;
+    width: 100%;
+  }
+
   @media @small {
     margin: 20px;
   }
@@ -15,12 +20,21 @@
 
     @media (max-width: 768px) {
       flex-direction: column;
+      width: 100%;
+      margin: 0;
+      padding: 0;
     }
   }
 
   &__content {
     flex: 1;
     min-width: 0;
+
+    @media (max-width: 767px) {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
   }
 
   &__sidebar {
@@ -43,6 +57,10 @@
       font-size: 16px;
       line-height: 28px;
       font-weight: 500;
+
+      @media @small {
+        font-size: 18px;
+      }
     }
     i.anticon.anticon-close {
       font-size: 14px;
@@ -50,13 +68,8 @@
   }
 
   &__header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 10px;
     margin-top: 10px;
-    flex-wrap: nowrap;
-    width: 100%;
   }
 
   &__type {
@@ -64,17 +77,26 @@
     color: @blue-gullGray;
     font-size: 18px;
     margin: 0;
-    flex: 0 0 auto;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(100% - 200px);
+  }
+
+  &__tags-sort-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   &__sorting {
     flex: 0 0 auto;
     flex-shrink: 0;
-    margin-left: auto;
     white-space: nowrap;
 
     @media (max-width: 768px) {
@@ -86,21 +108,33 @@
     display: none;
 
     @media (max-width: 768px) {
-      display: flex;
+      display: block;
       margin-bottom: 15px;
-      justify-content: flex-end;
+      text-align: right;
+      width: 100%;
+      clear: both;
+
+      .SortSelector {
+        text-align: right;
+        width: 100%;
+      }
     }
   }
   &__tags-bar {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: 16px;
     display: flex;
-    flex-direction: column;
-    gap: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
 
-    @media @small {
-      flex-direction: row;
-      flex-wrap: wrap;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
       gap: 0;
+      width: 100%;
     }
   }
   &__search-tag {

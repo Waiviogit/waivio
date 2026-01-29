@@ -231,7 +231,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite,
       ) : (
         <span style={buttonStyle} onClick={() => setShowInput(true)}>
           {isSite && intl.formatMessage({ id: 'continue_with', defaultMessage: 'Continue with' })}{' '}
-          Keychain
+          Hive Keychain
         </span>
       )}
       {/* {!keychainAvailable && ( */}

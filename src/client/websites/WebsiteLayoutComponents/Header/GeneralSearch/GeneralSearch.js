@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+import { getPlural } from '../../../../discoverObjects/helper';
 
 import UserSearchItem from '../../../../search/SearchItems/UserSearchItem';
 import ObjectSearchItem from '../../../../search/SearchItems/ObjectSearchItem';
@@ -184,6 +185,14 @@ const GeneralSearch = props => {
     return dataSource;
   };
 
+  const isSameTypeOrPlural = (searchValue, selectedType) => {
+    if (!searchValue || !selectedType) return false;
+    const lowerSearch = searchValue.toLowerCase().trim();
+    const lowerType = selectedType.toLowerCase().trim();
+
+    return lowerSearch === lowerType || lowerSearch === getPlural(lowerType);
+  };
+
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
     let redirectUrl = '';
 
@@ -209,7 +218,10 @@ const GeneralSearch = props => {
 
         const isUsers = value === 'Users';
         const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
-        const search = searchBarValue ? `?search=${searchBarValue}` : '';
+        const search =
+          searchBarValue && (isUsers || !isSameTypeOrPlural(searchBarValue, value))
+            ? `?search=${searchBarValue}`
+            : '';
 
         redirectUrl = `${mainLink}${search}`;
         break;

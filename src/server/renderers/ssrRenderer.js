@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet';
 
-export default function renderSsrPage(
+export default function renderSsrPage({
   store,
   html,
   assets,
@@ -12,7 +12,8 @@ export default function renderSsrPage(
   googleEventSnippetTag,
   googleAdsConfig,
   adSense,
-) {
+  analyticsInject,
+}) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
@@ -35,6 +36,7 @@ export default function renderSsrPage(
       if (assets[key].js) scripts += `<script src="${assets[key].js}" defer></script>`;
     }
   });
+  if (analyticsInject) scripts += analyticsInject;
 
   const production = process.env.NODE_ENV === 'production';
 

@@ -33,11 +33,42 @@ export const getAsync = async ({ key }) => {
   }
 };
 
+export const setEx = async ({ key, seconds, value }) => {
+  try {
+    // Redis v4 style: SET key value EX seconds
+    await redisClient.SET(key, value, { EX: seconds });
+    return true;
+  } catch (error) {
+    console.log(error.message);
+    return false;
+  }
+};
+
 export const sismember = async ({ key, member }) => {
   try {
     const result = await redisClient.SISMEMBER(key, member);
     return !!result;
   } catch (error) {
+    return false;
+  }
+};
+
+export const sadd = async ({ key, member }) => {
+  try {
+    const result = await redisClient.SADD(key, member);
+    return result;
+  } catch (error) {
+    console.log(error.message);
+    return 0;
+  }
+};
+
+export const expire = async ({ key, seconds }) => {
+  try {
+    const result = await redisClient.EXPIRE(key, seconds);
+    return !!result;
+  } catch (error) {
+    console.log(error.message);
     return false;
   }
 };

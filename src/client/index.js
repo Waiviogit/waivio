@@ -14,6 +14,7 @@ import AppHost from './AppHost';
 import { getBrowserLocale, loadLanguage } from '../common/translations';
 import { setScreenSize, setUsedLocale } from '../store/appStore/appActions';
 import { getLocale } from '../store/settingsStore/settingsSelectors';
+import startActivePinger from './services/analytics/pinger';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   navigator.serviceWorker.register('/service-worker.js');
@@ -43,6 +44,9 @@ message.config({
   top: 62,
   duration: 3,
 });
+
+// Start anonymous activity pinger once on app bootstrap
+startActivePinger();
 
 const render = async Component => {
   const state = store.getState();
