@@ -206,6 +206,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
           'ontouchend',
           'ontouchmove',
         ],
+        script: ['src', 'async', 'defer', 'type', 'crossorigin', 'integrity', 'referrerpolicy'],
         a: ['href', 'name', 'target', 'rel', 'title', 'download'],
         img: [
           'src',
@@ -348,6 +349,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         source: ['http', 'https', 'data', 'blob'],
         link: ['http', 'https'],
         iframe: ['http', 'https', 'data', 'blob'],
+        script: ['https'],
       },
       allowProtocolRelative: false,
       transformTags: {
@@ -377,6 +379,34 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
             ...attribs,
           },
         }),
+        script: (tagName, attribs) => {
+          const src = (attribs?.src || '').trim();
+
+          // Inline <script> оставляем (если ты хочешь разрешать inline-логику пользователя)
+          if (!src) return { tagName: 'script', attribs };
+
+          // Разрешаем только Google Tag (GA4) и GTM
+          const isGoogleAllowed =
+            /^https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+/i.test(src) ||
+            /^https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-[A-Z0-9]+/i.test(src);
+
+          if (!isGoogleAllowed) {
+            return { tagName: 'noscript', attribs: {} };
+          }
+
+          // Нормализуем атрибуты (async обычно нужен)
+          const safeAttribs = {
+            src,
+            async: 'async',
+            ...(attribs.defer ? { defer: 'defer' } : {}),
+            ...(attribs.type ? { type: attribs.type } : {}),
+            ...(attribs.crossorigin ? { crossorigin: attribs.crossorigin } : {}),
+            ...(attribs.integrity ? { integrity: attribs.integrity } : {}),
+            ...(attribs.referrerpolicy ? { referrerpolicy: attribs.referrerpolicy } : {}),
+          };
+
+          return { tagName: 'script', attribs: safeAttribs };
+        },
       },
     };
 
