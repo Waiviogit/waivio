@@ -105,7 +105,18 @@ export const encodeImageFileAsURL = (file, callback) => {
 
   formData.append('file', file);
 
-  return fetch(`https://www.waivio.com/api/image`, {
+  const currentLocation = typeof window !== 'undefined' && window.location.hostname;
+  let url;
+
+  if (currentLocation === 'waiviodev.com') {
+    url = `https://waiviodev.com/api/image`;
+  } else if (currentLocation === 'waivio.com' || currentLocation === 'www.waivio.com') {
+    url = `https://www.waivio.com/api/image`;
+  } else {
+    url = `https://${currentLocation}/api/image`;
+  }
+
+  return fetch(url, {
     method: 'POST',
     body: formData,
   })
