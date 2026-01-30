@@ -23,7 +23,7 @@
     }
 
     @media (max-width: 998px) {
-      width: calc((100% - 24px) / 2);
+      width: calc((100% - 10px) / 2);
     }
   }
 
@@ -39,39 +39,27 @@
     a {
       position: relative;
       display: block;
-
-      /* затемнення знизу */
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 40px;
-        background: linear-gradient(
-          to top,
-          color-mix(in srgb, var(--website-color) 85%, transparent),
-          color-mix(in srgb, var(--website-color) 65%, transparent),
-          color-mix(in srgb, var(--website-color) 25%, transparent)
-        );
-        backdrop-filter: blur(6px);
-      }
     }
 
     .Checklist__itemsTitle {
       position: absolute;
-      bottom: 9px;
+      bottom: 0;
       left: 0;
       z-index: 3;
       color: #fff;
       font-size: 18px;
       font-weight: 500;
       text-align: left;
+      padding: 10px 10px 15px;
       font-family: var(--template-font-body, PlayfairDisplay, serif);
-
-      @media @small-max {
-        bottom: 8px;
-      }
+      height: auto;
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--website-color) 85%, transparent),
+        color-mix(in srgb, var(--website-color) 65%, transparent),
+        color-mix(in srgb, var(--website-color) 25%, transparent)
+      );
+      backdrop-filter: blur(6px);
     }
   }
 
@@ -81,6 +69,7 @@
     object-fit: cover;
     border-radius: 24px;
     overflow: hidden;
+    height: 220px;
 
     &:hover {
       box-shadow: none;
@@ -88,7 +77,6 @@
   }
 
   .Checklist__listItems .Checklist__itemsTitle {
-    background: transparent;
     text-align: left;
     font-family: var(--template-font-body, PlayfairDisplay, serif);
     font-size: 16px;
