@@ -1,11 +1,12 @@
 import { Button } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useLocation } from 'react-router';
+import { formColumnsField } from '../../../common/constants/listOfFields';
 import HtmlSandbox from '../../../components/HtmlSandbox';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { getAuthorityList } from '../../../store/appendStore/appendSelectors';
@@ -198,7 +199,45 @@ const Wobj = ({
       case 'person':
         return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
+        const widgetForm = wobject?.widget && JSON.parse(wobject?.widget);
+
+        const currentWidgetColumn = get(widgetForm, 'column', '');
+        const fullScreenColumn = currentWidgetColumn === formColumnsField.fullScreen;
+        const newTabColumn = currentWidgetColumn === formColumnsField.newTab;
+
+        if (fullScreenColumn) {
+          return (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 100,
+                marginTop: '-15px',
+              }}
+            >
+              {accessExtend && authenticated && (
+                <Button
+                  onClick={toggleViewEditMode}
+                  style={{ position: 'absolute', left: '20px', top: '70px', zIndex: 10 }}
+                >
+                  {isEditMode
+                    ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                    : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+                </Button>
+              )}
+              <WidgetContent wobj={wobject} />
+            </div>
+          );
+        }
+
+        if (newTabColumn) {
+          return window.open(widgetForm.content, '_self');
+        }
+
         return <WidgetContent wobj={wobject} />;
+
       case 'html': {
         // eslint-disable-next-line no-console
         console.log(getObjectAvatar(wobject));
