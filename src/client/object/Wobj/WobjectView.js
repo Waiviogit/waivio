@@ -101,8 +101,11 @@ const WobjectView = ({
   const entireColumn =
     currentColumn === formColumnsField.entire ||
     (currentWidgetColumn === formColumnsField.entire && isWidgetPage);
+  const fullScreenColumn =
+    currentColumn === formColumnsField.fullScreen ||
+    (currentWidgetColumn === formColumnsField.fullScreen && isWidgetPage);
   const leftSidebarClassList = classNames('leftContainer leftContainer__wobj', {
-    'leftContainer--left': entireColumn,
+    'leftContainer--left': entireColumn || fullScreenColumn,
   });
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':

@@ -34,7 +34,7 @@ const ObjectForm = props => {
         )}
       </Form.Item>
       <div className="ant-form-item-label AppendForm__appendTitles">
-        <FormattedMessage id="columns" defaultMessage="Columns" />
+        <FormattedMessage id="display_settings" defaultMessage="Display settings" />
       </div>
       <Form.Item>
         {form.getFieldDecorator('formColumn', {
@@ -47,7 +47,12 @@ const ObjectForm = props => {
                   id: 'field_error',
                   defaultMessage: 'Field is required',
                 },
-                { field: 'Column' },
+                {
+                  field: intl.formatMessage({
+                    id: 'display_settings',
+                    defaultMessage: 'Display settings',
+                  }),
+                },
               ),
             },
           ],
