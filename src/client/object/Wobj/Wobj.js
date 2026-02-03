@@ -233,7 +233,7 @@ const Wobj = ({
         }
 
         if (newTabColumn) {
-          return window.open(widgetForm.content, '_self');
+          return window.open(widgetForm?.content, '_self');
         }
 
         return <WidgetContent wobj={wobject} />;
