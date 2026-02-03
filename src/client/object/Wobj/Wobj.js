@@ -203,7 +203,6 @@ const Wobj = ({
 
         const currentWidgetColumn = get(widgetForm, 'column', '');
         const fullScreenColumn = currentWidgetColumn === formColumnsField.fullScreen;
-        const newTabColumn = currentWidgetColumn === formColumnsField.newTab;
 
         if (fullScreenColumn) {
           return (
@@ -230,10 +229,6 @@ const Wobj = ({
               <WidgetContent wobj={wobject} />
             </div>
           );
-        }
-
-        if (newTabColumn) {
-          return window.open(widgetForm?.content, '_self');
         }
 
         return <WidgetContent wobj={wobject} />;

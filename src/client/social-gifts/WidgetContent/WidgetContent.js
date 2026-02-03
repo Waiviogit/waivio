@@ -29,6 +29,7 @@ import { getHideHeaderFromWobj } from '../../../store/wObjectStore/wObjectSelect
 import { getObject } from '../../../waivioApi/ApiClient';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import { formColumnsField } from '../../../common/constants/listOfFields';
 import Loading from '../../components/Icon/Loading';
 
 import './WidgetContent.less';
@@ -61,6 +62,13 @@ const WidgetContent = ({ wobj, intl }) => {
   };
   const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
   const hideHeader = useSelector(getHideHeaderFromWobj);
+  const newTabColumn = widgetForm?.column === formColumnsField.newTab;
+
+  useEffect(() => {
+    if (newTabColumn && widgetForm?.content && typeof window !== 'undefined') {
+      window.open(widgetForm.content, '_blank');
+    }
+  }, [newTabColumn, widgetForm?.content]);
 
   useEffect(() => {
     setLoading(true);
@@ -80,6 +88,7 @@ const WidgetContent = ({ wobj, intl }) => {
 
   const widgetView = () => {
     if (loading) return <Loading />;
+    if (newTabColumn) return null;
     if (!widgetForm) {
       return (
         <div className="Checklist">
