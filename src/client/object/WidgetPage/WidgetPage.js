@@ -23,7 +23,7 @@ const WidgetPage = props => {
   const nestedObjPermlink = getLastPermlinksFromHash(hash);
   const currentWobject = hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
-  const newTabColumn = widgetForm.column === formColumnsField.newTab;
+  const newTabColumn = widgetForm?.column === formColumnsField.newTab;
 
   useEffect(() => {
     if (nestedObjPermlink) {
