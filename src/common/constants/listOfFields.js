@@ -287,6 +287,8 @@ export const formColumnsField = {
   middle: 'Middle',
   middleRight: 'Middle + Right',
   entire: 'Entire Width',
+  fullScreen: 'Full Screen',
+  newTab: 'New Tab',
 };
 export const formFormFields = {
   link: 'Link',
