@@ -34,6 +34,7 @@
     -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
     border-radius: 24px;
+    height: fit-content;
     //height: 220px;
 
     a {
@@ -70,6 +71,10 @@
     border-radius: 24px;
     overflow: hidden;
     height: 220px;
+
+    @media @small-max {
+      height: 165px;
+    }
 
     &:hover {
       box-shadow: none;
