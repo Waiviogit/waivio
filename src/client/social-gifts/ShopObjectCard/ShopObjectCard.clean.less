@@ -27,8 +27,8 @@
   }
 
   &__imageWrap {
-    width: 185px;
-    height: 185px;
+    width: 150px;
+    height: 150px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -114,6 +114,11 @@
     &:hover {
       color: var(--website-color);
     }
+
+    @media @small-max {
+      text-align: center;
+      padding: 0;
+    }
   }
 
   &__rating {
@@ -129,6 +134,10 @@
       color: #111;
       font-size: 14px;
     }
+
+    @media @small-max {
+      padding-bottom: 10px;
+    }
   }
 
   &__priceRow {
@@ -143,6 +152,10 @@
       flex-direction: column;
       margin-right: 5px;
     }
+
+    @media @small-max {
+      flex-direction: column;
+    }
   }
 
   &__price {
@@ -150,6 +163,8 @@
     font-weight: 700;
     font-size: 18px;
     font-family: var(--template-font-body, inherit);
+    display: inline-block;
+    padding-bottom: 15px;
   }
 
   &__type {

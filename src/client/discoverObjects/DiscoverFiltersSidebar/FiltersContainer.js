@@ -45,7 +45,8 @@ const FiltersContainer = ({
   const activeObjectTypeName = match.params.type || match.params.typeName;
 
   useEffect(() => {
-    dispatchSetActiveTagsFilters(parseDiscoverTagsFilters(location.search), activeObjectTypeName);
+    if (!newDiscover)
+      dispatchSetActiveTagsFilters(parseDiscoverTagsFilters(location.search), activeObjectTypeName);
   }, [location.search, activeObjectTypeName]);
 
   const handleDisplayFilter = filterName => () => {
@@ -83,23 +84,19 @@ const FiltersContainer = ({
   const handleOnChangeTagsCheckbox = e => {
     const { name: tag, value: category, checked } = e.target;
 
-    const updatedTags = updateActiveTagsFilters(activeTagsFilters, tag, category, checked);
+    const currentTagsFromUrl = parseDiscoverTagsFilters(location.search);
+    const updatedTags = updateActiveTagsFilters(currentTagsFromUrl, tag, category, checked);
 
-    // dispatchSetActiveTagsFilters(updatedTags);
+    dispatchSetActiveTagsFilters(updatedTags, activeObjectTypeName);
 
-    const { sort } = parseDiscoverQuery(location.search);
-    const search = buildCanonicalSearch({
-      search: new URLSearchParams(location.search).get('search'),
-      category: new URLSearchParams(location.search).get('category'),
+    const { sort, search } = parseDiscoverQuery(location.search);
+    const canonicalSearch = buildCanonicalSearch({
+      search,
       tagsByCategory: updatedTags,
       sort,
     });
 
-    history.push(`${location.pathname}?${search}`);
-
-    // if (newDiscover && activeObjectTypeName) {
-    //   dispatchGetTagCategories(activeObjectTypeName);
-    // }
+    history.push(`${location.pathname}?${canonicalSearch}`);
   };
 
   const showMoreTagsHandler = useCallback(
@@ -110,6 +107,11 @@ const FiltersContainer = ({
   );
 
   const isCollapsed = name => collapsedFilters.includes(name);
+
+  // For newDiscover, read tags directly from URL to ensure sync with removeTag
+  const activeTagsForDisplay = newDiscover
+    ? parseDiscoverTagsFilters(location.search)
+    : activeTagsFilters;
 
   return (
     <div className="SidebarContentBlock__content">
@@ -141,7 +143,7 @@ const FiltersContainer = ({
                 filterName={categoryName}
                 handleDisplayFilter={handleDisplayFilter}
                 handleOnChangeCheckbox={handleOnChangeTagsCheckbox}
-                activeFilters={activeTagsFilters}
+                activeFilters={activeTagsForDisplay}
                 filterValues={data.tags || []}
                 hasMore={data.hasMore}
                 showMoreTags={() => showMoreTagsHandler(categoryName, data.tags || [])}

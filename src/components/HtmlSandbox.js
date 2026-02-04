@@ -5,7 +5,6 @@ import sanitizeHtml from 'sanitize-html';
 const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
-
   // -------- helpers -------------------------------------------------
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
@@ -165,6 +164,14 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         'femorphology',
         'feconvolvematrix',
         'canvas',
+        'form',
+        'label',
+        'input',
+        'textarea',
+        'select',
+        'option',
+        'fieldset',
+        'legend',
       ],
       disallowedTagsMode: 'discard',
       exclusiveFilter: frame => {
@@ -206,6 +213,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
           'ontouchend',
           'ontouchmove',
         ],
+        script: ['src', 'async', 'defer', 'type', 'crossorigin', 'integrity', 'referrerpolicy'],
         a: ['href', 'name', 'target', 'rel', 'title', 'download'],
         img: [
           'src',
@@ -218,6 +226,61 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
           'decoding',
           'referrerpolicy',
         ],
+        form: ['action', 'method', 'target', 'autocomplete', 'name'],
+        label: ['for'],
+        input: [
+          'type',
+          'name',
+          'value',
+          'placeholder',
+          'checked',
+          'disabled',
+          'readonly',
+          'required',
+          'min',
+          'max',
+          'step',
+          'maxlength',
+          'minlength',
+          'pattern',
+          'autocomplete',
+          'id',
+          'class',
+          'style',
+          'aria-*',
+          'data-*',
+        ],
+        textarea: [
+          'name',
+          'rows',
+          'cols',
+          'placeholder',
+          'disabled',
+          'readonly',
+          'required',
+          'maxlength',
+          'minlength',
+          'id',
+          'class',
+          'style',
+          'aria-*',
+          'data-*',
+        ],
+        select: [
+          'name',
+          'multiple',
+          'size',
+          'disabled',
+          'required',
+          'id',
+          'class',
+          'style',
+          'aria-*',
+          'data-*',
+        ],
+        option: ['value', 'selected', 'disabled', 'label'],
+        fieldset: ['disabled', 'name'],
+        legend: [],
         source: ['src', 'srcset', 'type', 'media', 'sizes'],
         video: [
           'src',
@@ -348,6 +411,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         source: ['http', 'https', 'data', 'blob'],
         link: ['http', 'https'],
         iframe: ['http', 'https', 'data', 'blob'],
+        script: ['https'],
       },
       allowProtocolRelative: false,
       transformTags: {
@@ -377,6 +441,34 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
             ...attribs,
           },
         }),
+        script: (tagName, attribs) => {
+          const src = (attribs?.src || '').trim();
+
+          // Inline <script> оставляем (если ты хочешь разрешать inline-логику пользователя)
+          if (!src) return { tagName: 'script', attribs };
+
+          // Разрешаем только Google Tag (GA4) и GTM
+          const isGoogleAllowed =
+            /^https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+/i.test(src) ||
+            /^https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-[A-Z0-9]+/i.test(src);
+
+          if (!isGoogleAllowed) {
+            return { tagName: 'noscript', attribs: {} };
+          }
+
+          // Нормализуем атрибуты (async обычно нужен)
+          const safeAttribs = {
+            src,
+            async: 'async',
+            ...(attribs.defer ? { defer: 'defer' } : {}),
+            ...(attribs.type ? { type: attribs.type } : {}),
+            ...(attribs.crossorigin ? { crossorigin: attribs.crossorigin } : {}),
+            ...(attribs.integrity ? { integrity: attribs.integrity } : {}),
+            ...(attribs.referrerpolicy ? { referrerpolicy: attribs.referrerpolicy } : {}),
+          };
+
+          return { tagName: 'script', attribs: safeAttribs };
+        },
       },
     };
 
@@ -451,7 +543,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         form-action 'none';
       ">
       <style>
-        :root { color-scheme: light dark; --hs-vh: 1vh; }
+        :root { --hs-vh: 1vh; }
         html, body { margin: 0; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
         /* якщо autoSize увімкнено — ховаємо внутр. вертикальний скрол, інакше дозволяємо */

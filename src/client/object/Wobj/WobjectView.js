@@ -101,8 +101,11 @@ const WobjectView = ({
   const entireColumn =
     currentColumn === formColumnsField.entire ||
     (currentWidgetColumn === formColumnsField.entire && isWidgetPage);
+  const fullScreenColumn =
+    currentColumn === formColumnsField.fullScreen ||
+    (currentWidgetColumn === formColumnsField.fullScreen && isWidgetPage);
   const leftSidebarClassList = classNames('leftContainer leftContainer__wobj', {
-    'leftContainer--left': entireColumn,
+    'leftContainer--left': entireColumn || fullScreenColumn,
   });
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':
@@ -111,7 +114,8 @@ const WobjectView = ({
       (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage ||
       middleRightColumn ||
-      entireColumn,
+      entireColumn ||
+      fullScreenColumn,
   });
   const centerClassList = classNames('center', {
     'center--page':
@@ -120,7 +124,7 @@ const WobjectView = ({
       (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage,
     'center--middleForm': middleRightColumn,
-    'center--fullForm': entireColumn,
+    'center--fullForm': entireColumn || fullScreenColumn,
   });
   const bestRating = getRatingForSocial(wobject.rating);
 

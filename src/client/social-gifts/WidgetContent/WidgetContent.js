@@ -25,9 +25,11 @@ import {
   hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
+import { getHideHeaderFromWobj } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
+import { formColumnsField } from '../../../common/constants/listOfFields';
 import Loading from '../../components/Icon/Loading';
 
 import './WidgetContent.less';
@@ -59,6 +61,14 @@ const WidgetContent = ({ wobj, intl }) => {
     dispatch(setEditMode(true));
   };
   const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
+  const hideHeader = useSelector(getHideHeaderFromWobj);
+  const newTabColumn = widgetForm?.column === formColumnsField.newTab;
+
+  useEffect(() => {
+    if (newTabColumn && widgetForm?.content && typeof window !== 'undefined') {
+      window.open(widgetForm.content, '_self');
+    }
+  }, [newTabColumn, widgetForm?.content]);
 
   useEffect(() => {
     setLoading(true);
@@ -78,6 +88,7 @@ const WidgetContent = ({ wobj, intl }) => {
 
   const widgetView = () => {
     if (loading) return <Loading />;
+    if (newTabColumn) return null;
     if (!widgetForm) {
       return (
         <div className="Checklist">
@@ -157,7 +168,7 @@ const WidgetContent = ({ wobj, intl }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      {accessExtend && authenticated && (
+      {accessExtend && authenticated && !hideHeader && (
         <div className="FeedMasonry__edit-container">
           <Button onClick={editObjectClick}>
             {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}

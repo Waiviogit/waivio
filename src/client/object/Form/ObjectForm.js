@@ -16,6 +16,9 @@ const ObjectForm = props => {
     handleSelectColumn,
     handleSelectForm,
   } = props;
+  const columnValue = form.getFieldValue('formColumn');
+
+  const disabled = columnValue === formColumnsField.newTab;
 
   return (
     <React.Fragment>
@@ -34,7 +37,7 @@ const ObjectForm = props => {
         )}
       </Form.Item>
       <div className="ant-form-item-label AppendForm__appendTitles">
-        <FormattedMessage id="columns" defaultMessage="Columns" />
+        <FormattedMessage id="display_settings" defaultMessage="Display settings" />
       </div>
       <Form.Item>
         {form.getFieldDecorator('formColumn', {
@@ -47,7 +50,12 @@ const ObjectForm = props => {
                   id: 'field_error',
                   defaultMessage: 'Field is required',
                 },
-                { field: 'Column' },
+                {
+                  field: intl.formatMessage({
+                    id: 'display_settings',
+                    defaultMessage: 'Display settings',
+                  }),
+                },
               ),
             },
           ],
@@ -85,7 +93,11 @@ const ObjectForm = props => {
         })(
           <Select disabled={loading} onChange={handleSelectForm}>
             {map(formFormFields, formItem => (
-              <Select.Option id={formItem} value={formItem}>
+              <Select.Option
+                id={formItem}
+                value={formItem}
+                disabled={formItem === formFormFields.widget && disabled}
+              >
                 {intl.formatMessage({
                   id: formItem,
                   defaultMessage: formItem,

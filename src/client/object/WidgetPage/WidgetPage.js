@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { has } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
+import { formColumnsField } from '../../../common/constants/listOfFields';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
@@ -22,6 +23,7 @@ const WidgetPage = props => {
   const nestedObjPermlink = getLastPermlinksFromHash(hash);
   const currentWobject = hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
+  const newTabColumn = widgetForm?.column === formColumnsField.newTab;
 
   useEffect(() => {
     if (nestedObjPermlink) {
@@ -46,6 +48,19 @@ const WidgetPage = props => {
   if (!widgetForm?.content) {
     return <Loading />;
   }
+
+  if (newTabColumn)
+    return (
+      <div className="feed_empty">
+        <p>
+          This widget opens in a new tab. Click the{' '}
+          <a href={widgetForm.content} target="_blank" rel="noopener noreferrer">
+            link
+          </a>{' '}
+          to continue.
+        </p>
+      </div>
+    );
 
   const widgetView = widgetForm?.content?.includes('<iframe') ? (
     // eslint-disable-next-line react/no-danger

@@ -3,7 +3,7 @@
 
 .ChecklistClean {
   margin: 0 auto;
-  padding: 20px 20px 80px;
+  padding: 20px 15px 80px;
   max-width: 1280px;
 
   @media @small {
@@ -22,12 +22,8 @@
       width: calc((100% - 48px) / 3);
     }
 
-    @media (max-width: 998px) and (min-width: 481px) {
-      width: calc((100% - 24px) / 2);
-    }
-
-    @media (max-width: 480px) {
-      width: 100%;
+    @media (max-width: 998px) {
+      width: calc((100% - 10px) / 2);
     }
   }
 
@@ -38,68 +34,46 @@
     -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
     border-radius: 24px;
-    height: 220px;
-
-    @media @small-max {
-      width: 310px;
-      height: 310px;
-      margin: 0 auto;
-    }
+    height: fit-content;
+    //height: 220px;
 
     a {
       position: relative;
       display: block;
-
-      /* затемнення знизу */
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 25%;
-        background: linear-gradient(to top, var(--website-color), transparent);
-        z-index: 2;
-        pointer-events: none;
-        transition: 0.3s;
-      }
-
-      &:hover {
-        &::after {
-          height: 35%;
-        }
-      }
     }
 
     .Checklist__itemsTitle {
       position: absolute;
-      bottom: 12px;
+      bottom: 0;
       left: 0;
       z-index: 3;
       color: #fff;
       font-size: 18px;
       font-weight: 500;
       text-align: left;
+      padding: 10px 10px 15px;
       font-family: var(--template-font-body, PlayfairDisplay, serif);
-
-      @media @small-max {
-        bottom: 8px;
-      }
+      height: auto;
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--website-color) 85%, transparent),
+        color-mix(in srgb, var(--website-color) 65%, transparent),
+        color-mix(in srgb, var(--website-color) 25%, transparent)
+      );
+      backdrop-filter: blur(6px);
     }
   }
 
   .Checklist__itemsAvatar {
     border: none;
     width: 100%;
-    height: 220px;
     object-fit: cover;
     border-radius: 24px;
     overflow: hidden;
+    height: 220px;
 
     @media @small-max {
-      width: 310px;
-      height: 310px;
-      margin: 0 auto;
+      height: 165px;
     }
 
     &:hover {
@@ -108,7 +82,6 @@
   }
 
   .Checklist__listItems .Checklist__itemsTitle {
-    background: transparent;
     text-align: left;
     font-family: var(--template-font-body, PlayfairDisplay, serif);
     font-size: 16px;

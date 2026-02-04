@@ -192,6 +192,7 @@ const SocialWrapper = props => {
               type: i.body.linkToObject ? 'nav' : 'blank',
               permlink: i.body.linkToObject,
               object_type: i?.object_type,
+              isNewTab: i?.body?.isNewTab || false,
             }));
 
             dispatch(

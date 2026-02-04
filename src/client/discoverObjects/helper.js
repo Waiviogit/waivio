@@ -105,7 +105,7 @@ export const createFilterBody = parseObject => {
 };
 
 export const updateActiveTagsFilters = (activeTagsFilters, filterValue, value, checked) => {
-  const filter = value.replace(' ', '%20');
+  const filter = value.replace(/\s/g, '%20');
 
   if (!activeTagsFilters[filter])
     return {
@@ -115,8 +115,11 @@ export const updateActiveTagsFilters = (activeTagsFilters, filterValue, value, c
 
   return {
     ...activeTagsFilters,
+    // eslint-disable-next-line no-nested-ternary
     [filter]: checked
-      ? [...activeTagsFilters[filter], filterValue]
+      ? activeTagsFilters[filter].includes(filterValue)
+        ? activeTagsFilters[filter]
+        : [...activeTagsFilters[filter], filterValue]
       : activeTagsFilters[filter].filter(tag => tag !== filterValue),
   };
 };
@@ -232,12 +235,14 @@ export const parseDiscoverTagsFilters = search => {
 
     if (!cat || !tag || cat === 'sort') return;
 
-    if (!result[cat]) {
-      result[cat] = [];
+    const normalizedCat = cat.replace(/\s/g, '%20');
+
+    if (!result[normalizedCat]) {
+      result[normalizedCat] = [];
     }
 
-    if (!result[cat].includes(tag)) {
-      result[cat].push(tag);
+    if (!result[normalizedCat].includes(tag)) {
+      result[normalizedCat].push(tag);
     }
   });
 

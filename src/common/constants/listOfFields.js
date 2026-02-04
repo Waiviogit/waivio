@@ -150,6 +150,7 @@ export const menuItemFields = {
   menuItemImage: 'menuItemImage',
   linkToObject: 'linkToObject',
   linkToWeb: 'linkToWeb',
+  isNewTab: 'isNewTab',
 };
 export const addressFields = {
   accommodation: 'accommodation',
@@ -287,6 +288,8 @@ export const formColumnsField = {
   middle: 'Middle',
   middleRight: 'Middle + Right',
   entire: 'Entire Width',
+  fullScreen: 'Full Screen',
+  newTab: 'New Tab',
 };
 export const formFormFields = {
   link: 'Link',

@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash';
+import { uniqBy, get } from 'lodash';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import {
   GET_ADD_ONS,
@@ -35,7 +35,7 @@ import {
   RESET_LINK_SAFETY,
   RESET_OBJ_STATE,
 } from './wobjActions';
-import { objectFields } from '../../common/constants/listOfFields';
+import { objectFields, formColumnsField } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
 
 export const initialState = {
@@ -127,6 +127,30 @@ export default function wobjectReducer(state = initialState, action) {
           isFetching: false,
           isFailed: false,
         };
+      }
+
+      // Check if widget has fullScreen column setting
+      if (action.payload.widget && action.payload.object_type === 'widget') {
+        try {
+          const widgetForm = JSON.parse(action.payload.widget);
+          const currentWidgetColumn = get(widgetForm, 'column', '');
+          const fullScreenColumn = currentWidgetColumn === formColumnsField.fullScreen;
+
+          if (fullScreenColumn) {
+            return {
+              ...state,
+              wobject: {
+                ...action.payload,
+                hideSignIn: true,
+                hideMenu: true,
+              },
+              isFetching: false,
+              isFailed: false,
+            };
+          }
+        } catch (e) {
+          // If parsing fails, continue with default behavior
+        }
       }
 
       return {

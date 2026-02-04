@@ -4,11 +4,6 @@
 .NewDiscover {
   margin: 5px;
 
-  @media (max-width: 767px) {
-    margin: 0;
-    width: 100%;
-  }
-
   @media @small {
     margin: 20px;
   }
@@ -20,21 +15,12 @@
 
     @media (max-width: 768px) {
       flex-direction: column;
-      width: 100%;
-      margin: 0;
-      padding: 0;
     }
   }
 
   &__content {
     flex: 1;
     min-width: 0;
-
-    @media (max-width: 767px) {
-      width: 100%;
-      padding: 0;
-      margin: 0;
-    }
   }
 
   &__sidebar {
