@@ -150,6 +150,7 @@ export const menuItemFields = {
   menuItemImage: 'menuItemImage',
   linkToObject: 'linkToObject',
   linkToWeb: 'linkToWeb',
+  isNewTab: 'isNewTab',
 };
 export const addressFields = {
   accommodation: 'accommodation',

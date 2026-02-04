@@ -114,7 +114,8 @@ const WobjectView = ({
       (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage ||
       middleRightColumn ||
-      entireColumn,
+      entireColumn ||
+      fullScreenColumn,
   });
   const centerClassList = classNames('center', {
     'center--page':
@@ -123,7 +124,7 @@ const WobjectView = ({
       (hasType(wobject, OBJECT_TYPE.HTML) && !match.params[0]) ||
       isWebPage,
     'center--middleForm': middleRightColumn,
-    'center--fullForm': entireColumn,
+    'center--fullForm': entireColumn || fullScreenColumn,
   });
   const bestRating = getRatingForSocial(wobject.rating);
 

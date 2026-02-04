@@ -37,11 +37,12 @@ const LinkItem = ({ link, index, intl }) => {
       className="WebsiteTopNavigation__link"
       onClick={() => {
         if (link?.link?.includes(hostname)) {
-          return window && window?.open(link.link, '_self');
+          return window && window?.open(link.link, link.isNewTab ? '_blank' : '_self');
         }
 
         return dispatch(setLinkSafetyInfo(link?.link));
       }}
+      target={link.isNewTab ? '_blank' : '_self'}
     >
       {getMenuLinkTitle(link, intl, 24, uppercase)}
     </a>
@@ -55,6 +56,7 @@ const LinkItem = ({ link, index, intl }) => {
       activeClassName={'WebsiteTopNavigation__link--active'}
       key={link.link}
       to={linkTo}
+      target={link.isNewTab ? '_blank' : '_self'}
     >
       {' '}
       {getMenuLinkTitle(link, intl, 24, uppercase)}
@@ -68,6 +70,7 @@ LinkItem.propTypes = {
     link: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
+    isNewTab: PropTypes.string,
     object_type: PropTypes.string,
     permlink: PropTypes.string,
   }),
