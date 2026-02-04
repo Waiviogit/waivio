@@ -66,7 +66,7 @@ const WidgetContent = ({ wobj, intl }) => {
 
   useEffect(() => {
     if (newTabColumn && widgetForm?.content && typeof window !== 'undefined') {
-      window.open(widgetForm.content, '_blank');
+      window.open(widgetForm.content, '_self');
     }
   }, [newTabColumn, widgetForm?.content]);
 

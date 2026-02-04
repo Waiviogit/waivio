@@ -1359,6 +1359,9 @@ class AppendForm extends Component {
             linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
               ? formValues[menuItemFields.linkToWeb]?.trim()
               : undefined,
+            isNewTab: !isEmpty(formValues[menuItemFields.isNewTab])
+              ? formValues[menuItemFields.isNewTab] === 'New'
+              : undefined,
           }),
         };
       }

@@ -16,6 +16,9 @@ const ObjectForm = props => {
     handleSelectColumn,
     handleSelectForm,
   } = props;
+  const columnValue = form.getFieldValue('formColumn');
+
+  const disabled = columnValue === formColumnsField.newTab;
 
   return (
     <React.Fragment>
@@ -90,7 +93,11 @@ const ObjectForm = props => {
         })(
           <Select disabled={loading} onChange={handleSelectForm}>
             {map(formFormFields, formItem => (
-              <Select.Option id={formItem} value={formItem}>
+              <Select.Option
+                id={formItem}
+                value={formItem}
+                disabled={formItem === formFormFields.widget && disabled}
+              >
                 {intl.formatMessage({
                   id: formItem,
                   defaultMessage: formItem,
