@@ -5,7 +5,6 @@ import sanitizeHtml from 'sanitize-html';
 const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
-
   // -------- helpers -------------------------------------------------
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
@@ -544,7 +543,7 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         form-action 'none';
       ">
       <style>
-        :root { color-scheme: light dark; --hs-vh: 1vh; }
+        :root { --hs-vh: 1vh; }
         html, body { margin: 0; box-sizing: border-box; }
         *, *::before, *::after { box-sizing: inherit; }
         /* якщо autoSize увімкнено — ховаємо внутр. вертикальний скрол, інакше дозволяємо */
