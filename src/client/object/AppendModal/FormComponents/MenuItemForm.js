@@ -98,7 +98,7 @@ const MenuItemForm = ({
           <Select
             defaultValue={intl.formatMessage({
               id: 'option_link',
-              defaultMessage: 'Link',
+              defaultMessage: 'Object',
             })}
             onChange={handleButtonTypeChange}
           >
