@@ -3,7 +3,7 @@ import { getBucket10m, uaHash, timingSafeEqualHex, signPingToken } from './crypt
 import { sadd, setEx } from '../redis/redisClient';
 import { isbot } from 'isbot';
 
-const analyticsSecret = process.env.ANALYTICS_SECRET;
+const analyticsSecret = process.env.ANALYTICS_SECRET || 'change_me';
 const SITE_USERS_STATISTIC_KEY = 'aid_active';
 
 const markActive = async (hostname, aid, ua) => {
