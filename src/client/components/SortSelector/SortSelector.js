@@ -17,7 +17,7 @@ export default class SortSelector extends React.Component {
   };
 
   static defaultProps = {
-    sort: 'recency',
+    sort: 'newestFirst',
     children: null,
     onChange: () => {},
     match: {},

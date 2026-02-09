@@ -469,7 +469,11 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
       transformTags: {
         a: (tagName, attribs) => ({
           tagName: 'a',
-          attribs: { ...attribs, rel: 'noopener nofollow ugc', target: '_blank' },
+          attribs: {
+            ...attribs,
+            rel: 'noopener nofollow ugc',
+            target: attribs.target === '_self' ? '_top' : attribs.target || '_blank',
+          },
         }),
         link: (tagName, attribs) => {
           const rel = (attribs.rel || '').toLowerCase();
@@ -788,7 +792,7 @@ ${bodyHtml}
     <iframe
       ref={iframeRef}
       srcDoc={processedHtml}
-      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin"
+      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
       className={className}
       scrolling={effectiveAutoSize ? 'no' : 'auto'}
       style={{
