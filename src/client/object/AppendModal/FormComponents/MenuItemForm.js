@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Form, Input, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { menuItemFields, objectFields } from '../../../../common/constants/listOfFields';
+import {
+  menuItemFields,
+  objectFields,
+  formColumnsField,
+} from '../../../../common/constants/listOfFields';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
@@ -26,8 +30,10 @@ const MenuItemForm = ({
   const [linkType, setLinkType] = useState(link);
   const buttonStyleOptionsValues = ['standard', 'highlight', 'icon', 'image'];
   const buttonTypeOptionsValues = ['link', 'website'];
+  const tabs = ['Same', 'New'];
   const imageButtonType = ['icon', 'image'].includes(menuItemButtonType);
-
+  const widgetForm = selectedObject?.widget && JSON.parse(selectedObject?.widget);
+  const newTabColumn = widgetForm?.column === formColumnsField.newTab;
   const buttonStyleOptions = buttonStyleOptionsValues.map(op => (
     <Select.Option key={op} value={op}>
       {intl.formatMessage({ id: `option_${op}`, defaultValue: op })}
@@ -36,6 +42,11 @@ const MenuItemForm = ({
   const buttonTypeOptions = buttonTypeOptionsValues.map(op => (
     <Select.Option key={op} value={op}>
       {intl.formatMessage({ id: `option_${op}`, defaultValue: op })}
+    </Select.Option>
+  ));
+  const tabOptions = tabs.map(t => (
+    <Select.Option key={t} value={t}>
+      {intl.formatMessage({ id: t, defaultValue: t })}
     </Select.Option>
   ));
   const handleButtonTypeChange = type => {
@@ -128,6 +139,16 @@ const MenuItemForm = ({
               <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
             )}
             <br />
+            {newTabColumn && (
+              <Form.Item>
+                <div className="AppendForm__appendTitles">
+                  <FormattedMessage id="tab" defaultMessage="Tab" />
+                </div>
+                {getFieldDecorator(menuItemFields.isNewTab, {
+                  initialValue: 'New',
+                })(<Select>{tabOptions}</Select>)}
+              </Form.Item>
+            )}
             <div className="add-create-btns">
               <CreateObject
                 withOpenModalBtn={!selectedObject}
