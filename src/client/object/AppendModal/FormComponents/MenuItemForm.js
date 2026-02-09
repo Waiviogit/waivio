@@ -139,10 +139,16 @@ const MenuItemForm = ({
               <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
             )}
             <br />
-            {newTabColumn &&
-              getFieldDecorator(menuItemFields.isNewTab, {
-                initialValue: 'New',
-              })(<Select>{tabOptions}</Select>)}
+            {newTabColumn && (
+              <Form.Item>
+                <div className="AppendForm__appendTitles">
+                  <FormattedMessage id="tab" defaultMessage="Tab" />
+                </div>
+                {getFieldDecorator(menuItemFields.isNewTab, {
+                  initialValue: 'New',
+                })(<Select>{tabOptions}</Select>)}
+              </Form.Item>
+            )}
             <div className="add-create-btns">
               <CreateObject
                 withOpenModalBtn={!selectedObject}

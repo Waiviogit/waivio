@@ -821,6 +821,10 @@ class AppendForm extends Component {
             ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
             : '';
 
+          const tabMenuItem = !isEmpty(formValues[menuItemFields.isNewTab])
+            ? `, tab: ${formValues[menuItemFields.menuItemTitle]}`
+            : '';
+
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
             !isNil(formValues[menuItemFields.menuItemTitle])
               ? formValues[menuItemFields.menuItemTitle].trim()
@@ -829,7 +833,7 @@ class AppendForm extends Component {
             !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
               : formValues[menuItemFields.linkToWeb]
-          }${imageMenuItem}`;
+          }${imageMenuItem}${tabMenuItem}`;
 
         case objectFields.dimensions:
           return `@${author} added ${currentField} (${langReadable}): ${

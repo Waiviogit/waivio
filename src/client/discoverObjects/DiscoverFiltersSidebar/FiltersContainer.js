@@ -87,7 +87,7 @@ const FiltersContainer = ({
     const currentTagsFromUrl = parseDiscoverTagsFilters(location.search);
     const updatedTags = updateActiveTagsFilters(currentTagsFromUrl, tag, category, checked);
 
-    dispatchSetActiveTagsFilters(updatedTags, activeObjectTypeName);
+    if (!newDiscover) dispatchSetActiveTagsFilters(updatedTags, activeObjectTypeName);
 
     const { sort, search } = parseDiscoverQuery(location.search);
     const canonicalSearch = buildCanonicalSearch({
