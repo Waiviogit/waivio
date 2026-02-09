@@ -113,9 +113,7 @@ const NewDiscover = () => {
     setLoading(true);
     dispatch(resetObjects());
 
-    const reduxSort = sort === 'rank' ? 'weight' : sort;
-
-    dispatch(changeSorting(reduxSort));
+    dispatch(changeSorting(sort));
 
     lastLoadedSearchRef.current = location.search;
 
