@@ -57,7 +57,7 @@ const ua = typeof window !== 'undefined' && window?.navigator?.userAgent;
 export const isIOS = () => {
   if (typeof navigator === 'undefined') return false;
 
-  return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
+  return /iPhone|iPod/i.test(ua) || (ua?.includes('Mac') && 'ontouchend' in document);
 };
 
 // export const isIOS = () => {
