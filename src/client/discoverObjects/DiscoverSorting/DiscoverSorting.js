@@ -5,13 +5,16 @@ import SortSelector from '../../components/SortSelector/SortSelector';
 
 const DiscoverSorting = ({ sort, handleSortChange }) => (
   <SortSelector sort={sort} onChange={handleSortChange}>
-    <SortSelector.Item key="reverse_recency">
+    <SortSelector.Item key="newestFirst">
       <FormattedMessage id="newest_first" defaultMessage="Newest first" />
+    </SortSelector.Item>{' '}
+    <SortSelector.Item key="newestFirstAll">
+      <FormattedMessage id="newest_first" defaultMessage="Newest first (All)" />
     </SortSelector.Item>
-    <SortSelector.Item key="recency">
+    <SortSelector.Item key="oldestFirst">
       <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
     </SortSelector.Item>
-    <SortSelector.Item key="rank">
+    <SortSelector.Item key="weight">
       <FormattedMessage id="rank" defaultMessage="Rank" />
     </SortSelector.Item>
   </SortSelector>
@@ -23,7 +26,7 @@ DiscoverSorting.propTypes = {
 };
 
 DiscoverSorting.defaultProps = {
-  sort: 'reverse_recency',
+  sort: 'newestFirst',
 };
 
 export default DiscoverSorting;
