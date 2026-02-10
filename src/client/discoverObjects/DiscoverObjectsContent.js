@@ -361,8 +361,15 @@ class DiscoverObjectsContent extends Component {
       location,
     } = this.props;
     const { sort: urlSort } = parseDiscoverQuery(location.search);
+
+    const objectType = this.props.theType?.name;
+
     const sortSelector = (
-      <DiscoverSorting sort={urlSort} handleSortChange={this.handleChangeSorting} />
+      <DiscoverSorting
+        sort={urlSort}
+        handleSortChange={this.handleChangeSorting}
+        objectType={objectType}
+      />
     );
 
     return (
