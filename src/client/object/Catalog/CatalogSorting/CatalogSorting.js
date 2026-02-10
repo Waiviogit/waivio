@@ -4,16 +4,22 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
+import OBJ_TYPES from '../../const/objectTypes';
 
-const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
-  !isEmpty(currWobject[objectFields.sorting]) ? (
+const CatalogSorting = ({ currWobject, sort, handleSortChange }) => {
+  const isRecipe =
+    currWobject?.object_type === OBJ_TYPES.RECIPE || currWobject?.type === OBJ_TYPES.RECIPE;
+
+  return !isEmpty(currWobject[objectFields.sorting]) ? (
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="newestFirst">
         <FormattedMessage id="newest_first" defaultMessage="Newest first" />
       </SortSelector.Item>
-      <SortSelector.Item key="newestFirstAll">
-        <FormattedMessage id="newest_first_all" defaultMessage="Newest first (All)" />
-      </SortSelector.Item>
+      {isRecipe && (
+        <SortSelector.Item key="newestFirstAll">
+          <FormattedMessage id="newest_first_all" defaultMessage="Newest first (All)" />
+        </SortSelector.Item>
+      )}
       <SortSelector.Item key="oldestFirst">
         <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
       </SortSelector.Item>
@@ -35,9 +41,11 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
       <SortSelector.Item key="newestFirst">
         <FormattedMessage id="newest_first" defaultMessage="Newest first" />
       </SortSelector.Item>
-      <SortSelector.Item key="newestFirstAll">
-        <FormattedMessage id="newest_first_all" defaultMessage="Newest first (All)" />
-      </SortSelector.Item>
+      {isRecipe && (
+        <SortSelector.Item key="newestFirstAll">
+          <FormattedMessage id="newest_first_all" defaultMessage="Newest first (All)" />
+        </SortSelector.Item>
+      )}
       <SortSelector.Item key="oldestFirst">
         <FormattedMessage id="oldest_first" defaultMessage="Oldest first" />
       </SortSelector.Item>
@@ -52,6 +60,7 @@ const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
       </SortSelector.Item>
     </SortSelector>
   );
+};
 
 CatalogSorting.propTypes = {
   sort: PropTypes.string.isRequired,

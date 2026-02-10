@@ -8,52 +8,28 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
 
   useEffect(() => {
     const handleMessage = event => {
-      if (!iframeRef.current) return;
-
-      if (event.source !== iframeRef.current.contentWindow) return;
+      if (!iframeRef.current || event.source !== iframeRef.current.contentWindow) return;
 
       const data = event.data;
 
-      if (!data || typeof data !== 'object') return;
+      if (!data || data.__hs !== true) return;
 
-      if (data.__hs !== true) return;
-
-      const forwardToParentGA = payload => {
-        if (typeof window.gtag !== 'function') {
-          return;
-        }
-
-        try {
-          // eslint-disable-next-line prefer-spread
-          if (typeof window !== 'undefined') window.gtag.apply(window, payload);
-        } catch (e) {
-          console.error('[Bridge] Failed to forward GA payload', e, payload);
-        }
-      };
+      if (typeof window.gtag !== 'function') return;
 
       if (data.type === 'GA_EVENT' && Array.isArray(data.payload)) {
-        forwardToParentGA(data.payload);
+        // eslint-disable-next-line prefer-spread
+        if (typeof window !== 'undefined') window.gtag.apply(window, data.payload);
 
         return;
       }
 
+      // ВАРІАНТ Б: Автоматичний клік (якщо ручного gtag не було)
       if (data.type === 'UI_INTERACTION') {
-        if (typeof window.gtag !== 'function') {
-          return;
-        }
-
-        const eventName = 'iframe_ui_interaction';
-
-        const params = {
+        window.gtag('event', 'iframe_ui_interaction', {
           source: 'html_sandbox',
           element_tag: data.element?.tag || null,
-          element_id: data.element?.id || null,
-          element_name: data.element?.name || null,
           element_text: data.element?.text || null,
-          debug_mode: true,
-        };
-
-        window.gtag('event', eventName, params);
+        });
       }
     };
 
@@ -566,7 +542,8 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     } catch (e) {}
   }
 
-  window.__hsGtag = function () {
+  // Створюємо функцію gtag прямо всередині iframe, щоб її бачив ваш HTML
+  window.gtag = function () {
     send({ type: 'GA_EVENT', payload: Array.prototype.slice.call(arguments) });
   };
 
@@ -594,7 +571,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
   }, true);
 })();
 `.trim();
-
     const headContent = `
       <meta charset="utf-8">
       <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; img-src * data: blob:; style-src * 'unsafe-inline'; script-src 'unsafe-inline' https: data:;">
