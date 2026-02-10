@@ -25,8 +25,12 @@ import {
   hasDelegation,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
-import { getHideHeaderFromWobj } from '../../../store/wObjectStore/wObjectSelectors';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import {
+  getHideHeaderFromWobj,
+  getObject as getObjectState,
+} from '../../../store/wObjectStore/wObjectSelectors';
+// import { getObject } from '../../../waivioApi/ApiClient';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { setEditMode } from '../../../store/wObjectStore/wobjActions';
 import { formColumnsField } from '../../../common/constants/listOfFields';
@@ -35,7 +39,6 @@ import Loading from '../../components/Icon/Loading';
 import './WidgetContent.less';
 
 const WidgetContent = ({ wobj, intl }) => {
-  const [currentWobject, setWobject] = useState(wobj);
   const [loading, setLoading] = useState(false);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
@@ -43,6 +46,7 @@ const WidgetContent = ({ wobj, intl }) => {
   const location = useLocation();
   const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
+  const currentWobject = useSelector(getObjectState);
   const siteName = useSelector(getSiteName);
   const username = useSelector(getAuthenticatedUserName);
   const authenticated = useSelector(getIsAuthenticated);
@@ -74,7 +78,6 @@ const WidgetContent = ({ wobj, intl }) => {
     setLoading(true);
     if (!wobj && wobj.author_permlink !== objName) {
       getObject(objName, userName, locale).then(obj => {
-        setWobject(obj);
         setLoading(false);
         if (typeof window !== 'undefined' && window.gtag)
           window.gtag('event', getObjectName(obj), { debug_mode: false });
@@ -84,7 +87,7 @@ const WidgetContent = ({ wobj, intl }) => {
         setLoading(false);
       }, 300);
     }
-  }, [objName]);
+  }, [objName, wobj.author_permlink]);
 
   const widgetView = () => {
     if (loading) return <Loading />;

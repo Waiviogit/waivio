@@ -822,7 +822,7 @@ class AppendForm extends Component {
             : '';
 
           const tabMenuItem = !isEmpty(formValues[menuItemFields.isNewTab])
-            ? `, tab: ${formValues[menuItemFields.menuItemTitle]}`
+            ? `, tab: ${formValues[menuItemFields.isNewTab]}`
             : '';
 
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
