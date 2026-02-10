@@ -203,7 +203,11 @@ const NewDiscover = () => {
       <React.Fragment>
         {isMobile() && !discoverUsers && (
           <div className="NewDiscover__sorting-mobile">
-            <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+            <DiscoverSorting
+              sort={sort}
+              handleSortChange={handleSortChange}
+              objectType={activeObjectTypeName}
+            />
           </div>
         )}
         <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
@@ -302,7 +306,11 @@ const NewDiscover = () => {
               </div>
               {!discoverUsers && (
                 <div className="NewDiscover__sorting">
-                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+                  <DiscoverSorting
+                    sort={sort}
+                    handleSortChange={handleSortChange}
+                    objectType={activeObjectTypeName}
+                  />
                 </div>
               )}
             </div>
