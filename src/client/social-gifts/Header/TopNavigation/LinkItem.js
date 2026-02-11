@@ -25,7 +25,16 @@ const LinkItem = ({ link, index, intl }) => {
 
   if (linkTo?.includes('/active-campaigns')) {
     return (
-      <a key={link.link} className="WebsiteTopNavigation__link" rel="noreferrer" href={link.link}>
+      <a
+        key={link.link}
+        className={
+          index === 0 && history.location.pathname === '/'
+            ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
+            : 'WebsiteTopNavigation__link'
+        }
+        rel="noreferrer"
+        href={link.link}
+      >
         {getMenuLinkTitle(link, intl, 24, uppercase)}
       </a>
     );
