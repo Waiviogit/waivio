@@ -13,11 +13,15 @@ import ActiveCampaignList from '../ActiveCampaignList/ActiveCampaignList';
 import Checklist from '../Checklist/Checklist';
 import { getAlbums } from '../../../store/galleryStore/galleryActions';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import NewDiscover from '../NewDiscover/NewDiscover';
 
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
   const objState = useSelector(getObjectState);
-  const objType = (links[0] || objState)?.object_type;
+  const objType =
+    (links[0] || objState)?.object_type || links[0]?.link?.includes('/discover-objects')
+      ? 'new-discover'
+      : '';
   const dispatch = useDispatch();
   const authorPermlink = links[0]?.permlink || objState.author_permlink;
 
@@ -54,7 +58,13 @@ const ShopMainForWobject = () => {
         return <Checklist permlink={authorPermlink} isMain />;
       case 'map':
         return <WebsiteBody permlink={authorPermlink} isSocial />;
+      case 'new-discover':
+        const type = links[0]?.link
+          ?.split('/')
+          .filter(Boolean)
+          .slice(-1)[0];
 
+        return <NewDiscover initialType={type} />;
       default:
         return (
           <Wobj
