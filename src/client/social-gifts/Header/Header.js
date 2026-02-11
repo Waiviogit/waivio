@@ -53,6 +53,9 @@ const Header = ({ hideSignIn, hideHeader }) => {
   if (to?.includes('/active-campaigns')) {
     to = '/active-campaigns';
   }
+  if (to?.includes('/discover-objects')) {
+    to = '/discover-objects';
+  }
 
   const props = {
     hideSignIn,
