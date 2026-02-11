@@ -222,6 +222,10 @@ const ObjectOfTypePage = props => {
           wobject.object_type === 'html',
         );
         setIsLoading(false);
+        if (wobject.object_type === 'html') {
+          if (typeof window !== 'undefined' && window.gtag)
+            window.gtag('event', getObjectName(wobject), { debug_mode: false });
+        }
       }
     }
   }, [props.location.hash, props.wobject.author_permlink]);

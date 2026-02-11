@@ -13,6 +13,7 @@ import ActiveCampaignList from '../ActiveCampaignList/ActiveCampaignList';
 import Checklist from '../Checklist/Checklist';
 import { getAlbums } from '../../../store/galleryStore/galleryActions';
 import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
+import NewDiscover from '../NewDiscover/NewDiscover';
 
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
@@ -30,6 +31,14 @@ const ShopMainForWobject = () => {
 
   const getFirstPage = () => {
     if (links[0]?.link?.includes('/active-campaigns')) return <ActiveCampaignList />;
+    if (links[0]?.link?.includes('/discover-objects')) {
+      const type = links[0]?.link
+        ?.split('/')
+        .filter(Boolean)
+        .slice(-1)[0];
+
+      return <NewDiscover initialType={type} />;
+    }
 
     switch (objType) {
       case 'shop':

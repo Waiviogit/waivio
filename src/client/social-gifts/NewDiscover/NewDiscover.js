@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useHistory, useParams, useRouteMatch, useLocation } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -40,13 +41,13 @@ import './NewDiscover.less';
 const wobjects_count = 20;
 const limit = 30;
 
-const NewDiscover = () => {
+const NewDiscover = ({ initialType }) => {
   const { type, user } = useParams();
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-  const activeObjectTypeName = match.params.type || match.params.typeName;
+  const activeObjectTypeName = type || match.params.typeName || initialType;
   const favicon = useSelector(getHelmetIcon);
   const host = useSelector(getAppHost);
   const siteName = useSelector(getSiteName);
@@ -96,13 +97,13 @@ const NewDiscover = () => {
   };
 
   useEffect(() => {
-    if (!discoverUsers && type) {
-      dispatch(getTagCategories(type));
+    if (!discoverUsers && activeObjectTypeName) {
+      dispatch(getTagCategories(activeObjectTypeName));
     }
-  }, [type, discoverUsers]);
+  }, [activeObjectTypeName, discoverUsers]);
 
   useEffect(() => {
-    if (discoverUsers || !type) return;
+    if (discoverUsers || !activeObjectTypeName) return;
 
     if (lastLoadedSearchRef.current === location.search && lastLoadedSearchRef.current !== null) {
       return;
@@ -113,24 +114,24 @@ const NewDiscover = () => {
     setLoading(true);
     dispatch(resetObjects());
 
-    const reduxSort = sort === 'rank' ? 'weight' : sort;
-
-    dispatch(changeSorting(reduxSort));
+    dispatch(changeSorting(sort));
 
     lastLoadedSearchRef.current = location.search;
 
-    dispatch(getObjectsTypeByTypesName(type, buildFilter(), wobjects_count, ac)).finally(() =>
-      setLoading(false),
-    );
+    dispatch(
+      getObjectsTypeByTypesName(activeObjectTypeName, buildFilter(), wobjects_count, ac),
+    ).finally(() => setLoading(false));
 
     // eslint-disable-next-line consistent-return
     return () => ac.abort();
-  }, [location.search, type, discoverUsers]);
+  }, [location.search, activeObjectTypeName, discoverUsers]);
 
   const loadMore = () => {
     const skip = objects?.length || 0;
 
-    dispatch(getObjectsTypeByTypesNameMore(type, buildFilter(), wobjects_count, skip));
+    dispatch(
+      getObjectsTypeByTypesNameMore(activeObjectTypeName, buildFilter(), wobjects_count, skip),
+    );
   };
 
   const removeSearch = () => {
@@ -205,7 +206,11 @@ const NewDiscover = () => {
       <React.Fragment>
         {isMobile() && !discoverUsers && (
           <div className="NewDiscover__sorting-mobile">
-            <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+            <DiscoverSorting
+              sort={sort}
+              handleSortChange={handleSortChange}
+              objectType={activeObjectTypeName}
+            />
           </div>
         )}
         <InfiniteScroll hasMore={hasMoreObjects} loadMore={loadMore} loader={<Loading />}>
@@ -265,7 +270,9 @@ const NewDiscover = () => {
         <div className="NewDiscover__content">
           <div className="NewDiscover__wrap">
             <div className="NewDiscover__header-row">
-              <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+              <h3 className="NewDiscover__type">
+                {discoverUsers ? 'Users' : activeObjectTypeName}
+              </h3>
             </div>
             {!discoverUsers && isMobile() && (
               <div
@@ -304,7 +311,11 @@ const NewDiscover = () => {
               </div>
               {!discoverUsers && (
                 <div className="NewDiscover__sorting">
-                  <DiscoverSorting sort={sort} handleSortChange={handleSortChange} />
+                  <DiscoverSorting
+                    sort={sort}
+                    handleSortChange={handleSortChange}
+                    objectType={activeObjectTypeName}
+                  />
                 </div>
               )}
             </div>
@@ -327,4 +338,7 @@ const NewDiscover = () => {
   );
 };
 
+NewDiscover.propTypes = {
+  initialType: PropTypes.string,
+};
 export default NewDiscover;

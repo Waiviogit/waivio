@@ -206,7 +206,7 @@ export const changeUrl = (activeTags, history, location) => {
     }
   });
 
-  if (sort && sort !== 'reverse_recency') {
+  if (sort && sort !== 'newestFirst') {
     params.set('sort', sort);
   }
 
@@ -256,7 +256,7 @@ export const parseDiscoverQuery = search => {
     search: params.get('search') || '',
     category: params.get('category') || null,
     tagsByCategory: parseDiscoverTagsFilters(search),
-    sort: params.get('sort') || 'reverse_recency',
+    sort: params.get('sort') || 'newestFirst',
   };
 };
 
@@ -267,7 +267,7 @@ export const buildCanonicalSearch = ({ search, tagsByCategory, sort }) => {
     params.set('search', search);
   }
 
-  if (sort && sort !== 'reverse_recency') {
+  if (sort && sort !== 'newestFirst') {
     params.set('sort', sort);
   }
 

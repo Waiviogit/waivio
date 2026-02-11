@@ -187,9 +187,7 @@ class DiscoverObjectsContent extends Component {
 
     this.props.setActiveFilters(searchFilters);
 
-    const reduxSort = sort === 'rank' ? 'weight' : sort;
-
-    this.props.changeSorting(reduxSort);
+    this.props.changeSorting(sort);
 
     if (searchFilters.map) {
       this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
@@ -215,9 +213,7 @@ class DiscoverObjectsContent extends Component {
       prevProps.location.pathname === location.pathname &&
       prevProps.location.search !== location.search
     ) {
-      const reduxSort = sort === 'rank' ? 'weight' : sort;
-
-      this.props.setObjectSortType(reduxSort);
+      this.props.setObjectSortType(sort);
 
       this.lastLoadedSortRef = sort;
 
@@ -289,9 +285,7 @@ class DiscoverObjectsContent extends Component {
     const { history, location } = this.props;
     const { search, tagsByCategory } = parseDiscoverQuery(location.search);
 
-    const reduxSort = sorting === 'rank' ? 'weight' : sorting;
-
-    this.props.setObjectSortType(reduxSort);
+    this.props.setObjectSortType(sorting);
 
     const canonical = buildCanonicalSearch({
       search,
@@ -367,8 +361,15 @@ class DiscoverObjectsContent extends Component {
       location,
     } = this.props;
     const { sort: urlSort } = parseDiscoverQuery(location.search);
+
+    const objectType = this.props.theType?.name;
+
     const sortSelector = (
-      <DiscoverSorting sort={urlSort} handleSortChange={this.handleChangeSorting} />
+      <DiscoverSorting
+        sort={urlSort}
+        handleSortChange={this.handleChangeSorting}
+        objectType={objectType}
+      />
     );
 
     return (

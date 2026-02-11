@@ -5,7 +5,39 @@ import sanitizeHtml from 'sanitize-html';
 const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
-  // -------- helpers -------------------------------------------------
+
+  useEffect(() => {
+    const handleMessage = event => {
+      if (!iframeRef.current || event.source !== iframeRef.current.contentWindow) return;
+
+      const data = event.data;
+
+      if (!data || data.__hs !== true) return;
+
+      if (typeof window.gtag !== 'function') return;
+
+      if (data.type === 'GA_EVENT' && Array.isArray(data.payload)) {
+        // eslint-disable-next-line prefer-spread
+        if (typeof window !== 'undefined') window.gtag.apply(window, data.payload);
+
+        return;
+      }
+
+      // ВАРІАНТ Б: Автоматичний клік (якщо ручного gtag не було)
+      if (data.type === 'UI_INTERACTION') {
+        window.gtag('event', 'iframe_ui_interaction', {
+          source: 'html_sandbox',
+          element_tag: data.element?.tag || null,
+          element_text: data.element?.text || null,
+        });
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   const stripPreCodeWrapper = (input = '') => {
     const m = String(input)
       .trim()
@@ -48,7 +80,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     return s;
   };
 
-  // важливо: НЕ ламаємо sticky/fixed та фон. Лише чистимо потенційно небезпечне + патчимо vh.
   const sanitizeCss = (css = '') =>
     css
       .replace(/expression\s*\(/gi, '')
@@ -59,7 +90,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
       .replace(/@namespace[\s\S]*?;?/gi, '')
       .replace(/\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi, (_m, n) => `calc(var(--hs-vh, 1vh) * ${n})`);
 
-  // ------ sanitize-html config -------------------------------------
   const sanitizeConfig = useMemo(() => {
     const cfg = {
       allowedTags: [
@@ -125,7 +155,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         'script',
         'button',
         'iframe',
-        // SVGs
         'svg',
         'g',
         'path',
@@ -190,7 +219,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
           'data-*',
           'aria-*',
           'style',
-          // дозволяємо on* бо валідацію вже зробили
           'onclick',
           'ondblclick',
           'onmousedown',
@@ -417,7 +445,11 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
       transformTags: {
         a: (tagName, attribs) => ({
           tagName: 'a',
-          attribs: { ...attribs, rel: 'noopener nofollow ugc', target: '_blank' },
+          attribs: {
+            ...attribs,
+            rel: 'noopener nofollow ugc',
+            target: attribs.target === '_self' ? '_top' : attribs.target || '_blank',
+          },
         }),
         link: (tagName, attribs) => {
           const rel = (attribs.rel || '').toLowerCase();
@@ -444,30 +476,14 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         script: (tagName, attribs) => {
           const src = (attribs?.src || '').trim();
 
-          // Inline <script> оставляем (если ты хочешь разрешать inline-логику пользователя)
           if (!src) return { tagName: 'script', attribs };
-
-          // Разрешаем только Google Tag (GA4) и GTM
           const isGoogleAllowed =
             /^https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-[A-Z0-9]+/i.test(src) ||
             /^https:\/\/www\.googletagmanager\.com\/gtm\.js\?id=GTM-[A-Z0-9]+/i.test(src);
 
-          if (!isGoogleAllowed) {
-            return { tagName: 'noscript', attribs: {} };
-          }
+          if (!isGoogleAllowed) return { tagName: 'noscript', attribs: {} };
 
-          // Нормализуем атрибуты (async обычно нужен)
-          const safeAttribs = {
-            src,
-            async: 'async',
-            ...(attribs.defer ? { defer: 'defer' } : {}),
-            ...(attribs.type ? { type: attribs.type } : {}),
-            ...(attribs.crossorigin ? { crossorigin: attribs.crossorigin } : {}),
-            ...(attribs.integrity ? { integrity: attribs.integrity } : {}),
-            ...(attribs.referrerpolicy ? { referrerpolicy: attribs.referrerpolicy } : {}),
-          };
-
-          return { tagName: 'script', attribs: safeAttribs };
+          return { tagName: 'script', attribs: { ...attribs, async: 'async' } };
         },
       },
     };
@@ -475,13 +491,9 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     return cfg;
   }, []);
 
-  // Виявляємо VH
   const hasVh = useMemo(() => /\b(\d+(?:\.\d+)?)\s*(?:[sld])?vh\b/gi.test(html || ''), [html]);
-
-  // Авто-висота працює лише якщо НЕМає vh (інакше даємо внутрішній скрол)
   const effectiveAutoSize = useMemo(() => autoSize && !hasVh, [autoSize, hasVh]);
 
-  // --------- HTML під iframe ---------------------------------------
   const processedHtml = useMemo(() => {
     let raw = stripPreCodeWrapper(html || '');
 
@@ -520,38 +532,54 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
 
     bodyHtml = bodyHtml
       .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '')
-      .replace(/<title[^>]*>[\s\S]*?<\/title>/gi, '')
-      .replace(/<meta[^>]*>/gi, '')
-      .replace(/<base[^>]*>/gi, '')
       .replace(/<\/?(html|body)\b[^>]*>/gi, '');
 
-    // ВАЖЛИВО: дозволяємо скрипти/фрейми у CSP (бо є власна валідація)
+    const bridgeScript = `
+(function () {
+  function send(data) {
+    try {
+      window.parent.postMessage(Object.assign({ __hs: true }, data), '*');
+    } catch (e) {}
+  }
+
+  // Створюємо функцію gtag прямо всередині iframe, щоб її бачив ваш HTML
+  window.gtag = function () {
+    send({ type: 'GA_EVENT', payload: Array.prototype.slice.call(arguments) });
+  };
+
+  window.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest
+      ? e.target.closest('button, a, input, select, textarea')
+      : null;
+
+    if (!el) return;
+
+    var text =
+      (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')
+        ? (el.value || '')
+        : (el.innerText || el.textContent || '');
+
+    send({
+      type: 'UI_INTERACTION',
+      element: {
+        tag: el.tagName,
+        id: el.id || null,
+        name: el.getAttribute('name') || null,
+        text: String(text).trim().slice(0, 60),
+      },
+    });
+  }, true);
+})();
+`.trim();
     const headContent = `
       <meta charset="utf-8">
-      <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' data: blob: https:;
-        img-src * data: blob:;
-        media-src *;
-        font-src *;
-        style-src * 'unsafe-inline';
-        script-src 'unsafe-inline' https: data: blob:;
-        connect-src *;
-        frame-src *;
-        child-src *;
-        object-src 'none';
-        base-uri 'none';
-        form-action 'none';
-      ">
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: https:; img-src * data: blob:; style-src * 'unsafe-inline'; script-src 'unsafe-inline' https: data:;">
+      <script>${bridgeScript}</script>
       <style>
         :root { --hs-vh: 1vh; }
         html, body { margin: 0; box-sizing: border-box; }
-        *, *::before, *::after { box-sizing: inherit; }
-        /* якщо autoSize увімкнено — ховаємо внутр. вертикальний скрол, інакше дозволяємо */
         html { ${effectiveAutoSize ? 'overflow-y:hidden;' : 'overflow-y:auto;'} overflow-x:hidden; }
         img, video, svg, canvas, iframe { max-width: 100%; height: auto; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
-        pre, code { white-space: pre-wrap; word-break: break-word; }
       </style>
       ${links.join('\n')}
       ${styles.map(cssText => `<style>${cssText}</style>`).join('\n')}
@@ -567,7 +595,6 @@ ${bodyHtml}
 </html>`;
   }, [html, sanitizeConfig, effectiveAutoSize]);
 
-  // --------- sizing -------------------------------------------------
   const updateVhVar = () => {
     try {
       const iframe = iframeRef.current;
@@ -629,9 +656,6 @@ ${bodyHtml}
     }
   };
 
-  // стартова висота:
-  // - якщо effectiveAutoSize=true → clamp по viewport, напр. 300..900
-  // - якщо false (є vh) → даємо адекватне вікно зі скролом, напр. 600..1000, а не maxHeight
   const initialStartHeight = useMemo(() => {
     const vp = typeof window !== 'undefined' ? window.innerHeight : 0;
 
@@ -640,24 +664,17 @@ ${bodyHtml}
 
       return maxHeight ? Math.min(maxHeight, clamped) : clamped;
     }
-    // режим зі скролом
     const clamped = Math.max(600, Math.min(vp || 0, 1000)) || 800;
 
     return maxHeight ? Math.min(maxHeight, clamped) : clamped;
   }, [effectiveAutoSize, maxHeight]);
 
-  // --------- lifecycle ---------------------------------------------
   useEffect(() => {
     const iframe = iframeRef.current;
 
     if (!iframe) return;
-
     const handleLoad = () => {
-      setInteractive(false);
       iframe.style.height = `${initialStartHeight}px`;
-      updateVhVar();
-
-      // підлаштовуємося під вміст
       if (effectiveAutoSize) {
         requestAnimationFrame(() => fit());
         setTimeout(fit, 50);
@@ -673,7 +690,6 @@ ${bodyHtml}
       try {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
 
-        // ресайз при завантаженні картинок/шрифтів
         [...(doc?.images || [])].forEach(img => {
           if (!img.complete)
             img.addEventListener(
@@ -748,16 +764,11 @@ ${bodyHtml}
     };
   }, [effectiveAutoSize, maxHeight, initialStartHeight]);
 
-  // Скрипти дозвлені завжди (валидація вже зроблена)
-  const sandboxValue =
-    'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin';
-
   return (
     <iframe
       ref={iframeRef}
       srcDoc={processedHtml}
-      sandbox={sandboxValue}
-      referrerPolicy="no-referrer"
+      sandbox="allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
       className={className}
       scrolling={effectiveAutoSize ? 'no' : 'auto'}
       style={{
