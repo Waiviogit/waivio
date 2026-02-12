@@ -18,10 +18,7 @@ import NewDiscover from '../NewDiscover/NewDiscover';
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
   const objState = useSelector(getObjectState);
-  const objType =
-    (links[0] || objState)?.object_type || links[0]?.link?.includes('/discover-objects')
-      ? 'new-discover'
-      : '';
+  const objType = (links[0] || objState)?.object_type;
   const dispatch = useDispatch();
   const authorPermlink = links[0]?.permlink || objState.author_permlink;
 
@@ -34,6 +31,14 @@ const ShopMainForWobject = () => {
 
   const getFirstPage = () => {
     if (links[0]?.link?.includes('/active-campaigns')) return <ActiveCampaignList />;
+    if (links[0]?.link?.includes('/discover-objects')) {
+      const type = links[0]?.link
+        ?.split('/')
+        .filter(Boolean)
+        .slice(-1)[0];
+
+      return <NewDiscover initialType={type} />;
+    }
 
     switch (objType) {
       case 'shop':
@@ -58,13 +63,7 @@ const ShopMainForWobject = () => {
         return <Checklist permlink={authorPermlink} isMain />;
       case 'map':
         return <WebsiteBody permlink={authorPermlink} isSocial />;
-      case 'new-discover':
-        const type = links[0]?.link
-          ?.split('/')
-          .filter(Boolean)
-          .slice(-1)[0];
 
-        return <NewDiscover initialType={type} />;
       default:
         return (
           <Wobj
