@@ -30,13 +30,14 @@ const ShopMainForWobject = () => {
   }, [links]);
 
   const getFirstPage = () => {
-    if (links[0]?.link?.includes('/active-campaigns')) return <ActiveCampaignList />;
-    if (links[0]?.link?.includes('/discover-objects')) {
-      const type = links[0]?.link
-        ?.split('/')
-        .filter(Boolean)
-        .slice(-1)[0];
+    const type = links[0]?.link
+      ?.split('/')
+      .filter(Boolean)
+      .slice(-1)[0];
 
+    if (links[0]?.link?.includes('/active-campaigns'))
+      return <ActiveCampaignList initialType={type} />;
+    if (links[0]?.link?.includes('/discover-objects')) {
       return <NewDiscover initialType={type} />;
     }
 
