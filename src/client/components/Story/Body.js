@@ -162,6 +162,15 @@ export function getHtml(
     );
   });
 
+  // Transform 3Speak thumbnail links to iframe embeds
+  const threeSpeakLinkRegex = /<a\s+[^>]*(?:href|data-href)="https?:\/\/3speak\.tv\/watch\?v=([^"&]+)[^"]*"[^>]*>[\s\S]*?<img[^>]*>[\s\S]*?<\/a>/gi;
+
+  parsedBody = parsedBody.replace(threeSpeakLinkRegex, (match, videoId) => {
+    const iframeSrc = `//play.3speak.tv/watch?v=${videoId}&mode=iframe&layout=desktop`;
+
+    return `<div class="PostFeedEmbed__container"><iframe src="${iframeSrc}" width="100%" height="400" frameborder="0" allowfullscreen></iframe></div>`;
+  });
+
   return (
     <div
       // eslint-disable-next-line react/no-danger
