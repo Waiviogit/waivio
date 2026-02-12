@@ -301,9 +301,9 @@ SteemEmbed.threeSpeak = function(url, authorPermlink, options) {
     options.width +
     '" height="' +
     options.height +
-    '" src="https://3speak.tv/embed?v=' +
+    '" src="//play.3speak.tv/watch?v=' +
     authorPermlink +
-    '" allowfullscreen></iframe>'
+    '&mode=iframe&layout=desktop" allowfullscreen></iframe>'
   );
 };
 
