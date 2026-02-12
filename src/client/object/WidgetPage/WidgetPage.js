@@ -24,6 +24,7 @@ const WidgetPage = props => {
   const currentWobject = hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
   const newTabColumn = widgetForm?.column === formColumnsField.newTab;
+  const forwardColumn = widgetForm?.column === formColumnsField.forward;
 
   useEffect(() => {
     if (nestedObjPermlink) {
@@ -49,12 +50,16 @@ const WidgetPage = props => {
     return <Loading />;
   }
 
-  if (newTabColumn)
+  if (newTabColumn || forwardColumn)
     return (
       <div className="feed_empty">
         <p>
-          This widget opens in a new tab. Click the{' '}
-          <a href={widgetForm.content} target="_blank" rel="noopener noreferrer">
+          This widget opens in {newTabColumn ? 'a new' : 'the same'} tab. Click the{' '}
+          <a
+            href={widgetForm.content}
+            target={newTabColumn ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+          >
             link
           </a>{' '}
           to continue.

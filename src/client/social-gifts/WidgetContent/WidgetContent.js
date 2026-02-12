@@ -67,12 +67,19 @@ const WidgetContent = ({ wobj, intl }) => {
   const isActiveCamp = widgetForm?.content?.includes('/active-campaigns?display=widget');
   const hideHeader = useSelector(getHideHeaderFromWobj);
   const newTabColumn = widgetForm?.column === formColumnsField.newTab;
+  const forwardColumn = widgetForm?.column === formColumnsField.forward;
 
   useEffect(() => {
     if (newTabColumn && widgetForm?.content && typeof window !== 'undefined') {
       window.open(widgetForm.content, '_self');
     }
   }, [newTabColumn, widgetForm?.content]);
+
+  useEffect(() => {
+    if (forwardColumn && widgetForm?.content && typeof window !== 'undefined') {
+      window.location.href = widgetForm.content;
+    }
+  }, [forwardColumn, widgetForm?.content]);
 
   useEffect(() => {
     setLoading(true);
@@ -91,7 +98,7 @@ const WidgetContent = ({ wobj, intl }) => {
 
   const widgetView = () => {
     if (loading) return <Loading />;
-    if (newTabColumn) return null;
+    if (newTabColumn || forwardColumn) return null;
     if (!widgetForm) {
       return (
         <div className="Checklist">
