@@ -54,7 +54,9 @@ const Header = ({ hideSignIn, hideHeader }) => {
     to = '/active-campaigns';
   }
   if (to?.includes('/discover-objects')) {
-    to = '/discover-objects';
+    const discoverMatch = to.match(/\/discover-objects(\/.*)?$/);
+
+    to = discoverMatch ? `/discover-objects${discoverMatch[1] || ''}` : '/discover-objects';
   }
 
   const props = {
