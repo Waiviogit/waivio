@@ -32,7 +32,7 @@ const ActiveCampaignList = ({ intl, initialType }) => {
   const favicon = useSelector(getHelmetIcon);
   const host = useSelector(getAppHost);
   const siteName = useSelector(getSiteName);
-  const { objectTyp: type } = useParams();
+  const { objectType: type } = useParams();
   const objectType = type || initialType;
   const match = useRouteMatch();
   const location = useLocation();
@@ -90,11 +90,17 @@ const ActiveCampaignList = ({ intl, initialType }) => {
               return (
                 <NavLink
                   key={tab}
-                  isActive={() =>
-                    isAll
-                      ? match.url === `/active-campaigns`
-                      : match?.url === `/active-campaigns/${tab}`
-                  }
+                  isActive={() => {
+                    if (location.pathname === '/' && initialType) {
+                      return tab === initialType;
+                    }
+
+                    if (isAll) {
+                      return match.url === `/active-campaigns`;
+                    }
+
+                    return match?.url === `/active-campaigns/${tab}`;
+                  }}
                   activeClassName="ActiveCampaignList__link--active"
                   to={getLinkUrl(tab, isAll)}
                 >
