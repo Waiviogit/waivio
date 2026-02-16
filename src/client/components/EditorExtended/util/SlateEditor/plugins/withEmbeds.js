@@ -8,6 +8,7 @@ import {
   getSafeSelectedElement,
   isInsideCodeBlock,
 } from '../utils/safeSelection';
+import { isYoutube } from '../../videoHelper';
 
 function wrapListItemsInBulletedList(nodes) {
   const result = [];
@@ -240,7 +241,7 @@ const withEmbeds = cb => editor => {
     if (text && /^https?:\/\/\S+$/.test(text.trim())) {
       let node;
 
-      if (text?.includes('youtube.com') || text?.includes('youtu.be')) {
+      if (isYoutube(text.trim())) {
         node = { type: 'video', url: text.trim(), children: [{ text: '' }] };
         Transforms.insertNodes(editor, node);
         Transforms.insertNodes(editor, createEmptyNode());
