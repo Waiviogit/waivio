@@ -68,7 +68,7 @@ const RewardsHeader = ({ proposition, intl }) => {
                 target={'_blank'}
                 rel="noreferrer"
               >
-                @{proposition?.guideName} {`(${proposition?.sponsorName})`}
+                @{proposition?.guideName} {`(${proposition?.sponsorURL})`}
               </a>
             </>
           )}

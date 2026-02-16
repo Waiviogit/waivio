@@ -16,16 +16,28 @@ const LinkItem = ({ link, index, intl }) => {
   const dispatch = useDispatch();
   const directObjTypes = ['person'];
   const hostname = window.location.hostname;
-  const className =
-    index === 0 && history.location.pathname === '/'
-      ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
-      : 'WebsiteTopNavigation__link';
 
   let linkTo = directObjTypes?.includes(link?.object_type || '')
     ? `/object/${link.permlink}`
     : link.link;
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
+  const normalize = (path = '') => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+
+  const pathname = normalize(history.location.pathname);
+
+  let linkPathname = linkTo;
+
+  if (linkTo?.startsWith('http')) {
+    linkPathname = new URL(linkTo).pathname;
+  }
+
+  linkPathname = normalize(linkPathname);
+
+  const className =
+    pathname === linkPathname || (index === 0 && history.location.pathname === '/')
+      ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
+      : 'WebsiteTopNavigation__link';
 
   if (linkTo?.includes('/active-campaigns')) {
     return (
