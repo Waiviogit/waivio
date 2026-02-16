@@ -289,5 +289,6 @@ export const validatorsCreator = (
     if (!domainPattern.test(domainPart)) {
       return callback(messages.sponsorURLInvalidFormat);
     }
+    callback();
   },
 });
