@@ -6,8 +6,8 @@ const currentHost = typeof window !== 'undefined' ? window.location.hostname : '
 const YOUTUBE_PREFIX = 'https://www.youtube.com/embed/';
 const VIMEO_PREFIX = 'https://player.vimeo.com/video/';
 const DTUBE_PREFIX = 'https://emb.d.tube/#!/';
-const THREESPEAK_PREFIX = 'https://3speak.online/embed?v=';
-const THREESPEAK_TV_PREFIX = 'https://3speak.tv/embed?v=';
+const THREESPEAK_PREFIX = '//play.3speak.tv/watch?v=';
+const THREESPEAK_TV_PREFIX = '//play.3speak.tv/watch?v=';
 const RUMBLE_PREFIX = 'https://rumble.com/embed/';
 const BITCHUTE_PREFIX = 'https://www.bitchute.com/embed/';
 
@@ -253,12 +253,12 @@ export const getSrc = ({ src }) => {
   if (isThreeSpeak(src)) {
     const { srcID } = getThreeSpeakSrc(src);
 
-    return `${THREESPEAK_PREFIX}${srcID}`;
+    return `${THREESPEAK_PREFIX}${srcID}&mode=iframe&layout=desktop`;
   }
   if (isThreeSpeakTV(src)) {
     const { srcID } = getThreeSpeakTVSrc(src);
 
-    return `${THREESPEAK_TV_PREFIX}${srcID}`;
+    return `${THREESPEAK_TV_PREFIX}${srcID}&mode=iframe&layout=desktop`;
   }
   if (isRumble(src)) {
     const { srcID } = getRumbleSrc(src);
