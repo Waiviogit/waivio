@@ -22,9 +22,20 @@ const LinkItem = ({ link, index, intl }) => {
     : link.link;
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
+  const normalize = (path = '') => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+
+  const pathname = normalize(history.location.pathname);
+
+  let linkPathname = linkTo;
+
+  if (linkTo?.startsWith('http')) {
+    linkPathname = new URL(linkTo).pathname;
+  }
+
+  linkPathname = normalize(linkPathname);
+
   const className =
-    (index === 0 && history.location.pathname === '/') ||
-    linkTo?.includes(history.location.pathname)
+    pathname === linkPathname || (index === 0 && history.location.pathname === '/')
       ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
       : 'WebsiteTopNavigation__link';
 
