@@ -99,15 +99,7 @@ export function getHtml(
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
-    if (videoLink) {
-      // Instead of replacing entire <center> block, only replace the linked image inside it
-      // This preserves the "Watch on 3Speak" text link
-      const centerContent = videoPreviewResult[0];
-      const linkedImageRegex = /\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\)/g;
-      const updatedContent = centerContent.replace(linkedImageRegex, videoLink);
-
-      parsedBody = parsedBody?.replace(videoPreviewResult[0], updatedContent);
-    }
+    if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
 
   parsedBody = improve(parsedBody);
