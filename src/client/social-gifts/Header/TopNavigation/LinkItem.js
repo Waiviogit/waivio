@@ -24,20 +24,26 @@ const LinkItem = ({ link, index, intl }) => {
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
   const normalize = (path = '') => (path.length > 1 ? path.replace(/\/+$/, '') : path);
 
-  const pathname = normalize(history.location.pathname);
+  const currentUrl = new URL(window.location.href);
+  const pathname = normalize(currentUrl.pathname);
 
-  let linkPathname = linkTo;
+  let linkUrl;
 
   if (linkTo?.startsWith('http')) {
-    linkPathname = new URL(linkTo).pathname;
+    linkUrl = new URL(linkTo);
+  } else {
+    linkUrl = new URL(linkTo, window.location.origin);
   }
 
-  linkPathname = normalize(linkPathname);
+  const linkPathname = normalize(linkUrl.pathname);
 
-  const className =
-    pathname === linkPathname || (index === 0 && history.location.pathname === '/')
-      ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
-      : 'WebsiteTopNavigation__link';
+  const isSameHost = linkUrl.host === currentUrl.host;
+
+  const isActive = isSameHost && pathname === linkPathname;
+
+  const className = isActive
+    ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
+    : 'WebsiteTopNavigation__link';
 
   if (linkTo?.includes('/active-campaigns')) {
     return (
