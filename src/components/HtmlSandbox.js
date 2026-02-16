@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
+import { getObjectName } from '../common/helpers/wObjectHelper';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
+const HtmlSandbox = ({ html, wobject, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
@@ -34,6 +35,10 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     };
 
     window.addEventListener('message', handleMessage);
+
+    if (typeof window !== 'undefined' && window.gtag && wobject) {
+      window.gtag('event', getObjectName(wobject), { debug_mode: false });
+    }
 
     return () => window.removeEventListener('message', handleMessage);
   }, []);
@@ -789,6 +794,7 @@ HtmlSandbox.propTypes = {
   className: PropTypes.string,
   autoSize: PropTypes.bool,
   maxHeight: PropTypes.number,
+  wobject: PropTypes.shape(),
 };
 
 export default HtmlSandbox;
