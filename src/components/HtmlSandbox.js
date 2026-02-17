@@ -24,7 +24,6 @@ const HtmlSandbox = ({ html, wobject, className, autoSize = true, maxHeight }) =
         return;
       }
 
-      // ВАРІАНТ Б: Автоматичний клік (якщо ручного gtag не було)
       if (data.type === 'UI_INTERACTION') {
         window.gtag('event', 'iframe_ui_interaction', {
           source: 'html_sandbox',
@@ -547,7 +546,6 @@ const HtmlSandbox = ({ html, wobject, className, autoSize = true, maxHeight }) =
     } catch (e) {}
   }
 
-  // Створюємо функцію gtag прямо всередині iframe, щоб її бачив ваш HTML
   window.gtag = function () {
     send({ type: 'GA_EVENT', payload: Array.prototype.slice.call(arguments) });
   };

@@ -53,6 +53,7 @@ export const isPeerTube = url => VIDEO_MATCH_URL.PEERTUBE.test(url);
 export const getIframeContainerClass = (embed, inPost, isSocial) =>
   classNames('PostFeedEmbed__container', {
     'PostFeedEmbed__container-vimeo': embed.provider_name === 'Vimeo',
+    'PostFeedEmbed__container--youtube': embed.provider_name === 'YouTube',
     PostFeedEmbed__container_high: embed.url && embed.url?.includes('tiktok.com/'),
     'PostFeedEmbed__container--thin': embed.url?.includes('tiktok.com/') && inPost,
     'PostFeedEmbed__container--shotsPost': embed.url?.includes('shorts') && inPost,
