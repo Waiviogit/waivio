@@ -152,20 +152,26 @@ const UserBlog = props => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={props.helmetIcon} type="image/x-icon" />
       </Helmet>
-      {mentions.main && <Campaing campain={mentions.main} secondary={mentions?.secondary} />}
-      {!isEmpty(mentions.secondary) &&
-        mentions.secondary.map(propos => <Proposition key={propos._id} proposition={propos} />)}
-      <Feed
-        content={content}
-        isFetching={isFetching || previewLoading}
-        hasMore={hasMore}
-        loadMoreContent={loadMoreContentAction}
-        showPostModal={props.showPostModal}
-        isGuest={props.isGuest}
-      />
-      {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-      {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-      {<PostModal userName={props.authenticatedUserName} />}
+      {user?.restricted ? (
+        <EmptyUserProfile text={'This user has shared content that may be inappropriate.'} />
+      ) : (
+        <>
+          {mentions.main && <Campaing campain={mentions.main} secondary={mentions?.secondary} />}
+          {!isEmpty(mentions.secondary) &&
+            mentions.secondary.map(propos => <Proposition key={propos._id} proposition={propos} />)}
+          <Feed
+            content={content}
+            isFetching={isFetching || previewLoading}
+            hasMore={hasMore}
+            loadMoreContent={loadMoreContentAction}
+            showPostModal={props.showPostModal}
+            isGuest={props.isGuest}
+          />
+          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+          {<PostModal userName={props.authenticatedUserName} />}
+        </>
+      )}
     </div>
   );
 };
