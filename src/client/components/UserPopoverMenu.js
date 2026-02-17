@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import { Icon } from 'antd';
 import { ReactSVG } from 'react-svg';
@@ -8,8 +9,17 @@ import withAuthAction from '../auth/withAuthActions';
 
 import Popover from './Popover';
 
-const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog, onActionInitiated }) => {
+const UserPopoverMenu = ({
+  handleMuteCurrUser,
+  user,
+  handleUnMuteUserBlog,
+  handleRestrictUserBlog,
+  onActionInitiated,
+  authUserName,
+}) => {
   const currentUserMuted = user.muted;
+  const appAdmins = Cookie.get('appAdmins');
+  const isAdministrator = appAdmins?.includes(authUserName);
 
   const handlePopoverClick = key => {
     switch (key) {
@@ -17,12 +27,42 @@ const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog, onAct
         return handleMuteCurrUser();
       case 'unmute':
         return handleUnMuteUserBlog(user);
+      case 'restrict':
+        return handleRestrictUserBlog(user);
       default:
         return null;
     }
   };
 
   const handlePopoverChoice = key => onActionInitiated(() => handlePopoverClick(key));
+
+  const menuItems = [
+    <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
+      {user.muteLoading ? (
+        <Icon type="loading" />
+      ) : (
+        <ReactSVG
+          className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
+          wrapper="span"
+          src="/images/icons/mute-user.svg"
+        />
+      )}
+      <FormattedMessage
+        id={currentUserMuted ? 'unmute' : 'mute'}
+        defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
+      />{' '}
+      {user.name}
+    </PopoverMenuItem>,
+  ];
+
+  if (isAdministrator && !user.restricted) {
+    menuItems.push(
+      <PopoverMenuItem key="restrict">
+        <Icon type="stop" />
+        <FormattedMessage id="restrict" defaultMessage="Restrict" /> {user.name}
+      </PopoverMenuItem>,
+    );
+  }
 
   return (
     <Popover
@@ -31,24 +71,7 @@ const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog, onAct
       content={
         <React.Fragment>
           <PopoverMenu onSelect={handlePopoverChoice} bold={false} trigger="hover">
-            {[
-              <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
-                {user.muteLoading ? (
-                  <Icon type="loading" />
-                ) : (
-                  <ReactSVG
-                    className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
-                    wrapper="span"
-                    src="/images/icons/mute-user.svg"
-                  />
-                )}
-                <FormattedMessage
-                  id={currentUserMuted ? 'unmute' : 'mute'}
-                  defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
-                />{' '}
-                {user.name}
-              </PopoverMenuItem>,
-            ]}
+            {menuItems}
           </PopoverMenu>
         </React.Fragment>
       }
@@ -62,13 +85,16 @@ UserPopoverMenu.propTypes = {
   user: PropTypes.shape(),
   handleMuteCurrUser: PropTypes.func,
   handleUnMuteUserBlog: PropTypes.func,
+  handleRestrictUserBlog: PropTypes.func,
   onActionInitiated: PropTypes.func,
+  authUserName: PropTypes.string,
 };
 
 UserPopoverMenu.defaultProps = {
   user: {},
   handleMuteCurrUser: () => {},
   handleUnMuteUserBlog: () => {},
+  handleRestrictUserBlog: () => {},
   onActionInitiated: () => {},
 };
 
