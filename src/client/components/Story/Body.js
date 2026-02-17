@@ -99,7 +99,15 @@ export function getHtml(
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
-    if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
+    if (videoLink) {
+      const centerContent = videoPreviewResult[0];
+      const linkedImageRegex = /\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\)/g;
+      const updatedContent = centerContent
+        .replace(linkedImageRegex, videoLink)
+        .replace(/<\/?center>/gi, '');
+
+      parsedBody = parsedBody?.replace(videoPreviewResult[0], updatedContent);
+    }
   }
 
   parsedBody = improve(parsedBody);
