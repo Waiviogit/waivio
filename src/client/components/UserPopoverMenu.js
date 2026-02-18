@@ -13,8 +13,8 @@ const UserPopoverMenu = ({
   handleMuteCurrUser,
   user,
   handleUnMuteUserBlog,
-  handleRestrictUserBlog,
   onRestrictClick,
+  onReinstateClick,
   onActionInitiated,
   authUserName,
 }) => {
@@ -31,7 +31,7 @@ const UserPopoverMenu = ({
       case 'restrict':
         return onRestrictClick();
       case 'reinstate':
-        return handleRestrictUserBlog(user);
+        return onReinstateClick();
       default:
         return null;
     }
@@ -99,8 +99,8 @@ UserPopoverMenu.propTypes = {
   user: PropTypes.shape(),
   handleMuteCurrUser: PropTypes.func,
   handleUnMuteUserBlog: PropTypes.func,
-  handleRestrictUserBlog: PropTypes.func,
   onRestrictClick: PropTypes.func,
+  onReinstateClick: PropTypes.func,
   onActionInitiated: PropTypes.func,
   authUserName: PropTypes.string,
 };
@@ -111,6 +111,7 @@ UserPopoverMenu.defaultProps = {
   handleUnMuteUserBlog: () => {},
   handleRestrictUserBlog: () => {},
   onRestrictClick: () => {},
+  onReinstateClick: () => {},
   onActionInitiated: () => {},
 };
 
