@@ -1027,18 +1027,14 @@ export const getReport = ({ guideName, userName, reservationPermlink }) =>
     .catch(error => {
       return error;
     });
-// endregion
 
-// region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
 
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
     headers,
     method: 'GET',
-  })
-    .then(res => res.json())
-    .then(res => omit(res.user_metadata, '_id'));
+  }).then(res => res.json());
 };
 
 export const updateUserMetadata = async (userName, data) => {

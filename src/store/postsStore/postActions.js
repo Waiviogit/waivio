@@ -8,7 +8,6 @@ import { setCurrentShownPost } from '../appStore/appActions';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
-import { parseJSON } from '../../common/helpers/parseJSON';
 import { setGuestMana } from '../usersStore/usersActions';
 import {
   getAuthorityFields,
@@ -89,21 +88,13 @@ export const getContent = (author, permlink, afterLike, isComment = false) => (
 
         if (embed?.provider_name === '3Speak') {
           try {
-            let speakRes = await fetch('https://api.hive.blog', {
-              method: 'POST',
+            let speakRes = await fetch(`https://play.3speak.tv/api/watch?v=${embed.id}`, {
+              method: 'GET',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                method: 'bridge.get_post',
-                params: { author, permlink },
-                id: 1,
-              }),
             });
 
             speakRes = await speakRes.json();
-            const metadata = parseJSON(speakRes?.result?.json_metadata);
-
-            videoPreview = metadata?.image?.[0];
+            videoPreview = speakRes.thumbnail;
           } catch (e) {
             console.error(e);
           }

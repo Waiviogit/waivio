@@ -39,7 +39,6 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
   const feedItemClassNames = classNames('FeedMasonry__item', {
     'FeedMasonry__item--giveaway': post.giveaway,
   });
-
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const user = useSelector(getAuthenticatedUser);
@@ -108,6 +107,22 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
           markTiktokUnavailable?.(post.permlink);
         });
     }
+
+    if (is3speak && !preview && !thumbnail && embeds[0]?.id) {
+      fetch(`https://play.3speak.tv/api/watch?v=${embeds[0].id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(data => data.json())
+        .then(data => {
+          if (data?.thumbnail) {
+            setThumbnail(data.thumbnail);
+          }
+        })
+        .catch(error => {
+          console.error('3Speak preview error:', error);
+        });
+    }
   }, []);
 
   if (withoutImage && isEmpty(embeds)) return null;
@@ -130,7 +145,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage, markTiktokUnava
   }
 
   if (is3speak) {
-    embed = { ...embed, thumbnail: imagePath[0] };
+    embed = { ...embed, thumbnail: preview || thumbnail || imagePath[0] };
   }
 
   return (

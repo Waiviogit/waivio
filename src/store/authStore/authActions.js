@@ -1,5 +1,5 @@
 import Cookie from 'js-cookie';
-import { get } from 'lodash';
+import { get, omit } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
@@ -29,7 +29,6 @@ import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
 import { clearGuestAuthData, getGuestAccessToken } from '../../common/helpers/localStorageHelpers';
 import {
-  getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsLoaded,
@@ -173,9 +172,19 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       Cookie.remove('auth');
       Cookie.remove('access_token');
     } else {
-      promise = new Promise(async resolve => {
+      // eslint-disable-next-line consistent-return
+      promise = new Promise(async (resolve, reject) => {
         const [account] = await dHive.database.getAccounts([hiveAuthData.username]);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+        const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+
+        if (userRes?.muted) {
+          dispatch(logout());
+          message.error('Your account has been muted.');
+
+          return reject(new Error('muted'));
+        }
+
+        const userMetaData = omit(userRes?.user_metadata, '_id');
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
         const appAdmins = await getAppAdmins();
@@ -205,40 +214,59 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       });
     }
   } else if (isUserLoaded(state)) {
-    const userMetaData = getAuthenticatedUserMetaData(state);
     const authenticatedUserName = getAuthenticatedUserName(state);
     const authenticatedUser = getAuthenticatedUser(state);
+    const userRes = await waivioAPI.getAuthenticatedUserMetadata(authenticatedUserName);
 
-    let account;
-
-    if (isGuest) {
-      account = authenticatedUser;
+    if (userRes?.muted) {
+      dispatch(logout());
+      message.error('Your account has been muted.');
+      promise = Promise.reject(new Error('muted'));
     } else {
-      account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
+      const userMetaData = omit(userRes?.user_metadata, '_id');
+
+      let account;
+
+      if (isGuest) {
+        account = authenticatedUser;
+      } else {
+        account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
+      }
+
+      dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
+      const signature =
+        userMetaData?.profile?.signature ||
+        (account?.posting_json_metadata
+          ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+          : '') ||
+        '';
+
+      dispatch(setSignature(signature));
+
+      const appAdmins = await getAppAdmins();
+
+      setNightMode(userMetaData.settings?.nightmode);
+      Cookie.set('appAdmins', appAdmins);
+      Cookie.set('currentUser', authenticatedUserName);
+      dispatch(changeAdminStatus(authenticatedUserName));
+      promise = Promise.resolve({ account, userMetaData });
     }
-
-    dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
-    const signature =
-      userMetaData?.profile?.signature ||
-      (account?.posting_json_metadata
-        ? JSON.parse(account.posting_json_metadata)?.profile?.signature
-        : '') ||
-      '';
-
-    dispatch(setSignature(signature));
-
-    const appAdmins = await getAppAdmins();
-
-    setNightMode(userMetaData.settings?.nightmode);
-    Cookie.set('appAdmins', appAdmins);
-    Cookie.set('currentUser', authenticatedUserName);
-    dispatch(changeAdminStatus(authenticatedUserName));
-    promise = Promise.resolve({ account, userMetaData });
   } else if (accessToken && socialNetwork) {
+    // eslint-disable-next-line consistent-return
     promise = new Promise(async (resolve, reject) => {
       try {
         const userData = await setToken(accessToken, socialNetwork, regData);
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+        const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+
+        if (userRes?.muted) {
+          dispatch(logout());
+          message.error('Your account has been muted.');
+
+          return reject(new Error('muted'));
+        }
+
+        const userMetaData = omit(userRes?.user_metadata, '_id');
+
         const privateEmail = await getPrivateEmail(userData.name);
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
@@ -269,7 +297,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   } else if (!steemConnectAPI.accessToken && !isGuest) {
     promise = Promise.reject('error');
   } else if (isGuest || steemConnectAPI.accessToken) {
-    promise = new Promise(async resolve => {
+    // eslint-disable-next-line consistent-return
+    promise = new Promise(async (resolve, reject) => {
       try {
         let account;
         const scUserData = await steemConnectAPI.me();
@@ -282,7 +311,16 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           account = (await dHive.database.getAccounts([scUserData.name]))[0];
         }
 
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+        const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+
+        if (userRes?.muted) {
+          dispatch(logout());
+          message.error('Your account has been muted.');
+
+          return reject(new Error('muted'));
+        }
+
+        const userMetaData = omit(userRes?.user_metadata, '_id');
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
@@ -359,9 +397,18 @@ export const loginFromServer = cookie => dispatch => {
       if (hiveAuthData.expire < Date.now()) {
         Promise.resolve();
       } else {
-        promise = new Promise(async resolve => {
+        // eslint-disable-next-line consistent-return
+        promise = new Promise(async (resolve, reject) => {
           const account = await getUserAccount(hiveAuthData.username);
-          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+          const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+
+          if (userRes?.muted) {
+            dispatch({ type: LOGOUT });
+
+            return reject(new Error('muted'));
+          }
+
+          const userMetaData = omit(userRes?.user_metadata, '_id');
           const privateEmail = await getPrivateEmail(hiveAuthData.username);
           const rewardsTab = await getRewardTab(hiveAuthData.username);
 
@@ -384,10 +431,19 @@ export const loginFromServer = cookie => dispatch => {
         });
       }
     } else if (cookie.access_token && cookie.socialProvider) {
+      // eslint-disable-next-line consistent-return
       promise = new Promise(async (resolve, reject) => {
         try {
           const userData = await setToken(cookie.access_token, cookie.socialProvider);
-          const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+          const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+
+          if (userRes?.muted) {
+            dispatch({ type: LOGOUT });
+
+            return reject(new Error('muted'));
+          }
+
+          const userMetaData = omit(userRes?.user_metadata, '_id');
           const privateEmail = await getPrivateEmail(userData.name);
           const rewardsTab = await getRewardTab(userData.name);
           const { WAIV } = await getGuestWaivBalance(userData.name);
@@ -407,6 +463,7 @@ export const loginFromServer = cookie => dispatch => {
         }
       });
     } else if (isGuest || cookie.access_token) {
+      // eslint-disable-next-line consistent-return
       promise = new Promise(async (resolve, reject) => {
         try {
           if (!isGuest && !cookie.currentUser) reject({});
@@ -415,7 +472,15 @@ export const loginFromServer = cookie => dispatch => {
               ? await waivioAPI.getUserAccount(cookie.guestName, true)
               : { name: cookie.currentUser };
             const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
-            const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+            const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+
+            if (userRes?.muted) {
+              dispatch({ type: LOGOUT });
+
+              return reject(new Error('muted'));
+            }
+
+            const userMetaData = omit(userRes?.user_metadata, '_id');
             const privateEmail = await getPrivateEmail(scUserData.name);
             const rewardsTab = await getRewardTab(scUserData.name);
             const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
