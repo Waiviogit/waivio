@@ -148,7 +148,10 @@ export function getHtml(
       safeLinks,
     }),
   );
-  parsedBody = parsedBody.replace(/<a([^>]+)href="([^"]+)"([^>]*)>/gi, '<a$1 data-href="$2"$3>');
+
+  if (!options.isChatBotLink) {
+    parsedBody = parsedBody.replace(/<a([^>]+)href="([^"]+)"([^>]*)>/gi, '<a$1 data-href="$2"$3>');
+  }
 
   parsedBody = parsedBody.replace(
     MD_DATA_IMG,
