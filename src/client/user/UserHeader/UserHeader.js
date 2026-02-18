@@ -57,6 +57,7 @@ const UserHeader = ({
 }) => {
   const [visible, setVisible] = useState(false);
   const [restrictedVisible, setRestrictedVisible] = useState(false);
+  const [restrictModalMode, setRestrictModalMode] = useState('reinstate');
   const [hoveringMute, setHoveringMute] = useState(false);
   const [isHoveredRestricted, setIsHoveredRestricted] = useState(false);
   const [wasRestrictLoading, setWasRestrictLoading] = useState(false);
@@ -141,6 +142,12 @@ const UserHeader = ({
   };
 
   const onRestrictedBtnClick = () => {
+    setRestrictModalMode('reinstate');
+    setRestrictedVisible(true);
+  };
+
+  const onRestrictClick = () => {
+    setRestrictModalMode('restrict');
     setRestrictedVisible(true);
   };
   const guestPrefix = ' (guest)';
@@ -215,6 +222,7 @@ const UserHeader = ({
           handleMuteCurrUser={handleMuteCurrUser}
           handleUnMuteUserBlog={handleMuteUserBlog}
           handleRestrictUserBlog={handleRestrictUserBlog}
+          onRestrictClick={onRestrictClick}
         />
       )}
     </div>
@@ -334,6 +342,7 @@ const UserHeader = ({
         visible={restrictedVisible}
         handleRestrictUser={handleRestrictUserBlog}
         restrictLoading={restrictLoading}
+        mode={restrictModalMode}
       />
     </div>
   );
