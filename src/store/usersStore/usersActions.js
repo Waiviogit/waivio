@@ -357,3 +357,23 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
     },
   });
 };
+
+export const RESTRICT_USER = createAsyncActionType('@auth/RESTRICT_USER');
+
+export const restrictUserBlog = user => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = user.restricted ? 'restore' : 'remove';
+
+  return dispatch({
+    type: RESTRICT_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.restrictUser(userName, user.name, action).then(result => result),
+    },
+    meta: {
+      restricted: user.name,
+      userName,
+      action,
+    },
+  });
+};

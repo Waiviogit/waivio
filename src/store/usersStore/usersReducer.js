@@ -506,6 +506,49 @@ export default function usersReducer(state = initialState, action) {
       };
     }
 
+    case actions.RESTRICT_USER.START: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.restricted]: {
+            ...state.users[action.meta.restricted],
+            restrictLoading: true,
+          },
+        },
+      };
+    }
+
+    case actions.RESTRICT_USER.SUCCESS: {
+      const user = state.users[action.meta.restricted];
+      const restricted = action.meta.action === 'remove';
+
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.restricted]: {
+            ...user,
+            restricted,
+            restrictLoading: false,
+          },
+        },
+      };
+    }
+
+    case actions.RESTRICT_USER.ERROR: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.restricted]: {
+            ...state.users[action.meta.restricted],
+            restrictLoading: false,
+          },
+        },
+      };
+    }
+
     case 'CLEAR_MUTE_LOADING': {
       return {
         ...state,

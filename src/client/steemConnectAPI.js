@@ -863,6 +863,19 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      restrictUser(userAccount, targetAccount, action, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [userAccount],
+          id: 'waivio_restricted',
+          json: JSON.stringify({
+            account: targetAccount,
+            action,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
       hiveEngineDepositWithdraw(user, data) {
         const params = {
           required_auths: [],
