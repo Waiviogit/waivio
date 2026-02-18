@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, omit } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAppHost } from '../appStore/appSelectors';
@@ -159,7 +159,9 @@ export const getUserMetadata = () => (dispatch, getState) => {
   if (userName) {
     return dispatch({
       type: GET_USER_METADATA.ACTION,
-      payload: ApiClient.getAuthenticatedUserMetadata(userName),
+      payload: ApiClient.getAuthenticatedUserMetadata(userName).then(res =>
+        omit(res?.user_metadata, '_id'),
+      ),
     });
   }
 
