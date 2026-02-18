@@ -19,7 +19,7 @@ import { initialColors } from '../constants/colors';
 
 const MainMapView = props => {
   const configuration = useSelector(getWebsiteConfiguration);
-  const mainColor = configuration.colors?.mapMarkerBody || initialColors.marker;
+  const mainColor = configuration?.colors?.mapMarkerBody || initialColors?.marker;
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
       if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {

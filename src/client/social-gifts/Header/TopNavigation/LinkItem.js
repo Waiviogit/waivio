@@ -39,7 +39,8 @@ const LinkItem = ({ link, index, intl }) => {
 
   const isSameHost = linkUrl.host === currentUrl.host;
 
-  const isActive = isSameHost && pathname === linkPathname;
+  const isActive =
+    (isSameHost && pathname === linkPathname) || (index === 0 && history.location.pathname === '/');
 
   const className = isActive
     ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'

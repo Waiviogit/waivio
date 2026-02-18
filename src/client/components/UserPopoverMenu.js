@@ -14,6 +14,7 @@ const UserPopoverMenu = ({
   user,
   handleUnMuteUserBlog,
   handleRestrictUserBlog,
+  onRestrictClick,
   onActionInitiated,
   authUserName,
 }) => {
@@ -28,6 +29,8 @@ const UserPopoverMenu = ({
       case 'unmute':
         return handleUnMuteUserBlog(user);
       case 'restrict':
+        return onRestrictClick();
+      case 'reinstate':
         return handleRestrictUserBlog(user);
       default:
         return null;
@@ -36,32 +39,43 @@ const UserPopoverMenu = ({
 
   const handlePopoverChoice = key => onActionInitiated(() => handlePopoverClick(key));
 
-  const menuItems = [
-    <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
-      {user.muteLoading ? (
-        <Icon type="loading" />
-      ) : (
-        <ReactSVG
-          className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
-          wrapper="span"
-          src="/images/icons/mute-user.svg"
-        />
-      )}
-      <FormattedMessage
-        id={currentUserMuted ? 'unmute' : 'mute'}
-        defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
-      />{' '}
-      {user.name}
-    </PopoverMenuItem>,
-  ];
+  const menuItems = [];
 
-  if (isAdministrator && !user.restricted) {
+  if (user.restricted) {
     menuItems.push(
-      <PopoverMenuItem key="restrict">
-        <Icon type="stop" />
-        <FormattedMessage id="restrict" defaultMessage="Restrict" /> {user.name}
+      <PopoverMenuItem key="reinstate">
+        {user.restrictLoading ? <Icon type="loading" /> : <Icon type="check-circle" />}
+        <FormattedMessage id="reinstate" defaultMessage="Reinstate" /> {user.name}
       </PopoverMenuItem>,
     );
+  } else {
+    menuItems.push(
+      <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
+        {user.muteLoading ? (
+          <Icon type="loading" />
+        ) : (
+          <ReactSVG
+            className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
+            wrapper="span"
+            src="/images/icons/mute-user.svg"
+          />
+        )}
+        <FormattedMessage
+          id={currentUserMuted ? 'unmute' : 'mute'}
+          defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
+        />{' '}
+        {user.name}
+      </PopoverMenuItem>,
+    );
+
+    if (isAdministrator) {
+      menuItems.push(
+        <PopoverMenuItem key="restrict">
+          <Icon type="stop" />
+          <FormattedMessage id="restrict" defaultMessage="Restrict" /> {user.name}
+        </PopoverMenuItem>,
+      );
+    }
   }
 
   return (
@@ -86,6 +100,7 @@ UserPopoverMenu.propTypes = {
   handleMuteCurrUser: PropTypes.func,
   handleUnMuteUserBlog: PropTypes.func,
   handleRestrictUserBlog: PropTypes.func,
+  onRestrictClick: PropTypes.func,
   onActionInitiated: PropTypes.func,
   authUserName: PropTypes.string,
 };
@@ -95,6 +110,7 @@ UserPopoverMenu.defaultProps = {
   handleMuteCurrUser: () => {},
   handleUnMuteUserBlog: () => {},
   handleRestrictUserBlog: () => {},
+  onRestrictClick: () => {},
   onActionInitiated: () => {},
 };
 
