@@ -186,7 +186,7 @@ export function getHtml(
   parsedBody = parsedBody.replace(threeSpeakImgRegex, (match, videoId) => {
     const iframeSrc = `//play.3speak.tv/watch?v=${videoId}&mode=iframe&layout=desktop`;
 
-    return `<div class="PostFeedEmbed__container"><iframe src="${iframeSrc}" width="100%" height="400" frameborder="0" allowfullscreen></iframe></div>`;
+    return `<div class="PostFeedEmbed__container"><iframe src="${iframeSrc}" width="100%" height="400" frameborder="0" style="overflow: hidden;" allowfullscreen></iframe></div>`;
   });
 
   return (

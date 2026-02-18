@@ -63,12 +63,8 @@ const RewardsHeader = ({ proposition, intl }) => {
               >
                 {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
               </a>
-              <a
-                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
-                target={'_blank'}
-                rel="noreferrer"
-              >
-                @{proposition?.guideName} {`(${proposition?.sponsorURL})`}
+              <a href={proposition.sponsorURL} target={'_blank'} rel="noreferrer">
+                @{proposition?.guideName} {`(${proposition?.sponsorName})`}
               </a>
             </>
           )}
