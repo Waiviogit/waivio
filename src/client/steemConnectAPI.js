@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign */
 import hivesigner from 'hivesigner';
 import Cookie from 'js-cookie';
+import { message } from 'antd';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { parseJSON } from '../common/helpers/parseJSON';
+import { clearGuestAuthData } from '../common/helpers/localStorageHelpers';
 import HAS from './HiveAuth/hive-auth-wrapper';
 import { broadcast as keychainBroadcast } from './services/hive/signer';
 
@@ -91,6 +93,27 @@ function sc2Extended() {
   sc2Proto.meOp = sc2Proto.me;
 
   sc2Proto.broadcast = async (operations, cb, keyType) => {
+    const userName =
+      (isGuest() && localStorage.getItem('guestName')) ||
+      parseJSON(Cookie.get('auth'))?.username ||
+      Cookie.get('currentUser');
+
+    if (userName) {
+      const mutedRes = await waivioAPI.getIsUserMuted(userName);
+
+      if (mutedRes?.muted) {
+        message.error('Your account has been muted.');
+        Cookie.remove('access_token');
+        Cookie.remove('auth');
+        Cookie.remove('currentUser');
+        Cookie.remove('appAdmins');
+        clearGuestAuthData();
+        window.location.href = '/';
+
+        return null;
+      }
+    }
+
     if (isGuest()) return broadcast(operations, cb);
     if (isHiveAuth()) {
       const auth = parseJSON(Cookie.get('auth'));

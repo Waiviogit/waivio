@@ -178,7 +178,7 @@ export default (state = initialState, action) => {
       };
 
     case types.LOGOUT:
-      return { ...initialState, isFetching: false };
+      return { ...initialState, isFetching: false, loaded: true };
 
     case GET_USER_METADATA.SUCCESS:
       return {

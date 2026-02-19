@@ -25,7 +25,6 @@ import {
   updateGuestProfile,
   waivioAPI,
 } from '../../waivioApi/ApiClient';
-import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
 import { clearGuestAuthData, getGuestAccessToken } from '../../common/helpers/localStorageHelpers';
 import {
@@ -172,18 +171,17 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       Cookie.remove('auth');
       Cookie.remove('access_token');
     } else {
-      // eslint-disable-next-line consistent-return
-      promise = new Promise(async (resolve, reject) => {
+      const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+
+      if (userRes?.muted) {
+        dispatch(logout());
+        message.error('Your account has been muted.');
+
+        return;
+      }
+
+      promise = new Promise(async resolve => {
         const [account] = await dHive.database.getAccounts([hiveAuthData.username]);
-        const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
-
-        if (userRes?.muted) {
-          dispatch(logout());
-          message.error('Your account has been muted.');
-
-          return reject(new Error('muted'));
-        }
-
         const userMetaData = omit(userRes?.user_metadata, '_id');
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
@@ -221,105 +219,99 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     if (userRes?.muted) {
       dispatch(logout());
       message.error('Your account has been muted.');
-      promise = Promise.reject(new Error('muted'));
+
+      return;
+    }
+
+    const userMetaData = omit(userRes?.user_metadata, '_id');
+
+    let account;
+
+    if (isGuest) {
+      account = authenticatedUser;
     } else {
+      account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
+    }
+
+    dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
+    const signature =
+      userMetaData?.profile?.signature ||
+      (account?.posting_json_metadata
+        ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+        : '') ||
+      '';
+
+    dispatch(setSignature(signature));
+
+    const appAdmins = await getAppAdmins();
+
+    setNightMode(userMetaData.settings?.nightmode);
+    Cookie.set('appAdmins', appAdmins);
+    Cookie.set('currentUser', authenticatedUserName);
+    dispatch(changeAdminStatus(authenticatedUserName));
+    promise = Promise.resolve({ account, userMetaData });
+  } else if (accessToken && socialNetwork) {
+    const userData = await setToken(accessToken, socialNetwork, regData);
+    const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+
+    if (userRes?.muted) {
+      dispatch(logout());
+      message.error('Your account has been muted.');
+
+      return;
+    }
+
+    promise = new Promise(async resolve => {
       const userMetaData = omit(userRes?.user_metadata, '_id');
 
-      let account;
-
-      if (isGuest) {
-        account = authenticatedUser;
-      } else {
-        account = (await dHive.database.getAccounts([authenticatedUserName]))[0];
-      }
-
-      dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
-      const signature =
-        userMetaData?.profile?.signature ||
-        (account?.posting_json_metadata
-          ? JSON.parse(account.posting_json_metadata)?.profile?.signature
-          : '') ||
-        '';
-
-      dispatch(setSignature(signature));
-
+      const privateEmail = await getPrivateEmail(userData.name);
+      const rewardsTab = await getRewardTab(userData.name);
+      const { WAIV } = await getGuestWaivBalance(userData.name);
       const appAdmins = await getAppAdmins();
 
-      setNightMode(userMetaData.settings?.nightmode);
+      setGoogleTagEvent('signed_in_google');
+      Cookie.set('currentUser', userData.name);
       Cookie.set('appAdmins', appAdmins);
-      Cookie.set('currentUser', authenticatedUserName);
-      dispatch(changeAdminStatus(authenticatedUserName));
-      promise = Promise.resolve({ account, userMetaData });
-    }
-  } else if (accessToken && socialNetwork) {
-    // eslint-disable-next-line consistent-return
-    promise = new Promise(async (resolve, reject) => {
-      try {
-        const userData = await setToken(accessToken, socialNetwork, regData);
-        const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+      setNightMode(userMetaData.settings?.nightmode);
+      dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
+      dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
+      dispatch(changeAdminStatus(userData.name));
 
-        if (userRes?.muted) {
-          dispatch(logout());
-          message.error('Your account has been muted.');
-
-          return reject(new Error('muted'));
-        }
-
-        const userMetaData = omit(userRes?.user_metadata, '_id');
-
-        const privateEmail = await getPrivateEmail(userData.name);
-        const rewardsTab = await getRewardTab(userData.name);
-        const { WAIV } = await getGuestWaivBalance(userData.name);
-        const appAdmins = await getAppAdmins();
-
-        setGoogleTagEvent('signed_in_google');
-        Cookie.set('currentUser', userData.name);
-        Cookie.set('appAdmins', appAdmins);
-        setNightMode(userMetaData.settings?.nightmode);
-        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
-        dispatch(getCurrentCurrencyRate(userMetaData?.settings?.currency));
-        dispatch(changeAdminStatus(userData.name));
-
-        resolve({
-          account: userData,
-          userMetaData,
-          privateEmail,
-          socialNetwork,
-          isGuestUser: true,
-          waivBalance: WAIV,
-          ...rewardsTab,
-        });
-      } catch (e) {
-        dispatch(notify(e.error.details[0].message));
-        reject(e);
-      }
+      resolve({
+        account: userData,
+        userMetaData,
+        privateEmail,
+        socialNetwork,
+        isGuestUser: true,
+        waivBalance: WAIV,
+        ...rewardsTab,
+      });
     });
   } else if (!steemConnectAPI.accessToken && !isGuest) {
     promise = Promise.reject('error');
   } else if (isGuest || steemConnectAPI.accessToken) {
-    // eslint-disable-next-line consistent-return
-    promise = new Promise(async (resolve, reject) => {
-      try {
-        let account;
-        const scUserData = await steemConnectAPI.me();
+    try {
+      let account;
+      const scUserData = await steemConnectAPI.me();
 
-        setGoogleTagEvent('signed_in_hivesigner');
+      setGoogleTagEvent('signed_in_hivesigner');
 
-        if (isGuest) {
-          account = scUserData?.account;
-        } else {
-          account = (await dHive.database.getAccounts([scUserData.name]))[0];
-        }
+      if (isGuest) {
+        account = scUserData?.account;
+      } else {
+        account = (await dHive.database.getAccounts([scUserData.name]))[0];
+      }
 
-        const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+      const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
 
-        if (userRes?.muted) {
-          dispatch(logout());
-          message.error('Your account has been muted.');
+      if (userRes?.muted) {
+        dispatch(logout());
+        message.error('Your account has been muted.');
 
-          return reject(new Error('muted'));
-        }
+        return;
+      }
 
+      promise = new Promise(async resolve => {
         const userMetaData = omit(userRes?.user_metadata, '_id');
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
@@ -350,18 +342,19 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           waivBalance: WAIV,
           isGuestUser: isGuest,
         });
-      } catch (e) {
-        console.error('Login error:', e);
-        if (e) message.error('Authorization was not successful. Please try again later.');
-        clearGuestAuthData();
-        Cookie.remove('auth');
-        Cookie.remove('currentUser');
-        Cookie.remove('appAdmins');
-        setNightMode(false);
-      }
-    });
+      });
+    } catch (e) {
+      console.error('Login error:', e);
+      if (e) message.error('Authorization was not successful. Please try again later.');
+      clearGuestAuthData();
+      Cookie.remove('auth');
+      Cookie.remove('currentUser');
+      Cookie.remove('appAdmins');
+      setNightMode(false);
+    }
   }
 
+  // eslint-disable-next-line consistent-return
   return dispatch({
     type: LOGIN,
     payload: {
@@ -387,7 +380,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 };
 
 // eslint-disable-next-line consistent-return
-export const loginFromServer = cookie => dispatch => {
+export const loginFromServer = cookie => async dispatch => {
   let promise = Promise.resolve(null);
   const isGuest = Boolean(cookie.guestName);
   const hiveAuthData = parseJSON(cookie.auth);
@@ -397,17 +390,16 @@ export const loginFromServer = cookie => dispatch => {
       if (hiveAuthData.expire < Date.now()) {
         Promise.resolve();
       } else {
-        // eslint-disable-next-line consistent-return
-        promise = new Promise(async (resolve, reject) => {
+        const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+
+        if (userRes?.muted) {
+          dispatch({ type: LOGOUT });
+
+          return;
+        }
+
+        promise = new Promise(async resolve => {
           const account = await getUserAccount(hiveAuthData.username);
-          const userRes = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
-
-          if (userRes?.muted) {
-            dispatch({ type: LOGOUT });
-
-            return reject(new Error('muted'));
-          }
-
           const userMetaData = omit(userRes?.user_metadata, '_id');
           const privateEmail = await getPrivateEmail(hiveAuthData.username);
           const rewardsTab = await getRewardTab(hiveAuthData.username);
@@ -431,86 +423,77 @@ export const loginFromServer = cookie => dispatch => {
         });
       }
     } else if (cookie.access_token && cookie.socialProvider) {
-      // eslint-disable-next-line consistent-return
-      promise = new Promise(async (resolve, reject) => {
-        try {
-          const userData = await setToken(cookie.access_token, cookie.socialProvider);
-          const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
+      const userData = await setToken(cookie.access_token, cookie.socialProvider);
+      const userRes = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
 
-          if (userRes?.muted) {
-            dispatch({ type: LOGOUT });
+      if (userRes?.muted) {
+        dispatch({ type: LOGOUT });
 
-            return reject(new Error('muted'));
-          }
+        return;
+      }
 
-          const userMetaData = omit(userRes?.user_metadata, '_id');
-          const privateEmail = await getPrivateEmail(userData.name);
-          const rewardsTab = await getRewardTab(userData.name);
-          const { WAIV } = await getGuestWaivBalance(userData.name);
+      promise = new Promise(async resolve => {
+        const userMetaData = omit(userRes?.user_metadata, '_id');
+        const privateEmail = await getPrivateEmail(userData.name);
+        const rewardsTab = await getRewardTab(userData.name);
+        const { WAIV } = await getGuestWaivBalance(userData.name);
 
-          resolve({
-            account: userData,
-            userMetaData,
-            privateEmail,
-            socialNetwork: cookie.socialProvider,
-            isGuestUser: true,
-            waivBalance: WAIV,
-            ...rewardsTab,
-          });
-        } catch (e) {
-          dispatch(notify(e.error.details[0].message));
-          reject(e);
-        }
+        resolve({
+          account: userData,
+          userMetaData,
+          privateEmail,
+          socialNetwork: cookie.socialProvider,
+          isGuestUser: true,
+          waivBalance: WAIV,
+          ...rewardsTab,
+        });
       });
     } else if (isGuest || cookie.access_token) {
-      // eslint-disable-next-line consistent-return
-      promise = new Promise(async (resolve, reject) => {
-        try {
-          if (!isGuest && !cookie.currentUser) reject({});
-          else {
-            const scUserData = isGuest
-              ? await waivioAPI.getUserAccount(cookie.guestName, true)
-              : { name: cookie.currentUser };
-            const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
-            const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+      if (!isGuest && !cookie.currentUser) {
+        promise = Promise.reject({});
+      } else {
+        const scUserData = isGuest
+          ? await waivioAPI.getUserAccount(cookie.guestName, true)
+          : { name: cookie.currentUser };
+        const account = isGuest ? scUserData : await getUserAccount(scUserData.name);
+        const userRes = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
 
-            if (userRes?.muted) {
-              dispatch({ type: LOGOUT });
+        if (userRes?.muted) {
+          dispatch({ type: LOGOUT });
 
-              return reject(new Error('muted'));
-            }
-
-            const userMetaData = omit(userRes?.user_metadata, '_id');
-            const privateEmail = await getPrivateEmail(scUserData.name);
-            const rewardsTab = await getRewardTab(scUserData.name);
-            const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
-
-            // dispatch(changeAdminStatus(scUserData.name));
-            const signature =
-              userMetaData?.profile?.signature ||
-              (account?.posting_json_metadata
-                ? JSON.parse(account.posting_json_metadata)?.profile?.signature
-                : '') ||
-              '';
-
-            dispatch(setSignature(signature));
-
-            resolve({
-              ...scUserData,
-              ...rewardsTab,
-              account,
-              userMetaData,
-              privateEmail,
-              waivBalance: WAIV,
-              isGuestUser: isGuest,
-            });
-          }
-        } catch (e) {
-          console.warn(e);
+          return;
         }
-      });
+
+        promise = new Promise(async resolve => {
+          const userMetaData = omit(userRes?.user_metadata, '_id');
+          const privateEmail = await getPrivateEmail(scUserData.name);
+          const rewardsTab = await getRewardTab(scUserData.name);
+          const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+
+          // dispatch(changeAdminStatus(scUserData.name));
+          const signature =
+            userMetaData?.profile?.signature ||
+            (account?.posting_json_metadata
+              ? JSON.parse(account.posting_json_metadata)?.profile?.signature
+              : '') ||
+            '';
+
+          dispatch(setSignature(signature));
+
+          resolve({
+            ...scUserData,
+            ...rewardsTab,
+            account,
+            userMetaData,
+            privateEmail,
+            waivBalance: WAIV,
+            isGuestUser: isGuest,
+          });
+        });
+      }
     }
 
+    // eslint-disable-next-line consistent-return
     return dispatch({
       type: LOGIN_SERVER.ACTION,
       payload: {
@@ -524,8 +507,6 @@ export const loginFromServer = cookie => dispatch => {
   } catch (e) {
     console.warn(e);
   }
-
-  // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
