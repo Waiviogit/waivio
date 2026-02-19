@@ -1037,6 +1037,14 @@ export const getAuthenticatedUserMetadata = userName => {
   }).then(res => res.json());
 };
 
+export const getIsUserMuted = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}/muted`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .catch(error => error);
+
 export const updateUserMetadata = async (userName, data) => {
   let isGuest;
   let token = getGuestAccessToken();
@@ -1740,6 +1748,7 @@ export const getSocialInfoPost = (author, postPermlink) =>
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
+  getIsUserMuted,
   broadcastGuestOperation,
   getUserAccount,
 };
