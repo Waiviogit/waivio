@@ -1027,19 +1027,23 @@ export const getReport = ({ guideName, userName, reservationPermlink }) =>
     .catch(error => {
       return error;
     });
-// endregion
 
-// region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
 
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
     headers,
     method: 'GET',
+  }).then(res => res.json());
+};
+
+export const getIsUserMuted = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}/muted`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
-    .then(res => omit(res.user_metadata, '_id'));
-};
+    .catch(error => error);
 
 export const updateUserMetadata = async (userName, data) => {
   let isGuest;
@@ -1744,6 +1748,7 @@ export const getSocialInfoPost = (author, postPermlink) =>
 
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
+  getIsUserMuted,
   broadcastGuestOperation,
   getUserAccount,
 };

@@ -38,6 +38,10 @@ const iframeWhitelist = [
     re: /^https:\/\/3speak\.(?:online|co|tv)\/embed\?v=([A-Za-z0-9_\-\/.]+)(&.*)?$/,
     fn: src => src.replace(/\?.+$/, ''), // strip query string
   },
+  {
+    re: /^(https?:)?\/\/play\.3speak\.tv\/watch\?v=([A-Za-z0-9_\-\/.]+)(&.*)?$/,
+    fn: src => src,
+  },
 
   {
     re: /^(https?:)?\/\/w.soundcloud.com\/player\/.*/i,

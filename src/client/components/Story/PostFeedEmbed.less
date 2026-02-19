@@ -59,7 +59,15 @@
     height: 0;
     width: 100%;
     position: relative;
-    padding-bottom: 56%;
+    padding-bottom: calc(56% + 2px);
+
+    @media @small-max {
+      padding-bottom: calc(56% + 7px);
+    }
+
+    &--youtube {
+      padding-bottom: 56%;
+    }
 
     &_high {
       min-height: 600px;
@@ -114,7 +122,7 @@
   }
 
   &__container-vimeo {
-    padding-bottom: 62%;
+    padding-bottom: calc(56% + 2px);
     @media @small {
       padding-bottom: 52%;
     }
@@ -140,10 +148,10 @@
     iframe {
       top: 0;
       left: 0;
-      width: calc(100% + 40px);
+      width: calc(100% + 10px);
       height: 100%;
       position: absolute;
-      margin-left: -20px;
+      margin-left: -5px;
 
       @media @small {
         left: 0;

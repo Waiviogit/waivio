@@ -99,7 +99,15 @@ export function getHtml(
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
-    if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
+    if (videoLink) {
+      const centerContent = videoPreviewResult[0];
+      const linkedImageRegex = /\[!\[[^\]]*\]\([^)]+\)\]\([^)]+\)/g;
+      const updatedContent = centerContent
+        .replace(linkedImageRegex, videoLink)
+        .replace(/<\/?center>/gi, '');
+
+      parsedBody = parsedBody?.replace(videoPreviewResult[0], updatedContent);
+    }
   }
 
   parsedBody = improve(parsedBody);
@@ -160,6 +168,25 @@ export function getHtml(
     return ReactDOMServer.renderToString(
       <PostFeedEmbed key={`embed-a-${embedId}`} inPost embed={embed} />,
     );
+  });
+
+  // Transform 3Speak thumbnail links to iframe embeds
+  // More restrictive regex that only matches anchor tags with img directly inside (no nested tags between)
+  const threeSpeakLinkRegex = /<a\s+[^>]*(?:href|data-href)="https?:\/\/3speak\.tv\/watch\?v=([^"&]+)[^"]*"[^>]*>\s*<img[^>]*>\s*<\/a>/gi;
+
+  parsedBody = parsedBody.replace(threeSpeakLinkRegex, (match, videoId) => {
+    const iframeSrc = `//play.3speak.tv/watch?v=${videoId}&mode=iframe&layout=desktop`;
+
+    return `<div class="PostFeedEmbed__container"><iframe src="${iframeSrc}" width="100%" height="400" frameborder="0" allowfullscreen></iframe></div>`;
+  });
+
+  // Also handle images with data-linked-url pointing to 3speak (created by earlier processing)
+  const threeSpeakImgRegex = /<img[^>]*data-linked-url="https?:\/\/3speak\.tv\/watch\?v=([^"&]+)[^"]*"[^>]*>/gi;
+
+  parsedBody = parsedBody.replace(threeSpeakImgRegex, (match, videoId) => {
+    const iframeSrc = `//play.3speak.tv/watch?v=${videoId}&mode=iframe&layout=desktop`;
+
+    return `<div class="PostFeedEmbed__container"><iframe src="${iframeSrc}" width="100%" height="400" frameborder="0" style="overflow: hidden;" allowfullscreen></iframe></div>`;
   });
 
   return (

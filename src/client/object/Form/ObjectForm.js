@@ -18,7 +18,8 @@ const ObjectForm = props => {
   } = props;
   const columnValue = form.getFieldValue('formColumn');
 
-  const disabled = columnValue === formColumnsField.newTab;
+  const disabled =
+    columnValue === formColumnsField.newTab || columnValue === formColumnsField.forward;
 
   return (
     <React.Fragment>

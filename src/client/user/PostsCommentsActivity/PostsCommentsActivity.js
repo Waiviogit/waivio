@@ -28,6 +28,11 @@ const PostsCommentsActivity = props => {
   if (!isEmpty(user.mutedBy) || user.muted)
     return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
+  if (user?.restricted)
+    return (
+      <div className="feed_empty">This user has shared content that may be inappropriate.</div>
+    );
+
   return (
     <Tabs defaultActiveKey={tab} className={'UserFollowers'} activeKey={tab}>
       <Tabs.TabPane

@@ -47,6 +47,17 @@ const RewardsHeader = ({ proposition, intl }) => {
         );
     }
   };
+  let baseUrl = '';
+
+  try {
+    if (proposition?.sponsorURL) {
+      const url = new URL(proposition.sponsorURL);
+
+      baseUrl = url.origin;
+    }
+  } catch (err) {
+    console.error('Invalid URL:', proposition?.sponsorURL);
+  }
 
   return (
     <div>
@@ -56,37 +67,33 @@ const RewardsHeader = ({ proposition, intl }) => {
           {proposition?.sponsorName && proposition.sponsorURL && (
             <>
               {' '}
-              <a
-                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
-                target={'_blank'}
-                rel="noreferrer"
-              >
+              <a href={`${baseUrl}/@${proposition?.guideName}`} target={'_blank'} rel="noreferrer">
                 {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
               </a>
-              <a
-                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
-                target={'_blank'}
-                rel="noreferrer"
-              >
-                @{proposition?.guideName} {`(${proposition?.sponsorName})`}
-              </a>
+              <div>
+                <a
+                  href={`${baseUrl}/@${proposition?.guideName}`}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  @{proposition?.guideName}
+                </a>
+                <span>
+                  {' '}
+                  <a href={proposition.sponsorURL} target={'_blank'} rel="noreferrer">
+                    {`(${proposition?.sponsorName})`}
+                  </a>
+                </span>
+              </div>
             </>
           )}
           {proposition.sponsorURL && !proposition.sponsorName && (
             <>
               {' '}
-              <a
-                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
-                target={'_blank'}
-                rel="noreferrer"
-              >
+              <a href={`${baseUrl}/@${proposition?.guideName}`} target={'_blank'} rel="noreferrer">
                 {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
               </a>
-              <a
-                href={`${proposition.sponsorURL}/@${proposition?.guideName}`}
-                target={'_blank'}
-                rel="noreferrer"
-              >
+              <a href={`${baseUrl}/@${proposition?.guideName}`} target={'_blank'} rel="noreferrer">
                 @{proposition?.guideName}
               </a>
             </>

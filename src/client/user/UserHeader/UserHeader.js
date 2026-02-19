@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Button, Icon } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -12,7 +13,12 @@ import AvatarLightbox from '../../components/AvatarLightbox';
 import FollowButton from '../../widgets/FollowButton';
 import WeightTag from '../../components/WeightTag';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { unfollowUser, followUser, muteUserBlog } from '../../../store/usersStore/usersActions';
+import {
+  unfollowUser,
+  followUser,
+  muteUserBlog,
+  restrictUserBlog,
+} from '../../../store/usersStore/usersActions';
 import BellButton from '../../widgets/BellButton';
 import MuteModal from '../../widgets/MuteModal';
 import UserPopoverMenu from '../../components/UserPopoverMenu';
@@ -30,6 +36,7 @@ import {
 } from '../../../store/walletStore/walletSelectors';
 
 import './UserHeader.less';
+import RestrictedModal from '../../widgets/RestrictedModal';
 
 const UserHeader = ({
   username,
@@ -45,9 +52,25 @@ const UserHeader = ({
   authUserName,
   handleMuteUserBlog,
   muteLoading,
+  handleRestrictUserBlog,
+  restrictLoading,
 }) => {
   const [visible, setVisible] = useState(false);
+  const [restrictedVisible, setRestrictedVisible] = useState(false);
+  const [restrictModalMode, setRestrictModalMode] = useState('reinstate');
   const [hoveringMute, setHoveringMute] = useState(false);
+  const [isHoveredRestricted, setIsHoveredRestricted] = useState(false);
+  const [wasRestrictLoading, setWasRestrictLoading] = useState(false);
+
+  useEffect(() => {
+    if (wasRestrictLoading && !restrictLoading) {
+      setRestrictedVisible(false);
+      setWasRestrictLoading(false);
+    }
+    if (restrictLoading) {
+      setWasRestrictLoading(true);
+    }
+  }, [restrictLoading, wasRestrictLoading]);
   const style = hasCover ? { backgroundImage: `url("${getImagePathPost(coverImage)}")` } : {};
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
@@ -107,6 +130,26 @@ const UserHeader = ({
     return mutedLabelText;
   };
 
+  const getRestrictedLabel = () => {
+    if (restrictLoading) {
+      return intl.formatMessage({ id: 'reinstating', defaultMessage: 'Reinstating...' });
+    }
+    if (isHoveredRestricted) {
+      return intl.formatMessage({ id: 'reinstate', defaultMessage: 'Reinstate' });
+    }
+
+    return intl.formatMessage({ id: 'restricted', defaultMessage: 'Restricted' });
+  };
+
+  const onRestrictedBtnClick = () => {
+    setRestrictModalMode('reinstate');
+    setRestrictedVisible(true);
+  };
+
+  const onRestrictClick = () => {
+    setRestrictModalMode('restrict');
+    setRestrictedVisible(true);
+  };
   const guestPrefix = ' (guest)';
   const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
   const headerUserName = isMobileDevice ? mobileUserName : username;
@@ -116,13 +159,33 @@ const UserHeader = ({
     </Link>
   ) : (
     <div className="UserHeader__buttons-container">
-      <FollowButton
-        unfollowUser={unfollow}
-        followUser={follow}
-        following={user.youFollows}
-        user={user}
-        followingType="user"
-      />
+      {user.restricted ? (
+        <Button
+          type={isHoveredRestricted ? 'default' : 'danger'}
+          onClick={onRestrictedBtnClick}
+          onMouseEnter={() => setIsHoveredRestricted(true)}
+          onMouseLeave={() => setIsHoveredRestricted(false)}
+          disabled={restrictLoading}
+        >
+          {restrictLoading && (
+            <Icon
+              type="loading"
+              style={{
+                marginRight: 8,
+              }}
+            />
+          )}
+          {getRestrictedLabel()}
+        </Button>
+      ) : (
+        <FollowButton
+          unfollowUser={unfollow}
+          followUser={follow}
+          following={user.youFollows}
+          user={user}
+          followingType="user"
+        />
+      )}
       {user.youFollows && <BellButton user={user} />}
       {user.muted && (
         <span
@@ -154,9 +217,13 @@ const UserHeader = ({
 
       {!mutedByModerator && (
         <UserPopoverMenu
+          authUserName={authUserName}
           user={user}
           handleMuteCurrUser={handleMuteCurrUser}
           handleUnMuteUserBlog={handleMuteUserBlog}
+          handleRestrictUserBlog={handleRestrictUserBlog}
+          onRestrictClick={onRestrictClick}
+          onReinstateClick={onRestrictedBtnClick}
         />
       )}
     </div>
@@ -270,6 +337,14 @@ const UserHeader = ({
         visible={visible}
         setVisibleMuteModal={setVisible}
       />
+      <RestrictedModal
+        user={user}
+        setVisible={setRestrictedVisible}
+        visible={restrictedVisible}
+        handleRestrictUser={handleRestrictUserBlog}
+        restrictLoading={restrictLoading}
+        mode={restrictModalMode}
+      />
     </div>
   );
 };
@@ -288,6 +363,8 @@ UserHeader.propTypes = {
   handleMuteUserBlog: PropTypes.func,
   authUserName: PropTypes.string,
   muteLoading: PropTypes.bool,
+  handleRestrictUserBlog: PropTypes.func,
+  restrictLoading: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -302,6 +379,8 @@ UserHeader.defaultProps = {
   handleMuteUserBlog: () => {},
   isGuest: false,
   muteLoading: false,
+  handleRestrictUserBlog: () => {},
+  restrictLoading: false,
 };
 
 export default injectIntl(
@@ -309,11 +388,13 @@ export default injectIntl(
     (state, ownProps) => ({
       authUserName: getAuthenticatedUserName(state),
       muteLoading: state.users?.users?.[ownProps.user?.name]?.muteLoading || false,
+      restrictLoading: state.users?.users?.[ownProps.user?.name]?.restrictLoading || false,
     }),
     {
       unfollow: unfollowUser,
       follow: followUser,
       handleMuteUserBlog: muteUserBlog,
+      handleRestrictUserBlog: restrictUserBlog,
     },
   )(UserHeader),
 );

@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import sanitizeHtml from 'sanitize-html';
+import { getObjectName } from '../common/helpers/wObjectHelper';
 
-const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
+const HtmlSandbox = ({ html, wobject, className, autoSize = true, maxHeight }) => {
   const iframeRef = useRef(null);
   const [interactive, setInteractive] = useState(false);
 
@@ -23,7 +24,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
         return;
       }
 
-      // ВАРІАНТ Б: Автоматичний клік (якщо ручного gtag не було)
       if (data.type === 'UI_INTERACTION') {
         window.gtag('event', 'iframe_ui_interaction', {
           source: 'html_sandbox',
@@ -34,6 +34,10 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     };
 
     window.addEventListener('message', handleMessage);
+
+    if (typeof window !== 'undefined' && window.gtag && wobject) {
+      window.gtag('event', getObjectName(wobject), { debug_mode: false });
+    }
 
     return () => window.removeEventListener('message', handleMessage);
   }, []);
@@ -542,7 +546,6 @@ const HtmlSandbox = ({ html, className, autoSize = true, maxHeight }) => {
     } catch (e) {}
   }
 
-  // Створюємо функцію gtag прямо всередині iframe, щоб її бачив ваш HTML
   window.gtag = function () {
     send({ type: 'GA_EVENT', payload: Array.prototype.slice.call(arguments) });
   };
@@ -789,6 +792,7 @@ HtmlSandbox.propTypes = {
   className: PropTypes.string,
   autoSize: PropTypes.bool,
   maxHeight: PropTypes.number,
+  wobject: PropTypes.shape(),
 };
 
 export default HtmlSandbox;

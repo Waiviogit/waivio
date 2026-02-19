@@ -289,30 +289,6 @@ export const validatorsCreator = (
     if (!domainPattern.test(domainPart)) {
       return callback(messages.sponsorURLInvalidFormat);
     }
-
-    try {
-      const url = new URL(trimmedValue);
-      const pathname = url.pathname;
-      const search = url.search;
-      const hash = url.hash;
-
-      if (pathname && pathname !== '/' && pathname.trim() !== '') {
-        return callback(messages.sponsorURLDomainOnly);
-      }
-      if (search && search.trim() !== '') {
-        return callback(messages.sponsorURLDomainOnly);
-      }
-      if (hash && hash.trim() !== '') {
-        return callback(messages.sponsorURLDomainOnly);
-      }
-
-      callback();
-    } catch (error) {
-      if (!trimmedValue.toLowerCase().startsWith('https://')) {
-        return callback(messages.sponsorURLMustHaveHttps);
-      }
-
-      return callback(messages.sponsorURLInvalidFormat);
-    }
+    callback();
   },
 });

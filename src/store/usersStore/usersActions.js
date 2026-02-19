@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, omit } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAppHost } from '../appStore/appSelectors';
@@ -161,7 +161,9 @@ export const getUserMetadata = () => (dispatch, getState) => {
   if (userName) {
     return dispatch({
       type: GET_USER_METADATA.ACTION,
-      payload: ApiClient.getAuthenticatedUserMetadata(userName),
+      payload: ApiClient.getAuthenticatedUserMetadata(userName).then(res =>
+        omit(res?.user_metadata, '_id'),
+      ),
     });
   }
 
@@ -354,6 +356,26 @@ export const muteUserBlog = user => (dispatch, getState, { steemConnectAPI }) =>
     meta: {
       muted: user.name,
       userName,
+    },
+  });
+};
+
+export const RESTRICT_USER = createAsyncActionType('@auth/RESTRICT_USER');
+
+export const restrictUserBlog = user => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const action = user.restricted ? 'restore' : 'remove';
+
+  return dispatch({
+    type: RESTRICT_USER.ACTION,
+    payload: {
+      promise: steemConnectAPI.restrictUser(userName, user.name, action).then(result => result),
+    },
+    meta: {
+      restricted: user.name,
+      userName,
+      action,
     },
   });
 };

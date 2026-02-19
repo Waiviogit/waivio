@@ -22,19 +22,33 @@ const LinkItem = ({ link, index, intl }) => {
     : link.link;
 
   if (!linkTo && link.type === 'nav') linkTo = `/object/${link.permlink}`;
+  const normalize = (path = '') => (path.length > 1 ? path.replace(/\/+$/, '') : path);
+
+  const currentUrl = new URL(window.location.href);
+  const pathname = normalize(currentUrl.pathname);
+
+  let linkUrl;
+
+  if (linkTo?.startsWith('http')) {
+    linkUrl = new URL(linkTo);
+  } else {
+    linkUrl = new URL(linkTo, window.location.origin);
+  }
+
+  const linkPathname = normalize(linkUrl.pathname);
+
+  const isSameHost = linkUrl.host === currentUrl.host;
+
+  const isActive =
+    (isSameHost && pathname === linkPathname) || (index === 0 && history.location.pathname === '/');
+
+  const className = isActive
+    ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
+    : 'WebsiteTopNavigation__link';
 
   if (linkTo?.includes('/active-campaigns')) {
     return (
-      <a
-        key={link.link}
-        className={
-          index === 0 && history.location.pathname === '/'
-            ? 'WebsiteTopNavigation__link WebsiteTopNavigation__link--active'
-            : 'WebsiteTopNavigation__link'
-        }
-        rel="noreferrer"
-        href={link.link}
-      >
+      <a key={link.link} className={className} rel="noreferrer" href={link.link}>
         {getMenuLinkTitle(link, intl, 24, uppercase)}
       </a>
     );
@@ -43,7 +57,7 @@ const LinkItem = ({ link, index, intl }) => {
   return link.type === 'blank' ? (
     <a
       key={link.link}
-      className="WebsiteTopNavigation__link"
+      className={className}
       onClick={() => {
         if (link?.link?.includes(hostname)) {
           return window && window?.open(link.link, link.isNewTab ? '_blank' : '_self');

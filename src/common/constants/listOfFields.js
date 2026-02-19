@@ -290,6 +290,7 @@ export const formColumnsField = {
   entire: 'Entire Width',
   fullScreen: 'Full Screen',
   newTab: 'New Tab',
+  forward: 'Forward',
 };
 export const formFormFields = {
   link: 'Link',
