@@ -18,7 +18,11 @@ import {
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates } from '../helper';
-import { getScreenSize, getUserAdministrator } from '../../../store/appStore/appSelectors';
+import {
+  getScreenSize,
+  getUserAdministrator,
+  getIsWaivio,
+} from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -97,7 +101,7 @@ const MainMap = React.memo(props => {
     let zoom = +query.get('zoom');
     let center = queryCenter;
 
-    if (isEmpty(queryCenter)) {
+    if (isEmpty(queryCenter) && !props.isWaivio) {
       const currLocation = await props.getCoordinates();
       const res = await props.getCurrentAppSettings();
       const siteConfig = get(res, 'configuration');
@@ -108,6 +112,7 @@ const MainMap = React.memo(props => {
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
     }
+
     if (props.isSocial) {
       const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
         ? JSON.parse(props.wobject?.mapDesktopView)
@@ -408,6 +413,7 @@ MainMap.propTypes = {
   isAdmin: PropTypes.bool,
   settings: PropTypes.shape(),
   socialLoading: PropTypes.bool,
+  isWaivio: PropTypes.bool,
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
@@ -469,6 +475,7 @@ export default connect(
       authUserName: getAuthenticatedUserName(state),
       isAuth: getIsAuthenticated(state),
       isAdmin: getUserAdministrator(state),
+      isWaivio: getIsWaivio(state),
       settings: getSettingsSite(state),
     };
   },
