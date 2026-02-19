@@ -223,6 +223,7 @@ const UserHeader = ({
           handleUnMuteUserBlog={handleMuteUserBlog}
           handleRestrictUserBlog={handleRestrictUserBlog}
           onRestrictClick={onRestrictClick}
+          onReinstateClick={onRestrictedBtnClick}
         />
       )}
     </div>
