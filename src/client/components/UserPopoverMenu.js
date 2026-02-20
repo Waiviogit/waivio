@@ -1,4 +1,5 @@
 import Cookie from 'js-cookie';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { Icon } from 'antd';
 import { ReactSVG } from 'react-svg';
@@ -41,7 +42,7 @@ const UserPopoverMenu = ({
 
   const menuItems = [];
 
-  if (user.restricted) {
+  if (user.restricted && isAdministrator) {
     menuItems.push(
       <PopoverMenuItem key="reinstate">
         {user.restrictLoading ? <Icon type="loading" /> : <Icon type="check-circle" />}
@@ -49,24 +50,25 @@ const UserPopoverMenu = ({
       </PopoverMenuItem>,
     );
   } else {
-    menuItems.push(
-      <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
-        {user.muteLoading ? (
-          <Icon type="loading" />
-        ) : (
-          <ReactSVG
-            className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
-            wrapper="span"
-            src="/images/icons/mute-user.svg"
-          />
-        )}
-        <FormattedMessage
-          id={currentUserMuted ? 'unmute' : 'mute'}
-          defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
-        />{' '}
-        {user.name}
-      </PopoverMenuItem>,
-    );
+    if (!user.restricted)
+      menuItems.push(
+        <PopoverMenuItem key={currentUserMuted ? 'unmute' : 'mute'}>
+          {user.muteLoading ? (
+            <Icon type="loading" />
+          ) : (
+            <ReactSVG
+              className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
+              wrapper="span"
+              src="/images/icons/mute-user.svg"
+            />
+          )}
+          <FormattedMessage
+            id={currentUserMuted ? 'unmute' : 'mute'}
+            defaultMessage={currentUserMuted ? 'Unmute' : 'Mute'}
+          />{' '}
+          {user.name}
+        </PopoverMenuItem>,
+      );
 
     if (isAdministrator) {
       menuItems.push(
@@ -78,7 +80,7 @@ const UserPopoverMenu = ({
     }
   }
 
-  return (
+  return isEmpty(menuItems) ? null : (
     <Popover
       placement="bottomRight"
       trigger="hover"

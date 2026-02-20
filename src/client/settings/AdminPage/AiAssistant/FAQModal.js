@@ -232,7 +232,7 @@ const FAQModal = ({ visible, onClose, onSuccess, editingFaq, authUserName, form,
 
     let url;
 
-    if (currentLocation === 'waiviodev.com') {
+    if (['waiviodev.com', 'localhost'].includes(currentLocation)) {
       url = `https://waiviodev.com/api/image`;
     } else if (currentLocation === 'waivio.com' || currentLocation === 'www.waivio.com') {
       url = `https://www.waivio.com/api/image`;
