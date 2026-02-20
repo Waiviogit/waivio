@@ -265,6 +265,15 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
     return `${space}<a href="/object/${tagLower}">${tag}</a>`;
   });
 
+  content = content.replace(
+    /(^|[\s(\[>])(@([a-z][a-z0-9.-]{2,15}))(?=[\s).,!?;:\]<>]|$)/g,
+    (match, prefix, full, username) => {
+      if (usertags) usertags.add(username.toLowerCase());
+      if (!mutate) return match;
+      return `${prefix}<a href="/@${username}">${full}</a>`;
+    },
+  );
+
   // 2) Лінки (без картинок)
   // уникаємо збігів усередині атрибутів типу href="..." / src="..."
   const urlRe = /(?<!["'=])\bhttps?:\/\/[^\s<>()\[\]{}"']+/gi;

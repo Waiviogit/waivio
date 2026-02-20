@@ -108,7 +108,7 @@ export const encodeImageFileAsURL = (file, callback) => {
   const currentLocation = typeof window !== 'undefined' && window.location.hostname;
   let url;
 
-  if (currentLocation === 'waiviodev.com') {
+  if (['waiviodev.com', 'localhost'].includes(currentLocation)) {
     url = `https://waiviodev.com/api/image`;
   } else if (currentLocation === 'waivio.com' || currentLocation === 'www.waivio.com') {
     url = `https://www.waivio.com/api/image`;

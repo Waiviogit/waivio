@@ -157,6 +157,33 @@
     align-items: center;
   }
 
+  &__restrictedButton {
+    height: 32px;
+    padding: 4px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    background-color: #eb5e5e;
+    color: @white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+
+    &:hover:not(:disabled) {
+      background-color: #d9534f;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+
   &__muteCard {
     display: inline-block;
     height: 30px;
