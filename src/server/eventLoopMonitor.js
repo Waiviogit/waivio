@@ -1,4 +1,4 @@
-import { monitorEventLoopDelay } from 'node:perf_hooks';
+import { monitorEventLoopDelay } from 'perf_hooks';
 
 /**
  * Event loop delay (ELD) monitor for SSR Node process.
