@@ -2,6 +2,7 @@ import http from 'http';
 import app from './app';
 import dotenv from 'dotenv';
 import { setupRedisConnections } from './redis/redisClient';
+import * as eventLoopMonitor from './eventLoopMonitor';
 dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
 
 const server = http.createServer(app);
@@ -13,6 +14,10 @@ const LOCAL_NETWORK_IP = '0.0.0.0'; // Replace with your local network IP addres
 
 const startServer = async () => {
   if (!IS_DEV) await setupRedisConnections();
+
+  if (!IS_DEV && eventLoopMonitor.isEnvEnabled()) {
+    eventLoopMonitor.start();
+  }
 
   server.listen(process.env.PORT || 3000, LOCAL_NETWORK_IP, () =>
     console.log(`SSR started on http://localhost:${process.env.PORT || 3000}`),
@@ -35,6 +40,7 @@ const startServer = async () => {
     });
     module.hot.accept();
     module.hot.dispose(() => {
+      eventLoopMonitor.stop();
       server.close();
     });
   }
