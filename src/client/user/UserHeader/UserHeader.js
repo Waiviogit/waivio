@@ -1,4 +1,5 @@
-import { Button, Icon } from 'antd';
+import { Icon, Button } from 'antd';
+import Cookie from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -94,7 +95,8 @@ const UserHeader = ({
   const lastActive = relativeString?.includes('in')
     ? `${relativeString?.replace('in', '').trim()} ago`
     : relativeString;
-
+  const appAdmins = Cookie.get('appAdmins');
+  const isAdministrator = appAdmins?.includes(authUserName);
   const handleMuteCurrUser = () => setVisible(true);
 
   if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
@@ -142,8 +144,10 @@ const UserHeader = ({
   };
 
   const onRestrictedBtnClick = () => {
-    setRestrictModalMode('reinstate');
-    setRestrictedVisible(true);
+    if (isAdministrator) {
+      setRestrictModalMode('reinstate');
+      setRestrictedVisible(true);
+    }
   };
 
   const onRestrictClick = () => {
@@ -153,6 +157,36 @@ const UserHeader = ({
   const guestPrefix = ' (guest)';
   const mobileUserName = username.length < 26 ? username : `${`${username.slice(0, 20)}...`}`;
   const headerUserName = isMobileDevice ? mobileUserName : username;
+  let restrictedButton;
+
+  if (user.restricted && isAdministrator) {
+    restrictedButton = (
+      <Button
+        type={isHoveredRestricted ? 'default' : 'danger'}
+        onClick={onRestrictedBtnClick}
+        onMouseEnter={() => setIsHoveredRestricted(true)}
+        onMouseLeave={() => setIsHoveredRestricted(false)}
+        disabled={restrictLoading}
+      >
+        {restrictLoading && (
+          <Icon
+            type="loading"
+            style={{
+              marginRight: 8,
+            }}
+          />
+        )}
+        {getRestrictedLabel()}
+      </Button>
+    );
+  } else if (user.restricted && !isAdministrator) {
+    restrictedButton = (
+      <button className="UserHeader__restrictedButton" disabled>
+        {intl.formatMessage({ id: 'restricted', defaultMessage: 'Restricted' })}
+      </button>
+    );
+  }
+
   const buttons = isSameUser ? (
     <Link to="/edit-profile" className="UserHeader__edit">
       {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })}
@@ -160,23 +194,7 @@ const UserHeader = ({
   ) : (
     <div className="UserHeader__buttons-container">
       {user.restricted ? (
-        <Button
-          type={isHoveredRestricted ? 'default' : 'danger'}
-          onClick={onRestrictedBtnClick}
-          onMouseEnter={() => setIsHoveredRestricted(true)}
-          onMouseLeave={() => setIsHoveredRestricted(false)}
-          disabled={restrictLoading}
-        >
-          {restrictLoading && (
-            <Icon
-              type="loading"
-              style={{
-                marginRight: 8,
-              }}
-            />
-          )}
-          {getRestrictedLabel()}
-        </Button>
+        restrictedButton
       ) : (
         <FollowButton
           unfollowUser={unfollow}
