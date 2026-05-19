@@ -363,26 +363,32 @@ export const getSwapInfo = async ({ data, onlyAmount }) => {
 
   if (!params) return null;
 
-  const { swapJson, predictionImpact, amntOut } = await params.getSwapData({
+  const swapResult = await params.getSwapData({
     params,
     quantity,
     outputSymbol,
   });
 
-  const { error: err, predictiveAmount } = await validateAmount({ amount: amntOut, outputSymbol });
+  if (swapResult.error) {
+    message.error(swapResult.error);
+
+    return null;
+  }
+
+  const { swapJson, predictionImpact, amntOut } = swapResult;
+
+  // Swap modal only executes market swaps on Hive Engine — no bridge withdrawal.
+  // Withdrawal fee / minimum checks belong in getWithdrawInfo, not here.
+  const amountOut = BigNumber(amntOut)
+    .dp(8, BigNumber.ROUND_HALF_DOWN)
+    .toNumber();
 
   if (onlyAmount)
     return {
       priceImpact: predictionImpact,
-      amountOut: predictiveAmount,
+      amountOut,
       json: JSON.stringify([...swapJson]),
     };
-
-  if (err) {
-    message.error(err);
-
-    return null;
-  }
 
   const json = [...swapJson];
 
