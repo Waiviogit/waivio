@@ -90,7 +90,7 @@ const BusinessObject = ({
   const linkField = parseWobjectField(wobject, 'link');
   const wobjTitle = get(wobject, 'title');
   const walletAddress = get(wobject, 'walletAddress', []);
-  const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i.name !== 'avatar');
+  const pictures = albums?.flatMap(alb => alb?.items)?.filter(i => i && i.name !== 'avatar');
   const customVisibility = get(wobject, 'sortCustom.expand', []);
   const sortExclude = get(wobject, 'sortCustom.exclude', []);
   const customSort = get(wobject, 'sortCustom.include', []);
@@ -114,8 +114,8 @@ const BusinessObject = ({
           return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
         });
   const tagCategories = get(wobject, 'tagCategory', []);
-  const companyIdBody = wobject.companyId
-    ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
+  const companyIdBody = Array.isArray(wobject.companyId)
+    ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
     : [];
   const address = parseAddress(wobject);
   const map = parseWobjectField(wobject, 'map');
@@ -125,15 +125,16 @@ const BusinessObject = ({
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const showGallery = !isEmpty(wobject.preview_gallery) || !isEmpty(getObjectAvatar(wobject));
   const groupId = wobject.groupId;
-  const productIdBody = wobject.productId
-    ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
+  const productIdBody = Array.isArray(wobject.productId)
+    ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
   const tagCategoriesForDescr = reduce(
     wobject.tagCategory,
     (acc, curr) => {
-      const currentCategory = !isEmpty(curr.items)
-        ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
-        : '';
+      const currentCategory =
+        Array.isArray(curr.items) && !isEmpty(curr.items)
+          ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
+          : '';
 
       return acc ? `${acc}. ${currentCategory}` : currentCategory;
     },

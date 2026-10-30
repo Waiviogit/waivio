@@ -184,9 +184,7 @@ export const getObject = (authorPermlink, user, locale, host, abortController) =
       ...addAppHost(host),
       ...(abortController && { signal: abortController.signal }),
     },
-  })
-    .then(res => Promise.resolve(res.json()))
-    .catch(Promise.reject);
+  }).then(res => res.json());
 };
 
 export const getUsersByObject = object =>

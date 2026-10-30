@@ -169,7 +169,7 @@ async function renderSsr(req, res, template) {
         store.dispatch(setBaseObject(mainObj));
       }
     } catch (e) {
-      console.error('fall settings requests str 70');
+      console.error(`settings ${hostname} ${e?.message || e}`);
     }
   }
 

@@ -232,14 +232,13 @@ const getHostFromUrl = (url = '') => {
     // Remove any trailing punctuation that might have slipped through
     cleanUrl = cleanUrl.replace(/[*.,;:!?)\]}>"']+$/, '');
 
-    const urlObj = new URL(cleanUrl);
+    const urlObj = new URL(/^[a-z][a-z\d+.-]*:/i.test(cleanUrl) ? cleanUrl : `https://${cleanUrl}`);
 
     const { hostname } = urlObj;
 
     if (hostname?.startsWith('www.')) return hostname.replace('www.', '');
     return hostname;
-  } catch (error) {
-    console.log(`Failed to parse URL: ${url}`, error.message);
+  } catch (e) {
     return null;
   }
 };

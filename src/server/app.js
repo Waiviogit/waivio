@@ -189,8 +189,6 @@ app.get('/:category/@:author/:permlink/amp', (req, res) => {
   const queryString = preserveQueryParams(req.url);
   const redirectUrl = `/@${decodedAuthor}/${permlink}/amp${queryString}`;
 
-  console.log(`Redirecting category post AMP: ${req.url} -> ${redirectUrl}`);
-
   res.redirect(301, redirectUrl);
 });
 app.get('/:category/@:author/:permlink', (req, res) => {
@@ -202,8 +200,6 @@ app.get('/:category/@:author/:permlink', (req, res) => {
   // Preserve query parameters
   const queryString = preserveQueryParams(req.url);
   const redirectUrl = `/@${decodedAuthor}/${permlink}${queryString}`;
-
-  console.log(`Redirecting category post: ${req.url} -> ${redirectUrl}`);
 
   res.redirect(301, redirectUrl);
 });

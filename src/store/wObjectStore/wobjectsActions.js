@@ -48,7 +48,7 @@ export const getObject = authorPermlink => (dispatch, getState) => {
     payload: ApiClient.getObject(authorPermlink, user, usedLocale, appHost, abortController)
       .then(res => res)
       .catch(error => {
-        console.error('Error getting wobjects:', error);
+        console.error(`wobject ${authorPermlink} ${error?.message || error}`);
 
         return dispatch({ type: GET_OBJECT_ERROR });
       }),
@@ -184,7 +184,7 @@ export const getNearbyObjects = authorPermlink => (dispatch, getState) => {
     type: GET_OBJECTS_NEARBY.ACTION,
     payload: ApiClient.getNearbyObjects(authorPermlink, domain, 0, 5, 20000, appHost).catch(
       error => {
-        console.error('Error getting nearby objects:', error);
+        console.error(`nearby ${error?.status || ''} ${error?.url || error?.message || error}`);
 
         return dispatch({ type: GET_OBJECT_ERROR });
       },
