@@ -51,6 +51,13 @@ if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
 } else {
   process.on('uncaughtExceptionMonitor', restartHandler);
+  process.on('unhandledRejection', reason => {
+    console.error('Unhandled rejection:', reason);
+    restartHandler(
+      reason instanceof Error ? reason : new Error(String(reason)),
+      'unhandledRejection',
+    );
+  });
   app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);
 }
