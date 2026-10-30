@@ -115,7 +115,7 @@ export const getContent = (author, permlink, afterLike, isComment = false) => (
       afterLike,
     },
   }).catch(error => {
-    console.error('Error in post operation:', error);
+    console.error(`post ${author}/${permlink} ${error?.message || error}`);
   });
 };
 

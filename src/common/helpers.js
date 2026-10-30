@@ -52,12 +52,12 @@ export const addPayoutForActiveVotes = (post, waivRates) => {
 
 export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
-const ua = typeof window !== 'undefined' && window?.navigator?.userAgent;
+const ua = typeof window !== 'undefined' ? window.navigator?.userAgent : '';
 
 export const isIOS = () => {
-  if (typeof navigator === 'undefined') return false;
+  if (typeof ua !== 'string' || !ua) return false;
 
-  return /iPhone|iPod/i.test(ua) || (ua?.includes('Mac') && 'ontouchend' in document);
+  return /iPhone|iPod/i.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
 };
 
 // export const isIOS = () => {

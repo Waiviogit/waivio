@@ -90,7 +90,7 @@ export default class Post extends React.Component {
     const { author, permlink } = match.params;
 
     return Promise.allSettled([
-      store.dispatch(getContent(author, permlink), store.dispatch(getPostsByAuthor(author))),
+      store.dispatch(getContent(author, permlink)),
       store.dispatch(getPostsByAuthor(author)),
     ]);
   }

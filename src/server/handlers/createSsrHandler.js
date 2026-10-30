@@ -22,6 +22,7 @@ import {
 import { setBaseObject } from '../../store/wObjectStore/wobjectsActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
+import { requestContext } from '../requestContext';
 
 import {
   getSettingsAdsense,
@@ -70,214 +71,224 @@ const isPageExistSitemap = async ({ url = '', host }) => {
   return sismember({ key, member });
 };
 
-export default function createSsrHandler(template) {
-  return async function serverSideResponse(req, res) {
-    const hostname = req.hostname;
-    const isWaivio = hostname?.includes('waivio');
-    const userAgent = req.get('User-Agent');
-    const inheritedHost = isInheritedHost(hostname);
-    const analyticsInject = req.ssrInject?.analytics || '';
+async function renderSsr(req, res, template) {
+  const hostname = req.hostname;
+  const isWaivio = hostname?.includes('waivio');
+  const userAgent = req.get('User-Agent');
+  const inheritedHost = isInheritedHost(hostname);
+  const analyticsInject = req.ssrInject?.analytics || '';
 
-    if (inheritedHost) {
-      const { redirect, redirectPath, status } = await checkAppStatus(hostname);
-      if (redirect) return res.redirect(status, redirectPath);
-    }
+  if (inheritedHost) {
+    const { redirect, redirectPath, status } = await checkAppStatus(hostname);
+    if (redirect) return res.redirect(status, redirectPath);
+  }
 
-    if (req.url?.includes('/checklist/'))
-      return res.redirect(301, req.url.replace('/checklist/', '/object/'));
+  if (req.url?.includes('/checklist/'))
+    return res.redirect(301, req.url.replace('/checklist/', '/object/'));
 
-    const isUser = !isbot(userAgent);
-    const sc2Api = new hivesigner.Client({
-      app: process.env.STEEMCONNECT_CLIENT_ID,
-      baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
-      callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
-    });
-    const store = getStore(sc2Api, waivioAPI, req.url);
+  const isUser = !isbot(userAgent);
+  const sc2Api = new hivesigner.Client({
+    app: process.env.STEEMCONNECT_CLIENT_ID,
+    baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
+    callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
+  });
+  const store = getStore(sc2Api, waivioAPI, req.url);
 
-    store.dispatch(setAppHost(hostname));
-    store.dispatch(setAppUrl(`https://${req.headers.host}`));
+  store.dispatch(setAppHost(hostname));
+  store.dispatch(setAppUrl(`https://${req.headers.host}`));
 
-    let settings = {};
-    let adsenseSettings = {};
-    let parentHost = '';
+  let settings = {};
+  let adsenseSettings = {};
+  let parentHost = '';
 
-    const splittedUrl = req.url.split('?');
-    const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
-    const access_token =
-      query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
-    const socialProvider = query ? query.get('socialProvider') : undefined;
-    const currentUser =
-      query && query.get('access_token') ? query?.get('username') : req?.cookies?.currentUser;
+  const splittedUrl = req.url.split('?');
+  const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
+  const access_token =
+    query && query.get('access_token') ? query.get('access_token') : req?.cookies?.access_token;
+  const socialProvider = query ? query.get('socialProvider') : undefined;
+  const currentUser =
+    query && query.get('access_token') ? query?.get('username') : req?.cookies?.currentUser;
 
-    if (req.cookies && !req.url?.includes('sign-in') && access_token) {
-      sc2Api.setAccessToken(access_token);
-      const isGuest = currentUser?.startsWith(GUEST_PREFIX);
-      const data = {
-        access_token,
-        socialProvider,
-        ...req?.cookies,
-        currentUser,
-        ...(isGuest ? { guestName: currentUser } : {}),
-      };
-
-      try {
-        await store.dispatch(loginFromServer(data)).then(async res => {
-          try {
-            const language = res?.value?.userMetaData?.settings?.locale;
-            store.dispatch(setLocale(language));
-            store.dispatch(setUsedLocale(await loadLanguage(language)));
-          } catch (e) {
-            console.log(e, 'e');
-          }
-        });
-      } catch (e) {
-        console.log(`login error ${e}`);
-      }
-    }
-
-    const promises = [];
-    if (!isWaivio) {
-      if (listOfWebsiteWithMainPage.some(site => site === hostname))
-        store.dispatch(setIsDiningGifts(true));
-      if (listOfSocialWebsites.some(site => site === hostname))
-        store.dispatch(setIsSocialGifts(true));
-
-      try {
-        settings = await getSettingsWebsite(hostname);
-        adsenseSettings = await getSettingsAdsense(hostname);
-        parentHost = (await store.dispatch(setParentHost(hostname))).value;
-        const configResult = await store.dispatch(getWebsiteConfigForSSR(hostname));
-        const configuration = configResult?.value;
-
-        if (configuration?.shopSettings?.value) {
-          const { type, value } = configuration.shopSettings;
-          let mainObj;
-
-          if (type === 'user') {
-            const user = await getUserAccount(value);
-            const metadata = getMetadata(user);
-            const profile = get(metadata, 'profile', {});
-
-            mainObj = {
-              name: user?.name,
-              description: profile?.about,
-            };
-          } else {
-            mainObj = await getObject(value);
-          }
-
-          store.dispatch(setBaseObject(mainObj));
-        }
-      } catch (e) {
-        console.error('fall settings requests str 70');
-      }
-    }
-
-    const renderTags = {
-      googleTag: get(settings, 'googleAnalyticsTag', ''),
-      googleGSC: get(settings, 'googleGSCTag', ''),
-      verifTags: get(settings, 'verificationTags', []),
-      googleEventSnippetTag: get(settings, 'googleEventSnippet', ''),
-      googleAdsConfig: get(settings, 'googleAdsConfig', ''),
-      adSense: get(adsenseSettings, 'code', ''),
+  if (req.cookies && !req.url?.includes('sign-in') && access_token) {
+    sc2Api.setAccessToken(access_token);
+    const isGuest = currentUser?.startsWith(GUEST_PREFIX);
+    const data = {
+      access_token,
+      socialProvider,
+      ...req?.cookies,
+      currentUser,
+      ...(isGuest ? { guestName: currentUser } : {}),
     };
 
-    if (isUser) {
-      return res.send(
-        renderSsrPage({
-          store,
-          html: null,
-          assets,
-          template,
-          isWaivio,
-          analyticsInject,
-          ...renderTags,
-        }),
-      );
-    }
-
-    store.dispatch(getSafeLinksAction());
-
-    const routes = switchRoutes(hostname, parentHost);
-    const branch = matchRoutes(routes, splittedUrl[0]);
-
-    const loc =
-      query?.get('usedLocale') ||
-      settings?.language ||
-      req.cookies.language ||
-      getRequestLocale(req.get('Accept-Language'));
-
-    if (!isWaivio && !req.cookies.access_token) {
-      store.dispatch(setLocale(loc));
-      store.dispatch(setUsedLocale(await loadLanguage(loc)));
-    }
-
     try {
-      const searchBot = isbot(req.get('User-Agent'));
-      if (inheritedHost && searchBot) {
-        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-        if (!pageExist) return res.redirect(301, `https://www.waivio.com${req.url}`);
-      }
-
-      if (searchBot) {
-        await updateBotCount(req);
-        const cachedPage = await getCachedPage(req);
-        if (cachedPage) {
-          return res.send(cachedPage);
-        }
-      }
-
-      branch.forEach(({ route, match }) => {
-        const fetchData = route?.component?.fetchData;
-        if (fetchData instanceof Function) {
-          promises.push(fetchData({ store, match, req, res, query, url: req.url }));
+      await store.dispatch(loginFromServer(data)).then(async res => {
+        try {
+          const language = res?.value?.userMetaData?.settings?.locale;
+          store.dispatch(setLocale(language));
+          store.dispatch(setUsedLocale(await loadLanguage(language)));
+        } catch (e) {
+          console.log(e, 'e');
         }
       });
+    } catch (e) {
+      console.log(`login error ${e}`);
+    }
+  }
 
-      await createTimeout(ssrTimeout, Promise.allSettled(promises));
+  const promises = [];
+  if (!isWaivio) {
+    if (listOfWebsiteWithMainPage.some(site => site === hostname))
+      store.dispatch(setIsDiningGifts(true));
+    if (listOfSocialWebsites.some(site => site === hostname))
+      store.dispatch(setIsSocialGifts(true));
 
-      if (res.headersSent) return null;
+    try {
+      settings = await getSettingsWebsite(hostname);
+      adsenseSettings = await getSettingsAdsense(hostname);
+      parentHost = (await store.dispatch(setParentHost(hostname))).value;
+      const configResult = await store.dispatch(getWebsiteConfigForSSR(hostname));
+      const configuration = configResult?.value;
 
-      const context = {};
+      if (configuration?.shopSettings?.value) {
+        const { type, value } = configuration.shopSettings;
+        let mainObj;
 
-      const content = renderToString(
-        <Provider store={store}>
-          <StaticRouter location={req.url} context={context}>
-            {renderRoutes(routes)}
-          </StaticRouter>
-        </Provider>,
-      );
+        if (type === 'user') {
+          const user = await getUserAccount(value);
+          const metadata = getMetadata(user);
+          const profile = get(metadata, 'profile', {});
 
-      if (context.status) res.status(context.status);
+          mainObj = {
+            name: user?.name,
+            description: profile?.about,
+          };
+        } else {
+          mainObj = await getObject(value);
+        }
 
-      const page = renderSsrPage({
+        store.dispatch(setBaseObject(mainObj));
+      }
+    } catch (e) {
+      console.error(`settings ${hostname} ${e?.message || e}`);
+    }
+  }
+
+  const renderTags = {
+    googleTag: get(settings, 'googleAnalyticsTag', ''),
+    googleGSC: get(settings, 'googleGSCTag', ''),
+    verifTags: get(settings, 'verificationTags', []),
+    googleEventSnippetTag: get(settings, 'googleEventSnippet', ''),
+    googleAdsConfig: get(settings, 'googleAdsConfig', ''),
+    adSense: get(adsenseSettings, 'code', ''),
+  };
+
+  if (isUser) {
+    return res.send(
+      renderSsrPage({
         store,
-        html: content,
+        html: null,
+        assets,
+        template,
+        isWaivio,
+        analyticsInject,
+        ...renderTags,
+      }),
+    );
+  }
+
+  store.dispatch(getSafeLinksAction());
+
+  const routes = switchRoutes(hostname, parentHost);
+  const branch = matchRoutes(routes, splittedUrl[0]);
+
+  const loc =
+    query?.get('usedLocale') ||
+    settings?.language ||
+    req.cookies.language ||
+    getRequestLocale(req.get('Accept-Language'));
+
+  if (!isWaivio && !req.cookies.access_token) {
+    store.dispatch(setLocale(loc));
+    store.dispatch(setUsedLocale(await loadLanguage(loc)));
+  }
+
+  try {
+    const searchBot = isbot(req.get('User-Agent'));
+    if (inheritedHost && searchBot) {
+      const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+      if (!pageExist) return res.redirect(301, `https://www.waivio.com${req.url}`);
+    }
+
+    if (searchBot) {
+      await updateBotCount(req);
+      const cachedPage = await getCachedPage(req);
+      if (cachedPage) {
+        return res.send(cachedPage);
+      }
+    }
+
+    branch.forEach(({ route, match }) => {
+      const fetchData = route?.component?.fetchData;
+      if (fetchData instanceof Function) {
+        promises.push(fetchData({ store, match, req, res, query, url: req.url }));
+      }
+    });
+
+    await createTimeout(ssrTimeout, Promise.allSettled(promises));
+
+    if (res.headersSent) return null;
+
+    const context = {};
+
+    const content = renderToString(
+      <Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+          {renderRoutes(routes)}
+        </StaticRouter>
+      </Provider>,
+    );
+
+    if (context.status) res.status(context.status);
+
+    const page = renderSsrPage({
+      store,
+      html: content,
+      assets,
+      template,
+      isWaivio,
+      ...renderTags,
+    });
+
+    if (searchBot) await setCachedPage({ page, req });
+
+    return res.send(page);
+  } catch (err) {
+    console.error(`SSR fail ${req.url} ${err?.message}`, err);
+
+    return res.send(
+      renderSsrPage({
+        store,
+        html: null,
         assets,
         template,
         isWaivio,
         ...renderTags,
-      });
+      }),
+    );
+  }
+}
 
-      if (searchBot) await setCachedPage({ page, req });
+export default function createSsrHandler(template) {
+  return function serverSideResponse(req, res) {
+    const ctx = { url: req.url, host: req.hostname };
 
-      return res.send(page);
-    } catch (err) {
-      console.error(
-        `SSR error occured, falling back to bundled application instead ${req.url}`,
-        err,
-      );
+    return requestContext.run(ctx, () =>
+      Promise.resolve(renderSsr(req, res, template)).catch(err => {
+        const error = err instanceof Error ? err : new Error(String(err));
 
-      return res.send(
-        renderSsrPage({
-          store,
-          html: null,
-          assets,
-          template,
-          isWaivio,
-          ...renderTags,
-        }),
-      );
-    }
+        error.ssrRequest = `${ctx.host || ''} ${ctx.url}`.trim();
+        throw error;
+      }),
+    );
   };
 }
