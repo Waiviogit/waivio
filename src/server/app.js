@@ -12,6 +12,7 @@ import botRateLimit from './middleware/botRateLimit';
 import urlDecodeMiddleware from './middleware/urlDecodeMiddleware';
 import path from 'path';
 import { restartHandler } from '../common/services/errorNotifier';
+import { requestContext } from './requestContext';
 import { makeAnalyticsInjectMiddleware } from './middleware/analyticsMiddleware';
 import { analyticsPing, analyticsToken } from './analytics/requestHandlers';
 
@@ -52,11 +53,17 @@ if (IS_DEV) {
 } else {
   process.on('uncaughtExceptionMonitor', restartHandler);
   process.on('unhandledRejection', reason => {
-    console.error('Unhandled rejection:', reason);
-    restartHandler(
-      reason instanceof Error ? reason : new Error(String(reason)),
-      'unhandledRejection',
-    );
+    const ctx = requestContext.getStore();
+    const where = ctx?.url
+      ? ` ${ctx.host || ''} ${ctx.url}`
+      : reason?.ssrRequest
+      ? ` ${reason.ssrRequest}`
+      : '';
+    const error = reason instanceof Error ? reason : new Error(String(reason));
+
+    if (where) error.message = `${error.message} |${where}`;
+    console.error(`Unhandled rejection:${where}`, reason);
+    restartHandler(error, 'unhandledRejection');
   });
   app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);

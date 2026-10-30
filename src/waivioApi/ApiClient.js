@@ -1603,9 +1603,13 @@ export const getPrivateEmail = userName => {
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}?onlyEmail=true`, {
     headers,
     method: 'GET',
-  })
-    .then(res => res.json())
-    .then(res => res.privateEmail);
+  }).then(res => {
+    const type = res.headers.get('content-type') || '';
+
+    if (!res.ok || !type.includes('application/json')) return null;
+
+    return res.json().then(body => body?.privateEmail ?? null);
+  });
 };
 
 export const getTransferDetails = withdrawId =>

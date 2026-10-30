@@ -248,7 +248,7 @@ const normalizeDomain = domain => domain.toLowerCase().trim();
 
 const isHostSafeFrontend = (inputUrl, redisData) => {
   const hostname = getHostFromUrl(inputUrl);
-  if (!hostname) return false;
+  if (!hostname || typeof redisData?.data !== 'string' || !redisData?.prefixLength) return false;
 
   const baseDomain = normalizeDomain(hostname);
   const hash = CryptoJS.SHA256(baseDomain).toString(CryptoJS.enc.Hex);

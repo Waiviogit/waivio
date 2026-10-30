@@ -4,7 +4,8 @@ import socialRoutes from '../client/social-gifts/routes';
 import { socialDomens } from '../client/social-gifts/listOfSocialWebsites';
 
 const switchRoutes = (host, parentHost) => {
-  const hostForCheck = parentHost || host || '';
+  const hostForCheck =
+    (typeof parentHost === 'string' && parentHost) || (typeof host === 'string' && host) || '';
 
   if (hostForCheck && socialDomens.some(item => hostForCheck.includes(item)))
     return socialRoutes(host);
