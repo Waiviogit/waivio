@@ -480,9 +480,11 @@ const posts = (state = initialState, action) => {
       };
     }
     case postsActions.RECOMMENTED_POSTS.SUCCESS: {
+      const recommendedPosts = action.payload?.posts;
+
       return {
         ...state,
-        recommendedPosts: [...action.payload.posts],
+        recommendedPosts: Array.isArray(recommendedPosts) ? [...recommendedPosts] : [],
       };
     }
     case postsActions.RESET_RECOMMENTED_POSTS: {

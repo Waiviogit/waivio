@@ -393,7 +393,11 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
       const configuration = res.value;
 
-      const promises = [store.dispatch(setMainObj(configuration.shopSettings))];
+      const promises = [
+        store.dispatch(setMainObj(configuration.shopSettings)).catch(error => {
+          console.error(`setMainObj ${error?.message || error}`);
+        }),
+      ];
 
       if (!isEmpty(configuration?.shopSettings)) {
         if (configuration.shopSettings?.type === 'object') {

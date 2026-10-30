@@ -315,7 +315,7 @@ const ClassicSocialProductView = ({
           <SocialProductDescription
             objectType={wobject?.object_type}
             description={wobject?.description}
-            pictures={photosAlbum.items}
+            pictures={photosAlbum?.items || []}
             authorPermlink={wobject?.author_permlink}
           />
         </div>

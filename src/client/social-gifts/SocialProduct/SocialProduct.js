@@ -176,7 +176,7 @@ const SocialProduct = ({
   const publisher = parseWobjectField(wobject, 'publisher');
   const instacardAff =
     isRecipe && wobject?.affiliateLinks ? getPreferredInstacartItem(wobject.affiliateLinks) : null;
-  const productAuthors = wobject?.authors
+  const productAuthors = Array.isArray(wobject?.authors)
     ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
     : [];
   const departments = get(wobject, 'departments');
@@ -189,11 +189,11 @@ const SocialProduct = ({
   const customSort = get(wobject, 'sortCustom.include', []);
   const customVisibility = get(wobject, 'sortCustom.expand', []);
   const sortExclude = get(wobject, 'sortCustom.exclude', []);
-  const features = wobject?.features
-    ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
+  const features = Array.isArray(wobject?.features)
+    ? wobject.features.map(el => parseWobjectField(el, 'body', []))
     : [];
-  const productIdBody = wobject?.productId
-    ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
+  const productIdBody = Array.isArray(wobject?.productId)
+    ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
   const showRecipeFields =
     calories ||
@@ -227,9 +227,10 @@ const SocialProduct = ({
   const tagCategoriesForDescr = reduce(
     wobject?.tagCategory || [],
     (acc, curr) => {
-      const currentCategory = !isEmpty(curr.items)
-        ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
-        : '';
+      const currentCategory =
+        Array.isArray(curr.items) && !isEmpty(curr.items)
+          ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
+          : '';
 
       return acc ? `${acc}. ${currentCategory}` : currentCategory;
     },

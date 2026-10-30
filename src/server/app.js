@@ -12,6 +12,7 @@ import botRateLimit from './middleware/botRateLimit';
 import urlDecodeMiddleware from './middleware/urlDecodeMiddleware';
 import path from 'path';
 import { restartHandler } from '../common/services/errorNotifier';
+import { requestContext } from './requestContext';
 import { makeAnalyticsInjectMiddleware } from './middleware/analyticsMiddleware';
 import { analyticsPing, analyticsToken } from './analytics/requestHandlers';
 
@@ -51,6 +52,19 @@ if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
 } else {
   process.on('uncaughtExceptionMonitor', restartHandler);
+  process.on('unhandledRejection', reason => {
+    const ctx = requestContext.getStore();
+    const where = ctx?.url
+      ? ` ${ctx.host || ''} ${ctx.url}`
+      : reason?.ssrRequest
+      ? ` ${reason.ssrRequest}`
+      : '';
+    const error = reason instanceof Error ? reason : new Error(String(reason));
+
+    if (where) error.message = `${error.message} |${where}`;
+    console.error(`Unhandled rejection:${where}`, reason);
+    restartHandler(error, 'unhandledRejection');
+  });
   app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
   app.use(botRateLimit);
 }
@@ -175,8 +189,6 @@ app.get('/:category/@:author/:permlink/amp', (req, res) => {
   const queryString = preserveQueryParams(req.url);
   const redirectUrl = `/@${decodedAuthor}/${permlink}/amp${queryString}`;
 
-  console.log(`Redirecting category post AMP: ${req.url} -> ${redirectUrl}`);
-
   res.redirect(301, redirectUrl);
 });
 app.get('/:category/@:author/:permlink', (req, res) => {
@@ -188,8 +200,6 @@ app.get('/:category/@:author/:permlink', (req, res) => {
   // Preserve query parameters
   const queryString = preserveQueryParams(req.url);
   const redirectUrl = `/@${decodedAuthor}/${permlink}${queryString}`;
-
-  console.log(`Redirecting category post: ${req.url} -> ${redirectUrl}`);
 
   res.redirect(301, redirectUrl);
 });

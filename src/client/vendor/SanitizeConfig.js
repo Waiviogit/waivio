@@ -232,14 +232,13 @@ const getHostFromUrl = (url = '') => {
     // Remove any trailing punctuation that might have slipped through
     cleanUrl = cleanUrl.replace(/[*.,;:!?)\]}>"']+$/, '');
 
-    const urlObj = new URL(cleanUrl);
+    const urlObj = new URL(/^[a-z][a-z\d+.-]*:/i.test(cleanUrl) ? cleanUrl : `https://${cleanUrl}`);
 
     const { hostname } = urlObj;
 
     if (hostname?.startsWith('www.')) return hostname.replace('www.', '');
     return hostname;
-  } catch (error) {
-    console.log(`Failed to parse URL: ${url}`, error.message);
+  } catch (e) {
     return null;
   }
 };
@@ -248,7 +247,7 @@ const normalizeDomain = domain => domain.toLowerCase().trim();
 
 const isHostSafeFrontend = (inputUrl, redisData) => {
   const hostname = getHostFromUrl(inputUrl);
-  if (!hostname) return false;
+  if (!hostname || typeof redisData?.data !== 'string' || !redisData?.prefixLength) return false;
 
   const baseDomain = normalizeDomain(hostname);
   const hash = CryptoJS.SHA256(baseDomain).toString(CryptoJS.enc.Hex);
