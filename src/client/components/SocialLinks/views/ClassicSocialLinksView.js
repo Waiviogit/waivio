@@ -101,10 +101,7 @@ const ClassicSocialLinksView = ({ availableProfiles, profile, currHost, isSocial
               <a
                 target="_blank"
                 rel="noopener noreferrer"
-                href={transform(
-                  socialProfile.id,
-                  availableProfiles.find(p => p.id === socialProfile.id).value,
-                )}
+                href={transform(socialProfile.id, profile[socialProfile.id])}
               >
                 X
               </a>
